@@ -1,0 +1,10 @@
+            		<option class="selectBlock" value="27in. Monitor, Dell U2711" data-width="2560" data-height="1440">On a 27in. Monitor</option>
+            		<option class="selectBlock" value="17in. Workstation" data-width="1920" data-height="1200" >On a 17in. Workstation</option>
+            		<option class="selectBlock" value="15in. Macbook Pro" data-width="1680" data-height="1050" >On a 15in. Macbook Pro</option>
+            		<option class="selectBlock" value="11in. Macbook Air" data-width="1366" data-height="768" >On an 11in. Mackbook Air</option>
+            		<option class="selectBlock" value="iPad (Landscape)" data-width="1024" data-height="768" >On the iPad (Landscape)</option>
+            		<option class="selectBlock" value="iPad (Portrait)" data-width="768" data-height="1024" >On the iPad (Portrait)</option>
+            		<option class="selectBlock" value="Nexus7 (Landscape)" data-width="966" data-height="603" >On the Nexus 7 (Landscape)</option>
+            		<option class="selectBlock" value="Nexus7 (Portrait)" data-width="603" data-height="966" >On the Nexus 7 (Portrait)</option>
+            		<option class="selectBlock" value="iPhone (Landscape)" data-width="480" data-height="320" >On the iPhone (Landscape)</option>
+            		<option class="selectBlock" value="iPhone (Portrait)" data-width="320" data-height="480" >On the iPhone (Portrait)</option>
