@@ -1,0 +1,224 @@
+Pegasus:  Class Structure
+
+EVENT
+  tables: t_event, t_series, t_cfgfleet, t_cfgrace, t_cfgseries, t_message, t_entry, t_eventduty
+
+  methods:
+      event_geteventformats     (db, active)                                  array
+      event_getevent            (db, eventid)                                 array
+      event_getnextevent        (db, date)                                    array
+      event_getevents           (fields, mode)                                array-2D
+      event_getopenevents       (fields, mode)                                array-2D
+      event_seteventdetail      (detail)                                      array
+      event_geteventduties      (db, eventid, dutycode="")                    array-2D
+      event_getdutyperson       (db, eventid, dutycode)                       str
+      event_addevent            (db, fields, duties)                          str
+      event_addduty             (db, eventid, fields)                         bool
+      event_addmessage          (fields)                                      bool
+      event_changedetail        (eventid, fields)
+      event_changeresults       (eventid, fields)
+      event_updatestatus        (eventid, status)                         bool
+      event_addresultitem       (db, fields)                                          * wrong class?
+      event_getracecfg          (db, racecfgid)                               array
+      event_getfleetcfg         (db, racecfgid)                               array-2D
+      event_getfleetstatus      (db, eventid)                                 array-2D
+      event_getracestate        (currentstatus)                               str * same as r_decoderacestatus?
+      event_getseries           (db, code)                                    array
+      event_getseriescodes      (db)                                          array
+	  event_clearentries      (eventid)                                     array
+      event_resetentries      (eventid)                                     array
+	  event_getentries        (eventid)                                     array
+
+
+RACE
+  tables: t_race, t_racestate, t_lap, t_finish, a_race, a_lap
+
+  methods:
+      race_loadentries          (eventid, entries)
+	  race_getentry            (db, entryid)                                  array
+      race_getentries          (db, eventid, constraint)                      array-2D
+      race_getrecords          (db, eventid, constraint, select, order)       array-2D
+      race_deleteentry         (db, entryid)                                  int?
+      race_updateentry         (db, entryid, values)                          int?
+      race_setresultcode       (db, entryid, $code)                           int?
+      race_clearrace           (db, eventid, racenum=0)                       int
+      race_cleararchive        (db, eventid, racenum=0)                       int
+      race_clearstatus         (db, eventid, racenum=0)                       int
+      race_clearpursuitfinish  (db, eventid)                                  int
+
+
+RESULT
+  tables: t_result, a_result, t_resultfile
+
+  methods:
+      result_clearresults   (db, $eventid, $racenum=0)                          int
+
+COMP
+  tables: t_competitor
+
+  methods:
+      comp_getdetailbyid    (db, id)                                             array
+      comp_findcompetitor   (db, constraint)                                     array-2D
+      comp_findbysailnum    (db, sailnum)                                        array-2D
+      comp_addcompetitor    (db, fields)                                         bool
+      comp_deletecompetitor (db, id)                                             bool
+      comp_updatecompetitor (db, id, fields)                                     bool 
+      comp_eligible         (db, competitor, eventformat)                        array  * -> duplicate with boat_racealloc?
+      comp_signon           (db, competitor, race)                               str
+      comp_chksignon        (db, eventid, compid)                                bool
+      comp_enter            (db, eventid, compid, helm, crew, sailno, pytype)    ???    * not implemented
+
+
+BOAT 
+  tables: t_class
+
+  methods:
+      boat_getclasscodes	(db)							                     array
+      boat_getclasslist		()							                     array
+      boat_getdetail		(db, class, classid)					    array
+      boat_getclassname		(classid)						        str	* necessary?
+      boat_classexists		(db, classname)						        bool
+      boat_addclass		    (db, fields, eventid)					    str	* why eventid
+      boat_deleteclass		(db, classname)						        str	* necessary
+      boat_updateclasscfg	(db, classname, category, numcrew, rig, spin, engine, keel)	str	* necessary
+      boat_updatepy		    (db, classname, nat_py, local_py)			str
+      boat_racealloc		(db, class, eventtype)					    array	* right class?
+
+DB
+  tables: t_code_type, t_code_system, t_code_result, t_ini, t_link
+
+  methods:
+      db_disconnect		()
+      db_query			(query)
+      db_get_row		(query)
+      db_get_rows		(query)
+      db_exists			(table, value, where())
+      db_insert			(table, values())
+      db_lastid			()
+      db_delete			(table, where(), limit)
+      db_update			(table, values(), where(), limit)
+      db_truncate       (tables())
+
+      db_getsystemlabel		(codetype, code)					          str
+      db_checksystemcode	(codetype, code)					          bool
+      db_getsystemcodes		(codetype)						              array
+      db_getresultcodes		(visibility)						          array
+      db_getinivalues		(category)						              array
+      db_getlinks		    (category)						              array
+      
+      db_log_errors		(error, query)
+      db_log_debug		(method, query)
+      
+
+HELP
+  tables: t_help
+
+  methods:
+
+HTML
+  tables: <none>
+  
+  methods:
+      html_header		(location, csspath, forms, tables, refresh, title)	    str * why does this return anything
+      html_footer		(style, left, middle, right, fixed)			            str * why does this return anything
+      html_endscripts	()							                            str
+      html_body			(attributes)
+      html_addhtml		(html)							                        str * why does this return anything
+      html_addinclude	(file)							                        str *
+      html_rmtwocolpage	(lefthtml, righthtml)					                str *
+      html_render		()							                            str
+      html_flush		()							                            str *
+
+---- LIBRARIES ------------------------------------------------------------------------------------
+
+html_lib
+      h_modalform		     (modal())						                     str	*A
+      h_modalHeader		     (left, right, close)					             str	*A
+      h_modalFooter		     (str)							                     str	*A
+      h_alert			     (type, msg1, msg2)					                 str
+      h_pagebutton_link		 (button())						                     str
+      h_pagebutton_modal	 (button())						                     str
+      h_pagebutton_dropdown	 (button())						                     str
+      h_pagebutton_confirm   (button())						                     str
+      h_button			     (id, label, glyph, type, size, block, disabled)	 str     *B
+      h_supportteam()		 ()							                         str     *C
+      h_selectcodelist		 (codelist, default)					             str	*D	
+      h_selectlist		     (codelist, default)					             str	*D
+      
+
+util_lib   **** not all of these are utilities
+      u_numordinal		     (number)						                     str
+      u_truncatestring		 (str, length, suffix)				                 str
+      u_timeresolution	     (resolution, time)					                 str
+      u_exitnicely		     (script, eventid, error, msg)				         str
+      u_writelog		     (msg, eventid)						                 bool
+      u_writedbg		     (msg, script, function, line)				
+      u_argumentdbg		     (script, function, line, args)				
+      u_startsyslog		     (script, app)						                 bool
+      u_starteventlog		 (script, eventid)
+      u_sessionstate		 (script, reference, eventid)
+      
+      u_initconfigfile		 (file)
+      u_initsetparams		 (lang, mode, debug)
+      u_initpagestart	 	 ()
+      
+      u_sendmail		     (from, to, subject, message)				          bool  	*E
+      
+      u_geteventname		 (name, number, length)					              str	****
+      u_gettimelimitstring	 (absolute, relative)					              str 	****
+      u_getclasses_str		 (db, fleetcfg)						                  str	****
+      u_getcompetitors_str	 (db, fleetcfg						                  str	****
+      
+      u_setgrowls		     (eventid, page, type, msg, params)		
+      u_unsetgrowls		     (eventid)
+      u_processgrowls		 (eventid, page)						              str	**** -> htmllib
+
+rm_lib
+      r_initialiseevent      (mode, eventid)                                                bool
+      r_seteventinsession    (eventid, event, series_rs, ood_rs = array())
+      r_setraceinsession     (eventid, racecfg, fleetnum)
+      r_initfleetsession     (eventid, fleetnum, fleet)
+      r_initfleetdb          (db, eventid, fleetnum, fleet, start_scheme, start_interval)   array()
+      r_clearfleetdb         (db, eventid)                                                  array()
+      r_getstartdelay        (startnum, start_scheme, start_interval )                      int
+      r_getelapsedtime       (mode, origin, clock, startdelay, delta=0)                     str
+      r_decoderacestatus     (currentstatus)                                                str
+      r_styleracestatus      (currentstatus)                                                str
+      r_tideformat           (time, height)                                                 str
+      r_pursuitstarttimes    (db, eventid, length, scratchid, resolution, pytype)           array()
+	  r_oktoclose            (eventid)                                                      array()
+	  r_oktoreset            (eventid)                                                      array()
+
+
+results_lib
+      s_listScoringCodes     (stylesheet)                                                    str
+      s_createRaceResults    (eventid, tablecols, tablequery, fleet, stylesheet)             str  
+      s_createPursuitStarts  (eventid, starts, length, scratchclass, resolution, pytype)     str
+      s_createEntryList      (eventid, title, entries)                                       str
+      s_dispPageTitle        (club, title)                                                   str
+      s_dispEventTitle       (event, title, print)                                           str
+      s_dispAttributes       (attributes)                                                    str
+      s_dispTable            (tblcols, tabledata)                                            str
+      s_dispFooter           (info, title)                                                   str       
+
+mob_lib
+      m_pageheader           (brand, options)                                                str
+      m_button               (script, label, style="btn-default btn-block")                  str
+      m_title                (title)                                                         str
+      m_alert                (type, body, glyph, dismiss)                                    str
+      m_block                (content)                                                       str
+      m_page                 (loc, pbufr)                                                    str
+      m_errorpage            (loc, pbufr)                                                    str
+
+mail_lib   *** to be implemented
+
+db_lib   **** do I need this
+      db_connect             (server)                                                       str
+      db_query               (conn, sql)                                                    array
+      db_fetchrow            (result)                                                       array
+      db_numrows             (result)                                                       int
+      db_lastinsert          (conn)                                                         int
+      db_affectedrows        (conn)                                                         int
+      mysqli_close           (conn)                           
+
+

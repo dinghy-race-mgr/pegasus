@@ -1,0 +1,190 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}
+		<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}
+		<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}
+		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-view" {$bodyattrs}>
+	{BEGIN body}
+		{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_all}
+<div class="rnr-c rnr-cv rnr-c-all">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
+
+{BEGIN container_add}
+<div class="rnr-c rnr-cv rnr-c-add">
+
+{BEGIN viewheader}
+<div  class="rnr-brickcontents style2 rnr-b-viewheader {$brickclass_viewheader}"><span>	<h1>{$pagetitlelabel t_code_result view}</h1>
+</span></div>{END viewheader}
+
+
+{BEGIN message_block}
+<div  class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>{END message_block}
+
+
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+
+{BEGIN container_fields}
+<div class="rnr-c rnr-cv rnr-c-fields">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-viewfields2_atop {$brickclass_viewfields2_atop}"><table class="fieldGrid fieldGrid2">
+
+<tr>
+<td>
+	{BEGIN code_fieldblock}
+<div data-fieldname="code" class="rnr-field style1 {$fielddispclass_code}">
+  <div class="rnr-label above">{$label t_code_result code}:</div>
+  <div class="rnr-control style3">{$code_value}</div>
+</div>
+{END code_fieldblock}
+	{BEGIN short_fieldblock}
+<div data-fieldname="short" class="rnr-field style1 {$fielddispclass_short}">
+  <div class="rnr-label above">{$label t_code_result short}:</div>
+  <div class="rnr-control style3">{$short_value}</div>
+</div>
+{END short_fieldblock}
+	{BEGIN info_fieldblock}
+<div data-fieldname="info" class="rnr-field style1 {$fielddispclass_info}">
+  <div class="rnr-label above">{$label t_code_result info}:</div>
+  <div class="rnr-control style3">{$info_value}</div>
+</div>
+{END info_fieldblock}
+	{BEGIN scoringtype_fieldblock}
+<div data-fieldname="scoringtype" class="rnr-field style1 {$fielddispclass_scoringtype}">
+  <div class="rnr-label above">{$label t_code_result scoringtype}:</div>
+  <div class="rnr-control style3">{$scoringtype_value}</div>
+</div>
+{END scoringtype_fieldblock}
+	{BEGIN rank_fieldblock}
+<div data-fieldname="rank" class="rnr-field style1 {$fielddispclass_rank}">
+  <div class="rnr-label above">{$label t_code_result rank}:</div>
+  <div class="rnr-control style3">{$rank_value}</div>
+</div>
+{END rank_fieldblock}
+	{BEGIN active_fieldblock}
+<div data-fieldname="active" class="rnr-field style1 {$fielddispclass_active}">
+  <div class="rnr-label above">{$label t_code_result active}:</div>
+  <div class="rnr-control style3">{$active_value}</div>
+</div>
+{END active_fieldblock}
+</td>
+<td>
+	{BEGIN scoring_fieldblock}
+<div data-fieldname="scoring" class="rnr-field style1 {$fielddispclass_scoring}">
+  <div class="rnr-label above">{$label t_code_result scoring}:</div>
+  <div class="rnr-control style3">{$scoring_value}</div>
+</div>
+{END scoring_fieldblock}
+	{BEGIN startcode_fieldblock}
+<div data-fieldname="startcode" class="rnr-field style1 {$fielddispclass_startcode}">
+  <div class="rnr-label above">{$label t_code_result startcode}:</div>
+  <div class="rnr-control style3">{$startcode_value}</div>
+</div>
+{END startcode_fieldblock}
+	{BEGIN timercode_fieldblock}
+<div data-fieldname="timercode" class="rnr-field style1 {$fielddispclass_timercode}">
+  <div class="rnr-label above">{$label t_code_result timercode}:</div>
+  <div class="rnr-control style3">{$timercode_value}</div>
+</div>
+{END timercode_fieldblock}
+	{BEGIN timing_fieldblock}
+<div data-fieldname="timing" class="rnr-field style1 {$fielddispclass_timing}">
+  <div class="rnr-label above">{$label t_code_result timing}:</div>
+  <div class="rnr-control style3">{$timing_value}</div>
+</div>
+{END timing_fieldblock}
+	{BEGIN nonexclude_fieldblock}
+<div data-fieldname="nonexclude" class="rnr-field style1 {$fielddispclass_nonexclude}">
+  <div class="rnr-label above">{$label t_code_result nonexclude}:</div>
+  <div class="rnr-control style3">{$nonexclude_value}</div>
+</div>
+{END nonexclude_fieldblock}
+</td>
+</tr>
+</table></div>
+
+
+{BEGIN viewbuttons}
+<div  class="rnr-brickcontents style2 rnr-b-viewbuttons {$brickclass_viewbuttons}"><div class="rnr-buttons-right">
+{BEGIN prev_button}
+<a href="#" class="rnr-button {$prevbutton_class}" {$prevbutton_attrs}>&lt;&lt;&lt;</a>
+{END prev_button}
+{BEGIN next_button}
+<a href="#" class="rnr-button {$nextbutton_class}" {$nextbutton_attrs}>&gt;&gt;&gt;</a>
+{END next_button}
+</div>
+<div class="rnr-buttons-left">
+{BEGIN back_button}
+<a href="#" class="rnr-button" {$backbutton_attrs}>Back to list</a>
+{END back_button}
+{BEGIN close_button}
+<a href="#" class="rnr-button" {$closebutton_attrs}>Close window</a>
+{END close_button}
+{BEGIN edit_page_button}
+<a href="#" class="rnr-button" {$edit_page_button_attrs}>Edit</a>
+{END edit_page_button}
+</div>
+</div>{END viewbuttons}
+
+
+</div>
+{END container_fields}
+
+</div>
+
+
+</div>
+{END container_add}
+
+</div>
+
+
+
+</div>
+{END container_all}
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			<!--%%bottom%%-->
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

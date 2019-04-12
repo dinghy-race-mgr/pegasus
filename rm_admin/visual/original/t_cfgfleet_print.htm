@@ -1,0 +1,408 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}
+		<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}
+		<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}
+		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-print" {$bodyattrs}>
+	{BEGIN body}
+		{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_master}
+<div class="rnr-c rnr-ch rnr-c-master">
+
+{BEGIN mastertable_block}
+<div  class="style1 rnr-bl rnr-b-masterinfoprint {$brickclass_masterinfoprint}">{$showmasterfile}
+</div>
+{END mastertable_block}
+
+<div class="rnr-hfiller"></div>
+</div>
+{END container_master}
+
+
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+
+{BEGIN container_grid}
+
+
+{BEGIN grid_block}
+{BEGIN page}
+<h1>Fleets</h1>
+<span>
+{BEGIN page_number}
+Page {$pageno} of {$maxpages} 
+{END page_number}
+</span>
+
+	<div class="rnr-s-grid {$pageStyleName}">	
+	<table class="rnr-c rnr-c-grid rnr-b-grid rnr-gridtable" cellpadding="0">
+		<thead>
+		{BEGIN grid_header}
+<tr class="rnr-toprow style1 {$gridHeader_class}" >
+{BEGIN record_header}
+		{BEGIN start_num_fieldheadercolumn}
+<th class="runner-cc {$start_num_class}" {$start_num_style}>
+	{BEGIN start_num_fieldheader}
+	<b>{$label t_cfgfleet start_num}</b>
+	{END start_num_fieldheader}
+</th>
+{END start_num_fieldheadercolumn}
+	{BEGIN fleet_num_fieldheadercolumn}
+<th class="runner-cc {$fleet_num_class}" {$fleet_num_style}>
+	{BEGIN fleet_num_fieldheader}
+	<b>{$label t_cfgfleet fleet_num}</b>
+	{END fleet_num_fieldheader}
+</th>
+{END fleet_num_fieldheadercolumn}
+	{BEGIN fleet_code_fieldheadercolumn}
+<th class="runner-cc {$fleet_code_class}" {$fleet_code_style}>
+	{BEGIN fleet_code_fieldheader}
+	<b>{$label t_cfgfleet fleet_code}</b>
+	{END fleet_code_fieldheader}
+</th>
+{END fleet_code_fieldheadercolumn}
+	{BEGIN fleet_name_fieldheadercolumn}
+<th class="runner-cc {$fleet_name_class}" {$fleet_name_style}>
+	{BEGIN fleet_name_fieldheader}
+	<b>{$label t_cfgfleet fleet_name}</b>
+	{END fleet_name_fieldheader}
+</th>
+{END fleet_name_fieldheadercolumn}
+	{BEGIN fleet_desc_fieldheadercolumn}
+<th class="runner-cc {$fleet_desc_class}" {$fleet_desc_style}>
+	{BEGIN fleet_desc_fieldheader}
+	<b>{$label t_cfgfleet fleet_desc}</b>
+	{END fleet_desc_fieldheader}
+</th>
+{END fleet_desc_fieldheadercolumn}
+	{BEGIN scoring_fieldheadercolumn}
+<th class="runner-cc {$scoring_class}" {$scoring_style}>
+	{BEGIN scoring_fieldheader}
+	<b>{$label t_cfgfleet scoring}</b>
+	{END scoring_fieldheader}
+</th>
+{END scoring_fieldheadercolumn}
+	{BEGIN py_type_fieldheadercolumn}
+<th class="runner-cc {$py_type_class}" {$py_type_style}>
+	{BEGIN py_type_fieldheader}
+	<b>{$label t_cfgfleet py_type}</b>
+	{END py_type_fieldheader}
+</th>
+{END py_type_fieldheadercolumn}
+	{BEGIN warn_signal_fieldheadercolumn}
+<th class="runner-cc {$warn_signal_class}" {$warn_signal_style}>
+	{BEGIN warn_signal_fieldheader}
+	<b>{$label t_cfgfleet warn_signal}</b>
+	{END warn_signal_fieldheader}
+</th>
+{END warn_signal_fieldheadercolumn}
+	{BEGIN prep_signal_fieldheadercolumn}
+<th class="runner-cc {$prep_signal_class}" {$prep_signal_style}>
+	{BEGIN prep_signal_fieldheader}
+	<b>{$label t_cfgfleet prep_signal}</b>
+	{END prep_signal_fieldheader}
+</th>
+{END prep_signal_fieldheadercolumn}
+	{BEGIN timelimit_abs_fieldheadercolumn}
+<th class="runner-cc {$timelimit_abs_class}" {$timelimit_abs_style}>
+	{BEGIN timelimit_abs_fieldheader}
+	<b>{$label t_cfgfleet timelimit_abs}</b>
+	{END timelimit_abs_fieldheader}
+</th>
+{END timelimit_abs_fieldheadercolumn}
+	{BEGIN timelimit_rel_fieldheadercolumn}
+<th class="runner-cc {$timelimit_rel_class}" {$timelimit_rel_style}>
+	{BEGIN timelimit_rel_fieldheader}
+	<b>{$label t_cfgfleet timelimit_rel}</b>
+	{END timelimit_rel_fieldheader}
+</th>
+{END timelimit_rel_fieldheadercolumn}
+	{BEGIN defaultlaps_fieldheadercolumn}
+<th class="runner-cc {$defaultlaps_class}" {$defaultlaps_style}>
+	{BEGIN defaultlaps_fieldheader}
+	<b>{$label t_cfgfleet defaultlaps}</b>
+	{END defaultlaps_fieldheader}
+</th>
+{END defaultlaps_fieldheadercolumn}
+	{BEGIN defaultfleet_fieldheadercolumn}
+<th class="runner-cc {$defaultfleet_class}" {$defaultfleet_style}>
+	{BEGIN defaultfleet_fieldheader}
+	<b>{$label t_cfgfleet defaultfleet}</b>
+	{END defaultfleet_fieldheader}
+</th>
+{END defaultfleet_fieldheadercolumn}
+	{BEGIN classinc_fieldheadercolumn}
+<th class="runner-cc {$classinc_class}" {$classinc_style}>
+	{BEGIN classinc_fieldheader}
+	<b>{$label t_cfgfleet classinc}</b>
+	{END classinc_fieldheader}
+</th>
+{END classinc_fieldheadercolumn}
+	{BEGIN onlyinc_fieldheadercolumn}
+<th class="runner-cc {$onlyinc_class}" {$onlyinc_style}>
+	{BEGIN onlyinc_fieldheader}
+	<b>{$label t_cfgfleet onlyinc}</b>
+	{END onlyinc_fieldheader}
+</th>
+{END onlyinc_fieldheadercolumn}
+	{BEGIN classexc_fieldheadercolumn}
+<th class="runner-cc {$classexc_class}" {$classexc_style}>
+	{BEGIN classexc_fieldheader}
+	<b>{$label t_cfgfleet classexc}</b>
+	{END classexc_fieldheader}
+</th>
+{END classexc_fieldheadercolumn}
+	{BEGIN groupinc_fieldheadercolumn}
+<th class="runner-cc {$groupinc_class}" {$groupinc_style}>
+	{BEGIN groupinc_fieldheader}
+	<b>{$label t_cfgfleet groupinc}</b>
+	{END groupinc_fieldheader}
+</th>
+{END groupinc_fieldheadercolumn}
+	{BEGIN min_py_fieldheadercolumn}
+<th class="runner-cc {$min_py_class}" {$min_py_style}>
+	{BEGIN min_py_fieldheader}
+	<b>{$label t_cfgfleet min_py}</b>
+	{END min_py_fieldheader}
+</th>
+{END min_py_fieldheadercolumn}
+	{BEGIN max_py_fieldheadercolumn}
+<th class="runner-cc {$max_py_class}" {$max_py_style}>
+	{BEGIN max_py_fieldheader}
+	<b>{$label t_cfgfleet max_py}</b>
+	{END max_py_fieldheader}
+</th>
+{END max_py_fieldheadercolumn}
+	{BEGIN crew_fieldheadercolumn}
+<th class="runner-cc {$crew_class}" {$crew_style}>
+	{BEGIN crew_fieldheader}
+	<b>{$label t_cfgfleet crew}</b>
+	{END crew_fieldheader}
+</th>
+{END crew_fieldheadercolumn}
+	{BEGIN spintype_fieldheadercolumn}
+<th class="runner-cc {$spintype_class}" {$spintype_style}>
+	{BEGIN spintype_fieldheader}
+	<b>{$label t_cfgfleet spintype}</b>
+	{END spintype_fieldheader}
+</th>
+{END spintype_fieldheadercolumn}
+	{BEGIN hulltype_fieldheadercolumn}
+<th class="runner-cc {$hulltype_class}" {$hulltype_style}>
+	{BEGIN hulltype_fieldheader}
+	<b>{$label t_cfgfleet hulltype}</b>
+	{END hulltype_fieldheader}
+</th>
+{END hulltype_fieldheadercolumn}
+	{BEGIN min_helmage_fieldheadercolumn}
+<th class="runner-cc {$min_helmage_class}" {$min_helmage_style}>
+	{BEGIN min_helmage_fieldheader}
+	<b>{$label t_cfgfleet min_helmage}</b>
+	{END min_helmage_fieldheader}
+</th>
+{END min_helmage_fieldheadercolumn}
+	{BEGIN max_helmage_fieldheadercolumn}
+<th class="runner-cc {$max_helmage_class}" {$max_helmage_style}>
+	{BEGIN max_helmage_fieldheader}
+	<b>{$label t_cfgfleet max_helmage}</b>
+	{END max_helmage_fieldheader}
+</th>
+{END max_helmage_fieldheadercolumn}
+		
+	<th class="rnr-edge">&nbsp;</th>
+	{BEGIN endrecordheader_block}
+	<th class="rnr-cs">&nbsp;</th>
+	{END endrecordheader_block}
+	{END record_header}
+</tr>
+{END grid_header}
+
+		</thead>
+		<tbody>	
+		{BEGIN grid_row}
+	<tr class="rnr-row style1 {$rowclass}" {$rowattrs} {$rowstyle}>
+		{BEGIN grid_record}
+				{BEGIN start_num_fieldcolumn}
+<td  class="runner-cc {$start_num_class}" {$start_num_style}>
+	{$start_num_value}
+</td>
+{END start_num_fieldcolumn}
+	{BEGIN fleet_num_fieldcolumn}
+<td  class="runner-cc {$fleet_num_class}" {$fleet_num_style}>
+	{$fleet_num_value}
+</td>
+{END fleet_num_fieldcolumn}
+	{BEGIN fleet_code_fieldcolumn}
+<td  class="runner-cc {$fleet_code_class}" {$fleet_code_style}>
+	{$fleet_code_value}
+</td>
+{END fleet_code_fieldcolumn}
+	{BEGIN fleet_name_fieldcolumn}
+<td  class="runner-cc {$fleet_name_class}" {$fleet_name_style}>
+	{$fleet_name_value}
+</td>
+{END fleet_name_fieldcolumn}
+	{BEGIN fleet_desc_fieldcolumn}
+<td  class="runner-cc {$fleet_desc_class}" {$fleet_desc_style}>
+	{$fleet_desc_value}
+</td>
+{END fleet_desc_fieldcolumn}
+	{BEGIN scoring_fieldcolumn}
+<td  class="runner-cc {$scoring_class}" {$scoring_style}>
+	{$scoring_value}
+</td>
+{END scoring_fieldcolumn}
+	{BEGIN py_type_fieldcolumn}
+<td  class="runner-cc {$py_type_class}" {$py_type_style}>
+	{$py_type_value}
+</td>
+{END py_type_fieldcolumn}
+	{BEGIN warn_signal_fieldcolumn}
+<td  class="runner-cc {$warn_signal_class}" {$warn_signal_style}>
+	{$warn_signal_value}
+</td>
+{END warn_signal_fieldcolumn}
+	{BEGIN prep_signal_fieldcolumn}
+<td  class="runner-cc {$prep_signal_class}" {$prep_signal_style}>
+	{$prep_signal_value}
+</td>
+{END prep_signal_fieldcolumn}
+	{BEGIN timelimit_abs_fieldcolumn}
+<td  class="runner-cc {$timelimit_abs_class}" {$timelimit_abs_style}>
+	{$timelimit_abs_value}
+</td>
+{END timelimit_abs_fieldcolumn}
+	{BEGIN timelimit_rel_fieldcolumn}
+<td  class="runner-cc {$timelimit_rel_class}" {$timelimit_rel_style}>
+	{$timelimit_rel_value}
+</td>
+{END timelimit_rel_fieldcolumn}
+	{BEGIN defaultlaps_fieldcolumn}
+<td  class="runner-cc {$defaultlaps_class}" {$defaultlaps_style}>
+	{$defaultlaps_value}
+</td>
+{END defaultlaps_fieldcolumn}
+	{BEGIN defaultfleet_fieldcolumn}
+<td  class="runner-cc {$defaultfleet_class}" {$defaultfleet_style}>
+	{$defaultfleet_value}
+</td>
+{END defaultfleet_fieldcolumn}
+	{BEGIN classinc_fieldcolumn}
+<td  class="runner-cc {$classinc_class}" {$classinc_style}>
+	{$classinc_value}
+</td>
+{END classinc_fieldcolumn}
+	{BEGIN onlyinc_fieldcolumn}
+<td  class="runner-cc {$onlyinc_class}" {$onlyinc_style}>
+	{$onlyinc_value}
+</td>
+{END onlyinc_fieldcolumn}
+	{BEGIN classexc_fieldcolumn}
+<td  class="runner-cc {$classexc_class}" {$classexc_style}>
+	{$classexc_value}
+</td>
+{END classexc_fieldcolumn}
+	{BEGIN groupinc_fieldcolumn}
+<td  class="runner-cc {$groupinc_class}" {$groupinc_style}>
+	{$groupinc_value}
+</td>
+{END groupinc_fieldcolumn}
+	{BEGIN min_py_fieldcolumn}
+<td  class="runner-cc {$min_py_class}" {$min_py_style}>
+	{$min_py_value}
+</td>
+{END min_py_fieldcolumn}
+	{BEGIN max_py_fieldcolumn}
+<td  class="runner-cc {$max_py_class}" {$max_py_style}>
+	{$max_py_value}
+</td>
+{END max_py_fieldcolumn}
+	{BEGIN crew_fieldcolumn}
+<td  class="runner-cc {$crew_class}" {$crew_style}>
+	{$crew_value}
+</td>
+{END crew_fieldcolumn}
+	{BEGIN spintype_fieldcolumn}
+<td  class="runner-cc {$spintype_class}" {$spintype_style}>
+	{$spintype_value}
+</td>
+{END spintype_fieldcolumn}
+	{BEGIN hulltype_fieldcolumn}
+<td  class="runner-cc {$hulltype_class}" {$hulltype_style}>
+	{$hulltype_value}
+</td>
+{END hulltype_fieldcolumn}
+	{BEGIN min_helmage_fieldcolumn}
+<td  class="runner-cc {$min_helmage_class}" {$min_helmage_style}>
+	{$min_helmage_value}
+</td>
+{END min_helmage_fieldcolumn}
+	{BEGIN max_helmage_fieldcolumn}
+<td  class="runner-cc {$max_helmage_class}" {$max_helmage_style}>
+	{$max_helmage_value}
+</td>
+{END max_helmage_fieldcolumn}
+
+		<td class="rnr-edge">&nbsp;</td>
+		{BEGIN endrecord_block}
+		<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
+		{END endrecord_block}
+										
+		{END grid_record}
+
+	</tr>
+{END grid_row}
+
+
+		
+		</tbody>
+	</table>
+</div>	
+{END page}
+
+{END grid_block}
+
+
+
+{END container_grid}
+
+
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			<!--%%bottom%%-->
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

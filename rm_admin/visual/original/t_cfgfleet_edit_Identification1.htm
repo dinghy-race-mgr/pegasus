@@ -1,0 +1,65 @@
+<div {$pageattrs}>
+
+{BEGIN container_1}
+
+
+
+<table class="fieldGrid">
+{BEGIN fleet_num_tabfieldblock}
+<tr class="{$fielddispclass_fleet_num}" data-fieldname="fleet_num">
+	<td class="style1 rnr-label">
+		{BEGIN fleet_num_label}{$label t_cfgfleet fleet_num}{END fleet_num_label}
+	</td>
+	<td class="rnr-control style3">
+		{$fleet_num_editcontrol}&nbsp;
+	</td>
+</tr>
+{END fleet_num_tabfieldblock}
+{BEGIN start_num_tabfieldblock}
+<tr class="{$fielddispclass_start_num}" data-fieldname="start_num">
+	<td class="style1 rnr-label">
+		{BEGIN start_num_label}{$label t_cfgfleet start_num}{END start_num_label}
+	</td>
+	<td class="rnr-control style3">
+		{$start_num_editcontrol}&nbsp;
+	</td>
+</tr>
+{END start_num_tabfieldblock}
+{BEGIN fleet_code_tabfieldblock}
+<tr class="{$fielddispclass_fleet_code}" data-fieldname="fleet_code">
+	<td class="style1 rnr-label">
+		{BEGIN fleet_code_label}{$label t_cfgfleet fleet_code}{END fleet_code_label}
+	</td>
+	<td class="rnr-control style3">
+		{$fleet_code_editcontrol}&nbsp;
+	</td>
+</tr>
+{END fleet_code_tabfieldblock}
+{BEGIN fleet_name_tabfieldblock}
+<tr class="{$fielddispclass_fleet_name}" data-fieldname="fleet_name">
+	<td class="style1 rnr-label">
+		{BEGIN fleet_name_label}{$label t_cfgfleet fleet_name}{END fleet_name_label}
+	</td>
+	<td class="rnr-control style3">
+		{$fleet_name_editcontrol}&nbsp;
+	</td>
+</tr>
+{END fleet_name_tabfieldblock}
+{BEGIN fleet_desc_tabfieldblock}
+<tr class="{$fielddispclass_fleet_desc}" data-fieldname="fleet_desc">
+	<td class="style1 rnr-label">
+		{BEGIN fleet_desc_label}{$label t_cfgfleet fleet_desc}{END fleet_desc_label}
+	</td>
+	<td class="rnr-control style3">
+		{$fleet_desc_editcontrol}&nbsp;
+	</td>
+</tr>
+{END fleet_desc_tabfieldblock}
+</table>
+
+
+
+
+{END container_1}
+
+</div>

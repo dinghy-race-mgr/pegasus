@@ -1,0 +1,48 @@
+<div {$pageattrs}>
+
+{BEGIN container_masterlistheader}
+<div class="rnr-c rnr-ch rnr-c-masterlistheader">
+
+
+<div  class="style1 rnr-bl rnr-b-masterprintheader {$brickclass_masterprintheader}">	<h1>{$pagetitlelabel t_event masterprint}</h1>
+</div>
+
+
+<div class="rnr-hfiller"></div>
+</div>
+{END container_masterlistheader}
+
+
+
+{BEGIN container_mastergrid}
+
+
+
+<table class="rnr-c rnr-cont rnr-c-mastergrid rnr-b-masterprintfields rnr-gridtable" cellpadding="0" >
+	<thead>
+		<tr class="rnr-toprow style1 {$gridHeader_class}" >
+			<th class="{$seriescode_class}">{$label t_event seriescode}</th>
+			<th class="{$event_type_class}">{$label t_event event_type}</th>
+			<th class="{$event_open_class}">{$label t_event event_open}</th>
+			<th class="{$event_name_class}">{$label t_event event_name}</th>
+			<th class="rnr-edge">&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="rnr-row style1">
+			<td class="{$seriescode_class}">{$seriescode_mastervalue}</td>
+			<td class="{$event_type_class}">{$event_type_mastervalue}</td>
+			<td class="{$event_open_class}">{$event_open_mastervalue}</td>
+			<td class="{$event_name_class}">{$event_name_mastervalue}</td>
+			<td class="rnr-edge">&nbsp;</td>
+		</tr>
+	</tbody>
+</table> 
+
+
+
+
+
+{END container_mastergrid}
+
+</div>

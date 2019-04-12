@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<HTML {$html_attrs}>
+  <HEAD>
+    <META http-equiv="X-UA-Compatible" content="IE=Edge">
+    <TITLE>
+      {$pagetitle}
+    </TITLE>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <LINK href="styles/default.css" rel="stylesheet" type="text/css">
+    {BEGIN rtlCSS}
+      <LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">
+    {END rtlCSS}
+    {BEGIN styleCSSFiles}
+      <LINK href="{$stylepath}" rel="stylesheet" type="text/css">
+    {END styleCSSFiles}
+    {BEGIN pageCSSFiles}
+      <LINK href="{$pagestylepath}" rel="stylesheet" type="text/css">
+    {END pageCSSFiles}
+    <META name="GENERATOR" content="MSHTML 11.00.9600.18161">
+  </HEAD>
+  <BODY class="{$stylename} function-add" {$bodyattrs}>
+    {BEGIN body}
+      {$header}
+      <DIV class="rnr-page">
+        <DIV class="rnr-top {$blockclass_top}">
+          {BEGIN container_all}
+            <DIV class="rnr-c rnr-cv rnr-c-all">
+              <DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
+                {BEGIN container_add}
+                  <DIV class="rnr-c rnr-cv rnr-c-add">
+                    {BEGIN addheader}
+                      <DIV class="rnr-brickcontents style2 rnr-b-addheader {$brickclass_addheader}">
+                        <SPAN>
+                          <H1>
+                            {$pagetitlelabel t_code_result add}
+                          </H1>
+                        </SPAN>
+                      </DIV>
+                    {END addheader}
+                    {BEGIN message_block}
+                      <DIV class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}">
+                        <DIV class="rnr-message">
+                          {$message}
+                        </DIV>
+                      </DIV>
+                    {END message_block}
+                    <DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+                      {BEGIN container_fields}
+                        <DIV class="rnr-c rnr-cv rnr-c-fields">
+                          <DIV class="rnr-brickcontents style1 rnr-b-addfields2_atop {$brickclass_addfields2_atop}">
+                            <TABLE class="fieldGrid fieldGrid2 edit">
+                              <TBODY>
+                                <TR>
+                                  <TD>
+                                    {BEGIN code_fieldblock}
+                                      <DIV class="rnr-field style1 {$fielddispclass_code}" data-fieldname="code">
+                                        <DIV class="rnr-label above">
+                                          {BEGIN code_label}
+                                            {$label t_code_result code}
+                                          {END code_label}
+                                        </DIV>
+                                        <DIV class="rnr-control style3">
+                                          {$code_editcontrol}
+                                        </DIV>
+                                      </DIV>
+                                    {END code_fieldblock}
+                                    {BEGIN short_fieldblock}
+                                      <DIV class="rnr-field style1 {$fielddispclass_short}" data-fieldname="short">
+                                        <DIV class="rnr-label above">
+                                          {BEGIN short_label}
+                                            {$label t_code_result short}
+                                          {END short_label}
+                                        </DIV>
+                                        <DIV class="rnr-control style3">
+                                          {$short_editcontrol}
+                                        </DIV>
+                                      </DIV>
+                                    {END short_fieldblock}
+                                    {BEGIN info_fieldblock}
+                                      <DIV class="rnr-field style1 {$fielddispclass_info}" data-fieldname="info">
+                                        <DIV class="rnr-label above">
+                                          {BEGIN info_label}
+                                            {$label t_code_result info}
+                                          {END info_label}
+                                        </DIV>
+                                        <DIV class="rnr-control style3">
+                                          {$info_editcontrol}
+                                        </DIV>
+                                      </DIV>
+                                    {END info_fieldblock}
+                                    {BEGIN scoringtype_fieldblock}
+                                      <DIV class="rnr-field style1 {$fielddispclass_scoringtype}" data-fieldname="scoringtype">
+                                        <DIV class="rnr-label above">
+                                          {BEGIN scoringtype_label}
+                                            {$label t_code_result scoringtype}
+                                          {END scoringtype_label}
+                                        </DIV>
+                                        <DIV class="rnr-control style3">
+                                          {$scoringtype_editcontrol}
+                                        </DIV>
+                                      </DIV>
+                                    {END scoringtype_fieldblock}
+                                    {BEGIN scoring_fieldblock}
+                                      <DIV class="rnr-field style1 {$fielddispclass_scoring}" data-fieldname="scoring">
+                                        <DIV class="rnr-label above">
+                                          {BEGIN scoring_label}
+                                            {$label t_code_result scoring}
+                                          {END scoring_label}
+                                        </DIV>
+                                        <DIV class="rnr-control style3">
+                                          {$scoring_editcontrol}
+                                        </DIV>
+                                      </DIV>
+                                    {END scoring_fieldblock}
+                                    
+                                  </TD>
+                                  <TD>
+{BEGIN timing_fieldblock}
+                                      <DIV class="rnr-field style1 {$fielddispclass_timing}" data-fieldname="timing">
+                                        <DIV class="rnr-label above">
+                                          {BEGIN timing_label}
+                                            {$label t_code_result timing}
+                                          {END timing_label}
+                                        </DIV>
+                                        <DIV class="rnr-control style3">
+                                          {$timing_editcontrol}
+                                        </DIV>
+                                      </DIV>
+                                    {END timing_fieldblock}
+                                    {BEGIN startcode_fieldblock}
+                                      <DIV class="rnr-field style1 {$fielddispclass_startcode}" data-fieldname="startcode">
+                                        <DIV class="rnr-label above">
+                                          {BEGIN startcode_label}
+                                            {$label t_code_result startcode}
+                                          {END startcode_label}
+                                        </DIV>
+                                        <DIV class="rnr-control style3">
+                                          {$startcode_editcontrol}
+                                        </DIV>
+                                      </DIV>
+                                    {END startcode_fieldblock}
+                                    {BEGIN timercode_fieldblock}
+                                      <DIV class="rnr-field style1 {$fielddispclass_timercode}" data-fieldname="timercode">
+                                        <DIV class="rnr-label above">
+                                          {BEGIN timercode_label}
+                                            {$label t_code_result timercode}
+                                          {END timercode_label}
+                                        </DIV>
+                                        <DIV class="rnr-control style3">
+                                          {$timercode_editcontrol}
+                                        </DIV>
+                                      </DIV>
+                                    {END timercode_fieldblock}
+                                    {BEGIN nonexclude_fieldblock}
+                                      <DIV class="rnr-field style1 {$fielddispclass_nonexclude}" data-fieldname="nonexclude">
+                                        <DIV class="rnr-label above">
+                                          {BEGIN nonexclude_label}
+                                            {$label t_code_result nonexclude}
+                                          {END nonexclude_label}
+                                        </DIV>
+                                        <DIV class="rnr-control style3">
+                                          {$nonexclude_editcontrol}
+                                        </DIV>
+                                      </DIV>
+                                    {END nonexclude_fieldblock}
+                                    {BEGIN rank_fieldblock}
+                                      <DIV class="rnr-field style1 {$fielddispclass_rank}" data-fieldname="rank">
+                                        <DIV class="rnr-label above">
+                                          {BEGIN rank_label}
+                                            {$label t_code_result rank}
+                                          {END rank_label}
+                                        </DIV>
+                                        <DIV class="rnr-control style3">
+                                          {$rank_editcontrol}
+                                        </DIV>
+                                      </DIV>
+                                    {END rank_fieldblock}
+                                    {BEGIN active_fieldblock}
+                                      <DIV class="rnr-field style1 {$fielddispclass_active}" data-fieldname="active">
+                                        <DIV class="rnr-label above">
+                                          {BEGIN active_label}
+                                            {$label t_code_result active}
+                                          {END active_label}
+                                        </DIV>
+                                        <DIV class="rnr-control style3">
+                                          {$active_editcontrol}
+                                        </DIV>
+                                      </DIV>
+                                    {END active_fieldblock}
+                                  </TD>
+                                </TR>
+                              </TBODY>
+                            </TABLE>
+                          </DIV>
+                          {BEGIN addbuttons}
+                            <DIV class="rnr-brickcontents style2 rnr-b-addbuttons {$brickclass_addbuttons}">
+                              <DIV class="rnr-buttons-left">
+                                {BEGIN save_button}
+                                  <A class="rnr-button main" id="saveButton{$id}" href="#" {$savebutton_attrs}>
+                                    Save
+                                  </A>
+                                {END save_button}
+                                {BEGIN reset_button}
+                                  <A class="rnr-button" id="resetButton{$id}" href="#">
+                                    Reset
+                                  </A>
+                                {END reset_button}
+                                {BEGIN cancel_button}
+                                  <A class="rnr-button" id="cancelButton{$id}" href="#">
+                                    Cancel
+                                  </A>
+                                {END cancel_button}
+                                {BEGIN back_button}
+                                  <A class="rnr-button" id="backButton{$id}" href="#">
+                                    Back to list
+                                  </A>
+                                {END back_button}
+                                {BEGIN backToMenu_button}
+                                  <A class="rnr-button" id="backToMenuButton{$id}" href="#">
+                                    Back to menu
+                                  </A>
+                                {END backToMenu_button}
+                              </DIV>
+                            </DIV>
+                          {END addbuttons}
+                        </DIV>
+                      {END container_fields}
+                    </DIV>
+                  </DIV>
+                {END container_add}
+              </DIV>
+            </DIV>
+          {END container_all}
+        </DIV>
+        <DIV class="rnr-middle">
+          <DIV class="rnr-left {$blockclass_left}">
+          </DIV>
+          <DIV class="rnr-center {$blockclass_center}">
+          </DIV>
+          <DIV class="rnr-right {$blockclass_right}">
+          </DIV>
+        </DIV>
+        <DIV class="rnr-bottom {$blockclass_bottom}">
+          <!--%%bottom%%-->
+        </DIV>
+      </DIV>
+      {$footer}
+    {END body}
+  </BODY>
+</HTML>

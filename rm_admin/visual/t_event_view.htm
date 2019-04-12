@@ -1,0 +1,109 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-view" {$bodyattrs}>
+	{BEGIN body}{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_all}<div class="rnr-c rnr-cv rnr-c-all">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+
+{BEGIN container_fields}<div class="rnr-c rnr-cv rnr-c-fields">
+
+{BEGIN viewheader}<div  class="rnr-brickcontents style2 rnr-b-viewheader {$brickclass_viewheader}"><h1><SPAN>
+{$pagetitlelabel t_event view}</span></H1></div>{END viewheader}
+
+
+{BEGIN message_block}<div  class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>{END message_block}
+
+
+
+<div  class="rnr-brickcontents style1 rnr-b-viewfields2 {$brickclass_viewfields2}"><table class="fieldGrid fieldGrid2">
+
+<tr>
+<td>
+	{BEGIN active_fieldblock}<div data-fieldname="active" class="rnr-field style1 {$fielddispclass_active}">
+  <span class="rnr-label">{$label t_event active}:</span>
+  <span class="rnr-control style3">{$active_value}</span>
+</div>
+{END active_fieldblock}
+</td>
+<td>
+</td>
+</tr>
+		<tr>
+	<td colspan="2">
+		<div class="rnr-field">
+		{$TabGroup Event1}&nbsp;		
+		</div>
+	</td>
+</tr>
+			
+
+					
+
+					
+
+					
+
+</table></div>
+
+
+{BEGIN viewbuttons}<div  class="rnr-brickcontents style2 rnr-b-viewbuttons {$brickclass_viewbuttons}"><div class="rnr-buttons-left">
+{BEGIN save_button}<A class="rnr-button main" id="saveButton{$id}" href="#" {$savebutton_attrs}> 
+Save </A> {END save_button}{BEGIN reset_button}<A class="rnr-button" id="resetButton{$id}" href="#"> Reset </A> {END reset_button}{BEGIN cancel_button}<A class="rnr-button" id="cancelButton{$id}" href="#"> Cancel </A> {END cancel_button}{BEGIN back_button}<A class="rnr-button" id="backButton{$id}" href="#">Back to list</a>
+{END back_button}
+{BEGIN backToMenu_button}<A class="rnr-button" id="backToMenuButton{$id}" href="#"> Back to menu </A> 
+{END backToMenu_button}</div>
+</div>{END viewbuttons}
+
+
+</div>
+{END container_fields}
+
+</div>
+
+
+
+</div>
+{END container_all}
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

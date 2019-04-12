@@ -1,0 +1,65 @@
+<div {$pageattrs}>
+
+{BEGIN container_1}
+
+
+
+<table class="fieldGrid">
+{BEGIN event_name_tabfieldblock}
+<tr class="{$fielddispclass_event_name}" data-fieldname="event_name">
+	<td class="style1 rnr-label">
+		{BEGIN event_name_label}{$label t_event event_name}{END event_name_label}
+	</td>
+	<td class="rnr-control style3">
+		{$event_name_editcontrol}&nbsp;
+	</td>
+</tr>
+{END event_name_tabfieldblock}
+{BEGIN event_type_tabfieldblock}
+<tr class="{$fielddispclass_event_type}" data-fieldname="event_type">
+	<td class="style1 rnr-label">
+		{BEGIN event_type_label}{$label t_event event_type}{END event_type_label}
+	</td>
+	<td class="rnr-control style3">
+		{$event_type_editcontrol}&nbsp;
+	</td>
+</tr>
+{END event_type_tabfieldblock}
+{BEGIN event_open_tabfieldblock}
+<tr class="{$fielddispclass_event_open}" data-fieldname="event_open">
+	<td class="style1 rnr-label">
+		{BEGIN event_open_label}{$label t_event event_open}{END event_open_label}
+	</td>
+	<td class="rnr-control style3">
+		{$event_open_editcontrol}&nbsp;
+	</td>
+</tr>
+{END event_open_tabfieldblock}
+{BEGIN event_notes_tabfieldblock}
+<tr class="{$fielddispclass_event_notes}" data-fieldname="event_notes">
+	<td class="style1 rnr-label">
+		{BEGIN event_notes_label}{$label t_event event_notes}{END event_notes_label}
+	</td>
+	<td class="rnr-control style3">
+		{$event_notes_editcontrol}&nbsp;
+	</td>
+</tr>
+{END event_notes_tabfieldblock}
+{BEGIN display_code_tabfieldblock}
+<tr class="{$fielddispclass_display_code}" data-fieldname="display_code">
+	<td class="style1 rnr-label">
+		{BEGIN display_code_label}{$label t_event display_code}{END display_code_label}
+	</td>
+	<td class="rnr-control style3">
+		{$display_code_editcontrol}&nbsp;
+	</td>
+</tr>
+{END display_code_tabfieldblock}
+</table>
+
+
+
+
+{END container_1}
+
+</div>

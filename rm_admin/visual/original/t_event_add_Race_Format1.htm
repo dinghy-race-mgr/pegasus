@@ -1,0 +1,65 @@
+<div {$pageattrs}>
+
+{BEGIN container_1}
+
+
+
+<table class="fieldGrid">
+{BEGIN event_format_tabfieldblock}
+<tr class="{$fielddispclass_event_format}" data-fieldname="event_format">
+	<td class="style1 rnr-label">
+		{BEGIN event_format_label}{$label t_event event_format}{END event_format_label}
+	</td>
+	<td class="rnr-control style3">
+		{$event_format_editcontrol}&nbsp;
+	</td>
+</tr>
+{END event_format_tabfieldblock}
+{BEGIN event_entry_tabfieldblock}
+<tr class="{$fielddispclass_event_entry}" data-fieldname="event_entry">
+	<td class="style1 rnr-label">
+		{BEGIN event_entry_label}{$label t_event event_entry}{END event_entry_label}
+	</td>
+	<td class="rnr-control style3">
+		{$event_entry_editcontrol}&nbsp;
+	</td>
+</tr>
+{END event_entry_tabfieldblock}
+{BEGIN seriescode_tabfieldblock}
+<tr class="{$fielddispclass_seriescode}" data-fieldname="seriescode">
+	<td class="style1 rnr-label">
+		{BEGIN seriescode_label}{$label t_event seriescode}{END seriescode_label}
+	</td>
+	<td class="rnr-control style3">
+		{$seriescode_editcontrol}&nbsp;
+	</td>
+</tr>
+{END seriescode_tabfieldblock}
+{BEGIN start_scheme_tabfieldblock}
+<tr class="{$fielddispclass_start_scheme}" data-fieldname="start_scheme">
+	<td class="style1 rnr-label">
+		{BEGIN start_scheme_label}{$label t_event start_scheme}{END start_scheme_label}
+	</td>
+	<td class="rnr-control style3">
+		{$start_scheme_editcontrol}&nbsp;
+	</td>
+</tr>
+{END start_scheme_tabfieldblock}
+{BEGIN start_interval_tabfieldblock}
+<tr class="{$fielddispclass_start_interval}" data-fieldname="start_interval">
+	<td class="style1 rnr-label">
+		{BEGIN start_interval_label}{$label t_event start_interval}{END start_interval_label}
+	</td>
+	<td class="rnr-control style3">
+		{$start_interval_editcontrol}&nbsp;
+	</td>
+</tr>
+{END start_interval_tabfieldblock}
+</table>
+
+
+
+
+{END container_1}
+
+</div>

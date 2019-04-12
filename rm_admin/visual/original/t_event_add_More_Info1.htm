@@ -1,0 +1,35 @@
+<div {$pageattrs}>
+
+{BEGIN container_1}
+
+
+
+<table class="fieldGrid">
+{BEGIN weblink_tabfieldblock}
+<tr class="{$fielddispclass_weblink}" data-fieldname="weblink">
+	<td class="style1 rnr-label">
+		{BEGIN weblink_label}{$label t_event weblink}{END weblink_label}
+	</td>
+	<td class="rnr-control style3">
+		{$weblink_editcontrol}&nbsp;
+	</td>
+</tr>
+{END weblink_tabfieldblock}
+{BEGIN webname_tabfieldblock}
+<tr class="{$fielddispclass_webname}" data-fieldname="webname">
+	<td class="style1 rnr-label">
+		{BEGIN webname_label}{$label t_event webname}{END webname_label}
+	</td>
+	<td class="rnr-control style3">
+		{$webname_editcontrol}&nbsp;
+	</td>
+</tr>
+{END webname_tabfieldblock}
+</table>
+
+
+
+
+{END container_1}
+
+</div>

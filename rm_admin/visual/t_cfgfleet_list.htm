@@ -1,0 +1,333 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-list" {$bodyattrs}>
+	{BEGIN body}{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_toplinks}<div class="rnr-c rnr-ch rnr-c-toplinks">
+
+</div>
+{END container_toplinks}
+
+
+
+{BEGIN container_hmenu}<div class="rnr-c rnr-ch rnr-c-hmenu">
+
+{BEGIN menu_block}{$menu main horizontal}{END menu_block}
+
+<div class="rnr-hfiller"></div>
+
+
+
+</div>
+{END container_hmenu}
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<DIV class="rnr-center {$blockclass_center}" style="width: 163.52%; height: 231px;">
+{BEGIN container_recordcontrols}<div class="rnr-c rnr-ch rnr-c-recordcontrols">
+
+{$event t_cfgfleet_snippet}
+{BEGIN mastertable_block}<div  class="style1 rnr-bl rnr-b-masterinfo {$brickclass_masterinfo}">{$showmasterfile}
+<a class="runner-link" {$backtomasterlink_attrs}>
+	<b>Back to&nbsp;{$backtomasterlink_caption}</b>
+</a></div>
+{END mastertable_block}
+
+<div class="rnr-hfiller"></div>
+{BEGIN newrecord_controls_block}<div  class="style1 rnr-br rnr-b-recordcontrols_new {$brickclass_recordcontrols_new}">		{BEGIN add_link}<a href="t_cfgfleet_add.php" class="rnr-button" {$addlink_attrs}>Add new</a>
+	{END add_link}
+
+	
+
+</div>
+{END newrecord_controls_block}
+
+
+{BEGIN record_controls_block}<div  class="style1 rnr-bl rnr-b-recordcontrol {$brickclass_recordcontrol}">{BEGIN widhtSelected}<span class="rnr-buttons-group">
+<a class="rnr-button {$withSelectedClass}" href="#" id="selectButtonsToggler{$id}">With selected...</a>
+<ul class="rnr-list" id="selectButtonsGroup{$id}">
+
+	
+		{BEGIN deleteselected_link}<li>
+		<a href="#" class="rnr-button link" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete</a>
+</li>
+	{END deleteselected_link}
+
+	
+</ul>
+</span>
+{END widhtSelected}
+	</div>
+{END record_controls_block}
+
+
+{BEGIN more_list}<div  class="style1 rnr-bl rnr-b-toplinks {$brickclass_toplinks}"><span class="rnr-buttons-group">
+</span></div>
+{END more_list}
+
+<div class="rnr-hfiller"></div>
+
+</div>
+{END container_recordcontrols}
+
+
+
+{BEGIN container_message}<DIV class="rnr-c rnr-ch rnr-c-message" style="min-height: 57px; min-width: 102.93%;">
+{BEGIN message_block}<div  class="style1 rnr-bc rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>
+{END message_block}
+
+
+</div>
+{END container_message}
+
+
+
+{BEGIN container_pagination}<div class="rnr-c rnr-ch rnr-multialign rnr-c-pagination">
+
+{BEGIN pagination_block}<div  class="style1 rnr-bc rnr-b-pagination {$brickclass_pagination}">{$pagination}</div>
+{END pagination_block}
+
+<div class="rnr-leftbricks">
+{BEGIN details_block}<div  class="style1 rnr-bl rnr-b-details_found {$brickclass_details_found}">	<span {$details_attrs}>
+			Details found: <b><span class="rnr-details_found_count">{$records_found}</span></b>
+	</span>
+</div>
+{END details_block}
+
+</div><div class="rnr-rightbricks">
+{BEGIN pages_block}<div  class="style1 rnr-br rnr-b-page_of {$brickclass_page_of}">	<span {$pages_attrs}>
+		Page <b>{$page}</b> of <b>{$maxpages}</b>
+	</span>
+
+</div>
+{END pages_block}
+
+
+{BEGIN recordspp_block}<div  class="style1 rnr-br rnr-b-recsperpage {$brickclass_recsperpage}">	<span id="recordspp_block{$id}" name="recordspp_block{$id}">
+			Records Per Page:&nbsp;{$recsPerPage}
+	</span>	
+</div>
+{END recordspp_block}
+
+</div>
+</div>
+{END container_pagination}
+
+
+
+{BEGIN container_grid}{BEGIN grid_block}<TABLE class="rnr-c rnr-cont rnr-c-grid rnr-b-grid rnr-gridtable hoverable" style="width: 1185px;" cellpadding="0">
+  <thead>
+															{BEGIN grid_header}<tr class="rnr-toprow style1 {$gridHeader_class}" >
+									{BEGIN record_header}{BEGIN listIcons_column}<TH style="width: 10%; white-space: nowrap;" rowspan="1" colspan="1" ieditcont="all"> &nbsp;</th>
+									{END listIcons_column}	
+
+																		{BEGIN checkbox_column}<TH class="rnr-bc" style="width: 5%; white-space: nowrap;" rowspan="1" colspan="1"><input type="checkbox" {$checkboxheader_attrs}>
+									</th>
+									{END checkbox_column}
+
+																																			{BEGIN fleet_num_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$fleet_num_class}" style="width: 10%; white-space: nowrap;" rowspan="1" colspan="1">{BEGIN fleet_num_fieldheader}<span {$fleet_num_orderlinkattrs}>
+											{$label t_cfgfleet fleet_num}
+										</span>
+									{END fleet_num_fieldheader}
+									</th>
+									{END fleet_num_fieldheadercolumn}
+
+																	{BEGIN start_num_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$start_num_class}" style="width: 10%; white-space: nowrap;" rowspan="1" colspan="1">{BEGIN start_num_fieldheader}<span {$start_num_orderlinkattrs}>
+											{$label t_cfgfleet start_num}
+										</span>
+									{END start_num_fieldheader}
+									</th>
+									{END start_num_fieldheadercolumn}
+
+																	{BEGIN fleet_code_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$fleet_code_class}" style="width: 10%; white-space: nowrap;" rowspan="1" colspan="1">{BEGIN fleet_code_fieldheader}<span {$fleet_code_orderlinkattrs}>
+											{$label t_cfgfleet fleet_code}
+										</span>
+									{END fleet_code_fieldheader}
+									</th>
+									{END fleet_code_fieldheadercolumn}
+
+																	{BEGIN fleet_name_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$fleet_name_class}" style="width: 25%; white-space: nowrap;" rowspan="1" colspan="1"> {BEGIN fleet_name_fieldheader}<span {$fleet_name_orderlinkattrs}>
+											{$label t_cfgfleet fleet_name}
+										</span>
+									{END fleet_name_fieldheader}
+									</th>
+									{END fleet_name_fieldheadercolumn}
+
+																	{BEGIN scoring_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$scoring_class}" style="width: 15%; white-space: nowrap;" rowspan="1" colspan="1">{BEGIN scoring_fieldheader}<span {$scoring_orderlinkattrs}>
+											{$label t_cfgfleet scoring}
+										</span>
+									{END scoring_fieldheader}
+									</th>
+									{END scoring_fieldheadercolumn}
+
+																	{BEGIN py_type_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$py_type_class}" style="width: 10%; white-space: nowrap;" rowspan="1" colspan="1">{BEGIN py_type_fieldheader}<span {$py_type_orderlinkattrs}>
+											{$label t_cfgfleet py_type}
+										</span>
+									{END py_type_fieldheader}
+									</th>
+									{END py_type_fieldheadercolumn}
+
+
+									
+									<TH class="rnr-edge" style="width: 19px;" rowspan="1" colspan="1"> &nbsp;
+    </th>
+									{BEGIN endrecordheader_block}<TH class="rnr-cs" style="width: 3px;" rowspan="1" colspan="1"> 
+      &nbsp;</th>
+									
+									{END endrecordheader_block}
+									
+									{END record_header}
+									
+								</tr>
+								{END grid_header}
+
+						</thead>
+						<tbody>	
+															{BEGIN grid_row}<tr class="rnr-row style1 {$rowclass}" {$rowattrs} {$rowstyle}>
+									{BEGIN grid_record}{BEGIN listIcons_column}<TD class="rnr-cc rnr-bc rnr-icons" style="width: 53px;" rowspan="1" colspan="1" ieditcont="all" {$rowstyle} {$recordattrs}>{BEGIN edit_column}{BEGIN edit_link}<a class="rnr-button-img" {$editlink_attrs} data-icon="edit" title="Edit"></a>
+									{END edit_link}
+									{END edit_column}
+
+									
+																		{BEGIN copy_column}{BEGIN copy_link}<a class="rnr-button-img" {$copylink_attrs} data-icon="copy" title="Copy"></a>
+									{END copy_link}
+									{END copy_column}
+
+																		{BEGIN view_column}{BEGIN view_link}<a class="rnr-button-img" {$viewlink_attrs} data-icon="view" title="View"></a>
+									{END view_link}
+									{END view_column}
+									</td>	
+									{END listIcons_column}	
+
+																		{BEGIN checkbox_column}<TD class="rnr-bc" style="width: 17px;" rowspan="1" colspan="1" ieditcont="checkBox" {$rowstyle} {$recordattrs}>{BEGIN checkbox}<input type="checkbox" {$checkbox_attrs}>
+									{END checkbox}
+									</td>
+									{END checkbox_column}
+
+									
+										{BEGIN fleet_num_fieldcolumn}<TD class="{$fleet_num_class}" style="width: 89px;" rowspan="1" colspan="1" {$fleet_num_style} {$recordattrs}>
+      <P align="left">
+      <DIV align="center">
+      {$fleet_num_value}
+	</DIV>
+      <P></P></td>
+{END fleet_num_fieldcolumn}
+
+	{BEGIN start_num_fieldcolumn}<TD class="{$start_num_class}" style="width: 97px;" rowspan="1" colspan="1" {$start_num_style} {$recordattrs}>
+      <P>
+      <DIV align="center">
+      {$start_num_value}
+	</DIV>
+      <P></P></td>
+{END start_num_fieldcolumn}
+
+	{BEGIN fleet_code_fieldcolumn}<TD class="{$fleet_code_class}" style="width: 99px;" rowspan="1" colspan="1" {$fleet_code_style} {$recordattrs}><STRONG>
+      {$fleet_code_value}
+	</STRONG> </td>
+{END fleet_code_fieldcolumn}
+
+	{BEGIN fleet_name_fieldcolumn}<TD class="{$fleet_name_class}" style="width: 167px;" rowspan="1" colspan="1" {$fleet_name_style} {$recordattrs}>
+      {$fleet_name_value}
+	<BR>
+      {$fleet_desc_value} </td>
+{END fleet_name_fieldcolumn}
+
+	{BEGIN scoring_fieldcolumn}<TD class="{$scoring_class}" style="width: 152px;" rowspan="1" colspan="1" {$scoring_style} {$recordattrs}>
+      {$scoring_value}
+	</td>
+{END scoring_fieldcolumn}
+
+	{BEGIN py_type_fieldcolumn}<TD class="{$py_type_class}" style="width: 77px;" rowspan="1" colspan="1" {$py_type_style} {$recordattrs}>
+      {$py_type_value}
+	</td>
+{END py_type_fieldcolumn}
+
+
+									<TD class="rnr-edge" style="width: 23px;" rowspan="1" colspan="1" {$recordattrs}> &nbsp;</td>
+									{BEGIN endrecord_block}<TD class="rnr-cs" style="width: 3px;" rowspan="1" colspan="1" {$endrecordblock_attrs}> &nbsp;</td>
+									{END endrecord_block}
+																	
+									{END grid_record}
+
+								</tr>
+								{END grid_row}
+															
+						</tbody>
+					</table>
+					
+
+{END grid_block}
+
+
+
+{END container_grid}
+
+
+
+{BEGIN container_pagination_bottom}<div class="rnr-c rnr-ch rnr-multialign rnr-c-pagination_bottom">
+
+{BEGIN pagination_block}<div  class="style1 rnr-bc rnr-b-pagination {$brickclass_pagination}">{$pagination}</div>
+{END pagination_block}
+
+<div class="rnr-leftbricks">
+{BEGIN details_block}<div  class="style1 rnr-bl rnr-b-details_found {$brickclass_details_found}">	<span {$details_attrs}>
+			Details found: <b><span class="rnr-details_found_count">{$records_found}</span></b>
+	</span>
+</div>
+{END details_block}
+
+</div><div class="rnr-rightbricks">
+{BEGIN pages_block}<div  class="style1 rnr-br rnr-b-page_of {$brickclass_page_of}">	<span {$pages_attrs}>
+		Page <b>{$page}</b> of <b>{$maxpages}</b>
+	</span>
+
+</div>
+{END pages_block}
+
+
+{BEGIN recordspp_block}<div  class="style1 rnr-br rnr-b-recsperpage {$brickclass_recsperpage}">	<span id="recordspp_block{$id}" name="recordspp_block{$id}">
+			Records Per Page:&nbsp;{$recsPerPage}
+	</span>	
+</div>
+{END recordspp_block}
+
+</div>
+</div>
+{END container_pagination_bottom}
+
+
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

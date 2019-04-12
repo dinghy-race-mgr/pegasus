@@ -1,0 +1,45 @@
+<div {$pageattrs}>
+
+{BEGIN container_1}
+
+
+
+<table class="fieldGrid">
+{BEGIN crew_tabfieldblock}
+<tr class="{$fielddispclass_crew}" data-fieldname="crew">
+	<td class="style1 rnr-label">
+		{BEGIN crew_label}{$label t_competitor crew}{END crew_label}
+	</td>
+	<td class="rnr-control style3">
+		{$crew_editcontrol}&nbsp;
+	</td>
+</tr>
+{END crew_tabfieldblock}
+{BEGIN crew_dob_tabfieldblock}
+<tr class="{$fielddispclass_crew_dob}" data-fieldname="crew_dob">
+	<td class="style1 rnr-label">
+		{BEGIN crew_dob_label}{$label t_competitor crew_dob}{END crew_dob_label}
+	</td>
+	<td class="rnr-control style3">
+		{$crew_dob_editcontrol}&nbsp;
+	</td>
+</tr>
+{END crew_dob_tabfieldblock}
+{BEGIN crew_email_tabfieldblock}
+<tr class="{$fielddispclass_crew_email}" data-fieldname="crew_email">
+	<td class="style1 rnr-label">
+		{BEGIN crew_email_label}{$label t_competitor crew_email}{END crew_email_label}
+	</td>
+	<td class="rnr-control style3">
+		{$crew_email_editcontrol}&nbsp;
+	</td>
+</tr>
+{END crew_email_tabfieldblock}
+</table>
+
+
+
+
+{END container_1}
+
+</div>

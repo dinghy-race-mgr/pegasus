@@ -1,0 +1,165 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-print" {$bodyattrs}>
+	{BEGIN body}{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_pdf}<div class="rnr-c rnr-ch rnr-c-pdf">
+
+{BEGIN printbuttons}<div  class="style1 rnr-bl rnr-b-printbuttons {$brickclass_printbuttons}">{BEGIN divideintopages_block}<a href="#" class="divideintopages rnr-button button" {$divideintopages_attrs}>Prepare for printing</a>
+{END divideintopages_block}
+</div>
+{END printbuttons}
+
+<div class="rnr-hfiller"></div>
+</div>
+{END container_pdf}
+
+
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+
+{BEGIN container_pageheader}<div class="rnr-c rnr-cv rnr-c-pageheader">
+
+{BEGIN printheader}<div  class="rnr-brickcontents style1 rnr-b-printheader {$brickclass_printheader}">	<h1>{$pagetitlelabel t_help print}</h1>
+</div>{END printheader}
+
+
+{BEGIN page_number}<div  class="rnr-brickcontents style1 rnr-b-page_of_print {$brickclass_page_of_print}"><h1>Page <span class="rp-pageno">{$pageno}</span> of <span class="rp-pagecount">{$pagecount}</span></h1></div>{END page_number}
+
+
+</div>
+{END container_pageheader}
+
+
+
+{BEGIN container_grid}{BEGIN grid_block}<table class="rnr-c rnr-c-grid rnr-b-grid rnr-gridtable rp-maintable" cellpadding="0">
+	<thead>
+	{BEGIN grid_header}<tr class="rnr-toprow style1 {$gridHeader_class}" >
+{BEGIN record_header}{BEGIN id_fieldheadercolumn}<TH class="runner-cc {$id_class}" style="width: 5%; white-space: normal;" rowspan="1" colspan="1" {$id_style}>{BEGIN id_fieldheader}<b>{$label t_help id}</b>
+	{END id_fieldheader}
+</th>
+{END id_fieldheadercolumn}
+	{BEGIN category_fieldheadercolumn}{END category_fieldheadercolumn}
+	{BEGIN question_fieldheadercolumn}<TH class="runner-cc {$question_class}" style="width: 15%; white-space: normal;" rowspan="1" colspan="1" {$question_style}>{BEGIN question_fieldheader}<b>{$label t_help question}</b>
+	{END question_fieldheader}
+</th>
+{END question_fieldheadercolumn}
+	{BEGIN answer_fieldheadercolumn}<TH class="runner-cc {$answer_class}" style="width: 65%; white-space: normal;" rowspan="1" colspan="1" {$answer_style}>{BEGIN answer_fieldheader}<b>{$label t_help answer}</b>
+	{END answer_fieldheader}
+</th>
+{END answer_fieldheadercolumn}
+	{BEGIN notes_fieldheadercolumn}{END notes_fieldheadercolumn}
+	{BEGIN author_fieldheadercolumn}{END author_fieldheadercolumn}
+	{BEGIN rank_fieldheadercolumn}{END rank_fieldheadercolumn}
+	{BEGIN upddate_fieldheadercolumn}<th class="runner-cc {$upddate_class}" {$upddate_style}>
+	{BEGIN upddate_fieldheader}<b>{$label t_help upddate}</b>
+	{END upddate_fieldheader}
+</th>
+{END upddate_fieldheadercolumn}
+	{BEGIN updby_fieldheadercolumn}<th class="runner-cc {$updby_class}" {$updby_style}>
+	{BEGIN updby_fieldheader}<b>{$label t_help updby}</b>
+	{END updby_fieldheader}
+</th>
+{END updby_fieldheadercolumn}
+		
+	<th class="rnr-edge">&nbsp;</th>
+	{BEGIN endrecordheader_block}<TH class="rnr-cs" rowspan="1" colspan="1"> &nbsp;
+  </th>
+	{END endrecordheader_block}
+	{END record_header}
+</tr>
+{END grid_header}
+
+	</thead>
+	<tbody>	
+	{BEGIN grid_row}<tr class="rnr-row style1 {$rowclass}" {$rowattrs} {$rowstyle}>
+		{BEGIN grid_record}{BEGIN id_fieldcolumn}<TD class="runner-cc {$id_class}" rowspan="1" colspan="1" {$id_style} {$recordattrs}>
+      {$id_value}
+</td>
+{END id_fieldcolumn}
+	{BEGIN category_fieldcolumn}{END category_fieldcolumn}
+	{BEGIN question_fieldcolumn}<TD class="runner-cc {$question_class}" rowspan="1" colspan="1" {$question_style} {$recordattrs}>
+      {$question_value}
+<BR>
+      {$author_value} <BR>
+      {$rank_value} 
+      <BR>
+      {$upd_date_value}&nbsp; </td>
+{END question_fieldcolumn}
+	{BEGIN answer_fieldcolumn}<TD class="runner-cc {$answer_class}" rowspan="1" colspan="1" {$answer_style} {$recordattrs}>
+      {$answer_value}
+<BR>
+      {$notes_value} </td>
+{END answer_fieldcolumn}
+	{BEGIN notes_fieldcolumn}{END notes_fieldcolumn}
+	{BEGIN author_fieldcolumn}{END author_fieldcolumn}
+	{BEGIN rank_fieldcolumn}{END rank_fieldcolumn}
+	{BEGIN upddate_fieldcolumn}<td  class="runner-cc {$upddate_class}" {$upddate_style} {$recordattrs}>
+	{$upddate_value}
+</td>
+{END upddate_fieldcolumn}
+	{BEGIN updby_fieldcolumn}<td  class="runner-cc {$updby_class}" {$updby_style} {$recordattrs}>
+	{$updby_value}
+</td>
+{END updby_fieldcolumn}
+
+		<td class="rnr-edge" {$recordattrs}>&nbsp;</td>
+		{BEGIN endrecord_block}<TD class="rnr-cs" rowspan="1" colspan="1" {$endrecordblock_attrs}> 
+       &nbsp;</td>
+		{END endrecord_block}
+										
+		{END grid_record}
+
+	</tr>
+	{END grid_row}
+
+
+	
+	</tbody>
+</table>
+
+{END grid_block}
+
+
+
+{END container_grid}
+
+
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

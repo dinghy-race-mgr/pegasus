@@ -1,0 +1,99 @@
+<DIV {$pageattrs}>
+  {BEGIN container_1}
+    <TABLE class="fieldGrid" style="width: 95%;" align="center">
+      <TBODY>
+        {BEGIN scoring_tabfieldblock}
+          <TR class="{$fielddispclass_scoring}" data-fieldname="scoring">
+            <TD class="style1 rnr-label" style="width: 35%;">
+              {BEGIN scoring_label}
+                {$label t_cfgfleet scoring}
+              {END scoring_label}
+            </TD>
+            <TD class="rnr-control style3" style="width: 65%;">
+              {$scoring_editcontrol}
+              &nbsp;
+            </TD>
+          </TR>
+        {END scoring_tabfieldblock}
+        {BEGIN py_type_tabfieldblock}
+          <TR class="{$fielddispclass_py_type}" data-fieldname="py_type">
+            <TD class="style1 rnr-label">
+              {BEGIN py_type_label}
+                {$label t_cfgfleet py_type}
+              {END py_type_label}
+            </TD>
+            <TD class="rnr-control style3">
+              {$py_type_editcontrol}
+              &nbsp;
+            </TD>
+          </TR>
+        {END py_type_tabfieldblock}
+        {BEGIN defaultlaps_tabfieldblock}
+          <TR class="{$fielddispclass_defaultlaps}" data-fieldname="defaultlaps">
+            <TD class="style1 rnr-label">
+              {BEGIN defaultlaps_label}
+                {$label t_cfgfleet defaultlaps}
+              {END defaultlaps_label}
+            </TD>
+            <TD class="rnr-control style3">
+              {$defaultlaps_editcontrol}
+              &nbsp;
+            </TD>
+          </TR>
+        {END defaultlaps_tabfieldblock}
+        {BEGIN timelimit_abs_tabfieldblock}
+          <TR class="{$fielddispclass_timelimit_abs}" data-fieldname="timelimit_abs">
+            <TD class="style1 rnr-label">
+              {BEGIN timelimit_abs_label}
+                {$label t_cfgfleet timelimit_abs}
+              {END timelimit_abs_label}
+            </TD>
+            <TD class="rnr-control style3">
+              {$timelimit_abs_editcontrol}
+              &nbsp;
+            </TD>
+          </TR>
+        {END timelimit_abs_tabfieldblock}
+        {BEGIN timelimit_rel_tabfieldblock}
+          <TR class="{$fielddispclass_timelimit_rel}" data-fieldname="timelimit_rel">
+            <TD class="style1 rnr-label">
+              {BEGIN timelimit_rel_label}
+                {$label t_cfgfleet timelimit_rel}
+              {END timelimit_rel_label}
+            </TD>
+            <TD class="rnr-control style3">
+              {$timelimit_rel_editcontrol}
+              &nbsp;
+            </TD>
+          </TR>
+        {END timelimit_rel_tabfieldblock}
+        {BEGIN warn_signal_tabfieldblock}
+          <TR class="{$fielddispclass_warn_signal}" data-fieldname="warn_signal">
+            <TD class="style1 rnr-label">
+              {BEGIN warn_signal_label}
+                {$label t_cfgfleet warn_signal}
+              {END warn_signal_label}
+            </TD>
+            <TD class="rnr-control style3">
+              {$warn_signal_editcontrol}
+              &nbsp;
+            </TD>
+          </TR>
+        {END warn_signal_tabfieldblock}
+        {BEGIN prep_signal_tabfieldblock}
+          <TR class="{$fielddispclass_prep_signal}" data-fieldname="prep_signal">
+            <TD class="style1 rnr-label">
+              {BEGIN prep_signal_label}
+                {$label t_cfgfleet prep_signal}
+              {END prep_signal_label}
+            </TD>
+            <TD class="rnr-control style3">
+              {$prep_signal_editcontrol}
+              &nbsp;
+            </TD>
+          </TR>
+        {END prep_signal_tabfieldblock}
+      </TBODY>
+    </TABLE>
+  {END container_1}
+</DIV>

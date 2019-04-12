@@ -1,0 +1,65 @@
+<div {$pageattrs}>
+
+{BEGIN container_dcount}
+<div class="rnr-c rnr-cv rnr-c-dcount">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-detailspreviewheader {$brickclass_detailspreviewheader}">	{$pagetitlelabel t_event detailspreview}
+</div>
+
+
+
+<div  class="rnr-brickcontents style1 rnr-b-detailspreviewdetailsfount {$brickclass_detailspreviewdetailsfount}">Details found: <strong>{$row_count}.</strong>
+</div>
+
+
+{BEGIN display_first}
+<div  class="rnr-brickcontents style1 rnr-b-detailspreviewdispfirst {$brickclass_detailspreviewdispfirst}">Displaying first: <strong>{$display_count}</strong>.
+</div>{END display_first}
+
+
+</div>
+{END container_dcount}
+
+
+
+{BEGIN container_detailspreviewgrid}
+
+
+{BEGIN details_data}
+<table class="rnr-c rnr-cont rnr-c--detailspreviewgrid rnr-b-detailspreviewgrid rnr-gridtable">
+{BEGIN details_row_header}
+	<thead>
+		<tr class="rnr-toprow style1 {$gridHeader_class}" >
+			<th class="{$event_date_class}">{$label t_event event_date}</th>
+			<th class="{$event_name_class}">{$label t_event event_name}</th>
+			<th class="{$event_start_class}">{$label t_event event_start}</th>
+			<th class="{$tide_time_class}">{$label t_event tide_time}</th>
+			<th class="{$event_format_class}">{$label t_event event_format}</th>
+			<th class="{$event_status_class}">{$label t_event event_status}</th>
+			<th class="rnr-edge">&nbsp;</th>
+		</tr>
+	</thead>
+{END details_row_header}
+	<tbody>
+{BEGIN details_row}
+		<tr class="rnr-row style1">
+			<td class="{$event_date_class}">{$event_date_value}</td>
+			<td class="{$event_name_class}">{$event_name_value}</td>
+			<td class="{$event_start_class}">{$event_start_value}</td>
+			<td class="{$tide_time_class}">{$tide_time_value}</td>
+			<td class="{$event_format_class}">{$event_format_value}</td>
+			<td class="{$event_status_class}">{$event_status_value}</td>
+			<td class="rnr-edge">&nbsp;</td>
+		</tr>
+{END details_row}	
+	</tbody>
+</table>
+
+{END details_data}
+
+
+
+{END container_detailspreviewgrid}
+
+</div>

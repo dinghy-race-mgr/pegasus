@@ -1,0 +1,35 @@
+<div {$pageattrs}>
+
+{BEGIN container_1}
+
+
+
+<table class="fieldGrid">
+{BEGIN series_code_tabfieldblock}
+<tr class="{$fielddispclass_series_code}" data-fieldname="series_code">
+	<td class="style1 rnr-label">
+		{BEGIN series_code_label}{$label t_event series_code}{END series_code_label}
+	</td>
+	<td class="rnr-control style3">
+		{$series_code_editcontrol}&nbsp;
+	</td>
+</tr>
+{END series_code_tabfieldblock}
+{BEGIN series_num_tabfieldblock}
+<tr class="{$fielddispclass_series_num}" data-fieldname="series_num">
+	<td class="style1 rnr-label">
+		{BEGIN series_num_label}{$label t_event series_num}{END series_num_label}
+	</td>
+	<td class="rnr-control style3">
+		{$series_num_editcontrol}&nbsp;
+	</td>
+</tr>
+{END series_num_tabfieldblock}
+</table>
+
+
+
+
+{END container_1}
+
+</div>

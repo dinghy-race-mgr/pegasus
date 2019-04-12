@@ -1,0 +1,178 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}
+		<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}
+		<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}
+		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-view" {$bodyattrs}>
+	{BEGIN body}
+		{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_all}
+<div class="rnr-c rnr-cv rnr-c-all">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
+
+{BEGIN container_add}
+<div class="rnr-c rnr-cv rnr-c-add">
+
+{BEGIN viewheader}
+<div  class="rnr-brickcontents style2 rnr-b-viewheader {$brickclass_viewheader}"><span>	<h1>{$pagetitlelabel t_cfgrace view}</h1>
+</span></div>{END viewheader}
+
+
+{BEGIN message_block}
+<div  class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>{END message_block}
+
+
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+
+{BEGIN container_fields}
+<div class="rnr-c rnr-cv rnr-c-fields">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-viewfields2_atop {$brickclass_viewfields2_atop}"><table class="fieldGrid fieldGrid2">
+
+<tr>
+<td>
+	{BEGIN race_code_fieldblock}
+<div data-fieldname="race_code" class="rnr-field style1 {$fielddispclass_race_code}">
+  <div class="rnr-label above">{$label t_cfgrace race_code}:</div>
+  <div class="rnr-control style3">{$race_code_value}</div>
+</div>
+{END race_code_fieldblock}
+	{BEGIN race_name_fieldblock}
+<div data-fieldname="race_name" class="rnr-field style1 {$fielddispclass_race_name}">
+  <div class="rnr-label above">{$label t_cfgrace race_name}:</div>
+  <div class="rnr-control style3">{$race_name_value}</div>
+</div>
+{END race_name_fieldblock}
+	{BEGIN race_desc_fieldblock}
+<div data-fieldname="race_desc" class="rnr-field style1 {$fielddispclass_race_desc}">
+  <div class="rnr-label above">{$label t_cfgrace race_desc}:</div>
+  <div class="rnr-control style3">{$race_desc_value}</div>
+</div>
+{END race_desc_fieldblock}
+	{BEGIN pursuit_fieldblock}
+<div data-fieldname="pursuit" class="rnr-field style1 {$fielddispclass_pursuit}">
+  <div class="rnr-label above">{$label t_cfgrace pursuit}:</div>
+  <div class="rnr-control style3">{$pursuit_value}</div>
+</div>
+{END pursuit_fieldblock}
+	{BEGIN numstarts_fieldblock}
+<div data-fieldname="numstarts" class="rnr-field style1 {$fielddispclass_numstarts}">
+  <div class="rnr-label above">{$label t_cfgrace numstarts}:</div>
+  <div class="rnr-control style3">{$numstarts_value}</div>
+</div>
+{END numstarts_fieldblock}
+</td>
+<td>
+	{BEGIN start_scheme_fieldblock}
+<div data-fieldname="start_scheme" class="rnr-field style1 {$fielddispclass_start_scheme}">
+  <div class="rnr-label above">{$label t_cfgrace start_scheme}:</div>
+  <div class="rnr-control style3">{$start_scheme_value}</div>
+</div>
+{END start_scheme_fieldblock}
+	{BEGIN start_interval_fieldblock}
+<div data-fieldname="start_interval" class="rnr-field style1 {$fielddispclass_start_interval}">
+  <div class="rnr-label above">{$label t_cfgrace start_interval}:</div>
+  <div class="rnr-control style3">{$start_interval_value}</div>
+</div>
+{END start_interval_fieldblock}
+	{BEGIN comp_pick_fieldblock}
+<div data-fieldname="comp_pick" class="rnr-field style1 {$fielddispclass_comp_pick}">
+  <div class="rnr-label above">{$label t_cfgrace comp_pick}:</div>
+  <div class="rnr-control style3">{$comp_pick_value}</div>
+</div>
+{END comp_pick_fieldblock}
+	{BEGIN active_fieldblock}
+<div data-fieldname="active" class="rnr-field style1 {$fielddispclass_active}">
+  <div class="rnr-label above">{$label t_cfgrace active}:</div>
+  <div class="rnr-control style3">{$active_value}</div>
+</div>
+{END active_fieldblock}
+</td>
+</tr>
+</table></div>
+
+
+{BEGIN viewbuttons}
+<div  class="rnr-brickcontents style2 rnr-b-viewbuttons {$brickclass_viewbuttons}"><div class="rnr-buttons-right">
+{BEGIN prev_button}
+<a href="#" class="rnr-button {$prevbutton_class}" {$prevbutton_attrs}>&lt;&lt;&lt;</a>
+{END prev_button}
+{BEGIN next_button}
+<a href="#" class="rnr-button {$nextbutton_class}" {$nextbutton_attrs}>&gt;&gt;&gt;</a>
+{END next_button}
+</div>
+<div class="rnr-buttons-left">
+{BEGIN back_button}
+<a href="#" class="rnr-button" {$backbutton_attrs}>Back to list</a>
+{END back_button}
+{BEGIN close_button}
+<a href="#" class="rnr-button" {$closebutton_attrs}>Close window</a>
+{END close_button}
+{BEGIN edit_page_button}
+<a href="#" class="rnr-button" {$edit_page_button_attrs}>Edit</a>
+{END edit_page_button}
+</div>
+</div>{END viewbuttons}
+
+
+</div>
+{END container_fields}
+
+</div>
+
+
+</div>
+{END container_add}
+
+</div>
+
+
+
+</div>
+{END container_all}
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			<!--%%bottom%%-->
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<HTML {$html_attrs}><HEAD> 
+<META http-equiv="X-UA-Compatible" content="IE=Edge"> <TITLE>{$pagetitle} </TITLE> 
+<META http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+<LINK href="styles/default.css" rel="stylesheet" type="text/css"> {BEGIN rtlCSS}<LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">{END rtlCSS} {BEGIN styleCSSFiles}<LINK href="{$stylepath}" rel="stylesheet" type="text/css">{END styleCSSFiles} {BEGIN pageCSSFiles}<LINK href="{$pagestylepath}" rel="stylesheet" type="text/css">{END pageCSSFiles} 
+<META name="GENERATOR" content="MSHTML 11.00.9600.18161"> </HEAD> 
+<BODY class="{$stylename} function-add" {$bodyattrs}>{BEGIN body}
+
+{$header} 
+<DIV class="rnr-page">
+<DIV class="rnr-top {$blockclass_top}">
+{BEGIN container_all}
+<DIV class="rnr-c rnr-cv rnr-c-all">
+<DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
+{BEGIN container_add}
+<DIV class="rnr-c rnr-cv rnr-c-add">
+{BEGIN addheader}<DIV class="rnr-brickcontents style2 rnr-b-addheader {$brickclass_addheader}"><SPAN>
+<H1>
+{$pagetitlelabel t_cfgseries add} 
+</H1></SPAN> </DIV>
+{END addheader}{BEGIN message_block}<DIV class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}">
+<DIV class="rnr-message">
+{$message} </DIV></DIV>
+{END message_block}<DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+{BEGIN container_fields}
+<DIV class="rnr-c rnr-cv rnr-c-fields">
+<DIV class="rnr-brickcontents style1 rnr-b-addfields2_atop {$brickclass_addfields2_atop}">
+<TABLE class="fieldGrid fieldGrid2 edit">
+  <TBODY>
+  <TR>
+    <TD>
+      {BEGIN seriestype_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_seriestype}" data-fieldname="seriestype">
+      <DIV class="rnr-label above">{BEGIN seriestype_label}
+      {$label t_cfgseries seriestype} (name) {END seriestype_label}</DIV>
+      <DIV class="rnr-control style3">
+      {$seriestype_editcontrol} </DIV></DIV>
+      {END seriestype_fieldblock}{BEGIN discard_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_discard}" data-fieldname="discard">
+      <DIV class="rnr-label above">{BEGIN discard_label}
+      {$label t_cfgseries discard}{END discard_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$discard_editcontrol} </DIV></DIV>
+      {END discard_fieldblock}{BEGIN nodiscard_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_nodiscard}" data-fieldname="nodiscard">
+      <DIV class="rnr-label above">{BEGIN nodiscard_label}
+      {$label t_cfgseries nodiscard}{END nodiscard_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$nodiscard_editcontrol} </DIV></DIV>
+      {END nodiscard_fieldblock}{BEGIN doublepoint_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_doublepoint}" data-fieldname="doublepoint">
+      <DIV class="rnr-label above">{BEGIN doublepoint_label}
+      {$label t_cfgseries doublepoint}{END doublepoint_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$doublepoint_editcontrol} </DIV></DIV>
+      {END doublepoint_fieldblock}{BEGIN avgscheme_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_avgscheme}" data-fieldname="avgscheme">
+      <DIV class="rnr-label above">{BEGIN avgscheme_label}
+      {$label t_cfgseries avgscheme} Scheme {END avgscheme_label}</DIV>
+      <DIV class="rnr-control style3">
+      {$avgscheme_editcontrol} </DIV></DIV>{END avgscheme_fieldblock}</TD>
+    <TD>
+      {BEGIN dutypoints_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_dutypoints}" data-fieldname="dutypoints">
+      <DIV class="rnr-label above">{BEGIN dutypoints_label}
+      {$label t_cfgseries dutypoints} Scheme {END dutypoints_label}</DIV>
+      <DIV class="rnr-control style3">
+      {$dutypoints_editcontrol} 
+      </DIV></DIV>
+      {END dutypoints_fieldblock}{BEGIN dutynum_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_dutynum}" data-fieldname="dutynum">
+      <DIV class="rnr-label above">{BEGIN dutynum_label}
+      {$label t_cfgseries dutynum} in Series {END dutynum_label}</DIV>
+      <DIV class="rnr-control style3">
+      {$dutynum_editcontrol} </DIV></DIV>
+      {END dutynum_fieldblock}{BEGIN notes_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_notes}" data-fieldname="notes">
+      <DIV class="rnr-label above">{BEGIN notes_label}
+      {$label t_cfgseries notes}{END notes_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$notes_editcontrol} </DIV></DIV>
+      {END notes_fieldblock}{BEGIN active_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_active}" data-fieldname="active">
+      <DIV class="rnr-label above">{BEGIN active_label}
+      {$label t_cfgseries active}{END active_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$active_editcontrol} </DIV></DIV>{END active_fieldblock}</TD></TR></TBODY></TABLE> 
+</DIV>
+{BEGIN addbuttons}<DIV class="rnr-brickcontents style2 rnr-b-addbuttons {$brickclass_addbuttons}">
+<DIV class="rnr-buttons-left">{BEGIN save_button}<A class="rnr-button main" id="saveButton{$id}" href="#" {$savebutton_attrs}> 
+Save </A> {END save_button}{BEGIN reset_button}<A class="rnr-button" id="resetButton{$id}" href="#"> Reset </A> {END reset_button}{BEGIN cancel_button}<A class="rnr-button" id="cancelButton{$id}" href="#"> Cancel </A> {END cancel_button}{BEGIN back_button}<A class="rnr-button" id="backButton{$id}" href="#"> Back to list </A> {END back_button}{BEGIN backToMenu_button}<A class="rnr-button" id="backToMenuButton{$id}" href="#"> Back to menu </A> 
+{END backToMenu_button}</DIV></DIV>{END addbuttons}</DIV>{END container_fields}</DIV></DIV> {END container_add}</DIV></DIV> {END container_all}</DIV>
+<DIV class="rnr-middle">
+<DIV class="rnr-left {$blockclass_left}"></DIV>
+<DIV class="rnr-center {$blockclass_center}"></DIV>
+<DIV class="rnr-right {$blockclass_right}"></DIV></DIV>
+<DIV class="rnr-bottom {$blockclass_bottom}"><!--%%bottom%%--> </DIV></DIV>
+{$footer}{END body} </BODY></HTML>

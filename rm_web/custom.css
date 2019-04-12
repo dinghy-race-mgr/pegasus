@@ -1,0 +1,100 @@
+body {
+        background-color: #FFFFFF;
+}
+
+body, html, input {
+        font-family:Kalinga, Arial, Helvetica, sans-serif;
+        font-size:1em;
+        color: black;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+.err-symptom {
+
+}
+
+.err-problem {
+
+}
+
+.err-where {
+
+}
+
+.err-fix {
+    font-style:italic;
+    font-size: 0.8em;
+    color: blue
+}
+
+
+.menu-block {
+    margin-top: 30px; 
+    margin-right:30px;
+    font-size: 1.2em;
+}
+
+.menu-block-1 {
+    background-color: #00a2b4 !important; 
+    color: #ffffff !important ;
+}
+
+.menu-block-2 {
+    background-color: #B9107C !important;; 
+    color: #ffffff !important ;
+}
+
+.menu-block-3 {
+    background-color: #0080b0 !important; 
+    color: #ffffff !important ;
+}
+
+.prg_past {
+   font-size: 0.8em;
+   color: gray;
+   background-color: white;
+   font-style:italic;
+}
+
+.prg_next {
+   font-size: 0.8em;
+   color: black;
+   background-color: LemonChiffon;
+}
+
+.prg_future {
+   font-size: 0.8em;
+   color: black;
+   background-color: white;
+}
+
+.prg_important {
+   font-size: 0.8em;
+   color: darkred;
+   background-color: pink;
+}
+
+.prg_event {
+   font-weight: bold;
+}
+
+.prg_notes {
+   font-style:italic;
+   font-weight: normal;
+}
+
+.duty_type {
+   font-size: 0.6em;
+   color: darkgray;
+   font-weight: bold;
+}
+
+.duty_person {
+   font-size: 0.6em;
+   color: black;
+}
+
+

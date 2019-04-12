@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<HTML {$html_attrs}>
+  <HEAD>
+    <META http-equiv="X-UA-Compatible" content="IE=Edge">
+    <TITLE>
+      {$pagetitle}
+    </TITLE>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <LINK href="styles/default.css" rel="stylesheet" type="text/css">
+    <LINK href="../../common/oss/bootstrap/css/bootstrap.min.css" 
+rel="stylesheet">
+    <STYLE>
+      body { padding-top: 70px; font-family: Kalinga, Arial, sans-serif;}
+    </STYLE>
+    {BEGIN rtlCSS}
+      <LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">
+    {END rtlCSS}
+    {BEGIN styleCSSFiles}
+      <LINK href="{$stylepath}" rel="stylesheet" type="text/css">
+    {END styleCSSFiles}
+    {BEGIN pageCSSFiles}
+      <LINK href="{$pagestylepath}" rel="stylesheet" type="text/css">
+    {END pageCSSFiles}
+    <META name="GENERATOR" content="MSHTML 11.00.9600.18098">
+  </HEAD>
+  <BODY class="{$stylename} function-login" {$bodyattrs}>
+    {BEGIN body}
+      {$header}
+      <DIV class="container">
+        <DIV class="jumbotron" style="padding-top: 20px; padding-bottom: 20px;">
+          <DIV class="container">
+            <H1>
+              <IMG src="../../common/images/logos/rmlogo-md.jpg">
+              raceManager
+            </H1>
+            <P>
+              Administration System
+            </P>
+            <P>
+              <SMALL>
+                Create your race programme, define race formats, manage competitors and classes, etc. etc.
+              </SMALL>
+            </P>
+          </DIV>
+          <DIV class="rnr-page">
+            <DIV class="rnr-top {$blockclass_top}">
+              {BEGIN container_search}
+                <DIV class="rnr-c rnr-cv rnr-c-search">
+                  <!-- <DIV class="rnr-brickcontents style2 rnr-b-loginheader {$brickclass_loginheader}">
+                  <SPAN>
+                    <H1>
+                      {$pagetitlelabel login}
+                    </H1>
+                  </SPAN>
+                </DIV> -->
+                  {BEGIN message_block}
+                    <DIV class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}">
+                      <DIV class="rnr-message">
+                        {$message}
+                      </DIV>
+                    </DIV>
+                  {END message_block}
+                  <DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+                    {BEGIN container_fields}
+                      <DIV class="rnr-c rnr-cv rnr-c-fields">
+                        <DIV class="rnr-brickcontents style1 rnr-b-loginfields {$brickclass_loginfields}">
+                          <TABLE class="fieldGrid">
+                            <TBODY>
+                              <TR>
+                                <TD>
+                                  {BEGIN username_label}
+                                    Username:
+                                  {END username_label}
+                                </TD>
+                                <TD class="rnr-control">
+                                  <INPUT name="username" type="text" {$username_attrs}>
+                                </TD>
+                              </TR>
+                              <TR>
+                                <TD>
+                                  {BEGIN password_label}
+                                    Password:
+                                  {END password_label}
+                                </TD>
+                                <TD class="rnr-control">
+                                  <INPUT name="password" type="password" {$password_attrs}>
+                                </TD>
+                              </TR>
+                              <TR>
+                                <TD>
+                                  {BEGIN remember_password_label}
+                                    Remember Password:
+                                  {END remember_password_label}
+                                </TD>
+                                <TD>
+                                  <INPUT type="checkbox" {$rememberbox_attrs}>
+                                </TD>
+                              </TR>
+                            </TBODY>
+                          </TABLE>
+                        </DIV>
+                      </DIV>
+                    {END container_fields}
+                  </DIV>
+                  {BEGIN guestlink_block}
+                    <DIV class="rnr-brickcontents style3 rnr-b-mesguest {$brickclass_mesguest}">
+                      <A {$guestlink_attrs}>
+                        Login as Guest
+                      </A>
+                    </DIV>
+                  {END guestlink_block}
+                  <DIV class="rnr-brickcontents style3 rnr-b-mesreg {$brickclass_mesreg}">
+                    <A href="register.php" {$registerlink_attrs}>
+                      Register
+                    </A>
+                  </DIV>
+                  <DIV class="rnr-brickcontents style3 rnr-b-mesforgot {$brickclass_mesforgot}">
+                    <A href="remind.php" {$forgotpasswordlink_attrs}>
+                      Forgot password?
+                    </A>
+                  </DIV>
+                  {BEGIN loginbuttons}
+                    <DIV class="rnr-brickcontents style2 rnr-b-loginbuttons {$brickclass_loginbuttons}">
+                      <A class="rnr-button main" href="#" {$loginlink_attrs}>
+                        Submit
+                      </A>
+                      {BEGIN continue_button}
+                        <A class="rnr-button" href="#" {$continuebutton_attrs}>
+                          Continue
+                        </A>
+                      {END continue_button}
+                    </DIV>
+                  {END loginbuttons}
+                </DIV>
+              {END container_search}
+            </DIV>
+            <DIV class="rnr-middle">
+              <DIV class="rnr-left {$blockclass_left}">
+              </DIV>
+              <DIV class="rnr-center {$blockclass_center}">
+              </DIV>
+              <DIV class="rnr-right {$blockclass_right}">
+              </DIV>
+            </DIV>
+            <DIV class="rnr-bottom {$blockclass_bottom}">
+            </DIV>
+          </DIV>
+          <P class="pull-right" style="font-size: 0.7em;" >
+            Version: add version number
+          </P>
+        </DIV>
+      </DIV>
+    {$footer}
+    {END body}
+  </BODY>
+</HTML>

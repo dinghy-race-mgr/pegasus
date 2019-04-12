@@ -1,0 +1,299 @@
+/* custom styles for rm_racebox application
+-------------------------------------------------- */
+
+/* theme colours
+    danger = #B92C28
+    primary = #2B669A
+
+*/
+
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+/* style for body */
+body {  
+  margin-top: 40px;                           /* margin for navbar and footer */   
+  margin-bottom: 40px;   
+  font-family: Kalinga, Arial, sans-serif;    /* default font */
+}
+
+/* style for main page container after body */
+body > .container {
+  padding: 10px 0px 0px 0px; 
+}
+
+/* top margin styles */
+.margin-top-0  { margin-top: 0.0em; }
+.margin-top-05 { margin-top: 0.5em; }
+.margin-top-10 { margin-top: 1.0em; }
+.margin-top-20 { margin-top: 2.0em; }
+.margin-top-40 { margin-top: 4.0em; }
+
+/* padding styles */
+.padding-bot-10 { padding-bottom: 1.0em; }
+
+/* horizontal margin styles */
+.margin-center-30 { margin-left: 30%; margin-right: 30%; padding-top: 10px; padding-bottom:  10px; }
+.margin-right-40 {margin-right: 40px;}
+
+/* text styles */
+.big-text { font-size: 1.2em; }
+
+
+/* tables */
+.table-condensed > tbody > tr > td { padding: 2px; }
+
+.table-hover tbody tr:hover td {
+    background: yellow;
+}
+
+.table-hover tbody.rowlink tr:hover td {
+    background: yellow;
+}
+
+.table-borderless tbody tr td, .table-borderless tbody tr th, .table-borderless thead tr th {
+    border: none;
+}
+
+/* forms */
+.help-block { font-size:  0.8em; color: blue; }
+.form-condensed { margin-bottom: 7px; }
+
+/* right hand page buttons */
+#rhcol .btn {text-align: left !important;}
+
+/* modals */
+.bg-danger-modal  {background-color: #B92C28; color: white;}
+.bg-warning-modal  {background-color: #EB9316; color: white;}
+.bg-primary-modal {background-color: #2B669A; color: white;}
+.modal-footer {margin-top: 0px; padding: 5px 20px 10px; }
+
+/* navpills */
+.red li.active a,
+.red li.active a:focus,
+.red li.active a:hover {
+    background-color: red;
+}
+
+/* drop down menu */
+.dropdown-menu {background-color: beige; color: black; font-size: 1.2em;}
+.dropdown-menu > li > a { padding:1px 10px !important;}
+
+/* modal close */
+.modal-close {
+    font-size: 18px !important;
+    color: yellow !important;
+    text-shadow: none  !important;
+    filter: none  !important;
+    opacity: 1.0  !important;
+}
+
+/* timer page row classes */
+.table > tbody > tr.finished {background-color: #e6e6e6; color: darkgrey;}
+.table > tbody > tr.lastlap {background-color: #f7bbbb; color: darkred;}
+
+.label-finished { background-color: lightgrey;}
+
+.truncate {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+
+.inline-button {padding: 0px 5px 0px 5px;}
+
+.racestate-title {font-size: 1.1em; font-weight: bold; color: #46658b; vertical-align: middle !important;}
+.racestate-text  {font-size: 1.1em; font-weight: bold; color: #616161; vertical-align: middle !important;}
+
+/* sidebar
+#sidebar .affix {
+       position: fixed;
+       top: 10px
+   }
+#sidebar .affix-top {
+    position: static;
+}
+#sidebar .affix-bottom {
+    position: absolute;
+}
+*/
+
+/*
+.affix-top {
+  width: 100%;
+}
+
+.affix-bottom {
+  position: absolute;
+  width: 100%;
+}
+
+
+#sidebar.affix {
+    position: fixed;
+    top:60px;
+    max-width: 220px;
+    width: 90%
+  }
+
+
+.affix,.affix-top {
+   position: static;
+}
+*/
+
+/*
+.container .text-muted {
+  margin: 20px 0;
+}
+*/
+
+/*
+#cover {
+    background: url("http://www.aveva.com/Images/ajax-loader.gif") no-repeat scroll center center #FFF;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+*/
+
+/*
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  background-color: red;
+}
+*/
+
+/* style for navbar brand link */
+.rm-brand-title {
+    font-family: Trebuchet MS, Arial, sans-serif;
+    font-size: 160%;
+    color: orange;    
+}
+
+/* styles for navbar menu items */
+.rm-navmenu {
+    font-family: Trebuchet MS, Arial, sans-serif;
+    font-size: 140%;
+    color:  white;
+}
+
+.rm-navmenu:hover {
+    font-family: Trebuchet MS, Arial, sans-serif;
+    font-size: 140%;
+    color: orange;
+}
+
+.rm-navmenu-active {
+    font-family: Trebuchet MS, Arial, sans-serif;
+    font-size: 140%;
+    color:  red;
+}
+
+.rm-navmenu-active:hover {
+    font-family: Trebuchet MS, Arial, sans-serif;
+    font-size: 140%;
+    color: orange;
+}
+
+@media (min-width: 1600px){
+    .navbar li {
+        margin-left : 1.5em;
+        margin-right : 1.5em;
+    }
+}
+
+/* timer styles */
+.timer-lg {
+        width: 100%;
+        height: 70px;
+        padding: 4px;
+        font-weight: bold; 
+        text-align: center; 
+        color: white; 
+        background-color: black;
+        font-size: 48px; 
+        border-radius: 4pt;       
+    }
+    
+.timer-sm {
+        width: 120px; 
+        height: 36px;
+        padding: 4px;
+        font-weight: bold; 
+        text-align: center; 
+        color: white; 
+        background-color: lightslategrey;
+        font-size: 24px; 
+        border-radius: 4pt;       
+    }
+
+/* modal scrolling 
+.modal-body{
+    height: 250px;
+    overflow-y: auto;
+}
+
+@media (min-height: 500px) {
+    .modal-body { height: 400px; }
+}
+
+@media (min-height: 800px) {
+    .modal-body { height: 600px; }
+}
+*/
+
+/* timer button 
+.round-button {
+    width:100%;
+}
+
+.round-button-circle {
+    width: 100%;
+    height:0;
+    padding-bottom: 90%;
+    border-radius: 50%;
+    border:5px solid #cfdcec;
+    overflow:hidden;   
+    background: #4679BD;
+    box-shadow: 0 0 3px gray;
+}
+
+.round-button-circle:hover {
+    background:#30588e;
+}
+
+.round-button-circle-off {
+    width: 100%;
+    height:0;
+    padding-bottom: 90%;
+    border-radius: 50%;
+    border:5px solid #cfdcec;
+    overflow:hidden;   
+    background: #D12626;
+    box-shadow: 0 0 3px gray;
+}
+
+.round-button-circle-off:hover {
+    background: #A80B0B;
+}
+
+
+.round-button a {
+    display:block;
+    float:left;
+    width:100%;
+    padding-top:45%;
+    padding-bottom:50%;
+    line-height:1.2em;
+    margin-top:-0.9em;   
+    text-align:center;
+    color:#e2eaf3;
+    font-family:Verdana;
+    font-size:1.1em;
+    font-weight:bold;
+    text-decoration:none;
+}
+*/

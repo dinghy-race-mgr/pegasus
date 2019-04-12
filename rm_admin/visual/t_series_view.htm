@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<HTML {$html_attrs}><HEAD> 
+<META http-equiv="X-UA-Compatible" content="IE=Edge"> <TITLE>{$pagetitle} </TITLE> 
+<META http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+<LINK href="styles/default.css" rel="stylesheet" type="text/css"> {BEGIN rtlCSS}<LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">{END rtlCSS} {BEGIN styleCSSFiles}<LINK href="{$stylepath}" rel="stylesheet" type="text/css">{END styleCSSFiles} {BEGIN pageCSSFiles}<LINK href="{$pagestylepath}" rel="stylesheet" type="text/css">{END pageCSSFiles} 
+<META name="GENERATOR" content="MSHTML 11.00.9600.18161"></HEAD> 
+<BODY class="{$stylename} function-view" {$bodyattrs}>{BEGIN body}
+
+{$header} 
+<DIV class="rnr-page">
+<DIV class="rnr-top {$blockclass_top}">
+{BEGIN container_all}
+<DIV class="rnr-c rnr-cv rnr-c-all">
+<DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
+{BEGIN container_add}
+<DIV class="rnr-c rnr-cv rnr-c-add">
+{BEGIN viewheader}<DIV class="rnr-brickcontents style2 rnr-b-viewheader {$brickclass_viewheader}"><SPAN>
+<H1>
+{$pagetitlelabel t_series view} 
+</H1></SPAN> </DIV>
+{END viewheader}{BEGIN message_block}<DIV class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}">
+<DIV class="rnr-message">
+{$message} </DIV></DIV>
+{END message_block}<DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+{BEGIN container_fields}
+<DIV class="rnr-c rnr-cv rnr-c-fields" style="min-height: 277px; min-width: 626px;"> 
+<DIV class="rnr-brickcontents style1 rnr-b-viewfields2_atop {$brickclass_viewfields2_atop}">
+<TABLE class="fieldGrid fieldGrid2">
+  <TBODY>
+  <TR>
+    <TD>
+      {BEGIN seriescode_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_seriescode}" data-fieldname="seriescode">
+      <DIV class="rnr-label above">
+      {$label t_series seriescode} : </DIV>
+      <DIV class="rnr-control style3">
+      {$seriescode_value} </DIV></DIV>
+      {END seriescode_fieldblock}{BEGIN seriesname_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_seriesname}" data-fieldname="seriesname">
+      <DIV class="rnr-label above">
+      {$label t_series seriesname} : </DIV>
+      <DIV class="rnr-control style3">
+      {$seriesname_value} </DIV></DIV>
+      {END seriesname_fieldblock}{BEGIN seriestype_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_seriestype}" data-fieldname="seriestype">
+      <DIV class="rnr-label above">
+      {$label t_series seriestype} : </DIV>
+      <DIV class="rnr-control style3">
+      {$seriestype_value} </DIV></DIV>
+      {END seriestype_fieldblock}{BEGIN classresults_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_classresults}" data-fieldname="classresults">
+      <DIV class="rnr-label above">
+      {$label t_series classresults} : </DIV>
+      <DIV class="rnr-control style3">
+      {$classresults_value} </DIV></DIV>{END classresults_fieldblock}</TD>
+    <TD>
+      {BEGIN startdate_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_startdate}" data-fieldname="startdate">
+      <DIV class="rnr-label above">
+      {$label t_series startdate} : </DIV>
+      <DIV class="rnr-control style3">
+      {$startdate_value} </DIV></DIV>
+      {END startdate_fieldblock}{BEGIN enddate_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_enddate}" data-fieldname="enddate">
+      <DIV class="rnr-label above">
+      {$label t_series enddate} : </DIV>
+      <DIV class="rnr-control style3">
+      {$enddate_value} </DIV></DIV>
+      {END enddate_fieldblock}{BEGIN notes_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_notes}" data-fieldname="notes">
+      <DIV class="rnr-label above">
+      {$label t_series notes} 
+      : </DIV>
+      <DIV class="rnr-control style3">
+      {$notes_value} </DIV></DIV>
+      {END notes_fieldblock}{BEGIN active_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_active}" data-fieldname="active">
+      <DIV class="rnr-label above">
+      {$label t_series active} 
+      : </DIV>
+      <DIV class="rnr-control style3">
+      {$active_value} </DIV></DIV>{END active_fieldblock}</TD></TR></TBODY></TABLE> 
+</DIV>
+{BEGIN viewbuttons}<DIV class="rnr-brickcontents style2 rnr-b-viewbuttons {$brickclass_viewbuttons}">
+<DIV class="rnr-buttons-right">{BEGIN prev_button}<A class="rnr-button {$prevbutton_class}" href="#" {$prevbutton_attrs}>
+&lt;&lt;&lt;</A> {END prev_button}{BEGIN next_button}<A class="rnr-button {$nextbutton_class}" href="#" {$nextbutton_attrs}> &gt;&gt;&gt;</A> 
+{END next_button}</DIV>
+<DIV class="rnr-buttons-left">{BEGIN back_button}<A class="rnr-button" href="#" {$backbutton_attrs}> Back to list </A> {END back_button}{BEGIN close_button}<A class="rnr-button" href="#" {$closebutton_attrs}> 
+Close window </A> {END close_button}{BEGIN edit_page_button}<A class="rnr-button" href="#" {$edit_page_button_attrs}> Edit </A> 
+{END edit_page_button}</DIV></DIV>{END viewbuttons}</DIV> {END container_fields}</DIV></DIV> 
+{END container_add}</DIV></DIV> {END container_all}</DIV>
+<DIV class="rnr-middle">
+<DIV class="rnr-left {$blockclass_left}"></DIV>
+<DIV class="rnr-center {$blockclass_center}"></DIV>
+<DIV class="rnr-right {$blockclass_right}"></DIV></DIV>
+<DIV class="rnr-bottom {$blockclass_bottom}"><!--%%bottom%%--> </DIV></DIV>
+{$footer}{END body} </BODY></HTML>

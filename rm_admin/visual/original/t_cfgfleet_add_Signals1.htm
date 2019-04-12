@@ -1,0 +1,35 @@
+<div {$pageattrs}>
+
+{BEGIN container_1}
+
+
+
+<table class="fieldGrid">
+{BEGIN warn_signal_tabfieldblock}
+<tr class="{$fielddispclass_warn_signal}" data-fieldname="warn_signal">
+	<td class="style1 rnr-label">
+		{BEGIN warn_signal_label}{$label t_cfgfleet warn_signal}{END warn_signal_label}
+	</td>
+	<td class="rnr-control style3">
+		{$warn_signal_editcontrol}&nbsp;
+	</td>
+</tr>
+{END warn_signal_tabfieldblock}
+{BEGIN prep_signal_tabfieldblock}
+<tr class="{$fielddispclass_prep_signal}" data-fieldname="prep_signal">
+	<td class="style1 rnr-label">
+		{BEGIN prep_signal_label}{$label t_cfgfleet prep_signal}{END prep_signal_label}
+	</td>
+	<td class="rnr-control style3">
+		{$prep_signal_editcontrol}&nbsp;
+	</td>
+</tr>
+{END prep_signal_tabfieldblock}
+</table>
+
+
+
+
+{END container_1}
+
+</div>

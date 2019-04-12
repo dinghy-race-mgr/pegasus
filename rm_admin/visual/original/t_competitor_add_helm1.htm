@@ -1,0 +1,45 @@
+<div {$pageattrs}>
+
+{BEGIN container_1}
+
+
+
+<table class="fieldGrid">
+{BEGIN helm_tabfieldblock}
+<tr class="{$fielddispclass_helm}" data-fieldname="helm">
+	<td class="style1 rnr-label">
+		{BEGIN helm_label}{$label t_competitor helm}{END helm_label}
+	</td>
+	<td class="rnr-control style3">
+		{$helm_editcontrol}&nbsp;
+	</td>
+</tr>
+{END helm_tabfieldblock}
+{BEGIN helm_dob_tabfieldblock}
+<tr class="{$fielddispclass_helm_dob}" data-fieldname="helm_dob">
+	<td class="style1 rnr-label">
+		{BEGIN helm_dob_label}{$label t_competitor helm_dob}{END helm_dob_label}
+	</td>
+	<td class="rnr-control style3">
+		{$helm_dob_editcontrol}&nbsp;
+	</td>
+</tr>
+{END helm_dob_tabfieldblock}
+{BEGIN helm_email_tabfieldblock}
+<tr class="{$fielddispclass_helm_email}" data-fieldname="helm_email">
+	<td class="style1 rnr-label">
+		{BEGIN helm_email_label}{$label t_competitor helm_email}{END helm_email_label}
+	</td>
+	<td class="rnr-control style3">
+		{$helm_email_editcontrol}&nbsp;
+	</td>
+</tr>
+{END helm_email_tabfieldblock}
+</table>
+
+
+
+
+{END container_1}
+
+</div>

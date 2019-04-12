@@ -1,0 +1,60 @@
+/* custom styles for rm_sailor application
+-------------------------------------------------- */
+html { position: relative;  min-height: 100%;}
+
+/* style for body */
+body {       
+  font-family: Kalinga, Arial, sans-serif;    /* default font */
+}
+
+/* typographic styles */
+.rm-page { color: lightgrey; }
+.rm-pagebold { color: lightgrey; font-size:2.0em; font-weight: bold; }
+.rm-hamburger  { color: lightgrey; font-size:2.0em; }
+
+.rm-text-bg {font-weight: bold; font-size:1.8em;}
+.rm-text-md {font-size:1.6em;}
+.rm-text-sm {font-size:1.0em;}
+.rm-text-space {padding-top:5px; padding-bottom: 5px; }
+.rm-text-highlight {color: yellow; }
+.rm-text-capitalise {text-transform: capitalize;}
+
+
+.rm-table-col-title {font-weight:bold; font-size: 1.2em; color: yellow; text-transform: capitalize;}
+.rm-table-col-value {font-size: 1.2em;}
+.rm-table-col-highlight {font-size: 1.2em; color: black; background-color: LightYellow}
+.rm-table-event-list {padding-top: 10px !important; padding-bottom: 10px !important; }
+
+.rm-glyph-bg {font-weight: bold; font-size:2.0em;}
+.rm-glyph-md {font-weight: bold; font-size:1.4em;}
+
+/* top margin styles */
+.margin-top-05 { margin-top: 0.5em; }
+.margin-top-10 { margin-top: 1.0em; }
+.margin-top-20 { margin-top: 2.0em; }
+.margin-top-40 { margin-top: 4.0em; }
+.margin-bot-40 { margin-bottom: 4.0em; }
+
+.fixed-button { min-width: 150px; max-width: 150px; margin-top: 10px; }
+
+.rm-form-style { font-size: 1.5em !important; }
+.rm_form-label { font-size: 1.5em !important; padding-top: 10px !important;}
+.rm-form-field { font-weight: bold;}
+
+.divider-line { height: 10px; border: none;}
+
+::-webkit-input-placeholder { color: slateblue !important; font-weight: normal !important; font-style: italic; text-align: right; font-size: 0.8em;}
+.form-control::-moz-placeholder { color: slateblue !important;  font-weight: normal !important; font-style: italic; text-align: right; font-size: 0.8em;}
+:-ms-input-placeholder { color: slateblue !important;  font-weight: normal !important; font-style: italic; text-align: right; font-size: 0.8em;}
+
+input[type=checkbox] {
+  transform: scale(2.0); /* All browsers except webkit*/
+  -webkit-transform: scale(2.0);  /* Webkit browsers*/
+}
+
+input[type=radio] {
+  transform: scale(1.7); /* All browsers except webkit*/
+  -webkit-transform: scale(1.7); /* Webkit browsers*/
+}
+
+.hover:hover{background-color: lightyellow; color: black;}

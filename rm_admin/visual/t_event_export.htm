@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<HTML {$html_attrs}>
+  <HEAD>
+    <META http-equiv="X-UA-Compatible" content="IE=Edge">
+    <TITLE>
+      {$pagetitle}
+    </TITLE>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <LINK href="styles/default.css" rel="stylesheet" type="text/css">
+    {BEGIN rtlCSS}
+      <LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">
+    {END rtlCSS}
+    {BEGIN styleCSSFiles}
+      <LINK href="{$stylepath}" rel="stylesheet" type="text/css">
+    {END styleCSSFiles}
+    {BEGIN pageCSSFiles}
+      <LINK href="{$pagestylepath}" rel="stylesheet" type="text/css">
+    {END pageCSSFiles}
+    <META name="GENERATOR" content="MSHTML 11.00.9600.18098">
+  </HEAD>
+  <BODY class="{$stylename} function-export" {$bodyattrs}>
+    {BEGIN body}
+      {$header}
+      <DIV class="rnr-page">
+        <DIV class="rnr-top {$blockclass_top}">
+          {BEGIN container_export}
+            <DIV class="rnr-c rnr-cv rnr-c-export">
+              <DIV class="rnr-brickcontents style2 rnr-b-exportheader {$brickclass_exportheader}">
+                <SPAN>
+                  <H1>
+                    {$pagetitlelabel t_event export}
+                  </H1>
+                </SPAN>
+              </DIV>
+              <DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_range} rnr-wrapper rnr-cbw-range">
+                {BEGIN container_range}
+                  <DIV class="rnr-c rnr-cv rnr-c-range">
+                    {BEGIN range_block}
+                      <DIV class="rnr-brickcontents style1 rnr-b-exprange {$brickclass_exprange}">
+                        <DIV class="rnr-field style2">
+                          Data range
+                        </DIV>
+                        <DIV class="rnr-field style1">
+                          <SPAN class="rnr-hoption">
+                            <INPUT name="records" class="rnr-radio-button" type="radio" checked value="all" {$allpageradio_attrs}>
+                            <SPAN class="rnr-radio-label">
+                              All records
+                            </SPAN>
+                            &nbsp;&nbsp;
+                          </SPAN>
+                          <SPAN class="rnr-hoption">
+                            <INPUT name="records" class="rnr-radio-button" type="radio" value="page" {$pageradio_attrs}>
+                            <SPAN class="rnr-radio-label">
+                              Current page only
+                            </SPAN>
+                          </SPAN>
+                        </DIV>
+                      </DIV>
+                    {END range_block}
+                  </DIV>
+                {END container_range}
+              </DIV>
+              <DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+                {BEGIN container_fields}
+                  <DIV class="rnr-c rnr-cv rnr-c-fields">
+                    <DIV class="rnr-brickcontents style1 rnr-b-expoutput {$brickclass_expoutput}">
+                      <DIV class="rnr-field style2">
+                        Output format
+                      </DIV>
+                    
+                      <DIV class="rnr-field style1">
+                        <INPUT name="type" class="rnr-radio-button" type="radio" value="word" {$wordradio_attrs}>
+                        <SPAN class="rnr-radio-label">
+                          <IMG align="absmiddle" alt=" " src="images/word.gif">
+                          &nbsp;Word
+                        </SPAN>
+                      </DIV>
+                      <DIV class="rnr-field style1">
+                        <INPUT name="type" class="rnr-radio-button" type="radio" value="csv" {$csvradio_attrs}>
+                        <SPAN class="rnr-radio-label">
+                          <IMG align="absmiddle" alt=" " src="images/csv.gif">
+                          &nbsp;CSV (comma separated values)
+                        </SPAN>
+                      </DIV>
+                      <DIV class="rnr-field style1">
+                        <INPUT name="type" class="rnr-radio-button" type="radio" value="xml" {$xmlradio_attrs}>
+                        <SPAN class="rnr-radio-label">
+                          <IMG align="absmiddle" alt=" " src="images/xml.gif">
+                          &nbsp;XML
+                        </SPAN>
+                      </DIV>
+                    </DIV>
+                  </DIV>
+                {END container_fields}
+              </DIV>
+              <DIV class="rnr-brickcontents style2 rnr-b-expbuttons {$brickclass_expbuttons}">
+                <A class="rnr-button main" href="#" {$exportlink_attrs}>
+                  Export
+                </A>
+              </DIV>
+            </DIV>
+          {END container_export}
+        </DIV>
+        <DIV class="rnr-middle">
+          <DIV class="rnr-left {$blockclass_left}">
+          </DIV>
+          <DIV class="rnr-center {$blockclass_center}">
+          </DIV>
+          <DIV class="rnr-right {$blockclass_right}">
+          </DIV>
+        </DIV>
+        <DIV class="rnr-bottom {$blockclass_bottom}">
+          <!--%%bottom%%-->
+        </DIV>
+      </DIV>
+      {$footer}
+    {END body}
+  </BODY>
+</HTML>

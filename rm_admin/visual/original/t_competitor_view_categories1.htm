@@ -1,0 +1,75 @@
+<div {$pageattrs}>
+
+{BEGIN container_1}
+
+
+
+<table class="fieldGrid">
+{BEGIN skill_level_tabfieldblock}
+<tr class="{$fielddispclass_skill_level}" data-fieldname="skill_level">
+	<td class="style1 rnr-label">
+		{$label t_competitor skill_level}
+	</td>
+	<td class="rnr-control style3">
+		<div class="fieldvalue_skill_level">
+		{$skill_level_value}
+		</div>
+	</td>
+</tr>
+{END skill_level_tabfieldblock}
+{BEGIN flight_tabfieldblock}
+<tr class="{$fielddispclass_flight}" data-fieldname="flight">
+	<td class="style1 rnr-label">
+		{$label t_competitor flight}
+	</td>
+	<td class="rnr-control style3">
+		<div class="fieldvalue_flight">
+		{$flight_value}
+		</div>
+	</td>
+</tr>
+{END flight_tabfieldblock}
+{BEGIN regular_tabfieldblock}
+<tr class="{$fielddispclass_regular}" data-fieldname="regular">
+	<td class="style1 rnr-label">
+		{$label t_competitor regular}
+	</td>
+	<td class="rnr-control style3">
+		<div class="fieldvalue_regular">
+		{$regular_value}
+		</div>
+	</td>
+</tr>
+{END regular_tabfieldblock}
+{BEGIN grouplist_tabfieldblock}
+<tr class="{$fielddispclass_grouplist}" data-fieldname="grouplist">
+	<td class="style1 rnr-label">
+		{$label t_competitor grouplist}
+	</td>
+	<td class="rnr-control style3">
+		<div class="fieldvalue_grouplist">
+		{$grouplist_value}
+		</div>
+	</td>
+</tr>
+{END grouplist_tabfieldblock}
+{BEGIN personal_py_tabfieldblock}
+<tr class="{$fielddispclass_personal_py}" data-fieldname="personal_py">
+	<td class="style1 rnr-label">
+		{$label t_competitor personal_py}
+	</td>
+	<td class="rnr-control style3">
+		<div class="fieldvalue_personal_py">
+		{$personal_py_value}
+		</div>
+	</td>
+</tr>
+{END personal_py_tabfieldblock}
+</table>
+
+
+
+
+{END container_1}
+
+</div>

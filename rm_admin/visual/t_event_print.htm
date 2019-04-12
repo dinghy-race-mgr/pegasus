@@ -1,0 +1,171 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-print" {$bodyattrs}>
+	{BEGIN body}{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_master}<div class="rnr-c rnr-ch rnr-c-master">
+
+{BEGIN mastertable_block}<div  class="style1 rnr-bl rnr-b-masterinfoprint {$brickclass_masterinfoprint}">{$showmasterfile}
+</div>
+{END mastertable_block}
+
+<div class="rnr-hfiller"></div>
+</div>
+{END container_master}
+
+
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+
+{BEGIN container_grid}{BEGIN grid_block}{BEGIN page}<h1>Races</h1>
+<span>
+{BEGIN page_number}
+Page {$pageno} of {$maxpages} 
+{END page_number}
+</span>
+
+	<div class="rnr-s-grid {$pageStyleName}">	
+	<table class="rnr-c rnr-c-grid rnr-b-grid rnr-gridtable" cellpadding="0">
+		<thead>
+		{BEGIN grid_header}<tr class="rnr-toprow style1 {$gridHeader_class}" >
+{BEGIN record_header}{BEGIN event_date_fieldheadercolumn}<TH class="runner-cc {$event_date_class}" rowspan="1" colspan="1" {$event_date_style}>
+                                  {BEGIN event_date_fieldheader}<b>{$label t_event event_date}</b>
+	{END event_date_fieldheader}
+</th>
+{END event_date_fieldheadercolumn}
+	{BEGIN event_name_fieldheadercolumn}<TH class="runner-cc {$event_name_class}" rowspan="1" colspan="1" {$event_name_style}>
+                                  {BEGIN event_name_fieldheader}<b>
+                                      Event
+                                    </b>
+	{END event_name_fieldheader}
+</th>
+{END event_name_fieldheadercolumn}
+	{BEGIN tide_time_fieldheadercolumn}<TH class="runner-cc {$tide_time_class}" rowspan="1" colspan="1" {$tide_time_style}>
+                                  {BEGIN tide_time_fieldheader}<b>
+                                      Tide
+                                    </b>
+	{END tide_time_fieldheader}
+</th>
+{END tide_time_fieldheadercolumn}
+	{BEGIN event_format_fieldheadercolumn}<TH class="runner-cc {$event_format_class}" rowspan="1" colspan="1" {$event_format_style}>
+                                  {BEGIN event_format_fieldheader}<b>{$label t_event event_format}</b>
+	{END event_format_fieldheader}
+</th>
+{END event_format_fieldheadercolumn}
+	{BEGIN event_entry_fieldheadercolumn}<TH class="runner-cc {$event_entry_class}" rowspan="1" colspan="1" {$event_entry_style}>
+                                  {BEGIN event_entry_fieldheader}<b>
+                                        Entry
+                                    </b>
+	{END event_entry_fieldheader}
+</th>
+{END event_entry_fieldheadercolumn}
+	{BEGIN event_status_fieldheadercolumn}<TH class="runner-cc {$event_status_class}" rowspan="1" colspan="1" {$event_status_style}>
+                                  {BEGIN event_status_fieldheader}<b>{$label t_event event_status}</b>
+	{END event_status_fieldheader}
+</th>
+{END event_status_fieldheadercolumn}
+	{BEGIN wd_start_fieldheadercolumn}<TH class="runner-cc {$wd_start_class}" rowspan="1" colspan="1" {$wd_start_style}>
+                                  {BEGIN wd_start_fieldheader}<b>
+                                      Wind
+                                    </b>
+	{END wd_start_fieldheader}
+</th>
+{END wd_start_fieldheadercolumn}
+	{END record_header}
+</tr>
+{END grid_header}
+
+		</thead>
+		<tbody>	
+		{BEGIN grid_row}<tr class="rnr-row style1 {$rowclass}" {$rowattrs} {$rowstyle}>
+		{BEGIN grid_record}{BEGIN event_date_fieldcolumn}<TD class="runner-cc {$event_date_class}" rowspan="1" colspan="1" {$event_date_style}>
+                                  {$event_date_value}
+{$event_start_value}
+                                </td>
+{END event_date_fieldcolumn}
+	{BEGIN event_name_fieldcolumn}<TD class="runner-cc {$event_name_class}" rowspan="1" colspan="1" {$event_name_style}>
+                                  {$event_name_value}
+{$event_notes_value}
+                                </td>
+{END event_name_fieldcolumn}
+	{BEGIN tide_time_fieldcolumn}<TD class="runner-cc {$tide_time_class}" rowspan="1" colspan="1" {$tide_time_style}>
+                                  {$tide_time_value}
+{$tide_height_value}
+                                </td>
+{END tide_time_fieldcolumn}
+	{BEGIN event_format_fieldcolumn}<TD class="runner-cc {$event_format_class}" rowspan="1" colspan="1" {$event_format_style}>
+                                  {$event_format_value}
+</td>
+{END event_format_fieldcolumn}
+	{BEGIN event_entry_fieldcolumn}<TD class="runner-cc {$event_entry_class}" rowspan="1" colspan="1" {$event_entry_style}>
+                                  {$event_entry_value}
+</td>
+{END event_entry_fieldcolumn}
+	{BEGIN event_status_fieldcolumn}<TD class="runner-cc {$event_status_class}" rowspan="1" colspan="1" {$event_status_style}>
+                                  {$event_status_value}
+</td>
+{END event_status_fieldcolumn}
+	{BEGIN wd_start_fieldcolumn}<TD class="runner-cc {$wd_start_class}" rowspan="1" colspan="1" {$wd_start_style}>
+                                  {$wd_start_value}
+{$ws_start_value}
+                                  {$wd_end_value}
+                                  {$ws_end_value}
+                                </td>
+{END wd_start_fieldcolumn}
+	{END grid_record}
+
+	</tr>
+{END grid_row}
+
+
+		
+		</tbody>
+	</table>
+</div>	
+{END page}
+
+{END grid_block}
+
+
+
+{END container_grid}
+
+
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

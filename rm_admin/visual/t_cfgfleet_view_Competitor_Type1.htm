@@ -1,0 +1,42 @@
+<div {$pageattrs}>
+  {BEGIN container_1}
+    <TABLE class="fieldGrid" style="width: 95%;" align="center">
+      {BEGIN groupinc_tabfieldblock}
+        <TR class="{$fielddispclass_groupinc}" data-fieldname="groupinc">
+          <TD class="style1 rnr-label" style="width: 35%;">
+            {$label t_cfgfleet groupinc}
+          </td>
+          <TD class="rnr-control style3" style="width: 65%;">
+            <DIV class="fieldvalue_groupinc">
+              {$groupinc_value}
+            </div>
+          </td>
+        </tr>
+      {END groupinc_tabfieldblock}
+      {BEGIN min_helmage_tabfieldblock}
+        <TR class="{$fielddispclass_min_helmage}" data-fieldname="min_helmage">
+          <TD class="style1 rnr-label">
+            {$label t_cfgfleet min_helmage}
+          </td>
+          <TD class="rnr-control style3">
+            <DIV class="fieldvalue_min_helmage">
+              {$min_helmage_value}
+            </div>
+          </td>
+        </tr>
+      {END min_helmage_tabfieldblock}
+      {BEGIN max_helmage_tabfieldblock}
+        <TR class="{$fielddispclass_max_helmage}" data-fieldname="max_helmage">
+          <TD class="style1 rnr-label">
+            {$label t_cfgfleet max_helmage}
+          </td>
+          <TD class="rnr-control style3">
+            <DIV class="fieldvalue_max_helmage">
+              {$max_helmage_value}
+            </div>
+          </td>
+        </tr>
+      {END max_helmage_tabfieldblock}
+    </table>
+  {END container_1}
+</div>

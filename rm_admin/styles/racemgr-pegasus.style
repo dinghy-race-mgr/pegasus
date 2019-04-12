@@ -1,0 +1,2156 @@
+{
+    "customCss" : "/* typography */\nbody {font-family: Kalinga, Verdana, sans-serif;}\nh1   {font-family: Kalinga, Verdana, sans-serif; font-size: 16pt; font-weight: bold;}\nh2   {font-family: Kalinga, Verdana, sans-serif; color: black; font-size: 14pt; font-weight: bold;}\nh3   {font-family: Kalinga, Verdana, sans-serif; color: black; font-size: 12pt; font-weight: bold;}\na    {font-family: Kalinga, Verdana, sans-serif; font-weight: bold;}\ntable, td,th    {font-family: Kalinga, Verdana, sans-serif !important;}\n\n/* overwrite default color on links */\na { color: inherit; font-weight: inherit; font-style: inherit; }\n\n/* page */\n.rnr-page {width: 98% !important;}\n\n/* record controls */\n.rnr-cw-recordcontrols {width:80% !important;}\n\n/* search highlight */\n.rnr-search-highlight {color: red  !important; font-weight: bold  !important;}\n  \n/* fields */\n.rnr-control {color: darkred !important; font-weight: bold !important; font-family: Kalinga, Verdana, sans-serif !important;}\n\n/* list page title */\n.psus-list-title {float:left; width: 200px; font-size: 20pt; font-weight: bold; vertical-align: top; color: darkred}\n\n/* list page key name */\n.psus-list-keyname {font-weight: bold; color: darkred}\n.psus-listalt-keyname {font-weight: bold; color: darkgreen}\n\n/* record controls */\n.rnr-cw-recordcontrols {width:80% !important;}\n\n/* master info */\n.rnr-b-masterinfo {vertical-align:top !important;}\n.psus-masterlist {font-size: 14pt; vertical-align: top; color: darkgrey}\n\n/* labels */\n/*.rnr-label {border-right: 1px solid darkgrey !important;}*/\n\n/* inline editing controls */\n.saveEditing { color:green; }\n.revertEditing { color: red; }\n\n\n/* tooltip */\ndiv.shiny_box_body.rnr-list {color: darkred !important; \nmargin: 20px 5px !important; \nbackground-color: linen !important; \nfont-size: 8pt !important; \nborder: 0px solid red !important; \nborder-left: 1pt solid darkred !important;}\n\n \ninput[type=\"text\"], input[type=\"search\"], input[type=\"password\"], input[type=\"number\"], input[type=\"email\"], input[type=\"tel\"], select, textarea {\n    background-color: white !important;\n} \n",
+    "globals" : {
+        "button1" : {
+            "border" : {
+                "width" : 1
+            },
+            "font" : {
+                "alias" : "custom",
+                "bold" : false,
+                "face" : "Trebuchet MS, sans-serif",
+                "italic" : false,
+                "size" : 14,
+                "underline" : false
+            },
+            "gradient" : {
+                "contrast" : 0,
+                "direction" : "empty"
+            },
+            "shape" : {
+                "h_padding" : 10,
+                "radius" : 9,
+                "shapeless" : false,
+                "v_padding" : 10
+            }
+        },
+        "button2" : {
+            "border" : {
+                "width" : 0
+            },
+            "font" : {
+                "alias" : "control1",
+                "face" : "Arial, sans-serif",
+                "size" : 8
+            },
+            "gradient" : {
+                "contrast" : 0,
+                "direction" : "west"
+            },
+            "shape" : {
+                "h_padding" : 8,
+                "radius" : 0,
+                "shapeless" : true,
+                "v_padding" : 7
+            }
+        },
+        "button3" : {
+            "border" : {
+                "width" : 1
+            },
+            "font" : {
+                "alias" : "custom",
+                "bold" : true,
+                "face" : "Avant Garde, sans-serif",
+                "italic" : false,
+                "size" : 13,
+                "underline" : false
+            },
+            "gradient" : {
+                "contrast" : 0,
+                "direction" : "empty"
+            },
+            "shape" : {
+                "h_padding" : 12,
+                "radius" : 0,
+                "shapeless" : false,
+                "v_padding" : 6
+            }
+        },
+        "common" : {
+            "border" : {
+                "innerwidth" : {
+                    "width" : 0
+                },
+                "width" : {
+                    "width" : 1
+                }
+            },
+            "radius" : {
+                "width" : 0
+            },
+            "shadow" : {
+                "value" : true
+            },
+            "text" : {
+                "font" : {
+                    "alias" : "text2",
+                    "face" : "Arial, sans-serif",
+                    "size" : 8
+                }
+            }
+        },
+        "dashboard" : {
+            "border" : {
+                "radius" : {
+                    "width" : 4
+                },
+                "width" : {
+                    "width" : 2
+                }
+            },
+            "footer" : {
+                "bgcolor" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    }
+                },
+                "text" : {
+                    "font" : {
+                        "alias" : "label1",
+                        "bold" : false,
+                        "face" : "Avant Garde, sans-serif",
+                        "italic" : false,
+                        "size" : 14,
+                        "underline" : false
+                    }
+                }
+            },
+            "gridsel" : {
+                "bgcolor" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                }
+            },
+            "header" : {
+                "bgcolor" : {
+                    "gradient" : {
+                        "contrast" : -6,
+                        "direction" : "northsouth"
+                    }
+                },
+                "text" : {
+                    "font" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Verdana, sans-serif",
+                        "italic" : false,
+                        "size" : 14,
+                        "underline" : false
+                    }
+                }
+            }
+        },
+        "font" : {
+            "scale" : 100,
+            "set" : "Verdana"
+        },
+        "grid" : {
+            "bgcolor" : {
+                "selection" : {
+                }
+            },
+            "border" : {
+                "data" : {
+                    "width" : 1
+                },
+                "footer" : {
+                    "width" : 1
+                },
+                "header" : {
+                    "width" : 1
+                },
+                "vertical" : {
+                    "data" : true,
+                    "footer" : true,
+                    "header" : true,
+                    "width" : 0
+                },
+                "width" : {
+                    "width" : 1
+                }
+            },
+            "button" : {
+                "show" : "button1"
+            },
+            "font" : {
+                "data" : {
+                    "alias" : "custom",
+                    "bold" : false,
+                    "face" : "Verdana, sans-serif",
+                    "italic" : false,
+                    "size" : 12,
+                    "underline" : false
+                },
+                "footer" : {
+                    "alias" : "custom",
+                    "bold" : false,
+                    "face" : "Verdana, sans-serif",
+                    "italic" : false,
+                    "size" : 12,
+                    "underline" : false
+                },
+                "header" : {
+                    "alias" : "custom",
+                    "bold" : true,
+                    "face" : "Verdana, sans-serif",
+                    "italic" : false,
+                    "size" : 12,
+                    "underline" : false
+                }
+            },
+            "format" : {
+                "data" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "footer" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "header" : {
+                    "align" : "left",
+                    "h_padding" : 6,
+                    "v_padding" : 7
+                }
+            },
+            "gradient" : {
+                "data" : {
+                    "contrast" : 0,
+                    "direction" : "west"
+                },
+                "footer" : {
+                    "contrast" : 0,
+                    "direction" : "west"
+                },
+                "header" : {
+                    "contrast" : 0,
+                    "direction" : "empty"
+                },
+                "selection" : {
+                }
+            },
+            "shape" : {
+                "bottomleft" : {
+                    "radiusx" : 5,
+                    "radiusy" : 5,
+                    "shape" : "rectangle"
+                },
+                "bottomright" : {
+                    "radiusx" : 5,
+                    "radiusy" : 5,
+                    "shape" : "rectangle"
+                },
+                "empty" : false,
+                "topleft" : {
+                    "radiusx" : 5,
+                    "radiusy" : 5,
+                    "shape" : "rectangle"
+                },
+                "topright" : {
+                    "radiusx" : 5,
+                    "radiusy" : 5,
+                    "shape" : "rectangle"
+                }
+            },
+            "textcolor" : {
+                "selection" : {
+                }
+            }
+        },
+        "hmenu" : {
+            "item" : {
+                "border" : {
+                    "width" : {
+                        "width" : 1
+                    }
+                },
+                "font" : {
+                    "active" : {
+                        "alias" : "custom",
+                        "bold" : true,
+                        "face" : "",
+                        "italic" : false,
+                        "size" : 16,
+                        "underline" : false
+                    },
+                    "expanded" : {
+                        "alias" : "custom",
+                        "bold" : true,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 16,
+                        "underline" : false
+                    },
+                    "hover" : {
+                        "alias" : "custom",
+                        "bold" : true,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 16,
+                        "underline" : false
+                    },
+                    "plain" : {
+                        "alias" : "custom",
+                        "bold" : true,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 16,
+                        "underline" : false
+                    }
+                },
+                "format" : {
+                    "align" : "left",
+                    "h_padding" : 20,
+                    "v_padding" : 10
+                },
+                "gradient" : {
+                    "active" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "expanded" : {
+                        "contrast" : -20,
+                        "direction" : "northsouth"
+                    },
+                    "hover" : {
+                        "contrast" : -20,
+                        "direction" : "northsouth"
+                    },
+                    "plain" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    }
+                },
+                "highlight" : {
+                    "active" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "expanded" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "hover" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "plain" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    }
+                },
+                "shape" : {
+                    "bottomleft" : {
+                        "radiusx" : 6,
+                        "radiusy" : 6,
+                        "shape" : "round"
+                    },
+                    "bottomright" : {
+                        "radiusx" : 6,
+                        "radiusy" : 6,
+                        "shape" : "rectangle"
+                    },
+                    "empty" : false,
+                    "topleft" : {
+                        "radiusx" : 8,
+                        "radiusy" : 8,
+                        "shape" : "round"
+                    },
+                    "topright" : {
+                        "radiusx" : 8,
+                        "radiusy" : 8,
+                        "shape" : "round"
+                    }
+                },
+                "style" : {
+                    "style" : "plates"
+                }
+            },
+            "item2" : {
+                "border" : {
+                    "width" : {
+                        "width" : 0
+                    }
+                },
+                "font" : {
+                    "active" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 12,
+                        "underline" : false
+                    },
+                    "expanded" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 12,
+                        "underline" : false
+                    },
+                    "hover" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 12,
+                        "underline" : false
+                    },
+                    "plain" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 12,
+                        "underline" : false
+                    }
+                },
+                "format" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "gradient" : {
+                    "active" : {
+                        "contrast" : -20,
+                        "direction" : "northsouth"
+                    },
+                    "expanded" : {
+                        "contrast" : -20,
+                        "direction" : "northsouth"
+                    },
+                    "hover" : {
+                        "contrast" : -20,
+                        "direction" : "northsouth"
+                    },
+                    "plain" : {
+                        "contrast" : -20,
+                        "direction" : "northsouth"
+                    }
+                },
+                "highlight" : {
+                    "active" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "expanded" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "hover" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "plain" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    }
+                },
+                "shape" : {
+                    "bottomleft" : {
+                        "radiusx" : 6,
+                        "radiusy" : 6,
+                        "shape" : "round"
+                    },
+                    "bottomright" : {
+                        "radiusx" : 6,
+                        "radiusy" : 6,
+                        "shape" : "rectangle"
+                    },
+                    "empty" : false,
+                    "topleft" : {
+                        "radiusx" : 8,
+                        "radiusy" : 8,
+                        "shape" : "rectangle"
+                    },
+                    "topright" : {
+                        "radiusx" : 8,
+                        "radiusy" : 8,
+                        "shape" : "round"
+                    }
+                },
+                "style" : {
+                    "style" : "tabs"
+                }
+            },
+            "mlabel" : {
+            },
+            "slabel" : {
+            },
+            "subitem" : {
+                "box" : {
+                    "innerwidth" : {
+                        "width" : 0
+                    },
+                    "radius" : {
+                        "width" : 0
+                    },
+                    "shadow" : {
+                        "value" : false
+                    },
+                    "width" : {
+                        "width" : 0
+                    }
+                },
+                "font" : {
+                    "active" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "",
+                        "italic" : false,
+                        "size" : 14,
+                        "underline" : false
+                    },
+                    "expanded" : {
+                        "alias" : "custom",
+                        "bold" : true,
+                        "face" : "",
+                        "italic" : false,
+                        "size" : 14,
+                        "underline" : false
+                    },
+                    "hover" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "",
+                        "italic" : false,
+                        "size" : 14,
+                        "underline" : false
+                    },
+                    "plain" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "",
+                        "italic" : false,
+                        "size" : 14,
+                        "underline" : false
+                    }
+                },
+                "format" : {
+                    "align" : "left",
+                    "h_padding" : 20,
+                    "v_padding" : 10
+                },
+                "gradient" : {
+                    "active" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "expanded" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "hover" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "plain" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    }
+                },
+                "highlight" : {
+                    "active" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "expanded" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "hover" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 7,
+                            "type" : "simple"
+                        }
+                    }
+                }
+            },
+            "subitem2" : {
+                "box" : {
+                    "innerwidth" : {
+                        "width" : 0
+                    },
+                    "radius" : {
+                        "width" : 0
+                    },
+                    "shadow" : {
+                        "value" : true
+                    },
+                    "width" : {
+                        "width" : 0
+                    }
+                },
+                "font" : {
+                    "active" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : true,
+                        "size" : 12,
+                        "underline" : false
+                    },
+                    "expanded" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : true,
+                        "size" : 12,
+                        "underline" : false
+                    },
+                    "hover" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : true,
+                        "size" : 12,
+                        "underline" : false
+                    },
+                    "plain" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : true,
+                        "size" : 12,
+                        "underline" : false
+                    }
+                },
+                "format" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "gradient" : {
+                    "active" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "expanded" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "hover" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "plain" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    }
+                },
+                "highlight" : {
+                    "active" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "expanded" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "hover" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    }
+                }
+            }
+        },
+        "menu" : {
+            "item" : {
+                "border" : {
+                    "inner" : {
+                        "width" : 1
+                    },
+                    "outer" : {
+                        "width" : 0
+                    }
+                },
+                "font" : {
+                    "active" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    },
+                    "expanded" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    },
+                    "hover" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    },
+                    "plain" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    }
+                },
+                "format" : {
+                    "align" : "left",
+                    "h_padding" : 6,
+                    "v_padding" : 9
+                },
+                "gradient" : {
+                    "active" : {
+                        "contrast" : -20,
+                        "direction" : "westeast"
+                    },
+                    "expanded" : {
+                        "contrast" : -20,
+                        "direction" : "westeast"
+                    },
+                    "hover" : {
+                        "contrast" : -20,
+                        "direction" : "westeast"
+                    },
+                    "plain" : {
+                        "contrast" : -20,
+                        "direction" : "westeast"
+                    }
+                },
+                "highlight" : {
+                    "active" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "expanded" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "hover" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    }
+                }
+            },
+            "item2" : {
+                "border" : {
+                    "inner" : {
+                        "width" : 0
+                    },
+                    "outer" : {
+                        "width" : 0
+                    }
+                },
+                "font" : {
+                    "active" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    },
+                    "expanded" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    },
+                    "hover" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    },
+                    "plain" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    }
+                },
+                "format" : {
+                    "align" : "left",
+                    "h_padding" : 6,
+                    "v_padding" : 9
+                },
+                "gradient" : {
+                    "active" : {
+                        "contrast" : 60,
+                        "direction" : "north"
+                    },
+                    "expanded" : {
+                        "contrast" : 60,
+                        "direction" : "north"
+                    },
+                    "hover" : {
+                        "contrast" : 60,
+                        "direction" : "north"
+                    },
+                    "plain" : {
+                        "contrast" : 60,
+                        "direction" : "north"
+                    }
+                },
+                "highlight" : {
+                    "active" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "expanded" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "hover" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    }
+                }
+            },
+            "slabel" : {
+            },
+            "subitem" : {
+                "box" : {
+                    "innerwidth" : {
+                        "width" : 1
+                    },
+                    "radius" : {
+                        "width" : 0
+                    },
+                    "shadow" : {
+                        "value" : false
+                    },
+                    "width" : {
+                        "width" : 0
+                    }
+                },
+                "font" : {
+                    "active" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    },
+                    "expanded" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    },
+                    "hover" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    },
+                    "plain" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    }
+                },
+                "format" : {
+                    "align" : "left",
+                    "h_padding" : 10,
+                    "v_padding" : 8
+                },
+                "gradient" : {
+                    "active" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "expanded" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "hover" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "plain" : {
+                        "contrast" : 5,
+                        "direction" : "westeast"
+                    }
+                },
+                "highlight" : {
+                    "active" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "expanded" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "hover" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    }
+                }
+            },
+            "subitem2" : {
+                "box" : {
+                    "innerwidth" : {
+                        "width" : 0
+                    },
+                    "radius" : {
+                        "width" : 0
+                    },
+                    "shadow" : {
+                        "value" : true
+                    },
+                    "width" : {
+                        "width" : 0
+                    }
+                },
+                "font" : {
+                    "active" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : true,
+                        "size" : 12,
+                        "underline" : false
+                    },
+                    "expanded" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : true,
+                        "size" : 12,
+                        "underline" : false
+                    },
+                    "hover" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : true,
+                        "size" : 12,
+                        "underline" : false
+                    },
+                    "plain" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : true,
+                        "size" : 12,
+                        "underline" : false
+                    }
+                },
+                "format" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "gradient" : {
+                    "active" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "expanded" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "hover" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    },
+                    "plain" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    }
+                },
+                "highlight" : {
+                    "active" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "expanded" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    },
+                    "hover" : {
+                        "bwidth" : {
+                            "width" : 0
+                        },
+                        "style" : {
+                            "borderWidth" : 0,
+                            "radius" : 0,
+                            "type" : "simple"
+                        }
+                    }
+                }
+            }
+        },
+        "messages" : {
+            "border" : {
+                "width" : {
+                    "width" : 2
+                }
+            },
+            "error" : {
+                "font" : {
+                    "alias" : "custom",
+                    "bold" : false,
+                    "face" : "Verdana, sans-serif",
+                    "italic" : false,
+                    "size" : 12,
+                    "underline" : false
+                }
+            },
+            "text" : {
+                "font" : {
+                    "alias" : "custom",
+                    "bold" : false,
+                    "face" : "Verdana, sans-serif",
+                    "italic" : false,
+                    "size" : 12,
+                    "underline" : false
+                }
+            }
+        },
+        "popup" : {
+            "border" : {
+                "radius" : {
+                    "width" : 4
+                },
+                "width" : {
+                    "width" : 3
+                }
+            },
+            "footer" : {
+                "bgcolor" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    }
+                },
+                "text" : {
+                    "font" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Arial, sans-serif",
+                        "italic" : false,
+                        "size" : 13,
+                        "underline" : false
+                    }
+                }
+            },
+            "header" : {
+                "bgcolor" : {
+                    "gradient" : {
+                        "contrast" : -6,
+                        "direction" : "northsouth"
+                    }
+                },
+                "text" : {
+                    "font" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Verdana, sans-serif",
+                        "italic" : false,
+                        "size" : 14,
+                        "underline" : false
+                    }
+                }
+            }
+        },
+        "progress" : {
+            "background" : {
+                "active" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    }
+                },
+                "inactive" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    }
+                }
+            },
+            "text" : {
+                "font" : {
+                    "alias" : "text2",
+                    "bold" : false,
+                    "face" : "Tahoma, sans-serif",
+                    "italic" : false,
+                    "size" : 13,
+                    "underline" : false
+                }
+            }
+        },
+        "tabs" : {
+            "border" : {
+                "width" : {
+                    "width" : 1
+                }
+            },
+            "shape" : {
+                "empty" : false,
+                "topleft" : {
+                    "radiusx" : 4,
+                    "radiusy" : 4,
+                    "shape" : "round"
+                },
+                "topright" : {
+                    "radiusx" : 4,
+                    "radiusy" : 4,
+                    "shape" : "round"
+                }
+            },
+            "text" : {
+                "font" : {
+                    "alias" : "label1",
+                    "face" : "Arial, sans-serif",
+                    "size" : 8
+                }
+            }
+        }
+    },
+    "runner_build" : "8861",
+    "runner_version" : "8",
+    "skins" : [
+        {
+            "background" : {
+                "alternative" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "highlight" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "plain" : {
+                    "gradient" : {
+                        "contrast" : -20,
+                        "direction" : "westeast"
+                    }
+                }
+            },
+            "border" : {
+                "width" : {
+                    "width" : 0
+                }
+            },
+            "button" : {
+                "show" : "button2"
+            },
+            "format" : {
+                "alternative" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "highlight" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "plain" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                }
+            },
+            "name" : "empty",
+            "shape" : {
+                "bottomleft" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                },
+                "bottomright" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                },
+                "empty" : true,
+                "topleft" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                },
+                "topright" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                }
+            },
+            "text" : {
+                "alternative" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "highlight" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "plain" : {
+                    "font" : {
+                        "alias" : "text2",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                }
+            }
+        },
+        {
+            "background" : {
+                "alternative" : {
+                    "gradient" : {
+                        "contrast" : -20,
+                        "direction" : "westeast"
+                    }
+                },
+                "highlight" : {
+                    "gradient" : {
+                        "contrast" : -20,
+                        "direction" : "westeast"
+                    }
+                },
+                "plain" : {
+                    "gradient" : {
+                        "contrast" : -20,
+                        "direction" : "westeast"
+                    }
+                }
+            },
+            "border" : {
+                "width" : {
+                    "width" : 0
+                }
+            },
+            "button" : {
+                "show" : "button1"
+            },
+            "format" : {
+                "alternative" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "highlight" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "plain" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                }
+            },
+            "name" : "menu",
+            "shape" : {
+                "bottomleft" : {
+                    "radiusx" : 2,
+                    "radiusy" : 2,
+                    "shape" : "rectangle"
+                },
+                "bottomright" : {
+                    "radiusx" : 2,
+                    "radiusy" : 2,
+                    "shape" : "rectangle"
+                },
+                "empty" : false,
+                "topleft" : {
+                    "radiusx" : 2,
+                    "radiusy" : 2,
+                    "shape" : "rectangle"
+                },
+                "topright" : {
+                    "radiusx" : 2,
+                    "radiusy" : 2,
+                    "shape" : "rectangle"
+                }
+            },
+            "text" : {
+                "alternative" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "highlight" : {
+                    "font" : {
+                        "alias" : "caption1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "plain" : {
+                    "font" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 12,
+                        "underline" : false
+                    }
+                }
+            }
+        },
+        {
+            "background" : {
+                "alternative" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "highlight" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "plain" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                }
+            },
+            "border" : {
+                "width" : {
+                    "width" : 0
+                }
+            },
+            "button" : {
+                "show" : "button1"
+            },
+            "format" : {
+                "alternative" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "highlight" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "plain" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 6
+                }
+            },
+            "name" : "hmenu",
+            "shape" : {
+                "bottomleft" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                },
+                "bottomright" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                },
+                "empty" : true,
+                "topleft" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                },
+                "topright" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                }
+            },
+            "text" : {
+                "alternative" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "highlight" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "plain" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                }
+            }
+        },
+        {
+            "background" : {
+                "alternative" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "highlight" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "plain" : {
+                    "gradient" : {
+                        "contrast" : -20,
+                        "direction" : "northsouth"
+                    }
+                }
+            },
+            "border" : {
+                "width" : {
+                    "width" : 0
+                }
+            },
+            "button" : {
+                "show" : "button1"
+            },
+            "format" : {
+                "alternative" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "highlight" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "plain" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                }
+            },
+            "name" : "undermenu",
+            "shape" : {
+                "bottomleft" : {
+                    "radiusx" : 2,
+                    "radiusy" : 2,
+                    "shape" : "rectangle"
+                },
+                "bottomright" : {
+                    "radiusx" : 2,
+                    "radiusy" : 2,
+                    "shape" : "rectangle"
+                },
+                "empty" : false,
+                "topleft" : {
+                    "radiusx" : 2,
+                    "radiusy" : 2,
+                    "shape" : "rectangle"
+                },
+                "topright" : {
+                    "radiusx" : 2,
+                    "radiusy" : 2,
+                    "shape" : "rectangle"
+                }
+            },
+            "text" : {
+                "alternative" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "highlight" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "plain" : {
+                    "font" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 12,
+                        "underline" : false
+                    }
+                }
+            }
+        },
+        {
+            "background" : {
+                "alternative" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    }
+                },
+                "highlight" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    }
+                },
+                "plain" : {
+                    "gradient" : {
+                        "contrast" : 60,
+                        "direction" : "north"
+                    }
+                }
+            },
+            "border" : {
+                "width" : {
+                    "width" : 0
+                }
+            },
+            "button" : {
+                "show" : "button1"
+            },
+            "format" : {
+                "alternative" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 8
+                },
+                "highlight" : {
+                    "align" : "center",
+                    "h_padding" : 10,
+                    "v_padding" : 8
+                },
+                "plain" : {
+                    "align" : "right",
+                    "h_padding" : 17,
+                    "v_padding" : 6
+                }
+            },
+            "name" : "fields",
+            "shape" : {
+                "bottomleft" : {
+                    "radiusx" : 3,
+                    "radiusy" : 3,
+                    "shape" : "round"
+                },
+                "bottomright" : {
+                    "radiusx" : 3,
+                    "radiusy" : 3,
+                    "shape" : "round"
+                },
+                "empty" : false,
+                "topleft" : {
+                    "radiusx" : 3,
+                    "radiusy" : 3,
+                    "shape" : "round"
+                },
+                "topright" : {
+                    "radiusx" : 3,
+                    "radiusy" : 3,
+                    "shape" : "round"
+                }
+            },
+            "text" : {
+                "alternative" : {
+                    "font" : {
+                        "alias" : "text2",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 12,
+                        "underline" : false
+                    }
+                },
+                "highlight" : {
+                    "font" : {
+                        "alias" : "custom",
+                        "bold" : true,
+                        "face" : "Avant Garde, sans-serif",
+                        "italic" : false,
+                        "size" : 14,
+                        "underline" : false
+                    }
+                },
+                "plain" : {
+                    "font" : {
+                        "alias" : "text2",
+                        "bold" : false,
+                        "face" : "Palatino, sans-serif",
+                        "italic" : false,
+                        "size" : 16,
+                        "underline" : false
+                    }
+                }
+            }
+        },
+        {
+            "background" : {
+                "alternative" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "highlight" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "plain" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                }
+            },
+            "border" : {
+                "width" : {
+                    "width" : 0
+                }
+            },
+            "button" : {
+                "show" : "button1"
+            },
+            "format" : {
+                "alternative" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "highlight" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "plain" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                }
+            },
+            "name" : "form",
+            "shape" : {
+                "bottomleft" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                },
+                "bottomright" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                },
+                "empty" : false,
+                "topleft" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                },
+                "topright" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                }
+            },
+            "text" : {
+                "alternative" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "highlight" : {
+                    "font" : {
+                        "alias" : "caption1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "plain" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                }
+            }
+        },
+        {
+            "background" : {
+                "alternative" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "highlight" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    }
+                },
+                "plain" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "empty"
+                    }
+                }
+            },
+            "border" : {
+                "width" : {
+                    "width" : 1
+                }
+            },
+            "button" : {
+                "show" : "button1"
+            },
+            "format" : {
+                "alternative" : {
+                    "align" : "left",
+                    "h_padding" : 10,
+                    "v_padding" : 5
+                },
+                "highlight" : {
+                    "align" : "left",
+                    "h_padding" : 10,
+                    "v_padding" : 8
+                },
+                "plain" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                }
+            },
+            "name" : "1",
+            "shape" : {
+                "bottomleft" : {
+                    "radiusx" : 4,
+                    "radiusy" : 4,
+                    "shape" : "round"
+                },
+                "bottomright" : {
+                    "radiusx" : 4,
+                    "radiusy" : 4,
+                    "shape" : "round"
+                },
+                "empty" : false,
+                "topleft" : {
+                    "radiusx" : 4,
+                    "radiusy" : 4,
+                    "shape" : "round"
+                },
+                "topright" : {
+                    "radiusx" : 4,
+                    "radiusy" : 4,
+                    "shape" : "round"
+                }
+            },
+            "text" : {
+                "alternative" : {
+                    "font" : {
+                        "alias" : "text2",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "highlight" : {
+                    "font" : {
+                        "alias" : "custom",
+                        "bold" : true,
+                        "face" : "Avant Garde, sans-serif",
+                        "italic" : false,
+                        "size" : 14,
+                        "underline" : false
+                    }
+                },
+                "plain" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                }
+            }
+        },
+        {
+            "background" : {
+                "alternative" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "highlight" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "plain" : {
+                    "gradient" : {
+                        "contrast" : 70,
+                        "direction" : "north"
+                    }
+                }
+            },
+            "border" : {
+                "width" : {
+                    "width" : 0
+                }
+            },
+            "button" : {
+                "show" : "button1"
+            },
+            "format" : {
+                "alternative" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "highlight" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "plain" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 7
+                }
+            },
+            "name" : "2",
+            "shape" : {
+                "bottomleft" : {
+                    "radiusx" : 2,
+                    "radiusy" : 2,
+                    "shape" : "round"
+                },
+                "bottomright" : {
+                    "radiusx" : 2,
+                    "radiusy" : 2,
+                    "shape" : "round"
+                },
+                "empty" : false,
+                "topleft" : {
+                    "radiusx" : 2,
+                    "radiusy" : 2,
+                    "shape" : "round"
+                },
+                "topright" : {
+                    "radiusx" : 2,
+                    "radiusy" : 2,
+                    "shape" : "round"
+                }
+            },
+            "text" : {
+                "alternative" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "highlight" : {
+                    "font" : {
+                        "alias" : "caption1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "plain" : {
+                    "font" : {
+                        "alias" : "custom",
+                        "bold" : false,
+                        "face" : "Tahoma, sans-serif",
+                        "italic" : false,
+                        "size" : 12,
+                        "underline" : false
+                    }
+                }
+            }
+        },
+        {
+            "background" : {
+                "alternative" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "highlight" : {
+                    "gradient" : {
+                        "contrast" : 0,
+                        "direction" : "west"
+                    }
+                },
+                "plain" : {
+                    "gradient" : {
+                        "contrast" : -20,
+                        "direction" : "westeast"
+                    }
+                }
+            },
+            "border" : {
+                "width" : {
+                    "width" : 0
+                }
+            },
+            "button" : {
+                "show" : "button1"
+            },
+            "format" : {
+                "alternative" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "highlight" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                },
+                "plain" : {
+                    "align" : "left",
+                    "h_padding" : 4,
+                    "v_padding" : 5
+                }
+            },
+            "name" : "3",
+            "shape" : {
+                "bottomleft" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                },
+                "bottomright" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                },
+                "empty" : false,
+                "topleft" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                },
+                "topright" : {
+                    "radiusx" : 10,
+                    "radiusy" : 10,
+                    "shape" : "round"
+                }
+            },
+            "text" : {
+                "alternative" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "highlight" : {
+                    "font" : {
+                        "alias" : "caption1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                },
+                "plain" : {
+                    "font" : {
+                        "alias" : "text1",
+                        "face" : "Arial, sans-serif",
+                        "size" : 8
+                    }
+                }
+            }
+        }
+    ]
+}

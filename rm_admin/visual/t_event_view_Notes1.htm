@@ -1,0 +1,80 @@
+<DIV {$pageattrs}>
+  {BEGIN container_1}
+    <TABLE class="fieldGrid" style="width: 750px;">
+      <TBODY>
+        {BEGIN event_notes_tabfieldblock}
+          <TR class="{$fielddispclass_event_notes}" data-fieldname="event_notes">
+            <TD class="style1 rnr-label" style="width: 150px;" rowspan="1" 
+      colspan="1">
+              {$label t_event event_notes}
+            </TD>
+            <TD class="rnr-control style3" style="width: 600px;" rowspan="1" 
+colspan="1">
+              <DIV class="fieldvalue_event_notes">
+                {$event_notes_value}
+              </DIV>
+            </TD>
+          </TR>
+        {END event_notes_tabfieldblock}
+        {BEGIN result_notes_tabfieldblock}
+          <TR class="{$fielddispclass_result_notes}" data-fieldname="result_notes">
+            <TD class="style1 rnr-label" style="width: 150px;" rowspan="1" 
+      colspan="1">
+              {$label t_event result_notes}
+            </TD>
+            <TD class="rnr-control style3" style="width: 600px;" rowspan="1" 
+colspan="1">
+              <DIV class="fieldvalue_result_notes">
+                {$result_notes_value}
+              </DIV>
+            </TD>
+          </TR>
+        {END result_notes_tabfieldblock}
+        {BEGIN display_code_tabfieldblock}
+          <TR class="{$fielddispclass_display_code}" data-fieldname="display_code">
+            <TD class="style1 rnr-label" style="width: 150px;" rowspan="1" 
+      colspan="1">
+              {$label t_event display_code}
+            </TD>
+            <TD class="rnr-control style3" style="width: 600px;" rowspan="1" 
+colspan="1">
+              <DIV class="fieldvalue_display_code">
+                {$display_code_value}
+              </DIV>
+            </TD>
+          </TR>
+        {END display_code_tabfieldblock}
+        {BEGIN ws_start_tabfieldblock}
+          <TR class="{$fielddispclass_ws_start}" data-fieldname="ws_start">
+            <TD class="style1 rnr-label" style="width: 150px;" rowspan="1" 
+      colspan="1">
+              {$label t_event ws_start}
+            </TD>
+            <TD class="rnr-control style3" style="width: 600px;" rowspan="1" 
+colspan="1">
+              <DIV class="fieldvalue_ws_start">
+                {$ws_start_value}&nbsp;&nbsp;
+                {$wd_start_value}
+              </DIV>
+            </TD>
+          </TR>
+        {END ws_start_tabfieldblock}
+        {BEGIN ws_end_tabfieldblock}
+          <TR class="{$fielddispclass_ws_end}" data-fieldname="ws_end">
+            <TD class="style1 rnr-label" style="width: 150px;" rowspan="1" 
+      colspan="1">
+              {$label t_event ws_end}
+            </TD>
+            <TD class="rnr-control style3" style="width: 600px;" rowspan="1" 
+colspan="1">
+              <DIV class="fieldvalue_ws_end">
+                {$ws_end_value}&nbsp;&nbsp;
+                {$wd_end_value}
+              </DIV>
+            </TD>
+          </TR>
+        {END ws_end_tabfieldblock}
+      </TBODY>
+    </TABLE>
+  {END container_1}
+</DIV>

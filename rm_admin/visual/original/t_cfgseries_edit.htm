@@ -1,0 +1,184 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}
+		<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}
+		<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}
+		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-edit" {$bodyattrs}>
+	{BEGIN body}
+		{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_all}
+<div class="rnr-c rnr-cv rnr-c-all">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
+
+{BEGIN container_add}
+<div class="rnr-c rnr-cv rnr-c-add">
+
+{BEGIN editheader}
+<div  class="rnr-brickcontents style2 rnr-b-editheader {$brickclass_editheader}"><span>	<h1>{$pagetitlelabel t_cfgseries edit}</h1>
+</span></div>{END editheader}
+
+
+{BEGIN message_block}
+<div  class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>{END message_block}
+
+
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+
+{BEGIN container_fields}
+<div class="rnr-c rnr-cv rnr-c-fields">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-editfields2_atop {$brickclass_editfields2_atop}"><table class="fieldGrid fieldGrid2 edit">
+
+<tr>
+<td>
+	{BEGIN seriestype_fieldblock}
+<div data-fieldname="seriestype" class="rnr-field style1 {$fielddispclass_seriestype}">
+  <div class="rnr-label above">{BEGIN seriestype_label}{$label t_cfgseries seriestype}{END seriestype_label}</div>
+  <div class="rnr-control style3">{$seriestype_editcontrol}</div>
+</div>
+{END seriestype_fieldblock}
+	{BEGIN discard_fieldblock}
+<div data-fieldname="discard" class="rnr-field style1 {$fielddispclass_discard}">
+  <div class="rnr-label above">{BEGIN discard_label}{$label t_cfgseries discard}{END discard_label}</div>
+  <div class="rnr-control style3">{$discard_editcontrol}</div>
+</div>
+{END discard_fieldblock}
+	{BEGIN nodiscard_fieldblock}
+<div data-fieldname="nodiscard" class="rnr-field style1 {$fielddispclass_nodiscard}">
+  <div class="rnr-label above">{BEGIN nodiscard_label}{$label t_cfgseries nodiscard}{END nodiscard_label}</div>
+  <div class="rnr-control style3">{$nodiscard_editcontrol}</div>
+</div>
+{END nodiscard_fieldblock}
+	{BEGIN doublepoint_fieldblock}
+<div data-fieldname="doublepoint" class="rnr-field style1 {$fielddispclass_doublepoint}">
+  <div class="rnr-label above">{BEGIN doublepoint_label}{$label t_cfgseries doublepoint}{END doublepoint_label}</div>
+  <div class="rnr-control style3">{$doublepoint_editcontrol}</div>
+</div>
+{END doublepoint_fieldblock}
+	{BEGIN avgscheme_fieldblock}
+<div data-fieldname="avgscheme" class="rnr-field style1 {$fielddispclass_avgscheme}">
+  <div class="rnr-label above">{BEGIN avgscheme_label}{$label t_cfgseries avgscheme}{END avgscheme_label}</div>
+  <div class="rnr-control style3">{$avgscheme_editcontrol}</div>
+</div>
+{END avgscheme_fieldblock}
+</td>
+<td>
+	{BEGIN dutypoints_fieldblock}
+<div data-fieldname="dutypoints" class="rnr-field style1 {$fielddispclass_dutypoints}">
+  <div class="rnr-label above">{BEGIN dutypoints_label}{$label t_cfgseries dutypoints}{END dutypoints_label}</div>
+  <div class="rnr-control style3">{$dutypoints_editcontrol}</div>
+</div>
+{END dutypoints_fieldblock}
+	{BEGIN dutynum_fieldblock}
+<div data-fieldname="dutynum" class="rnr-field style1 {$fielddispclass_dutynum}">
+  <div class="rnr-label above">{BEGIN dutynum_label}{$label t_cfgseries dutynum}{END dutynum_label}</div>
+  <div class="rnr-control style3">{$dutynum_editcontrol}</div>
+</div>
+{END dutynum_fieldblock}
+	{BEGIN notes_fieldblock}
+<div data-fieldname="notes" class="rnr-field style1 {$fielddispclass_notes}">
+  <div class="rnr-label above">{BEGIN notes_label}{$label t_cfgseries notes}{END notes_label}</div>
+  <div class="rnr-control style3">{$notes_editcontrol}</div>
+</div>
+{END notes_fieldblock}
+	{BEGIN active_fieldblock}
+<div data-fieldname="active" class="rnr-field style1 {$fielddispclass_active}">
+  <div class="rnr-label above">{BEGIN active_label}{$label t_cfgseries active}{END active_label}</div>
+  <div class="rnr-control style3">{$active_editcontrol}</div>
+</div>
+{END active_fieldblock}
+</td>
+</tr>
+</table></div>
+
+
+{BEGIN editbuttons}
+<div  class="rnr-brickcontents style2 rnr-b-editbuttons {$brickclass_editbuttons}"><div class="rnr-buttons-right">
+	{BEGIN prev_button}
+	<a href="#" class="rnr-button {$prevbutton_class}" {$prevbutton_attrs}>&lt;&lt;&lt;</a>
+	{END prev_button}
+	{BEGIN next_button}
+	<a href="#" class="rnr-button  {$nextbutton_class}" {$nextbutton_attrs}>&gt;&gt;&gt;</a>
+	{END next_button}
+</div>
+<div class="rnr-buttons-left">
+		{BEGIN save_button}
+	<a href="#" class="rnr-button main" {$savebutton_attrs}>Save</a>
+	{END save_button}
+	{BEGIN reset_button}
+	<a href="#" class="rnr-button" {$resetbutton_attrs}>Reset</a>
+	{END reset_button}
+	{BEGIN back_button}
+		<a href="#" class="rnr-button" {$backbutton_attrs}>Back to list</a>
+	{END back_button}
+	{BEGIN close_button}
+	<a href="#" class="rnr-button" {$closebutton_attrs}>Close window</a>
+	{END close_button}
+		{BEGIN view_page_button}
+	<a href="#" class="rnr-button" {$view_page_button_attrs}>View</a>
+	{END view_page_button}
+</div>
+</div>{END editbuttons}
+
+
+</div>
+{END container_fields}
+
+</div>
+
+
+</div>
+{END container_add}
+
+</div>
+
+
+
+</div>
+{END container_all}
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			<!--%%bottom%%-->
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

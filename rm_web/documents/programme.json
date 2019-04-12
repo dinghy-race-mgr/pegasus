@@ -1,0 +1,85 @@
+{
+"meta": {
+   "last_update": "2016-08-02T20:38",
+   "source": "raceManager",
+   "title": "Race Programme",
+   "club": "Starcross YC",
+   "first": "2016-04-04",
+   "last": "2017-04-01"
+},
+"events": {
+   "evt_1203": {
+      "id": 1203,
+      "name": "Spring Series 1",
+      "note": "First race of series",
+      "datetime": "2016-09-02T10:00",
+      "category": "racing",
+      "subcategory": "club series",
+      "tide": "HW 10:45 3.4m",
+      "duties": {
+            "race officer": "Fred Binns",
+            "timekeeper": "Joe Binns",
+            "safety boat 1": "Martha Binns",
+            "safety boat 2": "Joey Binns",
+            "safety crew 1": "Freda Binns",
+            "safety crew 2": "Maxammilion Binns",
+            "galley": "Petroushca Binns",
+            "bar": "Robbie Binns"
+            }
+      },
+   "evt_1204": {
+      "id": 1204,
+      "name": "Patrick Kelley Trophy",
+      "note": "Pursuit race - Topper is scratch boat",
+      "datetime": "2016-10-09T14:30",
+      "category": "racing",
+      "subcategory": "trophy race",
+      "tide": "HW 13:45 4.2m",
+      "duties": {
+            "race officer": "Fred Binns",
+            "timekeeper": "Joe Binns",
+            "safety boat 1": "Martha Binns",
+            "safety boat 2": "Joey Binns",
+            "safety crew 1": "Freda Binns",
+            "safety crew 2": "Maximillion Binns",
+            "galley": "Petroushca Binns",
+            "bar": "Robbie Binns"
+            }
+      },
+   "evt_1205": {
+      "id": 1205,
+      "name": "Commodore's Cruise",
+      "note": "",
+      "datetime": "2016-11-17T12:00",
+      "category": "dinghy cruise",
+      "subcategory": "up river",
+      "tide": "HW 10:45 3.4m",
+      "duties": {
+            "safety boat 1": "Martha Binns",
+            "safety boat 2": "Joey Binns",
+            "safety crew 1": "Freda Binns",
+            "safety crew 2": "Maxammilion Binns"
+            }
+      },
+   "evt_1206": {
+      "id": 1204,
+      "name": "Beginner's trophy",
+      "note": "Pursuit race - Topper is scratch boat",
+      "datetime": "2017-01-09T14:30",
+      "category": "racing",
+      "subcategory": "trophy race",
+      "tide": "HW 13:45 4.2m",
+      "state": "important",
+      "duties": {
+            "race officer": "Fred Binns",
+            "timekeeper": "Joe Binns",
+            "safety boat 1": "Martha Binns",
+            "safety boat 2": "Joey Binns",
+            "safety crew 1": "Freda Binns",
+            "safety crew 2": "Maximillion Binns",
+            "galley": "Petroushca Binns",
+            "bar": "Robbie Elkington"
+            }
+      }
+   }
+}

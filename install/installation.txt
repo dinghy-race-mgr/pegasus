@@ -1,0 +1,8 @@
+rm_sailor
+
+- set power recovery mode to restart whenever power comes on - when you startup the PC click F2/F8/F12 to access the BIOS config (depends on manufacturer)
+- set user accounts so that PC logs in automatically without presenting the startup screen - use google - this will depend on the operating system
+- configure the security and maintenance so that nothing will be downloaded and nothing will be reported
+- install shortcut from install/sailor on the desktop - set the icon to the racemenager icon
+- modify shortcut as follows . . .
+- take a copy of the shortcut and put it into the Windows startup folder - it will then load when the PC comes on

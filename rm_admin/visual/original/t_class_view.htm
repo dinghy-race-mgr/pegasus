@@ -1,0 +1,190 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}
+		<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}
+		<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}
+		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-view" {$bodyattrs}>
+	{BEGIN body}
+		{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_all}
+<div class="rnr-c rnr-cv rnr-c-all">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
+
+{BEGIN container_add}
+<div class="rnr-c rnr-cv rnr-c-add">
+
+{BEGIN viewheader}
+<div  class="rnr-brickcontents style2 rnr-b-viewheader {$brickclass_viewheader}"><span>	<h1>{$pagetitlelabel t_class view}</h1>
+</span></div>{END viewheader}
+
+
+{BEGIN message_block}
+<div  class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>{END message_block}
+
+
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+
+{BEGIN container_fields}
+<div class="rnr-c rnr-cv rnr-c-fields">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-viewfields2_atop {$brickclass_viewfields2_atop}"><table class="fieldGrid fieldGrid2">
+
+<tr>
+<td>
+	{BEGIN classname_fieldblock}
+<div data-fieldname="classname" class="rnr-field style1 {$fielddispclass_classname}">
+  <div class="rnr-label above">{$label t_class classname}:</div>
+  <div class="rnr-control style3">{$classname_value}</div>
+</div>
+{END classname_fieldblock}
+	{BEGIN info_fieldblock}
+<div data-fieldname="info" class="rnr-field style1 {$fielddispclass_info}">
+  <div class="rnr-label above">{$label t_class info}:</div>
+  <div class="rnr-control style3">{$info_value}</div>
+</div>
+{END info_fieldblock}
+	{BEGIN nat_py_fieldblock}
+<div data-fieldname="nat_py" class="rnr-field style1 {$fielddispclass_nat_py}">
+  <div class="rnr-label above">{$label t_class nat_py}:</div>
+  <div class="rnr-control style3">{$nat_py_value}</div>
+</div>
+{END nat_py_fieldblock}
+	{BEGIN local_py_fieldblock}
+<div data-fieldname="local_py" class="rnr-field style1 {$fielddispclass_local_py}">
+  <div class="rnr-label above">{$label t_class local_py}:</div>
+  <div class="rnr-control style3">{$local_py_value}</div>
+</div>
+{END local_py_fieldblock}
+	{BEGIN popular_fieldblock}
+<div data-fieldname="popular" class="rnr-field style1 {$fielddispclass_popular}">
+  <div class="rnr-label above">{$label t_class popular}:</div>
+  <div class="rnr-control style3">{$popular_value}</div>
+</div>
+{END popular_fieldblock}
+	{BEGIN category_fieldblock}
+<div data-fieldname="category" class="rnr-field style1 {$fielddispclass_category}">
+  <div class="rnr-label above">{$label t_class category}:</div>
+  <div class="rnr-control style3">{$category_value}</div>
+</div>
+{END category_fieldblock}
+</td>
+<td>
+	{BEGIN crew_fieldblock}
+<div data-fieldname="crew" class="rnr-field style1 {$fielddispclass_crew}">
+  <div class="rnr-label above">{$label t_class crew}:</div>
+  <div class="rnr-control style3">{$crew_value}</div>
+</div>
+{END crew_fieldblock}
+	{BEGIN spinnaker_fieldblock}
+<div data-fieldname="spinnaker" class="rnr-field style1 {$fielddispclass_spinnaker}">
+  <div class="rnr-label above">{$label t_class spinnaker}:</div>
+  <div class="rnr-control style3">{$spinnaker_value}</div>
+</div>
+{END spinnaker_fieldblock}
+	{BEGIN rig_fieldblock}
+<div data-fieldname="rig" class="rnr-field style1 {$fielddispclass_rig}">
+  <div class="rnr-label above">{$label t_class rig}:</div>
+  <div class="rnr-control style3">{$rig_value}</div>
+</div>
+{END rig_fieldblock}
+	{BEGIN engine_fieldblock}
+<div data-fieldname="engine" class="rnr-field style1 {$fielddispclass_engine}">
+  <div class="rnr-label above">{$label t_class engine}:</div>
+  <div class="rnr-control style3">{$engine_value}</div>
+</div>
+{END engine_fieldblock}
+	{BEGIN keel_fieldblock}
+<div data-fieldname="keel" class="rnr-field style1 {$fielddispclass_keel}">
+  <div class="rnr-label above">{$label t_class keel}:</div>
+  <div class="rnr-control style3">{$keel_value}</div>
+</div>
+{END keel_fieldblock}
+</td>
+</tr>
+</table></div>
+
+
+{BEGIN viewbuttons}
+<div  class="rnr-brickcontents style2 rnr-b-viewbuttons {$brickclass_viewbuttons}"><div class="rnr-buttons-right">
+{BEGIN prev_button}
+<a href="#" class="rnr-button {$prevbutton_class}" {$prevbutton_attrs}>&lt;&lt;&lt;</a>
+{END prev_button}
+{BEGIN next_button}
+<a href="#" class="rnr-button {$nextbutton_class}" {$nextbutton_attrs}>&gt;&gt;&gt;</a>
+{END next_button}
+</div>
+<div class="rnr-buttons-left">
+{BEGIN back_button}
+<a href="#" class="rnr-button" {$backbutton_attrs}>Back to list</a>
+{END back_button}
+{BEGIN close_button}
+<a href="#" class="rnr-button" {$closebutton_attrs}>Close window</a>
+{END close_button}
+{BEGIN edit_page_button}
+<a href="#" class="rnr-button" {$edit_page_button_attrs}>Edit</a>
+{END edit_page_button}
+</div>
+</div>{END viewbuttons}
+
+
+</div>
+{END container_fields}
+
+</div>
+
+
+</div>
+{END container_add}
+
+</div>
+
+
+
+</div>
+{END container_all}
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			<!--%%bottom%%-->
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<HTML {$html_attrs}><HEAD> 
+<META http-equiv="X-UA-Compatible" content="IE=Edge"> <TITLE>{$pagetitle} </TITLE> 
+<META http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+<LINK href="styles/default.css" rel="stylesheet" type="text/css"> {BEGIN rtlCSS}<LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">{END rtlCSS} {BEGIN styleCSSFiles}<LINK href="{$stylepath}" rel="stylesheet" type="text/css">{END styleCSSFiles} {BEGIN pageCSSFiles}<LINK href="{$pagestylepath}" rel="stylesheet" type="text/css">{END pageCSSFiles} 
+<META name="GENERATOR" content="MSHTML 11.00.9600.18161"> </HEAD> 
+<BODY class="{$stylename} function-edit" {$bodyattrs}>{BEGIN body}
+
+{$header} 
+<DIV class="rnr-page">
+<DIV class="rnr-top {$blockclass_top}">
+{BEGIN container_all}
+<DIV class="rnr-c rnr-cv rnr-c-all">
+<DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
+{BEGIN container_add}
+<DIV class="rnr-c rnr-cv rnr-c-add">
+{BEGIN editheader}<DIV class="rnr-brickcontents style2 rnr-b-editheader {$brickclass_editheader}"><SPAN>
+<H1>
+{$pagetitlelabel t_cfgrace edit} </H1></SPAN> 
+</DIV>
+{END editheader}{BEGIN message_block}<DIV class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}">
+<DIV class="rnr-message">
+{$message} </DIV></DIV>
+{END message_block}<DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+{BEGIN container_fields}
+<DIV class="rnr-c rnr-cv rnr-c-fields">
+<DIV class="rnr-brickcontents style1 rnr-b-editfields2_atop {$brickclass_editfields2_atop}">
+<TABLE class="fieldGrid fieldGrid2 edit">
+  <TBODY>
+  <TR>
+    <TD>
+      {BEGIN race_name_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_race_name}" data-fieldname="race_name">
+      <DIV class="rnr-label above">{BEGIN race_name_label}
+      {$label t_cfgrace race_name}{END race_name_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$race_name_editcontrol} </DIV></DIV>
+      {END race_name_fieldblock}{BEGIN race_desc_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_race_desc}" data-fieldname="race_desc">
+      <DIV class="rnr-label above">{BEGIN race_desc_label}
+      {$label t_cfgrace race_desc}{END race_desc_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$race_desc_editcontrol} </DIV></DIV>
+      {END race_desc_fieldblock}{BEGIN race_code_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_race_code}" data-fieldname="race_code">
+      <DIV class="rnr-label above">{BEGIN race_code_label}
+      {$label t_cfgrace race_code}{END race_code_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$race_code_editcontrol} </DIV></DIV>{END race_code_fieldblock}</TD>
+    <TD>
+      {BEGIN numstarts_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_numstarts}" data-fieldname="numstarts">
+      <DIV class="rnr-label above">{BEGIN numstarts_label}
+      {$label t_cfgrace numstarts}{END numstarts_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$numstarts_editcontrol} </DIV></DIV>
+      {END numstarts_fieldblock}{BEGIN start_scheme_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_start_scheme}" data-fieldname="start_scheme">
+      <DIV class="rnr-label above">{BEGIN start_scheme_label}
+      {$label t_cfgrace start_scheme}{END start_scheme_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$start_scheme_editcontrol} </DIV></DIV>
+      {END start_scheme_fieldblock}{BEGIN start_interval_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_start_interval}" data-fieldname="start_interval">
+      <DIV class="rnr-label above">{BEGIN start_interval_label}
+      {$label t_cfgrace start_interval}{END start_interval_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$start_interval_editcontrol} </DIV></DIV>{END start_interval_fieldblock}</TD>
+    <TD>
+      {BEGIN pursuit_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_pursuit}" data-fieldname="pursuit">
+      <DIV class="rnr-label above">{BEGIN pursuit_label}
+      {$label t_cfgrace pursuit}{END pursuit_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$pursuit_editcontrol} </DIV></DIV>
+      {END pursuit_fieldblock}{BEGIN comp_pick_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_comp_pick}" data-fieldname="comp_pick">
+      <DIV class="rnr-label above">{BEGIN comp_pick_label}
+      {$label t_cfgrace comp_pick}{END comp_pick_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$comp_pick_editcontrol} </DIV></DIV>
+      {END comp_pick_fieldblock}{BEGIN active_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_active}" data-fieldname="active">
+      <DIV class="rnr-label above">{BEGIN active_label}
+      {$label t_cfgrace active}{END active_label} </DIV>
+      <DIV class="rnr-control style3">
+      {$active_editcontrol} </DIV></DIV>{END active_fieldblock}</TD></TR></TBODY></TABLE> 
+</DIV>
+{BEGIN editbuttons}<DIV class="rnr-brickcontents style2 rnr-b-editbuttons {$brickclass_editbuttons}">
+<DIV class="rnr-buttons-left">{BEGIN save_button}<A class="rnr-button main" id="saveButton{$id}" href="#" {$savebutton_attrs}> 
+Save </A> {END save_button}{BEGIN reset_button}<A class="rnr-button" id="resetButton{$id}" href="#"> Reset </A> {END reset_button}{BEGIN cancel_button}<A class="rnr-button" id="cancelButton{$id}" href="#"> Cancel </A> {END cancel_button}{BEGIN back_button}<A class="rnr-button" id="backButton{$id}" href="#"> Back to list </A> {END back_button}{BEGIN backToMenu_button}<A class="rnr-button" id="backToMenuButton{$id}" href="#"> Back to menu </A> 
+{END backToMenu_button}</DIV></DIV>{END editbuttons}</DIV>{END container_fields}</DIV></DIV> {END container_add}</DIV></DIV> {END container_all}</DIV>
+<DIV class="rnr-middle">
+<DIV class="rnr-left {$blockclass_left}"></DIV>
+<DIV class="rnr-center {$blockclass_center}"></DIV>
+<DIV class="rnr-right {$blockclass_right}"></DIV></DIV>
+<DIV class="rnr-bottom {$blockclass_bottom}"><!--%%bottom%%--> </DIV></DIV>
+{$footer}{END body} </BODY></HTML>

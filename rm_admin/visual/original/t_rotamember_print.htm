@@ -1,0 +1,236 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}
+		<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}
+		<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}
+		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-print" {$bodyattrs}>
+	{BEGIN body}
+		{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_pdf}
+<div class="rnr-c rnr-ch rnr-c-pdf">
+
+{BEGIN printbuttons}
+<div  class="style1 rnr-bl rnr-b-printbuttons {$brickclass_printbuttons}">{BEGIN divideintopages_block}
+<a href="#" class="divideintopages rnr-button button" {$divideintopages_attrs}>Prepare for printing</a>
+{END divideintopages_block}
+</div>
+{END printbuttons}
+
+<div class="rnr-hfiller"></div>
+</div>
+{END container_pdf}
+
+
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+
+{BEGIN container_pageheader}
+<div class="rnr-c rnr-cv rnr-c-pageheader">
+
+{BEGIN printheader}
+<div  class="rnr-brickcontents style1 rnr-b-printheader {$brickclass_printheader}">	<h1>{$pagetitlelabel t_rotamember print}</h1>
+</div>{END printheader}
+
+
+{BEGIN page_number}
+<div  class="rnr-brickcontents style1 rnr-b-page_of_print {$brickclass_page_of_print}"><h1>Page <span class="rp-pageno">{$pageno}</span> of <span class="rp-pagecount">{$pagecount}</span></h1></div>{END page_number}
+
+
+</div>
+{END container_pageheader}
+
+
+
+{BEGIN container_grid}
+
+
+{BEGIN grid_block}
+	<table class="rnr-c rnr-c-grid rnr-b-grid rnr-gridtable rp-maintable" cellpadding="0">
+	<thead>
+	{BEGIN grid_header}
+<tr class="rnr-toprow style1 {$gridHeader_class}" >
+{BEGIN record_header}
+		{BEGIN firstname_fieldheadercolumn}
+<th class="runner-cc {$firstname_class}" {$firstname_style}>
+	{BEGIN firstname_fieldheader}
+	<b>{$label t_rotamember firstname}</b>
+	{END firstname_fieldheader}
+</th>
+{END firstname_fieldheadercolumn}
+	{BEGIN surname_fieldheadercolumn}
+<th class="runner-cc {$surname_class}" {$surname_style}>
+	{BEGIN surname_fieldheader}
+	<b>{$label t_rotamember surname}</b>
+	{END surname_fieldheader}
+</th>
+{END surname_fieldheadercolumn}
+	{BEGIN fullname_fieldheadercolumn}
+<th class="runner-cc {$fullname_class}" {$fullname_style}>
+	{BEGIN fullname_fieldheader}
+	<b>{$label t_rotamember fullname}</b>
+	{END fullname_fieldheader}
+</th>
+{END fullname_fieldheadercolumn}
+	{BEGIN rota_fieldheadercolumn}
+<th class="runner-cc {$rota_class}" {$rota_style}>
+	{BEGIN rota_fieldheader}
+	<b>{$label t_rotamember rota}</b>
+	{END rota_fieldheader}
+</th>
+{END rota_fieldheadercolumn}
+	{BEGIN phone_fieldheadercolumn}
+<th class="runner-cc {$phone_class}" {$phone_style}>
+	{BEGIN phone_fieldheader}
+	<b>{$label t_rotamember phone}</b>
+	{END phone_fieldheader}
+</th>
+{END phone_fieldheadercolumn}
+	{BEGIN email_fieldheadercolumn}
+<th class="runner-cc {$email_class}" {$email_style}>
+	{BEGIN email_fieldheader}
+	<b>{$label t_rotamember email}</b>
+	{END email_fieldheader}
+</th>
+{END email_fieldheadercolumn}
+	{BEGIN note_fieldheadercolumn}
+<th class="runner-cc {$note_class}" {$note_style}>
+	{BEGIN note_fieldheader}
+	<b>{$label t_rotamember note}</b>
+	{END note_fieldheader}
+</th>
+{END note_fieldheadercolumn}
+	{BEGIN partner_fieldheadercolumn}
+<th class="runner-cc {$partner_class}" {$partner_style}>
+	{BEGIN partner_fieldheader}
+	<b>{$label t_rotamember partner}</b>
+	{END partner_fieldheader}
+</th>
+{END partner_fieldheadercolumn}
+	{BEGIN active_fieldheadercolumn}
+<th class="runner-cc {$active_class}" {$active_style}>
+	{BEGIN active_fieldheader}
+	<b>{$label t_rotamember active}</b>
+	{END active_fieldheader}
+</th>
+{END active_fieldheadercolumn}
+		
+	<th class="rnr-edge">&nbsp;</th>
+	{BEGIN endrecordheader_block}
+	<th class="rnr-cs">&nbsp;</th>
+	{END endrecordheader_block}
+	{END record_header}
+</tr>
+{END grid_header}
+
+	</thead>
+	<tbody>	
+	{BEGIN grid_row}
+	<tr class="rnr-row style1 {$rowclass}" {$rowattrs} {$rowstyle}>
+		{BEGIN grid_record}
+				{BEGIN firstname_fieldcolumn}
+<td  class="runner-cc {$firstname_class}" {$firstname_style} {$recordattrs}>
+	{$firstname_value}
+</td>
+{END firstname_fieldcolumn}
+	{BEGIN surname_fieldcolumn}
+<td  class="runner-cc {$surname_class}" {$surname_style} {$recordattrs}>
+	{$surname_value}
+</td>
+{END surname_fieldcolumn}
+	{BEGIN fullname_fieldcolumn}
+<td  class="runner-cc {$fullname_class}" {$fullname_style} {$recordattrs}>
+	{$fullname_value}
+</td>
+{END fullname_fieldcolumn}
+	{BEGIN rota_fieldcolumn}
+<td  class="runner-cc {$rota_class}" {$rota_style} {$recordattrs}>
+	{$rota_value}
+</td>
+{END rota_fieldcolumn}
+	{BEGIN phone_fieldcolumn}
+<td  class="runner-cc {$phone_class}" {$phone_style} {$recordattrs}>
+	{$phone_value}
+</td>
+{END phone_fieldcolumn}
+	{BEGIN email_fieldcolumn}
+<td  class="runner-cc {$email_class}" {$email_style} {$recordattrs}>
+	{$email_value}
+</td>
+{END email_fieldcolumn}
+	{BEGIN note_fieldcolumn}
+<td  class="runner-cc {$note_class}" {$note_style} {$recordattrs}>
+	{$note_value}
+</td>
+{END note_fieldcolumn}
+	{BEGIN partner_fieldcolumn}
+<td  class="runner-cc {$partner_class}" {$partner_style} {$recordattrs}>
+	{$partner_value}
+</td>
+{END partner_fieldcolumn}
+	{BEGIN active_fieldcolumn}
+<td  class="runner-cc {$active_class}" {$active_style} {$recordattrs}>
+	{$active_value}
+</td>
+{END active_fieldcolumn}
+
+		<td class="rnr-edge" {$recordattrs}>&nbsp;</td>
+		{BEGIN endrecord_block}
+		<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
+		{END endrecord_block}
+										
+		{END grid_record}
+
+	</tr>
+	{END grid_row}
+
+
+	
+	</tbody>
+</table>
+
+{END grid_block}
+
+
+
+{END container_grid}
+
+
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			<!--%%bottom%%-->
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

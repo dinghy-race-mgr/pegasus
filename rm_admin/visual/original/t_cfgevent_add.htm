@@ -1,0 +1,223 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}
+		<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}
+		<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}
+		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-add" {$bodyattrs}>
+	{BEGIN body}
+		{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_all}
+<div class="rnr-c rnr-cv rnr-c-all">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
+
+{BEGIN container_add}
+<div class="rnr-c rnr-cv rnr-c-add">
+
+{BEGIN addheader}
+<div  class="rnr-brickcontents style2 rnr-b-addheader {$brickclass_addheader}"><span>	{$pagetitlelabel t_cfgevent add}
+</span></div>{END addheader}
+
+
+{BEGIN message_block}
+<div  class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>{END message_block}
+
+
+{BEGIN addbuttons}
+<div  class="rnr-brickcontents style3 rnr-b-addbuttons {$brickclass_addbuttons}">{BEGIN save_button}
+<a href="#" class="rnr-button main" {$savebutton_attrs}>Save</a>
+{END save_button}
+{BEGIN cancel_button}
+<a href="#" class="rnr-button" {$cancelbutton_attrs}>Cancel</a>
+{END cancel_button}
+{BEGIN back_button}
+<a href="#" class="rnr-button" {$backbutton_attrs}>Back to list</a>
+{END back_button}
+{BEGIN backToMenu_button}
+<a href="#" class="rnr-button" {$backToMenubutton_attrs}>Back to menu</a>
+{END backToMenu_button}</div>{END addbuttons}
+
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+
+{BEGIN container_fields}
+<div class="rnr-c rnr-cv rnr-c-fields">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-addfields {$brickclass_addfields}"><table class="fieldGrid">
+	{BEGIN event_code_fieldblock}
+<tr class="{$fielddispclass_event_code}" data-fieldname="event_code">
+	<td class="rnr-label">
+		{BEGIN event_code_label}{$label t_cfgevent event_code}{END event_code_label}
+	</td>
+	<td class="rnr-control style3">
+		{$event_code_editcontrol}&nbsp;
+	</td>
+</tr>
+{END event_code_fieldblock}
+	{BEGIN event_name_fieldblock}
+<tr class="{$fielddispclass_event_name}" data-fieldname="event_name">
+	<td class="rnr-label">
+		{BEGIN event_name_label}{$label t_cfgevent event_name}{END event_name_label}
+	</td>
+	<td class="rnr-control style3">
+		{$event_name_editcontrol}&nbsp;
+	</td>
+</tr>
+{END event_name_fieldblock}
+	{BEGIN event_desc_fieldblock}
+<tr class="{$fielddispclass_event_desc}" data-fieldname="event_desc">
+	<td class="rnr-label">
+		{BEGIN event_desc_label}{$label t_cfgevent event_desc}{END event_desc_label}
+	</td>
+	<td class="rnr-control style3">
+		{$event_desc_editcontrol}&nbsp;
+	</td>
+</tr>
+{END event_desc_fieldblock}
+	{BEGIN event_type_fieldblock}
+<tr class="{$fielddispclass_event_type}" data-fieldname="event_type">
+	<td class="rnr-label">
+		{BEGIN event_type_label}{$label t_cfgevent event_type}{END event_type_label}
+	</td>
+	<td class="rnr-control style3">
+		{$event_type_editcontrol}&nbsp;
+	</td>
+</tr>
+{END event_type_fieldblock}
+	{BEGIN numstarts_fieldblock}
+<tr class="{$fielddispclass_numstarts}" data-fieldname="numstarts">
+	<td class="rnr-label">
+		{BEGIN numstarts_label}{$label t_cfgevent numstarts}{END numstarts_label}
+	</td>
+	<td class="rnr-control style3">
+		{$numstarts_editcontrol}&nbsp;
+	</td>
+</tr>
+{END numstarts_fieldblock}
+	{BEGIN warning_time_fieldblock}
+<tr class="{$fielddispclass_warning_time}" data-fieldname="warning_time">
+	<td class="rnr-label">
+		{BEGIN warning_time_label}{$label t_cfgevent warning_time}{END warning_time_label}
+	</td>
+	<td class="rnr-control style3">
+		{$warning_time_editcontrol}&nbsp;
+	</td>
+</tr>
+{END warning_time_fieldblock}
+	{BEGIN start_interval_fieldblock}
+<tr class="{$fielddispclass_start_interval}" data-fieldname="start_interval">
+	<td class="rnr-label">
+		{BEGIN start_interval_label}{$label t_cfgevent start_interval}{END start_interval_label}
+	</td>
+	<td class="rnr-control style3">
+		{$start_interval_editcontrol}&nbsp;
+	</td>
+</tr>
+{END start_interval_fieldblock}
+	{BEGIN event_lists_fieldblock}
+<tr class="{$fielddispclass_event_lists}" data-fieldname="event_lists">
+	<td class="rnr-label">
+		{BEGIN event_lists_label}{$label t_cfgevent event_lists}{END event_lists_label}
+	</td>
+	<td class="rnr-control style3">
+		{$event_lists_editcontrol}&nbsp;
+	</td>
+</tr>
+{END event_lists_fieldblock}
+	{BEGIN active_fieldblock}
+<tr class="{$fielddispclass_active}" data-fieldname="active">
+	<td class="rnr-label">
+		{BEGIN active_label}{$label t_cfgevent active}{END active_label}
+	</td>
+	<td class="rnr-control style3">
+		{$active_editcontrol}&nbsp;
+	</td>
+</tr>
+{END active_fieldblock}
+	{BEGIN comp_pick_fieldblock}
+<tr class="{$fielddispclass_comp_pick}" data-fieldname="comp_pick">
+	<td class="rnr-label">
+		{BEGIN comp_pick_label}{$label t_cfgevent comp_pick}{END comp_pick_label}
+	</td>
+	<td class="rnr-control style3">
+		{$comp_pick_editcontrol}&nbsp;
+	</td>
+</tr>
+{END comp_pick_fieldblock}
+</table></div>
+
+
+{BEGIN addbuttons}
+<div  class="rnr-brickcontents style2 rnr-b-addbuttons {$brickclass_addbuttons}">{BEGIN save_button}
+<a href="#" class="rnr-button main" {$savebutton_attrs}>Save</a>
+{END save_button}
+{BEGIN cancel_button}
+<a href="#" class="rnr-button" {$cancelbutton_attrs}>Cancel</a>
+{END cancel_button}
+{BEGIN back_button}
+<a href="#" class="rnr-button" {$backbutton_attrs}>Back to list</a>
+{END back_button}
+{BEGIN backToMenu_button}
+<a href="#" class="rnr-button" {$backToMenubutton_attrs}>Back to menu</a>
+{END backToMenu_button}</div>{END addbuttons}
+
+
+</div>
+{END container_fields}
+
+</div>
+
+
+</div>
+{END container_add}
+
+</div>
+
+
+
+</div>
+{END container_all}
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			<!--%%bottom%%-->
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

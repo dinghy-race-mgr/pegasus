@@ -1,0 +1,335 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}
+		<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}
+		<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}
+		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-view" {$bodyattrs}>
+	{BEGIN body}
+		{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_all}
+<div class="rnr-c rnr-cv rnr-c-all">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_main} rnr-wrapper rnr-cbw-main">
+
+{BEGIN container_main}
+<div class="rnr-c rnr-cv rnr-c-main">
+
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_view} rnr-wrapper rnr-cbw-view">
+
+{BEGIN container_view}
+<div class="rnr-c rnr-cv rnr-c-view">
+
+{BEGIN viewheader}
+<div  class="rnr-brickcontents style2 rnr-b-viewheader {$brickclass_viewheader}"><span>	<h1>{$pagetitlelabel t_event_results view}</h1>
+</span></div>{END viewheader}
+
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+
+{BEGIN container_fields}
+<div class="rnr-c rnr-cv rnr-c-fields">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-viewfields {$brickclass_viewfields}"><table class="fieldGrid">
+	{BEGIN seriescode_fieldblock}
+<tr class="{$fielddispclass_seriescode}" data-fieldname="seriescode">
+	<td class="rnr-label">
+		{$label t_event_results seriescode}
+	</td>
+	<td class="rnr-control style3">
+		{$seriescode_value}&nbsp;
+	</td>
+</tr>
+{END seriescode_fieldblock}
+	{BEGIN event_type_fieldblock}
+<tr class="{$fielddispclass_event_type}" data-fieldname="event_type">
+	<td class="rnr-label">
+		{$label t_event_results event_type}
+	</td>
+	<td class="rnr-control style3">
+		{$event_type_value}&nbsp;
+	</td>
+</tr>
+{END event_type_fieldblock}
+	{BEGIN event_open_fieldblock}
+<tr class="{$fielddispclass_event_open}" data-fieldname="event_open">
+	<td class="rnr-label">
+		{$label t_event_results event_open}
+	</td>
+	<td class="rnr-control style3">
+		{$event_open_value}&nbsp;
+	</td>
+</tr>
+{END event_open_fieldblock}
+	{BEGIN event_name_fieldblock}
+<tr class="{$fielddispclass_event_name}" data-fieldname="event_name">
+	<td class="rnr-label">
+		{$label t_event_results event_name}
+	</td>
+	<td class="rnr-control style3">
+		{$event_name_value}&nbsp;
+	</td>
+</tr>
+{END event_name_fieldblock}
+	{BEGIN event_date_fieldblock}
+<tr class="{$fielddispclass_event_date}" data-fieldname="event_date">
+	<td class="rnr-label">
+		{$label t_event_results event_date}
+	</td>
+	<td class="rnr-control style3">
+		{$event_date_value}&nbsp;
+	</td>
+</tr>
+{END event_date_fieldblock}
+	{BEGIN event_start_fieldblock}
+<tr class="{$fielddispclass_event_start}" data-fieldname="event_start">
+	<td class="rnr-label">
+		{$label t_event_results event_start}
+	</td>
+	<td class="rnr-control style3">
+		{$event_start_value}&nbsp;
+	</td>
+</tr>
+{END event_start_fieldblock}
+	{BEGIN event_order_fieldblock}
+<tr class="{$fielddispclass_event_order}" data-fieldname="event_order">
+	<td class="rnr-label">
+		{$label t_event_results event_order}
+	</td>
+	<td class="rnr-control style3">
+		{$event_order_value}&nbsp;
+	</td>
+</tr>
+{END event_order_fieldblock}
+	{BEGIN event_status_fieldblock}
+<tr class="{$fielddispclass_event_status}" data-fieldname="event_status">
+	<td class="rnr-label">
+		{$label t_event_results event_status}
+	</td>
+	<td class="rnr-control style3">
+		{$event_status_value}&nbsp;
+	</td>
+</tr>
+{END event_status_fieldblock}
+	{BEGIN tide_time_fieldblock}
+<tr class="{$fielddispclass_tide_time}" data-fieldname="tide_time">
+	<td class="rnr-label">
+		{$label t_event_results tide_time}
+	</td>
+	<td class="rnr-control style3">
+		{$tide_time_value}&nbsp;
+	</td>
+</tr>
+{END tide_time_fieldblock}
+	{BEGIN tide_height_fieldblock}
+<tr class="{$fielddispclass_tide_height}" data-fieldname="tide_height">
+	<td class="rnr-label">
+		{$label t_event_results tide_height}
+	</td>
+	<td class="rnr-control style3">
+		{$tide_height_value}&nbsp;
+	</td>
+</tr>
+{END tide_height_fieldblock}
+	{BEGIN event_format_fieldblock}
+<tr class="{$fielddispclass_event_format}" data-fieldname="event_format">
+	<td class="rnr-label">
+		{$label t_event_results event_format}
+	</td>
+	<td class="rnr-control style3">
+		{$event_format_value}&nbsp;
+	</td>
+</tr>
+{END event_format_fieldblock}
+	{BEGIN event_entry_fieldblock}
+<tr class="{$fielddispclass_event_entry}" data-fieldname="event_entry">
+	<td class="rnr-label">
+		{$label t_event_results event_entry}
+	</td>
+	<td class="rnr-control style3">
+		{$event_entry_value}&nbsp;
+	</td>
+</tr>
+{END event_entry_fieldblock}
+	{BEGIN start_scheme_fieldblock}
+<tr class="{$fielddispclass_start_scheme}" data-fieldname="start_scheme">
+	<td class="rnr-label">
+		{$label t_event_results start_scheme}
+	</td>
+	<td class="rnr-control style3">
+		{$start_scheme_value}&nbsp;
+	</td>
+</tr>
+{END start_scheme_fieldblock}
+	{BEGIN start_interval_fieldblock}
+<tr class="{$fielddispclass_start_interval}" data-fieldname="start_interval">
+	<td class="rnr-label">
+		{$label t_event_results start_interval}
+	</td>
+	<td class="rnr-control style3">
+		{$start_interval_value}&nbsp;
+	</td>
+</tr>
+{END start_interval_fieldblock}
+	{BEGIN event_notes_fieldblock}
+<tr class="{$fielddispclass_event_notes}" data-fieldname="event_notes">
+	<td class="rnr-label">
+		{$label t_event_results event_notes}
+	</td>
+	<td class="rnr-control style3">
+		{$event_notes_value}&nbsp;
+	</td>
+</tr>
+{END event_notes_fieldblock}
+	{BEGIN result_notes_fieldblock}
+<tr class="{$fielddispclass_result_notes}" data-fieldname="result_notes">
+	<td class="rnr-label">
+		{$label t_event_results result_notes}
+	</td>
+	<td class="rnr-control style3">
+		{$result_notes_value}&nbsp;
+	</td>
+</tr>
+{END result_notes_fieldblock}
+	{BEGIN display_code_fieldblock}
+<tr class="{$fielddispclass_display_code}" data-fieldname="display_code">
+	<td class="rnr-label">
+		{$label t_event_results display_code}
+	</td>
+	<td class="rnr-control style3">
+		{$display_code_value}&nbsp;
+	</td>
+</tr>
+{END display_code_fieldblock}
+	{BEGIN ws_start_fieldblock}
+<tr class="{$fielddispclass_ws_start}" data-fieldname="ws_start">
+	<td class="rnr-label">
+		{$label t_event_results ws_start}
+	</td>
+	<td class="rnr-control style3">
+		{$ws_start_value}&nbsp;
+	</td>
+</tr>
+{END ws_start_fieldblock}
+	{BEGIN wd_start_fieldblock}
+<tr class="{$fielddispclass_wd_start}" data-fieldname="wd_start">
+	<td class="rnr-label">
+		{$label t_event_results wd_start}
+	</td>
+	<td class="rnr-control style3">
+		{$wd_start_value}&nbsp;
+	</td>
+</tr>
+{END wd_start_fieldblock}
+	{BEGIN ws_end_fieldblock}
+<tr class="{$fielddispclass_ws_end}" data-fieldname="ws_end">
+	<td class="rnr-label">
+		{$label t_event_results ws_end}
+	</td>
+	<td class="rnr-control style3">
+		{$ws_end_value}&nbsp;
+	</td>
+</tr>
+{END ws_end_fieldblock}
+	{BEGIN wd_end_fieldblock}
+<tr class="{$fielddispclass_wd_end}" data-fieldname="wd_end">
+	<td class="rnr-label">
+		{$label t_event_results wd_end}
+	</td>
+	<td class="rnr-control style3">
+		{$wd_end_value}&nbsp;
+	</td>
+</tr>
+{END wd_end_fieldblock}
+</table></div>
+
+
+{BEGIN viewbuttons}
+<div  class="rnr-brickcontents style2 rnr-b-viewbuttons {$brickclass_viewbuttons}"><div class="rnr-buttons-right">
+{BEGIN prev_button}
+<a href="#" class="rnr-button {$prevbutton_class}" {$prevbutton_attrs}>&lt;&lt;&lt;</a>
+{END prev_button}
+{BEGIN next_button}
+<a href="#" class="rnr-button {$nextbutton_class}" {$nextbutton_attrs}>&gt;&gt;&gt;</a>
+{END next_button}
+</div>
+<div class="rnr-buttons-left">
+{BEGIN back_button}
+<a href="#" class="rnr-button" {$backbutton_attrs}>Back to list</a>
+{END back_button}
+{BEGIN close_button}
+<a href="#" class="rnr-button" {$closebutton_attrs}>Close window</a>
+{END close_button}
+{BEGIN edit_page_button}
+<a href="#" class="rnr-button" {$edit_page_button_attrs}>Edit</a>
+{END edit_page_button}
+</div>
+</div>{END viewbuttons}
+
+
+</div>
+{END container_fields}
+
+</div>
+
+
+</div>
+{END container_view}
+
+</div>
+
+
+</div>
+{END container_main}
+
+</div>
+
+
+
+</div>
+{END container_all}
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			<!--%%bottom%%-->
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

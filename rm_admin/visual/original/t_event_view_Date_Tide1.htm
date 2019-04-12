@@ -1,0 +1,75 @@
+<div {$pageattrs}>
+
+{BEGIN container_1}
+
+
+
+<table class="fieldGrid">
+{BEGIN event_date_tabfieldblock}
+<tr class="{$fielddispclass_event_date}" data-fieldname="event_date">
+	<td class="style1 rnr-label">
+		{$label t_event event_date}
+	</td>
+	<td class="rnr-control style3">
+		<div class="fieldvalue_event_date">
+		{$event_date_value}
+		</div>
+	</td>
+</tr>
+{END event_date_tabfieldblock}
+{BEGIN event_start_tabfieldblock}
+<tr class="{$fielddispclass_event_start}" data-fieldname="event_start">
+	<td class="style1 rnr-label">
+		{$label t_event event_start}
+	</td>
+	<td class="rnr-control style3">
+		<div class="fieldvalue_event_start">
+		{$event_start_value}
+		</div>
+	</td>
+</tr>
+{END event_start_tabfieldblock}
+{BEGIN event_order_tabfieldblock}
+<tr class="{$fielddispclass_event_order}" data-fieldname="event_order">
+	<td class="style1 rnr-label">
+		{$label t_event event_order}
+	</td>
+	<td class="rnr-control style3">
+		<div class="fieldvalue_event_order">
+		{$event_order_value}
+		</div>
+	</td>
+</tr>
+{END event_order_tabfieldblock}
+{BEGIN tide_time_tabfieldblock}
+<tr class="{$fielddispclass_tide_time}" data-fieldname="tide_time">
+	<td class="style1 rnr-label">
+		{$label t_event tide_time}
+	</td>
+	<td class="rnr-control style3">
+		<div class="fieldvalue_tide_time">
+		{$tide_time_value}
+		</div>
+	</td>
+</tr>
+{END tide_time_tabfieldblock}
+{BEGIN tide_height_tabfieldblock}
+<tr class="{$fielddispclass_tide_height}" data-fieldname="tide_height">
+	<td class="style1 rnr-label">
+		{$label t_event tide_height}
+	</td>
+	<td class="rnr-control style3">
+		<div class="fieldvalue_tide_height">
+		{$tide_height_value}
+		</div>
+	</td>
+</tr>
+{END tide_height_tabfieldblock}
+</table>
+
+
+
+
+{END container_1}
+
+</div>

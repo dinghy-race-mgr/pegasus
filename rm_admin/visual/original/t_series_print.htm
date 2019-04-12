@@ -1,0 +1,252 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}
+		<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}
+		<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}
+		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-print" {$bodyattrs}>
+	{BEGIN body}
+		{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+
+{BEGIN container_grid}
+
+
+{BEGIN grid_block}
+{BEGIN page}
+<h1>Series</h1>
+<span>
+{BEGIN page_number}
+Page {$pageno} of {$maxpages} 
+{END page_number}
+</span>
+
+	<div class="rnr-s-grid {$pageStyleName}">	
+	<table class="rnr-c rnr-c-grid rnr-b-grid rnr-gridtable" cellpadding="0">
+		<thead>
+		{BEGIN grid_header}
+<tr class="rnr-toprow style1 {$gridHeader_class}" >
+{BEGIN record_header}
+		{BEGIN id_fieldheadercolumn}
+<th class="runner-cc {$id_class}" {$id_style}>
+	{BEGIN id_fieldheader}
+	<b>{$label t_series id}</b>
+	{END id_fieldheader}
+</th>
+{END id_fieldheadercolumn}
+	{BEGIN series_name_fieldheadercolumn}
+<th class="runner-cc {$series_name_class}" {$series_name_style}>
+	{BEGIN series_name_fieldheader}
+	<b>{$label t_series series_name}</b>
+	{END series_name_fieldheader}
+</th>
+{END series_name_fieldheadercolumn}
+	{BEGIN category_fieldheadercolumn}
+<th class="runner-cc {$category_class}" {$category_style}>
+	{BEGIN category_fieldheader}
+	<b>{$label t_series category}</b>
+	{END category_fieldheader}
+</th>
+{END category_fieldheadercolumn}
+	{BEGIN discard_fieldheadercolumn}
+<th class="runner-cc {$discard_class}" {$discard_style}>
+	{BEGIN discard_fieldheader}
+	<b>{$label t_series discard}</b>
+	{END discard_fieldheader}
+</th>
+{END discard_fieldheadercolumn}
+	{BEGIN nodiscard_fieldheadercolumn}
+<th class="runner-cc {$nodiscard_class}" {$nodiscard_style}>
+	{BEGIN nodiscard_fieldheader}
+	<b>{$label t_series nodiscard}</b>
+	{END nodiscard_fieldheader}
+</th>
+{END nodiscard_fieldheadercolumn}
+	{BEGIN doublepoint_fieldheadercolumn}
+<th class="runner-cc {$doublepoint_class}" {$doublepoint_style}>
+	{BEGIN doublepoint_fieldheader}
+	<b>{$label t_series doublepoint}</b>
+	{END doublepoint_fieldheader}
+</th>
+{END doublepoint_fieldheadercolumn}
+	{BEGIN startdate_fieldheadercolumn}
+<th class="runner-cc {$startdate_class}" {$startdate_style}>
+	{BEGIN startdate_fieldheader}
+	<b>{$label t_series startdate}</b>
+	{END startdate_fieldheader}
+</th>
+{END startdate_fieldheadercolumn}
+	{BEGIN enddate_fieldheadercolumn}
+<th class="runner-cc {$enddate_class}" {$enddate_style}>
+	{BEGIN enddate_fieldheader}
+	<b>{$label t_series enddate}</b>
+	{END enddate_fieldheader}
+</th>
+{END enddate_fieldheadercolumn}
+	{BEGIN classresults_fieldheadercolumn}
+<th class="runner-cc {$classresults_class}" {$classresults_style}>
+	{BEGIN classresults_fieldheader}
+	<b>{$label t_series classresults}</b>
+	{END classresults_fieldheader}
+</th>
+{END classresults_fieldheadercolumn}
+	{BEGIN series_code_fieldheadercolumn}
+<th class="runner-cc {$series_code_class}" {$series_code_style}>
+	{BEGIN series_code_fieldheader}
+	<b>{$label t_series series_code}</b>
+	{END series_code_fieldheader}
+</th>
+{END series_code_fieldheadercolumn}
+	{BEGIN series_parent_fieldheadercolumn}
+<th class="runner-cc {$series_parent_class}" {$series_parent_style}>
+	{BEGIN series_parent_fieldheader}
+	<b>{$label t_series series_parent}</b>
+	{END series_parent_fieldheader}
+</th>
+{END series_parent_fieldheadercolumn}
+	{BEGIN notes_fieldheadercolumn}
+<th class="runner-cc {$notes_class}" {$notes_style}>
+	{BEGIN notes_fieldheader}
+	<b>{$label t_series notes}</b>
+	{END notes_fieldheader}
+</th>
+{END notes_fieldheadercolumn}
+		
+	<th class="rnr-edge">&nbsp;</th>
+	{BEGIN endrecordheader_block}
+	<th class="rnr-cs">&nbsp;</th>
+	{END endrecordheader_block}
+	{END record_header}
+</tr>
+{END grid_header}
+
+		</thead>
+		<tbody>	
+		{BEGIN grid_row}
+	<tr class="rnr-row style1 {$rowclass}" {$rowattrs} {$rowstyle}>
+		{BEGIN grid_record}
+				{BEGIN id_fieldcolumn}
+<td  class="runner-cc {$id_class}" {$id_style}>
+	{$id_value}
+</td>
+{END id_fieldcolumn}
+	{BEGIN series_name_fieldcolumn}
+<td  class="runner-cc {$series_name_class}" {$series_name_style}>
+	{$series_name_value}
+</td>
+{END series_name_fieldcolumn}
+	{BEGIN category_fieldcolumn}
+<td  class="runner-cc {$category_class}" {$category_style}>
+	{$category_value}
+</td>
+{END category_fieldcolumn}
+	{BEGIN discard_fieldcolumn}
+<td  class="runner-cc {$discard_class}" {$discard_style}>
+	{$discard_value}
+</td>
+{END discard_fieldcolumn}
+	{BEGIN nodiscard_fieldcolumn}
+<td  class="runner-cc {$nodiscard_class}" {$nodiscard_style}>
+	{$nodiscard_value}
+</td>
+{END nodiscard_fieldcolumn}
+	{BEGIN doublepoint_fieldcolumn}
+<td  class="runner-cc {$doublepoint_class}" {$doublepoint_style}>
+	{$doublepoint_value}
+</td>
+{END doublepoint_fieldcolumn}
+	{BEGIN startdate_fieldcolumn}
+<td  class="runner-cc {$startdate_class}" {$startdate_style}>
+	{$startdate_value}
+</td>
+{END startdate_fieldcolumn}
+	{BEGIN enddate_fieldcolumn}
+<td  class="runner-cc {$enddate_class}" {$enddate_style}>
+	{$enddate_value}
+</td>
+{END enddate_fieldcolumn}
+	{BEGIN classresults_fieldcolumn}
+<td  class="runner-cc {$classresults_class}" {$classresults_style}>
+	{$classresults_value}
+</td>
+{END classresults_fieldcolumn}
+	{BEGIN series_code_fieldcolumn}
+<td  class="runner-cc {$series_code_class}" {$series_code_style}>
+	{$series_code_value}
+</td>
+{END series_code_fieldcolumn}
+	{BEGIN series_parent_fieldcolumn}
+<td  class="runner-cc {$series_parent_class}" {$series_parent_style}>
+	{$series_parent_value}
+</td>
+{END series_parent_fieldcolumn}
+	{BEGIN notes_fieldcolumn}
+<td  class="runner-cc {$notes_class}" {$notes_style}>
+	{$notes_value}
+</td>
+{END notes_fieldcolumn}
+
+		<td class="rnr-edge">&nbsp;</td>
+		{BEGIN endrecord_block}
+		<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
+		{END endrecord_block}
+										
+		{END grid_record}
+
+	</tr>
+{END grid_row}
+
+
+		
+		</tbody>
+	</table>
+</div>	
+{END page}
+
+{END grid_block}
+
+
+
+{END container_grid}
+
+
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			<!--%%bottom%%-->
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

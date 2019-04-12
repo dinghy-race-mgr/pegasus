@@ -1,0 +1,315 @@
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}
+		<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}
+		<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}
+		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
+	</head>
+	
+	<body class="{$stylename} function-view" {$bodyattrs}>
+	{BEGIN body}
+		{$header}
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
+
+{BEGIN container_all}
+<div class="rnr-c rnr-cv rnr-c-all">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_main} rnr-wrapper rnr-cbw-main">
+
+{BEGIN container_main}
+<div class="rnr-c rnr-cv rnr-c-main">
+
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_view} rnr-wrapper rnr-cbw-view">
+
+{BEGIN container_view}
+<div class="rnr-c rnr-cv rnr-c-view">
+
+{BEGIN viewheader}
+<div  class="rnr-brickcontents style2 rnr-b-viewheader {$brickclass_viewheader}"><span>	<h1>{$pagetitlelabel t_competitor view}</h1>
+</span></div>{END viewheader}
+
+
+
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+
+{BEGIN container_fields}
+<div class="rnr-c rnr-cv rnr-c-fields">
+
+
+<div  class="rnr-brickcontents style1 rnr-b-viewfields {$brickclass_viewfields}"><table class="fieldGrid">
+	{BEGIN active_fieldblock}
+<tr class="{$fielddispclass_active}" data-fieldname="active">
+	<td class="rnr-label">
+		{$label t_competitor active}
+	</td>
+	<td class="rnr-control style3">
+		{$active_value}&nbsp;
+	</td>
+</tr>
+{END active_fieldblock}
+	{BEGIN classid_fieldblock}
+<tr class="{$fielddispclass_classid}" data-fieldname="classid">
+	<td class="rnr-label">
+		{$label t_competitor classid}
+	</td>
+	<td class="rnr-control style3">
+		{$classid_value}&nbsp;
+	</td>
+</tr>
+{END classid_fieldblock}
+	{BEGIN boatnum_fieldblock}
+<tr class="{$fielddispclass_boatnum}" data-fieldname="boatnum">
+	<td class="rnr-label">
+		{$label t_competitor boatnum}
+	</td>
+	<td class="rnr-control style3">
+		{$boatnum_value}&nbsp;
+	</td>
+</tr>
+{END boatnum_fieldblock}
+	{BEGIN boatname_fieldblock}
+<tr class="{$fielddispclass_boatname}" data-fieldname="boatname">
+	<td class="rnr-label">
+		{$label t_competitor boatname}
+	</td>
+	<td class="rnr-control style3">
+		{$boatname_value}&nbsp;
+	</td>
+</tr>
+{END boatname_fieldblock}
+	{BEGIN club_fieldblock}
+<tr class="{$fielddispclass_club}" data-fieldname="club">
+	<td class="rnr-label">
+		{$label t_competitor club}
+	</td>
+	<td class="rnr-control style3">
+		{$club_value}&nbsp;
+	</td>
+</tr>
+{END club_fieldblock}
+	{BEGIN helm_fieldblock}
+<tr class="{$fielddispclass_helm}" data-fieldname="helm">
+	<td class="rnr-label">
+		{$label t_competitor helm}
+	</td>
+	<td class="rnr-control style3">
+		{$helm_value}&nbsp;
+	</td>
+</tr>
+{END helm_fieldblock}
+	{BEGIN helm_dob_fieldblock}
+<tr class="{$fielddispclass_helm_dob}" data-fieldname="helm_dob">
+	<td class="rnr-label">
+		{$label t_competitor helm_dob}
+	</td>
+	<td class="rnr-control style3">
+		{$helm_dob_value}&nbsp;
+	</td>
+</tr>
+{END helm_dob_fieldblock}
+	{BEGIN helm_email_fieldblock}
+<tr class="{$fielddispclass_helm_email}" data-fieldname="helm_email">
+	<td class="rnr-label">
+		{$label t_competitor helm_email}
+	</td>
+	<td class="rnr-control style3">
+		{$helm_email_value}&nbsp;
+	</td>
+</tr>
+{END helm_email_fieldblock}
+	{BEGIN crew_fieldblock}
+<tr class="{$fielddispclass_crew}" data-fieldname="crew">
+	<td class="rnr-label">
+		{$label t_competitor crew}
+	</td>
+	<td class="rnr-control style3">
+		{$crew_value}&nbsp;
+	</td>
+</tr>
+{END crew_fieldblock}
+	{BEGIN crew_dob_fieldblock}
+<tr class="{$fielddispclass_crew_dob}" data-fieldname="crew_dob">
+	<td class="rnr-label">
+		{$label t_competitor crew_dob}
+	</td>
+	<td class="rnr-control style3">
+		{$crew_dob_value}&nbsp;
+	</td>
+</tr>
+{END crew_dob_fieldblock}
+	{BEGIN crew_email_fieldblock}
+<tr class="{$fielddispclass_crew_email}" data-fieldname="crew_email">
+	<td class="rnr-label">
+		{$label t_competitor crew_email}
+	</td>
+	<td class="rnr-control style3">
+		{$crew_email_value}&nbsp;
+	</td>
+</tr>
+{END crew_email_fieldblock}
+	{BEGIN personal_py_fieldblock}
+<tr class="{$fielddispclass_personal_py}" data-fieldname="personal_py">
+	<td class="rnr-label">
+		{$label t_competitor personal_py}
+	</td>
+	<td class="rnr-control style3">
+		{$personal_py_value}&nbsp;
+	</td>
+</tr>
+{END personal_py_fieldblock}
+	{BEGIN skill_level_fieldblock}
+<tr class="{$fielddispclass_skill_level}" data-fieldname="skill_level">
+	<td class="rnr-label">
+		{$label t_competitor skill_level}
+	</td>
+	<td class="rnr-control style3">
+		{$skill_level_value}&nbsp;
+	</td>
+</tr>
+{END skill_level_fieldblock}
+	{BEGIN regular_fieldblock}
+<tr class="{$fielddispclass_regular}" data-fieldname="regular">
+	<td class="rnr-label">
+		{$label t_competitor regular}
+	</td>
+	<td class="rnr-control style3">
+		{$regular_value}&nbsp;
+	</td>
+</tr>
+{END regular_fieldblock}
+	{BEGIN flight_fieldblock}
+<tr class="{$fielddispclass_flight}" data-fieldname="flight">
+	<td class="rnr-label">
+		{$label t_competitor flight}
+	</td>
+	<td class="rnr-control style3">
+		{$flight_value}&nbsp;
+	</td>
+</tr>
+{END flight_fieldblock}
+	{BEGIN grouplist_fieldblock}
+<tr class="{$fielddispclass_grouplist}" data-fieldname="grouplist">
+	<td class="rnr-label">
+		{$label t_competitor grouplist}
+	</td>
+	<td class="rnr-control style3">
+		{$grouplist_value}&nbsp;
+	</td>
+</tr>
+{END grouplist_fieldblock}
+	{BEGIN prizelist_fieldblock}
+<tr class="{$fielddispclass_prizelist}" data-fieldname="prizelist">
+	<td class="rnr-label">
+		{$label t_competitor prizelist}
+	</td>
+	<td class="rnr-control style3">
+		{$prizelist_value}&nbsp;
+	</td>
+</tr>
+{END prizelist_fieldblock}
+	{BEGIN last_entry_fieldblock}
+<tr class="{$fielddispclass_last_entry}" data-fieldname="last_entry">
+	<td class="rnr-label">
+		{$label t_competitor last_entry}
+	</td>
+	<td class="rnr-control style3">
+		{$last_entry_value}&nbsp;
+	</td>
+</tr>
+{END last_entry_fieldblock}
+	{BEGIN last_event_fieldblock}
+<tr class="{$fielddispclass_last_event}" data-fieldname="last_event">
+	<td class="rnr-label">
+		{$label t_competitor last_event}
+	</td>
+	<td class="rnr-control style3">
+		{$last_event_value}&nbsp;
+	</td>
+</tr>
+{END last_event_fieldblock}
+</table></div>
+
+
+{BEGIN viewbuttons}
+<div  class="rnr-brickcontents style2 rnr-b-viewbuttons {$brickclass_viewbuttons}"><div class="rnr-buttons-right">
+{BEGIN prev_button}
+<a href="#" class="rnr-button {$prevbutton_class}" {$prevbutton_attrs}>&lt;&lt;&lt;</a>
+{END prev_button}
+{BEGIN next_button}
+<a href="#" class="rnr-button {$nextbutton_class}" {$nextbutton_attrs}>&gt;&gt;&gt;</a>
+{END next_button}
+</div>
+<div class="rnr-buttons-left">
+{BEGIN back_button}
+<a href="#" class="rnr-button" {$backbutton_attrs}>Back to list</a>
+{END back_button}
+{BEGIN close_button}
+<a href="#" class="rnr-button" {$closebutton_attrs}>Close window</a>
+{END close_button}
+{BEGIN edit_page_button}
+<a href="#" class="rnr-button" {$edit_page_button_attrs}>Edit</a>
+{END edit_page_button}
+</div>
+</div>{END viewbuttons}
+
+
+</div>
+{END container_fields}
+
+</div>
+
+
+</div>
+{END container_view}
+
+</div>
+
+
+</div>
+{END container_main}
+
+</div>
+
+
+
+</div>
+{END container_all}
+
+
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			<!--%%bottom%%-->
+		</div>
+	</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

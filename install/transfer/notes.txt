@@ -1,0 +1,7 @@
+TRANSFER SCRIPTS
+
+- transfer classes*
+- transfer competitors*
+- transfer codes*   -   produces a report of codes removed and added
+- transfer fixtures
+- transfer results
