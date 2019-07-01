@@ -1,56 +1,94 @@
 <div {$pageattrs}>
 
-{BEGIN container_1}<table class="fieldGrid">
-{BEGIN fleet_num_tabfieldblock}<tr class="{$fielddispclass_fleet_num}" data-fieldname="fleet_num">
-	<td class="style1 rnr-label">
-		{BEGIN fleet_num_label}{$label t_cfgfleet fleet_num}{END fleet_num_label}
-	</td>
-	<td class="rnr-control style3">
-		{$fleet_num_editcontrol}&nbsp;
-	</td>
-</tr>
+{BEGIN container_tabfields}<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
+
+
+{BEGIN fleet_num_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_fleet_num}" data-fieldname="fleet_num" data-signal-error-for="fleet_num{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_fleet_num}">
+			{BEGIN fleet_num_label}{$label t_cfgfleet fleet_num}{END fleet_num_label}
+		</label>
+		<div class="col-md-6 " >
+			{$fleet_num_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="fleet_num">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet fleet_num}
+			</div>
+		</div>
+	</div>
+</div>
 {END fleet_num_tabfieldblock}
-{BEGIN start_num_tabfieldblock}<tr class="{$fielddispclass_start_num}" data-fieldname="start_num">
-	<TD class="style1 rnr-label" style="width: 35%;">
-              {BEGIN start_num_label}{$label t_cfgfleet start_num}{END start_num_label}
-	</td>
-	<TD class="rnr-control style3" style="width: 65%;">
-              {$start_num_editcontrol}&nbsp;
-	</td>
-</tr>
+{BEGIN start_num_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_start_num}" data-fieldname="start_num" data-signal-error-for="start_num{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_start_num}">
+			{BEGIN start_num_label}{$label t_cfgfleet start_num}{END start_num_label}
+		</label>
+		<div class="col-md-6 " >
+			{$start_num_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="start_num">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet start_num}
+			</div>
+		</div>
+	</div>
+</div>
 {END start_num_tabfieldblock}
-{BEGIN fleet_code_tabfieldblock}<tr class="{$fielddispclass_fleet_code}" data-fieldname="fleet_code">
-	<td class="style1 rnr-label">
-		{BEGIN fleet_code_label}{$label t_cfgfleet fleet_code}{END fleet_code_label}
-	</td>
-	<td class="rnr-control style3">
-		{$fleet_code_editcontrol}&nbsp;
-	</td>
-</tr>
+{BEGIN fleet_code_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_fleet_code}" data-fieldname="fleet_code" data-signal-error-for="fleet_code{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_fleet_code}">
+			{BEGIN fleet_code_label}{$label t_cfgfleet fleet_code}{END fleet_code_label}
+		</label>
+		<div class="col-md-6 " >
+			{$fleet_code_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="fleet_code">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet fleet_code}
+			</div>
+		</div>
+	</div>
+</div>
 {END fleet_code_tabfieldblock}
-{BEGIN fleet_name_tabfieldblock}<tr class="{$fielddispclass_fleet_name}" data-fieldname="fleet_name">
-	<td class="style1 rnr-label">
-		{BEGIN fleet_name_label}{$label t_cfgfleet fleet_name}{END fleet_name_label}
-	</td>
-	<td class="rnr-control style3">
-		{$fleet_name_editcontrol}&nbsp;
-	</td>
-</tr>
+{BEGIN fleet_name_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_fleet_name}" data-fieldname="fleet_name" data-signal-error-for="fleet_name{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_fleet_name}">
+			{BEGIN fleet_name_label}{$label t_cfgfleet fleet_name}{END fleet_name_label}
+		</label>
+		<div class="col-md-6 " >
+			{$fleet_name_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="fleet_name">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet fleet_name}
+			</div>
+		</div>
+	</div>
+</div>
 {END fleet_name_tabfieldblock}
-{BEGIN fleet_desc_tabfieldblock}<tr class="{$fielddispclass_fleet_desc}" data-fieldname="fleet_desc">
-	<td class="style1 rnr-label">
-		{BEGIN fleet_desc_label}{$label t_cfgfleet fleet_desc}{END fleet_desc_label}
-	</td>
-	<td class="rnr-control style3">
-		{$fleet_desc_editcontrol}&nbsp;
-	</td>
-</tr>
+{BEGIN fleet_desc_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_fleet_desc}" data-fieldname="fleet_desc" data-signal-error-for="fleet_desc{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_fleet_desc}">
+			{BEGIN fleet_desc_label}{$label t_cfgfleet fleet_desc}{END fleet_desc_label}
+		</label>
+		<div class="col-md-6 " >
+			{$fleet_desc_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="fleet_desc">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet fleet_desc}
+			</div>
+		</div>
+	</div>
+</div>
 {END fleet_desc_tabfieldblock}
-</table>
 
 
 
 
-{END container_1}
+
+</div>
+{END container_tabfields}
 
 </div>

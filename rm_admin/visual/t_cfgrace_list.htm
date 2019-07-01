@@ -1,114 +1,559 @@
-<!DOCTYPE html>
-<HTML {$html_attrs}><HEAD> 
-<META http-equiv="X-UA-Compatible" content="IE=Edge"> <TITLE>{$pagetitle} </TITLE> 
-<META http-equiv="Content-Type" content="text/html; charset=utf-8"> 
-<LINK href="styles/default.css" rel="stylesheet" type="text/css"> {BEGIN rtlCSS}<LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">{END rtlCSS} {BEGIN styleCSSFiles}<LINK href="{$stylepath}" rel="stylesheet" type="text/css">{END styleCSSFiles} {BEGIN pageCSSFiles}<LINK href="{$pagestylepath}" rel="stylesheet" type="text/css">{END pageCSSFiles} 
-<META name="GENERATOR" content="MSHTML 11.00.9600.18161"> </HEAD> 
-<BODY class="{$stylename} function-list" {$bodyattrs}>{BEGIN body}
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{$pagetitle}</title>
 
-{$header} 
-<DIV class="rnr-page">
-<DIV class="rnr-top {$blockclass_top}">
-{BEGIN container_toplinks}
-<DIV class="rnr-c rnr-ch rnr-c-toplinks"></DIV>{END container_toplinks}
-{BEGIN container_hmenu}
-<DIV class="rnr-c rnr-ch rnr-c-hmenu">
-{BEGIN menu_block}{$menu main horizontal}{END menu_block}<DIV class="rnr-hfiller"></DIV></DIV>{END container_hmenu}</DIV>
-<DIV class="rnr-middle">
-<DIV class="rnr-left {$blockclass_left}"></DIV>
-<DIV class="rnr-center {$blockclass_center}">
-{BEGIN container_recordcontrols}
-<DIV class="rnr-c rnr-ch rnr-c-recordcontrols">
-{$event t_cfgrace_snippet1}
-<DIV class="rnr-hfiller"></DIV>
-{BEGIN newrecord_controls_block}<DIV class="style1 rnr-br rnr-b-recordcontrols_new {$brickclass_recordcontrols_new}">{BEGIN add_link}<A class="rnr-button" href="t_cfgrace_add.php" {$addlink_attrs}> Add new </A> {END add_link}</DIV>
-{END newrecord_controls_block}{BEGIN record_controls_block}<DIV class="style1 rnr-bl rnr-b-recordcontrol {$brickclass_recordcontrol}">{BEGIN widhtSelected}<SPAN class="rnr-buttons-group"><A class="rnr-button {$withSelectedClass}" id="selectButtonsToggler{$id}" href="#"> With selected... </A> 
-<UL class="rnr-list" id="selectButtonsGroup{$id}">
-  {BEGIN deleteselected_link}<LI><A class="rnr-button link" href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}> 
-  Delete </A></LI>{END deleteselected_link}</UL></SPAN> {END widhtSelected}</DIV>
-{END record_controls_block}{BEGIN more_list}<DIV class="style1 rnr-bl rnr-b-toplinks {$brickclass_toplinks}"><SPAN class="rnr-buttons-group"></SPAN> </DIV>
-{END more_list}<DIV class="rnr-hfiller"></DIV></DIV>{END container_recordcontrols}
-{BEGIN container_message}
-<DIV class="rnr-c rnr-ch rnr-c-message">
-{BEGIN message_block}<DIV class="style1 rnr-bc rnr-b-message {$brickclass_message}">
-<DIV class="rnr-message">
-{$message} </DIV></DIV>{END message_block}</DIV>{END container_message}
-{BEGIN container_pagination}
-<DIV class="rnr-c rnr-ch rnr-multialign rnr-c-pagination">
-{BEGIN pagination_block}<DIV class="style1 rnr-bc rnr-b-pagination {$brickclass_pagination}">
-{$pagination} </DIV>
-{END pagination_block}<DIV class="rnr-leftbricks">
-{BEGIN details_block}<DIV class="style1 rnr-bl rnr-b-details_found {$brickclass_details_found}"><SPAN {$details_attrs}> Details found: 
-<B><SPAN class="rnr-details_found_count">
-{$records_found} </SPAN> </B> </SPAN> </DIV>{END details_block}</DIV>
-<DIV class="rnr-rightbricks">
-{BEGIN pages_block}<DIV class="style1 rnr-br rnr-b-page_of {$brickclass_page_of}"><SPAN {$pages_attrs}> Page <B>
-{$page} </B> of <B>
-{$maxpages} </B> </SPAN> </DIV>
-{END pages_block}{BEGIN recordspp_block}<DIV class="style1 rnr-br rnr-b-recsperpage {$brickclass_recsperpage}"><SPAN id="recordspp_block{$id}" name="recordspp_block{$id}"> 
- Records Per Page:&nbsp;
-{$recsPerPage} </SPAN> </DIV>{END recordspp_block}</DIV></DIV>{END container_pagination}
-{BEGIN container_grid}
-{BEGIN grid_block}<TABLE class="rnr-c rnr-cont rnr-c-grid rnr-b-grid rnr-gridtable hoverable" cellpadding="0">
-  <THEAD>{BEGIN grid_header}
-  <TR class="rnr-toprow style1 {$gridHeader_class}">{BEGIN record_header}
-    {BEGIN listIcons_column}<TH ieditcont="all"> &nbsp;</TH>
-    {END listIcons_column}{BEGIN checkbox_column}<TH class="rnr-bc"><INPUT type="checkbox" {$checkboxheader_attrs}> </TH>
-    {END checkbox_column}{BEGIN t_cfgrace_dtable_column}<TH> &nbsp;</TH>
-    {END t_cfgrace_dtable_column}{BEGIN race_code_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$race_code_class}">{BEGIN race_code_fieldheader}<SPAN {$race_code_orderlinkattrs}>
-      {$label t_cfgrace race_code} </SPAN> {END race_code_fieldheader}</TH>
-    {END race_code_fieldheadercolumn}{BEGIN race_name_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$race_name_class}">{BEGIN race_name_fieldheader}<SPAN {$race_name_orderlinkattrs}>
-      {$label t_cfgrace race_name} </SPAN> {END race_name_fieldheader}</TH>
-    {END race_name_fieldheadercolumn}{BEGIN race_desc_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$race_desc_class}">{BEGIN race_desc_fieldheader}<SPAN {$race_desc_orderlinkattrs}>
-      {$label t_cfgrace race_desc} </SPAN> {END race_desc_fieldheader}</TH>
-    {END race_desc_fieldheadercolumn}{BEGIN numstarts_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$numstarts_class}">{BEGIN numstarts_fieldheader}<SPAN {$numstarts_orderlinkattrs}>
-      {$label t_cfgrace numstarts} </SPAN> {END numstarts_fieldheader}</TH>
-    {END numstarts_fieldheadercolumn}{BEGIN pursuit_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$pursuit_class}">{BEGIN pursuit_fieldheader}<SPAN {$pursuit_orderlinkattrs}>
-      {$label t_cfgrace pursuit} </SPAN> {END pursuit_fieldheader}</TH>
-    {END pursuit_fieldheadercolumn}{BEGIN active_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$active_class}">{BEGIN active_fieldheader}<SPAN {$active_orderlinkattrs}>
-      {$label t_cfgrace active} </SPAN> {END active_fieldheader}</TH>
-    {END active_fieldheadercolumn}<TH class="rnr-edge"> &nbsp;</TH>
-    {BEGIN endrecordheader_block}<TH class="rnr-cs"> &nbsp;</TH>{END endrecordheader_block}{END record_header}</TR>{END grid_header}</THEAD>
-  <TBODY>
-  {BEGIN grid_row}<TR class="rnr-row style1 {$rowclass}" {$rowattrs} {$rowstyle}>{BEGIN grid_record}
-    {BEGIN listIcons_column}<TD class="rnr-cc rnr-bc rnr-icons" ieditcont="all" {$rowstyle} {$recordattrs}>{BEGIN edit_column}{BEGIN edit_link}<A title="Edit" class="rnr-button-img" data-icon="edit" {$editlink_attrs}> </A> 
-      {END edit_link}{END edit_column}{BEGIN copy_column}{BEGIN copy_link}<A title="Copy" class="rnr-button-img" data-icon="copy" {$copylink_attrs}> </A> {END copy_link}{END copy_column}{BEGIN view_column}{BEGIN view_link}<A title="View" class="rnr-button-img" data-icon="view" {$viewlink_attrs}> </A> {END view_link}{END view_column}</TD>
-    {END listIcons_column}{BEGIN checkbox_column}<TD class="rnr-bc" ieditcont="checkBox" {$rowstyle} {$recordattrs}>{BEGIN checkbox}<INPUT type="checkbox" {$checkbox_attrs}>{END checkbox} 
-    </TD>
-    {END checkbox_column}{BEGIN t_cfgrace_dtable_column}<TD class="rnr-nowrap" {$rowstyle} {$recordattrs}>{BEGIN t_cfgfleet_dtable_link}<SPAN><A {$t_cfgfleet_dtablelink_attrs}> Fleets <SPAN dir="ltr" {$t_cfgfleet_childnumber_attr}>{BEGIN t_cfgfleet_childcount}               
-            (
-      {$t_cfgfleet_childnumber}) {END t_cfgfleet_childcount}</SPAN> </A> <BR></SPAN> {END t_cfgfleet_dtable_link}</TD>
-    {END t_cfgrace_dtable_column}{BEGIN race_code_fieldcolumn}<TD class="{$race_code_class}" {$race_code_style} {$recordattrs}>
-      {$race_code_value} </TD>
-    {END race_code_fieldcolumn}{BEGIN race_name_fieldcolumn}<TD class="{$race_name_class}" {$race_name_style} {$recordattrs}>
-      {$race_name_value} </TD>
-    {END race_name_fieldcolumn}{BEGIN race_desc_fieldcolumn}<TD class="{$race_desc_class}" {$race_desc_style} {$recordattrs}>
-      {$race_desc_value} </TD>
-    {END race_desc_fieldcolumn}{BEGIN numstarts_fieldcolumn}<TD class="{$numstarts_class}" {$numstarts_style} {$recordattrs}>
-      {$numstarts_value} </TD>
-    {END numstarts_fieldcolumn}{BEGIN pursuit_fieldcolumn}<TD class="{$pursuit_class}" {$pursuit_style} {$recordattrs}>
-      {$pursuit_value} </TD>
-    {END pursuit_fieldcolumn}{BEGIN active_fieldcolumn}<TD class="{$active_class}" {$active_style} {$recordattrs}>
-      {$active_value} </TD>
-    {END active_fieldcolumn}<TD class="rnr-edge" {$recordattrs}><A class="rnr-button button" id="Check____" href="#" typeid="ib">&nbsp;Check&nbsp;...&nbsp;</A> 
-    </TD>
-    {BEGIN endrecord_block}<TD class="rnr-cs" {$endrecordblock_attrs}> 
-      &nbsp;</TD>{END endrecord_block}{END grid_record}</TR>{END grid_row}</TBODY></TABLE>{END grid_block}{END container_grid}
-{BEGIN container_pagination_bottom}
-<DIV class="rnr-c rnr-ch rnr-multialign rnr-c-pagination_bottom">
-{BEGIN pagination_block}<DIV class="style1 rnr-bc rnr-b-pagination {$brickclass_pagination}">
-{$pagination} </DIV>
-{END pagination_block}<DIV class="rnr-leftbricks">
-{BEGIN details_block}<DIV class="style1 rnr-bl rnr-b-details_found {$brickclass_details_found}"><SPAN {$details_attrs}> Details found: 
-<B><SPAN class="rnr-details_found_count">
-{$records_found} </SPAN> </B> </SPAN> </DIV>{END details_block}</DIV>
-<DIV class="rnr-rightbricks">
-{BEGIN pages_block}<DIV class="style1 rnr-br rnr-b-page_of {$brickclass_page_of}"><SPAN {$pages_attrs}> Page <B>
-{$page} </B> of <B>
-{$maxpages} </B> </SPAN> </DIV>
-{END pages_block}{BEGIN recordspp_block}<DIV class="style1 rnr-br rnr-b-recsperpage {$brickclass_recsperpage}"><SPAN id="recordspp_block{$id}" name="recordspp_block{$id}"> 
- Records Per Page:&nbsp;
-{$recsPerPage} </SPAN> </DIV>{END recordspp_block}</DIV></DIV>{END container_pagination_bottom}</DIV>
-<DIV class="rnr-right {$blockclass_right}"></DIV></DIV>
-<DIV class="rnr-bottom {$blockclass_bottom}"><!--%%bottom%%--> </DIV></DIV>
-{$footer}{END body} </BODY></HTML>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+	</head>
+
+	<body class="{$stylename} function-list" {$bodyattrs}>
+	{BEGIN body}{$header}
+		<style>
+			{$containerCss}
+		</style>
+		{BEGIN container_menu}<nav {$menu_chiddenattr} data-pageid="{$pageid}" data-container="menu" class="navbar navbar-default ">					
+
+
+
+{BEGIN container_hdr}<div {$hdr_chiddenattr} data-pageid="{$pageid}" data-container="hdr" class=" navbar-header   "> 
+
+{BEGIN logo_block}<a href="{$home_link}" {$logo_hiddenattr} data-pageid="{$pageid}" data-brick="logo" class="navbar-brand" >{$logo}</a>
+{END logo_block}
+
+
+{BEGIN collapse_block}<button {$bsnavbarcollapse_hiddenattr} data-pageid="{$pageid}" data-brick="bsnavbarcollapse" type="button" class="navbar-toggle collapsed" data-runner-toggle="collapse" data-target=".bs-navcontrolled">	
+	<span class="sr-only">Toggle navigation</span>	
+	<span class="icon-bar"></span>					
+</button>												
+
+{END collapse_block}
+
+
+
+</div>
+{END container_hdr}
+
+
+
+
+
+
+{BEGIN container_menu_1}<div {$menu_1_chiddenattr} data-pageid="{$pageid}" data-container="menu_1" class="bs-navform navbar-collapse bs-navcontrolled bs-hidden-xs" aria-expanded="false" >												   
+{BEGIN menu_block}{$menu main horizontal}
+
+{END menu_block}
+
+
+
+
+
+{BEGIN container_more}<div {$more_chiddenattr} data-pageid="{$pageid}" data-container="more" class=" navbar-right navbar-form   "> 
+
+{BEGIN more_list}<div {$morebutton_hiddenattr} data-pageid="{$pageid}" data-brick="morebutton" class="btn-group bs-navsection">
+	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<span class="glyphicon glyphicon-cog"></span>
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu">
+		
+				
+				{BEGIN deleteselected_link}<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
+		{END deleteselected_link}
+		
+				<li role="separator" class="divider"></li>	
+
+		
+				
+				
+				
+				
+		
+		
+				
+	</ul>  
+</div>
+
+{END more_list}
+
+
+{BEGIN security_block}<span {$loggedas_hiddenattr} data-pageid="{$pageid}" data-brick="loggedas" id="login_block{$id}" class="bs-navsection">
+	{BEGIN guestloginbutton}<button class="btn btn-info" type="button" {$guestloginlink_attrs}>Login</button>
+	{END guestloginbutton}
+	{BEGIN loggedas_message}<span class="dropdown">
+			<button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<span class="glyphicon glyphicon-user"></span>	{$username}</button>
+			<ul class="dropdown-menu">
+		{BEGIN logoutbutton}<li><a href="#" {$logoutlink_attrs}>Log out</a></li>
+		{END logoutbutton}
+		
+		{BEGIN adminarea_link}<li><a href="admin_rights_list.php" {$adminarealink_attrs}>Admin Area</a></li>
+		{END adminarea_link}
+
+
+	{BEGIN changepwd_link}<li><a href="#" {$changepwdlink_attrs}>Change password</a></li>
+	{END changepwd_link}
+			</ul>
+		</span>
+	{END loggedas_message}
+</span>
+{END security_block}
+
+
+
+</div>
+{END container_more}
+
+
+
+
+
+
+
+
+{BEGIN container_more_1}<div {$more_1_chiddenattr} data-pageid="{$pageid}" data-container="more_1" class=" navbar-right navbar-form   "> 
+
+{BEGIN searchform_block}<span {$search_hiddenattr} data-pageid="{$pageid}" data-brick="search" class="form-group">
+
+		
+</span>
+{END searchform_block}
+
+
+
+</div>
+{END container_more_1}
+
+
+
+
+												</div>						{END container_menu_1}
+
+
+									</nav>{END container_menu}
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+
+{BEGIN container_breadcrumbs}<div {$breadcrumbs_chiddenattr} data-pageid="{$pageid}" data-container="breadcrumbs" class="    "> 
+
+
+
+
+{BEGIN container_bc}<div {$bc_chiddenattr} data-pageid="{$pageid}" data-container="bc" class="    "> 
+
+{BEGIN breadcrumbs}<ol class="breadcrumb">
+<li ><a href="{$home_link}"><span class="glyphicon glyphicon-home"></span></a>{$crumb_dropdown}</li>
+{BEGIN crumb}<li class="{$crumb_item_class}">
+{BEGIN crumb_title_link}<a {$crumb_attrs}>{$crumb_title}</a>
+{END crumb_title_link}
+{BEGIN crumb_title_span}<span {$crumb_attrs}>{$crumb_title}</span>
+{END crumb_title_span}	
+	{$crumb_dropdown}
+  </li>
+{END crumb}
+</ol>
+{END breadcrumbs}
+
+
+
+</div>
+{END container_bc}
+
+
+
+
+
+
+</div>
+{END container_breadcrumbs}
+
+
+
+
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+
+
+			</div>
+			<div class="bs-center bs-screenwidth bs-minwidth">
+				
+
+{BEGIN container_gridcontrols}<div {$gridcontrols_chiddenattr} data-pageid="{$pageid}" data-container="gridcontrols" class="row rnr-rowcontainer bs-navcontrolled bs-hidden-xs">
+
+
+
+
+{BEGIN container_add_delete}<div {$add_delete_chiddenattr} data-pageid="{$pageid}" data-container="add_delete" class=" bottom-margin  col-md-6 "> 
+
+{BEGIN newrecord_controls_block}{BEGIN add_link}<a {$add_hiddenattr} data-pageid="{$pageid}" data-brick="add" type="button" class="btn btn-primary" {$addlink_attrs}>Add new</a>
+	{END add_link}
+
+	
+{END newrecord_controls_block}
+
+
+{BEGIN record_controls_block}<span {$recordcontrol_hiddenattr} data-pageid="{$pageid}" data-brick="recordcontrol">
+		{BEGIN deleteselected_link}<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
+	{END deleteselected_link}
+		</span>
+
+{END record_controls_block}
+
+
+
+</div>
+{END container_add_delete}
+
+
+
+
+
+
+
+
+{BEGIN container_gridinfo}<div {$gridinfo_chiddenattr} data-pageid="{$pageid}" data-container="gridinfo" class=" bottom-margin pull-right text-right col-md-6 "> 
+
+{BEGIN details_found}<span {$details_found_hiddenattr} data-pageid="{$pageid}" data-brick="details_found" class="form-inline form-inline-always">
+	{$records_indicator}
+	<span>
+	{BEGIN recordspp_block}{$recsPerPage}
+	{END recordspp_block}
+	</span>
+</span>
+{END details_found}
+
+
+
+
+
+</div>
+{END container_gridinfo}
+
+
+
+
+
+
+
+</div>{END container_gridcontrols}
+
+
+
+{BEGIN container_tabs}<div {$tabs_chiddenattr} data-pageid="{$pageid}" data-container="tabs" class="    "> 
+
+{BEGIN grid_tabs}<div {$bsgrid_tabs_hiddenattr} data-pageid="{$pageid}" data-brick="bsgrid_tabs">
+<ul class="nav nav-tabs">
+{$grid_tabs_content}
+</ul>
+</div>
+{END grid_tabs}
+
+
+
+</div>
+{END container_tabs}
+
+
+
+{BEGIN container_messagerow}<div {$messagerow_chiddenattr} data-pageid="{$pageid}" data-container="messagerow" class="row rnr-rowcontainer ">
+
+
+
+
+{BEGIN container_message}<div {$message_chiddenattr} data-pageid="{$pageid}" data-container="message" class="   col-md-12 "> 
+
+{BEGIN message_block}<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">{$message}</div>
+{END message_block}
+
+
+
+</div>
+{END container_message}
+
+
+
+
+
+
+</div>{END container_messagerow}
+
+
+
+{BEGIN container_center}<div {$center_chiddenattr} data-pageid="{$pageid}" data-container="center" class="    "> 
+
+
+
+
+{BEGIN container_grid}<div {$grid_chiddenattr} data-pageid="{$pageid}" data-container="grid" class="bs-grid    "> 
+
+{BEGIN grid_block}<style>
+	.bs-gridcell[data-field=id]:before {
+		content: "{$label t_cfgrace id}";
+	}
+	.bs-gridcell[data-field=race_code]:before {
+		content: "{$label t_cfgrace race_code}";
+	}
+	.bs-gridcell[data-field=race_name]:before {
+		content: "{$label t_cfgrace race_name}";
+	}
+	.bs-gridcell[data-field=race_desc]:before {
+		content: "{$label t_cfgrace race_desc}";
+	}
+	.bs-gridcell[data-field=pursuit]:before {
+		content: "{$label t_cfgrace pursuit}";
+	}
+	.bs-gridcell[data-field=numstarts]:before {
+		content: "{$label t_cfgrace numstarts}";
+	}
+	.bs-gridcell[data-field=start_scheme]:before {
+		content: "{$label t_cfgrace start_scheme}";
+	}
+	.bs-gridcell[data-field=start_interval]:before {
+		content: "{$label t_cfgrace start_interval}";
+	}
+	.bs-gridcell[data-field=active]:before {
+		content: "{$label t_cfgrace active}";
+	}
+	.bs-gridcell[data-field=comp_pick]:before {
+		content: "{$label t_cfgrace comp_pick}";
+	}
+	.bs-gridcell[data-field=upddate]:before {
+		content: "{$label t_cfgrace upddate}";
+	}
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_cfgrace updby}";
+	}
+</style>
+<table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
+	<thead>
+										{BEGIN grid_header}<tr class="rnr-toprow {$gridHeader_class}" >
+									{BEGIN record_header}{BEGIN listIcons_column}<th iEditCont="all">&nbsp;</th>
+									{END listIcons_column}	
+
+																		{BEGIN checkbox_column}<th class="">
+										<input type="checkbox" {$checkboxheader_attrs}>
+									</th>
+									{END checkbox_column}
+
+																		{BEGIN t_cfgrace_dtable_column}<th >&nbsp;</th>
+									{END t_cfgrace_dtable_column}
+									
+									{BEGIN race_code_fieldheadercolumn}<th class="rnr-gridfieldlabel {$race_code_class}" data-field=race_code>
+									{BEGIN race_code_fieldheader}<span {$race_code_orderlinkattrs}>
+											{$label t_cfgrace race_code}
+										</span>
+									{END race_code_fieldheader}
+									</th>
+									{END race_code_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN race_name_fieldheadercolumn}<th class="rnr-gridfieldlabel {$race_name_class}" data-field=race_name>
+									{BEGIN race_name_fieldheader}<span {$race_name_orderlinkattrs}>
+											{$label t_cfgrace race_name}
+										</span>
+									{END race_name_fieldheader}
+									</th>
+									{END race_name_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN race_desc_fieldheadercolumn}<th class="rnr-gridfieldlabel {$race_desc_class}" data-field=race_desc>
+									{BEGIN race_desc_fieldheader}<span {$race_desc_orderlinkattrs}>
+											{$label t_cfgrace race_desc}
+										</span>
+									{END race_desc_fieldheader}
+									</th>
+									{END race_desc_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN numstarts_fieldheadercolumn}<th class="rnr-gridfieldlabel {$numstarts_class}" data-field=numstarts>
+									{BEGIN numstarts_fieldheader}<span {$numstarts_orderlinkattrs}>
+											{$label t_cfgrace numstarts}
+										</span>
+									{END numstarts_fieldheader}
+									</th>
+									{END numstarts_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN pursuit_fieldheadercolumn}<th class="rnr-gridfieldlabel {$pursuit_class}" data-field=pursuit>
+									{BEGIN pursuit_fieldheader}<span {$pursuit_orderlinkattrs}>
+											{$label t_cfgrace pursuit}
+										</span>
+									{END pursuit_fieldheader}
+									</th>
+									{END pursuit_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN active_fieldheadercolumn}<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
+									{BEGIN active_fieldheader}<span {$active_orderlinkattrs}>
+											{$label t_cfgrace active}
+										</span>
+									{END active_fieldheader}
+									</th>
+									{END active_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN endrecordheader_block}<th class="rnr-cs">&nbsp;</th>
+									
+									{END endrecordheader_block}
+									
+									{END record_header}
+									
+								</tr>
+								{END grid_header}
+
+	</thead>
+	<tbody>	
+		{BEGIN grid_row}<tr class="{$rowclass} bs-gridrow" {$rowattrs} {$rowstyle}>
+	{BEGIN grid_record}{BEGIN listIcons_column}<td class="bs-gridicons" iEditCont="all" {$rowstyle} {$recordattrs}>
+		{BEGIN edit_column}{BEGIN edit_link}<a class="glyphicon glyphicon-pencil" {$editlink_attrs} title="Edit"></a>
+	{END edit_link}
+	{END edit_column}
+
+		
+	<span data-hidden {$ieditbuttonsholder_attrs}></span>
+
+		{BEGIN copy_column}{BEGIN copy_link}<a class="glyphicon glyphicon-duplicate" {$copylink_attrs} title="Copy"></a>
+	{END copy_link}
+	{END copy_column}
+
+		{BEGIN view_column}{BEGIN view_link}<a class="glyphicon glyphicon-search" {$viewlink_attrs} title="View"></a>
+	{END view_link}
+	{END view_column}
+	</td>	
+	{END listIcons_column}	
+
+		{BEGIN checkbox_column}<td  iEditCont="checkBox" class="bs-gridcheckbox" {$rowstyle} {$recordattrs}>
+	{BEGIN checkbox}<input type="checkbox" {$checkbox_attrs}>
+	{END checkbox}
+	</td>
+	{END checkbox_column}
+
+		{BEGIN t_cfgrace_dtable_column}<td class="rnr-nowrap bs-griddetails" {$rowstyle} {$recordattrs}>
+	
+			{BEGIN t_cfgfleet_dtable_link}<span>
+			<a {$t_cfgfleet_dtablelink_attrs}>
+			Fleets
+							<span {$t_cfgfleet_childnumber_attr} dir="ltr">
+				{BEGIN t_cfgfleet_childcount}
+					({$t_cfgfleet_childnumber})
+				{END t_cfgfleet_childcount}</span>
+			</a>
+						<BR></span>
+		{END t_cfgfleet_dtable_link}
+
+	
+	</td>
+	{END t_cfgrace_dtable_column}
+
+
+	{BEGIN race_code_fieldcolumn}<td class="bs-gridcell {$race_code_class}"  data-field=race_code {$rowstyle} {$recordattrs}>
+		{$race_code_value}
+	</td>
+{END race_code_fieldcolumn}
+
+
+	{BEGIN race_name_fieldcolumn}<td class="bs-gridcell {$race_name_class}"  data-field=race_name {$rowstyle} {$recordattrs}>
+		{$race_name_value}
+	</td>
+{END race_name_fieldcolumn}
+
+
+	{BEGIN race_desc_fieldcolumn}<td class="bs-gridcell {$race_desc_class}"  data-field=race_desc {$rowstyle} {$recordattrs}>
+		{$race_desc_value}
+	</td>
+{END race_desc_fieldcolumn}
+
+
+	{BEGIN numstarts_fieldcolumn}<td class="bs-gridcell {$numstarts_class}"  data-field=numstarts {$rowstyle} {$recordattrs}>
+		{$numstarts_value}
+	</td>
+{END numstarts_fieldcolumn}
+
+
+	{BEGIN pursuit_fieldcolumn}<td class="bs-gridcell {$pursuit_class}"  data-field=pursuit {$rowstyle} {$recordattrs}>
+		{$pursuit_value}
+	</td>
+{END pursuit_fieldcolumn}
+
+
+	{BEGIN active_fieldcolumn}<td class="bs-gridcell {$active_class}"  data-field=active {$rowstyle} {$recordattrs}>
+		{$active_value}
+	</td>
+{END active_fieldcolumn}
+
+	{BEGIN endrecord_block}<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
+	{END endrecord_block}
+									
+	<A class="rnr-button button" id="Check____" href="#" typeid="ib">&nbsp;Check&nbsp;...&nbsp;</A> 
+    {END grid_record}
+
+</tr>
+{END grid_row}
+	</tbody>
+	<tfoot>
+										
+	</tfoot>
+</table>
+
+
+
+{END grid_block}
+
+
+
+</div>
+{END container_grid}
+
+
+
+
+
+
+</div>
+{END container_center}
+
+
+
+{BEGIN container_pagination}<div {$pagination_chiddenattr} data-pageid="{$pageid}" data-container="pagination" class="  text-center col-md-12 "> 
+
+{BEGIN pagination_block}<div {$pagination_hiddenattr} data-pageid="{$pageid}" data-brick="pagination">
+{$pagination}
+</div>
+{END pagination_block}
+
+
+
+</div>
+{END container_pagination}
+
+
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>

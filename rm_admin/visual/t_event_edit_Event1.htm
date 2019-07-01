@@ -1,56 +1,126 @@
 <div {$pageattrs}>
 
-{BEGIN container_1}<TABLE class="fieldGrid" style="width: 95%;">
-      {BEGIN event_name_tabfieldblock}<tr class="{$fielddispclass_event_name}" data-fieldname="event_name">
-	<TD class="style1 rnr-label" style="width: 25% important!;">
-            {BEGIN event_name_label}{$label t_event event_name}{END event_name_label}
-	</td>
-	<TD class="rnr-control style3" style="width: 75%;">
-            {$event_name_editcontrol}&nbsp;
-	</td>
-</tr>
+{BEGIN container_tabfields}<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
+
+
+{BEGIN event_name_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_event_name}" data-fieldname="event_name" data-signal-error-for="event_name{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_event_name}">
+			{BEGIN event_name_label}{$label t_event event_name}{END event_name_label}
+		</label>
+		<div class="col-md-6 " >
+			{$event_name_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="event_name">
+			<div class="text-muted" >
+			{$tooltip t_event event_name}
+			</div>
+		</div>
+	</div>
+</div>
 {END event_name_tabfieldblock}
-{BEGIN event_type_tabfieldblock}<tr class="{$fielddispclass_event_type}" data-fieldname="event_type">
-	<td class="style1 rnr-label">
-		{BEGIN event_type_label}{$label t_event event_type}{END event_type_label}
-	</td>
-	<td class="rnr-control style3">
-		{$event_type_editcontrol}&nbsp;
-	</td>
-</tr>
+{BEGIN event_type_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_event_type}" data-fieldname="event_type" data-signal-error-for="event_type{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_event_type}">
+			{BEGIN event_type_label}{$label t_event event_type}{END event_type_label}
+		</label>
+		<div class="col-md-6 " >
+			{$event_type_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="event_type">
+			<div class="text-muted" >
+			{$tooltip t_event event_type}
+			</div>
+		</div>
+	</div>
+</div>
 {END event_type_tabfieldblock}
-{BEGIN event_open_tabfieldblock}<tr class="{$fielddispclass_event_open}" data-fieldname="event_open">
-	<td class="style1 rnr-label">
-		{BEGIN event_open_label}{$label t_event event_open}{END event_open_label}
-	</td>
-	<td class="rnr-control style3">
-		{$event_open_editcontrol}&nbsp;
-	</td>
-</tr>
+{BEGIN series_code_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_series_code}" data-fieldname="series_code" data-signal-error-for="series_code{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_series_code}">
+			{BEGIN series_code_label}{$label t_event series_code}{END series_code_label}
+		</label>
+		<div class="col-md-6 " >
+			{$series_code_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="series_code">
+			<div class="text-muted" >
+			{$tooltip t_event series_code}
+			</div>
+		</div>
+	</div>
+</div>
+{END series_code_tabfieldblock}
+{BEGIN event_open_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_event_open}" data-fieldname="event_open" data-signal-error-for="event_open{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_event_open}">
+			{BEGIN event_open_label}{$label t_event event_open}{END event_open_label}
+		</label>
+		<div class="col-md-6 " >
+			{$event_open_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="event_open">
+			<div class="text-muted" >
+			{$tooltip t_event event_open}
+			</div>
+		</div>
+	</div>
+</div>
 {END event_open_tabfieldblock}
-{BEGIN event_notes_tabfieldblock}<tr class="{$fielddispclass_event_notes}" data-fieldname="event_notes">
-	<td class="style1 rnr-label">
-		{BEGIN event_notes_label}{$label t_event event_notes}{END event_notes_label}
-	</td>
-	<td class="rnr-control style3">
-		{$event_notes_editcontrol}&nbsp;
-	</td>
-</tr>
+{BEGIN event_notes_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_event_notes}" data-fieldname="event_notes" data-signal-error-for="event_notes{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_event_notes}">
+			{BEGIN event_notes_label}{$label t_event event_notes}{END event_notes_label}
+		</label>
+		<div class="col-md-6 " >
+			{$event_notes_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="event_notes">
+			<div class="text-muted" >
+			{$tooltip t_event event_notes}
+			</div>
+		</div>
+	</div>
+</div>
 {END event_notes_tabfieldblock}
-{BEGIN display_code_tabfieldblock}<tr class="{$fielddispclass_display_code}" data-fieldname="display_code">
-	<td class="style1 rnr-label">
-		{BEGIN display_code_label}{$label t_event display_code}{END display_code_label}
-	</td>
-	<td class="rnr-control style3">
-		{$display_code_editcontrol}&nbsp;
-	</td>
-</tr>
+{BEGIN display_code_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_display_code}" data-fieldname="display_code" data-signal-error-for="display_code{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_display_code}">
+			{BEGIN display_code_label}{$label t_event display_code}{END display_code_label}
+		</label>
+		<div class="col-md-6 " >
+			{$display_code_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="display_code">
+			<div class="text-muted" >
+			{$tooltip t_event display_code}
+			</div>
+		</div>
+	</div>
+</div>
 {END display_code_tabfieldblock}
-</table>
+{BEGIN active_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_active}" data-fieldname="active" data-signal-error-for="active{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_active}">
+			{BEGIN active_label}{$label t_event active}{END active_label}
+		</label>
+		<div class="col-md-6 " >
+			{$active_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="active">
+			<div class="text-muted" >
+			{$tooltip t_event active}
+			</div>
+		</div>
+	</div>
+</div>
+{END active_tabfieldblock}
 
 
 
 
-{END container_1}
+
+</div>
+{END container_tabfields}
 
 </div>

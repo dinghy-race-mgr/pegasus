@@ -1,4 +1,74 @@
-<SPAN class="psus-masterlist">
-  {$pagetitlelabel t_cfgrace masterlist}
-</span>
-<br>
+<div {$pageattrs}>
+
+{BEGIN container_column}<div class="rnr-c rnr-ch rnr-c-column">
+
+{BEGIN masterlist_title}<div  class="style1 rnr-bl rnr-b-masterlistheader {$brickclass_masterlistheader}"><a {$backtomasterlink_attrs} class="btn btn-link btn-xs">Back to {$backtomasterlink_caption}</a><span>{$pagetitlelabel t_cfgrace masterlist}</span></div>
+{END masterlist_title}
+
+<div class="rnr-hfiller"></div>
+</div>
+{END container_column}
+
+
+
+{BEGIN container_mastergrid}<style>
+	.bs-gridcell[data-field=id]:before {
+		content: "{$label t_cfgrace id}";
+	}
+	.bs-gridcell[data-field=race_code]:before {
+		content: "{$label t_cfgrace race_code}";
+	}
+	.bs-gridcell[data-field=race_name]:before {
+		content: "{$label t_cfgrace race_name}";
+	}
+	.bs-gridcell[data-field=race_desc]:before {
+		content: "{$label t_cfgrace race_desc}";
+	}
+	.bs-gridcell[data-field=pursuit]:before {
+		content: "{$label t_cfgrace pursuit}";
+	}
+	.bs-gridcell[data-field=numstarts]:before {
+		content: "{$label t_cfgrace numstarts}";
+	}
+	.bs-gridcell[data-field=start_scheme]:before {
+		content: "{$label t_cfgrace start_scheme}";
+	}
+	.bs-gridcell[data-field=start_interval]:before {
+		content: "{$label t_cfgrace start_interval}";
+	}
+	.bs-gridcell[data-field=active]:before {
+		content: "{$label t_cfgrace active}";
+	}
+	.bs-gridcell[data-field=comp_pick]:before {
+		content: "{$label t_cfgrace comp_pick}";
+	}
+	.bs-gridcell[data-field=upddate]:before {
+		content: "{$label t_cfgrace upddate}";
+	}
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_cfgrace updby}";
+	}
+</style>
+<table {$masterlistgrid_hiddenattr} data-pageid="{$pageid}" data-brick="masterlistgrid" class="table rnr-b-mastergridfields rnr-gridtable bs-flexgrid" >
+		<thead>
+		<tr>
+			<th class="{$race_code_class}">{$label t_cfgrace race_code}</th>
+			<th class="{$race_name_class}">{$label t_cfgrace race_name}</th>
+		</tr>
+	</thead>
+	
+	<tbody>
+		<tr>
+			<td class="{$race_code_class} bs-gridcell" data-field=race_code>{$race_code_mastervalue}</td>
+			<td class="{$race_name_class} bs-gridcell" data-field=race_name>{$race_name_mastervalue}</td>
+		</tr>
+	</tbody>
+
+</table> 
+
+
+
+
+{END container_mastergrid}
+
+</div>{$pagetitlelabel t_cfgrace masterlist}

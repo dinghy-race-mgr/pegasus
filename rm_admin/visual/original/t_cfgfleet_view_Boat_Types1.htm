@@ -1,123 +1,108 @@
 <div {$pageattrs}>
 
-{BEGIN container_1}
+{BEGIN container_tabfields}
+<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class="    "> 
 
 
-
-<table class="fieldGrid">
+<div class="container">
 {BEGIN classinc_tabfieldblock}
-<tr class="{$fielddispclass_classinc}" data-fieldname="classinc">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet classinc}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_classinc">
-		{$classinc_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_classinc}" data-fieldname="classinc" >
+		<label class=" control-label" for="{$labelfor_classinc}">
+			{$label t_cfgfleet classinc}
+		</label>
+		<div class="" >
+			{$classinc_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END classinc_tabfieldblock}
 {BEGIN onlyinc_tabfieldblock}
-<tr class="{$fielddispclass_onlyinc}" data-fieldname="onlyinc">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet onlyinc}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_onlyinc">
-		{$onlyinc_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_onlyinc}" data-fieldname="onlyinc" >
+		<label class=" control-label" for="{$labelfor_onlyinc}">
+			{$label t_cfgfleet onlyinc}
+		</label>
+		<div class="" >
+			{$onlyinc_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END onlyinc_tabfieldblock}
 {BEGIN classexc_tabfieldblock}
-<tr class="{$fielddispclass_classexc}" data-fieldname="classexc">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet classexc}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_classexc">
-		{$classexc_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_classexc}" data-fieldname="classexc" >
+		<label class=" control-label" for="{$labelfor_classexc}">
+			{$label t_cfgfleet classexc}
+		</label>
+		<div class="" >
+			{$classexc_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END classexc_tabfieldblock}
 {BEGIN min_py_tabfieldblock}
-<tr class="{$fielddispclass_min_py}" data-fieldname="min_py">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet min_py}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_min_py">
-		{$min_py_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_min_py}" data-fieldname="min_py" >
+		<label class=" control-label" for="{$labelfor_min_py}">
+			{$label t_cfgfleet min_py}
+		</label>
+		<div class="" >
+			{$min_py_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END min_py_tabfieldblock}
 {BEGIN max_py_tabfieldblock}
-<tr class="{$fielddispclass_max_py}" data-fieldname="max_py">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet max_py}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_max_py">
-		{$max_py_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_max_py}" data-fieldname="max_py" >
+		<label class=" control-label" for="{$labelfor_max_py}">
+			{$label t_cfgfleet max_py}
+		</label>
+		<div class="" >
+			{$max_py_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END max_py_tabfieldblock}
 {BEGIN crew_tabfieldblock}
-<tr class="{$fielddispclass_crew}" data-fieldname="crew">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet crew}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_crew">
-		{$crew_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_crew}" data-fieldname="crew" >
+		<label class=" control-label" for="{$labelfor_crew}">
+			{$label t_cfgfleet crew}
+		</label>
+		<div class="" >
+			{$crew_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END crew_tabfieldblock}
 {BEGIN spintype_tabfieldblock}
-<tr class="{$fielddispclass_spintype}" data-fieldname="spintype">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet spintype}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_spintype">
-		{$spintype_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_spintype}" data-fieldname="spintype" >
+		<label class=" control-label" for="{$labelfor_spintype}">
+			{$label t_cfgfleet spintype}
+		</label>
+		<div class="" >
+			{$spintype_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END spintype_tabfieldblock}
 {BEGIN hulltype_tabfieldblock}
-<tr class="{$fielddispclass_hulltype}" data-fieldname="hulltype">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet hulltype}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_hulltype">
-		{$hulltype_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_hulltype}" data-fieldname="hulltype" >
+		<label class=" control-label" for="{$labelfor_hulltype}">
+			{$label t_cfgfleet hulltype}
+		</label>
+		<div class="" >
+			{$hulltype_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END hulltype_tabfieldblock}
 {BEGIN defaultfleet_tabfieldblock}
-<tr class="{$fielddispclass_defaultfleet}" data-fieldname="defaultfleet">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet defaultfleet}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_defaultfleet">
-		{$defaultfleet_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_defaultfleet}" data-fieldname="defaultfleet" >
+		<label class=" control-label" for="{$labelfor_defaultfleet}">
+			{$label t_cfgfleet defaultfleet}
+		</label>
+		<div class="" >
+			{$defaultfleet_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END defaultfleet_tabfieldblock}
-</table>
+</div>
 
 
 
 
-{END container_1}
+
+
+</div>
+{END container_tabfields}
 
 </div>

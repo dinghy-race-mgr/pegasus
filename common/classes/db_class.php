@@ -193,7 +193,6 @@ class DB
         $values = '('. implode(', ', $values) .')';
         
         $query .= $fields .' VALUES '. $values;
-        u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__);
 
         if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
         $insert  = $this->link->query( $query );

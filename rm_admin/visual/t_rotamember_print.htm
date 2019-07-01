@@ -2,6 +2,7 @@
 <html  {$html_attrs}>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{$pagetitle}</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -10,45 +11,40 @@
 		{END rtlCSS}
 		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
 		{END styleCSSFiles}
-		{BEGIN pageCSSFiles}<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
-		{END pageCSSFiles}
 	</head>
-	
+
 	<body class="{$stylename} function-print" {$bodyattrs}>
 	{BEGIN body}{$header}
-	<div class="rnr-page">
-		<div class="rnr-top {$blockclass_top}">
-			
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
 
-{BEGIN container_pdf}<div class="rnr-c rnr-ch rnr-c-pdf">
+{BEGIN container_pdf}<div {$pdf_chiddenattr} data-pageid="{$pageid}" data-container="pdf" class="   col-md-12 "> 
 
-{BEGIN printbuttons}<div  class="style1 rnr-bl rnr-b-printbuttons {$brickclass_printbuttons}">{BEGIN divideintopages_block}<a href="#" class="divideintopages rnr-button button" {$divideintopages_attrs}>Prepare for printing</a>
-{END divideintopages_block}
-</div>
-{END printbuttons}
+{BEGIN printbuttons}{END printbuttons}
 
-<div class="rnr-hfiller"></div>
+
+
 </div>
 {END container_pdf}
 
 
 
 
-		</div>
-		<div class="rnr-middle">
-			<div class="rnr-left {$blockclass_left}">
-				
-			</div>
-			<div class="rnr-center {$blockclass_center}">
-				
 
-{BEGIN container_pageheader}<div class="rnr-c rnr-cv rnr-c-pageheader">
+{BEGIN container_pageheader}<div {$pageheader_chiddenattr} data-pageid="{$pageid}" data-container="pageheader" class="    "> 
 
-{BEGIN printheader}<div  class="rnr-brickcontents style1 rnr-b-printheader {$brickclass_printheader}">	<h1>{$pagetitlelabel t_rotamember print}</h1>
-</div>{END printheader}
+{BEGIN printheader}<h2 {$printheader_hiddenattr} data-pageid="{$pageid}" data-brick="printheader" >{$pagetitlelabel t_rotamember print}</h2>
+	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
+
+{END printheader}
 
 
-{BEGIN page_number}<div  class="rnr-brickcontents style1 rnr-b-page_of_print {$brickclass_page_of_print}">Page <span class="rp-pageno">{$pageno}</span> of <span class="rp-pagecount">{$pagecount}</span></div>{END page_number}
+{BEGIN page_number}<span>Page <span class="rp-pageno">{$pageno}</span> of <span class="rp-pagecount">{$pagecount}</span></span>
+{END page_number}
+
 
 
 </div>
@@ -56,122 +52,101 @@
 
 
 
-{BEGIN container_grid}{BEGIN grid_block}<TABLE class="rnr-c rnr-c-grid rnr-b-grid rnr-gridtable rp-maintable" style="width: 965px;" cellpadding="0">
-                  <thead>
-	{BEGIN grid_header}<tr class="rnr-toprow style1 {$gridHeader_class}" >
-{BEGIN record_header}{BEGIN firstname_fieldheadercolumn}<TH class="runner-cc {$firstname_class}" style="width: 78px;" {$firstname_style}>
-                              {BEGIN firstname_fieldheader}<b>{$label t_rotamember firstname}</b>
-	{END firstname_fieldheader}
-</th>
-{END firstname_fieldheadercolumn}
-	{BEGIN surname_fieldheadercolumn}<th class="runner-cc {$surname_class}" {$surname_style}>
-	{BEGIN surname_fieldheader}<b>{$label t_rotamember surname}</b>
-	{END surname_fieldheader}
-</th>
-{END surname_fieldheadercolumn}
-	{BEGIN fullname_fieldheadercolumn}<th class="runner-cc {$fullname_class}" {$fullname_style}>
-	{BEGIN fullname_fieldheader}<b>{$label t_rotamember fullname}</b>
-	{END fullname_fieldheader}
-</th>
-{END fullname_fieldheadercolumn}
-	{BEGIN rota_fieldheadercolumn}<th class="runner-cc {$rota_class}" {$rota_style}>
-	{BEGIN rota_fieldheader}<b>{$label t_rotamember rota}</b>
-	{END rota_fieldheader}
-</th>
-{END rota_fieldheadercolumn}
-	{BEGIN phone_fieldheadercolumn}<TH class="runner-cc {$phone_class}" style="width: 89px;" {$phone_style}>
-                              {BEGIN phone_fieldheader}<b>{$label t_rotamember phone}</b>
-	{END phone_fieldheader}
-</th>
-{END phone_fieldheadercolumn}
-	{BEGIN email_fieldheadercolumn}<TH class="runner-cc {$email_class}" style="width: 143px;" {$email_style}>
-                              {BEGIN email_fieldheader}<b>{$label t_rotamember email}</b>
-	{END email_fieldheader}
-</th>
-{END email_fieldheadercolumn}
-	{BEGIN note_fieldheadercolumn}<TH class="runner-cc {$note_class}" style="width: 217px;" {$note_style}>
-                              {BEGIN note_fieldheader}<b>{$label t_rotamember note}</b>
-	{END note_fieldheader}
-</th>
-{END note_fieldheadercolumn}
-	{BEGIN partner_fieldheadercolumn}<th class="runner-cc {$partner_class}" {$partner_style}>
-	{BEGIN partner_fieldheader}<b>{$label t_rotamember partner}</b>
-	{END partner_fieldheader}
-</th>
-{END partner_fieldheadercolumn}
-	{BEGIN active_fieldheadercolumn}<th class="runner-cc {$active_class}" {$active_style}>
-	{BEGIN active_fieldheader}<b>{$label t_rotamember active}</b>
-	{END active_fieldheader}
-</th>
-{END active_fieldheadercolumn}
-		
-	<TH class="rnr-edge" style="width: 3px;">
-                            &nbsp;
-                          </th>
-	{BEGIN endrecordheader_block}<TH class="rnr-cs" style="width: 20px;">
+{BEGIN container_grid}{BEGIN grid_block}<table class="table table-bordered rp-maintable" {$printgrid_hiddenattr} data-pageid="{$pageid}" data-brick="printgrid" >
+	<thead>
+	{BEGIN grid_header}<tr class="{$gridHeader_class}" >
+		{BEGIN record_header}{BEGIN firstname_fieldheadercolumn}<th class="{$firstname_class}" {$firstname_style}  data-field="firstname">
+				{$label t_rotamember firstname}
+			</th>
+			{END firstname_fieldheadercolumn}
+			{BEGIN surname_fieldheadercolumn}<th class="{$surname_class}" {$surname_style}  data-field="surname">
+				{$label t_rotamember surname}
+			</th>
+			{END surname_fieldheadercolumn}
+			{BEGIN fullname_fieldheadercolumn}<th class="{$fullname_class}" {$fullname_style}  data-field="fullname">
+				{$label t_rotamember fullname}
+			</th>
+			{END fullname_fieldheadercolumn}
+			{BEGIN rota_fieldheadercolumn}<th class="{$rota_class}" {$rota_style}  data-field="rota">
+				{$label t_rotamember rota}
+			</th>
+			{END rota_fieldheadercolumn}
+			{BEGIN phone_fieldheadercolumn}<th class="{$phone_class}" {$phone_style}  data-field="phone">
+				{$label t_rotamember phone}
+			</th>
+			{END phone_fieldheadercolumn}
+			{BEGIN email_fieldheadercolumn}<th class="{$email_class}" {$email_style}  data-field="email">
+				{$label t_rotamember email}
+			</th>
+			{END email_fieldheadercolumn}
+			{BEGIN note_fieldheadercolumn}<th class="{$note_class}" {$note_style}  data-field="note">
+				{$label t_rotamember note}
+			</th>
+			{END note_fieldheadercolumn}
+			{BEGIN partner_fieldheadercolumn}<th class="{$partner_class}" {$partner_style}  data-field="partner">
+				{$label t_rotamember partner}
+			</th>
+			{END partner_fieldheadercolumn}
+			{BEGIN active_fieldheadercolumn}<th class="{$active_class}" {$active_style}  data-field="active">
+				{$label t_rotamember active}
+			</th>
+			{END active_fieldheadercolumn}
+			{BEGIN endrecordheader_block}<TH class="rnr-cs" style="width: 20px;">
                               &nbsp;
                             </th>
-	{END endrecordheader_block}
-	{END record_header}
-</tr>
-{END grid_header}
-
+			{END endrecordheader_block}
+		{END record_header}
+		</tr>
+	{END grid_header}
 	</thead>
+	
 	<tbody>	
-	{BEGIN grid_row}<tr class="rnr-row style1 {$rowclass}" {$rowattrs} {$rowstyle}>
-		{BEGIN grid_record}{BEGIN firstname_fieldcolumn}<TD class="runner-cc {$firstname_class}" style="width: 82px;" {$firstname_style} {$recordattrs}>
-                              {$firstname_value}
-</td>
-{END firstname_fieldcolumn}
-	{BEGIN surname_fieldcolumn}<td  class="runner-cc {$surname_class}" {$surname_style} {$recordattrs}>
-	{$surname_value}
-</td>
-{END surname_fieldcolumn}
-	{BEGIN fullname_fieldcolumn}<td  class="runner-cc {$fullname_class}" {$fullname_style} {$recordattrs}>
-	{$fullname_value}
-</td>
-{END fullname_fieldcolumn}
-	{BEGIN rota_fieldcolumn}<td  class="runner-cc {$rota_class}" {$rota_style} {$recordattrs}>
-	{$rota_value}
-</td>
-{END rota_fieldcolumn}
-	{BEGIN phone_fieldcolumn}<TD class="runner-cc {$phone_class}" style="width: 93px;" {$phone_style} {$recordattrs}>
-                              {$phone_value}
-</td>
-{END phone_fieldcolumn}
-	{BEGIN email_fieldcolumn}<TD class="runner-cc {$email_class}" style="width: 147px;" {$email_style} {$recordattrs}>
-                              {$email_value}
-</td>
-{END email_fieldcolumn}
-	{BEGIN note_fieldcolumn}<TD class="runner-cc {$note_class}" style="width: 221px;" {$note_style} {$recordattrs}>
-                              {$note_value}
-</td>
-{END note_fieldcolumn}
-	{BEGIN partner_fieldcolumn}<td  class="runner-cc {$partner_class}" {$partner_style} {$recordattrs}>
-	{$partner_value}
-</td>
-{END partner_fieldcolumn}
-	{BEGIN active_fieldcolumn}<td  class="runner-cc {$active_class}" {$active_style} {$recordattrs}>
-	{$active_value}
-</td>
-{END active_fieldcolumn}
-
-		<TD class="rnr-edge" style="width: 7px;" {$recordattrs}>
-                            &nbsp;
-                          </td>
-		{BEGIN endrecord_block}<TD class="rnr-cs" style="width: 20px;" {$endrecordblock_attrs}>
+	{BEGIN grid_row}<tr class="{$rowclass}" {$rowattrs} {$rowstyle}>
+		{BEGIN grid_record}{BEGIN firstname_fieldcolumn}<td  class="{$firstname_class}" {$firstname_style} {$recordattrs}>
+				{$firstname_value}
+			</td>
+			{END firstname_fieldcolumn}
+			{BEGIN surname_fieldcolumn}<td  class="{$surname_class}" {$surname_style} {$recordattrs}>
+				{$surname_value}
+			</td>
+			{END surname_fieldcolumn}
+			{BEGIN fullname_fieldcolumn}<td  class="{$fullname_class}" {$fullname_style} {$recordattrs}>
+				{$fullname_value}
+			</td>
+			{END fullname_fieldcolumn}
+			{BEGIN rota_fieldcolumn}<td  class="{$rota_class}" {$rota_style} {$recordattrs}>
+				{$rota_value}
+			</td>
+			{END rota_fieldcolumn}
+			{BEGIN phone_fieldcolumn}<td  class="{$phone_class}" {$phone_style} {$recordattrs}>
+				{$phone_value}
+			</td>
+			{END phone_fieldcolumn}
+			{BEGIN email_fieldcolumn}<td  class="{$email_class}" {$email_style} {$recordattrs}>
+				{$email_value}
+			</td>
+			{END email_fieldcolumn}
+			{BEGIN note_fieldcolumn}<td  class="{$note_class}" {$note_style} {$recordattrs}>
+				{$note_value}
+			</td>
+			{END note_fieldcolumn}
+			{BEGIN partner_fieldcolumn}<td  class="{$partner_class}" {$partner_style} {$recordattrs}>
+				{$partner_value}
+			</td>
+			{END partner_fieldcolumn}
+			{BEGIN active_fieldcolumn}<td  class="{$active_class}" {$active_style} {$recordattrs}>
+				{$active_value}
+			</td>
+			{END active_fieldcolumn}
+			{BEGIN endrecord_block}<TD class="rnr-cs" style="width: 20px;" {$endrecordblock_attrs}>
                               &nbsp;
                             </td>
-		{END endrecord_block}
-										
+			{END endrecord_block}
 		{END grid_record}
-
-	</tr>
-	{END grid_row}
-
-
-	
+		</tr>
+{END grid_row}
 	</tbody>
+
 </table>
 
 {END grid_block}
@@ -181,16 +156,24 @@
 {END container_grid}
 
 
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
 			</div>
-			<div class="rnr-right {$blockclass_right}">
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
 				
 			</div>
 		</div>
-		<div class="rnr-bottom {$blockclass_bottom}">
-			
+		<DIV class="bs-bottom">
+        
 		</div>
-	</div>
-		
 		{$footer}
 	{END body}
 	</body>

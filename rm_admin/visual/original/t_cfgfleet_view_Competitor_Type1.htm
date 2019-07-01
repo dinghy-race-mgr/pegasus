@@ -1,51 +1,48 @@
 <div {$pageattrs}>
 
-{BEGIN container_1}
+{BEGIN container_tabfields}
+<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class="    "> 
 
 
-
-<table class="fieldGrid">
+<div class="container">
 {BEGIN groupinc_tabfieldblock}
-<tr class="{$fielddispclass_groupinc}" data-fieldname="groupinc">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet groupinc}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_groupinc">
-		{$groupinc_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_groupinc}" data-fieldname="groupinc" >
+		<label class=" control-label" for="{$labelfor_groupinc}">
+			{$label t_cfgfleet groupinc}
+		</label>
+		<div class="" >
+			{$groupinc_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END groupinc_tabfieldblock}
 {BEGIN min_helmage_tabfieldblock}
-<tr class="{$fielddispclass_min_helmage}" data-fieldname="min_helmage">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet min_helmage}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_min_helmage">
-		{$min_helmage_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_min_helmage}" data-fieldname="min_helmage" >
+		<label class=" control-label" for="{$labelfor_min_helmage}">
+			{$label t_cfgfleet min_helmage}
+		</label>
+		<div class="" >
+			{$min_helmage_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END min_helmage_tabfieldblock}
 {BEGIN max_helmage_tabfieldblock}
-<tr class="{$fielddispclass_max_helmage}" data-fieldname="max_helmage">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet max_helmage}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_max_helmage">
-		{$max_helmage_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_max_helmage}" data-fieldname="max_helmage" >
+		<label class=" control-label" for="{$labelfor_max_helmage}">
+			{$label t_cfgfleet max_helmage}
+		</label>
+		<div class="" >
+			{$max_helmage_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END max_helmage_tabfieldblock}
-</table>
+</div>
 
 
 
 
-{END container_1}
+
+
+</div>
+{END container_tabfields}
 
 </div>

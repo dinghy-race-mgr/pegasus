@@ -33,6 +33,25 @@ EOT;
     return $html;
 }
 
+function error_msg($params = array())
+{
+    // TBD - see pick boat
+    $bufr = <<<EOT
+        <div class="row margin-top-10">
+           <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+               <div class="alert alert-danger rm-text-md" role="alert"> 
+                    <h1>Sorry ...</h1>
+                    <h3>{error}</h3>
+                    <h4>{detail}</h4>
+                    <hr>
+                    <p>{action}<p> 
+               </div>
+           </div>
+        </div>
+EOT;
+    return $bufr;
+}
+
 //function growls($params=array())
 ///*
 // FIELDS

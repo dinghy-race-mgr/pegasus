@@ -1,71 +1,94 @@
 <div {$pageattrs}>
-  {BEGIN container_1}
-    <TABLE class="fieldGrid" style="width: 95%;">
-      {BEGIN event_date_tabfieldblock}
-        <TR class="{$fielddispclass_event_date}" data-fieldname="event_date">
-          <TD class="style1 rnr-label" style="width: 25% important!;">
-            {BEGIN event_date_label}
-              {$label t_event event_date}
-            {END event_date_label}
-          </td>
-          <TD class="rnr-control style3" style="width: 75%;">
-            {$event_date_editcontrol}
-            &nbsp;
-          </td>
-        </tr>
-      {END event_date_tabfieldblock}
-      {BEGIN event_start_tabfieldblock}
-        <TR class="{$fielddispclass_event_start}" data-fieldname="event_start">
-          <TD class="style1 rnr-label">
-            {BEGIN event_start_label}
-              {$label t_event event_start}
-            {END event_start_label}
-          </td>
-          <TD class="rnr-control style3">
-            {$event_start_editcontrol}
-            &nbsp;
-          </td>
-        </tr>
-      {END event_start_tabfieldblock}
-      {BEGIN event_order_tabfieldblock}
-        <TR class="{$fielddispclass_event_order}" data-fieldname="event_order">
-          <TD class="style1 rnr-label">
-            {BEGIN event_order_label}
-              {$label t_event event_order}
-            {END event_order_label}
-          </td>
-          <TD class="rnr-control style3">
-            {$event_order_editcontrol}
-            &nbsp;
-          </td>
-        </tr>
-      {END event_order_tabfieldblock}
-      {BEGIN tide_time_tabfieldblock}
-        <TR class="{$fielddispclass_tide_time}" data-fieldname="tide_time">
-          <TD class="style1 rnr-label">
-            {BEGIN tide_time_label}
-              {$label t_event tide_time}
-            {END tide_time_label}
-          </td>
-          <TD class="rnr-control style3">
-            {$tide_time_editcontrol}
-            &nbsp;
-          </td>
-        </tr>
-      {END tide_time_tabfieldblock}
-      {BEGIN tide_height_tabfieldblock}
-        <TR class="{$fielddispclass_tide_height}" data-fieldname="tide_height">
-          <TD class="style1 rnr-label">
-            {BEGIN tide_height_label}
-              {$label t_event tide_height}
-            {END tide_height_label}
-          </td>
-          <TD class="rnr-control style3">
-            {$tide_height_editcontrol}
-            &nbsp;
-          </td>
-        </tr>
-      {END tide_height_tabfieldblock}
-    </table>
-  {END container_1}
+
+{BEGIN container_tabfields}<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
+
+
+{BEGIN event_date_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_event_date}" data-fieldname="event_date" data-signal-error-for="event_date{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_event_date}">
+			{BEGIN event_date_label}{$label t_event event_date}{END event_date_label}
+		</label>
+		<div class="col-md-6 " >
+			{$event_date_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="event_date">
+			<div class="text-muted" >
+			{$tooltip t_event event_date}
+			</div>
+		</div>
+	</div>
+</div>
+{END event_date_tabfieldblock}
+{BEGIN event_start_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_event_start}" data-fieldname="event_start" data-signal-error-for="event_start{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_event_start}">
+			{BEGIN event_start_label}{$label t_event event_start}{END event_start_label}
+		</label>
+		<div class="col-md-6 " >
+			{$event_start_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="event_start">
+			<div class="text-muted" >
+			{$tooltip t_event event_start}
+			</div>
+		</div>
+	</div>
+</div>
+{END event_start_tabfieldblock}
+{BEGIN event_order_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_event_order}" data-fieldname="event_order" data-signal-error-for="event_order{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_event_order}">
+			{BEGIN event_order_label}{$label t_event event_order}{END event_order_label}
+		</label>
+		<div class="col-md-6 " >
+			{$event_order_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="event_order">
+			<div class="text-muted" >
+			{$tooltip t_event event_order}
+			</div>
+		</div>
+	</div>
+</div>
+{END event_order_tabfieldblock}
+{BEGIN tide_time_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_tide_time}" data-fieldname="tide_time" data-signal-error-for="tide_time{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_tide_time}">
+			{BEGIN tide_time_label}{$label t_event tide_time}{END tide_time_label}
+		</label>
+		<div class="col-md-6 " >
+			{$tide_time_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="tide_time">
+			<div class="text-muted" >
+			{$tooltip t_event tide_time}
+			</div>
+		</div>
+	</div>
+</div>
+{END tide_time_tabfieldblock}
+{BEGIN tide_height_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_tide_height}" data-fieldname="tide_height" data-signal-error-for="tide_height{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_tide_height}">
+			{BEGIN tide_height_label}{$label t_event tide_height}{END tide_height_label}
+		</label>
+		<div class="col-md-6 " >
+			{$tide_height_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="tide_height">
+			<div class="text-muted" >
+			{$tooltip t_event tide_height}
+			</div>
+		</div>
+	</div>
+</div>
+{END tide_height_tabfieldblock}
+
+
+
+
+
+</div>
+{END container_tabfields}
+
 </div>

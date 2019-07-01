@@ -2,6 +2,7 @@
 <html  {$html_attrs}>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{$pagetitle}</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -12,184 +13,401 @@
 		{BEGIN styleCSSFiles}
 		<link REL="stylesheet" href="{$stylepath}" type="text/css">
 		{END styleCSSFiles}
-		{BEGIN pageCSSFiles}
-		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
-		{END pageCSSFiles}
 	</head>
-	
+
 	<body class="{$stylename} function-edit" {$bodyattrs}>
 	{BEGIN body}
 		{$header}
-	<div class="rnr-page">
-		<div class="rnr-top {$blockclass_top}">
-			
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
 
-{BEGIN container_all}
-<div class="rnr-c rnr-cv rnr-c-all">
+{BEGIN container_editpage}
+<div {$editpage_chiddenattr} data-pageid="{$pageid}" data-container="editpage" class="container    "> 
 
 
-<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
 
-{BEGIN container_add}
-<div class="rnr-c rnr-cv rnr-c-add">
+
+{BEGIN container_header}
+<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-9 col-md-offset-3"> 
 
 {BEGIN editheader}
-<div  class="rnr-brickcontents style2 rnr-b-editheader {$brickclass_editheader}"><span>	<h1>{$pagetitlelabel t_class edit}</h1>
-</span></div>{END editheader}
+	<h2 {$editheader_hiddenattr} data-pageid="{$pageid}" data-brick="editheader" >{$pagetitlelabel t_class edit}</h2>
+	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
 
+{END editheader}
+
+
+
+</div>
+{END container_header}
+
+
+
+
+
+
+
+
+{BEGIN container_message}
+<div {$message_chiddenattr} data-pageid="{$pageid}" data-container="message" class="   col-md-6 col-md-offset-3"> 
 
 {BEGIN message_block}
-<div  class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>{END message_block}
+<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">
+<h5>{$message}</h5>
+<div>
+{BEGIN back_button}
+		<button class="btn btn-sm btn-default" {$backbutton_attrs}>Back to list</button>
+{END back_button}
+{BEGIN view_page_button}
+	<button class="btn btn-sm btn-default" {$view_page_button_attrs}>View</button>
+{END view_page_button}
+</div>
+</div>
+
+{END message_block}
+
+
+
+</div>
+{END container_message}
 
 
 
 
-<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+
+
+
+</div>
+{END container_editpage}
+
+
 
 {BEGIN container_fields}
-<div class="rnr-c rnr-cv rnr-c-fields">
+<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class="   col-md-12 "> 
 
 
-<div  class="rnr-brickcontents style1 rnr-b-editfields2_atop {$brickclass_editfields2_atop}"><table class="fieldGrid fieldGrid2 edit">
+<div {$editfields_hiddenattr} data-pageid="{$pageid}" data-brick="editfields" class="form-horizontal" role="form">
 
-<tr>
-<td>
-	{BEGIN classname_fieldblock}
-<div data-fieldname="classname" class="rnr-field style1 {$fielddispclass_classname}">
-  <div class="rnr-label above">{BEGIN classname_label}{$label t_class classname}{END classname_label}</div>
-  <div class="rnr-control style3">{$classname_editcontrol}</div>
+
+
+			{BEGIN classname_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_classname}" data-fieldname="classname" data-signal-error-for="classname{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_classname}">
+		{BEGIN classname_label}{$label t_class classname}{END classname_label}
+	</label>
+	<div class="col-md-6" >
+		{$classname_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="classname">
+		<div class="text-muted" >
+		{$tooltip t_class classname}
+		</div>
+	</div>
+</div>
 </div>
 {END classname_fieldblock}
-	{BEGIN info_fieldblock}
-<div data-fieldname="info" class="rnr-field style1 {$fielddispclass_info}">
-  <div class="rnr-label above">{BEGIN info_label}{$label t_class info}{END info_label}</div>
-  <div class="rnr-control style3">{$info_editcontrol}</div>
+
+			{BEGIN info_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_info}" data-fieldname="info" data-signal-error-for="info{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_info}">
+		{BEGIN info_label}{$label t_class info}{END info_label}
+	</label>
+	<div class="col-md-6" >
+		{$info_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="info">
+		<div class="text-muted" >
+		{$tooltip t_class info}
+		</div>
+	</div>
+</div>
 </div>
 {END info_fieldblock}
-	{BEGIN nat_py_fieldblock}
-<div data-fieldname="nat_py" class="rnr-field style1 {$fielddispclass_nat_py}">
-  <div class="rnr-label above">{BEGIN nat_py_label}{$label t_class nat_py}{END nat_py_label}</div>
-  <div class="rnr-control style3">{$nat_py_editcontrol}</div>
+
+			{BEGIN nat_py_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_nat_py}" data-fieldname="nat_py" data-signal-error-for="nat_py{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_nat_py}">
+		{BEGIN nat_py_label}{$label t_class nat_py}{END nat_py_label}
+	</label>
+	<div class="col-md-6" >
+		{$nat_py_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="nat_py">
+		<div class="text-muted" >
+		{$tooltip t_class nat_py}
+		</div>
+	</div>
+</div>
 </div>
 {END nat_py_fieldblock}
-	{BEGIN local_py_fieldblock}
-<div data-fieldname="local_py" class="rnr-field style1 {$fielddispclass_local_py}">
-  <div class="rnr-label above">{BEGIN local_py_label}{$label t_class local_py}{END local_py_label}</div>
-  <div class="rnr-control style3">{$local_py_editcontrol}</div>
+
+			{BEGIN local_py_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_local_py}" data-fieldname="local_py" data-signal-error-for="local_py{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_local_py}">
+		{BEGIN local_py_label}{$label t_class local_py}{END local_py_label}
+	</label>
+	<div class="col-md-6" >
+		{$local_py_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="local_py">
+		<div class="text-muted" >
+		{$tooltip t_class local_py}
+		</div>
+	</div>
+</div>
 </div>
 {END local_py_fieldblock}
-	{BEGIN popular_fieldblock}
-<div data-fieldname="popular" class="rnr-field style1 {$fielddispclass_popular}">
-  <div class="rnr-label above">{BEGIN popular_label}{$label t_class popular}{END popular_label}</div>
-  <div class="rnr-control style3">{$popular_editcontrol}</div>
+
+			{BEGIN popular_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_popular}" data-fieldname="popular" data-signal-error-for="popular{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_popular}">
+		{BEGIN popular_label}{$label t_class popular}{END popular_label}
+	</label>
+	<div class="col-md-6" >
+		{$popular_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="popular">
+		<div class="text-muted" >
+		{$tooltip t_class popular}
+		</div>
+	</div>
+</div>
 </div>
 {END popular_fieldblock}
-	{BEGIN category_fieldblock}
-<div data-fieldname="category" class="rnr-field style1 {$fielddispclass_category}">
-  <div class="rnr-label above">{BEGIN category_label}{$label t_class category}{END category_label}</div>
-  <div class="rnr-control style3">{$category_editcontrol}</div>
+
+			{BEGIN category_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_category}" data-fieldname="category" data-signal-error-for="category{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_category}">
+		{BEGIN category_label}{$label t_class category}{END category_label}
+	</label>
+	<div class="col-md-6" >
+		{$category_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="category">
+		<div class="text-muted" >
+		{$tooltip t_class category}
+		</div>
+	</div>
+</div>
 </div>
 {END category_fieldblock}
-</td>
-<td>
-	{BEGIN crew_fieldblock}
-<div data-fieldname="crew" class="rnr-field style1 {$fielddispclass_crew}">
-  <div class="rnr-label above">{BEGIN crew_label}{$label t_class crew}{END crew_label}</div>
-  <div class="rnr-control style3">{$crew_editcontrol}</div>
+
+			{BEGIN crew_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_crew}" data-fieldname="crew" data-signal-error-for="crew{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_crew}">
+		{BEGIN crew_label}{$label t_class crew}{END crew_label}
+	</label>
+	<div class="col-md-6" >
+		{$crew_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="crew">
+		<div class="text-muted" >
+		{$tooltip t_class crew}
+		</div>
+	</div>
+</div>
 </div>
 {END crew_fieldblock}
-	{BEGIN spinnaker_fieldblock}
-<div data-fieldname="spinnaker" class="rnr-field style1 {$fielddispclass_spinnaker}">
-  <div class="rnr-label above">{BEGIN spinnaker_label}{$label t_class spinnaker}{END spinnaker_label}</div>
-  <div class="rnr-control style3">{$spinnaker_editcontrol}</div>
+
+			{BEGIN spinnaker_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_spinnaker}" data-fieldname="spinnaker" data-signal-error-for="spinnaker{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_spinnaker}">
+		{BEGIN spinnaker_label}{$label t_class spinnaker}{END spinnaker_label}
+	</label>
+	<div class="col-md-6" >
+		{$spinnaker_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="spinnaker">
+		<div class="text-muted" >
+		{$tooltip t_class spinnaker}
+		</div>
+	</div>
+</div>
 </div>
 {END spinnaker_fieldblock}
-	{BEGIN rig_fieldblock}
-<div data-fieldname="rig" class="rnr-field style1 {$fielddispclass_rig}">
-  <div class="rnr-label above">{BEGIN rig_label}{$label t_class rig}{END rig_label}</div>
-  <div class="rnr-control style3">{$rig_editcontrol}</div>
+
+			{BEGIN rig_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_rig}" data-fieldname="rig" data-signal-error-for="rig{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_rig}">
+		{BEGIN rig_label}{$label t_class rig}{END rig_label}
+	</label>
+	<div class="col-md-6" >
+		{$rig_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="rig">
+		<div class="text-muted" >
+		{$tooltip t_class rig}
+		</div>
+	</div>
+</div>
 </div>
 {END rig_fieldblock}
-	{BEGIN engine_fieldblock}
-<div data-fieldname="engine" class="rnr-field style1 {$fielddispclass_engine}">
-  <div class="rnr-label above">{BEGIN engine_label}{$label t_class engine}{END engine_label}</div>
-  <div class="rnr-control style3">{$engine_editcontrol}</div>
+
+			{BEGIN engine_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_engine}" data-fieldname="engine" data-signal-error-for="engine{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_engine}">
+		{BEGIN engine_label}{$label t_class engine}{END engine_label}
+	</label>
+	<div class="col-md-6" >
+		{$engine_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="engine">
+		<div class="text-muted" >
+		{$tooltip t_class engine}
+		</div>
+	</div>
+</div>
 </div>
 {END engine_fieldblock}
-	{BEGIN keel_fieldblock}
-<div data-fieldname="keel" class="rnr-field style1 {$fielddispclass_keel}">
-  <div class="rnr-label above">{BEGIN keel_label}{$label t_class keel}{END keel_label}</div>
-  <div class="rnr-control style3">{$keel_editcontrol}</div>
+
+			{BEGIN keel_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_keel}" data-fieldname="keel" data-signal-error-for="keel{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_keel}">
+		{BEGIN keel_label}{$label t_class keel}{END keel_label}
+	</label>
+	<div class="col-md-6" >
+		{$keel_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="keel">
+		<div class="text-muted" >
+		{$tooltip t_class keel}
+		</div>
+	</div>
+</div>
 </div>
 {END keel_fieldblock}
-</td>
-</tr>
-</table></div>
 
 
-{BEGIN editbuttons}
-<div  class="rnr-brickcontents style2 rnr-b-editbuttons {$brickclass_editbuttons}"><div class="rnr-buttons-right">
-	{BEGIN prev_button}
-	<a href="#" class="rnr-button {$prevbutton_class}" {$prevbutton_attrs}>&lt;&lt;&lt;</a>
-	{END prev_button}
-	{BEGIN next_button}
-	<a href="#" class="rnr-button  {$nextbutton_class}" {$nextbutton_attrs}>&gt;&gt;&gt;</a>
-	{END next_button}
 </div>
-<div class="rnr-buttons-left">
-		{BEGIN save_button}
-	<a href="#" class="rnr-button main" {$savebutton_attrs}>Save</a>
-	{END save_button}
-	{BEGIN reset_button}
-	<a href="#" class="rnr-button" {$resetbutton_attrs}>Reset</a>
-	{END reset_button}
-	{BEGIN back_button}
-		<a href="#" class="rnr-button" {$backbutton_attrs}>Back to list</a>
-	{END back_button}
-	{BEGIN close_button}
-	<a href="#" class="rnr-button" {$closebutton_attrs}>Close window</a>
-	{END close_button}
-		{BEGIN view_page_button}
-	<a href="#" class="rnr-button" {$view_page_button_attrs}>View</a>
-	{END view_page_button}
-</div>
-</div>{END editbuttons}
+
+
 
 
 </div>
 {END container_fields}
 
+
+
+{BEGIN container_bottombuttons}
+<div {$bottombuttons_chiddenattr} data-pageid="{$pageid}" data-container="bottombuttons" class="container    "> 
+
+
+
+
+{BEGIN container_buttons}
+<div {$buttons_chiddenattr} data-pageid="{$pageid}" data-container="buttons" class=" form-group   "> 
+
+
+
+
+{BEGIN container_leftbuttons}
+<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
+
+{BEGIN editbuttons}
+	{BEGIN save_button}
+	<button class="btn btn-primary" {$savebutton_attrs}>Save</button>
+	{END save_button}
+	{BEGIN back_button}
+		<button class="btn btn-default" {$backbutton_attrs}>Back to list</button>
+	{END back_button}
+	{BEGIN close_button}
+	<a href="#" class="btn btn-default" {$closebutton_attrs}>Cancel</a>
+	{END close_button}
+
+{END editbuttons}
+
+
+
 </div>
-
-
-</div>
-{END container_add}
-
-</div>
+{END container_leftbuttons}
 
 
 
-</div>
-{END container_all}
 
 
-		</div>
-		<div class="rnr-middle">
-			<div class="rnr-left {$blockclass_left}">
-				
-			</div>
-			<div class="rnr-center {$blockclass_center}">
-				
-			</div>
-			<div class="rnr-right {$blockclass_right}">
-				
-			</div>
-		</div>
-		<div class="rnr-bottom {$blockclass_bottom}">
-			<!--%%bottom%%-->
-		</div>
+
+
+
+{BEGIN container_leftbuttons_1}
+<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="  text-right col-md-3 "> 
+
+{BEGIN righteditbuttons}
+<div class="btn-group" role="group">
+
+	{BEGIN prev_button}
+	<button class="btn btn-default {$prevbutton_class}" {$prevbutton_attrs}><span class="glyphicon glyphicon-chevron-left"></span></button>
+	{END prev_button}
+	{BEGIN next_button}
+	<button class="btn btn-default  {$nextbutton_class}" {$nextbutton_attrs}><span class="glyphicon glyphicon-chevron-right"></span></button>
+	{END next_button}
+	<div class="btn-group dropup" role="group">
+		<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span class="glyphicon glyphicon-menu-hamburger"></span></button>
+		<ul class="dropdown-menu dropdown-left">
+			{BEGIN reset_button}
+				<li><a href="#" {$resetbutton_attrs}>Reset</a></li>
+			{END reset_button}
+			{BEGIN view_page_button}
+				<li><a href="#" {$view_page_button_attrs}>View</a></li>
+			{END view_page_button}
+		</ul>
 	</div>
-		
+</div>
+{END righteditbuttons}
+
+
+
+</div>
+{END container_leftbuttons_1}
+
+
+
+
+
+
+</div>
+{END container_buttons}
+
+
+
+
+
+
+</div>
+{END container_bottombuttons}
+
+
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		<DIV class="bs-bottom">
+        
+		</div>
 		{$footer}
 	{END body}
 	</body>

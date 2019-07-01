@@ -2,6 +2,7 @@
 <html  {$html_attrs}>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{$pagetitle}</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -12,102 +13,246 @@
 		{BEGIN styleCSSFiles}
 		<link REL="stylesheet" href="{$stylepath}" type="text/css">
 		{END styleCSSFiles}
-		{BEGIN pageCSSFiles}
-		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
-		{END pageCSSFiles}
 	</head>
-	
+
 	<body class="{$stylename} function-register" {$bodyattrs}>
 	{BEGIN body}
 		{$header}
-	<div class="rnr-page">
-		<div class="rnr-top {$blockclass_top}">
-			
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
 
-{BEGIN container_register}
-<div class="rnr-c rnr-cv rnr-c-register">
+{BEGIN container_regpage}
+<div {$regpage_chiddenattr} data-pageid="{$pageid}" data-container="regpage" class="container    "> 
+
+
+
+
+{BEGIN container_header}
+<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-6 col-md-offset-3"> 
 
 {BEGIN regheader}
-<div  class="rnr-brickcontents style2 rnr-b-regheader {$brickclass_regheader}"><span>	{$pagetitlelabel  register}
-</span></div>{END regheader}
+	<h2 {$regheader_hiddenattr} data-pageid="{$pageid}" data-brick="regheader">{$pagetitlelabel  register}</h2>
 
+{END regheader}
+
+
+
+</div>
+{END container_header}
+
+
+
+
+
+
+
+
+{BEGIN container_message}
+<div {$message_chiddenattr} data-pageid="{$pageid}" data-container="message" class="   col-md-6 col-md-offset-3"> 
 
 {BEGIN message_block}
-<div  class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>{END message_block}
+<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">
+<h5>{$message}</h5>
+<div>
+{BEGIN back_button}
+		<button class="btn btn-sm btn-default" {$backbutton_attrs}>Back to menu</button>
+{END back_button}
+{BEGIN view_page_button}
+	<button class="btn btn-sm btn-default" {$view_page_button_attrs}>View</button>
+{END view_page_button}
+</div>
+</div>
+
+{END message_block}
 
 
 
-<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+</div>
+{END container_message}
+
+
+
+
+
+
+
+</div>
+{END container_regpage}
+
+
 
 {BEGIN container_fields}
-<div class="rnr-c rnr-cv rnr-c-fields">
+<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class="   col-md-12 "> 
 
 
-<div  class="rnr-brickcontents style1 rnr-b-regfields_atop {$brickclass_regfields_atop}"><div class="rnr-simplefields edit register">
-	{BEGIN username_fieldblock}
-<div data-fieldname="username" class="rnr-field style1 {$fielddispclass_username}">
-  <div class="rnr-label above">{BEGIN username_label}{$label rm_admin_users username}{END username_label}</div>
-  <div class="rnr-control style3">{$username_editcontrol}</div>
+<div {$regfields_hiddenattr} data-pageid="{$pageid}" data-brick="regfields" class="form-horizontal" role="form">
+			
+		{BEGIN username_fieldblock}
+<div class="container">
+<div class="form-group {$fielddispclass_username}" data-fieldname="username" data-signal-error-for="username{$id}">
+	<label class="col-md-3 control-label" for="{$labelfor_username}">
+	{BEGIN username_label}{$label rm_admin_users username}{END username_label}
+	</label>
+	<div class="col-md-6">
+	{$username_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="username">
+		<div class="text-muted" >
+		{$tooltip rm_admin_users username}
+		</div>
+	</div>
+</div>
 </div>
 {END username_fieldblock}
-	{BEGIN password_fieldblock}
-<div data-fieldname="password" class="rnr-field style1 {$fielddispclass_password}">
-  <div class="rnr-label above">{BEGIN password_label}{$label rm_admin_users password}{END password_label}</div>
-  <div class="rnr-control style3">{$password_editcontrol}</div>
+					
+		{BEGIN password_fieldblock}
+<div class="container">
+<div class="form-group {$fielddispclass_password}" data-fieldname="password" data-signal-error-for="password{$id}">
+	<label class="col-md-3 control-label" for="{$labelfor_password}">
+	{BEGIN password_label}{$label rm_admin_users password}{END password_label}
+	</label>
+	<div class="col-md-6">
+	{$password_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="password">
+		<div class="text-muted" >
+		{$tooltip rm_admin_users password}
+		</div>
+	</div>
+</div>
 </div>
 {END password_fieldblock}
-	{BEGIN password_fieldblock}
-<div data-fieldname="password" class="rnr-field style1 {$fielddispclass_password}">
-  <div class="rnr-label above">{BEGIN confirm_label}Re-enter password{END confirm_label}</div>
-  <div class="rnr-control style3">{$confirm_editcontrol1}</div>
-  <div class="error">{$reenter_msg}</div>
+					{BEGIN confirm_block}
+<div class=container>
+<div class="{$fielddispclass_password} form-group" data-fieldname="confirm" data-signal-error-for="confirm{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_password_confirm}">
+		{BEGIN confirm_label}Re-enter password{END confirm_label}
+	</label>
+	<div class="col-md-6" >
+		{$confirm_editcontrol1}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="confirm">
+	</div>
 </div>
-{END password_fieldblock}
-	{BEGIN email_fieldblock}
-<div data-fieldname="email" class="rnr-field style1 {$fielddispclass_email}">
-  <div class="rnr-label above">{BEGIN email_label}{$label rm_admin_users email}{END email_label}</div>
-  <div class="rnr-control style3">{$email_editcontrol}</div>
+</div>
+{END confirm_block}
+			
+		{BEGIN email_fieldblock}
+<div class="container">
+<div class="form-group {$fielddispclass_email}" data-fieldname="email" data-signal-error-for="email{$id}">
+	<label class="col-md-3 control-label" for="{$labelfor_email}">
+	{BEGIN email_label}{$label rm_admin_users email}{END email_label}
+	</label>
+	<div class="col-md-6">
+	{$email_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="email">
+		<div class="text-muted" >
+		{$tooltip rm_admin_users email}
+		</div>
+	</div>
+</div>
 </div>
 {END email_fieldblock}
-</div></div>
-
-
-{BEGIN regbuttons}
-<div  class="rnr-brickcontents style2 rnr-b-regbuttons {$brickclass_regbuttons}"><div class="rnr-withsidelink">
-	<a href="#" class="rnr-button main" {$submit_attrs}>Register</a>
-	<a href="login.php" class="rnr-button link rnr-sidelink" {$backlink_attrs}>Back to login page</a>
+					
+		{BEGIN fullname_fieldblock}
+<div class="container">
+<div class="form-group {$fielddispclass_fullname}" data-fieldname="fullname" data-signal-error-for="fullname{$id}">
+	<label class="col-md-3 control-label" for="{$labelfor_fullname}">
+	{BEGIN fullname_label}{$label rm_admin_users fullname}{END fullname_label}
+	</label>
+	<div class="col-md-6">
+	{$fullname_editcontrol}
+	</div>
+	<div class="col-md-3 help-block" data-helpfor="fullname">
+		<div class="text-muted" >
+		{$tooltip rm_admin_users fullname}
+		</div>
+	</div>
 </div>
+</div>
+{END fullname_fieldblock}
+		</div>
 
-</div>{END regbuttons}
+
 
 
 </div>
 {END container_fields}
 
-</div>
 
 
-</div>
-{END container_register}
+{BEGIN container_bottombuttons}
+<div {$bottombuttons_chiddenattr} data-pageid="{$pageid}" data-container="bottombuttons" class="container    "> 
 
 
-		</div>
-		<div class="rnr-middle">
-			<div class="rnr-left {$blockclass_left}">
-				
-			</div>
-			<div class="rnr-center {$blockclass_center}">
-				
-			</div>
-			<div class="rnr-right {$blockclass_right}">
-				
-			</div>
-		</div>
-		<div class="rnr-bottom {$blockclass_bottom}">
-			<!--%%bottom%%-->
-		</div>
-	</div>
+
+
+{BEGIN container_buttons}
+<div {$buttons_chiddenattr} data-pageid="{$pageid}" data-container="buttons" class=" form-group   "> 
+
+
+
+
+{BEGIN container_leftbuttons}
+<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
+
+{BEGIN regbuttons}
+	<a href="#" class="btn btn-primary" {$submit_attrs}>Register</a>
+	<a href="login.php" class="btn btn-default" {$backlink_attrs}>Back to login page</a>
+
+	
+	
 		
+	
+	
+
+
+{END regbuttons}
+
+
+
+</div>
+{END container_leftbuttons}
+
+
+
+
+
+
+</div>
+{END container_buttons}
+
+
+
+
+
+
+</div>
+{END container_bottombuttons}
+
+
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		<DIV class="bs-bottom">
+        
+		</div>
 		{$footer}
 	{END body}
 	</body>

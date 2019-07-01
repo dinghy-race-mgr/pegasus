@@ -7,7 +7,7 @@
 /*
  * Main page template with defined header and footer
  */
- function basic_page($params = array())
+ function import_page($params = array())
  {
      $bufr = <<<EOT
      <!DOCTYPE html>

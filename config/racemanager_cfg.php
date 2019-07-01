@@ -15,4 +15,4 @@ $_SESSION['sys_copyright'] = "Elmswood Software ".date("Y");                    
 $_SESSION['sys_website']   = "http://dinghyracemanager.wordpress.com/";              // website
 
 $_SESSION['app_ini']       = "racemanager.ini";                                      // name of ini file for this app
-?>
+

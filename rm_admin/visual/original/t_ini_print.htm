@@ -2,6 +2,7 @@
 <html  {$html_attrs}>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{$pagetitle}</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -12,53 +13,47 @@
 		{BEGIN styleCSSFiles}
 		<link REL="stylesheet" href="{$stylepath}" type="text/css">
 		{END styleCSSFiles}
-		{BEGIN pageCSSFiles}
-		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
-		{END pageCSSFiles}
 	</head>
-	
+
 	<body class="{$stylename} function-print" {$bodyattrs}>
 	{BEGIN body}
 		{$header}
-	<div class="rnr-page">
-		<div class="rnr-top {$blockclass_top}">
-			
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
 
 {BEGIN container_pdf}
-<div class="rnr-c rnr-ch rnr-c-pdf">
+<div {$pdf_chiddenattr} data-pageid="{$pageid}" data-container="pdf" class="   col-md-12 "> 
 
 {BEGIN printbuttons}
-<div  class="style1 rnr-bl rnr-b-printbuttons {$brickclass_printbuttons}">{BEGIN divideintopages_block}
-<a href="#" class="divideintopages rnr-button button" {$divideintopages_attrs}>Prepare for printing</a>
-{END divideintopages_block}
-</div>
+
 {END printbuttons}
 
-<div class="rnr-hfiller"></div>
+
+
 </div>
 {END container_pdf}
 
 
 
 
-		</div>
-		<div class="rnr-middle">
-			<div class="rnr-left {$blockclass_left}">
-				
-			</div>
-			<div class="rnr-center {$blockclass_center}">
-				
 
 {BEGIN container_pageheader}
-<div class="rnr-c rnr-cv rnr-c-pageheader">
+<div {$pageheader_chiddenattr} data-pageid="{$pageid}" data-container="pageheader" class="    "> 
 
 {BEGIN printheader}
-<div  class="rnr-brickcontents style1 rnr-b-printheader {$brickclass_printheader}">	<h1>{$pagetitlelabel t_ini print}</h1>
-</div>{END printheader}
+	<h2 {$printheader_hiddenattr} data-pageid="{$pageid}" data-brick="printheader" >{$pagetitlelabel t_ini print}</h2>
+	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
+
+{END printheader}
 
 
 {BEGIN page_number}
-<div  class="rnr-brickcontents style1 rnr-b-page_of_print {$brickclass_page_of_print}"><h1>Page <span class="rp-pageno">{$pageno}</span> of <span class="rp-pagecount">{$pagecount}</span></h1></div>{END page_number}
+<span>Page <span class="rp-pageno">{$pageno}</span> of <span class="rp-pagecount">{$pagecount}</span></span>
+{END page_number}
+
 
 
 </div>
@@ -70,135 +65,111 @@
 
 
 {BEGIN grid_block}
-	<table class="rnr-c rnr-c-grid rnr-b-grid rnr-gridtable rp-maintable" cellpadding="0">
+	<table class="table table-bordered rp-maintable" {$printgrid_hiddenattr} data-pageid="{$pageid}" data-brick="printgrid" >
 	<thead>
 	{BEGIN grid_header}
-<tr class="rnr-toprow style1 {$gridHeader_class}" >
-{BEGIN record_header}
-		{BEGIN id_fieldheadercolumn}
-<th class="runner-cc {$id_class}" {$id_style}>
-	{BEGIN id_fieldheader}
-	<b>{$label t_ini id}</b>
-	{END id_fieldheader}
-</th>
-{END id_fieldheadercolumn}
-	{BEGIN label_fieldheadercolumn}
-<th class="runner-cc {$label_class}" {$label_style}>
-	{BEGIN label_fieldheader}
-	<b>{$label t_ini label}</b>
-	{END label_fieldheader}
-</th>
-{END label_fieldheadercolumn}
-	{BEGIN parameter_fieldheadercolumn}
-<th class="runner-cc {$parameter_class}" {$parameter_style}>
-	{BEGIN parameter_fieldheader}
-	<b>{$label t_ini parameter}</b>
-	{END parameter_fieldheader}
-</th>
-{END parameter_fieldheadercolumn}
-	{BEGIN value_fieldheadercolumn}
-<th class="runner-cc {$value_class}" {$value_style}>
-	{BEGIN value_fieldheader}
-	<b>{$label t_ini value}</b>
-	{END value_fieldheader}
-</th>
-{END value_fieldheadercolumn}
-	{BEGIN notes_fieldheadercolumn}
-<th class="runner-cc {$notes_class}" {$notes_style}>
-	{BEGIN notes_fieldheader}
-	<b>{$label t_ini notes}</b>
-	{END notes_fieldheader}
-</th>
-{END notes_fieldheadercolumn}
-	{BEGIN category_fieldheadercolumn}
-<th class="runner-cc {$category_class}" {$category_style}>
-	{BEGIN category_fieldheader}
-	<b>{$label t_ini category}</b>
-	{END category_fieldheader}
-</th>
-{END category_fieldheadercolumn}
-	{BEGIN upddate_fieldheadercolumn}
-<th class="runner-cc {$upddate_class}" {$upddate_style}>
-	{BEGIN upddate_fieldheader}
-	<b>{$label t_ini upddate}</b>
-	{END upddate_fieldheader}
-</th>
-{END upddate_fieldheadercolumn}
-	{BEGIN updby_fieldheadercolumn}
-<th class="runner-cc {$updby_class}" {$updby_style}>
-	{BEGIN updby_fieldheader}
-	<b>{$label t_ini updby}</b>
-	{END updby_fieldheader}
-</th>
-{END updby_fieldheadercolumn}
-		
-	<th class="rnr-edge">&nbsp;</th>
-	{BEGIN endrecordheader_block}
-	<th class="rnr-cs">&nbsp;</th>
-	{END endrecordheader_block}
-	{END record_header}
-</tr>
-{END grid_header}
-
+		<tr class="{$gridHeader_class}" >
+		{BEGIN record_header}
+			{BEGIN id_fieldheadercolumn}
+			<th class="{$id_class}" {$id_style}  data-field="id">
+				{$label t_ini id}
+			</th>
+			{END id_fieldheadercolumn}
+			{BEGIN label_fieldheadercolumn}
+			<th class="{$label_class}" {$label_style}  data-field="label">
+				{$label t_ini label}
+			</th>
+			{END label_fieldheadercolumn}
+			{BEGIN parameter_fieldheadercolumn}
+			<th class="{$parameter_class}" {$parameter_style}  data-field="parameter">
+				{$label t_ini parameter}
+			</th>
+			{END parameter_fieldheadercolumn}
+			{BEGIN value_fieldheadercolumn}
+			<th class="{$value_class}" {$value_style}  data-field="value">
+				{$label t_ini value}
+			</th>
+			{END value_fieldheadercolumn}
+			{BEGIN notes_fieldheadercolumn}
+			<th class="{$notes_class}" {$notes_style}  data-field="notes">
+				{$label t_ini notes}
+			</th>
+			{END notes_fieldheadercolumn}
+			{BEGIN category_fieldheadercolumn}
+			<th class="{$category_class}" {$category_style}  data-field="category">
+				{$label t_ini category}
+			</th>
+			{END category_fieldheadercolumn}
+			{BEGIN upddate_fieldheadercolumn}
+			<th class="{$upddate_class}" {$upddate_style}  data-field="upddate">
+				{$label t_ini upddate}
+			</th>
+			{END upddate_fieldheadercolumn}
+			{BEGIN updby_fieldheadercolumn}
+			<th class="{$updby_class}" {$updby_style}  data-field="updby">
+				{$label t_ini updby}
+			</th>
+			{END updby_fieldheadercolumn}
+			{BEGIN endrecordheader_block}
+			<th class="rnr-cs">&nbsp;</th>
+			{END endrecordheader_block}
+		{END record_header}
+		</tr>
+	{END grid_header}
 	</thead>
+	
 	<tbody>	
 	{BEGIN grid_row}
-	<tr class="rnr-row style1 {$rowclass}" {$rowattrs} {$rowstyle}>
+		<tr class="{$rowclass}" {$rowattrs} {$rowstyle}>
 		{BEGIN grid_record}
-				{BEGIN id_fieldcolumn}
-<td  class="runner-cc {$id_class}" {$id_style} {$recordattrs}>
-	{$id_value}
-</td>
-{END id_fieldcolumn}
-	{BEGIN label_fieldcolumn}
-<td  class="runner-cc {$label_class}" {$label_style} {$recordattrs}>
-	{$label_value}
-</td>
-{END label_fieldcolumn}
-	{BEGIN parameter_fieldcolumn}
-<td  class="runner-cc {$parameter_class}" {$parameter_style} {$recordattrs}>
-	{$parameter_value}
-</td>
-{END parameter_fieldcolumn}
-	{BEGIN value_fieldcolumn}
-<td  class="runner-cc {$value_class}" {$value_style} {$recordattrs}>
-	{$value_value}
-</td>
-{END value_fieldcolumn}
-	{BEGIN notes_fieldcolumn}
-<td  class="runner-cc {$notes_class}" {$notes_style} {$recordattrs}>
-	{$notes_value}
-</td>
-{END notes_fieldcolumn}
-	{BEGIN category_fieldcolumn}
-<td  class="runner-cc {$category_class}" {$category_style} {$recordattrs}>
-	{$category_value}
-</td>
-{END category_fieldcolumn}
-	{BEGIN upddate_fieldcolumn}
-<td  class="runner-cc {$upddate_class}" {$upddate_style} {$recordattrs}>
-	{$upddate_value}
-</td>
-{END upddate_fieldcolumn}
-	{BEGIN updby_fieldcolumn}
-<td  class="runner-cc {$updby_class}" {$updby_style} {$recordattrs}>
-	{$updby_value}
-</td>
-{END updby_fieldcolumn}
-
-		<td class="rnr-edge" {$recordattrs}>&nbsp;</td>
-		{BEGIN endrecord_block}
-		<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
-		{END endrecord_block}
-										
+			{BEGIN id_fieldcolumn}
+			<td  class="{$id_class}" {$id_style} {$recordattrs}>
+				{$id_value}
+			</td>
+			{END id_fieldcolumn}
+			{BEGIN label_fieldcolumn}
+			<td  class="{$label_class}" {$label_style} {$recordattrs}>
+				{$label_value}
+			</td>
+			{END label_fieldcolumn}
+			{BEGIN parameter_fieldcolumn}
+			<td  class="{$parameter_class}" {$parameter_style} {$recordattrs}>
+				{$parameter_value}
+			</td>
+			{END parameter_fieldcolumn}
+			{BEGIN value_fieldcolumn}
+			<td  class="{$value_class}" {$value_style} {$recordattrs}>
+				{$value_value}
+			</td>
+			{END value_fieldcolumn}
+			{BEGIN notes_fieldcolumn}
+			<td  class="{$notes_class}" {$notes_style} {$recordattrs}>
+				{$notes_value}
+			</td>
+			{END notes_fieldcolumn}
+			{BEGIN category_fieldcolumn}
+			<td  class="{$category_class}" {$category_style} {$recordattrs}>
+				{$category_value}
+			</td>
+			{END category_fieldcolumn}
+			{BEGIN upddate_fieldcolumn}
+			<td  class="{$upddate_class}" {$upddate_style} {$recordattrs}>
+				{$upddate_value}
+			</td>
+			{END upddate_fieldcolumn}
+			{BEGIN updby_fieldcolumn}
+			<td  class="{$updby_class}" {$updby_style} {$recordattrs}>
+				{$updby_value}
+			</td>
+			{END updby_fieldcolumn}
+			{BEGIN endrecord_block}
+			<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
+			{END endrecord_block}
 		{END grid_record}
-
-	</tr>
-	{END grid_row}
-
-
-	
+		</tr>
+{END grid_row}
 	</tbody>
+
 </table>
 
 {END grid_block}
@@ -208,16 +179,24 @@
 {END container_grid}
 
 
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
 			</div>
-			<div class="rnr-right {$blockclass_right}">
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
 				
 			</div>
 		</div>
-		<div class="rnr-bottom {$blockclass_bottom}">
-			<!--%%bottom%%-->
+		<DIV class="bs-bottom">
+        
 		</div>
-	</div>
-		
 		{$footer}
 	{END body}
 	</body>

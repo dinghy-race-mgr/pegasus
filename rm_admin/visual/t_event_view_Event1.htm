@@ -23,6 +23,17 @@
 	</td>
 </tr>
 {END event_type_tabfieldblock}
+{BEGIN series_code_tabfieldblock}<tr class="{$fielddispclass_series_code}" data-fieldname="series_code">
+	<td class="style1 rnr-label">
+		{$label t_event series_code}
+	</td>
+	<td class="rnr-control style3">
+		<div class="fieldvalue_series_code">
+		{$series_code_value}
+		</div>
+	</td>
+</tr>
+{END series_code_tabfieldblock}
 {BEGIN event_open_tabfieldblock}<tr class="{$fielddispclass_event_open}" data-fieldname="event_open">
 	<td class="style1 rnr-label">
 		{$label t_event event_open}
@@ -56,6 +67,17 @@
 	</td>
 </tr>
 {END display_code_tabfieldblock}
+{BEGIN active_tabfieldblock}<tr class="{$fielddispclass_active}" data-fieldname="active">
+	<td class="style1 rnr-label">
+		{$label t_event active}
+	</td>
+	<td class="rnr-control style3">
+		<div class="fieldvalue_active">
+		{$active_value}
+		</div>
+	</td>
+</tr>
+{END active_tabfieldblock}
 </table>
 
 

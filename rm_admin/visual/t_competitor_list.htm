@@ -2,6 +2,7 @@
 <html  {$html_attrs}>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{$pagetitle}</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -10,145 +11,316 @@
 		{END rtlCSS}
 		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
 		{END styleCSSFiles}
-		{BEGIN pageCSSFiles}<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
-		{END pageCSSFiles}
 	</head>
-	
+
 	<body class="{$stylename} function-list" {$bodyattrs}>
 	{BEGIN body}{$header}
-	<div class="rnr-page">
-		<div class="rnr-top {$blockclass_top}">
-			
+		<style>
+			{$containerCss}
+		</style>
+		{BEGIN container_menu}<nav {$menu_chiddenattr} data-pageid="{$pageid}" data-container="menu" class="navbar navbar-default ">					
 
-{BEGIN container_toplinks}<div class="rnr-c rnr-ch rnr-c-toplinks">
+
+
+{BEGIN container_hdr}<div {$hdr_chiddenattr} data-pageid="{$pageid}" data-container="hdr" class=" navbar-header   "> 
+
+{BEGIN logo_block}<a href="{$home_link}" {$logo_hiddenattr} data-pageid="{$pageid}" data-brick="logo" class="navbar-brand" >{$logo}</a>
+{END logo_block}
+
+
+{BEGIN collapse_block}<button {$bsnavbarcollapse_hiddenattr} data-pageid="{$pageid}" data-brick="bsnavbarcollapse" type="button" class="navbar-toggle collapsed" data-runner-toggle="collapse" data-target=".bs-navcontrolled">	
+	<span class="sr-only">Toggle navigation</span>	
+	<span class="icon-bar"></span>					
+</button>												
+
+{END collapse_block}
+
+
 
 </div>
-{END container_toplinks}
+{END container_hdr}
 
 
 
-{BEGIN container_hmenu}<div class="rnr-c rnr-ch rnr-c-hmenu">
 
-{BEGIN menu_block}{$menu main horizontal}{END menu_block}
 
-<div class="rnr-hfiller"></div>
-{BEGIN searchform_block}<div  class="style1 rnr-br rnr-b-search {$brickclass_search}">	<span>
-		{$simpleSearchFieldCombo}
-		{$simpleSearchTypeCombo}
-		{BEGIN searchform_text}<input type="text" {$searchfor_attrs} size="25">
-		{END searchform_text}
-		{BEGIN searchform_search}<a href="#" class="rnr-button img" data-icon="search" {$searchbutton_attrs}></a>
-		{END searchform_search}
-		{BEGIN searchform_showall}<a href="#" class="rnr-button" {$showAllCont_attrs} {$showallbutton_attrs}>Show all</a>
-		{END searchform_showall}
+
+{BEGIN container_menu_1}<div {$menu_1_chiddenattr} data-pageid="{$pageid}" data-container="menu_1" class="bs-navform navbar-collapse bs-navcontrolled bs-hidden-xs" aria-expanded="false" >												   
+{BEGIN menu_block}{$menu main horizontal}
+
+{END menu_block}
+
+
+
+
+
+{BEGIN container_more}<div {$more_chiddenattr} data-pageid="{$pageid}" data-container="more" class=" navbar-right navbar-form   "> 
+
+{BEGIN more_list}<div {$morebutton_hiddenattr} data-pageid="{$pageid}" data-brick="morebutton" class="btn-group bs-navsection">
+	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<span class="glyphicon glyphicon-cog"></span>
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu">
+		
+				{BEGIN exportselected_link}<li class="massButton{$id} disabled"><a href="#" {$exportselectedlink_attrs} {$exportselectedlink_span} >Export selected</a></li>
+		{END exportselected_link}
+		
+				{BEGIN deleteselected_link}<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
+		{END deleteselected_link}
+		
+				<li role="separator" class="divider"></li>	
+
+				{BEGIN asearch_link}<li><a href="t_competitor_search.php" {$advsearchlink_attrs}>Advanced search</a></li>
+		{END asearch_link}
+
+				{BEGIN searchPanelTopButtons}<li><a href=# id="showOptPanel{$id}">Show search panel</a></li>
+		{END searchPanelTopButtons}	
+		
+				
+				<li role="separator" class="divider"></li>	
+		
+				
+				{BEGIN export_link}<li><a target="_blank" href="t_competitor_export.php"  {$exportlink_attrs}>Export results</a></li>
+		{END export_link}
+
+				{BEGIN import_link}<li><a href="t_competitor_import.php?{$crosstable_attrs}"  {$importlink_attrs}>Import</a></li>
+		{END import_link}
+
+				
+	</ul>  
+</div>
+
+{END more_list}
+
+
+{BEGIN security_block}<span {$loggedas_hiddenattr} data-pageid="{$pageid}" data-brick="loggedas" id="login_block{$id}" class="bs-navsection">
+	{BEGIN guestloginbutton}<button class="btn btn-info" type="button" {$guestloginlink_attrs}>Login</button>
+	{END guestloginbutton}
+	{BEGIN loggedas_message}<span class="dropdown">
+			<button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<span class="glyphicon glyphicon-user"></span>	{$username}</button>
+			<ul class="dropdown-menu">
+		{BEGIN logoutbutton}<li><a href="#" {$logoutlink_attrs}>Log out</a></li>
+		{END logoutbutton}
+		
+		{BEGIN adminarea_link}<li><a href="admin_rights_list.php" {$adminarealink_attrs}>Admin Area</a></li>
+		{END adminarea_link}
+
+
+	{BEGIN changepwd_link}<li><a href="#" {$changepwdlink_attrs}>Change password</a></li>
+	{END changepwd_link}
+			</ul>
+		</span>
+	{END loggedas_message}
+</span>
+{END security_block}
+
+
+
+</div>
+{END container_more}
+
+
+
+
+
+
+
+
+{BEGIN container_more_1}<div {$more_1_chiddenattr} data-pageid="{$pageid}" data-container="more_1" class=" navbar-right navbar-form   "> 
+
+{BEGIN searchform_block}<span {$search_hiddenattr} data-pageid="{$pageid}" data-brick="search" class="form-group">
+
+	{$simpleSearchFieldCombo}
+	
+	{$simpleSearchTypeCombo}
+ <div  class="input-group">
+{BEGIN searchform_text}<input type="search" class="form-control" {$searchfor_attrs} size="25">
+{END searchform_text}
+	<span class="input-group-btn">
+	{BEGIN searchform_showall}<button class="btn btn-default" {$showAllCont_attrs} {$showallbutton_attrs} title="Show all">
+			<span class="glyphicon glyphicon-remove"></span>
+		</button>
+	{END searchform_showall}
+	{BEGIN searchform_search}<button {$searchbutton_attrs} class="btn btn-primary" >
+		<span class="glyphicon glyphicon-search"></span>
+	</button>
+	{END searchform_search}
 	</span>
 </div>
+		
+</span>
 {END searchform_block}
 
 
-{BEGIN searchformbuttons_block}<div  class="style1 rnr-br rnr-b-search_buttons {$brickclass_search_buttons}">{BEGIN searchPanelTopButtons}<span>
-	<a href="#" class="rnr-button img" id="showSrchWin{$id}" data-icon="panelfloat" {$showHideSearchWin_attrs}></a>
-	<a href="#" class="rnr-button img" id="showOptPanel{$id}" data-icon="paneldown" {$showHideSearchPanel_attrs}></a>
-</span>
-{END searchPanelTopButtons}
-</div>
-{END searchformbuttons_block}
-
-
-{BEGIN searchsaving_block}<div  class="style1 rnr-br rnr-b-search_saving_buttons {$brickclass_search_saving_buttons}"></div>
-{END searchsaving_block}
-
 
 </div>
-{END container_hmenu}
+{END container_more_1}
 
 
-		</div>
-		<div class="rnr-middle">
-			<div class="rnr-left {$blockclass_left}">
+
+
+												</div>						{END container_menu_1}
+
+
+									</nav>{END container_menu}
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
 				
+
+{BEGIN container_breadcrumbs}<div {$breadcrumbs_chiddenattr} data-pageid="{$pageid}" data-container="breadcrumbs" class="    "> 
+
+
+
+
+{BEGIN container_bc}<div {$bc_chiddenattr} data-pageid="{$pageid}" data-container="bc" class="    "> 
+
+{BEGIN breadcrumbs}<ol class="breadcrumb">
+<li ><a href="{$home_link}"><span class="glyphicon glyphicon-home"></span></a>{$crumb_dropdown}</li>
+{BEGIN crumb}<li class="{$crumb_item_class}">
+{BEGIN crumb_title_link}<a {$crumb_attrs}>{$crumb_title}</a>
+{END crumb_title_link}
+{BEGIN crumb_title_span}<span {$crumb_attrs}>{$crumb_title}</span>
+{END crumb_title_span}	
+	{$crumb_dropdown}
+  </li>
+{END crumb}
+</ol>
+{END breadcrumbs}
+
+
+
+</div>
+{END container_bc}
+
+
+
+
+
+
+</div>
+{END container_breadcrumbs}
+
+
+
+{BEGIN container_masterinfo}<div {$masterinfo_chiddenattr} data-pageid="{$pageid}" data-container="masterinfo" class="    "> 
+
+{BEGIN mastertable_block}<div class="panel panel-info table-panel">
+	<div class="panel-heading">
+		{$master_heading}
+	</div>
+	<div class="panel-body">
+		{$showmasterfile}
+		
+	</div>
+</div>
+
+]
+                      {END mastertable_block}
+
+
+
+</div>
+{END container_masterinfo}
+
+
 			</div>
-			<div class="rnr-center {$blockclass_center}">
+			<div class="bs-left" {$blockattr_left}>
 				
 
-{BEGIN container_recordcontrols}<div class="rnr-c rnr-ch rnr-c-recordcontrols">
 
-{$event t_competitor_snippet}
-                {BEGIN mastertable_block}<div  class="style1 rnr-bl rnr-b-masterinfo {$brickclass_masterinfo}">{$showmasterfile}
-<a class="runner-link" {$backtomasterlink_attrs}>
-	<b>Back to&nbsp;{$backtomasterlink_caption}]
-                      </b>
-</a></div>
-{END mastertable_block}
+			</div>
+			<div class="bs-center bs-screenwidth bs-minwidth">
+				
 
-<div class="rnr-hfiller"></div>
-{BEGIN newrecord_controls_block}<div  class="style1 rnr-br rnr-b-recordcontrols_new {$brickclass_recordcontrols_new}">		{BEGIN add_link}<a href="t_competitor_add.php" class="rnr-button" {$addlink_attrs}>Add new</a>
+{BEGIN container_gridcontrols}<div {$gridcontrols_chiddenattr} data-pageid="{$pageid}" data-container="gridcontrols" class="row rnr-rowcontainer bs-navcontrolled bs-hidden-xs">
+
+
+
+
+{BEGIN container_add_delete}<div {$add_delete_chiddenattr} data-pageid="{$pageid}" data-container="add_delete" class=" bottom-margin  col-md-6 "> 
+
+{BEGIN newrecord_controls_block}{BEGIN add_link}<a {$add_hiddenattr} data-pageid="{$pageid}" data-brick="add" type="button" class="btn btn-primary" {$addlink_attrs}>Add new</a>
 	{END add_link}
 
 	
-
-</div>
 {END newrecord_controls_block}
 
 
-{BEGIN record_controls_block}<div  class="style1 rnr-bl rnr-b-recordcontrol {$brickclass_recordcontrol}">{BEGIN widhtSelected}<span class="rnr-buttons-group">
-<a class="rnr-button {$withSelectedClass}" href="#" id="selectButtonsToggler{$id}">With selected...</a>
-<ul class="rnr-list" id="selectButtonsGroup{$id}">
-
-	
-		{BEGIN deleteselected_link}<li>
-		<a href="#" class="rnr-button link" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete</a>
-</li>
+{BEGIN record_controls_block}<span {$recordcontrol_hiddenattr} data-pageid="{$pageid}" data-brick="recordcontrol">
+		{BEGIN deleteselected_link}<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
 	{END deleteselected_link}
+		</span>
 
-		{BEGIN exportselected_link}<li>
-		<a href="#" class="rnr-button link" {$exportselectedlink_attrs} {$exportselectedlink_span}>Export</a>
-</li>
-	{END exportselected_link}
-
-</ul>
-</span>
-{END widhtSelected}
-	</div>
 {END record_controls_block}
 
 
-{BEGIN more_list}<div  class="style1 rnr-bl rnr-b-toplinks {$brickclass_toplinks}"><span class="rnr-buttons-group">
-{BEGIN moreButtons}<a class="rnr-button" id="extraButtonsToggler{$id}" href="#">More...</a>
-<ul class="rnr-list rnr-buttons-group" id="extraButtonsGroup{$id}">
-
-{BEGIN asearch_link}<li>
-	<a href="t_competitor_search.php" class="rnr-button link" {$advsearchlink_attrs}>Advanced search</a>
-</li>
-{END asearch_link}
-
-{BEGIN export_link}<li>
-	<a target="_blank" href="t_competitor_export.php" class="rnr-button link" {$exportlink_attrs}>Export results</a>
-</li>
-{END export_link}
-
-{BEGIN import_link}<li>
-	<a href="t_competitor_import.php?{$crosstable_attrs}" class="rnr-button link" {$importlink_attrs}>Import</a>
-</li>
-{END import_link}
-</ul>
-{END moreButtons}
-</span></div>
-{END more_list}
-
-<DIV class="rnr-hfiller" style="width: 50px;">
-                  &nbsp;
-                </div>
 
 </div>
-{END container_recordcontrols}
+{END container_add_delete}
 
 
 
-{BEGIN container_message}<div class="rnr-c rnr-ch rnr-c-message">
 
-{BEGIN message_block}<div  class="style1 rnr-bc rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>
+
+
+
+
+{BEGIN container_gridinfo}<div {$gridinfo_chiddenattr} data-pageid="{$pageid}" data-container="gridinfo" class=" bottom-margin pull-right text-right col-md-6 "> 
+
+{BEGIN details_found}<span {$details_found_hiddenattr} data-pageid="{$pageid}" data-brick="details_found" class="form-inline form-inline-always">
+	{$records_indicator}
+	<span>
+	{BEGIN recordspp_block}{$recsPerPage}
+	{END recordspp_block}
+	</span>
+</span>
+{END details_found}
+
+
+
+
+
+</div>
+{END container_gridinfo}
+
+
+
+
+
+
+
+</div>{END container_gridcontrols}
+
+
+
+{BEGIN container_tabs}<div {$tabs_chiddenattr} data-pageid="{$pageid}" data-container="tabs" class="    "> 
+
+{BEGIN grid_tabs}<div {$bsgrid_tabs_hiddenattr} data-pageid="{$pageid}" data-brick="bsgrid_tabs">
+<ul class="nav nav-tabs">
+{$grid_tabs_content}
+</ul>
+</div>
+{END grid_tabs}
+
+
+
+</div>
+{END container_tabs}
+
+
+
+{BEGIN container_messagerow}<div {$messagerow_chiddenattr} data-pageid="{$pageid}" data-container="messagerow" class="row rnr-rowcontainer ">
+
+
+
+
+{BEGIN container_message}<div {$message_chiddenattr} data-pageid="{$pageid}" data-container="message" class="   col-md-12 "> 
+
+{BEGIN message_block}<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">{$message}</div>
 {END message_block}
+
 
 
 </div>
@@ -156,127 +328,207 @@
 
 
 
-{BEGIN container_pagination}<div class="rnr-c rnr-ch rnr-multialign rnr-c-pagination">
-
-{BEGIN pagination_block}<div  class="style1 rnr-bc rnr-b-pagination {$brickclass_pagination}">{$pagination}</div>
-{END pagination_block}
-
-<div class="rnr-leftbricks">
-{BEGIN details_block}<div  class="style1 rnr-bl rnr-b-details_found {$brickclass_details_found}">	<span {$details_attrs}>
-			Details found: <b><span class="rnr-details_found_count">{$records_found}</span></b>
-	</span>
-</div>
-{END details_block}
-
-</div><div class="rnr-rightbricks">
-{BEGIN pages_block}<div  class="style1 rnr-br rnr-b-page_of {$brickclass_page_of}">	<span {$pages_attrs}>
-		Page <b>{$page}</b> of <b>{$maxpages}</b>
-	</span>
-
-</div>
-{END pages_block}
-
-
-{BEGIN recordspp_block}<div  class="style1 rnr-br rnr-b-recsperpage {$brickclass_recsperpage}">	<span id="recordspp_block{$id}" name="recordspp_block{$id}">
-			Records Per Page:&nbsp;{$recsPerPage}
-	</span>	
-</div>
-{END recordspp_block}
-
-</div>
-</div>
-{END container_pagination}
 
 
 
-{BEGIN container_grid}{BEGIN grid_block}<table class="rnr-c rnr-cont rnr-c-grid rnr-b-grid rnr-gridtable  hoverable " cellpadding="0" >
-						<thead>
-															{BEGIN grid_header}<tr class="rnr-toprow style1 {$gridHeader_class}" >
+</div>{END container_messagerow}
+
+
+
+{BEGIN container_center}<div {$center_chiddenattr} data-pageid="{$pageid}" data-container="center" class="    "> 
+
+
+
+
+{BEGIN container_grid}<div {$grid_chiddenattr} data-pageid="{$pageid}" data-container="grid" class="bs-grid    "> 
+
+{BEGIN grid_block}<style>
+	.bs-gridcell[data-field=id]:before {
+		content: "{$label t_competitor id}";
+	}
+	.bs-gridcell[data-field=classid]:before {
+		content: "{$label t_competitor classid}";
+	}
+	.bs-gridcell[data-field=boatnum]:before {
+		content: "{$label t_competitor boatnum}";
+	}
+	.bs-gridcell[data-field=sailnum]:before {
+		content: "{$label t_competitor sailnum}";
+	}
+	.bs-gridcell[data-field=boatname]:before {
+		content: "{$label t_competitor boatname}";
+	}
+	.bs-gridcell[data-field=helm]:before {
+		content: "{$label t_competitor helm}";
+	}
+	.bs-gridcell[data-field=helm_dob]:before {
+		content: "{$label t_competitor helm_dob}";
+	}
+	.bs-gridcell[data-field=helm_email]:before {
+		content: "{$label t_competitor helm_email}";
+	}
+	.bs-gridcell[data-field=crew]:before {
+		content: "{$label t_competitor crew}";
+	}
+	.bs-gridcell[data-field=crew_dob]:before {
+		content: "{$label t_competitor crew_dob}";
+	}
+	.bs-gridcell[data-field=crew_email]:before {
+		content: "{$label t_competitor crew_email}";
+	}
+	.bs-gridcell[data-field=club]:before {
+		content: "{$label t_competitor club}";
+	}
+	.bs-gridcell[data-field=personal_py]:before {
+		content: "{$label t_competitor personal_py}";
+	}
+	.bs-gridcell[data-field=skill_level]:before {
+		content: "{$label t_competitor skill_level}";
+	}
+	.bs-gridcell[data-field=flight]:before {
+		content: "{$label t_competitor flight}";
+	}
+	.bs-gridcell[data-field=regular]:before {
+		content: "{$label t_competitor regular}";
+	}
+	.bs-gridcell[data-field=last_entry]:before {
+		content: "{$label t_competitor last_entry}";
+	}
+	.bs-gridcell[data-field=last_event]:before {
+		content: "{$label t_competitor last_event}";
+	}
+	.bs-gridcell[data-field=active]:before {
+		content: "{$label t_competitor active}";
+	}
+	.bs-gridcell[data-field=prizelist]:before {
+		content: "{$label t_competitor prizelist}";
+	}
+	.bs-gridcell[data-field=grouplist]:before {
+		content: "{$label t_competitor grouplist}";
+	}
+	.bs-gridcell[data-field=memberid]:before {
+		content: "{$label t_competitor memberid}";
+	}
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_competitor updby}";
+	}
+	.bs-gridcell[data-field=upddate]:before {
+		content: "{$label t_competitor upddate}";
+	}
+</style>
+<table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
+	<thead>
+										{BEGIN grid_header}<tr class="rnr-toprow {$gridHeader_class}" >
 									{BEGIN record_header}{BEGIN listIcons_column}<th iEditCont="all">&nbsp;</th>
 									{END listIcons_column}	
 
-																		{BEGIN checkbox_column}<th class="rnr-bc">
+																		{BEGIN checkbox_column}<th class="">
 										<input type="checkbox" {$checkboxheader_attrs}>
 									</th>
 									{END checkbox_column}
 
 																		{BEGIN t_competitor_dtable_column}<th >&nbsp;</th>
 									{END t_competitor_dtable_column}
-																										{BEGIN active_fieldheadercolumn}<th class="rnr-gridfieldlabel {$active_class}">
+									
+									{BEGIN active_fieldheadercolumn}<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
 									{BEGIN active_fieldheader}<span {$active_orderlinkattrs}>
 											{$label t_competitor active}
 										</span>
 									{END active_fieldheader}
 									</th>
 									{END active_fieldheadercolumn}
-
-																	{BEGIN classid_fieldheadercolumn}<th class="rnr-gridfieldlabel {$classid_class}">
+									
+									
+									
+									
+									{BEGIN classid_fieldheadercolumn}<th class="rnr-gridfieldlabel {$classid_class}" data-field=classid>
 									{BEGIN classid_fieldheader}<span {$classid_orderlinkattrs}>
 											{$label t_competitor classid}
 										</span>
 									{END classid_fieldheader}
 									</th>
 									{END classid_fieldheadercolumn}
-
-																	{BEGIN boatnum_fieldheadercolumn}<th class="rnr-gridfieldlabel {$boatnum_class}">
+									
+									
+									
+									
+									{BEGIN boatnum_fieldheadercolumn}<th class="rnr-gridfieldlabel {$boatnum_class}" data-field=boatnum>
 									{BEGIN boatnum_fieldheader}<span {$boatnum_orderlinkattrs}>
 											{$label t_competitor boatnum}
 										</span>
 									{END boatnum_fieldheader}
 									</th>
 									{END boatnum_fieldheadercolumn}
-
-																	{BEGIN helm_fieldheadercolumn}<th class="rnr-gridfieldlabel {$helm_class}">
+									
+									
+									
+									
+									{BEGIN helm_fieldheadercolumn}<th class="rnr-gridfieldlabel {$helm_class}" data-field=helm>
 									{BEGIN helm_fieldheader}<span {$helm_orderlinkattrs}>
 											{$label t_competitor helm}
 										</span>
 									{END helm_fieldheader}
 									</th>
 									{END helm_fieldheadercolumn}
-
-																	{BEGIN crew_fieldheadercolumn}<th class="rnr-gridfieldlabel {$crew_class}">
+									
+									
+									
+									
+									{BEGIN crew_fieldheadercolumn}<th class="rnr-gridfieldlabel {$crew_class}" data-field=crew>
 									{BEGIN crew_fieldheader}<span {$crew_orderlinkattrs}>
 											{$label t_competitor crew}
 										</span>
 									{END crew_fieldheader}
 									</th>
 									{END crew_fieldheadercolumn}
-
-																	{BEGIN grouplist_fieldheadercolumn}<th class="rnr-gridfieldlabel {$grouplist_class}">
+									
+									
+									
+									
+									{BEGIN grouplist_fieldheadercolumn}<th class="rnr-gridfieldlabel {$grouplist_class}" data-field=grouplist>
 									{BEGIN grouplist_fieldheader}<span {$grouplist_orderlinkattrs}>
 											{$label t_competitor grouplist}
 										</span>
 									{END grouplist_fieldheader}
 									</th>
 									{END grouplist_fieldheadercolumn}
-
-																	{BEGIN prizelist_fieldheadercolumn}<th class="rnr-gridfieldlabel {$prizelist_class}">
+									
+									
+									
+									
+									{BEGIN prizelist_fieldheadercolumn}<th class="rnr-gridfieldlabel {$prizelist_class}" data-field=prizelist>
 									{BEGIN prizelist_fieldheader}<span {$prizelist_orderlinkattrs}>
 											{$label t_competitor prizelist}
 										</span>
 									{END prizelist_fieldheader}
 									</th>
 									{END prizelist_fieldheadercolumn}
-
-																	{BEGIN last_entry_fieldheadercolumn}<th class="rnr-gridfieldlabel {$last_entry_class}">
+									
+									
+									
+									
+									{BEGIN last_entry_fieldheadercolumn}<th class="rnr-gridfieldlabel {$last_entry_class}" data-field=last_entry>
 									{BEGIN last_entry_fieldheader}<span {$last_entry_orderlinkattrs}>
 											{$label t_competitor last_entry}
 										</span>
 									{END last_entry_fieldheader}
 									</th>
 									{END last_entry_fieldheadercolumn}
-
-																	{BEGIN regular_fieldheadercolumn}<th class="rnr-gridfieldlabel {$regular_class}">
+									
+									
+									
+									
+									{BEGIN regular_fieldheadercolumn}<th class="rnr-gridfieldlabel {$regular_class}" data-field=regular>
 									{BEGIN regular_fieldheader}<span {$regular_orderlinkattrs}>
 											{$label t_competitor regular}
 										</span>
 									{END regular_fieldheader}
 									</th>
 									{END regular_fieldheadercolumn}
-
-
 									
-									<th class="rnr-edge">&nbsp;</th>
+									
+									
+									
 									{BEGIN endrecordheader_block}<th class="rnr-cs">&nbsp;</th>
 									
 									{END endrecordheader_block}
@@ -286,150 +538,152 @@
 								</tr>
 								{END grid_header}
 
-						</thead>
-						<tbody>	
-															{BEGIN grid_row}<tr class="rnr-row style1 {$rowclass}" {$rowattrs} {$rowstyle}>
-									{BEGIN grid_record}{BEGIN listIcons_column}<td class="rnr-cc rnr-bc rnr-icons" iEditCont="all" {$rowstyle} {$recordattrs}>
-																		{BEGIN edit_column}{BEGIN edit_link}<a class="rnr-button-img" {$editlink_attrs} data-icon="edit" title="Edit"></a>
-									{END edit_link}
-									{END edit_column}
+	</thead>
+	<tbody>	
+		{BEGIN grid_row}<tr class="{$rowclass} bs-gridrow" {$rowattrs} {$rowstyle}>
+	{BEGIN grid_record}{BEGIN listIcons_column}<td class="bs-gridicons" iEditCont="all" {$rowstyle} {$recordattrs}>
+		{BEGIN edit_column}{BEGIN edit_link}<a class="glyphicon glyphicon-pencil" {$editlink_attrs} title="Edit"></a>
+	{END edit_link}
+	{END edit_column}
 
-									
-									
-																		{BEGIN view_column}{BEGIN view_link}<a class="rnr-button-img" {$viewlink_attrs} data-icon="view" title="View"></a>
-									{END view_link}
-									{END view_column}
-									</td>	
-									{END listIcons_column}	
+		
+	<span data-hidden {$ieditbuttonsholder_attrs}></span>
 
-																		{BEGIN checkbox_column}<td class="rnr-bc" iEditCont="checkBox" {$rowstyle} {$recordattrs}>
-									{BEGIN checkbox}<input type="checkbox" {$checkbox_attrs}>
-									{END checkbox}
-									</td>
-									{END checkbox_column}
+	
+		{BEGIN view_column}{BEGIN view_link}<a class="glyphicon glyphicon-search" {$viewlink_attrs} title="View"></a>
+	{END view_link}
+	{END view_column}
+	</td>	
+	{END listIcons_column}	
 
-																		{BEGIN t_competitor_dtable_column}<td class="rnr-nowrap" {$rowstyle} {$recordattrs}>
+		{BEGIN checkbox_column}<td  iEditCont="checkBox" class="bs-gridcheckbox" {$rowstyle} {$recordattrs}>
+	{BEGIN checkbox}<input type="checkbox" {$checkbox_attrs}>
+	{END checkbox}
+	</td>
+	{END checkbox_column}
 
-																		{BEGIN t_result_dtable_link}<span>
-									<a {$t_result_dtablelink_attrs}>
-										Results
-																				<span {$t_result_childnumber_attr} dir="ltr">{BEGIN t_result_childcount}({$t_result_childnumber}){END t_result_childcount}</span>
-									</a>
-																		&nbsp;
-									</span>
-									{END t_result_dtable_link}
-									
-									</td>
-									{END t_competitor_dtable_column}
+		{BEGIN t_competitor_dtable_column}<td class="rnr-nowrap bs-griddetails" {$rowstyle} {$recordattrs}>
+	
+			{BEGIN t_result_dtable_link}<span>
+			<a {$t_result_dtablelink_attrs}>
+			Results
+							<span {$t_result_childnumber_attr} dir="ltr">
+				{BEGIN t_result_childcount}
+					({$t_result_childnumber})
+				{END t_result_childcount}</span>
+			</a>
+						&nbsp;
+		</span>
+		{END t_result_dtable_link}
 
-										{BEGIN active_fieldcolumn}<td class="{$active_class}" {$active_style} {$recordattrs}>
+	
+	</td>
+	{END t_competitor_dtable_column}
+
+
+	{BEGIN active_fieldcolumn}<td class="bs-gridcell {$active_class}"  data-field=active {$rowstyle} {$recordattrs}>
 		{$active_value}
 	</td>
 {END active_fieldcolumn}
 
-	{BEGIN classid_fieldcolumn}<td class="{$classid_class}" {$classid_style} {$recordattrs}>
+
+	{BEGIN classid_fieldcolumn}<td class="bs-gridcell {$classid_class}"  data-field=classid {$rowstyle} {$recordattrs}>
 		{$classid_value}
 	</td>
 {END classid_fieldcolumn}
 
-	{BEGIN boatnum_fieldcolumn}<td class="{$boatnum_class}" {$boatnum_style} {$recordattrs}>
+
+	{BEGIN boatnum_fieldcolumn}<td class="bs-gridcell {$boatnum_class}"  data-field=boatnum {$rowstyle} {$recordattrs}>
 		{$boatnum_value}
 	</td>
 {END boatnum_fieldcolumn}
 
-	{BEGIN helm_fieldcolumn}<td class="{$helm_class}" {$helm_style} {$recordattrs}>
+
+	{BEGIN helm_fieldcolumn}<td class="bs-gridcell {$helm_class}"  data-field=helm {$rowstyle} {$recordattrs}>
 		{$helm_value}
 	</td>
 {END helm_fieldcolumn}
 
-	{BEGIN crew_fieldcolumn}<td class="{$crew_class}" {$crew_style} {$recordattrs}>
+
+	{BEGIN crew_fieldcolumn}<td class="bs-gridcell {$crew_class}"  data-field=crew {$rowstyle} {$recordattrs}>
 		{$crew_value}
 	</td>
 {END crew_fieldcolumn}
 
-	{BEGIN grouplist_fieldcolumn}<td class="{$grouplist_class}" {$grouplist_style} {$recordattrs}>
+
+	{BEGIN grouplist_fieldcolumn}<td class="bs-gridcell {$grouplist_class}"  data-field=grouplist {$rowstyle} {$recordattrs}>
 		{$grouplist_value}
 	</td>
 {END grouplist_fieldcolumn}
 
-	{BEGIN prizelist_fieldcolumn}<td class="{$prizelist_class}" {$prizelist_style} {$recordattrs}>
+
+	{BEGIN prizelist_fieldcolumn}<td class="bs-gridcell {$prizelist_class}"  data-field=prizelist {$rowstyle} {$recordattrs}>
 		{$prizelist_value}
 	</td>
 {END prizelist_fieldcolumn}
 
-	{BEGIN last_entry_fieldcolumn}<td class="{$last_entry_class}" {$last_entry_style} {$recordattrs}>
+
+	{BEGIN last_entry_fieldcolumn}<td class="bs-gridcell {$last_entry_class}"  data-field=last_entry {$rowstyle} {$recordattrs}>
 		{$last_entry_value}
 	</td>
 {END last_entry_fieldcolumn}
 
-	{BEGIN regular_fieldcolumn}<td class="{$regular_class}" {$regular_style} {$recordattrs}>
+
+	{BEGIN regular_fieldcolumn}<td class="bs-gridcell {$regular_class}"  data-field=regular {$rowstyle} {$recordattrs}>
 		{$regular_value}
 	</td>
 {END regular_fieldcolumn}
 
+	{BEGIN endrecord_block}<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
+	{END endrecord_block}
+									
+	{END grid_record}
 
-									<td class="rnr-edge" {$recordattrs}>&nbsp;</td>
-									{BEGIN endrecord_block}<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
-									{END endrecord_block}
-																	
-									{END grid_record}
+</tr>
+{END grid_row}
+	</tbody>
+	<tfoot>
+										
+	</tfoot>
+</table>
 
-								</tr>
-								{END grid_row}
-															
-						</tbody>
-					</table>
-					
+
 
 {END grid_block}
 
 
 
+</div>
 {END container_grid}
 
 
 
-{BEGIN container_pagination_bottom}<div class="rnr-c rnr-ch rnr-multialign rnr-c-pagination_bottom">
 
-{BEGIN pagination_block}<div  class="style1 rnr-bc rnr-b-pagination {$brickclass_pagination}">{$pagination}</div>
+
+
+</div>
+{END container_center}
+
+
+
+{BEGIN container_pagination}<div {$pagination_chiddenattr} data-pageid="{$pageid}" data-container="pagination" class="  text-center col-md-12 "> 
+
+{BEGIN pagination_block}<div {$pagination_hiddenattr} data-pageid="{$pageid}" data-brick="pagination">
+{$pagination}
+</div>
 {END pagination_block}
 
-<div class="rnr-leftbricks">
-{BEGIN details_block}<div  class="style1 rnr-bl rnr-b-details_found {$brickclass_details_found}">	<span {$details_attrs}>
-			Details found: <b><span class="rnr-details_found_count">{$records_found}</span></b>
-	</span>
-</div>
-{END details_block}
-
-</div><div class="rnr-rightbricks">
-{BEGIN pages_block}<div  class="style1 rnr-br rnr-b-page_of {$brickclass_page_of}">	<span {$pages_attrs}>
-		Page <b>{$page}</b> of <b>{$maxpages}</b>
-	</span>
-
-</div>
-{END pages_block}
 
 
-{BEGIN recordspp_block}<div  class="style1 rnr-br rnr-b-recsperpage {$brickclass_recsperpage}">	<span id="recordspp_block{$id}" name="recordspp_block{$id}">
-			Records Per Page:&nbsp;{$recsPerPage}
-	</span>	
 </div>
-{END recordspp_block}
-
-</div>
-</div>
-{END container_pagination_bottom}
+{END container_pagination}
 
 
 			</div>
-			<div class="rnr-right {$blockclass_right}">
+			<div class="bs-right">
 				
 			</div>
 		</div>
-		<div class="rnr-bottom {$blockclass_bottom}">
-			
-		</div>
-	</div>
 		
 		{$footer}
 	{END body}

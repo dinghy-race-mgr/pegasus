@@ -1,89 +1,231 @@
-<!DOCTYPE html>
-<HTML {$html_attrs}><HEAD> 
-<META http-equiv="X-UA-Compatible" content="IE=Edge"> <TITLE>{$pagetitle} </TITLE> 
-<META http-equiv="Content-Type" content="text/html; charset=utf-8"> 
-<LINK href="styles/default.css" rel="stylesheet" type="text/css"> {BEGIN rtlCSS}<LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">{END rtlCSS} {BEGIN styleCSSFiles}<LINK href="{$stylepath}" rel="stylesheet" type="text/css">{END styleCSSFiles} {BEGIN pageCSSFiles}<LINK href="{$pagestylepath}" rel="stylesheet" type="text/css">{END pageCSSFiles} 
-<META name="GENERATOR" content="MSHTML 11.00.9600.18161"></HEAD> 
-<BODY class="{$stylename} function-view" {$bodyattrs}>{BEGIN body}
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{$pagetitle}</title>
 
-{$header} 
-<DIV class="rnr-page">
-<DIV class="rnr-top {$blockclass_top}">
-{BEGIN container_all}
-<DIV class="rnr-c rnr-cv rnr-c-all">
-<DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
-{BEGIN container_add}
-<DIV class="rnr-c rnr-cv rnr-c-add">
-{BEGIN viewheader}<DIV class="rnr-brickcontents style2 rnr-b-viewheader {$brickclass_viewheader}"><SPAN>
-<H1>
-{$pagetitlelabel t_series view} 
-</H1></SPAN> </DIV>
-{END viewheader}{BEGIN message_block}<DIV class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}">
-<DIV class="rnr-message">
-{$message} </DIV></DIV>
-{END message_block}<DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
-{BEGIN container_fields}
-<DIV class="rnr-c rnr-cv rnr-c-fields" style="min-height: 277px; min-width: 626px;"> 
-<DIV class="rnr-brickcontents style1 rnr-b-viewfields2_atop {$brickclass_viewfields2_atop}">
-<TABLE class="fieldGrid fieldGrid2">
-  <TBODY>
-  <TR>
-    <TD>
-      {BEGIN seriescode_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_seriescode}" data-fieldname="seriescode">
-      <DIV class="rnr-label above">
-      {$label t_series seriescode} : </DIV>
-      <DIV class="rnr-control style3">
-      {$seriescode_value} </DIV></DIV>
-      {END seriescode_fieldblock}{BEGIN seriesname_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_seriesname}" data-fieldname="seriesname">
-      <DIV class="rnr-label above">
-      {$label t_series seriesname} : </DIV>
-      <DIV class="rnr-control style3">
-      {$seriesname_value} </DIV></DIV>
-      {END seriesname_fieldblock}{BEGIN seriestype_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_seriestype}" data-fieldname="seriestype">
-      <DIV class="rnr-label above">
-      {$label t_series seriestype} : </DIV>
-      <DIV class="rnr-control style3">
-      {$seriestype_value} </DIV></DIV>
-      {END seriestype_fieldblock}{BEGIN classresults_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_classresults}" data-fieldname="classresults">
-      <DIV class="rnr-label above">
-      {$label t_series classresults} : </DIV>
-      <DIV class="rnr-control style3">
-      {$classresults_value} </DIV></DIV>{END classresults_fieldblock}</TD>
-    <TD>
-      {BEGIN startdate_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_startdate}" data-fieldname="startdate">
-      <DIV class="rnr-label above">
-      {$label t_series startdate} : </DIV>
-      <DIV class="rnr-control style3">
-      {$startdate_value} </DIV></DIV>
-      {END startdate_fieldblock}{BEGIN enddate_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_enddate}" data-fieldname="enddate">
-      <DIV class="rnr-label above">
-      {$label t_series enddate} : </DIV>
-      <DIV class="rnr-control style3">
-      {$enddate_value} </DIV></DIV>
-      {END enddate_fieldblock}{BEGIN notes_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_notes}" data-fieldname="notes">
-      <DIV class="rnr-label above">
-      {$label t_series notes} 
-      : </DIV>
-      <DIV class="rnr-control style3">
-      {$notes_value} </DIV></DIV>
-      {END notes_fieldblock}{BEGIN active_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_active}" data-fieldname="active">
-      <DIV class="rnr-label above">
-      {$label t_series active} 
-      : </DIV>
-      <DIV class="rnr-control style3">
-      {$active_value} </DIV></DIV>{END active_fieldblock}</TD></TR></TBODY></TABLE> 
-</DIV>
-{BEGIN viewbuttons}<DIV class="rnr-brickcontents style2 rnr-b-viewbuttons {$brickclass_viewbuttons}">
-<DIV class="rnr-buttons-right">{BEGIN prev_button}<A class="rnr-button {$prevbutton_class}" href="#" {$prevbutton_attrs}>
-&lt;&lt;&lt;</A> {END prev_button}{BEGIN next_button}<A class="rnr-button {$nextbutton_class}" href="#" {$nextbutton_attrs}> &gt;&gt;&gt;</A> 
-{END next_button}</DIV>
-<DIV class="rnr-buttons-left">{BEGIN back_button}<A class="rnr-button" href="#" {$backbutton_attrs}> Back to list </A> {END back_button}{BEGIN close_button}<A class="rnr-button" href="#" {$closebutton_attrs}> 
-Close window </A> {END close_button}{BEGIN edit_page_button}<A class="rnr-button" href="#" {$edit_page_button_attrs}> Edit </A> 
-{END edit_page_button}</DIV></DIV>{END viewbuttons}</DIV> {END container_fields}</DIV></DIV> 
-{END container_add}</DIV></DIV> {END container_all}</DIV>
-<DIV class="rnr-middle">
-<DIV class="rnr-left {$blockclass_left}"></DIV>
-<DIV class="rnr-center {$blockclass_center}"></DIV>
-<DIV class="rnr-right {$blockclass_right}"></DIV></DIV>
-<DIV class="rnr-bottom {$blockclass_bottom}"><!--%%bottom%%--> </DIV></DIV>
-{$footer}{END body} </BODY></HTML>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+	</head>
+
+	<body class="{$stylename} function-view" {$bodyattrs}>
+	{BEGIN body}{$header}
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
+
+{BEGIN container_viewpage}<div {$viewpage_chiddenattr} data-pageid="{$pageid}" data-container="viewpage" class="container    "> 
+
+
+
+
+{BEGIN container_header}<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-12 "> 
+
+{BEGIN viewheader}<h2 {$viewheader_hiddenattr} data-pageid="{$pageid}" data-brick="viewheader" >{$pagetitlelabel t_series view}</h2>
+	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
+
+{END viewheader}
+
+
+
+</div>
+{END container_header}
+
+
+
+
+
+
+</div>
+{END container_viewpage}
+
+
+
+{BEGIN container_fields}<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class=" form-horizontal  col-md-12 "> 
+
+
+<div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
+
+	<div class="container">
+					{BEGIN seriescode_fieldblock}<div class="{$fielddispclass_seriescode} col-md-4 bs-viewcontrolgroup" data-fieldname="seriescode">
+		<label class="control-label" for="{$labelfor_seriescode}">
+			{$label t_series seriescode}
+		</label>
+		<div class="" >
+			{$seriescode_value}&nbsp;
+		</div>
+	</div>
+{END seriescode_fieldblock}
+					{BEGIN seriesname_fieldblock}<div class="{$fielddispclass_seriesname} col-md-4 bs-viewcontrolgroup" data-fieldname="seriesname">
+		<label class="control-label" for="{$labelfor_seriesname}">
+			{$label t_series seriesname}
+		</label>
+		<div class="" >
+			{$seriesname_value}&nbsp;
+		</div>
+	</div>
+{END seriesname_fieldblock}
+					{BEGIN seriestype_fieldblock}<div class="{$fielddispclass_seriestype} col-md-4 bs-viewcontrolgroup" data-fieldname="seriestype">
+		<label class="control-label" for="{$labelfor_seriestype}">
+			{$label t_series seriestype}
+		</label>
+		<div class="" >
+			{$seriestype_value}&nbsp;
+		</div>
+	</div>
+{END seriestype_fieldblock}
+					{BEGIN classresults_fieldblock}<div class="{$fielddispclass_classresults} col-md-4 bs-viewcontrolgroup" data-fieldname="classresults">
+		<label class="control-label" for="{$labelfor_classresults}">
+			{$label t_series classresults}
+		</label>
+		<div class="" >
+			{$classresults_value}&nbsp;
+		</div>
+	</div>
+{END classresults_fieldblock}
+					{BEGIN startdate_fieldblock}<div class="{$fielddispclass_startdate} col-md-4 bs-viewcontrolgroup" data-fieldname="startdate">
+		<label class="control-label" for="{$labelfor_startdate}">
+			{$label t_series startdate}
+		</label>
+		<div class="" >
+			{$startdate_value}&nbsp;
+		</div>
+	</div>
+{END startdate_fieldblock}
+					{BEGIN enddate_fieldblock}<div class="{$fielddispclass_enddate} col-md-4 bs-viewcontrolgroup" data-fieldname="enddate">
+		<label class="control-label" for="{$labelfor_enddate}">
+			{$label t_series enddate}
+		</label>
+		<div class="" >
+			{$enddate_value}&nbsp;
+		</div>
+	</div>
+{END enddate_fieldblock}
+					{BEGIN notes_fieldblock}<div class="{$fielddispclass_notes} col-md-4 bs-viewcontrolgroup" data-fieldname="notes">
+		<label class="control-label" for="{$labelfor_notes}">
+			{$label t_series notes}
+		</label>
+		<div class="" >
+			{$notes_value}&nbsp;
+		</div>
+	</div>
+{END notes_fieldblock}
+					{BEGIN active_fieldblock}<div class="{$fielddispclass_active} col-md-4 bs-viewcontrolgroup" data-fieldname="active">
+		<label class="control-label" for="{$labelfor_active}">
+			{$label t_series active}
+		</label>
+		<div class="" >
+			{$active_value}&nbsp;
+		</div>
+	</div>
+{END active_fieldblock}
+	</div>
+</div>
+
+
+
+
+</div>
+{END container_fields}
+
+
+
+{BEGIN container_bottombuttons}<div {$bottombuttons_chiddenattr} data-pageid="{$pageid}" data-container="bottombuttons" class="container    "> 
+
+
+
+
+{BEGIN container_buttons}<div {$buttons_chiddenattr} data-pageid="{$pageid}" data-container="buttons" class=" form-group   "> 
+
+
+
+
+{BEGIN container_leftbuttons}<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-8 "> 
+
+{BEGIN viewbuttons}{BEGIN back_button}<button class="btn btn-primary" {$backbutton_attrs}>Back to list</button>
+{END back_button}
+{BEGIN close_button}<button href="#" class="btn btn-primary" {$closebutton_attrs}>Close window</button>
+{END close_button}
+{END viewbuttons}
+
+
+
+</div>
+{END container_leftbuttons}
+
+
+
+
+
+
+
+
+{BEGIN container_leftbuttons_1}<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="   col-md-4 "> 
+
+{BEGIN rightviewbuttons}<div class="btn-group" role="group">
+		{BEGIN prev_button}<button class="btn btn-default {$prevbutton_class}" {$prevbutton_attrs}><span class="glyphicon glyphicon-chevron-left"></span></button>
+	{END prev_button}
+	{BEGIN next_button}<button class="btn btn-default {$nextbutton_class}" {$nextbutton_attrs}><span class="glyphicon glyphicon-chevron-right"></span></button>
+	{END next_button}
+		{BEGIN view_menu_button}<div class="btn-group dropup" role="group">
+		<button class="btn btn-default dropdown-toggle {$groupbutton_class}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span class="glyphicon glyphicon-menu-hamburger"></span></button>
+		<ul class="dropdown-menu dropdown-left">
+									{BEGIN edit_page_button}<li><a href=# {$edit_page_button_attrs}>Edit</a></li>
+			{END edit_page_button}
+		</ul>
+	</div>
+	{END view_menu_button}
+</div>
+{END rightviewbuttons}
+
+
+
+</div>
+{END container_leftbuttons_1}
+
+
+
+
+
+
+</div>
+{END container_buttons}
+
+
+
+
+
+
+</div>
+{END container_bottombuttons}
+
+
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		<DIV class="bs-bottom">
+        
+		</div>
+		{$footer}
+	{END body}
+	</body>
+</html>

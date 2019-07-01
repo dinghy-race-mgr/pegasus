@@ -2,6 +2,7 @@
 <html  {$html_attrs}>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{$pagetitle}</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -10,137 +11,286 @@
 		{END rtlCSS}
 		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
 		{END styleCSSFiles}
-		{BEGIN pageCSSFiles}<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
-		{END pageCSSFiles}
 	</head>
-	
+
 	<body class="{$stylename} function-add" {$bodyattrs}>
 	{BEGIN body}{$header}
-	<div class="rnr-page">
-		<div class="rnr-top {$blockclass_top}">
-			
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
 
-{BEGIN container_all}<div class="rnr-c rnr-cv rnr-c-all">
-
-
-<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
-
-{BEGIN container_add}<div class="rnr-c rnr-cv rnr-c-add">
-
-{BEGIN addheader}<div  class="rnr-brickcontents style2 rnr-b-addheader {$brickclass_addheader}"><span>	<h1>{$pagetitlelabel t_help add}</h1>
-</span></div>{END addheader}
-
-
-{BEGIN message_block}<div  class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>{END message_block}
+{BEGIN container_editpage}<div {$editpage_chiddenattr} data-pageid="{$pageid}" data-container="editpage" class="container    "> 
 
 
 
 
-<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+{BEGIN container_header}<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-9 col-md-offset-3"> 
 
-{BEGIN container_fields}<div class="rnr-c rnr-cv rnr-c-fields">
+{BEGIN addheader}<h2 {$addheader_hiddenattr} data-pageid="{$pageid}" data-brick="addheader" >{$pagetitlelabel t_help add}</h2>
+	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
+
+{END addheader}
 
 
-<div  class="rnr-brickcontents style1 rnr-b-addfields2_atop {$brickclass_addfields2_atop}"><table class="fieldGrid fieldGrid2 edit">
 
-<tr>
-<td>
-	{BEGIN updby_fieldblock}<div data-fieldname="updby" class="rnr-field style1 {$fielddispclass_updby}">
-  <div class="rnr-label above">{BEGIN updby_label}{$label t_help updby}{END updby_label}</div>
-  <div class="rnr-control style3">{$updby_editcontrol}</div>
 </div>
-{END updby_fieldblock}
-	{BEGIN upddate_fieldblock}<div data-fieldname="upddate" class="rnr-field style1 {$fielddispclass_upddate}">
-  <div class="rnr-label above">{BEGIN upddate_label}{$label t_help upddate}{END upddate_label}</div>
-  <div class="rnr-control style3">{$upddate_editcontrol}</div>
+{END container_header}
+
+
+
+
+
+
+
+
+{BEGIN container_message}<div {$message_chiddenattr} data-pageid="{$pageid}" data-container="message" class="   col-md-6 col-md-offset-3"> 
+
+{BEGIN message_block}<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">
+<h5>{$message}</h5>
+<div>
+{BEGIN back_button}<button class="btn btn-sm btn-default" {$backbutton_attrs}>Back to list</button>
+{END back_button}
+{BEGIN view_page_button}<button class="btn btn-sm btn-default" {$view_page_button_attrs}>View</button>
+{END view_page_button}
+{BEGIN edit_page_button}<button class="btn btn-sm btn-default" {$edit_page_button_attrs}>Edit</button>
+{END edit_page_button}
+</div>
+</div>
+
+{END message_block}
+
+
+
+</div>
+{END container_message}
+
+
+
+
+
+
+
+</div>
+{END container_editpage}
+
+
+
+{BEGIN container_fields}<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class="   col-md-12 "> 
+
+
+<div {$addfields_hiddenattr} data-pageid="{$pageid}" data-brick="addfields" class="form-horizontal" role="form">
+			{BEGIN upddate_fieldblock}<div class=container>
+<div class="form-group {$fielddispclass_upddate}" data-fieldname="upddate" data-signal-error-for="upddate{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_upddate}">
+		{BEGIN upddate_label}{$label t_help upddate}{END upddate_label}
+	</label>
+	<div class="col-md-5" >
+		{$upddate_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="upddate">
+		<div class="text-muted" >
+		{$tooltip t_help upddate}
+		</div>
+	</div>
+</div>
 </div>
 {END upddate_fieldblock}
-	{BEGIN category_fieldblock}<div data-fieldname="category" class="rnr-field style1 {$fielddispclass_category}">
-  <div class="rnr-label above">{BEGIN category_label}{$label t_help category}{END category_label}</div>
-  <div class="rnr-control style3">{$category_editcontrol}</div>
+
+			{BEGIN updby_fieldblock}<div class=container>
+<div class="form-group {$fielddispclass_updby}" data-fieldname="updby" data-signal-error-for="updby{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_updby}">
+		{BEGIN updby_label}{$label t_help updby}{END updby_label}
+	</label>
+	<div class="col-md-5" >
+		{$updby_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="updby">
+		<div class="text-muted" >
+		{$tooltip t_help updby}
+		</div>
+	</div>
+</div>
+</div>
+{END updby_fieldblock}
+
+			{BEGIN category_fieldblock}<div class=container>
+<div class="form-group {$fielddispclass_category}" data-fieldname="category" data-signal-error-for="category{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_category}">
+		{BEGIN category_label}{$label t_help category}{END category_label}
+	</label>
+	<div class="col-md-5" >
+		{$category_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="category">
+		<div class="text-muted" >
+		{$tooltip t_help category}
+		</div>
+	</div>
+</div>
 </div>
 {END category_fieldblock}
-	{BEGIN question_fieldblock}<div data-fieldname="question" class="rnr-field style1 {$fielddispclass_question}">
-  <div class="rnr-label above">{BEGIN question_label}{$label t_help question}{END question_label}</div>
-  <div class="rnr-control style3">{$question_editcontrol}</div>
+
+			{BEGIN question_fieldblock}<div class=container>
+<div class="form-group {$fielddispclass_question}" data-fieldname="question" data-signal-error-for="question{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_question}">
+		{BEGIN question_label}{$label t_help question}{END question_label}
+	</label>
+	<div class="col-md-5" >
+		{$question_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="question">
+		<div class="text-muted" >
+		{$tooltip t_help question}
+		</div>
+	</div>
+</div>
 </div>
 {END question_fieldblock}
-</td>
-<td>
-	{BEGIN answer_fieldblock}<div data-fieldname="answer" class="rnr-field style1 {$fielddispclass_answer}">
-  <div class="rnr-label above">{BEGIN answer_label}{$label t_help answer}{END answer_label}</div>
-  <div class="rnr-control style3">{$answer_editcontrol}</div>
+
+			{BEGIN answer_fieldblock}<div class=container>
+<div class="form-group {$fielddispclass_answer}" data-fieldname="answer" data-signal-error-for="answer{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_answer}">
+		{BEGIN answer_label}{$label t_help answer}{END answer_label}
+	</label>
+	<div class="col-md-5" >
+		{$answer_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="answer">
+		<div class="text-muted" >
+		{$tooltip t_help answer}
+		</div>
+	</div>
+</div>
 </div>
 {END answer_fieldblock}
-	{BEGIN notes_fieldblock}<div data-fieldname="notes" class="rnr-field style1 {$fielddispclass_notes}">
-  <div class="rnr-label above">{BEGIN notes_label}{$label t_help notes}{END notes_label}</div>
-  <div class="rnr-control style3">{$notes_editcontrol}</div>
+
+			{BEGIN notes_fieldblock}<div class=container>
+<div class="form-group {$fielddispclass_notes}" data-fieldname="notes" data-signal-error-for="notes{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_notes}">
+		{BEGIN notes_label}{$label t_help notes}{END notes_label}
+	</label>
+	<div class="col-md-5" >
+		{$notes_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="notes">
+		<div class="text-muted" >
+		{$tooltip t_help notes}
+		</div>
+	</div>
+</div>
 </div>
 {END notes_fieldblock}
-	{BEGIN author_fieldblock}<div data-fieldname="author" class="rnr-field style1 {$fielddispclass_author}">
-  <div class="rnr-label above">{BEGIN author_label}{$label t_help author}{END author_label}</div>
-  <div class="rnr-control style3">{$author_editcontrol}</div>
+
+			{BEGIN author_fieldblock}<div class=container>
+<div class="form-group {$fielddispclass_author}" data-fieldname="author" data-signal-error-for="author{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_author}">
+		{BEGIN author_label}{$label t_help author}{END author_label}
+	</label>
+	<div class="col-md-5" >
+		{$author_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="author">
+		<div class="text-muted" >
+		{$tooltip t_help author}
+		</div>
+	</div>
+</div>
 </div>
 {END author_fieldblock}
-	{BEGIN rank_fieldblock}<div data-fieldname="rank" class="rnr-field style1 {$fielddispclass_rank}">
-  <div class="rnr-label above">{BEGIN rank_label}{$label t_help rank}{END rank_label}</div>
-  <div class="rnr-control style3">{$rank_editcontrol}</div>
+
+			{BEGIN rank_fieldblock}<div class=container>
+<div class="form-group {$fielddispclass_rank}" data-fieldname="rank" data-signal-error-for="rank{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_rank}">
+		{BEGIN rank_label}{$label t_help rank}{END rank_label}
+	</label>
+	<div class="col-md-5" >
+		{$rank_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="rank">
+		<div class="text-muted" >
+		{$tooltip t_help rank}
+		</div>
+	</div>
+</div>
 </div>
 {END rank_fieldblock}
-</td>
-</tr>
-</table></div>
 
 
-{BEGIN addbuttons}<div  class="rnr-brickcontents style2 rnr-b-addbuttons {$brickclass_addbuttons}"><div class="rnr-buttons-left">
-		{BEGIN save_button}<a href="#" class="rnr-button main" id="saveButton{$id}" {$savebutton_attrs}>Save</a>
-	{END save_button}
-	{BEGIN reset_button}<a href="#" class="rnr-button" id="resetButton{$id}">Reset</a>
-	{END reset_button}
-	{BEGIN cancel_button}<a href="#" class="rnr-button" id="cancelButton{$id}">Cancel</a>
-	{END cancel_button}
-	{BEGIN back_button}<a href="#" class="rnr-button" id="backButton{$id}">Back to list</a>
-	{END back_button}
-	{BEGIN backToMenu_button}<a href="#" class="rnr-button" id="backToMenuButton{$id}">Back to menu</a>
-	{END backToMenu_button}
 </div>
-</div>{END addbuttons}
+
+
 
 
 </div>
 {END container_fields}
 
+
+
+{BEGIN container_bottombuttons}<div {$bottombuttons_chiddenattr} data-pageid="{$pageid}" data-container="bottombuttons" class="container    "> 
+
+
+
+
+{BEGIN container_buttons}<div {$buttons_chiddenattr} data-pageid="{$pageid}" data-container="buttons" class=" form-group   "> 
+
+
+
+
+{BEGIN container_leftbuttons}<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
+
+{BEGIN addbuttons}{BEGIN save_button}<button class="btn btn-primary" {$savebutton_attrs}>Save</button>
+	{END save_button}
+	{BEGIN reset_button}<button class="btn btn-default" id="resetButton{$id}">Reset</button>
+	{END reset_button}
+	{BEGIN back_button}<button class="btn btn-default" id="backButton{$id}">Back to list</button>
+	{END back_button}
+	{BEGIN cancel_button}<a href="#" class="btn btn-default" id="cancelButton{$id}">Cancel</a>
+	{END cancel_button}
+
+{END addbuttons}
+
+
+
 </div>
+{END container_leftbuttons}
 
 
-</div>
-{END container_add}
 
-</div>
 
 
 
 </div>
-{END container_all}
+{END container_buttons}
+
+
+
+
+
+
+</div>
+{END container_bottombuttons}
 
 
 		</div>
-		<div class="rnr-middle">
-			<div class="rnr-left {$blockclass_left}">
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
 				
 			</div>
-			<div class="rnr-center {$blockclass_center}">
+			<div class="bs-left" {$blockattr_left}>
 				
 			</div>
-			<div class="rnr-right {$blockclass_right}">
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
 				
 			</div>
 		</div>
-		<div class="rnr-bottom {$blockclass_bottom}">
-			
+		<DIV class="bs-bottom">
+        
 		</div>
-	</div>
-		
 		{$footer}
 	{END body}
 	</body>

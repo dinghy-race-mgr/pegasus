@@ -1,16 +1,15 @@
 <div {$pageattrs}>
 
-{BEGIN container_masterlistheader}
-<div class="rnr-c rnr-ch rnr-c-masterlistheader">
+{BEGIN container_column}
+<div class="rnr-c rnr-ch rnr-c-column">
 
-
-<div  class="style1 rnr-bl rnr-b-masterlistheader {$brickclass_masterlistheader}">	<h1>{$pagetitlelabel t_event masterlist}</h1>
-</div>
-
+{BEGIN masterlist_title}
+<div  class="style1 rnr-bl rnr-b-masterlistheader {$brickclass_masterlistheader}"><a {$backtomasterlink_attrs} class="btn btn-link btn-xs">Back to {$backtomasterlink_caption}</a><span>{$pagetitlelabel t_event masterlist}</span></div>
+{END masterlist_title}
 
 <div class="rnr-hfiller"></div>
 </div>
-{END container_masterlistheader}
+{END container_column}
 
 
 
@@ -18,23 +17,106 @@
 
 
 
-<table class="rnr-c rnr-cont rnr-c-mastergrid rnr-b-mastergridfields rnr-gridtable" cellpadding="0" >
-	<thead>
-		<tr class="rnr-toprow style1 {$gridHeader_class}" >
-			<th class="{$active_class}">{$label t_event active}</th>
+	<style>
+	.bs-gridcell[data-field=id]:before {
+		content: "{$label t_event id}";
+	}
+	.bs-gridcell[data-field=event_date]:before {
+		content: "{$label t_event event_date}";
+	}
+	.bs-gridcell[data-field=event_start]:before {
+		content: "{$label t_event event_start}";
+	}
+	.bs-gridcell[data-field=event_order]:before {
+		content: "{$label t_event event_order}";
+	}
+	.bs-gridcell[data-field=event_name]:before {
+		content: "{$label t_event event_name}";
+	}
+	.bs-gridcell[data-field=series_code]:before {
+		content: "{$label t_event series_code}";
+	}
+	.bs-gridcell[data-field=event_type]:before {
+		content: "{$label t_event event_type}";
+	}
+	.bs-gridcell[data-field=event_format]:before {
+		content: "{$label t_event event_format}";
+	}
+	.bs-gridcell[data-field=event_entry]:before {
+		content: "{$label t_event event_entry}";
+	}
+	.bs-gridcell[data-field=event_status]:before {
+		content: "{$label t_event event_status}";
+	}
+	.bs-gridcell[data-field=event_open]:before {
+		content: "{$label t_event event_open}";
+	}
+	.bs-gridcell[data-field=tide_time]:before {
+		content: "{$label t_event tide_time}";
+	}
+	.bs-gridcell[data-field=tide_height]:before {
+		content: "{$label t_event tide_height}";
+	}
+	.bs-gridcell[data-field=start_scheme]:before {
+		content: "{$label t_event start_scheme}";
+	}
+	.bs-gridcell[data-field=start_interval]:before {
+		content: "{$label t_event start_interval}";
+	}
+	.bs-gridcell[data-field=ws_start]:before {
+		content: "{$label t_event ws_start}";
+	}
+	.bs-gridcell[data-field=wd_start]:before {
+		content: "{$label t_event wd_start}";
+	}
+	.bs-gridcell[data-field=ws_end]:before {
+		content: "{$label t_event ws_end}";
+	}
+	.bs-gridcell[data-field=wd_end]:before {
+		content: "{$label t_event wd_end}";
+	}
+	.bs-gridcell[data-field=event_notes]:before {
+		content: "{$label t_event event_notes}";
+	}
+	.bs-gridcell[data-field=result_notes]:before {
+		content: "{$label t_event result_notes}";
+	}
+	.bs-gridcell[data-field=display_code]:before {
+		content: "{$label t_event display_code}";
+	}
+	.bs-gridcell[data-field=upddate]:before {
+		content: "{$label t_event upddate}";
+	}
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_event updby}";
+	}
+	.bs-gridcell[data-field=weblink]:before {
+		content: "{$label t_event weblink}";
+	}
+	.bs-gridcell[data-field=webname]:before {
+		content: "{$label t_event webname}";
+	}
+	.bs-gridcell[data-field=active]:before {
+		content: "{$label t_event active}";
+	}
+</style>
+<table {$masterlistgrid_hiddenattr} data-pageid="{$pageid}" data-brick="masterlistgrid" class="table rnr-b-mastergridfields rnr-gridtable bs-flexgrid" >
+		<thead>
+		<tr>
 			<th class="{$event_name_class}">{$label t_event event_name}</th>
 			<th class="{$event_date_class}">{$label t_event event_date}</th>
-			<th class="rnr-edge">&nbsp;</th>
+			<th class="{$event_start_class}">{$label t_event event_start}</th>
 		</tr>
 	</thead>
+	
 	<tbody>
-		<tr class="rnr-row style1">
-			<td class="{$active_class}">{$active_mastervalue}</td>
-			<td class="{$event_name_class}">{$event_name_mastervalue}</td>
-			<td class="{$event_date_class}">{$event_date_mastervalue}</td>
-			<td class="rnr-edge">&nbsp;</td>
+		<tr>
+			<td class="{$event_name_class} bs-gridcell" data-field=event_name>{$event_name_mastervalue}</td>
+			<td class="{$event_date_class} bs-gridcell" data-field=event_date>{$event_date_mastervalue}</td>
+			<td class="{$event_start_class} bs-gridcell" data-field=event_start>{$event_start_mastervalue}</td>
 		</tr>
 	</tbody>
+
 </table> 
 
 

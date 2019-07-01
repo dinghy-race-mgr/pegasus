@@ -1,75 +1,68 @@
 <div {$pageattrs}>
 
-{BEGIN container_1}
+{BEGIN container_tabfields}
+<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class="    "> 
 
 
-
-<table class="fieldGrid">
+<div class="container">
 {BEGIN fleet_num_tabfieldblock}
-<tr class="{$fielddispclass_fleet_num}" data-fieldname="fleet_num">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet fleet_num}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_fleet_num">
-		{$fleet_num_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_fleet_num}" data-fieldname="fleet_num" >
+		<label class=" control-label" for="{$labelfor_fleet_num}">
+			{$label t_cfgfleet fleet_num}
+		</label>
+		<div class="" >
+			{$fleet_num_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END fleet_num_tabfieldblock}
 {BEGIN start_num_tabfieldblock}
-<tr class="{$fielddispclass_start_num}" data-fieldname="start_num">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet start_num}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_start_num">
-		{$start_num_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_start_num}" data-fieldname="start_num" >
+		<label class=" control-label" for="{$labelfor_start_num}">
+			{$label t_cfgfleet start_num}
+		</label>
+		<div class="" >
+			{$start_num_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END start_num_tabfieldblock}
 {BEGIN fleet_code_tabfieldblock}
-<tr class="{$fielddispclass_fleet_code}" data-fieldname="fleet_code">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet fleet_code}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_fleet_code">
-		{$fleet_code_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_fleet_code}" data-fieldname="fleet_code" >
+		<label class=" control-label" for="{$labelfor_fleet_code}">
+			{$label t_cfgfleet fleet_code}
+		</label>
+		<div class="" >
+			{$fleet_code_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END fleet_code_tabfieldblock}
 {BEGIN fleet_name_tabfieldblock}
-<tr class="{$fielddispclass_fleet_name}" data-fieldname="fleet_name">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet fleet_name}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_fleet_name">
-		{$fleet_name_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_fleet_name}" data-fieldname="fleet_name" >
+		<label class=" control-label" for="{$labelfor_fleet_name}">
+			{$label t_cfgfleet fleet_name}
+		</label>
+		<div class="" >
+			{$fleet_name_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END fleet_name_tabfieldblock}
 {BEGIN fleet_desc_tabfieldblock}
-<tr class="{$fielddispclass_fleet_desc}" data-fieldname="fleet_desc">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet fleet_desc}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_fleet_desc">
-		{$fleet_desc_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_fleet_desc}" data-fieldname="fleet_desc" >
+		<label class=" control-label" for="{$labelfor_fleet_desc}">
+			{$label t_cfgfleet fleet_desc}
+		</label>
+		<div class="" >
+			{$fleet_desc_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END fleet_desc_tabfieldblock}
-</table>
+</div>
 
 
 
 
-{END container_1}
+
+
+</div>
+{END container_tabfields}
 
 </div>

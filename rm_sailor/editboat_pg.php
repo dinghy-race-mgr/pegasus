@@ -19,6 +19,7 @@ require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("./include/rm_sailor_lib.php");
 
 u_initpagestart(0,"editboat_pg",false);   // starts session and sets error reporting
+
 // libraries
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");

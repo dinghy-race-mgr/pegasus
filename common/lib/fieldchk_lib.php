@@ -1,4 +1,7 @@
 <?php
+/*
+ * Field validation library for use in PHPrunner applications
+ */
 
 function f_check_delete($table, $where, $conn)
 {
@@ -103,6 +106,16 @@ function f_values_insequence($value1, $value2)    // returns true if values are 
     return false;
 }
 
+function f_get_row($table, $fields, $where, $conn)
+{
+    $rs = db_query("SELECT $fields from $table WHERE $where", $conn);
+    $data = db_fetch_array($rs);
+    if ($data)
+    {
+        return true;
+    }
+    return false;
+}
 
 
 ?>

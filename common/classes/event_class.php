@@ -49,6 +49,7 @@ event_add                            event_addevent($fields, $duties)
 event_update                         event_changedetail($eventid, $fields)
 event_close                          event_eventclose($eventid)
 event_reset                          event_eventreset($eventid)
+event_delete
 
 // event misc methods
 event_wind_set                       event_seteventdetail($detail)
@@ -822,6 +823,21 @@ class EVENT
         $status = r_initialiseevent("reset", $eventid);
         
         return  $status;
+    }
+
+    public function event_delete($eventid)
+    {
+        $status = true;
+
+        // delete event
+        $del = $this->db->db_delete("t_event", array("id"=>$eventid));
+        if($del === false) { $status = false; }
+
+        // delete associated duties
+        $del = $this->db->db_delete("t_eventduty", array("eventid"=>$eventid));
+        if($del === false) { $status = false; }
+
+        return $status;
     }
     
     

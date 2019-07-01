@@ -1,16 +1,15 @@
 <div {$pageattrs}>
 
-{BEGIN container_masterlistheader}
-<div class="rnr-c rnr-ch rnr-c-masterlistheader">
+{BEGIN container_column}
+<div class="rnr-c rnr-ch rnr-c-column">
 
-
-<div  class="style1 rnr-bl rnr-b-masterlistheader {$brickclass_masterlistheader}">	<h1>{$pagetitlelabel t_competitor masterlist}</h1>
-</div>
-
+{BEGIN masterlist_title}
+<div  class="style1 rnr-bl rnr-b-masterlistheader {$brickclass_masterlistheader}"><a {$backtomasterlink_attrs} class="btn btn-link btn-xs">Back to {$backtomasterlink_caption}</a><span>{$pagetitlelabel t_competitor masterlist}</span></div>
+{END masterlist_title}
 
 <div class="rnr-hfiller"></div>
 </div>
-{END container_masterlistheader}
+{END container_column}
 
 
 
@@ -18,27 +17,101 @@
 
 
 
-<table class="rnr-c rnr-cont rnr-c-mastergrid rnr-b-mastergridfields rnr-gridtable" cellpadding="0" >
-	<thead>
-		<tr class="rnr-toprow style1 {$gridHeader_class}" >
+	<style>
+	.bs-gridcell[data-field=id]:before {
+		content: "{$label t_competitor id}";
+	}
+	.bs-gridcell[data-field=classid]:before {
+		content: "{$label t_competitor classid}";
+	}
+	.bs-gridcell[data-field=boatnum]:before {
+		content: "{$label t_competitor boatnum}";
+	}
+	.bs-gridcell[data-field=sailnum]:before {
+		content: "{$label t_competitor sailnum}";
+	}
+	.bs-gridcell[data-field=boatname]:before {
+		content: "{$label t_competitor boatname}";
+	}
+	.bs-gridcell[data-field=helm]:before {
+		content: "{$label t_competitor helm}";
+	}
+	.bs-gridcell[data-field=helm_dob]:before {
+		content: "{$label t_competitor helm_dob}";
+	}
+	.bs-gridcell[data-field=helm_email]:before {
+		content: "{$label t_competitor helm_email}";
+	}
+	.bs-gridcell[data-field=crew]:before {
+		content: "{$label t_competitor crew}";
+	}
+	.bs-gridcell[data-field=crew_dob]:before {
+		content: "{$label t_competitor crew_dob}";
+	}
+	.bs-gridcell[data-field=crew_email]:before {
+		content: "{$label t_competitor crew_email}";
+	}
+	.bs-gridcell[data-field=club]:before {
+		content: "{$label t_competitor club}";
+	}
+	.bs-gridcell[data-field=personal_py]:before {
+		content: "{$label t_competitor personal_py}";
+	}
+	.bs-gridcell[data-field=skill_level]:before {
+		content: "{$label t_competitor skill_level}";
+	}
+	.bs-gridcell[data-field=flight]:before {
+		content: "{$label t_competitor flight}";
+	}
+	.bs-gridcell[data-field=regular]:before {
+		content: "{$label t_competitor regular}";
+	}
+	.bs-gridcell[data-field=last_entry]:before {
+		content: "{$label t_competitor last_entry}";
+	}
+	.bs-gridcell[data-field=last_event]:before {
+		content: "{$label t_competitor last_event}";
+	}
+	.bs-gridcell[data-field=active]:before {
+		content: "{$label t_competitor active}";
+	}
+	.bs-gridcell[data-field=prizelist]:before {
+		content: "{$label t_competitor prizelist}";
+	}
+	.bs-gridcell[data-field=grouplist]:before {
+		content: "{$label t_competitor grouplist}";
+	}
+	.bs-gridcell[data-field=memberid]:before {
+		content: "{$label t_competitor memberid}";
+	}
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_competitor updby}";
+	}
+	.bs-gridcell[data-field=upddate]:before {
+		content: "{$label t_competitor upddate}";
+	}
+</style>
+<table {$masterlistgrid_hiddenattr} data-pageid="{$pageid}" data-brick="masterlistgrid" class="table rnr-b-mastergridfields rnr-gridtable bs-flexgrid" >
+		<thead>
+		<tr>
 			<th class="{$last_event_class}">{$label t_competitor last_event}</th>
 			<th class="{$active_class}">{$label t_competitor active}</th>
 			<th class="{$boatnum_class}">{$label t_competitor boatnum}</th>
 			<th class="{$helm_class}">{$label t_competitor helm}</th>
 			<th class="{$personal_py_class}">{$label t_competitor personal_py}</th>
-			<th class="rnr-edge">&nbsp;</th>
 		</tr>
 	</thead>
+	
 	<tbody>
-		<tr class="rnr-row style1">
-			<td class="{$last_event_class}">{$last_event_mastervalue}</td>
-			<td class="{$active_class}">{$active_mastervalue}</td>
-			<td class="{$boatnum_class}">{$boatnum_mastervalue}</td>
-			<td class="{$helm_class}">{$helm_mastervalue}</td>
-			<td class="{$personal_py_class}">{$personal_py_mastervalue}</td>
-			<td class="rnr-edge">&nbsp;</td>
+		<tr>
+			<td class="{$last_event_class} bs-gridcell" data-field=last_event>{$last_event_mastervalue}</td>
+			<td class="{$active_class} bs-gridcell" data-field=active>{$active_mastervalue}</td>
+			<td class="{$boatnum_class} bs-gridcell" data-field=boatnum>{$boatnum_mastervalue}</td>
+			<td class="{$helm_class} bs-gridcell" data-field=helm>{$helm_mastervalue}</td>
+			<td class="{$personal_py_class} bs-gridcell" data-field=personal_py>{$personal_py_mastervalue}</td>
 		</tr>
 	</tbody>
+
 </table> 
 
 

@@ -2,6 +2,7 @@
 <html  {$html_attrs}>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{$pagetitle}</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -12,102 +13,304 @@
 		{BEGIN styleCSSFiles}
 		<link REL="stylesheet" href="{$stylepath}" type="text/css">
 		{END styleCSSFiles}
-		{BEGIN pageCSSFiles}
-		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
-		{END pageCSSFiles}
 	</head>
-	
+
 	<body class="{$stylename} function-list" {$bodyattrs}>
 	{BEGIN body}
 		{$header}
-	<div class="rnr-page">
-		<div class="rnr-top {$blockclass_top}">
-			
+		<style>
+			{$containerCss}
+		</style>
+		{BEGIN container_menu}<nav {$menu_chiddenattr} data-pageid="{$pageid}" data-container="menu" class="navbar navbar-default ">					
 
-{BEGIN container_toplinks}
-<div class="rnr-c rnr-ch rnr-c-toplinks">
+
+
+{BEGIN container_hdr}
+<div {$hdr_chiddenattr} data-pageid="{$pageid}" data-container="hdr" class=" navbar-header   "> 
+
+{BEGIN logo_block}
+<a href="{$home_link}" {$logo_hiddenattr} data-pageid="{$pageid}" data-brick="logo" class="navbar-brand" >{$logo}</a>
+{END logo_block}
+
+
+{BEGIN collapse_block}
+<button {$bsnavbarcollapse_hiddenattr} data-pageid="{$pageid}" data-brick="bsnavbarcollapse" type="button" class="navbar-toggle collapsed" data-runner-toggle="collapse" data-target=".bs-navcontrolled">	
+	<span class="sr-only">Toggle navigation</span>	
+	<span class="icon-bar"></span>					
+</button>												
+
+{END collapse_block}
+
+
 
 </div>
-{END container_toplinks}
+{END container_hdr}
 
 
 
-{BEGIN container_hmenu}
-<div class="rnr-c rnr-ch rnr-c-hmenu">
 
+
+
+{BEGIN container_menu_1}<div {$menu_1_chiddenattr} data-pageid="{$pageid}" data-container="menu_1" class="bs-navform navbar-collapse bs-navcontrolled bs-hidden-xs" aria-expanded="false" >												   
 {BEGIN menu_block}
-{$menu main horizontal}{END menu_block}
+{$menu main horizontal}
 
-<div class="rnr-hfiller"></div>
+{END menu_block}
+
+
+
+
+
+{BEGIN container_more}
+<div {$more_chiddenattr} data-pageid="{$pageid}" data-container="more" class=" navbar-right navbar-form   "> 
+
+{BEGIN more_list}
+<div {$morebutton_hiddenattr} data-pageid="{$pageid}" data-brick="morebutton" class="btn-group bs-navsection">
+	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<span class="glyphicon glyphicon-cog"></span>
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu">
+		
+				
+				{BEGIN deleteselected_link}
+		<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
+		{END deleteselected_link}
+		
+				<li role="separator" class="divider"></li>	
+
+		
+				
+				
+				
+				
+		
+		
+				
+	</ul>  
+</div>
+
+{END more_list}
+
+
+{BEGIN security_block}
+<span {$loggedas_hiddenattr} data-pageid="{$pageid}" data-brick="loggedas" id="login_block{$id}" class="bs-navsection">
+	{BEGIN guestloginbutton}
+		<button class="btn btn-info" type="button" {$guestloginlink_attrs}>Login</button>
+	{END guestloginbutton}
+	{BEGIN loggedas_message} 
+		<span class="dropdown">
+			<button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<span class="glyphicon glyphicon-user"></span>	{$username}</button>
+			<ul class="dropdown-menu">
+		{BEGIN logoutbutton}
+				<li><a href="#" {$logoutlink_attrs}>Log out</a></li>
+		{END logoutbutton}
+		
+		{BEGIN adminarea_link}
+				<li><a href="admin_rights_list.php" {$adminarealink_attrs}>Admin Area</a></li>
+		{END adminarea_link}
+
+
+	{BEGIN changepwd_link}
+				<li><a href="#" {$changepwdlink_attrs}>Change password</a></li>
+	{END changepwd_link}
+			</ul>
+		</span>
+	{END loggedas_message}
+</span>
+{END security_block}
 
 
 
 </div>
-{END container_hmenu}
+{END container_more}
 
 
-		</div>
-		<div class="rnr-middle">
-			<div class="rnr-left {$blockclass_left}">
+
+
+
+
+
+
+{BEGIN container_more_1}
+<div {$more_1_chiddenattr} data-pageid="{$pageid}" data-container="more_1" class=" navbar-right navbar-form   "> 
+
+{BEGIN searchform_block}
+<span {$search_hiddenattr} data-pageid="{$pageid}" data-brick="search" class="form-group">
+
+		
+</span>
+{END searchform_block}
+
+
+
+</div>
+{END container_more_1}
+
+
+
+
+												</div>						{END container_menu_1}
+
+
+									</nav>{END container_menu}
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
 				
+
+{BEGIN container_breadcrumbs}
+<div {$breadcrumbs_chiddenattr} data-pageid="{$pageid}" data-container="breadcrumbs" class="    "> 
+
+
+
+
+{BEGIN container_bc}
+<div {$bc_chiddenattr} data-pageid="{$pageid}" data-container="bc" class="    "> 
+
+{BEGIN breadcrumbs}
+<ol class="breadcrumb">
+<li ><a href="{$home_link}"><span class="glyphicon glyphicon-home"></span></a>{$crumb_dropdown}</li>
+{BEGIN crumb}
+  <li class="{$crumb_item_class}">
+{BEGIN crumb_title_link}
+	<a {$crumb_attrs}>{$crumb_title}</a>
+{END crumb_title_link}
+{BEGIN crumb_title_span}
+	<span {$crumb_attrs}>{$crumb_title}</span>
+{END crumb_title_span}	
+	{$crumb_dropdown}
+  </li>
+{END crumb}
+</ol>
+{END breadcrumbs}
+
+
+
+</div>
+{END container_bc}
+
+
+
+
+
+
+</div>
+{END container_breadcrumbs}
+
+
+
+
 			</div>
-			<div class="rnr-center {$blockclass_center}">
+			<div class="bs-left" {$blockattr_left}>
 				
 
-{BEGIN container_recordcontrols}
-<div class="rnr-c rnr-ch rnr-c-recordcontrols">
 
-<div class="rnr-hfiller"></div>
+			</div>
+			<div class="bs-center bs-screenwidth bs-minwidth">
+				
+
+{BEGIN container_gridcontrols}
+<div {$gridcontrols_chiddenattr} data-pageid="{$pageid}" data-container="gridcontrols" class="row rnr-rowcontainer bs-navcontrolled bs-hidden-xs">
+
+
+
+
+{BEGIN container_add_delete}
+<div {$add_delete_chiddenattr} data-pageid="{$pageid}" data-container="add_delete" class=" bottom-margin  col-md-6 "> 
+
 {BEGIN newrecord_controls_block}
-<div  class="style1 rnr-br rnr-b-recordcontrols_new {$brickclass_recordcontrols_new}">		{BEGIN add_link}
-		<a href="t_cfgseries_add.php" class="rnr-button" {$addlink_attrs}>Add new</a>
+		{BEGIN add_link}
+		<a {$add_hiddenattr} data-pageid="{$pageid}" data-brick="add" type="button" class="btn btn-primary" {$addlink_attrs}>Add new</a>
 	{END add_link}
 
 	
-
-</div>
 {END newrecord_controls_block}
 
 
 {BEGIN record_controls_block}
-<div  class="style1 rnr-bl rnr-b-recordcontrol {$brickclass_recordcontrol}">{BEGIN widhtSelected}
-<span class="rnr-buttons-group">
-<a class="rnr-button {$withSelectedClass}" href="#" id="selectButtonsToggler{$id}">With selected...</a>
-<ul class="rnr-list" id="selectButtonsGroup{$id}">
-
-	
+<span {$recordcontrol_hiddenattr} data-pageid="{$pageid}" data-brick="recordcontrol">
 		{BEGIN deleteselected_link}
-<li>
-		<a href="#" class="rnr-button link" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete</a>
-</li>
+	<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
 	{END deleteselected_link}
+		</span>
 
-	
-</ul>
-</span>
-{END widhtSelected}
-	</div>
 {END record_controls_block}
 
 
-{BEGIN more_list}
-<div  class="style1 rnr-bl rnr-b-toplinks {$brickclass_toplinks}"><span class="rnr-buttons-group">
-</span></div>
-{END more_list}
-
-<div class="rnr-hfiller"></div>
 
 </div>
-{END container_recordcontrols}
+{END container_add_delete}
+
+
+
+
+
+
+
+
+{BEGIN container_gridinfo}
+<div {$gridinfo_chiddenattr} data-pageid="{$pageid}" data-container="gridinfo" class=" bottom-margin pull-right text-right col-md-6 "> 
+
+{BEGIN details_found}
+<span {$details_found_hiddenattr} data-pageid="{$pageid}" data-brick="details_found" class="form-inline form-inline-always">
+	{$records_indicator}
+	<span>
+	{BEGIN recordspp_block}
+			{$recsPerPage}
+	{END recordspp_block}
+	</span>
+</span>
+{END details_found}
+
+
+
+
+
+</div>
+{END container_gridinfo}
+
+
+
+
+
+
+
+</div>{END container_gridcontrols}
+
+
+
+{BEGIN container_tabs}
+<div {$tabs_chiddenattr} data-pageid="{$pageid}" data-container="tabs" class="    "> 
+
+{BEGIN grid_tabs}
+<div {$bsgrid_tabs_hiddenattr} data-pageid="{$pageid}" data-brick="bsgrid_tabs">
+<ul class="nav nav-tabs">
+{$grid_tabs_content}
+</ul>
+</div>
+{END grid_tabs}
+
+
+
+</div>
+{END container_tabs}
+
+
+
+{BEGIN container_messagerow}
+<div {$messagerow_chiddenattr} data-pageid="{$pageid}" data-container="messagerow" class="row rnr-rowcontainer ">
+
 
 
 
 {BEGIN container_message}
-<div class="rnr-c rnr-ch rnr-c-message">
+<div {$message_chiddenattr} data-pageid="{$pageid}" data-container="message" class="   col-md-12 "> 
 
 {BEGIN message_block}
-<div  class="style1 rnr-bc rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>
+<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">{$message}</div>
 {END message_block}
+
 
 
 </div>
@@ -115,59 +318,72 @@
 
 
 
-{BEGIN container_pagination}
-<div class="rnr-c rnr-ch rnr-multialign rnr-c-pagination">
-
-{BEGIN pagination_block}
-<div  class="style1 rnr-bc rnr-b-pagination {$brickclass_pagination}">{$pagination}</div>
-{END pagination_block}
-
-<div class="rnr-leftbricks">
-{BEGIN details_block}
-<div  class="style1 rnr-bl rnr-b-details_found {$brickclass_details_found}">	<span {$details_attrs}>
-			Details found: <b><span class="rnr-details_found_count">{$records_found}</span></b>
-	</span>
-</div>
-{END details_block}
-
-</div><div class="rnr-rightbricks">
-{BEGIN pages_block}
-<div  class="style1 rnr-br rnr-b-page_of {$brickclass_page_of}">	<span {$pages_attrs}>
-		Page <b>{$page}</b> of <b>{$maxpages}</b>
-	</span>
-
-</div>
-{END pages_block}
 
 
-{BEGIN recordspp_block}
-<div  class="style1 rnr-br rnr-b-recsperpage {$brickclass_recsperpage}">	<span id="recordspp_block{$id}" name="recordspp_block{$id}">
-			Records Per Page:&nbsp;{$recsPerPage}
-	</span>	
-</div>
-{END recordspp_block}
 
-</div>
-</div>
-{END container_pagination}
+</div>{END container_messagerow}
+
+
+
+{BEGIN container_center}
+<div {$center_chiddenattr} data-pageid="{$pageid}" data-container="center" class="    "> 
+
 
 
 
 {BEGIN container_grid}
-
+<div {$grid_chiddenattr} data-pageid="{$pageid}" data-container="grid" class="bs-grid    "> 
 
 {BEGIN grid_block}
-						<table class="rnr-c rnr-cont rnr-c-grid rnr-b-grid rnr-gridtable  hoverable " cellpadding="0" >
-						<thead>
-															{BEGIN grid_header}
-								<tr class="rnr-toprow style1 {$gridHeader_class}" >
+	<style>
+	.bs-gridcell[data-field=id]:before {
+		content: "{$label t_cfgseries id}";
+	}
+	.bs-gridcell[data-field=seriestype]:before {
+		content: "{$label t_cfgseries seriestype}";
+	}
+	.bs-gridcell[data-field=discard]:before {
+		content: "{$label t_cfgseries discard}";
+	}
+	.bs-gridcell[data-field=nodiscard]:before {
+		content: "{$label t_cfgseries nodiscard}";
+	}
+	.bs-gridcell[data-field=doublepoint]:before {
+		content: "{$label t_cfgseries doublepoint}";
+	}
+	.bs-gridcell[data-field=avgscheme]:before {
+		content: "{$label t_cfgseries avgscheme}";
+	}
+	.bs-gridcell[data-field=dutypoints]:before {
+		content: "{$label t_cfgseries dutypoints}";
+	}
+	.bs-gridcell[data-field=dutynum]:before {
+		content: "{$label t_cfgseries dutynum}";
+	}
+	.bs-gridcell[data-field=notes]:before {
+		content: "{$label t_cfgseries notes}";
+	}
+	.bs-gridcell[data-field=active]:before {
+		content: "{$label t_cfgseries active}";
+	}
+	.bs-gridcell[data-field=upddate]:before {
+		content: "{$label t_cfgseries upddate}";
+	}
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_cfgseries updby}";
+	}
+</style>
+<table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
+	<thead>
+										{BEGIN grid_header}
+								<tr class="rnr-toprow {$gridHeader_class}" >
 									{BEGIN record_header}
 									{BEGIN listIcons_column}
 									<th iEditCont="all">&nbsp;</th>
 									{END listIcons_column}	
 
 																		{BEGIN checkbox_column}
-									<th class="rnr-bc">
+									<th class="">
 										<input type="checkbox" {$checkboxheader_attrs}>
 									</th>
 									{END checkbox_column}
@@ -175,8 +391,9 @@
 																		{BEGIN t_cfgseries_dtable_column}
 									<th >&nbsp;</th>
 									{END t_cfgseries_dtable_column}
-																										{BEGIN seriestype_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$seriestype_class}">
+									
+									{BEGIN seriestype_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$seriestype_class}" data-field=seriestype>
 									{BEGIN seriestype_fieldheader}
 																				<span {$seriestype_orderlinkattrs}>
 											{$label t_cfgseries seriestype}
@@ -184,9 +401,12 @@
 									{END seriestype_fieldheader}
 									</th>
 									{END seriestype_fieldheadercolumn}
-
-																	{BEGIN discard_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$discard_class}">
+									
+									
+									
+									
+									{BEGIN discard_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$discard_class}" data-field=discard>
 									{BEGIN discard_fieldheader}
 																				<span {$discard_orderlinkattrs}>
 											{$label t_cfgseries discard}
@@ -194,9 +414,12 @@
 									{END discard_fieldheader}
 									</th>
 									{END discard_fieldheadercolumn}
-
-																	{BEGIN avgscheme_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$avgscheme_class}">
+									
+									
+									
+									
+									{BEGIN avgscheme_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$avgscheme_class}" data-field=avgscheme>
 									{BEGIN avgscheme_fieldheader}
 																				<span {$avgscheme_orderlinkattrs}>
 											{$label t_cfgseries avgscheme}
@@ -204,9 +427,12 @@
 									{END avgscheme_fieldheader}
 									</th>
 									{END avgscheme_fieldheadercolumn}
-
-																	{BEGIN dutypoints_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$dutypoints_class}">
+									
+									
+									
+									
+									{BEGIN dutypoints_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$dutypoints_class}" data-field=dutypoints>
 									{BEGIN dutypoints_fieldheader}
 																				<span {$dutypoints_orderlinkattrs}>
 											{$label t_cfgseries dutypoints}
@@ -214,9 +440,12 @@
 									{END dutypoints_fieldheader}
 									</th>
 									{END dutypoints_fieldheadercolumn}
-
-																	{BEGIN dutynum_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$dutynum_class}">
+									
+									
+									
+									
+									{BEGIN dutynum_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$dutynum_class}" data-field=dutynum>
 									{BEGIN dutynum_fieldheader}
 																				<span {$dutynum_orderlinkattrs}>
 											{$label t_cfgseries dutynum}
@@ -224,9 +453,12 @@
 									{END dutynum_fieldheader}
 									</th>
 									{END dutynum_fieldheadercolumn}
-
-																	{BEGIN notes_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$notes_class}">
+									
+									
+									
+									
+									{BEGIN notes_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$notes_class}" data-field=notes>
 									{BEGIN notes_fieldheader}
 																				<span {$notes_orderlinkattrs}>
 											{$label t_cfgseries notes}
@@ -234,9 +466,12 @@
 									{END notes_fieldheader}
 									</th>
 									{END notes_fieldheadercolumn}
-
-																	{BEGIN active_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$active_class}">
+									
+									
+									
+									
+									{BEGIN active_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
 									{BEGIN active_fieldheader}
 																				<span {$active_orderlinkattrs}>
 											{$label t_cfgseries active}
@@ -244,10 +479,10 @@
 									{END active_fieldheader}
 									</th>
 									{END active_fieldheadercolumn}
-
-
 									
-									<th class="rnr-edge">&nbsp;</th>
+									
+									
+									
 									{BEGIN endrecordheader_block}
 									<th class="rnr-cs">&nbsp;</th>
 									
@@ -258,169 +493,166 @@
 								</tr>
 								{END grid_header}
 
-						</thead>
-						<tbody>	
-															{BEGIN grid_row}
-								<tr class="rnr-row style1 {$rowclass}" {$rowattrs} {$rowstyle}>
-									{BEGIN grid_record}
-									{BEGIN listIcons_column}
-									<td class="rnr-cc rnr-bc rnr-icons" iEditCont="all" {$rowstyle} {$recordattrs}>
-																		{BEGIN edit_column}
-									{BEGIN edit_link}
-																			<a class="rnr-button-img" {$editlink_attrs} data-icon="edit" title="Edit"></a>
-									{END edit_link}
-									{END edit_column}
+	</thead>
+	<tbody>	
+		{BEGIN grid_row}
+<tr class="{$rowclass} bs-gridrow" {$rowattrs} {$rowstyle}>
+	{BEGIN grid_record}
+	{BEGIN listIcons_column}
+	<td class="bs-gridicons" iEditCont="all" {$rowstyle} {$recordattrs}>
+		{BEGIN edit_column}
+	{BEGIN edit_link}
+			<a class="glyphicon glyphicon-pencil" {$editlink_attrs} title="Edit"></a>
+	{END edit_link}
+	{END edit_column}
 
-									
-																		{BEGIN copy_column}
-									{BEGIN copy_link}
-																			<a class="rnr-button-img" {$copylink_attrs} data-icon="copy" title="Copy"></a>
-									{END copy_link}
-									{END copy_column}
+		
+	<span data-hidden {$ieditbuttonsholder_attrs}></span>
 
-																		{BEGIN view_column}
-									{BEGIN view_link}
-																			<a class="rnr-button-img" {$viewlink_attrs} data-icon="view" title="View"></a>
-									{END view_link}
-									{END view_column}
-									</td>	
-									{END listIcons_column}	
+		{BEGIN copy_column}
+	{BEGIN copy_link}
+			<a class="glyphicon glyphicon-duplicate" {$copylink_attrs} title="Copy"></a>
+	{END copy_link}
+	{END copy_column}
 
-																		{BEGIN checkbox_column}
-									<td class="rnr-bc" iEditCont="checkBox" {$rowstyle} {$recordattrs}>
-									{BEGIN checkbox}
-									<input type="checkbox" {$checkbox_attrs}>
-									{END checkbox}
-									</td>
-									{END checkbox_column}
+		{BEGIN view_column}
+	{BEGIN view_link}
+			<a class="glyphicon glyphicon-search" {$viewlink_attrs} title="View"></a>
+	{END view_link}
+	{END view_column}
+	</td>	
+	{END listIcons_column}	
 
-																		{BEGIN t_cfgseries_dtable_column}
-									<td class="rnr-nowrap" {$rowstyle} {$recordattrs}>
+		{BEGIN checkbox_column}
+	<td  iEditCont="checkBox" class="bs-gridcheckbox" {$rowstyle} {$recordattrs}>
+	{BEGIN checkbox}
+	<input type="checkbox" {$checkbox_attrs}>
+	{END checkbox}
+	</td>
+	{END checkbox_column}
 
-																		{BEGIN t_series_dtable_link}
-									<span>
-									<a {$t_series_dtablelink_attrs}>
-										Series
-																				<span {$t_series_childnumber_attr} dir="ltr">{BEGIN t_series_childcount}({$t_series_childnumber}){END t_series_childcount}</span>
-									</a>
-																		&nbsp;
-									</span>
-									{END t_series_dtable_link}
-									
-									</td>
-									{END t_cfgseries_dtable_column}
+		{BEGIN t_cfgseries_dtable_column}
+	<td class="rnr-nowrap bs-griddetails" {$rowstyle} {$recordattrs}>
+	
+			{BEGIN t_series_dtable_link}
+		<span>
+			<a {$t_series_dtablelink_attrs}>
+			Series
+							<span {$t_series_childnumber_attr} dir="ltr">
+				{BEGIN t_series_childcount}
+					({$t_series_childnumber})
+				{END t_series_childcount}</span>
+			</a>
+						&nbsp;
+		</span>
+		{END t_series_dtable_link}
 
-										{BEGIN seriestype_fieldcolumn}
-	<td class="{$seriestype_class}" {$seriestype_style} {$recordattrs}>
+	
+	</td>
+	{END t_cfgseries_dtable_column}
+
+
+	{BEGIN seriestype_fieldcolumn}
+	<td class="bs-gridcell {$seriestype_class}"  data-field=seriestype {$rowstyle} {$recordattrs}>
 		{$seriestype_value}
 	</td>
 {END seriestype_fieldcolumn}
 
+
 	{BEGIN discard_fieldcolumn}
-	<td class="{$discard_class}" {$discard_style} {$recordattrs}>
+	<td class="bs-gridcell {$discard_class}"  data-field=discard {$rowstyle} {$recordattrs}>
 		{$discard_value}
 	</td>
 {END discard_fieldcolumn}
 
+
 	{BEGIN avgscheme_fieldcolumn}
-	<td class="{$avgscheme_class}" {$avgscheme_style} {$recordattrs}>
+	<td class="bs-gridcell {$avgscheme_class}"  data-field=avgscheme {$rowstyle} {$recordattrs}>
 		{$avgscheme_value}
 	</td>
 {END avgscheme_fieldcolumn}
 
+
 	{BEGIN dutypoints_fieldcolumn}
-	<td class="{$dutypoints_class}" {$dutypoints_style} {$recordattrs}>
+	<td class="bs-gridcell {$dutypoints_class}"  data-field=dutypoints {$rowstyle} {$recordattrs}>
 		{$dutypoints_value}
 	</td>
 {END dutypoints_fieldcolumn}
 
+
 	{BEGIN dutynum_fieldcolumn}
-	<td class="{$dutynum_class}" {$dutynum_style} {$recordattrs}>
+	<td class="bs-gridcell {$dutynum_class}"  data-field=dutynum {$rowstyle} {$recordattrs}>
 		{$dutynum_value}
 	</td>
 {END dutynum_fieldcolumn}
 
+
 	{BEGIN notes_fieldcolumn}
-	<td class="{$notes_class}" {$notes_style} {$recordattrs}>
+	<td class="bs-gridcell {$notes_class}"  data-field=notes {$rowstyle} {$recordattrs}>
 		{$notes_value}
 	</td>
 {END notes_fieldcolumn}
 
+
 	{BEGIN active_fieldcolumn}
-	<td class="{$active_class}" {$active_style} {$recordattrs}>
+	<td class="bs-gridcell {$active_class}"  data-field=active {$rowstyle} {$recordattrs}>
 		{$active_value}
 	</td>
 {END active_fieldcolumn}
 
+	{BEGIN endrecord_block}
+	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
+	{END endrecord_block}
+									
+	{END grid_record}
 
-									<td class="rnr-edge" {$recordattrs}>&nbsp;</td>
-									{BEGIN endrecord_block}
-									<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
-									{END endrecord_block}
-																	
-									{END grid_record}
+</tr>
+{END grid_row}
+	</tbody>
+	<tfoot>
+										
+	</tfoot>
+</table>
 
-								</tr>
-								{END grid_row}
-															
-						</tbody>
-					</table>
-					
+
 
 {END grid_block}
 
 
 
+</div>
 {END container_grid}
 
 
 
-{BEGIN container_pagination_bottom}
-<div class="rnr-c rnr-ch rnr-multialign rnr-c-pagination_bottom">
+
+
+
+</div>
+{END container_center}
+
+
+
+{BEGIN container_pagination}
+<div {$pagination_chiddenattr} data-pageid="{$pageid}" data-container="pagination" class="  text-center col-md-12 "> 
 
 {BEGIN pagination_block}
-<div  class="style1 rnr-bc rnr-b-pagination {$brickclass_pagination}">{$pagination}</div>
+<div {$pagination_hiddenattr} data-pageid="{$pageid}" data-brick="pagination">
+{$pagination}
+</div>
 {END pagination_block}
 
-<div class="rnr-leftbricks">
-{BEGIN details_block}
-<div  class="style1 rnr-bl rnr-b-details_found {$brickclass_details_found}">	<span {$details_attrs}>
-			Details found: <b><span class="rnr-details_found_count">{$records_found}</span></b>
-	</span>
-</div>
-{END details_block}
-
-</div><div class="rnr-rightbricks">
-{BEGIN pages_block}
-<div  class="style1 rnr-br rnr-b-page_of {$brickclass_page_of}">	<span {$pages_attrs}>
-		Page <b>{$page}</b> of <b>{$maxpages}</b>
-	</span>
-
-</div>
-{END pages_block}
 
 
-{BEGIN recordspp_block}
-<div  class="style1 rnr-br rnr-b-recsperpage {$brickclass_recsperpage}">	<span id="recordspp_block{$id}" name="recordspp_block{$id}">
-			Records Per Page:&nbsp;{$recsPerPage}
-	</span>	
 </div>
-{END recordspp_block}
-
-</div>
-</div>
-{END container_pagination_bottom}
+{END container_pagination}
 
 
 			</div>
-			<div class="rnr-right {$blockclass_right}">
+			<div class="bs-right">
 				
 			</div>
 		</div>
-		<div class="rnr-bottom {$blockclass_bottom}">
-			<!--%%bottom%%-->
-		</div>
-	</div>
 		
 		{$footer}
 	{END body}

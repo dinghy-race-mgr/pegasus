@@ -1,85 +1,134 @@
 <div {$pageattrs}>
 
-{BEGIN container_1}
+{BEGIN container_tabfields}
+<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
 
 
-
-<table class="fieldGrid">
 {BEGIN scoring_tabfieldblock}
-<tr class="{$fielddispclass_scoring}" data-fieldname="scoring">
-	<td class="style1 rnr-label">
-		{BEGIN scoring_label}{$label t_cfgfleet scoring}{END scoring_label}
-	</td>
-	<td class="rnr-control style3">
-		{$scoring_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_scoring}" data-fieldname="scoring" data-signal-error-for="scoring{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_scoring}">
+			{BEGIN scoring_label}{$label t_cfgfleet scoring}{END scoring_label}
+		</label>
+		<div class="col-md-6 " >
+			{$scoring_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="scoring">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet scoring}
+			</div>
+		</div>
+	</div>
+</div>
 {END scoring_tabfieldblock}
 {BEGIN py_type_tabfieldblock}
-<tr class="{$fielddispclass_py_type}" data-fieldname="py_type">
-	<td class="style1 rnr-label">
-		{BEGIN py_type_label}{$label t_cfgfleet py_type}{END py_type_label}
-	</td>
-	<td class="rnr-control style3">
-		{$py_type_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_py_type}" data-fieldname="py_type" data-signal-error-for="py_type{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_py_type}">
+			{BEGIN py_type_label}{$label t_cfgfleet py_type}{END py_type_label}
+		</label>
+		<div class="col-md-6 " >
+			{$py_type_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="py_type">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet py_type}
+			</div>
+		</div>
+	</div>
+</div>
 {END py_type_tabfieldblock}
 {BEGIN defaultlaps_tabfieldblock}
-<tr class="{$fielddispclass_defaultlaps}" data-fieldname="defaultlaps">
-	<td class="style1 rnr-label">
-		{BEGIN defaultlaps_label}{$label t_cfgfleet defaultlaps}{END defaultlaps_label}
-	</td>
-	<td class="rnr-control style3">
-		{$defaultlaps_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_defaultlaps}" data-fieldname="defaultlaps" data-signal-error-for="defaultlaps{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_defaultlaps}">
+			{BEGIN defaultlaps_label}{$label t_cfgfleet defaultlaps}{END defaultlaps_label}
+		</label>
+		<div class="col-md-6 " >
+			{$defaultlaps_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="defaultlaps">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet defaultlaps}
+			</div>
+		</div>
+	</div>
+</div>
 {END defaultlaps_tabfieldblock}
 {BEGIN timelimit_abs_tabfieldblock}
-<tr class="{$fielddispclass_timelimit_abs}" data-fieldname="timelimit_abs">
-	<td class="style1 rnr-label">
-		{BEGIN timelimit_abs_label}{$label t_cfgfleet timelimit_abs}{END timelimit_abs_label}
-	</td>
-	<td class="rnr-control style3">
-		{$timelimit_abs_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_timelimit_abs}" data-fieldname="timelimit_abs" data-signal-error-for="timelimit_abs{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_timelimit_abs}">
+			{BEGIN timelimit_abs_label}{$label t_cfgfleet timelimit_abs}{END timelimit_abs_label}
+		</label>
+		<div class="col-md-6 " >
+			{$timelimit_abs_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="timelimit_abs">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet timelimit_abs}
+			</div>
+		</div>
+	</div>
+</div>
 {END timelimit_abs_tabfieldblock}
 {BEGIN timelimit_rel_tabfieldblock}
-<tr class="{$fielddispclass_timelimit_rel}" data-fieldname="timelimit_rel">
-	<td class="style1 rnr-label">
-		{BEGIN timelimit_rel_label}{$label t_cfgfleet timelimit_rel}{END timelimit_rel_label}
-	</td>
-	<td class="rnr-control style3">
-		{$timelimit_rel_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_timelimit_rel}" data-fieldname="timelimit_rel" data-signal-error-for="timelimit_rel{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_timelimit_rel}">
+			{BEGIN timelimit_rel_label}{$label t_cfgfleet timelimit_rel}{END timelimit_rel_label}
+		</label>
+		<div class="col-md-6 " >
+			{$timelimit_rel_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="timelimit_rel">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet timelimit_rel}
+			</div>
+		</div>
+	</div>
+</div>
 {END timelimit_rel_tabfieldblock}
 {BEGIN warn_signal_tabfieldblock}
-<tr class="{$fielddispclass_warn_signal}" data-fieldname="warn_signal">
-	<td class="style1 rnr-label">
-		{BEGIN warn_signal_label}{$label t_cfgfleet warn_signal}{END warn_signal_label}
-	</td>
-	<td class="rnr-control style3">
-		{$warn_signal_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_warn_signal}" data-fieldname="warn_signal" data-signal-error-for="warn_signal{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_warn_signal}">
+			{BEGIN warn_signal_label}{$label t_cfgfleet warn_signal}{END warn_signal_label}
+		</label>
+		<div class="col-md-6 " >
+			{$warn_signal_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="warn_signal">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet warn_signal}
+			</div>
+		</div>
+	</div>
+</div>
 {END warn_signal_tabfieldblock}
 {BEGIN prep_signal_tabfieldblock}
-<tr class="{$fielddispclass_prep_signal}" data-fieldname="prep_signal">
-	<td class="style1 rnr-label">
-		{BEGIN prep_signal_label}{$label t_cfgfleet prep_signal}{END prep_signal_label}
-	</td>
-	<td class="rnr-control style3">
-		{$prep_signal_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_prep_signal}" data-fieldname="prep_signal" data-signal-error-for="prep_signal{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_prep_signal}">
+			{BEGIN prep_signal_label}{$label t_cfgfleet prep_signal}{END prep_signal_label}
+		</label>
+		<div class="col-md-6 " >
+			{$prep_signal_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="prep_signal">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet prep_signal}
+			</div>
+		</div>
+	</div>
+</div>
 {END prep_signal_tabfieldblock}
-</table>
 
 
 
 
-{END container_1}
+
+</div>
+{END container_tabfields}
 
 </div>

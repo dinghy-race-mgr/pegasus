@@ -1,35 +1,49 @@
 <div {$pageattrs}>
 
-{BEGIN container_1}
+{BEGIN container_tabfields}
+<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
 
 
-
-<table class="fieldGrid">
 {BEGIN weblink_tabfieldblock}
-<tr class="{$fielddispclass_weblink}" data-fieldname="weblink">
-	<td class="style1 rnr-label">
-		{BEGIN weblink_label}{$label t_event weblink}{END weblink_label}
-	</td>
-	<td class="rnr-control style3">
-		{$weblink_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_weblink}" data-fieldname="weblink" data-signal-error-for="weblink{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_weblink}">
+			{BEGIN weblink_label}{$label t_event weblink}{END weblink_label}
+		</label>
+		<div class="col-md-6 " >
+			{$weblink_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="weblink">
+			<div class="text-muted" >
+			{$tooltip t_event weblink}
+			</div>
+		</div>
+	</div>
+</div>
 {END weblink_tabfieldblock}
 {BEGIN webname_tabfieldblock}
-<tr class="{$fielddispclass_webname}" data-fieldname="webname">
-	<td class="style1 rnr-label">
-		{BEGIN webname_label}{$label t_event webname}{END webname_label}
-	</td>
-	<td class="rnr-control style3">
-		{$webname_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_webname}" data-fieldname="webname" data-signal-error-for="webname{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_webname}">
+			{BEGIN webname_label}{$label t_event webname}{END webname_label}
+		</label>
+		<div class="col-md-6 " >
+			{$webname_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="webname">
+			<div class="text-muted" >
+			{$tooltip t_event webname}
+			</div>
+		</div>
+	</div>
+</div>
 {END webname_tabfieldblock}
-</table>
 
 
 
 
-{END container_1}
+
+</div>
+{END container_tabfields}
 
 </div>

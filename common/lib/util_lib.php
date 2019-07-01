@@ -417,15 +417,73 @@ function u_sessionstate($scriptname, $reference, $eventid)
 
 
 // ------ INITIALISATION FUNCTIONS ----------------------------------------------------------------------------------
-/**
- * u_initconfigfile()
- * 
- * loads content off system configuration file - assumes no
- * sections in inifile  
- *
- * @param string  $inifile      path to inifile 
- * @return void
- */
+
+function u_initialisation($rm_cfg_file, $app_cfg_file, $loc, $scriptname)
+{
+    $status = true;
+    $_SESSION['app_init'] = false;
+
+    // set raceManager config file content into SESSION
+    if (is_readable($rm_cfg_file))
+    {
+        include ("$rm_cfg_file");
+    }
+    else
+    {
+        $status = false;
+        u_exitnicely($scriptname, 0, "configuration file failure",
+            "raceManager configuration file ($rm_cfg_file) does not exist or is unreadable");
+    }
+
+    // set application config file content into SESSION
+    if (is_readable($app_cfg_file))
+    {
+        include ("$app_cfg_file");
+    }
+    else
+    {
+        $status = false;
+        u_exitnicely($scriptname, 0, "configuration file failure",
+            "application configuration file ($app_cfg_file) does not exist or is unreadable");
+    }
+
+    // process common (system wide) ini file
+    $common_ini_file = "$loc/config/common.ini";
+    if (is_readable($common_ini_file))
+    {
+        u_initconfigfile($common_ini_file);
+    }
+    else
+    {
+        $status = false;
+        u_exitnicely($scriptname, 0, "configuration file failure",
+            "application configuration file ($common_ini_file) does not exist or is unreadable");
+    }
+    // process application specific ini file
+    if (!empty($_SESSION['app_ini'])) {
+        $app_ini_file = "$loc/config/{$_SESSION['app_ini']}";
+        if (is_readable($app_ini_file)) {
+            u_initconfigfile($app_ini_file);
+        } else {
+            $status = false;
+            u_exitnicely($scriptname, 0, "configuration file failure",
+                "application configuration file ($app_ini_file) does not exist or is unreadable");
+        }
+    }
+    // deal with php ini setting changes
+    if (!empty($_SESSION['session_timeout']))
+    {
+        ini_set('session.gc_maxlifetime', $_SESSION['session_timeout']);   // set sessions length
+    }
+
+    if ($status)
+    {
+        $_SESSION['app_init'] = true;
+    }
+
+    return $status;
+}
+
 
 function u_initconfigfile($inifile)
 {
@@ -433,9 +491,10 @@ function u_initconfigfile($inifile)
     
     if (is_readable($inifile)) 
     {
-       $ini = parse_ini_file($inifile, false);       
-       foreach ($ini as $key=>$data)
-       {
+        //echo "|$inifile|<br>";
+        $ini = parse_ini_file($inifile, false);
+        foreach ($ini as $key=>$data)
+        {
            if ($key == "email_list")   // create array from list
            {
                $emails = explode(",", $data);
@@ -444,17 +503,18 @@ function u_initconfigfile($inifile)
                {
                   $_SESSION["email"][$i] = $email;
                   $i++;
+
                }
            }
            else
            {
               $_SESSION["$key"] = $data;
-           }     
-       }
+           }
+        }
     }
     else
     {
-        u_exitnicely($scriptname,0,$lang['err']['sys003'],"application initialisation file ($inifile) does not exist"); 
+        u_exitnicely($scriptname,0,"configuration file error","application initialisation file ($inifile) does not exist");
     }
 }
 
@@ -1004,4 +1064,4 @@ function u_get_result_codes_info($result_codes, $codes_used = array())
     return $output;
 }
 
-?>
+

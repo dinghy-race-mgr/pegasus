@@ -1,99 +1,88 @@
 <div {$pageattrs}>
 
-{BEGIN container_1}
+{BEGIN container_tabfields}
+<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class="    "> 
 
 
-
-<table class="fieldGrid">
+<div class="container">
 {BEGIN scoring_tabfieldblock}
-<tr class="{$fielddispclass_scoring}" data-fieldname="scoring">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet scoring}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_scoring">
-		{$scoring_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_scoring}" data-fieldname="scoring" >
+		<label class=" control-label" for="{$labelfor_scoring}">
+			{$label t_cfgfleet scoring}
+		</label>
+		<div class="" >
+			{$scoring_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END scoring_tabfieldblock}
 {BEGIN py_type_tabfieldblock}
-<tr class="{$fielddispclass_py_type}" data-fieldname="py_type">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet py_type}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_py_type">
-		{$py_type_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_py_type}" data-fieldname="py_type" >
+		<label class=" control-label" for="{$labelfor_py_type}">
+			{$label t_cfgfleet py_type}
+		</label>
+		<div class="" >
+			{$py_type_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END py_type_tabfieldblock}
 {BEGIN defaultlaps_tabfieldblock}
-<tr class="{$fielddispclass_defaultlaps}" data-fieldname="defaultlaps">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet defaultlaps}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_defaultlaps">
-		{$defaultlaps_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_defaultlaps}" data-fieldname="defaultlaps" >
+		<label class=" control-label" for="{$labelfor_defaultlaps}">
+			{$label t_cfgfleet defaultlaps}
+		</label>
+		<div class="" >
+			{$defaultlaps_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END defaultlaps_tabfieldblock}
 {BEGIN timelimit_abs_tabfieldblock}
-<tr class="{$fielddispclass_timelimit_abs}" data-fieldname="timelimit_abs">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet timelimit_abs}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_timelimit_abs">
-		{$timelimit_abs_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_timelimit_abs}" data-fieldname="timelimit_abs" >
+		<label class=" control-label" for="{$labelfor_timelimit_abs}">
+			{$label t_cfgfleet timelimit_abs}
+		</label>
+		<div class="" >
+			{$timelimit_abs_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END timelimit_abs_tabfieldblock}
 {BEGIN timelimit_rel_tabfieldblock}
-<tr class="{$fielddispclass_timelimit_rel}" data-fieldname="timelimit_rel">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet timelimit_rel}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_timelimit_rel">
-		{$timelimit_rel_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_timelimit_rel}" data-fieldname="timelimit_rel" >
+		<label class=" control-label" for="{$labelfor_timelimit_rel}">
+			{$label t_cfgfleet timelimit_rel}
+		</label>
+		<div class="" >
+			{$timelimit_rel_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END timelimit_rel_tabfieldblock}
 {BEGIN warn_signal_tabfieldblock}
-<tr class="{$fielddispclass_warn_signal}" data-fieldname="warn_signal">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet warn_signal}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_warn_signal">
-		{$warn_signal_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_warn_signal}" data-fieldname="warn_signal" >
+		<label class=" control-label" for="{$labelfor_warn_signal}">
+			{$label t_cfgfleet warn_signal}
+		</label>
+		<div class="" >
+			{$warn_signal_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END warn_signal_tabfieldblock}
 {BEGIN prep_signal_tabfieldblock}
-<tr class="{$fielddispclass_prep_signal}" data-fieldname="prep_signal">
-	<td class="style1 rnr-label">
-		{$label t_cfgfleet prep_signal}
-	</td>
-	<td class="rnr-control style3">
-		<div class="fieldvalue_prep_signal">
-		{$prep_signal_value}
+	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_prep_signal}" data-fieldname="prep_signal" >
+		<label class=" control-label" for="{$labelfor_prep_signal}">
+			{$label t_cfgfleet prep_signal}
+		</label>
+		<div class="" >
+			{$prep_signal_value}
 		</div>
-	</td>
-</tr>
+	</div>
 {END prep_signal_tabfieldblock}
-</table>
+</div>
 
 
 
 
-{END container_1}
+
+
+</div>
+{END container_tabfields}
 
 </div>

@@ -1,32 +1,26 @@
-<!DOCTYPE html>
-<HTML {$html_attrs}>
-  <HEAD>
-    <META http-equiv="X-UA-Compatible" content="IE=Edge">
-    <TITLE>
-      {$pagetitle}
-    </TITLE>
-    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <LINK href="styles/default.css" rel="stylesheet" type="text/css">
-    <LINK href="../../common/oss/bootstrap/css/bootstrap.min.css" 
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		<LINK href="../../common/oss/bootstrap/css/bootstrap.min.css" 
 rel="stylesheet">
     <STYLE>
       body { padding-top: 70px; font-family: Kalinga, Arial, sans-serif;}
     </STYLE>
-    {BEGIN rtlCSS}
-      <LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">
-    {END rtlCSS}
-    {BEGIN styleCSSFiles}
-      <LINK href="{$stylepath}" rel="stylesheet" type="text/css">
-    {END styleCSSFiles}
-    {BEGIN pageCSSFiles}
-      <LINK href="{$pagestylepath}" rel="stylesheet" type="text/css">
-    {END pageCSSFiles}
-    <META name="GENERATOR" content="MSHTML 11.00.9600.18098">
-  </HEAD>
-  <BODY class="{$stylename} function-login" {$bodyattrs}>
-    {BEGIN body}
-      {$header}
-      <DIV class="container">
+    {BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+	</head>
+
+	<body class="{$stylename} function-login" {$bodyattrs}>
+	{BEGIN body}{$header}
+		<DIV class="container">
         <DIV class="jumbotron" style="padding-top: 20px; padding-bottom: 20px;">
           <DIV class="container">
             <H1>
@@ -38,119 +32,225 @@ rel="stylesheet">
             </P>
             <P>
               <SMALL>
-                Create your race programme, define race formats, manage competitors and classes, etc. etc.
+                Create your race programme, define race formats, manage competitors and classes, etc. etc.<BR><BR>
               </SMALL>
             </P>
           </DIV>
-          <DIV class="rnr-page">
-            <DIV class="rnr-top {$blockclass_top}">
-              {BEGIN container_search}
-                <DIV class="rnr-c rnr-cv rnr-c-search">
-                  <!-- <DIV class="rnr-brickcontents style2 rnr-b-loginheader {$brickclass_loginheader}">
-                  <SPAN>
-                    <H1>
-                      {$pagetitlelabel login}
-                    </H1>
-                  </SPAN>
-                </DIV> -->
-                  {BEGIN message_block}
-                    <DIV class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}">
-                      <DIV class="rnr-message">
-                        {$message}
-                      </DIV>
-                    </DIV>
-                  {END message_block}
-                  <DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
-                    {BEGIN container_fields}
-                      <DIV class="rnr-c rnr-cv rnr-c-fields">
-                        <DIV class="rnr-brickcontents style1 rnr-b-loginfields {$brickclass_loginfields}">
-                          <TABLE class="fieldGrid">
-                            <TBODY>
-                              <TR>
-                                <TD>
-                                  {BEGIN username_label}
-                                    Username:
-                                  {END username_label}
-                                </TD>
-                                <TD class="rnr-control">
-                                  <INPUT name="username" type="text" {$username_attrs}>
-                                </TD>
-                              </TR>
-                              <TR>
-                                <TD>
-                                  {BEGIN password_label}
-                                    Password:
-                                  {END password_label}
-                                </TD>
-                                <TD class="rnr-control">
-                                  <INPUT name="password" type="password" {$password_attrs}>
-                                </TD>
-                              </TR>
-                              <TR>
-                                <TD>
-                                  {BEGIN remember_password_label}
-                                    Remember Password:
-                                  {END remember_password_label}
-                                </TD>
-                                <TD>
-                                  <INPUT type="checkbox" {$rememberbox_attrs}>
-                                </TD>
-                              </TR>
-                            </TBODY>
-                          </TABLE>
-                        </DIV>
-                      </DIV>
-                    {END container_fields}
-                  </DIV>
-                  {BEGIN guestlink_block}
-                    <DIV class="rnr-brickcontents style3 rnr-b-mesguest {$brickclass_mesguest}">
-                      <A {$guestlink_attrs}>
-                        Login as Guest
-                      </A>
-                    </DIV>
-                  {END guestlink_block}
-                  <DIV class="rnr-brickcontents style3 rnr-b-mesreg {$brickclass_mesreg}">
-                    <A href="register.php" {$registerlink_attrs}>
-                      Register
-                    </A>
-                  </DIV>
-                  <DIV class="rnr-brickcontents style3 rnr-b-mesforgot {$brickclass_mesforgot}">
-                    <A href="remind.php" {$forgotpasswordlink_attrs}>
-                      Forgot password?
-                    </A>
-                  </DIV>
-                  {BEGIN loginbuttons}
-                    <DIV class="rnr-brickcontents style2 rnr-b-loginbuttons {$brickclass_loginbuttons}">
-                      <A class="rnr-button main" href="#" {$loginlink_attrs}>
-                        Submit
-                      </A>
-                      {BEGIN continue_button}
-                        <A class="rnr-button" href="#" {$continuebutton_attrs}>
-                          Continue
-                        </A>
-                      {END continue_button}
-                    </DIV>
-                  {END loginbuttons}
-                </DIV>
-              {END container_search}
-            </DIV>
-            <DIV class="rnr-middle">
-              <DIV class="rnr-left {$blockclass_left}">
-              </DIV>
-              <DIV class="rnr-center {$blockclass_center}">
-              </DIV>
-              <DIV class="rnr-right {$blockclass_right}">
-              </DIV>
-            </DIV>
-            <DIV class="rnr-bottom {$blockclass_bottom}">
-            </DIV>
+          <style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
+
+{BEGIN container_page}<div {$page_chiddenattr} data-pageid="{$pageid}" data-container="page" class="container    "> 
+
+
+
+
+{BEGIN container_page_1}<div {$page_1_chiddenattr} data-pageid="{$pageid}" data-container="page_1" class=" bs-standalone-page  col-md-6 col-md-offset-3"> 
+
+
+
+
+{BEGIN container_panel}<div {$panel_chiddenattr} data-pageid="{$pageid}" data-container="panel" class=" bs-pagepanel panel panel-primary   "> 
+
+
+
+
+{BEGIN container_header}<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class=" panel-heading   "> 
+
+{BEGIN loginheader}<h3 class="panel-title" {$loginheader_hiddenattr} data-pageid="{$pageid}" data-brick="loginheader" >
+
+	{$pagetitlelabel  login}
+</h3>
+
+{END loginheader}
+
+
+
+</div>
+{END container_header}
+
+
+
+
+
+
+
+
+{BEGIN container_body}<div {$body_chiddenattr} data-pageid="{$pageid}" data-container="body" class=" panel-body   "> 
+
+
+
+
+{BEGIN container_header_1}<div {$header_1_chiddenattr} data-pageid="{$pageid}" data-container="header_1" class="   col-md-12 "> 
+
+{BEGIN message_block}<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">{$message}</div>
+{END message_block}
+
+
+
+</div>
+{END container_header_1}
+
+
+
+
+
+
+
+
+{BEGIN container_fields}<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class="   col-md-12 "> 
+
+
+<div {$loginfields_hiddenattr} data-pageid="{$pageid}" data-brick="loginfields" class="form-horizontal" role="form">
+{BEGIN main_loginfields}<div class="form-group" >
+		<label class="col-md-4 control-label" for="username">
+			{BEGIN username_label}Username:{END username_label}
+		</label>
+		<div class="col-md-6" >
+			<input type="text" class="form-control" name="username" {$username_attrs} id="username">
+		</div>
+	</div>
+	<div class="form-group" >
+		<label class="col-md-4 control-label" for="password">
+			{BEGIN password_label}Password:{END password_label}
+		</label>
+		<div class="col-md-6" >
+			<input type="password" class="form-control" name="password" {$password_attrs} id="password">
+		</div>
+	</div>
+		<div class="form-group" >
+		<div class="col-md-6 col-md-offset-4" >
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" {$rememberbox_attrs}> {BEGIN remember_password_label}<span>Remember me</span>{END remember_password_label}
+				</label>
+			</div>
+		</div>
+	</div>
+{END main_loginfields}
+	
+
+</div>
+
+
+
+
+
+
+</div>
+{END container_fields}
+
+
+
+
+
+
+
+
+{BEGIN container_header_2}<div {$header_2_chiddenattr} data-pageid="{$pageid}" data-container="header_2" class="   col-md-8 col-md-offset-4"> 
+
+{BEGIN loginbuttons}<span {$loginbuttons_hiddenattr} data-pageid="{$pageid}" data-brick="loginbuttons">
+
+{BEGIN signin_button}<button class="btn btn-primary" {$loginlink_attrs}>Sign in</button>
+{END signin_button}
+{BEGIN continue_button}<button class="btn btn-primary" {$continuebutton_attrs}>Continue</button>
+{END continue_button}
+
+{BEGIN guestlink_block}<div class="btn btn-link"><a {$guestlink_attrs} >Login as Guest</a></div>
+{END guestlink_block}
+
+</span>
+
+
+{END loginbuttons}
+
+
+
+</div>
+{END container_header_2}
+
+
+
+
+
+
+
+</div>
+{END container_body}
+
+
+
+
+
+
+</div>
+{END container_panel}
+
+
+
+
+
+
+
+
+{BEGIN container_register}<div {$register_chiddenattr} data-pageid="{$pageid}" data-container="register" class="  text-center col-md-12 "> 
+
+
+<span {$bsloginregister_hiddenattr} data-pageid="{$pageid}" data-brick="bsloginregister">
+	<a href="register.php" class="btn btn-link btn-xs" {$registerlink_attrs}>Sign Up</a>
+	<a href="remind.php" class="btn btn-link btn-xs" {$forgotpasswordlink_attrs}>Forgot password?</a>
+</span>
+
+
+
+
+
+</div>
+{END container_register}
+
+
+
+
+
+
+</div>
+{END container_page_1}
+
+
+
+
+
+
+</div>
+{END container_page}
+
+
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</DIV>
           </DIV>
-          <P class="pull-right" style="font-size: 0.7em;" >
-            Version: add version number
+          <P class="pull-right" style="font-size: 1em;">
+            Version: {$rm_version}
           </P>
-        </DIV>
-      </DIV>
-    {$footer}
-    {END body}
-  </BODY>
-</HTML>
+        </div>
+		<DIV class="bs-bottom">
+        
+		</div>
+		{$footer}
+	{END body}
+	</body>
+</html>

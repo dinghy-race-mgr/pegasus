@@ -1,4 +1,112 @@
-<SPAN class="psus-masterlist">
-  {$pagetitlelabel t_event_results masterlist}
-</span>
-<br>
+<div {$pageattrs}>
+
+{BEGIN container_column}<div class="rnr-c rnr-ch rnr-c-column">
+
+{BEGIN masterlist_title}<div  class="style1 rnr-bl rnr-b-masterlistheader {$brickclass_masterlistheader}"><a {$backtomasterlink_attrs} class="btn btn-link btn-xs">Back to {$backtomasterlink_caption}</a><span>{$pagetitlelabel t_event_results masterlist}</span></div>
+{END masterlist_title}
+
+<div class="rnr-hfiller"></div>
+</div>
+{END container_column}
+
+
+
+{BEGIN container_mastergrid}<style>
+	.bs-gridcell[data-field=id]:before {
+		content: "{$label t_event_results id}";
+	}
+	.bs-gridcell[data-field=event_date]:before {
+		content: "{$label t_event_results event_date}";
+	}
+	.bs-gridcell[data-field=event_start]:before {
+		content: "{$label t_event_results event_start}";
+	}
+	.bs-gridcell[data-field=event_order]:before {
+		content: "{$label t_event_results event_order}";
+	}
+	.bs-gridcell[data-field=event_name]:before {
+		content: "{$label t_event_results event_name}";
+	}
+	.bs-gridcell[data-field=series_code]:before {
+		content: "{$label t_event_results series_code}";
+	}
+	.bs-gridcell[data-field=event_type]:before {
+		content: "{$label t_event_results event_type}";
+	}
+	.bs-gridcell[data-field=event_format]:before {
+		content: "{$label t_event_results event_format}";
+	}
+	.bs-gridcell[data-field=event_entry]:before {
+		content: "{$label t_event_results event_entry}";
+	}
+	.bs-gridcell[data-field=event_status]:before {
+		content: "{$label t_event_results event_status}";
+	}
+	.bs-gridcell[data-field=event_open]:before {
+		content: "{$label t_event_results event_open}";
+	}
+	.bs-gridcell[data-field=tide_time]:before {
+		content: "{$label t_event_results tide_time}";
+	}
+	.bs-gridcell[data-field=tide_height]:before {
+		content: "{$label t_event_results tide_height}";
+	}
+	.bs-gridcell[data-field=start_scheme]:before {
+		content: "{$label t_event_results start_scheme}";
+	}
+	.bs-gridcell[data-field=start_interval]:before {
+		content: "{$label t_event_results start_interval}";
+	}
+	.bs-gridcell[data-field=ws_start]:before {
+		content: "{$label t_event_results ws_start}";
+	}
+	.bs-gridcell[data-field=wd_start]:before {
+		content: "{$label t_event_results wd_start}";
+	}
+	.bs-gridcell[data-field=ws_end]:before {
+		content: "{$label t_event_results ws_end}";
+	}
+	.bs-gridcell[data-field=wd_end]:before {
+		content: "{$label t_event_results wd_end}";
+	}
+	.bs-gridcell[data-field=event_notes]:before {
+		content: "{$label t_event_results event_notes}";
+	}
+	.bs-gridcell[data-field=result_notes]:before {
+		content: "{$label t_event_results result_notes}";
+	}
+	.bs-gridcell[data-field=display_code]:before {
+		content: "{$label t_event_results display_code}";
+	}
+	.bs-gridcell[data-field=upddate]:before {
+		content: "{$label t_event_results upddate}";
+	}
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_event_results updby}";
+	}
+</style>
+<table {$masterlistgrid_hiddenattr} data-pageid="{$pageid}" data-brick="masterlistgrid" class="table rnr-b-mastergridfields rnr-gridtable bs-flexgrid" >
+		<thead>
+		<tr>
+			<th class="{$event_date_class}">{$label t_event_results event_date}</th>
+			<th class="{$series_code_class}">{$label t_event_results series_code}</th>
+			<th class="{$event_name_class}">{$label t_event_results event_name}</th>
+		</tr>
+	</thead>
+	
+	<tbody>
+		<tr>
+			<td class="{$event_date_class} bs-gridcell" data-field=event_date>{$event_date_mastervalue}</td>
+			<td class="{$series_code_class} bs-gridcell" data-field=series_code>{$series_code_mastervalue}</td>
+			<td class="{$event_name_class} bs-gridcell" data-field=event_name>{$event_name_mastervalue}</td>
+		</tr>
+	</tbody>
+
+</table> 
+
+
+
+
+{END container_mastergrid}
+
+</div>{$pagetitlelabel t_event_results masterlist}

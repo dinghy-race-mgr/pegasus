@@ -1,179 +1,248 @@
-<!DOCTYPE html>
-<HTML {$html_attrs}>
-  <HEAD>
-    <META http-equiv="X-UA-Compatible" content="IE=Edge">
-    <TITLE>
-      {$pagetitle}
-    </TITLE>
-    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <LINK href="styles/default.css" rel="stylesheet" type="text/css">
-    {BEGIN rtlCSS}
-      <LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">
-    {END rtlCSS}
-    {BEGIN styleCSSFiles}
-      <LINK href="{$stylepath}" rel="stylesheet" type="text/css">
-    {END styleCSSFiles}
-    {BEGIN pageCSSFiles}
-      <LINK href="{$pagestylepath}" rel="stylesheet" type="text/css">
-    {END pageCSSFiles}
-    <META name="GENERATOR" content="MSHTML 11.00.9600.18161">
-  </HEAD>
-  <BODY class="{$stylename} function-view" {$bodyattrs}>
-    {BEGIN body}
-      {$header}
-      <DIV class="rnr-page">
-        <DIV class="rnr-top {$blockclass_top}">
-          {BEGIN container_all}
-            <DIV class="rnr-c rnr-cv rnr-c-all">
-              <DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
-                {BEGIN container_add}
-                  <DIV class="rnr-c rnr-cv rnr-c-add">
-                    {BEGIN viewheader}
-                      <DIV class="rnr-brickcontents style2 rnr-b-viewheader {$brickclass_viewheader}">
-                        <SPAN>
-                          <H1>
-                            {$pagetitlelabel t_class view}
-                          </H1>
-                        </SPAN>
-                      </DIV>
-                    {END viewheader}
-                    {BEGIN message_block}
-                      <DIV class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}">
-                        <DIV class="rnr-message">
-                          {$message}
-                        </DIV>
-                      </DIV>
-                    {END message_block}
-                    <DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
-                      {BEGIN container_fields}
-                        <DIV class="rnr-c rnr-cv rnr-c-fields">
-                          <DIV class="rnr-ff-block rnr-ff-container rnr-brickcontents style1 rnr-b-viewfields2_atop {$brickclass_viewfields2_atop}" style="background-position: 0% 0%; width: 744px; height: 400px; overflow: auto; position: relative; background-image: linear-gradient(0turn, rgb(243, 245, 245), rgb(226, 230, 231)); background-attachment: scroll; background-repeat: repeat; background-color: transparent;">
-                            <DIV class="rnr-ff-cwrap ff-focus" style="left: 50px; top: 49px; line-height: 1; font-family: Verdana, sans-serif; font-size: medium; font-style: normal; font-weight: bold; position: absolute;">
-                              {$classname_value}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 50px; top: 99px; width: 310px; height: 60px; color: rgb(0, 0, 139); line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: normal; position: absolute;">
-                              {$info_value}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 50px; top: 275px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class popular}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 110px; top: 269px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$popular_value}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 50px; top: 180px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class nat_py}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 50px; top: 200px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
-                              {$nat_py_value}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 190px; top: 180px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class local_py}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 190px; top: 200px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
-                              {$local_py_value}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 430px; top: 90px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class category}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 510px; top: 90px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
-                              {$category_value}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 430px; top: 130px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class crew}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 510px; top: 130px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
-                              {$crew_value}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 430px; top: 170px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class spinnaker}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 510px; top: 170px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
-                              {$spinnaker_value}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 430px; top: 210px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class rig}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 510px; top: 210px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
-                              {$rig_value}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 430px; top: 250px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class engine}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 510px; top: 250px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
-                              {$engine_value}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 430px; top: 290px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class keel}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 510px; top: 290px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
-                              {$keel_value}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="margin: 0px; padding: 0px; left: 10px; top: 19px; width: auto; height: auto; position: absolute;">
-                              <SPAN class="rnr-ff-text">
-                                <BR>
-                              </SPAN>
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="margin: 0px; padding: 0px; left: 420px; top: 50px; width: 200px; height: auto; font-size: small; position: absolute;">
-                              <SPAN class="rnr-ff-text">
-                                <STRONG>Classification</STRONG>
-                              </SPAN>
-                            </DIV>
-                          </DIV>
-                          {BEGIN viewbuttons}
-                            <DIV class="rnr-brickcontents style2 rnr-b-viewbuttons {$brickclass_viewbuttons}">
-                              <DIV class="rnr-buttons-right">
-                                {BEGIN prev_button}
-                                  <A class="rnr-button {$prevbutton_class}" href="#" {$prevbutton_attrs}>
-                                    <<<
-                                  </A>
-                                {END prev_button}
-                                {BEGIN next_button}
-                                  <A class="rnr-button {$nextbutton_class}" href="#" {$nextbutton_attrs}>
-                                    >>>
-                                  </A>
-                                {END next_button}
-                              </DIV>
-                              <DIV class="rnr-buttons-left">
-                                {BEGIN back_button}
-                                  <A class="rnr-button" href="#" {$backbutton_attrs}>
-                                    Back to list
-                                  </A>
-                                {END back_button}
-                                {BEGIN close_button}
-                                  <A class="rnr-button" href="#" {$closebutton_attrs}>
-                                    Close window
-                                  </A>
-                                {END close_button}
-                                {BEGIN edit_page_button}
-                                  <A class="rnr-button" href="#" {$edit_page_button_attrs}>
-                                    Edit
-                                  </A>
-                                {END edit_page_button}
-                              </DIV>
-                            </DIV>
-                          {END viewbuttons}
-                        </DIV>
-                      {END container_fields}
-                    </DIV>
-                  </DIV>
-                {END container_add}
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+	</head>
+
+	<body class="{$stylename} function-view" {$bodyattrs}>
+	{BEGIN body}{$header}
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
+
+{BEGIN container_viewpage}<div {$viewpage_chiddenattr} data-pageid="{$pageid}" data-container="viewpage" class="container    "> 
+
+
+
+
+{BEGIN container_header}<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-12 "> 
+
+{BEGIN viewheader}<h2 {$viewheader_hiddenattr} data-pageid="{$pageid}" data-brick="viewheader" >{$pagetitlelabel t_class view}</h2>
+	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
+
+{END viewheader}
+
+
+
+</div>
+{END container_header}
+
+
+
+
+
+
+</div>
+{END container_viewpage}
+
+
+
+{BEGIN container_fields}<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class=" form-horizontal  col-md-12 "> 
+
+
+<DIV class="rnr-ff-block rnr-ff-container rnr-brickcontents style1 rnr-b-viewfields2_atop {$brickclass_viewfields2_atop}" style="background-position: 0% 0%; width: 744px; height: 400px; overflow: auto; position: relative; background-image: linear-gradient(0turn, rgb(243, 245, 245), rgb(226, 230, 231)); background-attachment: scroll; background-repeat: repeat; background-color: transparent;">
+              <div class="container">
+					<DIV class="rnr-ff-cwrap ff-focus" style="left: 50px; top: 49px; line-height: 1; font-family: Verdana, sans-serif; font-size: medium; font-style: normal; font-weight: bold; position: absolute;">
+                {$classname_value}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 50px; top: 99px; width: 310px; height: 60px; color: rgb(0, 0, 139); line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: normal; position: absolute;">
+                {$info_value}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 50px; top: 275px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
+                {$label t_class popular}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 110px; top: 269px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
+                {$popular_value}
+              </div>
+<DIV class="rnr-ff-cwrap" style="left: 50px; top: 180px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
+                {$label t_class nat_py}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 50px; top: 200px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
+                {$nat_py_value}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 190px; top: 180px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
+                {$label t_class local_py}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 190px; top: 200px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
+                {$local_py_value}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 430px; top: 90px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
+                {$label t_class category}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 510px; top: 90px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
+                {$category_value}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 430px; top: 130px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
+                {$label t_class crew}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 510px; top: 130px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
+                {$crew_value}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 430px; top: 170px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
+                {$label t_class spinnaker}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 510px; top: 170px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
+                {$spinnaker_value}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 430px; top: 210px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
+                {$label t_class rig}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 510px; top: 210px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
+                {$rig_value}
+              </div>
+
+
+
+
+<DIV class="rnr-ff-cwrap" style="left: 430px; top: 250px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
+                {$label t_class engine}
+              </div>
+<DIV class="rnr-ff-cwrap" style="left: 510px; top: 250px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
+                {$engine_value}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 430px; top: 290px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
+                {$label t_class keel}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="left: 510px; top: 290px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: bold; position: absolute;">
+                {$keel_value}
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="margin: 0px; padding: 0px; left: 10px; top: 19px; width: auto; height: auto; position: absolute;">
+                <SPAN class="rnr-ff-text">
+                  <BR>
+                </SPAN>
+              </DIV>
+              <DIV class="rnr-ff-cwrap" style="margin: 0px; padding: 0px; left: 420px; top: 50px; width: 200px; height: auto; font-size: small; position: absolute;">
+                <SPAN class="rnr-ff-text">
+                  <STRONG>Classification</STRONG>
+                </SPAN>
               </DIV>
             </DIV>
-          {END container_all}
-        </DIV>
-        <DIV class="rnr-middle">
-          <DIV class="rnr-left {$blockclass_left}">
-          </DIV>
-          <DIV class="rnr-center {$blockclass_center}">
-          </DIV>
-          <DIV class="rnr-right {$blockclass_right}">
-          </DIV>
-        </DIV>
-        <DIV class="rnr-bottom {$blockclass_bottom}">
-          <!--%%bottom%%-->
-        </DIV>
-      </DIV>
-      {$footer}
-    {END body}
-  </BODY>
-</HTML>
+          </div>
+          {$classname_value}
+          {$info_value}
+          {$label t_class popular}
+          {$popular_value}
+          {$label t_class nat_py}
+          {$nat_py_value}
+          {$label t_class local_py}
+          {$local_py_value}
+          {$label t_class category}
+          {$category_value}
+          {$label t_class crew}
+          {$crew_value}
+          {$label t_class spinnaker}
+          {$spinnaker_value}
+          {$label t_class rig}
+          {$rig_value}
+          {$label t_class engine}
+          {$engine_value}
+          {$label t_class keel}
+          {$keel_value}
+          Classification
+        {END container_fields}
+
+
+
+{BEGIN container_bottombuttons}<div {$bottombuttons_chiddenattr} data-pageid="{$pageid}" data-container="bottombuttons" class="container    "> 
+
+
+
+
+{BEGIN container_buttons}<div {$buttons_chiddenattr} data-pageid="{$pageid}" data-container="buttons" class=" form-group   "> 
+
+
+
+
+{BEGIN container_leftbuttons}<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-8 "> 
+
+{BEGIN viewbuttons}{BEGIN back_button}<button class="btn btn-primary" {$backbutton_attrs}>Back to list</button>
+{END back_button}
+{BEGIN close_button}<button href="#" class="btn btn-primary" {$closebutton_attrs}>Close window</button>
+{END close_button}
+{END viewbuttons}
+
+
+
+</div>
+{END container_leftbuttons}
+
+
+
+
+
+
+
+
+{BEGIN container_leftbuttons_1}<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="   col-md-4 "> 
+
+{BEGIN rightviewbuttons}<div class="btn-group" role="group">
+		{BEGIN prev_button}<button class="btn btn-default {$prevbutton_class}" {$prevbutton_attrs}><span class="glyphicon glyphicon-chevron-left"></span></button>
+	{END prev_button}
+	{BEGIN next_button}<button class="btn btn-default {$nextbutton_class}" {$nextbutton_attrs}><span class="glyphicon glyphicon-chevron-right"></span></button>
+	{END next_button}
+		{BEGIN view_menu_button}<div class="btn-group dropup" role="group">
+		<button class="btn btn-default dropdown-toggle {$groupbutton_class}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span class="glyphicon glyphicon-menu-hamburger"></span></button>
+		<ul class="dropdown-menu dropdown-left">
+									{BEGIN edit_page_button}<li><a href=# {$edit_page_button_attrs}>Edit</a></li>
+			{END edit_page_button}
+		</ul>
+	</div>
+	{END view_menu_button}
+</div>
+{END rightviewbuttons}
+
+
+
+</div>
+{END container_leftbuttons_1}
+
+
+
+
+
+
+</div>
+{END container_buttons}
+
+
+
+
+
+
+</div>
+{END container_bottombuttons}
+
+
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		<DIV class="bs-bottom">
+        
+		</div>
+		{$footer}
+	{END body}
+	</body>
+</html>

@@ -1,5 +1,5 @@
 {
-    "customCss" : "/* typography */\nbody {font-family: Kalinga, Verdana, sans-serif;}\nh1   {font-family: Kalinga, Verdana, sans-serif; font-size: 16pt; font-weight: bold;}\nh2   {font-family: Kalinga, Verdana, sans-serif; color: black; font-size: 14pt; font-weight: bold;}\nh3   {font-family: Kalinga, Verdana, sans-serif; color: black; font-size: 12pt; font-weight: bold;}\na    {font-family: Kalinga, Verdana, sans-serif; font-weight: bold;}\ntable, td,th    {font-family: Kalinga, Verdana, sans-serif !important;}\n\n/* overwrite default color on links */\na { color: inherit; font-weight: inherit; font-style: inherit; }\n\n/* page */\n.rnr-page {width: 98% !important;}\n\n/* record controls */\n.rnr-cw-recordcontrols {width:80% !important;}\n\n/* search highlight */\n.rnr-search-highlight {color: red  !important; font-weight: bold  !important;}\n  \n/* fields */\n.rnr-control {color: darkred !important; font-weight: bold !important; font-family: Kalinga, Verdana, sans-serif !important;}\n\n/* list page title */\n.psus-list-title {float:left; width: 200px; font-size: 20pt; font-weight: bold; vertical-align: top; color: darkred}\n\n/* list page key name */\n.psus-list-keyname {font-weight: bold; color: darkred}\n.psus-listalt-keyname {font-weight: bold; color: darkgreen}\n\n/* record controls */\n.rnr-cw-recordcontrols {width:80% !important;}\n\n/* master info */\n.rnr-b-masterinfo {vertical-align:top !important;}\n.psus-masterlist {font-size: 14pt; vertical-align: top; color: darkgrey}\n\n/* labels */\n/*.rnr-label {border-right: 1px solid darkgrey !important;}*/\n\n/* inline editing controls */\n.saveEditing { color:green; }\n.revertEditing { color: red; }\n\n\n/* tooltip */\ndiv.shiny_box_body.rnr-list {color: darkred !important; \nmargin: 20px 5px !important; \nbackground-color: linen !important; \nfont-size: 8pt !important; \nborder: 0px solid red !important; \nborder-left: 1pt solid darkred !important;}\n\n \ninput[type=\"text\"], input[type=\"search\"], input[type=\"password\"], input[type=\"number\"], input[type=\"email\"], input[type=\"tel\"], select, textarea {\n    background-color: white !important;\n} \n",
+    "customCss" : "/* typography */\nbody {font-family: Kalinga, Verdana, sans-serif;}\nh1   {font-family: Kalinga, Verdana, sans-serif; font-size: 16pt; font-weight: bold;}\nh2   {font-family: Kalinga, Verdana, sans-serif; color: black; font-size: 14pt; font-weight: bold;}\nh3   {font-family: Kalinga, Verdana, sans-serif; color: black; font-size: 12pt; font-weight: bold;}\na    {font-family: Kalinga, Verdana, sans-serif; font-weight: bold;}\ntable, td,th    {font-family: Kalinga, Verdana, sans-serif !important;}\n\n/* overwrite default color on links */\na { color: inherit; font-weight: inherit; font-style: inherit; }\n\n/* page */\n.rnr-page {width: 98% !important;}\n\n/* record controls */\n.rnr-cw-recordcontrols {width:80% !important;}\n\n/* search highlight */\n.rnr-search-highlight {color: red  !important; font-weight: bold  !important;}\n  \n/* fields */\n.rnr-control {color: darkred !important; font-weight: bold !important; font-family: Kalinga, Verdana, sans-serif !important;}\n\n/* list page title */\n.psus-list-title {float:left; width: 200px; font-size: 20pt; font-weight: bold; vertical-align: top; color: darkred}\n\n/* list page key name */\n.psus-list-keyname {color: darkred}\n.psus-list-keyname-red {color: darkred}\n.psus-list-keyname-orange {color: orange}\n.psus-list-keyname-green {color: darkgreen}\n.psus-list-keyname-blue {color: darkblue}\n\n/* record controls */\n.rnr-cw-recordcontrols {width:80% !important;}\n\n/* master info */\n.rnr-b-masterinfo {vertical-align:top !important;}\n.psus-masterlist {font-size: 14pt; vertical-align: top; color: darkgrey}\n\n/* labels */\n/*.rnr-label {border-right: 1px solid darkgrey !important;}*/\n\n/* inline editing controls */\n.saveEditing { color:green; }\n.revertEditing { color: red; }\n\n\n/* tooltip */\ndiv.shiny_box_body.rnr-list {color: darkred !important; \nmargin: 20px 5px !important; \nbackground-color: linen !important; \nfont-size: 8pt !important; \nborder: 0px solid red !important; \nborder-left: 1pt solid darkred !important;}\n\n \ninput[type=\"text\"], input[type=\"search\"], input[type=\"password\"], input[type=\"number\"], input[type=\"email\"], input[type=\"tel\"], select, textarea {\n    background-color: white !important;\n} \n",
     "globals" : {
         "button1" : {
             "border" : {
@@ -274,7 +274,7 @@
                     "active" : {
                         "alias" : "custom",
                         "bold" : true,
-                        "face" : "",
+                        "face" : "Tahoma, sans-serif",
                         "italic" : false,
                         "size" : 16,
                         "underline" : false
@@ -551,7 +551,7 @@
                     "active" : {
                         "alias" : "custom",
                         "bold" : false,
-                        "face" : "",
+                        "face" : "Tahoma, sans-serif",
                         "italic" : false,
                         "size" : 14,
                         "underline" : false
@@ -559,7 +559,7 @@
                     "expanded" : {
                         "alias" : "custom",
                         "bold" : true,
-                        "face" : "",
+                        "face" : "Tahoma, sans-serif",
                         "italic" : false,
                         "size" : 14,
                         "underline" : false
@@ -567,7 +567,7 @@
                     "hover" : {
                         "alias" : "custom",
                         "bold" : false,
-                        "face" : "",
+                        "face" : "Tahoma, sans-serif",
                         "italic" : false,
                         "size" : 14,
                         "underline" : false
@@ -575,7 +575,7 @@
                     "plain" : {
                         "alias" : "custom",
                         "bold" : false,
-                        "face" : "",
+                        "face" : "Tahoma, sans-serif",
                         "italic" : false,
                         "size" : 14,
                         "underline" : false

@@ -1,89 +1,240 @@
-<!DOCTYPE html>
-<HTML {$html_attrs}><HEAD> 
-<META http-equiv="X-UA-Compatible" content="IE=Edge"> <TITLE>{$pagetitle} </TITLE> 
-<META http-equiv="Content-Type" content="text/html; charset=utf-8"> 
-<LINK href="styles/default.css" rel="stylesheet" type="text/css"> {BEGIN rtlCSS}<LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">{END rtlCSS} {BEGIN styleCSSFiles}<LINK href="{$stylepath}" rel="stylesheet" type="text/css">{END styleCSSFiles} {BEGIN pageCSSFiles}<LINK href="{$pagestylepath}" rel="stylesheet" type="text/css">{END pageCSSFiles} 
-<META name="GENERATOR" content="MSHTML 11.00.9600.18161"> </HEAD> 
-<BODY class="{$stylename} function-view" {$bodyattrs}>{BEGIN body}
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{$pagetitle}</title>
 
-{$header} 
-<DIV class="rnr-page">
-<DIV class="rnr-top {$blockclass_top}">
-{BEGIN container_all}
-<DIV class="rnr-c rnr-cv rnr-c-all">
-<DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
-{BEGIN container_add}
-<DIV class="rnr-c rnr-cv rnr-c-add">
-{BEGIN viewheader}<DIV class="rnr-brickcontents style2 rnr-b-viewheader {$brickclass_viewheader}"><SPAN>
-<H1>
-{$pagetitlelabel t_cfgrace view} 
-</H1></SPAN> </DIV>
-{END viewheader}{BEGIN message_block}<DIV class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}">
-<DIV class="rnr-message">
-{$message} </DIV></DIV>
-{END message_block}<DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
-{BEGIN container_fields}
-<DIV class="rnr-c rnr-cv rnr-c-fields">
-<DIV class="rnr-brickcontents style1 rnr-b-viewfields2_atop {$brickclass_viewfields2_atop}">
-<TABLE class="fieldGrid fieldGrid2 edit">
-  <TBODY>
-  <TR>
-    <TD>
-      {BEGIN race_name_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_race_name}" data-fieldname="race_name">
-      <DIV class="rnr-label above">{BEGIN race_name_label}
-      {$label t_cfgrace race_name}{END race_name_label} </DIV>
-      <DIV class="rnr-control style3">
-      {$race_name_value} </DIV></DIV>
-      {END race_name_fieldblock}{BEGIN race_desc_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_race_desc}" data-fieldname="race_desc">
-      <DIV class="rnr-label above">{BEGIN race_desc_label}
-      {$label t_cfgrace race_desc}{END race_desc_label} </DIV>
-      <DIV class="rnr-control style3">
-      {$race_desc_value} </DIV></DIV>
-      {END race_desc_fieldblock}{BEGIN race_code_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_race_code}" data-fieldname="race_code">
-      <DIV class="rnr-label above">{BEGIN race_code_label}
-      {$label t_cfgrace race_code}{END race_code_label} </DIV>
-      <DIV class="rnr-control style3">
-      {$race_code_value} </DIV></DIV>{END race_code_fieldblock}</TD>
-    <TD>
-      {BEGIN numstarts_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_numstarts}" data-fieldname="numstarts">
-      <DIV class="rnr-label above">{BEGIN numstarts_label}
-      {$label t_cfgrace numstarts}{END numstarts_label} </DIV>
-      <DIV class="rnr-control style3">
-      {$numstarts_value} </DIV></DIV>
-      {END numstarts_fieldblock}{BEGIN start_scheme_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_start_scheme}" data-fieldname="start_scheme">
-      <DIV class="rnr-label above">{BEGIN start_scheme_label}
-      {$label t_cfgrace start_scheme}{END start_scheme_label} </DIV>
-      <DIV class="rnr-control style3">
-      {$start_scheme_value} </DIV></DIV>
-      {END start_scheme_fieldblock}{BEGIN start_interval_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_start_interval}" data-fieldname="start_interval">
-      <DIV class="rnr-label above">{BEGIN start_interval_label}
-      {$label t_cfgrace start_interval}{END start_interval_label} </DIV>
-      <DIV class="rnr-control style3">
-      {$start_interval_value} </DIV></DIV>{END start_interval_fieldblock}</TD>
-    <TD>
-      {BEGIN pursuit_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_pursuit}" data-fieldname="pursuit">
-      <DIV class="rnr-label above">{BEGIN pursuit_label}
-      {$label t_cfgrace pursuit}{END pursuit_label} </DIV>
-      <DIV class="rnr-control style3">
-      {$pursuit_value} </DIV></DIV>
-      {END pursuit_fieldblock}{BEGIN comp_pick_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_comp_pick}" data-fieldname="comp_pick">
-      <DIV class="rnr-label above">{BEGIN comp_pick_label}
-      {$label t_cfgrace comp_pick}{END comp_pick_label} </DIV>
-      <DIV class="rnr-control style3">
-      {$comp_pick_value} </DIV></DIV>
-      {END comp_pick_fieldblock}{BEGIN active_fieldblock}<DIV class="rnr-field style1 {$fielddispclass_active}" data-fieldname="active">
-      <DIV class="rnr-label above">{BEGIN active_label}
-      {$label t_cfgrace active}{END active_label} </DIV>
-      <DIV class="rnr-control style3">
-      {$active_value} </DIV></DIV>{END active_fieldblock}</TD></TR></TBODY></TABLE> 
-</DIV>
-{BEGIN viewbuttons}<DIV class="rnr-brickcontents style2 rnr-b-viewbuttons {$brickclass_viewbuttons}">
-<DIV class="rnr-buttons-left">{BEGIN save_button}<A class="rnr-button main" id="saveButton{$id}" href="#" {$savebutton_attrs}>
-Save </A> {END save_button}{BEGIN reset_button}<A class="rnr-button" id="resetButton{$id}" href="#"> Reset </A> {END reset_button}{BEGIN cancel_button}<A class="rnr-button" id="cancelButton{$id}" href="#"> Cancel </A> {END cancel_button}{BEGIN back_button}<A class="rnr-button" id="backButton{$id}" href="#"> Back to list </A> {END back_button}{BEGIN backToMenu_button}<A class="rnr-button" id="backToMenuButton{$id}" href="#"> Back to menu </A> 
-{END backToMenu_button}</DIV></DIV>{END viewbuttons}</DIV>{END container_fields}</DIV></DIV> {END container_add}</DIV></DIV> {END container_all}</DIV>
-<DIV class="rnr-middle">
-<DIV class="rnr-left {$blockclass_left}"></DIV>
-<DIV class="rnr-center {$blockclass_center}"></DIV>
-<DIV class="rnr-right {$blockclass_right}"></DIV></DIV>
-<DIV class="rnr-bottom {$blockclass_bottom}"><!--%%bottom%%--> </DIV></DIV>
-{$footer}{END body} </BODY></HTML>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+	</head>
+
+	<body class="{$stylename} function-view" {$bodyattrs}>
+	{BEGIN body}{$header}
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
+
+{BEGIN container_viewpage}<div {$viewpage_chiddenattr} data-pageid="{$pageid}" data-container="viewpage" class="container    "> 
+
+
+
+
+{BEGIN container_header}<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-12 "> 
+
+{BEGIN viewheader}<h2 {$viewheader_hiddenattr} data-pageid="{$pageid}" data-brick="viewheader" >{$pagetitlelabel t_cfgrace view}</h2>
+	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
+
+{END viewheader}
+
+
+
+</div>
+{END container_header}
+
+
+
+
+
+
+</div>
+{END container_viewpage}
+
+
+
+{BEGIN container_fields}<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class=" form-horizontal  col-md-12 "> 
+
+
+<div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
+
+	<div class="container">
+					{BEGIN race_code_fieldblock}<div class="{$fielddispclass_race_code} col-md-4 bs-viewcontrolgroup" data-fieldname="race_code">
+		<label class="control-label" for="{$labelfor_race_code}">
+			{$label t_cfgrace race_code}
+		</label>
+		<div class="" >
+			{$race_code_value}&nbsp;
+		</div>
+	</div>
+{END race_code_fieldblock}
+					{BEGIN race_name_fieldblock}<div class="{$fielddispclass_race_name} col-md-4 bs-viewcontrolgroup" data-fieldname="race_name">
+		<label class="control-label" for="{$labelfor_race_name}">
+			{$label t_cfgrace race_name}
+		</label>
+		<div class="" >
+			{$race_name_value}&nbsp;
+		</div>
+	</div>
+{END race_name_fieldblock}
+					{BEGIN race_desc_fieldblock}<div class="{$fielddispclass_race_desc} col-md-4 bs-viewcontrolgroup" data-fieldname="race_desc">
+		<label class="control-label" for="{$labelfor_race_desc}">
+			{$label t_cfgrace race_desc}
+		</label>
+		<div class="" >
+			{$race_desc_value}&nbsp;
+		</div>
+	</div>
+{END race_desc_fieldblock}
+					{BEGIN pursuit_fieldblock}<div class="{$fielddispclass_pursuit} col-md-4 bs-viewcontrolgroup" data-fieldname="pursuit">
+		<label class="control-label" for="{$labelfor_pursuit}">
+			{$label t_cfgrace pursuit}
+		</label>
+		<div class="" >
+			{$pursuit_value}&nbsp;
+		</div>
+	</div>
+{END pursuit_fieldblock}
+					{BEGIN numstarts_fieldblock}<div class="{$fielddispclass_numstarts} col-md-4 bs-viewcontrolgroup" data-fieldname="numstarts">
+		<label class="control-label" for="{$labelfor_numstarts}">
+			{$label t_cfgrace numstarts}
+		</label>
+		<div class="" >
+			{$numstarts_value}&nbsp;
+		</div>
+	</div>
+{END numstarts_fieldblock}
+					{BEGIN start_scheme_fieldblock}<div class="{$fielddispclass_start_scheme} col-md-4 bs-viewcontrolgroup" data-fieldname="start_scheme">
+		<label class="control-label" for="{$labelfor_start_scheme}">
+			{$label t_cfgrace start_scheme}
+		</label>
+		<div class="" >
+			{$start_scheme_value}&nbsp;
+		</div>
+	</div>
+{END start_scheme_fieldblock}
+					{BEGIN start_interval_fieldblock}<div class="{$fielddispclass_start_interval} col-md-4 bs-viewcontrolgroup" data-fieldname="start_interval">
+		<label class="control-label" for="{$labelfor_start_interval}">
+			{$label t_cfgrace start_interval}
+		</label>
+		<div class="" >
+			{$start_interval_value}&nbsp;
+		</div>
+	</div>
+{END start_interval_fieldblock}
+					{BEGIN comp_pick_fieldblock}<div class="{$fielddispclass_comp_pick} col-md-4 bs-viewcontrolgroup" data-fieldname="comp_pick">
+		<label class="control-label" for="{$labelfor_comp_pick}">
+			{$label t_cfgrace comp_pick}
+		</label>
+		<div class="" >
+			{$comp_pick_value}&nbsp;
+		</div>
+	</div>
+{END comp_pick_fieldblock}
+					{BEGIN active_fieldblock}<div class="{$fielddispclass_active} col-md-4 bs-viewcontrolgroup" data-fieldname="active">
+		<label class="control-label" for="{$labelfor_active}">
+			{$label t_cfgrace active}
+		</label>
+		<div class="" >
+			{$active_value}&nbsp;
+		</div>
+	</div>
+{END active_fieldblock}
+	</div>
+</div>
+
+
+
+
+</div>
+{END container_fields}
+
+
+
+{BEGIN container_bottombuttons}<div {$bottombuttons_chiddenattr} data-pageid="{$pageid}" data-container="bottombuttons" class="container    "> 
+
+
+
+
+{BEGIN container_buttons}<div {$buttons_chiddenattr} data-pageid="{$pageid}" data-container="buttons" class=" form-group   "> 
+
+
+
+
+{BEGIN container_leftbuttons}<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-8 "> 
+
+{BEGIN viewbuttons}{BEGIN save_button}<A class="rnr-button main" id="saveButton{$id}" href="#" {$savebutton_attrs}>
+Save </A> {END save_button}{BEGIN reset_button}<A class="rnr-button" id="resetButton{$id}" href="#"> Reset </A> {END reset_button}{BEGIN cancel_button}<A class="rnr-button" id="cancelButton{$id}" href="#"> Cancel </A> {END cancel_button}{BEGIN back_button}<button class="btn btn-primary" {$backbutton_attrs}>Back to list</button>
+<A class="rnr-button" id="backButton{$id}" href="#">{END back_button}
+{BEGIN backToMenu_button}<A class="rnr-button" id="backToMenuButton{$id}" href="#"> Back to menu </A> 
+{END backToMenu_button}{END viewbuttons}
+
+
+
+</div>
+{END container_leftbuttons}
+
+
+
+
+
+
+
+
+{BEGIN container_leftbuttons_1}<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="   col-md-4 "> 
+
+{BEGIN rightviewbuttons}<div class="btn-group" role="group">
+		{BEGIN prev_button}<button class="btn btn-default {$prevbutton_class}" {$prevbutton_attrs}><span class="glyphicon glyphicon-chevron-left"></span></button>
+	{END prev_button}
+	{BEGIN next_button}<button class="btn btn-default {$nextbutton_class}" {$nextbutton_attrs}><span class="glyphicon glyphicon-chevron-right"></span></button>
+	{END next_button}
+		{BEGIN view_menu_button}<div class="btn-group dropup" role="group">
+		<button class="btn btn-default dropdown-toggle {$groupbutton_class}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span class="glyphicon glyphicon-menu-hamburger"></span></button>
+		<ul class="dropdown-menu dropdown-left">
+									{BEGIN edit_page_button}<li><a href=# {$edit_page_button_attrs}>Edit</a></li>
+			{END edit_page_button}
+		</ul>
+	</div>
+	{END view_menu_button}
+</div>
+{END rightviewbuttons}
+
+
+
+</div>
+{END container_leftbuttons_1}
+
+
+
+
+
+
+</div>
+{END container_buttons}
+
+
+
+
+
+
+</div>
+{END container_bottombuttons}
+
+
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		<DIV class="bs-bottom">
+        
+		</div>
+		{$footer}
+	{END body}
+	</body>
+</html>

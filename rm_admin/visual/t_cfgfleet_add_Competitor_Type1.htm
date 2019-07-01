@@ -1,49 +1,62 @@
-<DIV {$pageattrs}>
-  {BEGIN container_1}
-    <BR>
-    &nbsp;{$event t_cfgfleet_snippet1}
-    <TABLE class="fieldGrid" style="width: 95%;" align="center">
-      <TBODY>
-        {BEGIN groupinc_tabfieldblock}
-          <TR class="{$fielddispclass_groupinc}" data-fieldname="groupinc">
-            <TD class="style1 rnr-label" style="width: 35%;">
-              {BEGIN groupinc_label}
-                {$label t_cfgfleet groupinc}
-              {END groupinc_label}
-            </TD>
-            <TD class="rnr-control style3" style="width: 65%;">
-              {$groupinc_editcontrol}
-              &nbsp;
-            </TD>
-          </TR>
-        {END groupinc_tabfieldblock}
-        {BEGIN min_helmage_tabfieldblock}
-          <TR class="{$fielddispclass_min_helmage}" data-fieldname="min_helmage">
-            <TD class="style1 rnr-label">
-              {BEGIN min_helmage_label}
-                {$label t_cfgfleet min_helmage}
-              {END min_helmage_label}
-            </TD>
-            <TD class="rnr-control style3">
-              {$min_helmage_editcontrol}
-              &nbsp;
-            </TD>
-          </TR>
-        {END min_helmage_tabfieldblock}
-        {BEGIN max_helmage_tabfieldblock}
-          <TR class="{$fielddispclass_max_helmage}" data-fieldname="max_helmage">
-            <TD class="style1 rnr-label">
-              {BEGIN max_helmage_label}
-                {$label t_cfgfleet max_helmage}
-              {END max_helmage_label}
-            </TD>
-            <TD class="rnr-control style3">
-              {$max_helmage_editcontrol}
-              &nbsp;
-            </TD>
-          </TR>
-        {END max_helmage_tabfieldblock}
-      </TBODY>
-    </TABLE>
-  {END container_1}
-</DIV>
+<div {$pageattrs}>
+
+{BEGIN container_tabfields}<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
+
+
+{BEGIN groupinc_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_groupinc}" data-fieldname="groupinc" data-signal-error-for="groupinc{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_groupinc}">
+			{BEGIN groupinc_label}{$label t_cfgfleet groupinc}{END groupinc_label}
+		</label>
+		<div class="col-md-6 " >
+			{$groupinc_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="groupinc">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet groupinc}
+			</div>
+		</div>
+	</div>
+</div>
+{END groupinc_tabfieldblock}
+{BEGIN min_helmage_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_min_helmage}" data-fieldname="min_helmage" data-signal-error-for="min_helmage{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_min_helmage}">
+			{BEGIN min_helmage_label}{$label t_cfgfleet min_helmage}{END min_helmage_label}
+		</label>
+		<div class="col-md-6 " >
+			{$min_helmage_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="min_helmage">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet min_helmage}
+			</div>
+		</div>
+	</div>
+</div>
+{END min_helmage_tabfieldblock}
+{BEGIN max_helmage_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_max_helmage}" data-fieldname="max_helmage" data-signal-error-for="max_helmage{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_max_helmage}">
+			{BEGIN max_helmage_label}{$label t_cfgfleet max_helmage}{END max_helmage_label}
+		</label>
+		<div class="col-md-6 " >
+			{$max_helmage_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="max_helmage">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet max_helmage}
+			</div>
+		</div>
+	</div>
+</div>
+{END max_helmage_tabfieldblock}
+
+
+
+
+
+</div>
+{END container_tabfields}
+
+</div>

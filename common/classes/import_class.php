@@ -14,7 +14,7 @@ Class for managing csv imports
         $this->db = $db;
         $this->imp_data = array();           // data to be imported into database - mapped to database fields
         $this->imp_ref = array();            // value to be used to reference line of data
-        $this->field_map = $field_map;        // mapping between database and csv field names
+        $this->field_map = $field_map;       // mapping between database and csv field names
         $this->file_inf = array();           // holds error information about file
         $this->data_inf = array();           // holds error information about data rows
         $this->import_inf = array();         // holds error information about import
@@ -26,12 +26,7 @@ Class for managing csv imports
 
     public function check_importfile($files)
     {
-        //echo print_r($files,true);
-
-        // check it is a csv file
-        if (strpos($files['importfile']['type'], "/csv") === false)
-            {   //echo "fails type test<br>";
-                $this->file_inf['filetype'] = "This file is not the correct type - it must be a CSV file";}
+        $err = "";
 
         // check file is readable
         if ($this->open_import($files['importfile']['tmp_name']))
@@ -40,22 +35,22 @@ Class for managing csv imports
 
             // check I can interpret the first line
             $this->header = fgetcsv($this->handle, 0);
-            //echo print_r($this->field_map, true);
 
             foreach ($this->header as $value)
             {
                 $value = preg_replace('/[^\w-]/', '', $value);
-                //echo "value: $value<br>";
                 if (!in_array($value, $this->field_map))
-                    { $this->file_inf['filehdr'].= $value." is invalid field<br> "; }
+                {
+                    $err .= $value." is invalid field<br> ";
+                }
             }
         }
-        else
-        {
-            $this->file_inf['fileopen'] = "not able to read supplied import file";
-        }
 
-        if (!empty($this->file_inf)) { return false; }
+        if (!empty($err))
+        {
+            $this->file_inf['filehdr'] = $err;
+            return false;
+        }
         return true;             
     }
 
@@ -69,8 +64,10 @@ Class for managing csv imports
         while (($row = fgetcsv($this->handle, 0)) !== FALSE)
         {
             $i++;
-            if ($row = array_combine($this->header, $row))
+            $err = "";
+            if (count($this->header) == count($row))
             {
+                $row = array_combine($this->header, $row);
                 $row_transform = array();
                 foreach ($row as $key=>$value)
                 {
@@ -80,13 +77,24 @@ Class for managing csv imports
                 }
                 $this->imp_data[] = $row_transform;
             }
+            else
+            {
+                $err .= "incorrect number of data values";
+            }
+            if (!empty($err)) { $this->data_inf[$i] = $err; }
         }
         $this->close_import();
         $this->num_imports = $i;
 
-        return true;
+        if (!empty($this->data_inf))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
-
 
     public function open_import($filename)
     {
@@ -94,7 +102,6 @@ Class for managing csv imports
         if (!$this->handle) { return false; }
         return true;
     }
-
 
     public function close_import()
     {
@@ -111,7 +118,6 @@ Class for managing csv imports
         return $this->imp_data;
     }
 
-
     public function put_importdata($data)
     {
         $this->imp_data = $data;
@@ -122,10 +128,19 @@ Class for managing csv imports
         $this->imp_ref = $data;
     }
 
-
     public function get_fail_line()
     {
         return $this->import_fail_line;
+    }
+
+    public function get_data_info()
+    {
+        return $this->data_inf;
+    }
+
+    public function get_import_info()
+    {
+        return $this->import_inf;
     }
 
     public function get_file_val()
@@ -141,58 +156,8 @@ Class for managing csv imports
         return $bufr;
     }
 
-
-    public function get_import_val()
+    public function import_data ($table, $truncate, $update)
     {
-        $no_updates = false;
-        $no_inserts = false;
-        $updates = rtrim($this->import_inf['update'], ", ");
-        if (empty($updates))
-        {
-            $updates = "<i>- none -</i>";
-            $no_updates = true;
-        }
-
-        $inserts = rtrim($this->import_inf['insert'],", ");
-        if (empty($inserts))
-        {
-            $inserts = "<i>- none -</i>";
-            $no_inserts = true;
-        }
-
-        $bufr = "";
-        if (!empty($this->import_fail_line))
-        {
-            $bufr.= <<<EOT
-            <p class="text-danger"><b>Import failed on line {$this->import_fail_line}</b></p>
-EOT;
-        }
-        if ($no_updates AND $no_inserts)
-        {
-            $bufr.= <<<EOT
-        <div style="padding-left:30px;">
-            <p><b>No changes made</b></p>
-        </div>
-EOT;
-        }
-        else
-        {
-            $bufr.= <<<EOT
-        <div style="padding-left:30px;">
-            <p><b>Inserts:</b></p><p style="padding-left:60px; padding-right:60px">$inserts</p>
-            <p><b>Updates:</b></p> <p style="padding-left:60px; padding-right:60px">$updates</p>
-        </div>
-EOT;
-        }
-
-
-        return $bufr;
-    }
-
-
-    public function import_data ($table, $truncate)
-    {
-
         // if truncate - empty table
         if ($truncate)
         {
@@ -200,57 +165,59 @@ EOT;
             if (!$empty)
             {
                 $this->import_fail_line = -100;
-                echo "fail line: ".$this->import_fail_line."<br>";
                 return false;
             }
         }
 
         $i = 1;
+        $this->import_inf['insert'] = "";
+        $this->import_inf['update'] = "";
         foreach ($this->imp_data as $key=>$row)
         {
             $i++;
-            $row['updby'] = "import";
-
             // check if update processing required
             $exists   = $this->imp_ref[$i]['exists'];
             $item     = $this->imp_ref[$i]['ref'];
-            $record_id = $this->imp_ref[$i]['id'];
+            if (array_key_exists('id', $this->imp_ref[$i]))
+            {
+                $record_id = $this->imp_ref[$i]['id'];
+            }
+            else
+            {
+                $record_id = 0;
+            }
 
-            if (!$exists)       // record does not exist - so insert
+            if (!$exists or $truncate)       // record does not exist or we have truncated table - so insert
             {
                 $insert_rs = $this->db->db_insert( $table, $row );
                 if (!$insert_rs)
                 {
                     $this->import_fail_line = $i;
-                    //echo "insert - fail<br>";
                     return false;
                 }
                 else
                 {
                     $this->import_inf['insert'].= "$item, ";
-                    //echo "insert - success<br>";
                 }
             }
-            else                      // already exists so update
+            else                      // already exists so update if permitted
             {
-                $update_rs = $this->db->db_update( $table, $row, array ('id'=>$record_id) );
-
-                if ($update_rs == -1)
+                if ($update)
                 {
-                    $this->import_fail_line = $i;
-                    //echo "update fail line: ".$this->import_fail_line."<br>";
-                    return false;
+                    $update_rs = $this->db->db_update( $table, $row, array ('id'=>$record_id) );
+                    if ($update_rs == -1)
+                    {
+                        $this->import_fail_line = $i;
+                        return false;
+                    }
+                    elseif ( $update_rs > 0 )
+                    {
+                        $this->import_inf['update'].= "$item , ";
+                    }
                 }
-                elseif ( $update_rs > 0 )
-                {
-                    $this->import_inf['update'].= "$item , ";
-                    //echo "update - success<br>";
-                }
-                //echo "update - no change<br>";
             }
         }
         return true;
     }
 
 }
-?>

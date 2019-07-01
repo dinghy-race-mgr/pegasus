@@ -2,6 +2,7 @@
 <html  {$html_attrs}>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{$pagetitle}</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -12,166 +13,347 @@
 		{BEGIN styleCSSFiles}
 		<link REL="stylesheet" href="{$stylepath}" type="text/css">
 		{END styleCSSFiles}
-		{BEGIN pageCSSFiles}
-		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
-		{END pageCSSFiles}
 	</head>
-	
+
 	<body class="{$stylename} function-edit" {$bodyattrs}>
 	{BEGIN body}
 		{$header}
-	<div class="rnr-page">
-		<div class="rnr-top {$blockclass_top}">
-			
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
 
-{BEGIN container_all}
-<div class="rnr-c rnr-cv rnr-c-all">
+{BEGIN container_editpage}
+<div {$editpage_chiddenattr} data-pageid="{$pageid}" data-container="editpage" class="container    "> 
 
 
-<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
 
-{BEGIN container_add}
-<div class="rnr-c rnr-cv rnr-c-add">
+
+{BEGIN container_header}
+<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-9 col-md-offset-3"> 
 
 {BEGIN editheader}
-<div  class="rnr-brickcontents style2 rnr-b-editheader {$brickclass_editheader}"><span>	<h1>{$pagetitlelabel t_series edit}</h1>
-</span></div>{END editheader}
+	<h2 {$editheader_hiddenattr} data-pageid="{$pageid}" data-brick="editheader" >{$pagetitlelabel t_series edit}</h2>
+	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
 
+{END editheader}
+
+
+
+</div>
+{END container_header}
+
+
+
+
+
+
+
+
+{BEGIN container_message}
+<div {$message_chiddenattr} data-pageid="{$pageid}" data-container="message" class="   col-md-6 col-md-offset-3"> 
 
 {BEGIN message_block}
-<div  class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}"><div class="rnr-message">{$message}</div></div>{END message_block}
+<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">
+<h5>{$message}</h5>
+<div>
+{BEGIN back_button}
+		<button class="btn btn-sm btn-default" {$backbutton_attrs}>Back to list</button>
+{END back_button}
+{BEGIN view_page_button}
+	<button class="btn btn-sm btn-default" {$view_page_button_attrs}>View</button>
+{END view_page_button}
+</div>
+</div>
+
+{END message_block}
+
+
+
+</div>
+{END container_message}
 
 
 
 
-<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+
+
+
+</div>
+{END container_editpage}
+
+
 
 {BEGIN container_fields}
-<div class="rnr-c rnr-cv rnr-c-fields">
+<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class="   col-md-12 "> 
 
 
-<div  class="rnr-brickcontents style1 rnr-b-editfields2_atop {$brickclass_editfields2_atop}"><table class="fieldGrid fieldGrid2 edit">
+<div {$editfields_hiddenattr} data-pageid="{$pageid}" data-brick="editfields" class="form-horizontal" role="form">
 
-<tr>
-<td>
-	{BEGIN seriescode_fieldblock}
-<div data-fieldname="seriescode" class="rnr-field style1 {$fielddispclass_seriescode}">
-  <div class="rnr-label above">{BEGIN seriescode_label}{$label t_series seriescode}{END seriescode_label}</div>
-  <div class="rnr-control style3">{$seriescode_editcontrol}</div>
+
+
+			{BEGIN seriescode_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_seriescode}" data-fieldname="seriescode" data-signal-error-for="seriescode{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_seriescode}">
+		{BEGIN seriescode_label}{$label t_series seriescode}{END seriescode_label}
+	</label>
+	<div class="col-md-5" >
+		{$seriescode_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="seriescode">
+		<div class="text-muted" >
+		{$tooltip t_series seriescode}
+		</div>
+	</div>
+</div>
 </div>
 {END seriescode_fieldblock}
-	{BEGIN seriesname_fieldblock}
-<div data-fieldname="seriesname" class="rnr-field style1 {$fielddispclass_seriesname}">
-  <div class="rnr-label above">{BEGIN seriesname_label}{$label t_series seriesname}{END seriesname_label}</div>
-  <div class="rnr-control style3">{$seriesname_editcontrol}</div>
+
+			{BEGIN seriesname_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_seriesname}" data-fieldname="seriesname" data-signal-error-for="seriesname{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_seriesname}">
+		{BEGIN seriesname_label}{$label t_series seriesname}{END seriesname_label}
+	</label>
+	<div class="col-md-5" >
+		{$seriesname_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="seriesname">
+		<div class="text-muted" >
+		{$tooltip t_series seriesname}
+		</div>
+	</div>
+</div>
 </div>
 {END seriesname_fieldblock}
-	{BEGIN seriestype_fieldblock}
-<div data-fieldname="seriestype" class="rnr-field style1 {$fielddispclass_seriestype}">
-  <div class="rnr-label above">{BEGIN seriestype_label}{$label t_series seriestype}{END seriestype_label}</div>
-  <div class="rnr-control style3">{$seriestype_editcontrol}</div>
+
+			{BEGIN seriestype_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_seriestype}" data-fieldname="seriestype" data-signal-error-for="seriestype{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_seriestype}">
+		{BEGIN seriestype_label}{$label t_series seriestype}{END seriestype_label}
+	</label>
+	<div class="col-md-5" >
+		{$seriestype_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="seriestype">
+		<div class="text-muted" >
+		{$tooltip t_series seriestype}
+		</div>
+	</div>
+</div>
 </div>
 {END seriestype_fieldblock}
-	{BEGIN classresults_fieldblock}
-<div data-fieldname="classresults" class="rnr-field style1 {$fielddispclass_classresults}">
-  <div class="rnr-label above">{BEGIN classresults_label}{$label t_series classresults}{END classresults_label}</div>
-  <div class="rnr-control style3">{$classresults_editcontrol}</div>
+
+			{BEGIN classresults_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_classresults}" data-fieldname="classresults" data-signal-error-for="classresults{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_classresults}">
+		{BEGIN classresults_label}{$label t_series classresults}{END classresults_label}
+	</label>
+	<div class="col-md-5" >
+		{$classresults_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="classresults">
+		<div class="text-muted" >
+		{$tooltip t_series classresults}
+		</div>
+	</div>
+</div>
 </div>
 {END classresults_fieldblock}
-</td>
-<td>
-	{BEGIN startdate_fieldblock}
-<div data-fieldname="startdate" class="rnr-field style1 {$fielddispclass_startdate}">
-  <div class="rnr-label above">{BEGIN startdate_label}{$label t_series startdate}{END startdate_label}</div>
-  <div class="rnr-control style3">{$startdate_editcontrol}</div>
+
+			{BEGIN startdate_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_startdate}" data-fieldname="startdate" data-signal-error-for="startdate{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_startdate}">
+		{BEGIN startdate_label}{$label t_series startdate}{END startdate_label}
+	</label>
+	<div class="col-md-5" >
+		{$startdate_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="startdate">
+		<div class="text-muted" >
+		{$tooltip t_series startdate}
+		</div>
+	</div>
+</div>
 </div>
 {END startdate_fieldblock}
-	{BEGIN enddate_fieldblock}
-<div data-fieldname="enddate" class="rnr-field style1 {$fielddispclass_enddate}">
-  <div class="rnr-label above">{BEGIN enddate_label}{$label t_series enddate}{END enddate_label}</div>
-  <div class="rnr-control style3">{$enddate_editcontrol}</div>
+
+			{BEGIN enddate_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_enddate}" data-fieldname="enddate" data-signal-error-for="enddate{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_enddate}">
+		{BEGIN enddate_label}{$label t_series enddate}{END enddate_label}
+	</label>
+	<div class="col-md-5" >
+		{$enddate_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="enddate">
+		<div class="text-muted" >
+		{$tooltip t_series enddate}
+		</div>
+	</div>
+</div>
 </div>
 {END enddate_fieldblock}
-	{BEGIN notes_fieldblock}
-<div data-fieldname="notes" class="rnr-field style1 {$fielddispclass_notes}">
-  <div class="rnr-label above">{BEGIN notes_label}{$label t_series notes}{END notes_label}</div>
-  <div class="rnr-control style3">{$notes_editcontrol}</div>
+
+			{BEGIN notes_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_notes}" data-fieldname="notes" data-signal-error-for="notes{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_notes}">
+		{BEGIN notes_label}{$label t_series notes}{END notes_label}
+	</label>
+	<div class="col-md-5" >
+		{$notes_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="notes">
+		<div class="text-muted" >
+		{$tooltip t_series notes}
+		</div>
+	</div>
+</div>
 </div>
 {END notes_fieldblock}
-	{BEGIN active_fieldblock}
-<div data-fieldname="active" class="rnr-field style1 {$fielddispclass_active}">
-  <div class="rnr-label above">{BEGIN active_label}{$label t_series active}{END active_label}</div>
-  <div class="rnr-control style3">{$active_editcontrol}</div>
+
+			{BEGIN active_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_active}" data-fieldname="active" data-signal-error-for="active{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_active}">
+		{BEGIN active_label}{$label t_series active}{END active_label}
+	</label>
+	<div class="col-md-5" >
+		{$active_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="active">
+		<div class="text-muted" >
+		{$tooltip t_series active}
+		</div>
+	</div>
+</div>
 </div>
 {END active_fieldblock}
-</td>
-</tr>
-</table></div>
 
 
-{BEGIN editbuttons}
-<div  class="rnr-brickcontents style2 rnr-b-editbuttons {$brickclass_editbuttons}"><div class="rnr-buttons-right">
-	{BEGIN prev_button}
-	<a href="#" class="rnr-button {$prevbutton_class}" {$prevbutton_attrs}>&lt;&lt;&lt;</a>
-	{END prev_button}
-	{BEGIN next_button}
-	<a href="#" class="rnr-button  {$nextbutton_class}" {$nextbutton_attrs}>&gt;&gt;&gt;</a>
-	{END next_button}
 </div>
-<div class="rnr-buttons-left">
-		{BEGIN save_button}
-	<a href="#" class="rnr-button main" {$savebutton_attrs}>Save</a>
-	{END save_button}
-	{BEGIN reset_button}
-	<a href="#" class="rnr-button" {$resetbutton_attrs}>Reset</a>
-	{END reset_button}
-	{BEGIN back_button}
-		<a href="#" class="rnr-button" {$backbutton_attrs}>Back to list</a>
-	{END back_button}
-	{BEGIN close_button}
-	<a href="#" class="rnr-button" {$closebutton_attrs}>Close window</a>
-	{END close_button}
-		{BEGIN view_page_button}
-	<a href="#" class="rnr-button" {$view_page_button_attrs}>View</a>
-	{END view_page_button}
-</div>
-</div>{END editbuttons}
+
+
 
 
 </div>
 {END container_fields}
 
+
+
+{BEGIN container_bottombuttons}
+<div {$bottombuttons_chiddenattr} data-pageid="{$pageid}" data-container="bottombuttons" class="container    "> 
+
+
+
+
+{BEGIN container_buttons}
+<div {$buttons_chiddenattr} data-pageid="{$pageid}" data-container="buttons" class=" form-group   "> 
+
+
+
+
+{BEGIN container_leftbuttons}
+<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
+
+{BEGIN editbuttons}
+	{BEGIN save_button}
+	<button class="btn btn-primary" {$savebutton_attrs}>Save</button>
+	{END save_button}
+	{BEGIN back_button}
+		<button class="btn btn-default" {$backbutton_attrs}>Back to list</button>
+	{END back_button}
+	{BEGIN close_button}
+	<a href="#" class="btn btn-default" {$closebutton_attrs}>Cancel</a>
+	{END close_button}
+
+{END editbuttons}
+
+
+
 </div>
-
-
-</div>
-{END container_add}
-
-</div>
+{END container_leftbuttons}
 
 
 
-</div>
-{END container_all}
 
 
-		</div>
-		<div class="rnr-middle">
-			<div class="rnr-left {$blockclass_left}">
-				
-			</div>
-			<div class="rnr-center {$blockclass_center}">
-				
-			</div>
-			<div class="rnr-right {$blockclass_right}">
-				
-			</div>
-		</div>
-		<div class="rnr-bottom {$blockclass_bottom}">
-			<!--%%bottom%%-->
-		</div>
+
+
+
+{BEGIN container_leftbuttons_1}
+<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="  text-right col-md-3 "> 
+
+{BEGIN righteditbuttons}
+<div class="btn-group" role="group">
+
+	{BEGIN prev_button}
+	<button class="btn btn-default {$prevbutton_class}" {$prevbutton_attrs}><span class="glyphicon glyphicon-chevron-left"></span></button>
+	{END prev_button}
+	{BEGIN next_button}
+	<button class="btn btn-default  {$nextbutton_class}" {$nextbutton_attrs}><span class="glyphicon glyphicon-chevron-right"></span></button>
+	{END next_button}
+	<div class="btn-group dropup" role="group">
+		<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span class="glyphicon glyphicon-menu-hamburger"></span></button>
+		<ul class="dropdown-menu dropdown-left">
+			{BEGIN reset_button}
+				<li><a href="#" {$resetbutton_attrs}>Reset</a></li>
+			{END reset_button}
+			{BEGIN view_page_button}
+				<li><a href="#" {$view_page_button_attrs}>View</a></li>
+			{END view_page_button}
+		</ul>
 	</div>
-		
+</div>
+{END righteditbuttons}
+
+
+
+</div>
+{END container_leftbuttons_1}
+
+
+
+
+
+
+</div>
+{END container_buttons}
+
+
+
+
+
+
+</div>
+{END container_bottombuttons}
+
+
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		<DIV class="bs-bottom">
+        
+		</div>
 		{$footer}
 	{END body}
 	</body>
