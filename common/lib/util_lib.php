@@ -198,10 +198,22 @@ function u_truncatestring ($string, $length, $dots = "...")
 
 }
 
+function u_roundminutes($time, $resolution)
+/*
+ * rounds minutes in time (hh:mm) to nearest number of minutes defined by
+ * resolution (e.g if resolution is 30 the time will be rounded to nearest 30 minutes
+ */
+{
+    $time = strtotime($time);
+    $round = $resolution*60;
+    $rounded = round($time / $round) * $round;
+    return date("H:i", $rounded);
+}
+
 function u_timeresolution($resolution, $time)
 /*
     resolves time (in decimal minutes) to nearest minute, 30 seconds, or
-    10 seconds based on desired resolution.
+    10 seconds based on desired resolution.  Used in calculating start times for pursuit race
     
     resolution:  required resolution |60|30|10|
     time:        time in decimal minutes

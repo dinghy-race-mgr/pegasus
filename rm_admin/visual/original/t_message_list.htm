@@ -73,12 +73,8 @@
 	<ul class="dropdown-menu">
 		
 				
-				{BEGIN deleteselected_link}
-		<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
-		{END deleteselected_link}
+				
 		
-				<li role="separator" class="divider"></li>	
-
 				{BEGIN asearch_link}
 		<li><a href="t_message_search.php" {$advsearchlink_attrs}>Advanced search</a></li>
 		{END asearch_link}
@@ -277,10 +273,7 @@
 
 {BEGIN record_controls_block}
 <span {$recordcontrol_hiddenattr} data-pageid="{$pageid}" data-brick="recordcontrol">
-		{BEGIN deleteselected_link}
-	<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
-	{END deleteselected_link}
-		</span>
+			</span>
 
 {END record_controls_block}
 
@@ -423,22 +416,17 @@
 									<th iEditCont="all">&nbsp;</th>
 									{END listIcons_column}	
 
-																		{BEGIN checkbox_column}
-									<th class="">
-										<input type="checkbox" {$checkboxheader_attrs}>
-									</th>
-									{END checkbox_column}
-
+									
 																		
-									{BEGIN updby_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$updby_class}" data-field=updby>
-									{BEGIN updby_fieldheader}
-																				<span {$updby_orderlinkattrs}>
-											{$label t_message updby}
+									{BEGIN upddate_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$upddate_class}" data-field=upddate>
+									{BEGIN upddate_fieldheader}
+																				<span {$upddate_orderlinkattrs}>
+											{$label t_message upddate}
 										</span>
-									{END updby_fieldheader}
+									{END upddate_fieldheader}
 									</th>
-									{END updby_fieldheadercolumn}
+									{END upddate_fieldheadercolumn}
 									
 									
 									
@@ -508,15 +496,15 @@
 									
 									
 									
-									{BEGIN upddate_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$upddate_class}" data-field=upddate>
-									{BEGIN upddate_fieldheader}
-																				<span {$upddate_orderlinkattrs}>
-											{$label t_message upddate}
+									{BEGIN updby_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$updby_class}" data-field=updby>
+									{BEGIN updby_fieldheader}
+																				<span {$updby_orderlinkattrs}>
+											{$label t_message updby}
 										</span>
-									{END upddate_fieldheader}
+									{END updby_fieldheader}
 									</th>
-									{END upddate_fieldheadercolumn}
+									{END updby_fieldheadercolumn}
 									
 									
 									
@@ -556,21 +544,14 @@
 	</td>	
 	{END listIcons_column}	
 
-		{BEGIN checkbox_column}
-	<td  iEditCont="checkBox" class="bs-gridcheckbox" {$rowstyle} {$recordattrs}>
-	{BEGIN checkbox}
-	<input type="checkbox" {$checkbox_attrs}>
-	{END checkbox}
-	</td>
-	{END checkbox_column}
-
+	
 	
 
-	{BEGIN updby_fieldcolumn}
-	<td class="bs-gridcell {$updby_class}"  data-field=updby {$rowstyle} {$recordattrs}>
-		{$updby_value}
+	{BEGIN upddate_fieldcolumn}
+	<td class="bs-gridcell {$upddate_class}"  data-field=upddate {$rowstyle} {$recordattrs}>
+		{$upddate_value}
 	</td>
-{END updby_fieldcolumn}
+{END upddate_fieldcolumn}
 
 
 	{BEGIN name_fieldcolumn}
@@ -608,11 +589,11 @@
 {END status_fieldcolumn}
 
 
-	{BEGIN upddate_fieldcolumn}
-	<td class="bs-gridcell {$upddate_class}"  data-field=upddate {$rowstyle} {$recordattrs}>
-		{$upddate_value}
+	{BEGIN updby_fieldcolumn}
+	<td class="bs-gridcell {$updby_class}"  data-field=updby {$rowstyle} {$recordattrs}>
+		{$updby_value}
 	</td>
-{END upddate_fieldcolumn}
+{END updby_fieldcolumn}
 
 	{BEGIN endrecord_block}
 	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>

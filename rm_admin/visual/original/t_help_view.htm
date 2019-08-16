@@ -31,7 +31,7 @@
 
 
 {BEGIN container_header}
-<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-12 "> 
+<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-9 col-md-offset-3"> 
 
 {BEGIN viewheader}
 	<h2 {$viewheader_hiddenattr} data-pageid="{$pageid}" data-brick="viewheader" >{$pagetitlelabel t_help view}</h2>
@@ -59,89 +59,102 @@
 
 
 <div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
-
-	<div class="container">
-					{BEGIN category_fieldblock}
-	<div class="{$fielddispclass_category} col-md-4 bs-viewcontrolgroup" data-fieldname="category">
-		<label class="control-label" for="{$labelfor_category}">
+	{BEGIN category_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_category} bs-viewform-group" data-fieldname="category">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_category}">
 			{$label t_help category}
 		</label>
-		<div class="" >
+		<div class="col-md-6 bs-horizontal-value" >
 			{$category_value}&nbsp;
 		</div>
 	</div>
+</div>
 {END category_fieldblock}
-					{BEGIN question_fieldblock}
-	<div class="{$fielddispclass_question} col-md-4 bs-viewcontrolgroup" data-fieldname="question">
-		<label class="control-label" for="{$labelfor_question}">
+	{BEGIN question_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_question} bs-viewform-group" data-fieldname="question">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_question}">
 			{$label t_help question}
 		</label>
-		<div class="" >
+		<div class="col-md-6 bs-horizontal-value" >
 			{$question_value}&nbsp;
 		</div>
 	</div>
+</div>
 {END question_fieldblock}
-					{BEGIN answer_fieldblock}
-	<div class="{$fielddispclass_answer} col-md-4 bs-viewcontrolgroup" data-fieldname="answer">
-		<label class="control-label" for="{$labelfor_answer}">
+	{BEGIN answer_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_answer} bs-viewform-group" data-fieldname="answer">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_answer}">
 			{$label t_help answer}
 		</label>
-		<div class="" >
+		<div class="col-md-6 bs-horizontal-value" >
 			{$answer_value}&nbsp;
 		</div>
 	</div>
+</div>
 {END answer_fieldblock}
-					{BEGIN notes_fieldblock}
-	<div class="{$fielddispclass_notes} col-md-4 bs-viewcontrolgroup" data-fieldname="notes">
-		<label class="control-label" for="{$labelfor_notes}">
+	{BEGIN notes_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_notes} bs-viewform-group" data-fieldname="notes">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_notes}">
 			{$label t_help notes}
 		</label>
-		<div class="" >
+		<div class="col-md-6 bs-horizontal-value" >
 			{$notes_value}&nbsp;
 		</div>
 	</div>
+</div>
 {END notes_fieldblock}
-					{BEGIN author_fieldblock}
-	<div class="{$fielddispclass_author} col-md-4 bs-viewcontrolgroup" data-fieldname="author">
-		<label class="control-label" for="{$labelfor_author}">
+	{BEGIN author_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_author} bs-viewform-group" data-fieldname="author">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_author}">
 			{$label t_help author}
 		</label>
-		<div class="" >
+		<div class="col-md-6 bs-horizontal-value" >
 			{$author_value}&nbsp;
 		</div>
 	</div>
+</div>
 {END author_fieldblock}
-					{BEGIN rank_fieldblock}
-	<div class="{$fielddispclass_rank} col-md-4 bs-viewcontrolgroup" data-fieldname="rank">
-		<label class="control-label" for="{$labelfor_rank}">
+	{BEGIN rank_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_rank} bs-viewform-group" data-fieldname="rank">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_rank}">
 			{$label t_help rank}
 		</label>
-		<div class="" >
+		<div class="col-md-6 bs-horizontal-value" >
 			{$rank_value}&nbsp;
 		</div>
 	</div>
+</div>
 {END rank_fieldblock}
-					{BEGIN upddate_fieldblock}
-	<div class="{$fielddispclass_upddate} col-md-4 bs-viewcontrolgroup" data-fieldname="upddate">
-		<label class="control-label" for="{$labelfor_upddate}">
+	{BEGIN upddate_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_upddate} bs-viewform-group" data-fieldname="upddate">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_upddate}">
 			{$label t_help upddate}
 		</label>
-		<div class="" >
+		<div class="col-md-6 bs-horizontal-value" >
 			{$upddate_value}&nbsp;
 		</div>
 	</div>
+</div>
 {END upddate_fieldblock}
-					{BEGIN updby_fieldblock}
-	<div class="{$fielddispclass_updby} col-md-4 bs-viewcontrolgroup" data-fieldname="updby">
-		<label class="control-label" for="{$labelfor_updby}">
+	{BEGIN updby_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_updby} bs-viewform-group" data-fieldname="updby">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_updby}">
 			{$label t_help updby}
 		</label>
-		<div class="" >
+		<div class="col-md-6 bs-horizontal-value" >
 			{$updby_value}&nbsp;
 		</div>
 	</div>
+</div>
 {END updby_fieldblock}
-	</div>
 </div>
 
 
@@ -165,7 +178,7 @@
 
 
 {BEGIN container_leftbuttons}
-<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-8 "> 
+<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
 
 {BEGIN viewbuttons}
 {BEGIN back_button}
@@ -189,7 +202,7 @@
 
 
 {BEGIN container_leftbuttons_1}
-<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="   col-md-4 "> 
+<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="  text-right col-md-3 "> 
 
 {BEGIN rightviewbuttons}
 <div class="btn-group" role="group">

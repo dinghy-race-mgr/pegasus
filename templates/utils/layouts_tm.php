@@ -22,8 +22,7 @@
 
             
             <link rel="shortcut icon" href="{loc}/common/images/favicon.ico">             
-            <link rel="stylesheet"    href="{loc}/common/oss/bootstrap/css/bootstrap.min.css" >      
-            <link rel="stylesheet"    href="{loc}/common/oss/bootstrap/css/bootstrap-theme.min.css">
+            <link rel="stylesheet"    href="{loc}/common/oss/bootstrap/css/{theme}bootstrap.min.css" >      
             <link rel="stylesheet"    href="{loc}/common/oss/bs-dialog/css/bootstrap-dialog.min.css">
                     
             <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>
@@ -43,15 +42,13 @@
       
           </head>
           <body class="{$_SESSION['background']}" style="padding-top:10px; padding-bottom: 10px" >
-            <div class="container-fluid">
-            <!-- Header -->
-                <div class="container" style="border-bottom: 1px solid white; margin-bottom: 10px">
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-left rm-pagebold">{header-left}</div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center rm-pagebold">{header-center}</div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-right rm-pagebold">{header-right}</div>
-                    </div>   
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <div class="container-fluid">
+                    <h2 class="text-success">{header-left}<span class="pull-right">{header-right}</span></h2>
                 </div>
+            </nav>
+          
+            <div class="container-fluid">
             
                 <!-- Body -->
                 <div class="container" style="margin-bottom: 20px; min-height: 400px;">

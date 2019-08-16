@@ -7,8 +7,8 @@ function upload_import_file($params = array())
     $bufr = <<<EOT
     <div class="container" style="margin-top: 40px;">
         <div class="jumbotron" style="margin-top: 40px;">
-            <p class="text-info">Instructions:</p>
-            <p class="text-info">{instructions}</p>
+            <h2 class="text-primary">Instructions:</h2>
+            <p class="text-primary">{instructions}</p>
         </div>
         <form enctype="multipart/form-data" id="selectfileForm" action="dbimport.php?pagestate=submit" method="post">
         <div class="row">
@@ -29,7 +29,7 @@ function upload_import_file($params = array())
                     <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
                 </div>
                 <div class="pull-right">
-                    <button type="submit" class="btn btn-lg btn-success"  style="min-width: 200px;" >
+                    <button type="submit" class="btn btn-lg btn-primary"  style="min-width: 200px;" >
                     <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Import {import-title}</b></button>
                 </div>
             </div>

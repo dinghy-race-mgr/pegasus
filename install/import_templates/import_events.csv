@@ -1,4 +1,4 @@
-id,event_date,event_start,event_name,seriescode,event_type,event_format,event_entry,event_open,tide_time,tide_height,event_notes,weblink
+"id","event_date","event_start","event_name","series_code","event_type","event_format","entry_type","event_open","tide_time","tide_height","event_notes","weblink"
 0,12/08/2016,10:30,Spring Series,SPRING-16,racing,club series,signon,club,11:12,4.1,This is a test import,
 0,13/13/2016,12:00,Dinghy Cruise,,cruise,,,open,,,This is a test cruise,
 0,09/04/2016,06:00,Spring Series,SPRING-16,racing,club series,signon,club,,,,

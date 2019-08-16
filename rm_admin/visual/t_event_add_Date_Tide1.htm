@@ -1,94 +1,50 @@
-<div {$pageattrs}>
 
-{BEGIN container_tabfields}<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
-
-
-{BEGIN event_date_tabfieldblock}<div class="container">
-	<div class="form-group in-tab {$fielddispclass_event_date}" data-fieldname="event_date" data-signal-error-for="event_date{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_event_date}">
-			{BEGIN event_date_label}{$label t_event event_date}{END event_date_label}
-		</label>
-		<div class="col-md-6 " >
-			{$event_date_editcontrol}
-		</div>
-		<div class="col-md-3 help-block " data-helpfor="event_date">
-			<div class="text-muted" >
-			{$tooltip t_event event_date}
-			</div>
-		</div>
-	</div>
-</div>
-{END event_date_tabfieldblock}
-{BEGIN event_start_tabfieldblock}<div class="container">
-	<div class="form-group in-tab {$fielddispclass_event_start}" data-fieldname="event_start" data-signal-error-for="event_start{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_event_start}">
-			{BEGIN event_start_label}{$label t_event event_start}{END event_start_label}
-		</label>
-		<div class="col-md-6 " >
-			{$event_start_editcontrol}
-		</div>
-		<div class="col-md-3 help-block " data-helpfor="event_start">
-			<div class="text-muted" >
-			{$tooltip t_event event_start}
-			</div>
-		</div>
-	</div>
-</div>
-{END event_start_tabfieldblock}
-{BEGIN event_order_tabfieldblock}<div class="container">
-	<div class="form-group in-tab {$fielddispclass_event_order}" data-fieldname="event_order" data-signal-error-for="event_order{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_event_order}">
-			{BEGIN event_order_label}{$label t_event event_order}{END event_order_label}
-		</label>
-		<div class="col-md-6 " >
-			{$event_order_editcontrol}
-		</div>
-		<div class="col-md-3 help-block " data-helpfor="event_order">
-			<div class="text-muted" >
-			{$tooltip t_event event_order}
-			</div>
-		</div>
-	</div>
-</div>
-{END event_order_tabfieldblock}
-{BEGIN tide_time_tabfieldblock}<div class="container">
-	<div class="form-group in-tab {$fielddispclass_tide_time}" data-fieldname="tide_time" data-signal-error-for="tide_time{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_tide_time}">
-			{BEGIN tide_time_label}{$label t_event tide_time}{END tide_time_label}
-		</label>
-		<div class="col-md-6 " >
-			{$tide_time_editcontrol}
-		</div>
-		<div class="col-md-3 help-block " data-helpfor="tide_time">
-			<div class="text-muted" >
-			{$tooltip t_event tide_time}
-			</div>
-		</div>
-	</div>
-</div>
-{END tide_time_tabfieldblock}
-{BEGIN tide_height_tabfieldblock}<div class="container">
-	<div class="form-group in-tab {$fielddispclass_tide_height}" data-fieldname="tide_height" data-signal-error-for="tide_height{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_tide_height}">
-			{BEGIN tide_height_label}{$label t_event tide_height}{END tide_height_label}
-		</label>
-		<div class="col-md-6 " >
-			{$tide_height_editcontrol}
-		</div>
-		<div class="col-md-3 help-block " data-helpfor="tide_height">
-			<div class="text-muted" >
-			{$tooltip t_event tide_height}
-			</div>
-		</div>
-	</div>
-</div>
-{END tide_height_tabfieldblock}
-
-
-
-
-
-</div>
-{END container_tabfields}
-
-</div>
+<DIV {$pageattrs}>
+{BEGIN container_tabfields}<DIV class="form-horizontal" data-container="tabfields" data-pageid="{$pageid}" {$tabfields_chiddenattr}>
+{BEGIN event_date_tabfieldblock}<DIV class="container">
+<DIV class="form-group in-tab {$fielddispclass_event_date}" data-signal-error-for="event_date{$id}" data-fieldname="event_date"><LABEL class="col-md-3 control-label" for="{$labelfor_event_date}">{BEGIN event_date_label}
+{$label t_event event_date}{END event_date_label} </LABEL> 
+<DIV class="col-md-6">
+{$event_date_editcontrol} </DIV>
+<DIV class="col-md-3 help-block" data-helpfor="event_date">
+<DIV class="text-muted">
+{$tooltip t_event event_date} </DIV></DIV></DIV></DIV>
+{END event_date_tabfieldblock}{BEGIN event_start_tabfieldblock}<DIV class="container">
+<DIV class="form-group in-tab {$fielddispclass_event_start}" data-signal-error-for="event_start{$id}" data-fieldname="event_start"><LABEL class="col-md-3 control-label" for="{$labelfor_event_start}">{BEGIN event_start_label}
+{$label t_event event_start}{END event_start_label} 
+</LABEL> 
+<DIV class="col-md-6">
+{$event_start_editcontrol} </DIV>
+<DIV class="col-md-3 help-block" data-helpfor="event_start">
+<DIV class="text-muted">
+{$tooltip t_event event_start} </DIV></DIV></DIV></DIV>
+{END event_start_tabfieldblock}{BEGIN event_order_tabfieldblock}<DIV class="container">
+<DIV class="form-group in-tab {$fielddispclass_event_order}" data-signal-error-for="event_order{$id}" data-fieldname="event_order"><LABEL class="col-md-3 control-label" for="{$labelfor_event_order}">{BEGIN event_order_label}
+{$label t_event event_order}{END event_order_label} 
+</LABEL> 
+<DIV class="col-md-6">
+{$event_order_editcontrol} </DIV>
+<DIV class="col-md-3 help-block" data-helpfor="event_order">
+<DIV class="text-muted">
+{$tooltip t_event event_order} 
+</DIV></DIV></DIV></DIV>{END event_order_tabfieldblock}
+{BEGIN tide_time_tabfieldblock}<DIV class="container"> 
+{$event t_event_snippet_tidefields} 
+<DIV class="form-group in-tab {$fielddispclass_tide_time}" data-signal-error-for="tide_time{$id}" data-fieldname="tide_time"><LABEL class="col-md-3 control-label" for="{$labelfor_tide_time}">{BEGIN tide_time_label}
+{$label t_event tide_time}{END tide_time_label} 
+</LABEL> 
+<DIV class="col-md-6">
+{$tide_time_editcontrol} </DIV>
+<DIV class="col-md-3 help-block" data-helpfor="tide_time">
+<DIV class="text-muted">
+{$tooltip t_event tide_time} 
+</DIV></DIV></DIV></DIV>{END tide_time_tabfieldblock} 
+{BEGIN tide_height_tabfieldblock}<DIV class="container">
+<DIV class="form-group in-tab {$fielddispclass_tide_height}" data-signal-error-for="tide_height{$id}" data-fieldname="tide_height"><LABEL class="col-md-3 control-label" for="{$labelfor_tide_height}">{BEGIN tide_height_label}
+{$label t_event tide_height}{END tide_height_label} 
+</LABEL> 
+<DIV class="col-md-6">
+{$tide_height_editcontrol} </DIV>
+<DIV class="col-md-3 help-block" data-helpfor="tide_height">
+<DIV class="text-muted">
+{$tooltip t_event tide_height} </DIV></DIV></DIV></DIV>{END tide_height_tabfieldblock}</DIV>{END container_tabfields}</DIV>

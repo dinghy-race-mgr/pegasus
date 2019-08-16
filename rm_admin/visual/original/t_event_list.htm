@@ -590,6 +590,19 @@
 									
 									
 									
+									{BEGIN weblink_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$weblink_class}" data-field=weblink>
+									{BEGIN weblink_fieldheader}
+																				<span {$weblink_orderlinkattrs}>
+											{$label t_event weblink}
+										</span>
+									{END weblink_fieldheader}
+									</th>
+									{END weblink_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN active_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
 									{BEGIN active_fieldheader}
@@ -746,6 +759,13 @@
 		{$tide_height_value}
 	</td>
 {END tide_height_fieldcolumn}
+
+
+	{BEGIN weblink_fieldcolumn}
+	<td class="bs-gridcell {$weblink_class}"  data-field=weblink {$rowstyle} {$recordattrs}>
+		{$weblink_value}
+	</td>
+{END weblink_fieldcolumn}
 
 
 	{BEGIN active_fieldcolumn}

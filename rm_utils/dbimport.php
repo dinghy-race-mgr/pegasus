@@ -47,11 +47,11 @@ $tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","$loc/templates/uti
 
 $_SESSION['pagefields'] = array(
     "loc" => $loc,
+    "theme" => "flatly_",
     "stylesheet" => "$loc/style/rm_utils.css",
     "title" => "Import",
-    "header-left" => "RaceManager import",
-    "header-center" => "",
-    "header-right" => "",
+    "header-left" => "raceManager Import",
+    "header-right" => "EVENTS",
     "body" => "",
     "footer-left" => "",
     "footer-center" => "",
@@ -78,7 +78,7 @@ else
     $_SESSION['pagefields']['header-right'] = strtoupper($type_opts['title']);
     $_SESSION['pagefields']['instructions'] = $type_opts['instructions'];
     $_SESSION['pagefields']['import-type']  = $type_opts['type'];
-    $_SESSION['pagefields']['import-title'] = $type_opts['title'];
+    $_SESSION['pagefields']['import-title'] = ucwords($type_opts['title']);
     $_SESSION['pagefields']['file-types']   = $type_opts['files'];
 }
 
@@ -309,17 +309,17 @@ function get_typeoptions($importtype)
 
             "fieldmap" => array(
                 "id"           => 'id',
-                "event_date"   => 'date',
-                "event_start"  => 'time',
-                "event_name"   => 'name',
-                "series_code"  => 'series',
-                "event_type"   => 'type',
-                "event_format" => 'format',
-                "event_entry"  => 'entry_type',
-                "event_open"   => 'restricted',
+                "event_date"   => 'event_date',
+                "event_start"  => 'event_start',
+                "event_name"   => 'event_name',
+                "series_code"  => 'series_code',
+                "event_type"   => 'event_type',
+                "event_format" => 'event_format',
+                "event_entry"  => 'event_entry',
+                "event_open"   => 'event_open',
                 "tide_time"    => 'tide_time',
                 "tide_height"  => 'tide_height',
-                "event_notes"  => 'notes',
+                "event_notes"  => 'event_notes',
                 "weblink"      => "weblink"
             ),
             "instructions" => "Use the <code>import_event.csv</code> template file in the <code>install/import_templates</code> 

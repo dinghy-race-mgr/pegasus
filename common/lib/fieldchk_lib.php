@@ -112,7 +112,7 @@ function f_get_row($table, $fields, $where, $conn)
     $data = db_fetch_array($rs);
     if ($data)
     {
-        return true;
+        return $data;
     }
     return false;
 }

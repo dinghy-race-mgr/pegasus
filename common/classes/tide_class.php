@@ -44,6 +44,7 @@ class TIDE
             $where = implode(' AND ', $clause);
         }
 
+
         $query = "SELECT id FROM t_tide WHERE $where";
         $detail = $this->db->db_get_rows($query);
 
