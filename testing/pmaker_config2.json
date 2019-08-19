@@ -1,0 +1,69 @@
+{
+  "name": "testing",
+  "version": "1.0",
+  "author": "Mark Elkington",
+  
+  "settings": {
+    "signon": "on/retire*",
+    "round_start_mins": "30*",
+    "tidal": { "preferred":"-00:30*", "before_hw": "02:15*", "after_hw": "01:00*", "t3_early": "1*", "t3_late": "1*"},
+    "multiple_races": { "first_start": "-01:00*", "interval": "+01:30*", "tide": "G*" }
+  },
+    
+  "single_events": {
+     "bdt": {
+      "name": "Boxing Day Trophy",
+      "type": { "category": "racing", "format": "trophy" },
+      "date": { "type":"fixed", "value": "26-dec", "earliest": "", "latest": "", "day": ""},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+      },
+    "tjt": {
+      "name": "12th July Trophy",
+      "type": { "category": "racing", "format": "trophy" },
+      "date": { "type":"nearest", "value": "12-jul", "earliest": "", "latest": "", "day": "sunday|wednesday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+      },
+    "get": {
+      "name": "George Eaton Trophy",
+      "type": { "category": "racing", "format": "trophy" },
+      "date": { "type":"float", "value": "", "earliest": "15-jul", "latest": "30-jul", "day": "sunday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+      }
+  },
+
+  "series_events": {
+    "sps": {
+      "name": "Spring Series",
+      "type": { "category":"racing", "format": "club series", "code": "SPRING" },
+      "date": { "type":"float", "value": "", "earliest": "01-apr", "latest": "30-jun", "time": ""},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00", "max_starts": "2"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "sms": {
+      "name": "Summer Series",
+      "type": { "category":"racing", "format": "club series", "code": "SUMMER" }, "max_events": "",
+      "date": { "type":"float", "value": "", "earliest": "01-jul", "latest": "30-oct", "time": ""},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00", "max_starts": "2"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "evs": {
+      "name": "Evening Series",
+      "type": { "category":"racing", "format": "handicap series", "code": "EVENING", "max_events": "" },
+      "date": { "type":"float", "value": "", "earliest": "01-jul", "latest": "30-oct", "time": ""},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00", "max_starts": "1"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "dcs": {
+      "name": "Dinghy Cruise",
+      "type": { "category":"dcruise", "format": "", "code": "DCRUISE", "max_events": "12"  },
+      "date": { "type":"float", "value": "", "earliest": "15-apr", "latest": "15-oct", "time": ""},
+      "time": { "type": "tidal", "start": "" , "earliest": "", "latest": "", "max_starts": ""},
+      "duties": "safety-driver|safety-driver"
+    }
+  }
+}
+
+

@@ -7,8 +7,6 @@ TO DO
 - convert to a script + class (& remove relevant functions into util.lib)
 - add validation tests
 - report validation errors
-
-
 */
 
 /*
@@ -20,12 +18,13 @@ TO DO
         status     - programmed status (X - not programmed, S - scheduled event, P - protected date (not schedule-able
         start_time - start time (hh:mm)
         event_name" => $series['name'],
-        series_code" => $series['type']['code']."-".substr($cfg['settings']['year'], -2),
+        series_code" => $series['type']['code']."-".year
         type       - type of event - must match one of racemanager even codes - set in cfg.json file
         format     - event format - typically the race format defined in racemanager - set in cfg.json file
         entry_type - how do people enter the event (<blank>|on/retire|ood) - set in cfg.json file
         restricted - who is the event accessible to (club|open) - currently not used
         notes      - notes that will appear in programme - currently not used
+        code       - index code for his event
         weblink    - url associated with event - currently not used
  */
 
@@ -50,11 +49,11 @@ if (!isset($_SESSION['app_init']) OR ($_SESSION['app_init'] === false))
 
         // start log
         $_SESSION['syslog'] = "$loc/logs/adminlogs/".$_SESSION['syslog'];
-        error_log(date('H:i:s')." -- IMPORT --------------------".PHP_EOL, 3, $_SESSION['syslog']);
+        error_log(date('H:i:s')." -- PMAKER --------------------".PHP_EOL, 3, $_SESSION['syslog']);
     }
     else
     {
-        u_exitnicely($scriptname, 0, "initialisation failure", "one or more problems with import initialisation");
+        u_exitnicely($scriptname, 0, "initialisation failure", "one or more problems with pmaker initialisation");
     }
 }
 
@@ -94,7 +93,7 @@ if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
 
 if ($_REQUEST['pagestate'] == "init")
 {
-    // present form to select csv file for processing (general template)
+    // present form to select json file for processing (general template)
     $_SESSION['pagefields']['body'] =  $tmpl_o->get_template("upload_pmaker_file", $_SESSION['pagefields']);
 
     // render page
@@ -108,7 +107,7 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
 {
     $bufr = "";
     $json_err = array();
-    //$json_content = file_get_contents($_FILES['pmakerfile']['tmp_name']);
+
     $cfg = json_decode(file_get_contents($_FILES['pmakerfile']['tmp_name']), true);
     if ($cfg)
     {
@@ -123,27 +122,23 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
 
     if (!empty($json_err))
     {
-        //report errors and stop  // FIXME
+        //report errors and stop  // FIXME create html output and display in template
         echo "</pre>".print_r($json_err,true)."</pre>";
         exit("configuration error");
     }
 
     // create list of events to be scheduled that are relevant to the period to be programmed
-    $el = pg_get_event_list($_REQUEST['date-start'], $_REQUEST['date-end'], $cfg);
-    //$bufr.= "<pre>".print_r($el,true)."</pre>";
+    $cfgevent = pg_get_event_list($_REQUEST['date-start'], $_REQUEST['date-end']);
 
-    // create list of scheduled days
+    // create list of schedulable weekdays tha can have evens scheduled
     $sched_days = pg_get_schedule_days($cfg);
-    //echo "<pre> ---- sched days -----".print_r($sched_days, true)."</pre>";
 
     $pg = array();
-    // get number of days which will potentially have scheduled events
+    // get days which will potentially have scheduled events and create empty records
     pg_get_days($_REQUEST['date-start'], $_REQUEST['date-end'], $cfg, $sched_days);
-    //echo "<pre> ---- pg 1 -----".print_r($pg, true)."</pre>";
 
     // add days for one off events on fixed days if they don't exist
     pg_get_fixed_dates($_REQUEST['date-start'], $_REQUEST['date-end'], $cfg);
-    //echo "<pre> ---- pg 2 -----".print_r($pg, true)."</pre>";
 
     // assess best tide for each day scheduled
     foreach ($pg as $k=>$event)
@@ -168,21 +163,32 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
 
     // now allocate individual events
     pg_allocate_events();
-//
-//    // finally deal with multiple event days
-//    if ($cfg['settings']['race_times'] == "tidal" and  $cfg['settings']['multiple_races']["num_per_day"] > 1)
-//    {
-//        pg_allocate_multi_events();
-//    }
 
-
+    // deal with multiple event days
+    // FIXME loop over series here and deal with max events fo each series
+    if ($cfg['settings']['race_times'] == "tidal" and  $cfg['settings']['multiple_races']["num_per_day"] > 1)
+    {
+        pg_allocate_multi_events();
+    }
 
     // produce table of events for review
     $bufr.= pg_display_events($pg, $_REQUEST['date-start'], $_REQUEST['date-end'], $_FILES['pmakerfile']['name']);
 
+    // finally check which events have been scheduled
+    foreach ($pg as $k=>$event)
+    {
+        foreach ($cfgevent as $j=>$cevent)
+        {
+            if ($cevent['code'] == $event['code'])
+            {
+                $cfgevent[$j]['scheduled'] = $cfgevent[$j]['scheduled'] + 1;
+                $cfgevent[$j]['dates'] = $cfgevent[$j]['dates'] . $event['date'] . "|";
+            }
+        }
+    }
+    $bufr.= pg_display_event_summary($cfgevent);
 
     // FIXME present form to select csv file for processing (general template)
-    //$bufr.= "<pre>LAST<br>".print_r($pg,true)."</pre>";
     $_SESSION['pagefields']['body'] = $bufr;
 
     // render page
@@ -212,13 +218,47 @@ function pg_config_validation($cfg)
     return $error;
 }
 
+function pg_get_event_list($start_date, $end_date)
+{
+    global $cfg;
+    $el = array();
+
+    foreach($cfg['single_events'] as $k=>$event)
+    {
+        if (in_period($start_date, $end_date, $event['date']['value']) or
+            in_period($start_date, $end_date, $event['date']['earliest']) or
+            in_period($start_date, $end_date, $event['date']['latest']))
+        {
+            $el[] = array("name"=>$event['name'], "code"=>$k, "type"=>"single",
+                "category"=>$event['type']['category'], "scheduled"=>0, "dates"=>"");
+        }
+    }
+
+    foreach($cfg['series_events'] as $k=>$event)
+    {
+        if (in_period($start_date, $end_date, $event['date']['value']) or
+            in_period($start_date, $end_date, $event['date']['earliest']) or
+            in_period($start_date, $end_date, $event['date']['latest']))
+        {
+            $el[] = array("name"=>$event['name'], "code"=>$k, "type"=>"series",
+                "category"=>$event['type']['category'], "scheduled"=>0, "dates"=>"");
+        }
+    }
+
+    if (empty($el)) { return false; }
+
+    return $el;
+}
+
 function pg_get_schedule_days($cfg)
 {
+    global $cfg;
+
     $days = array();
-    foreach ($cfg['schedule'] as $k=>$day)
-    {
-        $days[$k] = strtolower($day['day']);
-    }
+//    foreach ($cfg['schedule'] as $k=>$day)
+//    {
+//        $days[$k] = strtolower($day['day']);
+//    }
 
     return $days;
 }
@@ -281,6 +321,44 @@ EOT;
     return $bufr;
 }
 
+function pg_display_event_summary($cfgevent)
+{
+    $bufr = "<br><br><hr><br>";
+
+    // header
+    $bufr.= <<<EOT
+    <h2>Programming Check</h2>
+    <table class="table table-condensed table-hover">
+    <tbody>
+    <thead>
+        <tr>
+            <th>Event</th>
+            <th>Type</th>
+            <th>No. Scheduled</th>
+            <th>Dates</th>
+        </tr>
+    </thead>
+EOT;
+        foreach ($cfgevent as $ev)
+        {
+            $ev['scheduled']<1? $style = "danger" : $style = "";
+            $bufr.= <<<EOT
+        <tr class="$style">
+            <td>{$ev['name']}</td>
+            <td>{$ev['category']}</td>
+            <td>{$ev['scheduled']}</td>
+            <td>{$ev['dates']}</td>
+        </tr>
+EOT;
+        }
+        $bufr.= <<<EOT
+    </tbody>
+    </table>
+EOT;
+    return $bufr;
+}
+
+
 function pg_allocate_events()
 {
     global $cfg;
@@ -300,7 +378,7 @@ function pg_allocate_events()
                 {
                     if (tide_better_than($event['date']['value'], "M"))
                     {
-                        $event_data = allocate_events("event", $event, $pg[$key]['tidal_status'], $pg[$key]['tidal_time'], $event['date']['time']);
+                        $event_data = allocate_events("event", $event, $pg[$key]['tidal_status'], $pg[$key]['tidal_time'], $event['date']['time'], $j);
                         if ($event_data)
                         {
                             $pg[$key] = array_merge($pg[$key], $event_data);
@@ -325,7 +403,7 @@ function pg_allocate_events()
                     );
 
                     // get event data and add to existing record
-                    $event_data = allocate_events("event", $event, $tidal['status'], $tidal['tide_time'], $event['date']['time']);
+                    $event_data = allocate_events("event", $event, $tidal['status'], $tidal['tide_time'], $event['date']['time'], $j);
 
                     if ($event_data) { $temp = array_merge($temp, $event_data); }
 
@@ -356,7 +434,7 @@ function pg_allocate_events()
                 {
                     $key = is_date_in_programme($nearest_day);
 
-                    $event_data = allocate_events("event", $event, $pg[$key]['tidal_status'], $pg[$key]['tidal_time'],$event['date']['time']);
+                    $event_data = allocate_events("event", $event, $pg[$key]['tidal_status'], $pg[$key]['tidal_time'],$event['date']['time'], $j);
                     if ($event_data) { $pg[$key] = array_merge($pg[$key], $event_data); }
                 }
                 else   // tide not ok - look at next nearest day
@@ -374,7 +452,7 @@ function pg_allocate_events()
                     {
                         $key = is_date_in_programme($nearest_day);
 
-                        $event_data = allocate_events("event", $event, $pg[$key]['tidal_status'], $pg[$key]['tidal_time'], $event['date']['time']);
+                        $event_data = allocate_events("event", $event, $pg[$key]['tidal_status'], $pg[$key]['tidal_time'], $event['date']['time'], $j);
                         if ($event_data) { $pg[$key] = array_merge($pg[$key], $event_data); }
                     }
                 }
@@ -400,7 +478,7 @@ function pg_allocate_events()
                     {
                         $key = is_date_in_programme($sch_date);
 
-                        $event_data = allocate_events("event", $event, $pg[$key]['tidal_status'], $pg[$key]['tidal_time'], $event['date']['time']);
+                        $event_data = allocate_events("event", $event, $pg[$key]['tidal_status'], $pg[$key]['tidal_time'], $event['date']['time'], $j);
                         if ($event_data)
                         {
                             $pg[$key] = array_merge($pg[$key], $event_data);
@@ -415,7 +493,6 @@ function pg_allocate_events()
             }
         }
     }
-
     return;
 }
 
@@ -432,7 +509,7 @@ function pg_allocate_series($k, $event)
             {
                 if (tide_better_than($event['date'], "X"))
                 {
-                    $event_data = allocate_events("series", $series, $event['tidal_status'], $event['tidal_time'], $event['start_time']);
+                    $event_data = allocate_events("series", $series, $event['tidal_status'], $event['tidal_time'], $event['start_time'], $j);
                     if ($event_data) { $pg[$k] = array_merge($pg[$k], $event_data); }
                 }
             }
@@ -493,35 +570,7 @@ function pg_allocate_multi_events ()
     return;
 }
 
-function pg_get_event_list($start_date, $end_date, $cfg)
-{
-    $el = array();
 
-    foreach($cfg['single_events'] as $k=>$event)
-    {
-        if (in_period($start_date, $end_date, $event['date']['value']) or
-            in_period($start_date, $end_date, $event['date']['earliest']) or
-            in_period($start_date, $end_date, $event['date']['latest']))
-        {
-            $el[] = array("name"=>$event['name'], "code"=>$k, "type"=>"single",
-                "category"=>$event['type']['category'], "scheduled"=>0);
-        }
-    }
-
-    foreach($cfg['series_events'] as $k=>$event)
-    {
-        if (in_period($start_date, $end_date, $event['date']['value']) or
-            in_period($start_date, $end_date, $event['date']['earliest']) or
-            in_period($start_date, $end_date, $event['date']['latest']))
-        {
-            $el[] = array("name"=>$event['name'], "code"=>$k, "type"=>"series", "category"=>$event['type']['category'], "scheduled"=>0);
-        }
-    }
-
-    if (empty($el)) { return false; }
-
-    return $el;
-}
 
 function pg_get_days($start_date, $end_date, $cfg, $sched_days)
 {
@@ -555,6 +604,7 @@ function pg_get_days($start_date, $end_date, $cfg, $sched_days)
                         "entry_type"=> "",
                         "restricted"=> "",
                         "tidal_status"=> "",
+                        "code" => "",
                         "state"=>"X"
                     );
                 }
@@ -622,7 +672,6 @@ function pg_get_fixed_dates($start_date, $end_date, $cfg)
     }
 
     sort_programme_by_date(true);       //  remove duplicates
-
     return;
 }
 
@@ -630,8 +679,6 @@ function pg_get_fixed_start_tide($schedule_day, $date)
 {
     global $tide_o;
     global $cfg;
-
-    $tidal = array();
 
     // get tides for today
     $tide = $tide_o->get_tide($date);
@@ -661,7 +708,7 @@ function pg_get_tidal_start_tide($schedule_day, $date)
     {
         $et = explode(":",$cfg['tidal']['before_hw']);
         $lt = explode(":",$cfg['tidal']['after_hw']);
-
+        // FIXME can't use earliest and latest here - need to get them from the event itself
         $t1_early = (new DateTime($schedule_day['time']['earliest']))->sub(new DateInterval("PT{$et[0]}H{$et[1]}M"));
         $t1_late  = (new DateTime($schedule_day['time']['latest']))->add(new DateInterval("PT{$lt[0]}H{$lt[1]}M"));
 
@@ -731,7 +778,7 @@ function pg_get_tidal_start_tide($schedule_day, $date)
 }
 
 function is_date_in_programme($date)
-    // note this only gets the first event on a particular day
+// note this only gets the first event on a particular day
 {
     global $pg;
 
@@ -740,7 +787,7 @@ function is_date_in_programme($date)
 }
 
 function all_events_for_date_in_programme($date)
-    // note this returns all dates on a particular day
+// note this returns all dates on a particular day
 {
     global $pg;
 
@@ -776,7 +823,6 @@ function tide_better_than ($date, $required)
             $rs = true;
         }
     }
-
     return $rs;
 }
 
@@ -808,8 +854,6 @@ function get_previous_day($day, $date)
     return date("Y-m-d", strtotime('last '.ucfirst($day), strtotime($date)));
 }
 
-
-
 function in_series($series_cfg, $weekday)
 {
     global $cfg;
@@ -829,9 +873,9 @@ function in_series($series_cfg, $weekday)
 }
 
 function decode_delta_time($dtime)
-    //  decodes a time difference expressed as +hh:mm:ss or -hh:mm:ss into dir(+-), hrs, min, secs
-    //  mm and sss may be missing
-    //  00 is converted to 0
+//  decodes a time difference expressed as +hh:mm:ss or -hh:mm:ss into dir(+-), hrs, min, secs
+//  mm and sss may be missing
+//  00 is converted to 0
 {
     $t = explode(":", substr($dtime, 1));
     $time_arr = array();
@@ -903,7 +947,7 @@ function get_start_times($tide_category, $tide_hw, $data)
     return $start_time;
 }
 
-function allocate_events($type, $data, $tidal_status="", $tidal_time="", $start_time="")
+function allocate_events($type, $data, $tidal_status, $tidal_time, $start_time, $event_code)
 {
     global $cfg;
 
@@ -927,7 +971,8 @@ function allocate_events($type, $data, $tidal_status="", $tidal_time="", $start_
             "entry_type"  => $cfg['settings']['signon'],
             "restricted"  => "club",
             "notes"       => "",
-            "weblink"     => ""
+            "weblink"     => "",
+            "code"        => $event_code
         );
         if ($type == "series")
         {
@@ -942,8 +987,8 @@ function allocate_events($type, $data, $tidal_status="", $tidal_time="", $start_
 }
 
 function assess_tide($date)
-//           checks if there is a suitable tide for event and adds to programmed schedule
-//           records tide status as a coded value: X - error, N - no start possible, M - marginal, G - good
+//  checks if there is a suitable tide for event and adds to programmed schedule
+//  records tide status as a coded value: X - error, N - no start possible, M - marginal, G - good
 {
     global $cfg;
 
@@ -972,9 +1017,7 @@ function assess_tide($date)
             }
         }
     }
-
     return $tidal;
-
 }
 
 
@@ -992,9 +1035,7 @@ function in_period($start, $end, $target)
 }
 
 function period_overlap($start_1, $end_1, $start_2, $end_2)
-    /*
-     * Calculates if period_1 overlaps period_2
-     */
+    // Calculates if period_1 overlaps period_2
 {
     $overlap = false;
 
@@ -1060,20 +1101,6 @@ function sort_programme_by_date($remove_duplicates)
 }
 
 
-function find_nearest_day($days, $date)
-{
-//    $d = array();
-//    // FIXME - this doesn't handle start and end periods for scheduled days
-//    foreach ($days as $k=>$day)
-//    {
-//        $nearest = strtotime("next $day", strtotime("$date - 4 days"));
-//        $d[$k] = abs(strtotime($date) - $nearest;
-//    }
-//    $min_key =  min(array_keys($d, min($d)));
-//
-//
-//    return strtotime("next $day", strtotime("$date - 4 days"));
-}
 
 
 
