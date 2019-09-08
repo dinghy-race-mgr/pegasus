@@ -1,63 +1,86 @@
 <?php
 
 /* 
-ISSUES:
-- should be able to set start and end dates to process
-- check it loads
-
+USAGE:
+- take tide .doc file and convert to text file
+- converts to bst for the relevant dates
+- run script with parameters
+   ../tide_data_scrape.php?infile=<pathtoinputfile>&outfile=<pathtooutfile>&start-date=<YYYY-MM-DD>&end-date=<YYYY-MM-DD>
 */
+$loc  = "..";
+$page = "programmeMaker";     //
+$scriptname = basename(__FILE__);
+$today = date("Y-m-d");
 
-$input_file = "tide_data_2021.txt";
-$output_file = "tide_import_2021.csv";
+include ("$loc/config/rm_utils_cfg.php");
 
-$req_start = "2021-01-01";
-$req_end = "2021-12-31";
+
+if (empty($_REQUEST['infile']) or empty($_REQUEST['outfile']) or empty($_REQUEST['start-date']) or empty($_REQUEST['end-date']))
+{
+    echo "ERROR: argument missing from script - infile, outfile, start-date, end-date<br>";
+    exit("SCRIPT EXIT");
+}
+
+$pos = strpos($_REQUEST['infile'], ".txt");
+if ($pos === false)
+{
+    echo "ERROR: input file must be a text file (.txt)<br>";
+    exit("SCRIPT EXIT");
+}
+
+$pos = strpos($_REQUEST['outfile'], ".csv");
+if ($pos === false)
+{
+    echo "ERROR: output file must be a csv file (.txt)<br>";
+    exit("SCRIPT EXIT");
+}
+
+$input_file = $_REQUEST['infile'];
+$output_file = $_REQUEST['outfile'];
+
+$req_start = $_REQUEST['start-date'];
+$req_end = $_REQUEST['end-date'];
+
 
 
 // open output csv file
 $outfile = fopen($output_file, "w") or die("Unable to open output file!");
 // output header names
-fputcsv($outfile, 
-        array('date','bst','midday','best_hw','height','start','hw1','height1','hw2','height2'));   
+//fputcsv($outfile, array('date','bst','midday','best_hw','height','start','hw1','height1','hw2','height2'));
+fputcsv($outfile, array('date','hw1_time','hw1_height','hw2_time','hw2_height','time_reference','height_units'));
 
 // open data file
 $infile = fopen($input_file, "r") or die("Unable to open input file!");
 
 // initialise
-$num_days = 0;
-$status = 0;
-$num_lines = 0;
+$num_days   = 0;
+$num_lines  = 0;
 $start_date = "";
-$end_date = "";
-$num_days = "";
+$end_date   = "";
 
 
 // loop through lines in data file
 while(! feof($infile))
 {
    $num_lines++;
-   // if ($num_lines > 200) { exit(); }
-
    $line = trim(fgets($infile));
-   
-   // echo $num_lines." --- ".$line."<br>";
-    
-
    $check = check_line($line);
 
    // if line only contains a date - create new output array - with date and fixed fields 
    if ($check == "date")
    {
-       if (outside_period($req_start, $req_end, $line)) { continue; }  // skip if it is a date we don't need
+       if (outside_period($req_start, $req_end, $line)) { continue; }  // skip this data if it is a date we don't need
 	   
 	   $output_date = date("Y-m-d",strtotime(convert_date(trim($line))));
-	   $outdata = array("date"=>$output_date, "bst"=>"0", "midday"=>"13:00", "best_hw"=>"00:00", "height"=>"0.0", "start"=>"10:00", "hw1"=>"00:00", "height1"=>"0.0","hw2"=>"00:00", "height2"=>"0.0",);
-      
-       $event = "";
-       if (is_wednesday($outdata['date']))
-       {
-          $event = "evening";
-       }
+       $outdata = array(
+           'date'           => $output_date,
+           'hw1_time'       => "00:00",
+           'hw1_height'     => "0.0",
+           'hw2_time'       => "",
+           'hw2_height'     => "",
+           'time_reference' => "gmt",
+           'height_units'   => "m",
+       );
        
        if (empty($start_date)) { $start_date = $outdata['date']; }
    }
@@ -65,31 +88,42 @@ while(! feof($infile))
    // elseif line starts with "high" - parse details and add to output array
    elseif ($check == "hw" and !empty($outdata))
    {     
-      if ($outdata['hw1'] != "00:00")  // already have HW1 this must be HW2
+      if ($outdata['hw1_time'] != "00:00")  // already have HW1 this must be HW2
       {
-         $outdata["hw2"] = substr($line, 6, 5);
-         $outdata["height2"] = substr($line, 15, 4);            
+         $outdata["hw2_time"]   = substr($line, 6, 5);
+         $outdata["hw2_height"] = substr($line, 15, 4);
       }
       else
       {
-         $outdata["hw1"] = substr($line, 6, 5);
-         $outdata["height1"] = substr($line, 15, 4);
+         $outdata["hw1_time"]   = substr($line, 6, 5);
+         $outdata["hw1_height"] = substr($line, 15, 4);
       } 
    }
    
    // end of HW data output line
    elseif ($check == "lw" and !empty($outdata))
    {
-		// data parsing is complete       
-		// work out best HW and add to array
-		$best_hw = get_best_hw($outdata);
-		$outdata["best_hw"] = $outdata["hw$best_hw"];
-		$outdata["height"]  = $outdata["height$best_hw"];
+        // convert to local time if necessary
+       if ($outdata['time_reference'] == "gmt")
+       {
+           $new_hw1 = convert_to_local_time($outdata['date'], $outdata['hw1_time'], $_SESSION['daylight_saving']);
+           if ($new_hw1 != $outdata['hw1_time'])
+           {
+               $outdata['time_reference'] = "bst";
+               $outdata['hw1_time'] = $new_hw1;
+               if (!empty($outdata['hw2_time']))
+               {
+                   $outdata['hw2_time'] = convert_to_local_time($outdata['date'], $outdata['hw2_time'], $_SESSION['daylight_saving']);
+               }
+           }
+       }
 
 		// write array to output file and also to terminal 
 		$num_days++;
 		fputcsv($outfile, $outdata);
-		echo print_r($outdata,true)."<br>";
+		echo $outdata['date']." | ".$outdata['hw1_time']." | ",$outdata['hw1_height']." | ".
+             $outdata['hw2_time']." | ".$outdata['hw2_height']." | ".$outdata['time_reference'].
+             " | ".$outdata['height_units']."<br>";
 		
 		// reinitialise array
 		$end_date = $outdata['date'];
@@ -109,8 +143,8 @@ fclose($infile);
 // close output file with message (including count of number of days written and first and last date) 
 fclose($outfile);
 echo "<b>Conversion complete</b><br>";
-echo "start/end date: $start_date &nbsp;&nbsp;&nbsp; $end_date<br>";
-echo "number of days: $num_days";
+echo "start/end date of file: $start_date &nbsp;&nbsp;&nbsp; $end_date <br>";
+echo "start/end date of extracted data: $req_start &nbsp;&nbsp;&nbsp; $req_end [$num_days days]<br>";
 
 
 function convert_date($date)
@@ -193,4 +227,20 @@ function get_best_hw($data)
    return $best_hw;
 }
 
-?>
+function convert_to_local_time($date_str, $time_str, $local)
+{
+    // get start and end of daylight saving time
+    $year = date("Y", strtotime($date_str));
+    $dst_start_date = str_replace("YYYY", $year, $local['start_ref']);
+    $dst_end_date   = str_replace("YYYY", $year, $local['end_ref']);
+    $dst_start = strtotime("$dst_start_date {$local['start_delta']}");
+    $dst_end   = strtotime("$dst_end_date {$local['end_delta']}");
+
+    if (strtotime($date_str) >= $dst_start and strtotime($date_str) < $dst_end)
+    {
+        $t = (new DateTime($time_str))->add(new DateInterval("PT{$local['time_diff']}H0M"));
+        $time_str = $t->format("H:i");
+    }
+
+    return $time_str;
+}

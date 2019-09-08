@@ -16,39 +16,34 @@ if ($values['event_type'] == "racing") {
     }
 
     // check start_interval is set if start_scheme has been set
-    if (!f_values_dependset($values['start_scheme'], $values['start_interval']))
-    {
+    if (!f_values_dependset($values['start_scheme'], $values['start_interval'])) {
         $msg .= "- default start scheme has changed and the start interval must be set<br>";
     }
 
     // check series code exists
-    if (!empty($values['series_code']))
+    if (!empty($values['series_code']) and ($values['series_code']))
     {
         $series_root = get_series_root($values['series_code']);
-        if (!f_check_exists("t_series", " seriescode='$series_root' ", $conn)) {
-
+        if (!f_check_exists("t_series", " series_code='$series_root' ", $conn)) {
             $msg .= "- series code [{$values['series_code']}] is not recognised<br>";
         }
     }
 
     // check entry type is set
-    if (empty($values['event_entry']))
-    {
-        $msg.= "- race entry method must be set<br>";
-    }
+    if (empty($values['event_entry'])){ $msg.= "- race entry method must be set<br>"; }
 
 }
 elseif ($values['event_type'] == "training")
 {
-    // no additional checks required
+    if (empty($values['event_start'])) { $msg .= "- the event start time must be defined<br>"; }
 }
 elseif  ($values['event_type'] == "social")
 {
-    // no additional checks required
+    if (empty($values['event_start'])) { $msg .= "- the event start time must be defined<br>"; }
 }
 elseif  ($values['event_type'] == "cruise")
 {
-    // no additional checks required
+    if (empty($values['event_start'])) { $msg .= "- the event start time must be defined<br>"; }
 }
 
 empty($msg) ? $commit = true : $commit = false;
@@ -74,15 +69,17 @@ if ($commit)
 
     if ($tide_reset)
     {
-        if (f_check_exists("t_tide", " date = '{$values['event_date']}' ", $conn))
+        $tide_rs = $tide_o->get_tide_by_date($date, false);
+        if ($tide_rs)
         {
-            $tide_rs = f_get_row("t_tide", "hw1_time,hw1_height,hw2_time,hw2_height", " date = '{$values['event_date']}' ", $conn);
-            if ($tide_rs and !empty($values['event_start']))
-            {
-                $best_tide = get_best_tide($values['event_start'], $tide_rs['hw1_time'], $tide_rs['hw2_time']);
-                $values['tide_time']   = $tide_rs["hw{$best_tide}_time"];
-                $values['tide_height'] = $tide_rs["hw{$best_tide}_height"];
-            }
+            $best_tide = get_best_tide($values['event_start'], $tide_rs['hw1_time'], $tide_rs['hw2_time']);
+            $values['tide_time']   = $tide_rs["hw{$best_tide}_time"];
+            $values['tide_height'] = $tide_rs["hw{$best_tide}_height"];
+        }
+        else
+        {
+            $values['tide_time'] = "unknown";
+            $values['tide_height'] = "";
         }
     }
 
@@ -100,5 +97,7 @@ else
 {
     $message = "<span style=\"white-space: normal\">WARNINGS:<br>$msg </span>";
 }
+
+
 
 

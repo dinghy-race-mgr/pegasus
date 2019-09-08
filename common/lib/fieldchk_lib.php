@@ -106,6 +106,17 @@ function f_values_insequence($value1, $value2)    // returns true if values are 
     return false;
 }
 
+function f_check_code($code, $codetype, $conn)
+{
+    $rs = db_query("SELECT * from t_code_system WHERE groupname='$codetype' and code='$code'", $conn);
+    $data = db_fetch_array($rs);
+    if ($data)
+    {
+        return true;
+    }
+    return false;
+}
+
 function f_get_row($table, $fields, $where, $conn)
 {
     $rs = db_query("SELECT $fields from $table WHERE $where", $conn);

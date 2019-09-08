@@ -61,4 +61,26 @@ EOT;
     return $bufr;
 }
 
+function report_pmaker_cfg_err($params = array())
+{
+    $bufr = <<<EOT
+    <div class="jumbotron">
+        <h2>Configuration Error(s) ...</h2>
+        <p>One or more errors have been identified in the configuration file</p>
+        <p>Please fix them and try again</p>
+    </div>
+EOT;
+    foreach ($params as $k=>$err)
+    {
+        $bufr.= <<<EOT
+        <div class="alert alert-info alert-dismissible fade in" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <h4>Error $k</h4>
+            <p>$err</p>
+        </div>
+EOT;
+    }
+    return $bufr;
+}
+
 

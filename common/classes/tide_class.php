@@ -31,6 +31,7 @@ class TIDE
     public function __construct(DB $db)
     {
         $this->db = $db;
+
     }
 
     public function tide_count($constraint)
@@ -44,22 +45,32 @@ class TIDE
             $where = implode(' AND ', $clause);
         }
 
-
         $query = "SELECT id FROM t_tide WHERE $where";
         $detail = $this->db->db_get_rows($query);
 
         return count($detail);
     }
 
-    public function get_tide($date_str)
+    public function get_tide_by_date($date_str, $local = false)
     {
-        $query = "SELECT * FROM t_tide WHERE date = '$date_str'";
+        $date = date("Y-m-d", strtotime($date_str));
+        $query = "SELECT * FROM t_tide WHERE date = '$date'";
         $detail = $this->db->db_get_row($query);
+
+//        if ($local != false) // convert to local time
+//        {
+//            $detail['hw1_time'] = $this->convert_to_local_time($detail['date'], $detail['hw1_time'], $local);
+//            if (!empty($detail['hw2_time']))
+//            {
+//                $detail['hw2_time'] = $this->convert_to_local_time($detail['date'], $detail['hw2_time'], $local);
+//            }
+//
+//        }
 
         return $detail;
     }
 
-    public function get_tides($constraint)
+    public function get_tides($constraint, $local = false)
     {
         $where = " 1=1 ";
         if ($constraint) {
@@ -71,10 +82,40 @@ class TIDE
         }
 
         $query = "SELECT * FROM t_tide WHERE $where ORDER BY date ASC";
-        $detail = $this->db->db_get_rows($query);
+        $details = $this->db->db_get_rows($query);
 
-        return $detail;
+//        if ($local != false) // convert to local time
+//        {
+//            foreach ($details as $k=>$detail)
+//            {
+//                $details[$k]['hw1_time'] = $this->convert_to_local_time($detail['date'], $detail['hw1_time'], $local);
+//                if (!empty($detail['hw2_time']))
+//                {
+//                    $details[$k]['hw2_time'] = $this->convert_to_local_time($detail['date'], $detail['hw2_time'], $local);
+//                }
+//            }
+//        }
+
+        return $details;
     }
+
+//    private function convert_to_local_time($date_str, $time_str, $local)
+//    {
+//        // get start and end of daylight saving time
+//        $year = date("Y", strtotime($date_str));
+//        $dst_start_date = str_replace("YYYY", $year, $local['start_ref']);
+//        $dst_end_date   = str_replace("YYYY", $year, $local['end_ref']);
+//        $dst_start = strtotime("$dst_start_date {$local['start_delta']}");
+//        $dst_end   = strtotime("$dst_end_date {$local['end_delta']}");
+//
+//        if (strtotime($date_str) >= $dst_start and strtotime($date_str) <= $dst_end)
+//        {
+//            $t = (new DateTime($time_str))->add(new DateInterval("PT{$local['time_diff']}H0M"));
+//            $time_str = $t->format("H:i");
+//        }
+//
+//        return $time_str;
+//    }
 
     public function set_tide($fields)
     {

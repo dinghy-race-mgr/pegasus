@@ -1,0 +1,355 @@
+{
+  "name": "testing",
+  "version": "1.0",
+  "author": "Mark Elkington",
+  "file": "pmaker_export.csv",
+  
+  "settings": {
+    "signon": "on/retire",
+    "round_start_mins": "30",
+    "tidal": { "preferred":"-00:30", "before_hw": "02:15", "after_hw": "01:00", "t3_early": "01:00", "t3_late": "01:00"},
+    "multiple_races": { "include": "yes", "first_start": "-01:00", "interval": "+01:30", "tide": "G" }
+  },
+    
+  "single_events": {
+    "agm": {
+      "name": "Annual General Meeting",
+      "status": "report",
+      "type": { "category": "social", "format": "", "access": "club" },
+      "date": { "type":"nearest", "value": "28-nov", "earliest": "", "latest": "", "day": "sunday" },
+      "time": { "type": "fixed", "start": "13:00" , "earliest": "", "latest": ""},
+      "duties": ""
+    },
+    "wpm": {
+      "name": "Winter Prize-giving",
+      "status": "report",
+      "type": { "category": "social", "format": "", "access": "club" },
+      "date": { "type":"float", "value": "", "earliest": "29-mar", "latest": "7-apr", "day": "sunday" },
+      "time": { "type": "fixed", "start": "14:00" , "earliest": "", "latest": ""},
+      "duties": ""
+    },
+    "spm": {
+      "name": "Summer Prize-giving",
+      "status": "report",
+      "type": { "category": "social", "format": "", "access": "club" },
+      "date": { "type":"float", "value": "", "earliest": "29-oct", "latest": "7-nov", "day": "sunday" },
+      "time": { "type": "fixed", "start": "14:00" , "earliest": "", "latest": ""},
+      "duties": ""
+    },
+    "nme": {
+      "name": "New Members Evening",
+      "status": "report",
+      "type": { "category": "social", "format": "", "access": "club" },
+      "date": { "type":"nearest", "value": "18-mar", "earliest": "", "latest": "", "day": "wednesday" },
+      "time": { "type": "fixed", "start": "19:30" , "earliest": "", "latest": ""},
+      "duties": ""
+    },
+    "fos": {
+      "name": "Fitting Out Supper",
+      "status": "report",
+      "type": { "category": "social", "format": "", "access": "club" },
+      "date": { "type":"nearest", "value": "1-apr", "earliest": "", "latest": "", "day": "saturday" },
+      "time": { "type": "fixed", "start": "19:00" , "earliest": "", "latest": ""},
+      "duties": ""
+    },
+    "lus": {
+      "name": "Laying Up Supper",
+      "status": "schedule",
+      "type": { "category": "social", "format": "", "access": "club" },
+      "date": { "type":"nearest", "value": "1-nov", "earliest": "", "latest": "", "day": "saturday" },
+      "time": { "type": "fixed", "start": "19:00" , "earliest": "", "latest": ""},
+      "duties": ""
+    },
+    "bdt": {
+      "name": "Boxing Day Trophies",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "trophy", "access": "club" },
+      "date": { "type":"fixed", "value": "26-dec", "earliest": "", "latest": "", "day": ""},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "wwt": {
+      "name": "Winter Woolley Trophies",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "trophy", "access": "club" },
+      "date": { "type":"fixed", "value": "1-jan", "earliest": "", "latest": "", "day": ""},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "tjt": {
+      "name": "12th July / John Donovan Trophies",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "trophy", "access": "club" },
+      "date": { "type":"nearest", "value": "12-jul", "earliest": "", "latest": "", "day": "sunday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+      },
+    "get": {
+      "name": "George Eaton / John Bridger Trophies",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "trophy", "access": "club" },
+      "date": { "type":"float", "value": "", "earliest": "5-may", "latest": "30-may", "day": "sunday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+      },
+    "cut": {
+      "name": "Crash Boat / Upright Trophies",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "trophy", "access": "club" },
+      "date": { "type":"float", "value": "", "earliest": "15-jul", "latest": "30-jul", "day": "sunday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "16:00"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "sdt": {
+      "name": "Simon Dunsford Trophy",
+      "status": "report",
+      "type": { "category": "racing", "format": "multihull", "access": "club" },
+      "date": { "type":"nearest", "value": "20-jun", "earliest": "", "latest": "", "day": "sunday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "16:00"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "rtt": {
+      "name": "Rough & Tumble Trophy",
+      "status": "report",
+      "type": { "category": "racing", "format": "multihull", "access": "club" },
+      "date": { "type":"nearest", "value": "20-oct", "earliest": "", "latest": "", "day": "sunday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "16:00"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "ldt": {
+      "name": "Long Distance Race",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "trophy", "access": "club" },
+      "date": { "type":"float", "value": "", "earliest": "15-aug", "latest": "30-aug", "day": "sunday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "15:00"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "pkp": {
+      "name": "Patrick Kelley Pursuit",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "pursuit", "access": "club" },
+      "date": { "type":"nearest", "value": "20-jun", "earliest": "", "latest": "", "day": "sunday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "14:00"},
+      "duties": "ood"
+    },
+    "rnp": {
+      "name": "RNLI Pursuit",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "pursuit", "access": "club" },
+      "date": { "type":"nearest", "value": "20-oct", "earliest": "", "latest": "", "day": "sunday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "14:00"},
+      "duties": "ood"
+    },
+    "sxs": {
+      "name": "Exe Sails Starcross Steamer",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "pursuit", "access": "open" },
+      "date": { "type":"fixed", "value": "19-jan", "earliest": "", "latest": "", "day": "sunday" },
+      "time": { "type": "fixed", "start": "12:00" , "earliest": "", "latest": ""},
+      "duties": "ood"
+    },
+    "nct": {
+      "name": "Newport Trophy (cruisers)",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "cruiser", "access": "club" },
+      "date": { "type":"nearest", "value": "20-jun", "earliest": "", "latest": "", "day": "saturday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "14:00"},
+      "duties": "ood"
+    },
+    "nct": {
+      "name": "Drew Trophy (cruisers)",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "cruiser", "access": "club" },
+      "date": { "type":"nearest", "value": "14-sep", "earliest": "", "latest": "", "day": "saturday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "14:00"},
+      "duties": "ood"
+    },
+    "cct": {
+      "name": "Chaos Trophy (cruisers)",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "cruiser", "access": "club" },
+      "date": { "type":"nearest", "value": "20-jul", "earliest": "", "latest": "", "day": "saturday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "14:00"},
+      "duties": "ood"
+    },
+    "sqt": {
+      "name": "Squires Cups",
+      "status": "schedule",
+      "type": { "category": "racing", "format": "squires", "access": "open" },
+      "date": { "type":"nearest", "value": "26-may", "earliest": "", "latest": "", "day": "sunday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "16:00"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "cmc": {
+      "name": "Commodore's Cruise",
+      "status": "report",
+      "type": { "category": "dcruise", "format": "", "access": "club" },
+      "date": { "type":"float", "value": "", "earliest": "15-jul", "latest": "30-jul", "day": "saturday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00"},
+      "duties": "safety-driver"
+    },
+    "cmc": {
+      "name": "Roadford Weekend",
+      "status": "report",
+      "type": { "category": "training", "format": "", "access": "club" },
+      "date": { "type":"float", "value": "", "earliest": "20-jun", "latest": "30-jun", "day": "saturday" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00"},
+      "duties": ""
+    }
+  },
+
+  "series_events": {
+    "fbs": {
+      "name": "Frostbite Series",
+      "status": "schedule",
+      "type": { "category":"racing", "format": "club series", "code": "FROSTBITE", "max_events": "", "access": "club" },
+      "date": { "type":"float", "value": "", "earliest": "02-jan", "latest": "30-apr", "day": "sunday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "15:00", "max_starts": "2"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "sps": {
+      "name": "Spring Series",
+      "status": "schedule",
+      "type": { "category":"racing", "format": "club series", "code": "SPRING", "max_events": "", "access": "club" },
+      "date": { "type":"float", "value": "", "earliest": "01-apr", "latest": "30-jun", "day": "sunday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "09:30", "latest": "17:00", "max_starts": "2"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "sms": {
+      "name": "Summer Series",
+      "status": "schedule",
+      "type": { "category":"racing", "format": "club series", "code": "SUMMER", "max_events": "", "access": "club"},
+      "date": { "type":"float", "value": "", "earliest": "01-jul", "latest": "31-oct", "day": "sunday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "09:30", "latest": "17:00", "max_starts": "2"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "ams": {
+      "name": "Autumn Series",
+      "status": "schedule",
+      "type": { "category":"racing", "format": "club series", "code": "SUMMER", "max_events": "", "access": "club"},
+      "date": { "type":"float", "value": "", "earliest": "01-oct", "latest": "31-dec", "day": "sunday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "09:30", "latest": "15:00", "max_starts": "2"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "evs": {
+      "name": "Evening Series",
+      "status": "schedule",
+      "type": { "category":"racing", "format": "handicap series", "code": "EVENING", "max_events": "", "access": "club"},
+      "date": { "type":"float", "value": "", "earliest": "01-apr", "latest": "21-sep", "day": "wednesday"},
+      "time": { "type": "fixed", "start": "19:00" , "earliest": "", "latest": "", "max_starts": "1"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "dcs": {
+      "name": "Dinghy Cruise",
+      "status": "report",
+      "type": { "category":"dcruise", "format": "", "code": "DCRUISE", "max_events": "12", "access": "club"},
+      "date": { "type":"float", "value": "", "earliest": "12-apr", "latest": "25-oct", "day": "saturday", "frequency": "2" },
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "14:00", "max_starts": "1"},
+      "duties": "safety-driver|safety-driver"
+    },
+    "fss": {
+      "name": "Free Sailing / Kayak",
+      "status": "report",
+      "type": { "category":"dcruise", "format": "", "code": "FREESAIL", "max_events": "12", "access": "club"},
+      "date": { "type":"float", "value": "", "earliest": "15-apr", "latest": "15-oct", "day": "saturday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "14:00", "max_starts": "1"},
+      "duties": "ood|safety-driver|safety-driver"
+    },
+    "wkp": {
+      "name": "Working Party",
+      "status": "report",
+      "type": { "category":"social", "format": "", "code": "WORKPARTY", "max_events": "4", "access": "club"},
+      "date": { "type":"float", "value": "", "earliest": "10-apr", "latest": "30-oct", "day": "saturday", "frequency": "8" },
+      "time": { "type": "fixed", "start": "10:00" , "earliest": "10:00", "latest": "14:00", "max_starts": "1"},
+      "duties": ""
+    }
+  },
+
+  "special_events": {
+    "eas": {
+      "name": "Easter Series",
+      "status": "report",
+      "type": { "category":"racing", "format": "trophy", "code": "EASTER", "max_events": "4", "access": "club" },
+      "date": { "type":"float", "value": "", "earliest": "12-apr", "latest": "13-apr", "day": "sunday|monday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "09:30", "latest": "16:00", "max_starts": "4"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "kbs": {
+      "name": "Kathleen / Buxton Belle Trophies",
+      "status": "report",
+      "type": { "category":"racing", "format": "trophy", "code": "KATHLEEN", "max_events": "1", "access": "club" },
+      "date": { "type":"float", "value": "", "earliest": "10-sep", "latest": "30-sep", "day": "sunday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "09:30", "latest": "16:00", "max_starts": "3"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    }
+  },
+
+  "open_events": {
+    "xrd": {
+      "name": "Exe Regatta (dinghy)",
+      "status": "report",
+      "type": { "category":"racing", "format": "regatta-dinghy", "code": "EXEREGDINGHY", "max_events": "2", "access": "open" },
+      "date": { "type":"fixed", "value": "", "earliest": "25-jul", "latest": "26-jul", "day": "saturday|sunday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "16:00", "max_starts": "4"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "xrm": {
+      "name": "Exe Regatta (multihull)",
+      "status": "report",
+      "type": { "category":"racing", "format": "regatta-multihull", "code": "EXEREGDMULTI", "max_events": "2", "access": "open" },
+      "date": { "type":"fixed", "value": "", "earliest": "25-jul", "latest": "26-jul", "day": "saturday|sunday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "16:00", "max_starts": "4"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "trs": {
+      "name": "Two Rivers Junior Series",
+      "status": "report",
+      "type": { "category":"racing", "format": "", "code": "TWORIVERS", "max_events": "1", "access": "open" },
+      "date": { "type":"nearest", "value": "29-jun", "earliest": "", "latest": "", "day": "saturday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "16:00", "max_starts": "3"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "mom": {
+      "name": "Merlin Rocket Open Meeting",
+      "status": "report",
+      "type": { "category":"racing", "format": "open", "code": "MERLINOPEN", "max_events": "2", "access": "open" },
+      "date": { "type":"fixed", "value": "", "earliest": "30-may", "latest": "31-may", "day": "saturday|sunday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "16:00", "max_starts": "5"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "lom": {
+      "name": "Laser Open Meeting",
+      "status": "report",
+      "type": { "category":"racing", "format": "open", "code": "LASEROPEN", "max_events": "1", "access": "open" },
+      "date": { "type":"fixed", "value": "", "earliest": "20-jul", "latest": "30-jul", "day": "saturday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "16:00", "max_starts": "4"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "hom": {
+      "name": "Hurricane Open Meeting",
+      "status": "report",
+      "type": { "category":"racing", "format": "open", "code": "HURRICANEOPEN", "max_events": "2", "access": "open" },
+      "date": { "type":"fixed", "value": "", "earliest": "1-jul", "latest": "30-jul", "day": "saturday|sunday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "16:00", "max_starts": "8"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "rom": {
+      "name": "RS 400/200/100 Open Meeting",
+      "status": "report",
+      "type": { "category":"racing", "format": "open", "code": "RSOPEN", "max_events": "2", "access": "open" },
+      "date": { "type":"fixed", "value": "", "earliest": "3-sep", "latest": "15-sep", "day": "saturday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "16:00", "max_starts": "4"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    },
+    "tom": {
+      "name": "Topper Open Meeting",
+      "status": "report",
+      "type": { "category":"racing", "format": "open", "code": "TOPPEROPEN", "max_events": "2", "access": "open" },
+      "date": { "type":"fixed", "value": "", "earliest": "1-oct", "latest": "10-oct", "day": "saturday|sunday"},
+      "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "16:00", "max_starts": "3"},
+      "duties": "ood|aood|safety-driver|safety-driver|galley|bar"
+    }
+  }
+}
+
+
