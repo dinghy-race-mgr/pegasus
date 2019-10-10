@@ -117,6 +117,44 @@ EOT;
      return $bufr;
  }
 
+function script_confirm($params = array())
+{
+    $bufr = <<<EOT
+    <div class="container" style="margin-top: 40px;">
+        <div class="jumbotron" style="margin-top: 40px;">
+            <h2 class="text-primary">Instructions:</h2>
+            <p class="text-primary">{instructions}</p>
+        </div>
+        <form enctype="multipart/form-data" id="confirmScript" action="{script}" method="post">
+
+        <div class="row margin-top-40">
+            <div class="col-sm-8 col-sm-offset-1">
+                <div class="pull-left">
+                    <a class="btn btn-lg btn-warning" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
+                </div>
+                <div class="pull-right">
+                     <button type="submit" class="btn btn-lg btn-primary"  style="min-width: 200px;">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>{confirm}</b></button>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+    <script language="javascript">
+    function quitBox(cmd)
+    {   
+        if (cmd=='quit')
+        {
+            open(location, '_self').close();
+        }   
+        return false;   
+    }
+    </script>
+EOT;
+    return $bufr;
+}
+
 
 
  function options_hamburger($params = array())

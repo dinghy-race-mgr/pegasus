@@ -216,6 +216,8 @@
 	</div>
 </div>
 
+
+
 ]
                       {END mastertable_block}
 
@@ -409,6 +411,9 @@
 	.bs-gridcell[data-field=memberid]:before {
 		content: "{$label t_competitor memberid}";
 	}
+	.bs-gridcell[data-field=trackerid]:before {
+		content: "{$label t_competitor trackerid}";
+	}
 	.bs-gridcell[data-field=updby]:before {
 		content: "{$label t_competitor updby}";
 	}
@@ -437,6 +442,17 @@
 									{END active_fieldheader}
 									</th>
 									{END active_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN trackerid_fieldheadercolumn}<th class="rnr-gridfieldlabel {$trackerid_class}" data-field=trackerid>
+									{BEGIN trackerid_fieldheader}<span {$trackerid_orderlinkattrs}>
+											{$label t_competitor trackerid}
+										</span>
+									{END trackerid_fieldheader}
+									</th>
+									{END trackerid_fieldheadercolumn}
 									
 									
 									
@@ -585,6 +601,12 @@
 		{$active_value}
 	</td>
 {END active_fieldcolumn}
+
+
+	{BEGIN trackerid_fieldcolumn}<td class="bs-gridcell {$trackerid_class}"  data-field=trackerid {$rowstyle} {$recordattrs}>
+		{$trackerid_value}
+	</td>
+{END trackerid_fieldcolumn}
 
 
 	{BEGIN classid_fieldcolumn}<td class="bs-gridcell {$classid_class}"  data-field=classid {$rowstyle} {$recordattrs}>

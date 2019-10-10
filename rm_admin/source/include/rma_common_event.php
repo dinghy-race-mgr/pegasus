@@ -19,7 +19,7 @@ function get_series_root($series)
     $pos = strripos($series, "-");
     if ($pos !== false)
     {
-        $series = substr($series, 0, $pos+1);
+        $series = substr($series, 0, $pos);
     }
 
     return $series;

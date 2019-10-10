@@ -300,6 +300,226 @@
 {END details_found}
 
 
+{BEGIN print_friendly}
+<span {$printpanel_hiddenattr} data-pageid="{$pageid}" data-brick="printpanel" class="bs-printpanel" id="printpanelblock{$id}">
+	<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Print-friendly page">
+		<span class="glyphicon glyphicon-print" ></span>
+		<span class="caret"></span>
+    </button>
+	<ul class="dropdown-menu pull-right" >
+		<li>
+			<div class="container-fluid" id="print_friendly_scope{$id}">
+				<div class="row">
+					<div class="col-md-4">Scope:</div>
+										{BEGIN print_friendly_all}
+					<div class="col-md-8">
+						<label for="printAll{$id}">
+							<input type="radio" id="printAll{$id}" data-href="t_event_print.php?all=1&amp;{$crosstable_attrs}" name="printScope">
+							Print all pages
+						</label>
+					</div>
+					{END print_friendly_all}
+				</div>
+				<div class="row">
+					<div class="col-md-4">&nbsp;</div>
+					<div class="col-md-8">
+						<label for="printPage{$id}">
+							<input type="radio" id="printPage{$id}" data-href="t_event_print.php?{$crosstable_attrs}" name="printScope" checked>
+							Print this page
+						</label>
+					</div>
+				</div>
+								<div class="row">
+					<div class="col-md-4">&nbsp;</div>
+					<div class="col-md-8">
+						<label for="printSelection{$id}" style="color: gray;">
+							<input type="radio" id="printSelection{$id}" name="printScope" disabled="disabled">
+							Print selected
+						</label>
+					</div>
+				</div>
+			</div>
+		</li>
+		<li class="divider" role="separator"></li>
+
+				<li>			
+		{BEGIN print_details}
+			<div class="rnr-printdetails">
+				<label for="printDetailsToggler{$id}">
+					<input type="checkbox" id="printDetailsToggler{$id}">
+					Print details
+				</label>
+				<div class="rnr-printdetailstables"  id="printdetailstables{$id}" style="display:none;">
+					{BEGIN print_details_t_eventduty}
+						
+							<div class="rnr-printdetialstable">
+								<label for="printDetailst_eventduty{$id}">
+									<input type="checkbox" value="t_eventduty" id="printDetailst_eventduty{$id}" checked>
+									Duties
+								</label>
+							</div>
+					{END print_details_t_eventduty}
+					{BEGIN print_details_t_tide}
+						
+							<div class="rnr-printdetialstable">
+								<label for="printDetailst_tide{$id}">
+									<input type="checkbox" value="t_tide" id="printDetailst_tide{$id}" checked>
+									Tide Data
+								</label>
+							</div>
+					{END print_details_t_tide}
+				</div>
+			</div>
+		{END print_details}
+		</li>
+		<li class="divider" role="separator"></li>
+
+				<li>	
+			<div class="rnr-printdetails">
+				<label for="printPerPage{$id}">
+											Records Per Page:
+				</label>
+				<input type="number" id="printPerPage{$id}" value="{$print_recspp}" class="rnr-printrecspp">		
+			</div>
+		</li>
+		<li class="divider" role="separator"></li>
+		<li class="rnr-printbutton">				
+			<button type="button" class="btn btn-primary" id="print_friendly_button{$id}" >Print</button>			
+		</li>
+	</ul>	
+</span>
+
+{END print_friendly}
+
+
+{BEGIN field_hide_panel}
+<div {$bsfieldhidepanel_hiddenattr} data-pageid="{$pageid}" data-brick="bsfieldhidepanel" id="fildhidepanel{$id}" class="keep-open btn-group" title="Show/hide columns">
+	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button"><i class="glyphicon glyphicon-th-list"></i> <span class="caret"></span></button>
+	<ul role="menu" class="dropdown-menu dropdown-left">
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_event_date" checked="checked" value="1" data-field="event_date">
+			  <span>{$label t_event event_date}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_event_start" checked="checked" value="1" data-field="event_start">
+			  <span>{$label t_event event_start}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_event_name" checked="checked" value="1" data-field="event_name">
+			  <span>{$label t_event event_name}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_event_notes" checked="checked" value="1" data-field="event_notes">
+			  <span>{$label t_event event_notes}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_event_type" checked="checked" value="1" data-field="event_type">
+			  <span>{$label t_event event_type}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_event_format" checked="checked" value="1" data-field="event_format">
+			  <span>{$label t_event event_format}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_event_order" checked="checked" value="1" data-field="event_order">
+			  <span>{$label t_event event_order}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_tide_time" checked="checked" value="1" data-field="tide_time">
+			  <span>{$label t_event tide_time}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_tide_height" checked="checked" value="1" data-field="tide_height">
+			  <span>{$label t_event tide_height}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_weblink" checked="checked" value="1" data-field="weblink">
+			  <span>{$label t_event weblink}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_active" checked="checked" value="1" data-field="active">
+			  <span>{$label t_event active}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_id" checked="checked" value="1" data-field="id">
+			  <span>{$label t_event id}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+	</ul>
+</div>
+
+{END field_hide_panel}
 
 
 
@@ -680,19 +900,17 @@
 		{BEGIN t_event_dtable_column}
 	<td class="rnr-nowrap bs-griddetails" {$rowstyle} {$recordattrs}>
 	
-			{BEGIN t_eventduty_dtable_link}
-		<span>
-			<a {$t_eventduty_dtablelink_attrs}>
-			Duties
-							<span {$t_eventduty_childnumber_attr} dir="ltr">
-				{BEGIN t_eventduty_childcount}
-					({$t_eventduty_childnumber})
-				{END t_eventduty_childcount}</span>
-			</a>
-						<br/>
-		</span>
-		{END t_eventduty_dtable_link}
-
+			{BEGIN dtables_link}
+		
+							
+				
+								<a {$dtables_link_attrs}  title="Show details">
+				<span class="badge t_eventduty_badge" {$t_eventduty_childnumber_attr}>
+					<span class="glyphicon glyphicon-th-list"></span> 
+					<span class="{$t_eventduty_cntspan_class}" >{$t_eventduty_childnumber}</span>
+				</span></a>
+		{END dtables_link}
+	
 	
 	</td>
 	{END t_event_dtable_column}

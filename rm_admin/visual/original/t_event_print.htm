@@ -2,6 +2,7 @@
 <html  {$html_attrs}>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{$pagetitle}</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -12,246 +13,178 @@
 		{BEGIN styleCSSFiles}
 		<link REL="stylesheet" href="{$stylepath}" type="text/css">
 		{END styleCSSFiles}
-		{BEGIN pageCSSFiles}
-		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
-		{END pageCSSFiles}
 	</head>
-	
+
 	<body class="{$stylename} function-print" {$bodyattrs}>
 	{BEGIN body}
 		{$header}
-	<div class="rnr-page">
-		<div class="rnr-top {$blockclass_top}">
-			
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
 
-{BEGIN container_master}
-<div class="rnr-c rnr-ch rnr-c-master">
+{BEGIN container_pdf}
+<div {$pdf_chiddenattr} data-pageid="{$pageid}" data-container="pdf" class="   col-md-12 "> 
 
-{BEGIN mastertable_block}
-<div  class="style1 rnr-bl rnr-b-masterinfoprint {$brickclass_masterinfoprint}">{$showmasterfile}
+{BEGIN printbuttons}
+
+{END printbuttons}
+
+
+
 </div>
-{END mastertable_block}
+{END container_pdf}
 
-<div class="rnr-hfiller"></div>
+
+
+
+
+{BEGIN container_pageheader}
+<div {$pageheader_chiddenattr} data-pageid="{$pageid}" data-container="pageheader" class="    "> 
+
+{BEGIN printheader}
+	<h2 {$printheader_hiddenattr} data-pageid="{$pageid}" data-brick="printheader" >{$pagetitlelabel t_event print}</h2>
+	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
+
+{END printheader}
+
+
+{BEGIN page_number}
+<span>Page <span class="rp-pageno">{$pageno}</span> of <span class="rp-pagecount">{$pagecount}</span></span>
+{END page_number}
+
+
+
 </div>
-{END container_master}
+{END container_pageheader}
 
 
-
-
-		</div>
-		<div class="rnr-middle">
-			<div class="rnr-left {$blockclass_left}">
-				
-			</div>
-			<div class="rnr-center {$blockclass_center}">
-				
 
 {BEGIN container_grid}
 
 
 {BEGIN grid_block}
-{BEGIN page}
-<h1>Races</h1>
-<span>
-{BEGIN page_number}
-Page {$pageno} of {$maxpages} 
-{END page_number}
-</span>
-
-	<div class="rnr-s-grid {$pageStyleName}">	
-	<table class="rnr-c rnr-c-grid rnr-b-grid rnr-gridtable" cellpadding="0">
-		<thead>
-		{BEGIN grid_header}
-<tr class="rnr-toprow style1 {$gridHeader_class}" >
-{BEGIN record_header}
-		{BEGIN event_date_fieldheadercolumn}
-<th class="runner-cc {$event_date_class}" {$event_date_style}>
-	{BEGIN event_date_fieldheader}
-	<b>{$label t_event event_date}</b>
-	{END event_date_fieldheader}
-</th>
-{END event_date_fieldheadercolumn}
-	{BEGIN event_start_fieldheadercolumn}
-<th class="runner-cc {$event_start_class}" {$event_start_style}>
-	{BEGIN event_start_fieldheader}
-	<b>{$label t_event event_start}</b>
-	{END event_start_fieldheader}
-</th>
-{END event_start_fieldheadercolumn}
-	{BEGIN event_name_fieldheadercolumn}
-<th class="runner-cc {$event_name_class}" {$event_name_style}>
-	{BEGIN event_name_fieldheader}
-	<b>{$label t_event event_name}</b>
-	{END event_name_fieldheader}
-</th>
-{END event_name_fieldheadercolumn}
-	{BEGIN event_notes_fieldheadercolumn}
-<th class="runner-cc {$event_notes_class}" {$event_notes_style}>
-	{BEGIN event_notes_fieldheader}
-	<b>{$label t_event event_notes}</b>
-	{END event_notes_fieldheader}
-</th>
-{END event_notes_fieldheadercolumn}
-	{BEGIN tide_time_fieldheadercolumn}
-<th class="runner-cc {$tide_time_class}" {$tide_time_style}>
-	{BEGIN tide_time_fieldheader}
-	<b>{$label t_event tide_time}</b>
-	{END tide_time_fieldheader}
-</th>
-{END tide_time_fieldheadercolumn}
-	{BEGIN tide_height_fieldheadercolumn}
-<th class="runner-cc {$tide_height_class}" {$tide_height_style}>
-	{BEGIN tide_height_fieldheader}
-	<b>{$label t_event tide_height}</b>
-	{END tide_height_fieldheader}
-</th>
-{END tide_height_fieldheadercolumn}
-	{BEGIN event_format_fieldheadercolumn}
-<th class="runner-cc {$event_format_class}" {$event_format_style}>
-	{BEGIN event_format_fieldheader}
-	<b>{$label t_event event_format}</b>
-	{END event_format_fieldheader}
-</th>
-{END event_format_fieldheadercolumn}
-	{BEGIN event_entry_fieldheadercolumn}
-<th class="runner-cc {$event_entry_class}" {$event_entry_style}>
-	{BEGIN event_entry_fieldheader}
-	<b>{$label t_event event_entry}</b>
-	{END event_entry_fieldheader}
-</th>
-{END event_entry_fieldheadercolumn}
-	{BEGIN event_status_fieldheadercolumn}
-<th class="runner-cc {$event_status_class}" {$event_status_style}>
-	{BEGIN event_status_fieldheader}
-	<b>{$label t_event event_status}</b>
-	{END event_status_fieldheader}
-</th>
-{END event_status_fieldheadercolumn}
-	{BEGIN wd_start_fieldheadercolumn}
-<th class="runner-cc {$wd_start_class}" {$wd_start_style}>
-	{BEGIN wd_start_fieldheader}
-	<b>{$label t_event wd_start}</b>
-	{END wd_start_fieldheader}
-</th>
-{END wd_start_fieldheadercolumn}
-	{BEGIN ws_start_fieldheadercolumn}
-<th class="runner-cc {$ws_start_class}" {$ws_start_style}>
-	{BEGIN ws_start_fieldheader}
-	<b>{$label t_event ws_start}</b>
-	{END ws_start_fieldheader}
-</th>
-{END ws_start_fieldheadercolumn}
-	{BEGIN wd_end_fieldheadercolumn}
-<th class="runner-cc {$wd_end_class}" {$wd_end_style}>
-	{BEGIN wd_end_fieldheader}
-	<b>{$label t_event wd_end}</b>
-	{END wd_end_fieldheader}
-</th>
-{END wd_end_fieldheadercolumn}
-	{BEGIN ws_end_fieldheadercolumn}
-<th class="runner-cc {$ws_end_class}" {$ws_end_style}>
-	{BEGIN ws_end_fieldheader}
-	<b>{$label t_event ws_end}</b>
-	{END ws_end_fieldheader}
-</th>
-{END ws_end_fieldheadercolumn}
-		
-	<th class="rnr-edge">&nbsp;</th>
-	{BEGIN endrecordheader_block}
-	<th class="rnr-cs">&nbsp;</th>
-	{END endrecordheader_block}
-	{END record_header}
-</tr>
-{END grid_header}
-
-		</thead>
-		<tbody>	
-		{BEGIN grid_row}
-	<tr class="rnr-row style1 {$rowclass}" {$rowattrs} {$rowstyle}>
+	<table class="table table-bordered rp-maintable" {$printgrid_hiddenattr} data-pageid="{$pageid}" data-brick="printgrid" >
+	<thead>
+	{BEGIN grid_header}
+		<tr class="{$gridHeader_class}" >
+		{BEGIN record_header}
+			{BEGIN event_date_fieldheadercolumn}
+			<th class="{$event_date_class}" {$event_date_style}  data-field="event_date">
+				{$label t_event event_date}
+			</th>
+			{END event_date_fieldheadercolumn}
+			{BEGIN event_start_fieldheadercolumn}
+			<th class="{$event_start_class}" {$event_start_style}  data-field="event_start">
+				{$label t_event event_start}
+			</th>
+			{END event_start_fieldheadercolumn}
+			{BEGIN event_name_fieldheadercolumn}
+			<th class="{$event_name_class}" {$event_name_style}  data-field="event_name">
+				{$label t_event event_name}
+			</th>
+			{END event_name_fieldheadercolumn}
+			{BEGIN tide_time_fieldheadercolumn}
+			<th class="{$tide_time_class}" {$tide_time_style}  data-field="tide_time">
+				{$label t_event tide_time}
+			</th>
+			{END tide_time_fieldheadercolumn}
+			{BEGIN tide_height_fieldheadercolumn}
+			<th class="{$tide_height_class}" {$tide_height_style}  data-field="tide_height">
+				{$label t_event tide_height}
+			</th>
+			{END tide_height_fieldheadercolumn}
+			{BEGIN event_notes_fieldheadercolumn}
+			<th class="{$event_notes_class}" {$event_notes_style}  data-field="event_notes">
+				{$label t_event event_notes}
+			</th>
+			{END event_notes_fieldheadercolumn}
+			{BEGIN event_type_fieldheadercolumn}
+			<th class="{$event_type_class}" {$event_type_style}  data-field="event_type">
+				{$label t_event event_type}
+			</th>
+			{END event_type_fieldheadercolumn}
+			{BEGIN event_format_fieldheadercolumn}
+			<th class="{$event_format_class}" {$event_format_style}  data-field="event_format">
+				{$label t_event event_format}
+			</th>
+			{END event_format_fieldheadercolumn}
+			{BEGIN endrecordheader_block}
+			<th class="rnr-cs">&nbsp;</th>
+			{END endrecordheader_block}
+		{END record_header}
+		</tr>
+	{END grid_header}
+	</thead>
+	
+	<tbody>	
+	{BEGIN grid_row}
+		<tr class="{$rowclass}" {$rowattrs} {$rowstyle}>
 		{BEGIN grid_record}
-				{BEGIN event_date_fieldcolumn}
-<td  class="runner-cc {$event_date_class}" {$event_date_style}>
-	{$event_date_value}
-</td>
-{END event_date_fieldcolumn}
-	{BEGIN event_start_fieldcolumn}
-<td  class="runner-cc {$event_start_class}" {$event_start_style}>
-	{$event_start_value}
-</td>
-{END event_start_fieldcolumn}
-	{BEGIN event_name_fieldcolumn}
-<td  class="runner-cc {$event_name_class}" {$event_name_style}>
-	{$event_name_value}
-</td>
-{END event_name_fieldcolumn}
-	{BEGIN event_notes_fieldcolumn}
-<td  class="runner-cc {$event_notes_class}" {$event_notes_style}>
-	{$event_notes_value}
-</td>
-{END event_notes_fieldcolumn}
-	{BEGIN tide_time_fieldcolumn}
-<td  class="runner-cc {$tide_time_class}" {$tide_time_style}>
-	{$tide_time_value}
-</td>
-{END tide_time_fieldcolumn}
-	{BEGIN tide_height_fieldcolumn}
-<td  class="runner-cc {$tide_height_class}" {$tide_height_style}>
-	{$tide_height_value}
-</td>
-{END tide_height_fieldcolumn}
-	{BEGIN event_format_fieldcolumn}
-<td  class="runner-cc {$event_format_class}" {$event_format_style}>
-	{$event_format_value}
-</td>
-{END event_format_fieldcolumn}
-	{BEGIN event_entry_fieldcolumn}
-<td  class="runner-cc {$event_entry_class}" {$event_entry_style}>
-	{$event_entry_value}
-</td>
-{END event_entry_fieldcolumn}
-	{BEGIN event_status_fieldcolumn}
-<td  class="runner-cc {$event_status_class}" {$event_status_style}>
-	{$event_status_value}
-</td>
-{END event_status_fieldcolumn}
-	{BEGIN wd_start_fieldcolumn}
-<td  class="runner-cc {$wd_start_class}" {$wd_start_style}>
-	{$wd_start_value}
-</td>
-{END wd_start_fieldcolumn}
-	{BEGIN ws_start_fieldcolumn}
-<td  class="runner-cc {$ws_start_class}" {$ws_start_style}>
-	{$ws_start_value}
-</td>
-{END ws_start_fieldcolumn}
-	{BEGIN wd_end_fieldcolumn}
-<td  class="runner-cc {$wd_end_class}" {$wd_end_style}>
-	{$wd_end_value}
-</td>
-{END wd_end_fieldcolumn}
-	{BEGIN ws_end_fieldcolumn}
-<td  class="runner-cc {$ws_end_class}" {$ws_end_style}>
-	{$ws_end_value}
-</td>
-{END ws_end_fieldcolumn}
-
-		<td class="rnr-edge">&nbsp;</td>
-		{BEGIN endrecord_block}
-		<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
-		{END endrecord_block}
-										
+			{BEGIN event_date_fieldcolumn}
+			<td  class="{$event_date_class}" {$event_date_style} {$recordattrs}>
+				{$event_date_value}
+			</td>
+			{END event_date_fieldcolumn}
+			{BEGIN event_start_fieldcolumn}
+			<td  class="{$event_start_class}" {$event_start_style} {$recordattrs}>
+				{$event_start_value}
+			</td>
+			{END event_start_fieldcolumn}
+			{BEGIN event_name_fieldcolumn}
+			<td  class="{$event_name_class}" {$event_name_style} {$recordattrs}>
+				{$event_name_value}
+			</td>
+			{END event_name_fieldcolumn}
+			{BEGIN tide_time_fieldcolumn}
+			<td  class="{$tide_time_class}" {$tide_time_style} {$recordattrs}>
+				{$tide_time_value}
+			</td>
+			{END tide_time_fieldcolumn}
+			{BEGIN tide_height_fieldcolumn}
+			<td  class="{$tide_height_class}" {$tide_height_style} {$recordattrs}>
+				{$tide_height_value}
+			</td>
+			{END tide_height_fieldcolumn}
+			{BEGIN event_notes_fieldcolumn}
+			<td  class="{$event_notes_class}" {$event_notes_style} {$recordattrs}>
+				{$event_notes_value}
+			</td>
+			{END event_notes_fieldcolumn}
+			{BEGIN event_type_fieldcolumn}
+			<td  class="{$event_type_class}" {$event_type_style} {$recordattrs}>
+				{$event_type_value}
+			</td>
+			{END event_type_fieldcolumn}
+			{BEGIN event_format_fieldcolumn}
+			<td  class="{$event_format_class}" {$event_format_style} {$recordattrs}>
+				{$event_format_value}
+			</td>
+			{END event_format_fieldcolumn}
+			{BEGIN endrecord_block}
+			<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
+			{END endrecord_block}
 		{END grid_record}
-
-	</tr>
+		</tr>
+	{BEGIN details_row}
+		<tr class="{$rowclass}" {$rowattrs} {$rowstyle}>
+			{BEGIN details_record}
+				<td colspan="9">
+					{BEGIN details_table}
+						{$details}
+					{END details_table}
+				</td>
+				{BEGIN endrecord_block}
+				<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
+				{END endrecord_block}
+			{END details_record}
+		</tr>
+	{END details_row}
 {END grid_row}
+	</tbody>
 
-
-		
-		</tbody>
-	</table>
-</div>	
-{END page}
+</table>
 
 {END grid_block}
 
@@ -260,16 +193,24 @@ Page {$pageno} of {$maxpages}
 {END container_grid}
 
 
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
 			</div>
-			<div class="rnr-right {$blockclass_right}">
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
 				
 			</div>
 		</div>
-		<div class="rnr-bottom {$blockclass_bottom}">
-			<!--%%bottom%%-->
+		<DIV class="bs-bottom">
+        
 		</div>
-	</div>
-		
 		{$footer}
 	{END body}
 	</body>

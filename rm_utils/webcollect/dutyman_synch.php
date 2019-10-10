@@ -13,7 +13,7 @@ define('BASE', dirname(__FILE__) . '/');
 session_start(); 
 $_SESSION['sql_debug'] = false;
 $_SESSION['syslog'] = "./sys_log".date("Y_m_d").".log";
-include ("./lib/db_class.php");
+include("./lib/db_class.php");
 
 include ("./config.php");
 

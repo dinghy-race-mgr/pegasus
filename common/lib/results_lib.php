@@ -232,7 +232,7 @@ function s_createPursuitStarts($eventid, $starts, $length, $scratchclass, $resol
     $title = "Start Times";
     
     // document header
-    include ("$loc/rm_racebox/css/rm_export_classic.css");
+    include ("$loc/rm_racebox/css/rm_export_classic.php");
 
     // header
     $hbufr = "<div class=\"title2 pull-right\">{$_SESSION['clubname']} - Start Times</div>";

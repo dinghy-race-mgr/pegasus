@@ -57,15 +57,8 @@ class TIDE
         $query = "SELECT * FROM t_tide WHERE date = '$date'";
         $detail = $this->db->db_get_row($query);
 
-//        if ($local != false) // convert to local time
-//        {
-//            $detail['hw1_time'] = $this->convert_to_local_time($detail['date'], $detail['hw1_time'], $local);
-//            if (!empty($detail['hw2_time']))
-//            {
-//                $detail['hw2_time'] = $this->convert_to_local_time($detail['date'], $detail['hw2_time'], $local);
-//            }
-//
-//        }
+        // $local is for future use (converts to local time)
+        // for now assumes ide date is in local time
 
         return $detail;
     }

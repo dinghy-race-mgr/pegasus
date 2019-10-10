@@ -15,7 +15,7 @@ TO DO
  pg --- programmable days/events (may be more than one event per day).  This is the array that the import file is
         created from.
 
-        status     - programmed status (X - not programmed, S - scheduled event, P - protected date (not schedule-able
+        status     - programmed status (X - not programmed, S - scheduled event, P - protected date (not schedule-able), U - not scheduled
         start_time - start time (hh:mm)
         event_name" => $series['name'],
         series_code" => $series['type']['code']."-".year
@@ -24,7 +24,7 @@ TO DO
         entry_type - how do people enter the event (<blank>|on/retire|ood) - set in cfg.json file
         restricted - who is the event accessible to (club|open) - currently not used
         notes      - notes that will appear in programme - currently not used
-        code       - index code for his event
+        code       - index code for this event
         weblink    - url associated with event - currently not used
 
 Assumes that tidal data is held in table t_tide and HW times have been converted to local time
@@ -102,11 +102,14 @@ if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
 
 if ($_REQUEST['pagestate'] == "init")
 {
+    // setup debug
+    array_key_exists("debug", $_REQUEST) ? $params['debug'] = $_REQUEST['debug'] : $params['debug'] = "off" ;
+
     // present form to select json file for processing (general template)
-    $_SESSION['pagefields']['body'] =  $tmpl_o->get_template("upload_pmaker_file", $_SESSION['pagefields']);
+    $_SESSION['pagefields']['body'] =  $tmpl_o->get_template("upload_pmaker_file", $_SESSION['pagefields'], $params);
 
     // render page
-    echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
+    echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields'] );
 }
 
 
@@ -117,6 +120,10 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
     $bufr = "";
     $json_err = array();
     $json_file = $_FILES['pmakerfile']['name'];
+    if (array_key_exists("debug", $_REQUEST))
+    {
+        $_REQUEST['debug'] == "on" ? $_SESSION['debug'] = true : $_SESSION['debug'] = false ;
+    }
 
     $cfg = json_decode(file_get_contents($_FILES['pmakerfile']['tmp_name']), true);
     if ($cfg)
@@ -136,6 +143,7 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
     }
     else
     {
+        $_SESSION['types'] = explode("|", $cfg['settings']['types']);
 
         // create list of events to be scheduled that are relevant to the period to be programmed
         $cfgevent = pg_get_event_list($_REQUEST['date-start'], $_REQUEST['date-end']);
@@ -150,48 +158,114 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
         // add days for one off events on fixed days if they don't exist
         pg_get_fixed_dates($_REQUEST['date-start'], $_REQUEST['date-end'], $cfg);
 
+        if ($_SESSION['debug']) {echo "--- BLANK PROGRAMME CREATED -----------------------------------<br>";}
+        // allocate fixed (open) events
+        if ($_SESSION['debug']) {echo "--- OPEN MEETINGS / SPECIAL EVENTS ADDED ----------------------<br>";}
+        pg_allocate_open_events();
+
         // allocated series races to programme days
+        if ($_SESSION['debug']) {echo "--- SERIES EVENTS ADDED ----------------------------------------<br>";}
         pg_allocate_series_events();
 
         // now allocate individual events - replacing series events if necessary
+        if ($_SESSION['debug']) {echo "--- SINGLE EVENTS (RACING) ADDED -------------------------------<br>";}
         pg_allocate_fixed_events();
+        if ($_SESSION['debug']) {echo "--- SINGLE EVENTS (NON_RACING) ADDED ---------------------------<br>";}
+        pg_allocate_fixed_nonracing();
 
         // now check if any days with just a series event could have more than one event
-        if ($cfg['settings']['multiple_races']['include'] == "yes") {
+        if ($cfg['settings']['multiple_races']['include'] == "yes")
+        {
+            if ($_SESSION['debug']) {echo "--- ADDING EXTRA SERIES EVENTS ON GOOD TIDE DAYS -----------<br>";}
             $races_added = pg_allocate_multi_events();
+            if ($_SESSION['debug']) {echo " - races added - $races_added<br>";}
         }
 
+        // add tides for unscheduled event days (settings['fixed_days]
+        if ($_SESSION['debug']) {echo "--- ADDING MISSING TIDE DATA -----------------------------------<br>";}
+        pg_add_missing_tides($cfg['settings']['fixed_days']);
+
         // create csv file
+        if ($_SESSION['debug']) {echo "--- CREATING CSV FILE ------------------------------------------<br>";}
         $csv_status = pg_create_csv();
 
         // produce table of events for review
+        if ($_SESSION['debug']) {echo "--- CREATING REPORT --------------------------------------------<br>";}
         $bufr .= pg_display_events($_REQUEST['date-start'], $_REQUEST['date-end'], $json_file, $csv_status);
 
         // finally check which events have been scheduled
-        foreach ($pg as $k => $event) {
-            foreach ($cfgevent as $j => $cevent) {
-                if ($cevent['code'] == $event['code']) {
-                    $cfgevent[$j]['scheduled'] = $cfgevent[$j]['scheduled'] + 1;
-                    $cfgevent[$j]['dates'] = $cfgevent[$j]['dates'] . $event['date'] . " | ";
+        foreach ($pg as $k => $event)
+        {
+            if ($event['state'] != "X")
+            {
+                foreach ($cfgevent as $j => $cevent) {
+                    if ($cevent['code'] == $event['code']) {
+                        $cfgevent[$j]['scheduled'] = $cfgevent[$j]['scheduled'] + 1;
+                        $cfgevent[$j]['dates'] = $cfgevent[$j]['dates'] . $event['date'] . " | ";
+                    }
                 }
             }
         }
+        foreach ($cfgevent as $j => $cevent)
+        {
+            $cfgevent[$j]['dates'] = rtrim($cfgevent[$j]['dates'], " |");
+        }
         $bufr .= pg_display_event_summary($cfgevent);
 
-
+        if ($_SESSION['debug'])
+        {
+            $bufr .= "<pre>Config Events:<br>".print_r($cfgevent,true)."</pre>";
+            $bufr .= "<pre>Config Details:<br>".print_r($cfg,true)."</pre>";
+            $bufr .= "<pre>Programme Details:<br>".print_r($pg,true)."</pre>";
+        }
     }
 
-
-    // FIXME present form to select csv file for processing (general template)
-    $_SESSION['pagefields']['body'] = $bufr;
-
     // render page
+    $_SESSION['pagefields']['body'] = $bufr;
     echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
-    echo "<pre>Config Events:<br>".print_r($cfgevent,true)."</pre>";
-    echo "<pre>Config Details:<br>".print_r($cfg,true)."</pre>";
-    echo "<pre>Programme Details:<br>".print_r($pg,true)."</pre>";
+
 }
 
+function pg_add_missing_tides($days)
+{
+    global $pg;
+    global $tide_o;
+
+    foreach ($days as $day => $val)
+    {
+        foreach ($pg as $k => $event)
+        {
+            if (strtolower(date('l', strtotime($event['date']))) == strtolower($day))     // matching day found
+            {
+                if (empty($event['tidal_time']))                      // add tide data
+                {
+                    $tide = $tide_o->get_tide_by_date($event['date'], false);
+                    $ref_time = $val['start'];
+                    $time_diff_1 = abs(strtotime($ref_time) - strtotime($tide['hw1_time']));
+                    $time_diff_2 = abs(strtotime($ref_time) - strtotime($tide['hw2_time']));
+                    if ($time_diff_1 <= $time_diff_2) {
+                        $tdata = array(
+                            "tidal_time"   => $tide['hw1_time'],
+                            "tidal_height" => $tide['hw1_height'],
+                            "tidal_num"    => "1",
+                            "tidal_status" => ""
+                        );
+                    }
+                    else
+                    {
+                        $tdata = array(
+                            "tidal_time"   => $tide['hw2_time'],
+                            "tidal_height" => $tide['hw2_height'],
+                            "tidal_num"    => "2",
+                            "tidal_status" => ""
+                        );
+                    }
+                    $pg[$k] = array_merge($pg[$k], $tdata);
+                }
+            }
+        }
+    }
+}
 
 function pg_config_validation()
 {
@@ -376,6 +450,22 @@ function pg_config_validation()
     }
     if ($msg) { $error[5] = $msg; }
 
+    // test 6 - check for unique identifiers
+    $msg = "";
+
+    $arr = array();
+    foreach ($_SESSION['types'] as $type)
+    {
+        $arr = array_merge($arr, $cfg[$type]);
+    }
+//    $arr = array_merge($cfg['single_events'], $cfg['series_events'], $cfg['special_events'], $cfg['open_events']);
+    $keys = array_keys($arr);
+    $keys_u = array_unique($keys);
+    if (count($keys) != count($keys_u))
+    {
+        $msg.= "- the configuration file has a duplicate event identifier ";
+    }
+    if ($msg) { $error[6] = $msg; }
 
     return $error;
 }
@@ -383,16 +473,15 @@ function pg_config_validation()
 function pg_get_event_list($start_date, $end_date)
 {
     global $cfg;
-    $types = array("single_events", "series_events", "special_events", "open_events");
     $el = array();
 
-    foreach ($types as $type)
+    foreach ($_SESSION['types'] as $type)
     {
         foreach($cfg[$type] as $k=>$event)
         {
             $str_arr = explode("_", $type);
             $type_code = $str_arr[0];
-            if ($event['status'] == "schedule" or $event == "report")
+            if ($event['status'] == "schedule" or $event['status'] == "report")
             {
                 $set = false;
                 if ( !empty($event['date']['value']))
@@ -421,7 +510,6 @@ function pg_get_event_list($start_date, $end_date)
                     }
                 }
 
-
                 if ($set)
                 {
                     $el[] = array("name"=>$event['name'], "code"=>$k, "type"=>$type_code,
@@ -430,29 +518,6 @@ function pg_get_event_list($start_date, $end_date)
             }
         }
     }
-
-//    foreach($cfg['series_events'] as $k=>$event)
-//    {
-//        $set = false;
-//
-//        if ( !empty($event['date']['value']) and
-//            in_period($start_date, $end_date, $event['date']['value']))
-//        {
-//            $set = true;
-//        }
-//
-//        if ( !empty($event['date']['earliest']) and !empty($event['date']['latest']) and
-//            period_overlap($start_date, $end_date, $event['date']['earliest'], $event['date']['latest']))
-//        {
-//            $set = true;
-//        }
-//
-//        if ($set)
-//        {
-//            $el[] = array("name"=>$event['name'], "code"=>$k, "type"=>"series",
-//                "category"=>$event['type']['category'], "scheduled"=>0, "dates"=>"");
-//        }
-//    }
 
     if (empty($el)) { return false; }
 
@@ -500,11 +565,6 @@ function pg_get_schedule_days($start_date, $end_date)
         }
     }
 
-//    foreach ($cfg['schedule'] as $k=>$day)
-//    {
-//        $days[$k] = strtolower($day['day']);
-//    }
-
     return $days;
 }
 
@@ -514,8 +574,9 @@ function pg_get_days($start_date, $end_date, $days)
     global $cfg;
 
     $blank = array(
-        "date"        =>"",
+        "date"        => "",
         "event_name"  => "",
+        "event_cfg"   => "",
         "start_time"  => "",
         "tidal_time"  => "",
         "tidal_height"=> "",
@@ -544,7 +605,9 @@ function pg_get_days($start_date, $end_date, $days)
         {
             foreach ($cfg['series_events'] as $event)
             {
-                if (in_period($event['date']['earliest'], $event['date']['latest'], $date)) { $create_record = true; }
+                if ($event['date']['day'] == $day_of_week and
+                    in_period($event['date']['earliest'], $event['date']['latest'], $date))
+                { $create_record = true; }
             }
 
             foreach ($cfg['single_events'] as $event)
@@ -555,7 +618,9 @@ function pg_get_days($start_date, $end_date, $days)
                 }
                 else
                 {
-                    if (in_period($event['date']['earliest'], $event['date']['latest'], $date)) { $create_record = true; }
+                    if ($event['date']['day'] == $day_of_week and
+                        in_period($event['date']['earliest'], $event['date']['latest'], $date))
+                    { $create_record = true; }
                 }
             }
 
@@ -570,41 +635,119 @@ function pg_get_days($start_date, $end_date, $days)
     return;
 }
 
+function pg_allocate_open_events()
+{
+    global $cfg;
+    global $pg;
+
+    foreach ($cfg['open_events'] as $j => $open)
+    {
+        if ($_SESSION['debug']) {echo "++++ {$open['name']}<br>";}
+
+        if (strtolower($open['status']) == "schedule") {
+            if (!empty($open['date']['value'])) {
+                $num_events = 0;
+                $num_days = 0;
+                $date = $open['date']['value'];   // set initial date
+
+                // loop over number of days for event
+                while ($num_days < $open['date']['num_days']) {
+                    $tidal = assess_tide($open, $date);
+                    //echo "<pre>".print_r($tidal,true)."</pre>";
+                    $event_data = allocate_event("open", $open, $tidal, $j, $open['time']['start_delta']);
+                    //echo "<pre>".print_r($event_data,true)."</pre>";
+
+                    if ($event_data) {
+                        $k = is_date_in_programme($date);
+
+                        if ($k) {
+                            if ($_SESSION['debug']) {echo " - overwriting $date<br>";}
+                            $pg[$k] = array_merge($pg[$k], $event_data);
+                            $num_days++;
+                            $num_events++;
+
+                        } else {
+                            if ($_SESSION['debug']) {echo " - creating new $date<br>";}
+                            $event_data['date'] = date("Y-m-d", strtotime($date));
+                            $pg[] = $event_data;
+                            $num_days++;
+                            $num_events++;
+                        }
+                        // add additional events on that day
+                        $start_time =  $event_data['start_time'];
+                        while ($num_events < $open['type']['num_events'])
+                        {
+                            $event_data['date'] = date("Y-m-d", strtotime($date));
+                            // change start time
+                            $start_time = date('H:i', strtotime($start_time.'+1 hour'));
+                            if ($_SESSION['debug']) {echo "start: $start_time <br>";}
+                            $event_data['start_time'] = $start_time;
+                            $pg[] = $event_data;
+                            $num_events++;
+                            if ($_SESSION['debug']) {echo "adding extra event (events: $num_events, days: $num_days)<br>";}
+                        }
+
+                        // get next date
+                        $num_events = 0;
+                        $date = date('Y-m-d', strtotime($date . ' +1 day'));
+                    }
+                    else   // not getting event data so stop
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return;
+}
+
 function pg_allocate_series_events()
 {
     global $cfg;
     global $pg;
 
     // FIXME how does this work for non-tidal series
-
     foreach ($pg as $k=>$event)                              // loop over each day to be scheduled
     {
         foreach ($cfg['series_events'] as $j => $series)     // loop over each series in cfg
         {
-            if (strtolower($series['status']) == "schedule")
+            if (strtolower($series['status']) == "schedule" and $event['state'] == "X")
             {
                 if (in_period($series['date']['earliest'],
-                              $series['date']['latest'], $event['date']))  // is this day within the series start/end
+                    $series['date']['latest'], $event['date']))  // is this day within the series start/end
                 {
                     if (in_series($series, $event['date']))      // does this day match the series day requirement in cfg
                     {
                         $tidal = assess_tide($series, $event['date']);  // assess tide
-
-                        if (!empty($tidal) and
-                            tide_better_than($event['date'], "X", $tidal['status']))  // check is useful tide
+                        if ($series['type']['category'] == "racing" )
                         {
-                            $event_data = allocate_event("series", $series, $tidal, $j);
-                            if ($event_data) { $pg[$k] = array_merge($pg[$k], $event_data);}
+                            if (!empty($tidal) and
+                                tide_better_than($event['date'], "X", $tidal['status']))  // check is useful tide
+                            {
+                                $event_data = allocate_event("series", $series, $tidal, $j);
+                                if ($event_data) { $pg[$k] = array_merge($pg[$k], $event_data);}
+                            }
                         }
-                        else  // just add tidal details
+                        elseif ($series['type']['category'] == "freesail")
                         {
-                            $upd = array(
-                                "tidal_time"   => $tidal['tide_time'],
-                                "tidal_height" => $tidal['tide_height'],
-                                "tidal_status" => $tidal['status'],
-                                "tidal_num"    => $tidal['tide_num'],
-                            );
-                            $pg[$k] = array_merge($pg[$k], $upd);
+                            if (!empty($tidal) and
+                                tide_better_than($event['date'], "M", $tidal['status']))  // check is useful tide
+                            {
+                                $event_data = allocate_event("freesail", $series, $tidal, $j);
+                                if ($event_data)
+                                {
+                                    if ($event['state'] != "X")
+                                    {
+                                        $event_data['date'] = $event['date'];
+                                        $pg[] = $event_data;
+                                    }
+                                    else
+                                    {
+                                        $pg[$k] = array_merge($pg[$k], $event_data);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -614,6 +757,36 @@ function pg_allocate_series_events()
     return;
 }
 
+function pg_allocate_fixed_nonracing()
+{
+    global $cfg;
+    foreach ($cfg['single_events'] as $j => $event)
+    {
+        if ($_SESSION['debug']) {echo "++++ {$event['name']}<br>";}
+
+        if (strtolower($event['status'] == "schedule") and
+            ( $event['type']['category'] == "social" or $event['type']['category'] == "training"))
+        {
+            $date = $event['date']['value'];
+            if ($event['date']['type'] == "fixed")
+            {
+                if (in_period($_REQUEST['date-start'], $_REQUEST['date-end'], $date))
+                {
+                    $allocated = allocated_fixed_nonracing($event, $date, $j);
+                }
+                if ($_SESSION['debug']) {echo " - fixed: $date allocated: $allocated<br>";}
+            }
+            elseif  ($event['date']['type'] == "nearest")
+            {
+                $weekday = $event['date']['day'];
+                $nearest_day = get_nearest_day($weekday, $date);                 // get nearest day
+                $allocated = allocated_fixed_nonracing($event, $nearest_day, $j);     // try to allocate it
+                if ($_SESSION['debug']) {echo " - nearest: $nearest_day allocated: $allocated<br>";}
+            }
+        }
+    }
+}
+
 function pg_allocate_fixed_events()
 {
     global $cfg;
@@ -621,11 +794,15 @@ function pg_allocate_fixed_events()
     // deal with fixed date events
     foreach ($cfg['single_events'] as $j => $event)
     {
-        if (strtolower($event['status'] == "schedule") and $event['date']['type'] == "fixed")
+
+        if (strtolower($event['status'] == "schedule") and
+            $event['date']['type'] == "fixed" and
+            $event['type']['category'] == "racing")
         {
             $date = $event['date']['value'];
             if (in_period($_REQUEST['date-start'], $_REQUEST['date-end'], $date))
             {
+                if ($_SESSION['debug']) {echo "++++ {$event['name']}<br>";}
                 $allocated = allocated_fixed($event, $date, "X", $j);
             }
         }
@@ -635,39 +812,49 @@ function pg_allocate_fixed_events()
     // now deal with 'nearest' and 'float' events
     foreach ($cfg['single_events'] as $j => $event)
     {
-        if (strtolower($event['status'] == "schedule") and $event['date']['type'] == "nearest")
-            // tries to allocate nearest relevant sailing day - if that is not a good tide tries the next nearest day
+        if (strtolower($event['status'] == "schedule") and
+            $event['date']['type'] == "nearest"  and
+            $event['type']['category'] == "racing")
+            // tries to allocate nearest relevant  day - if that is not a good tide tries the next nearest day
             // if still bad tide - give up
         {
             $date = $event['date']['value'];
             if (in_period($_REQUEST['date-start'], $_REQUEST['date-end'], $date))
             {
+                if ($_SESSION['debug']) {echo "++++ {$event['name']}<br>";}
                 $weekday = $event['date']['day'];
-                $nearest_day = get_nearest_day($weekday, $date);   // get nearest day
+                $nearest_day = get_nearest_day($weekday, $date);                 // get nearest day
+                $allocated = allocated_fixed($event, $nearest_day, "M", $j);     // try to allocate i
 
-                $allocated = allocated_fixed($event, $nearest_day, "M", $j);
-
-                if (!$allocated)  // tide not ok - look at next nearest day
+                strtotime($nearest_day) >= $date ? $delta_dir = "+" : $delta_dir = "-";
+                $trial_date = $nearest_day;
+                $delta = 1;
+                $give_up = 6;
+                while (!$allocated)  // tide not ok - iterate on previous and next matching days
                 {
-                    if (strtotime($nearest_day) <= $event['date']['value'])
-                    {
-                        $nearest_day = get_next_day($weekday, $nearest_day);
-                    }
-                    else
-                    {
-                        $nearest_day = get_previous_day($weekday, $nearest_day);
-                    }
+                    $trial_date = get_relative_day($weekday, $trial_date, "$delta_dir"."$delta weeks");
 
-                    $allocated = allocated_fixed($event, $nearest_day, "M", $j);
+                    $allocated = allocated_fixed($event, $trial_date, "M", $j);
+                    if ($_SESSION['debug']) {echo " - nearest: $nearest_day trial: $trial_date allocated: $allocated<br>";}
+
+                    if (!$allocated)
+                    {
+                        $delta++;
+                        if ($delta > $give_up) { break; }
+                        $delta_dir == "-" ? $delta_dir = "+" : $delta_dir = "-";
+                    }
                 }
             }
         }
 
-        elseif (strtolower($event['status'] == "schedule") and $event['date']['type'] == "float")
+        elseif (strtolower($event['status'] == "schedule") and
+                $event['date']['type'] == "float" and
+                $event['type']['category'] == "racing")
             // allocates floating even to first suitable day after the 'earliest' date specified
         {
             if (period_overlap($_REQUEST['date-start'], $_REQUEST['date-end'], $event['date']['earliest'], $event['date']['latest']))
             {
+                if ($_SESSION['debug']) {echo "++++ {$event['name']}<br>";}
                 $weekday = $event['date']['day'];
 
                 $allocated = false;
@@ -699,54 +886,52 @@ function pg_allocate_multi_events ()
     foreach ($pg as $k=>$event)
     {
 
-        // check that tide meets criteria for multiple even
-        if (tide_better_than($event['date'], $cfg['settings']['multiple_races']['tide']))
+        // check that a race is currently scheduled for this date, it is a race and a series event
+        $rs = all_events_for_date_in_programme($event['date']);
+        $num_events = count($rs);
+
+        foreach ($rs as $j=>$ev)
         {
-            // check that only one race is currently scheduled for this date, it is a race and a series event
-            $rs = all_events_for_date_in_programme($event['date']);
-            // FIXME how do I know this is a single or series event
-//            if (count($rs) < $cfg['single_events']["{$event['code']}"]['time']['max_starts'])
-//            {
-                $num_events = count($rs);
-                foreach ($rs as $j=>$ev)
+            // must be a racing event and a series event
+            if ($ev['type'] == "racing" and $ev['event_cfg'] == "series")
+            {
+                if (tide_better_than($event['date'], $cfg['settings']['multiple_races']['tide'], $ev['tidal_status']))
                 {
-                    // must be a racing event and a series event
-                    if ($ev['type'] == "racing" and !empty($ev['series_code']))
+                    // must not exceed max number of races per day and not be a fixed start time series
+                    if ($num_events < $cfg['series_events']["{$event['code']}"]['time']['max_starts'] and
+                        $cfg['series_events']["{$event['code']}"]['time']['type'] != "fixed")
                     {
-                        // must not exceed max number of races per day and not be a fixed start time series
-                        if ($num_events < $cfg['series_events']["{$event['code']}"]['time']['max_starts'] and
-                            $cfg['series_events']["{$event['code']}"]['time']['type'] != "fixed")
+                        // move start time of current race to (settings: first_start) before HW
+                        $dtime = decode_delta_time($cfg['settings']['multiple_races']['first_start']);
+
+                        if ($dtime['dir'] == "-")
                         {
-                            // move start time of current race to (settings: first_start) before HW
-                            $dtime = decode_delta_time($cfg['settings']['multiple_races']['first_start']);
-                            if ($dtime['dir'] == "-")
-                            {
-                                $s = (new DateTime($ev['start_time']))->sub(new DateInterval("PT{$dtime['hrs']}H{$dtime['min']}M"));
-                            }
-                            else
-                            {
-                                $s = (new DateTime($ev['start_time']))->add(new DateInterval("PT{$dtime['hrs']}H{$dtime['min']}M"));
-                            }
-                            //  set into record
-                            $new_start_time_1 = u_roundminutes($s->format("H:i"), $cfg['settings']['round_start_mins']);
-                            $pg[$k]['start_time'] = $new_start_time_1;
-
-                            // add another race (settings: interval)  after the first race)
-
-                            $dtime = decode_delta_time($cfg['settings']['multiple_races']['interval']);
-                            $s = (new DateTime($new_start_time_1))->add(new DateInterval("PT{$dtime['hrs']}H{$dtime['min']}M"));
-                            $new_start_time_2 = u_roundminutes($s->format("H:i"), $cfg['settings']['round_start_mins']);
-                            $ev['start_time'] = $new_start_time_2;
-
-                            // create new record
-                            $pg[] = $ev;
-                            $num_events++;
-                            $new_races++;
+                            $s = (new DateTime($ev['tidal_time']))->sub(new DateInterval("PT{$dtime['hrs']}H{$dtime['min']}M"));
                         }
+                        else
+                        {
+                            $s = (new DateTime($ev['tidal_time']))->add(new DateInterval("PT{$dtime['hrs']}H{$dtime['min']}M"));
+                        }
+
+                        //  set into record
+                        $start_time_r1 = u_roundminutes($s->format("H:i"), $cfg['settings']['round_start_mins']);
+                        $pg[$k]['start_time'] = $start_time_r1;
+
+                        // add another race with a start time(settings: interval) after the first race)
+                        $dtime = decode_delta_time($cfg['settings']['multiple_races']['interval']);
+                        $s = (new DateTime($start_time_r1))->add(new DateInterval("PT{$dtime['hrs']}H{$dtime['min']}M"));
+                        $start_time_r2 = u_roundminutes($s->format("H:i"), $cfg['settings']['round_start_mins']);
+                        $ev['start_time'] = $start_time_r2;
+
+                        // create new record
+                        $pg[] = $ev;
+                        $num_events++;
+                        $new_races++;
                     }
                 }
- //           }
+            }
         }
+//        }
     }
     sort_programme_by_date(false);    // don't remove duplicates
     return $new_races;
@@ -765,31 +950,52 @@ function pg_create_csv()
     if ( !$file ) { $status ="1"; }  // file not opened
 
     // write header
-    $hdr_arr = array("id","date","time","name","series","type","format","entry_type",
-        "restricted","tide_time","tide_height","notes","weblink");
+//    $hdr_arr = array("id","date","time","name","series","type","format","entry_type",
+//        "restricted","tide_time","tide_height","notes","weblink");
+    $hdr_arr = array("id","event_date","event_start","event_name","series_code","event_type",
+                      "event_format","event_entry","event_open","tide_time","tide_height","event_notes","weblink");
     $write = fputcsv($file, $hdr_arr);
     if ( $write === false ) { $status ="2"; }  // header error
 
     // write data
     foreach ($pg as $k=>$event)
     {
-        $out_arr = array (
-            "id"         => "",
-            "date"       => $event['date'],
-            "time"       => $event['start_time'],
-            "name"       => $event['event_name'],
-            "series"     => $event['series_code'],
-            "type"       => $event['type'],
-            "format"     => $event['format'],
-            "entry_type" => $event['entry_type'],
-            "restricted" => $event['restricted'],
-            "tide_time"  => $event['tidal_time'],
-            "tide_height"=> sprintf('%0.1f', $event['tidal_height']),
-            "notes"      => "",
-            "weblink"    => ""
-        );
-        $write = fputcsv($file, $out_arr);
-        if ( $write === false ) { $status ="3"; }  // data error
+        // output if array record has tidal data
+        if (!empty($event['tidal_time']))
+        {
+//            $out_arr = array (
+//                "id"         => "",
+//                "event_date"       => $event['date'],
+//                "event_start"       => $event['start_time'],
+//                "event_name"       => $event['event_name'],
+//                "series_code"     => $event['series_code'],
+//                "event_type"       => $event['type'],
+//                "event_format"     => $event['format'],
+//                "event_entry" => $event['entry_type'],
+//                "event_open" => $event['restricted'],
+//                "tide_time"  => $event['tidal_time'],
+//                "tide_height"=> sprintf('%0.1f', $event['tidal_height']),
+//                "event_notes"      => "",
+//                "weblink"    => ""
+
+            $out_arr = array (
+                "id"         => "",
+                "date"       => $event['date'],
+                "time"       => $event['start_time'],
+                "name"       => $event['event_name'],
+                "series"     => $event['series_code'],
+                "type"       => $event['type'],
+                "format"     => $event['format'],
+                "entry_type" => $event['entry_type'],
+                "restricted" => $event['restricted'],
+                "tide_time"  => $event['tidal_time'],
+                "tide_height"=> sprintf('%0.1f', $event['tidal_height']),
+                "notes"      => "",
+                "weblink"    => ""
+            );
+            $write = fputcsv($file, $out_arr);
+            if ( $write === false ) { $status ="3"; }  // data error
+        }
     }
     fclose($file);
 
@@ -806,10 +1012,10 @@ function pg_display_events($start, $end, $file, $csv_status)
 
     if ($csv_status == 0)
     {
-        $csv_file = $_SESSION['basepath']."/tmp/{$cfg['file']}";
+        //$csv_file = $_SESSION['basepath']."/tmp/{$cfg['file']}";
+        $csv_file = "../tmp/{$cfg['file']}";
         $bufr.=<<<EOT
-
-        <div class="pull-right"><a class="btn btn-primary btn-lg" href="$file" role="button">Create Import File</a></div>
+        <div class="pull-right"><a class="btn btn-primary btn-lg" href="$csv_file" role="button" >Create Import File</a></div>
 EOT;
 
     }
@@ -839,10 +1045,10 @@ EOT;
     <tbody>
     <thead>
         <tr>
-            <th>Date</th>
+            <th width="15%">Date</th>
             <th>Event</th>
             <th>Start</th>
-            <th>Tide</th>
+            <th width="10%">Tide</th>
             <th>Series</th>
             <th>Type</th>
             <th>Format</th>
@@ -855,7 +1061,8 @@ EOT;
     foreach ($pg as $ev)
     {
         $weekday = date("D", strtotime($ev['date']));
-        $ev['state'] == "X" ? $tide_str = "" : $tide_str = "{$ev['tidal_time']} {$ev['tidal_height']}m";
+        empty($ev['tidal_time']) ? $tide_str = "" : $tide_str = "{$ev['tidal_time']} {$ev['tidal_height']}m";
+        empty($ev['tidal_status']) ? $tidal_status = "" : $tidal_status = $ev['tidal_status'] ;
         $ev['state'] == "X" ? $start_str = "" : $start_str = $ev['start_time'];
 
         $bufr.= <<<EOT
@@ -869,7 +1076,7 @@ EOT;
             <td>{$ev['format']}</td>
             <td>{$ev['entry_type']}</td>
             <td>{$ev['restricted']}</td>
-            <td>{$ev['tidal_status']}</td>
+            <td>$tidal_status</td>
         </tr>
 EOT;
     }
@@ -895,10 +1102,10 @@ function pg_display_event_summary($cfgevent)
     <tbody>
     <thead>
         <tr>
-            <th>Event</th>
-            <th>Type</th>
-            <th>No. Scheduled</th>
-            <th>Dates</th>
+            <th width="30%">Event</th>
+            <th width="10%">Type</th>
+            <th width="10%">No. Scheduled</th>
+            <th width="50%">Dates</th>
         </tr>
     </thead>
 EOT;
@@ -932,10 +1139,10 @@ function pg_get_fixed_dates($start_date, $end_date, $cfg)
         {
             if (in_period($start_date, $end_date, $event['date']['value']))
             {
-                //echo "single-event: ".date("Y-m-d",$date_this_year)."</br>";
                 $pg[] = array(
                     "date"=>date("Y-m-d",strtotime($event['date']['value'])),
                     "event_name"=> "",
+                    "event_cfg"=> "",
                     "start_time"=> "",
                     "tidal_time"=> "",
                     "tidal_height"=> "",
@@ -961,6 +1168,7 @@ function pg_get_fixed_dates($start_date, $end_date, $cfg)
                 $pg[] = array(
                     "date"=>date("Y-m-d",strtotime($series['date']['value'])),
                     "event_name"=> "",
+                    "event_cfg"=> "",
                     "start_time"=> "",
                     "tidal_time"=> "",
                     "tidal_height"=> "",
@@ -1011,9 +1219,6 @@ function get_tidal_start_tide($event_cfg, $date)
     $tide = $tide_o->get_tide_by_date($date, false);
     if ($tide)
     {
-//        $et = explode(":",$cfg['settings']['tidal']['before_hw']);
-//        $lt = explode(":",$cfg['settings']['tidal']['after_hw']);
-
         $bhw = decode_delta_time($cfg['settings']['tidal']['before_hw']);
         $ahw = decode_delta_time($cfg['settings']['tidal']['after_hw']);
         $et3 = decode_delta_time($cfg['settings']['tidal']['t3_early']);
@@ -1065,30 +1270,14 @@ function get_tidal_start_tide($event_cfg, $date)
             $tide_2_rs = 0;     // no tide
         }
 
-        if ($date == "2020-07-19") {
-            echo "$date: $tide_1_rs $tide_2_rs<br>";
-            echo "tide: {$tide['hw1_time']} {$tide['hw2_time']}<br>";
-            echo "e/l start: " . $event_cfg['time']['earliest'] . " " . $event_cfg['time']['latest'] . "<br>";
-            echo "t1: " . $t1_early->format("H:i") . " " . $t1_late->format("H:i") . "<br>";
-            echo "t2: " . $t2_early->format("H:i") . " " . $t2_late->format("H:i") . "<br>";
-            echo "t3: " . $t3_early->format("H:i") . " " . $t3_late->format("H:i") . "<br>";
-        }
         // get best tide
-
         if ($tide_1_rs >= $tide_2_rs)
         {
-            if ($date == "2020-07-19")
-            {
-                echo "tide 1<br>";
-            }
             $tidal = array("status" => $tide_code[$tide_1_rs], "tide_num" => 1, "tide_height" => $tide['hw1_height'],
                 "tide_time" => $tide['hw1_time'], "start_time" => "");
         }
         else
         {
-            if ($date == "2020-07-19") {
-                echo "tide 2<br>";
-            }
             $tidal = array("status" => $tide_code[$tide_2_rs], "tide_num" => 2, "tide_height" => $tide['hw2_height'],
                 "tide_time" => $tide['hw2_time'], "start_time" => "");
         }
@@ -1114,7 +1303,7 @@ function is_date_in_programme($date)
 
 function all_events_for_date_in_programme($date)
 {
-// note this returns all dates on a particular day
+// note this returns all events on a particular day
     global $pg;
 
     $rs = array();
@@ -1126,9 +1315,12 @@ function all_events_for_date_in_programme($date)
     return $rs;
 }
 
-function tide_better_than ($date, $required, $tide_status="")
+function tide_better_than ($date, $required, $tide_status)
 {
-    global $pg;
+    if (empty($required) or empty($date) or empty($tide_status))
+    {
+        return false;
+    }
 
     $tide_status_val = array(1=>"X", 2=>"M", 3=>"G", 4=>"E");
     $rs = false;
@@ -1136,8 +1328,6 @@ function tide_better_than ($date, $required, $tide_status="")
 
     if ($k !== false)
     {
-        //echo "$date: $tide_status|{$pg[$k]['tidal_status']}<br>";
-        if(empty($tide_status)) { $tide_status = $pg[$k]['tidal_status']; }
         $i = array_search($required, $tide_status_val);
         $j = array_search($tide_status[0], $tide_status_val);
 
@@ -1162,6 +1352,11 @@ function get_nearest_day($day, $date)
     {
         return date("Y-m-d", strtotime('last '.$day, strtotime($date)));
     }
+}
+
+function get_relative_day($day, $date, $delta)
+{
+    return date("Y-m-d", strtotime("$delta ".ucfirst($day), strtotime($date)));
 }
 
 function get_next_day($day, $date)
@@ -1216,13 +1411,20 @@ function decode_delta_time($dtime)
     return $time_arr;
 }
 
-function get_start_time($tide_hw, $data)
+function get_start_time($tide_hw, $data, $preferred = "")
 {
     global $cfg;
     $round     = $cfg['settings']['round_start_mins'];
     $earliest  = $data['time']['earliest'];
     $latest    = $data['time']['latest'];
-    $tide_time = decode_delta_time($cfg['settings']['tidal']['preferred']);
+    if (empty($preferred))
+    {
+        $tide_time = decode_delta_time($cfg['settings']['tidal']['preferred']);
+    }
+    else
+    {
+        $tide_time = decode_delta_time($preferred);
+    }
 
     // get start time from HW time and preferred start delta  from HW
     if ($tide_time['dir'] == "-")
@@ -1244,33 +1446,87 @@ function get_start_time($tide_hw, $data)
     return $start_time;
 }
 
-function allocate_event($type, $data, $tidal, $event_code)
+function allocate_event($type, $data, $tidal, $event_code, $start_delta = "")
 {
     global $cfg;
 
-    $start = $tidal['start_time'];
-    if (empty($start)) { $start = get_start_time($tidal['tide_time'], $data); }
+    $state = "S";
+    $series_code = "";
+
+    if (empty($tidal))
+    {
+        $start = $data['time']['start'];
+    }
+    else
+    {
+        $start = $tidal['start_time'];
+        if (empty($start)) { $start = get_start_time($tidal['tide_time'], $data); }
+    }
+
+    if ($type == "freesail")
+    {
+       $start = get_start_time($tidal['tide_time'], $data, "-01:00");
+    }
+    elseif ($type == "open")
+    {
+        empty($start_delta) ? $delta = "-01:30" : $delta = $start_delta;
+        $start = get_start_time($tidal['tide_time'], $data, $delta);
+        $state = "P";
+    }
+
+    if (!empty($data['type']['code']))
+    {
+        $series_code = $data['type']['code']."_".substr($cfg['settings']['year'], -2);
+    }
 
     $event = array(
-        "state"      => "S",
+        "state"       => $state,
         "start_time"  => $start,
         "event_name"  => $data['name'],
-        "tidal_time"  => $tidal['tide_time'],
-        "tidal_height"=> $tidal['tide_height'],
-        "tidal_status"=> $tidal['status'],
-        "tidal_num"   => $tidal['tide_num'],
+        "event_cfg"   => $type,
         "type"        => $data['type']['category'],
         "format"      => $data['type']['format'],
         "entry_type"  => $cfg['settings']['signon'],
         "restricted"  => $data['type']['access'],
+        "series_code" => $series_code,
         "notes"       => "",
         "weblink"     => "",
         "code"        => $event_code
     );   // array doesn't have date allocated here as this may be an update to an existing record
 
-    $type != "series" ? $event["series_code"] = "" : $event["series_code"] = $data['type']['code']."-".substr($cfg['settings']['year'], -2);
+    if (!empty($tidal))
+    {
+        $event["tidal_time"] = $tidal['tide_time'];
+        $event["tidal_height"] = $tidal['tide_height'];
+        $event["tidal_status"] = $tidal['status'];
+        $event["tidal_num"] = $tidal['tide_num'];
+    }
 
     return $event;
+}
+
+function allocated_fixed_nonracing($event, $date, $event_code)
+{
+    global $pg;
+
+    $allocated = false;
+    if ($_SESSION['debug']) {echo " ++++ {$event['name']}<br>";}
+    $key = is_date_in_programme($date);
+    $event_data = allocate_event("event", $event, array(), $event_code);
+    if ($key and $pg[$key]['state']=="X")
+    {
+        $pg[$key] = array_merge($pg[$key], $event_data);
+        $allocated = true;
+        if ($_SESSION['debug']) {echo " - overwriting {$pg[$key]['date']}<br>";}
+    }
+    else
+    {
+        $event_data['date'] = date("Y-m-d", strtotime($date));
+        if ($_SESSION['debug']) {echo " - creating new {$event_data['date']}<br>";}
+        $pg[] = $event_data;
+        $allocated = true;
+    }
+    return $allocated;
 }
 
 function allocated_fixed($event, $date, $requested_tide, $cfg_code)
@@ -1278,36 +1534,46 @@ function allocated_fixed($event, $date, $requested_tide, $cfg_code)
     global $pg;
 
     $allocated = false;
+    if ($_SESSION['debug']) {echo " ++++ {$event['name']}<br>";}
     $key = is_date_in_programme($date);
     $tidal = assess_tide($event, $date);  // assess tide for date
+
     if (!empty($tidal) and tide_better_than($date, $requested_tide, $tidal['status']))  // check is useful tide
     {
         $event_data = allocate_event("event", $event, $tidal, $cfg_code);
         if ($event_data)
         {
-
-            if ($key)                                     // update existing programme record
+            if ($key !== false)    // update existing programme record if not already a fixed even
             {
-                $pg[$key] = array_merge($pg[$key], $event_data);
-                $allocated = true;
+                if ($pg[$key]['state'] == "S")
+                {
+                    if ($pg[$key]['event_cfg'] == "series" or $pg[$key]['event_cfg'] == "freesail" )
+                    {
+                        $pg[$key] = array_merge($pg[$key], $event_data);
+                        $allocated = true;
+                        if ($_SESSION['debug']) {echo " - overwriting {$pg[$key]['date']}<br>";}
+                    }
+                    else
+                    {
+                        $allocated = false;
+                        if ($_SESSION['debug']) {echo " - blocked {$pg[$key]['date']}<br>";}
+                    }
+                }
+                elseif ($pg[$key]['state'] == "X")
+                {
+                    $pg[$key] = array_merge($pg[$key], $event_data);
+                    $allocated = true;
+                    if ($_SESSION['debug']) {echo " - overwriting {$pg[$key]['date']}<br>";}
+                }
             }
             else                                          // create new programme record
             {
-                $event_data['date'] = date("Y-m-d", strototime($date));
+                $event_data['date'] = date("Y-m-d", strtotime($date));
+                if ($_SESSION['debug']) {echo " - creating new {$event_data['date']}<br>";}
                 $pg[] = $event_data;
                 $allocated = true;
             }
         }
-    }
-    else
-    {
-        $upd = array(
-            "tidal_time"  => $tidal['tide_time'],
-            "tidal_height"=> $tidal['tide_height'],
-            "tidal_status"=> $tidal['status'],
-            "tidal_num"   => $tidal['tide_num'],
-        );
-        $pg[$key] = array_merge($pg[$key], $upd);
     }
     return $allocated;
 }
@@ -1406,8 +1672,9 @@ function sort_programme_by_date($remove_duplicates)
 {
     global $pg;
 
-    $keys = array_column($pg, 'date');
-    array_multisort($keys, SORT_ASC, $pg);
+    array_multisort(array_column($pg, 'date'), SORT_ASC,
+        array_column($pg, 'start_time'), SORT_ASC,
+        $pg);
 
     if ($remove_duplicates)
     {

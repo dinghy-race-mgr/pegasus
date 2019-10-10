@@ -24,8 +24,8 @@ if ($values['event_type'] == "racing") {
     if (!empty($values['series_code']) and ($values['series_code']))
     {
         $series_root = get_series_root($values['series_code']);
-        if (!f_check_exists("t_series", " series_code='$series_root' ", $conn)) {
-            $msg .= "- series code [{$values['series_code']}] is not recognised<br>";
+        if (!f_check_exists("t_series", " seriescode='$series_root' ", $conn)) {
+            $msg .= "- series code [ $series_root ] is not recognised<br>";
         }
     }
 
@@ -66,10 +66,12 @@ if ($commit)
         }
     }
 
-
     if ($tide_reset)
     {
-        $tide_rs = $tide_o->get_tide_by_date($date, false);
+        $rs = db_query("SELECT * FROM t_tide WHERE date = '{$values['event_date']}'", $conn);
+        $tide_rs = db_fetch_array($rs);
+
+//        $tide_rs = $tide_o->get_tide_by_date($date, false);
         if ($tide_rs)
         {
             $best_tide = get_best_tide($values['event_start'], $tide_rs['hw1_time'], $tide_rs['hw2_time']);

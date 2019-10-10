@@ -4,13 +4,16 @@
 */
 function upload_pmaker_file($params = array())
 {
+    $dbg = $params['debug'];
+
     $bufr = <<<EOT
     <div class="container">
         <div class="jumbotron" style="margin-top: 40px;">
             <h2 class="text-primary">Instructions:</h2>
             <p class="text-primary">{instructions}</p>
         </div>
-        <form class = "form-horizontal" enctype="multipart/form-data" id="selectfileForm" action="programmemaker.php?pagestate=submit" method="post">
+        <form class = "form-horizontal" enctype="multipart/form-data" id="selectfileForm" 
+              action="programmemaker.php?pagestate=submit&debug=$dbg" method="post">
             <div class="form-inline">
                 <label class="col-sm-2 control-label">Period (from/to)</label>
                 <div class="form-group">                   

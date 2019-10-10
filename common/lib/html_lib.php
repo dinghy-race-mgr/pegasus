@@ -560,7 +560,7 @@ function h_underconstruction($eventid, $title, $msg)
     global $loc;
     
     // document header  ($headbufr)
-    include ("$loc/rm_racebox/css/rm_export_classic.css");
+    include ("$loc/rm_racebox/css/rm_export_classic.php");
     
     $pbufr = <<<EOT
        <div>

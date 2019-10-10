@@ -843,7 +843,7 @@ function val_competitor($i, $key, $row, $table, $fields)
 //    $import[$key]['grouplist']   = addslashes($row['grouplist']);
 //    $import[$key]['memberid']    = addslashes($row['memberid']);
 //
-    return $error;
+//    return $error;
 }
 
 

@@ -145,7 +145,7 @@ class EVENT
     */
     {
         // FIXME - this doesn't work if the system is run in a different time zone to the database - need to use convert_tz to got from UTC to local timezone - but how do I know they are working in UTC
-
+        // FIXME - should this have active = 1 by default
         $where  = " WHERE event_name NOT LIKE '%DEMO%' and event_status='scheduled' and event_date>='$date' ORDER BY event_date ASC LIMIT 1";
         $query = "SELECT * FROM t_event $where ";
         //echo "<pre>$query</pre>";
@@ -162,6 +162,7 @@ class EVENT
     /*
     Returns all events from specified event - ignores demo events
     */
+        // FIXME - should this have active = 1 by default
     {
         $where  = " WHERE event_name NOT LIKE '%DEMO%' and event_date>='$date' ORDER BY event_date ASC LIMIT 1";                                                                
         $query = "SELECT * FROM t_event $where ";
@@ -173,6 +174,49 @@ class EVENT
         } 
 
         return $detail;      
+    }
+
+
+    public function getevents_inperiod($fields, $start, $end, $mode, $race = false)
+    {
+        // FIXME - this doesn't work if the system is run in a different time zone to the database - need to use convert_tz to got from UTC to local timezone - but how do I know they are working in UTC
+        // FIXME - should this have active = 1 by default
+        if ($mode=="demo")
+        {
+            $race ? $where= " WHERE event_name LIKE '%DEMO%' AND event_format > 0 AND event_type ='racing' "
+                : $where= " WHERE event_name LIKE '%DEMO%' ";
+        }
+        else
+        {
+            $race ? $where = " WHERE event_name NOT LIKE '%DEMO%' AND event_format > 0 AND event_type ='racing' "
+                : $where = " WHERE event_name NOT LIKE '%DEMO%' " ;
+
+            // deal with dates
+            $start_date = date("Y-m-d", strtotime($start));
+            $end_date = date("Y-m-d", strtotime($end));
+            $where.= "AND `event_date`>='$start_date' AND `event_date`<='$end_date' ";
+
+            // deal with other constraints
+            if ($fields)
+            {
+                $where.= " AND ";
+                foreach( $fields as $field => $value )
+                {
+                    $clause[] = "`$field` = '$value'";
+                }
+                $where.= implode(' AND ', $clause);
+            }
+        }
+        $query = "SELECT * FROM t_event $where ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
+        //u_writedbg($query, "addrace", "getevents", 123);
+
+        $detail = $this->db->db_get_rows( $query );
+        if (empty($detail))       // nothing found
+        {
+            $detail = false;
+        }
+
+        return $detail;
     }
 
 
@@ -250,7 +294,7 @@ class EVENT
     }
 
 
-    public function event_geteventduties($eventid, $dutycode="")
+    public function event_geteventduties($eventid, $dutycode = "")
     {
         $duties = array();
         $query = "SELECT * FROM t_eventduty WHERE eventid = $eventid ";
