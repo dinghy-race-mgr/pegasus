@@ -1,6 +1,6 @@
 <?php
 $loc  = "..";
-$page = "eventcard";     //
+$page = "duty_check";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
 
@@ -36,7 +36,7 @@ $db_o = new DB();
 
 // set templates
 $tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","$loc/templates/utils/layouts_tm.php",
-                             "$loc/templates/utils/eventcard_tm.php"));
+                             "$loc/templates/utils/duty_check_tm.php"));
 
 
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
@@ -49,11 +49,9 @@ if ($_REQUEST['pagestate'] == "init")
     array_key_exists("debug", $_REQUEST) ? $params['debug'] = $_REQUEST['debug'] : $params['debug'] = "off" ;
 
     $formfields = array(
-        "instructions" => "Create a print-friendly display of the current event programme</br>
-                       <small>The header and footer content are held in html files which can be edited to
-                       display any information you want to add to the event card - please see User Guide: Event Programme</br>
-                       Please select the start and end date for the programme and the fields you want to include.</small>",
-        "script" => "eventcard.php?pagestate=submit",
+        "instructions" => "Create a report summarising duty allocations</br>
+                       <small>Please select the start and end date for the period you want to analyse and the rotas you want to include.</small>",
+        "script" => "duty_check.php?pagestate=submit",
     );
 
     // present form to select json file for processing (general template)
@@ -63,8 +61,8 @@ if ($_REQUEST['pagestate'] == "init")
         "stylesheet" => "$loc/style/rm_utils.css",
         "title" => "eventcard",
         "header-left" => "raceManager",
-        "header-right" => "Event Card",
-        "body" => $tmpl_o->get_template("event_card_form", $formfields, $params),
+        "header-right" => "Duty Check",
+        "body" => $tmpl_o->get_template("duty_check_form", $formfields, $params),
         "footer-left" => "",
         "footer-center" => "",
         "footer-right" => "",

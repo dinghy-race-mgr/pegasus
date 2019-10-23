@@ -6,14 +6,15 @@
 
     --------------------------------------------------------------------------------------
 */
+$_SESSION['app_name'] = "utils";                        // name of application
 
-$_SESSION['app_ini'] = "";              // no application specific ini settings file
 $_SESSION['app_db'] = false;            // no application specific database stored parameters
 
 $_SESSION['sql_debug'] = false;         // set true to turn on debugging of sql commands - otherwise false
 
 $_SESSION['background'] = "";           // display has white background
-$_SESSION['syslog'] = "import_".date("Y-m-d").".log";    // log
+
+$_SESSION['syslog'] = "import_".date("Y-m-d").".log";    // log FIXME - not correct for all utils
 
 $_SESSION['daylight_saving']= array(
     "start_ref"   => "YYYY-04-01",
@@ -31,7 +32,7 @@ $_SESSION['webcollect']= array(
     "phone_fld"               => "mobile_phone",
     "email_fld"               => "email",
     "rota_fld"                => "Allocated_Duties_Club_use_only",
-    "duty_restriction_fld"    => "Duty_Restictions_Club_use_only",
+    "duty_restriction_fld"    => "Duty_Restrictions_Club_use_only",
     "duty_availability_fld"   => "Duty_Non_Availability_Club_use_only",
     "rota_code_map"           => array(
         "ood cruising"       => "ood_c",
@@ -47,6 +48,7 @@ $_SESSION['webcollect']= array(
 $_SESSION['rotamap'] = array(
     "ood_p"    => "race_duty",
     "ood_a"    => "race_duty",
+    "ood_c"    => "safety_duty",
     "safety_d" => "safety_duty",
     "safety_c" => "safety_duty",
     "galley"   => "club_duty",

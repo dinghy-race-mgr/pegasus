@@ -50,6 +50,7 @@ event_update                         event_changedetail($eventid, $fields)
 event_close                          event_eventclose($eventid)
 event_reset                          event_eventreset($eventid)
 event_delete
+event_publish
 
 // event misc methods
 event_wind_set                       event_seteventdetail($detail)
@@ -180,7 +181,7 @@ class EVENT
     public function getevents_inperiod($fields, $start, $end, $mode, $race = false)
     {
         // FIXME - this doesn't work if the system is run in a different time zone to the database - need to use convert_tz to got from UTC to local timezone - but how do I know they are working in UTC
-        // FIXME - should this have active = 1 by default
+        // To be sure of getting published events - the $fields array should include ("active"=>"1")
         if ($mode=="demo")
         {
             $race ? $where= " WHERE event_name LIKE '%DEMO%' AND event_format > 0 AND event_type ='racing' "
@@ -880,6 +881,27 @@ class EVENT
         // delete associated duties
         $del = $this->db->db_delete("t_eventduty", array("eventid"=>$eventid));
         if($del === false) { $status = false; }
+
+        return $status;
+    }
+
+    public function event_publish($eventid, $action)
+    {
+        $status = true;
+
+        if (strtolower($action) == "publish")
+        {
+            $upd = $this->db->db_update("t_event", array("active" => 1), array("id"=>$eventid));
+        }
+        elseif(strtolower($action) == "unpublish")
+        {
+            $upd = $this->db->db_update("t_event", array("active" => 0), array("id"=>$eventid));
+        }
+
+        if ($upd < 1)
+        {
+            $status = false;
+        }
 
         return $status;
     }

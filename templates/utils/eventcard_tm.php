@@ -2,6 +2,164 @@
 /*
   html templates for csv import utility
 */
+
+function event_card($params = array())
+{
+    // essentially two layouts - if no duties, notes go in separate column - otherwise go under even name
+
+//    echo "<pre>".print_r($params['constraints'], true)."</pre>";
+    $params['constraints']['tide'] ? $th_1 = "<th  style='width: 8%'>{$params['fields']['tide']}</th>" : $th_1 = "";
+
+    $duties_inc = false;
+    if ($params['constraints']['race_duty'] or $params['constraints']['safety_duty'] or
+        $params['club_duty'])  { $duties_inc = true; }
+    $th_2 = "";
+    if ($params['constraints']['race_duty'])   { $th_2.= "<th class='pull-left' style='width: 15%'>{$params['fields']['race_duty']}</th>"; }
+    if ($params['constraints']['safety_duty']) { $th_2.= "<th class='pull-left' style='width: 15%'>{$params['fields']['safety_duty']}</th>"; }
+    if ($params['constraints']['club_duty'])   { $th_2.= "<th class='pull-left' style='width: 15%'>{$params['fields']['club_duty']}</th>"; }
+
+    if (!$duties_inc and $params['constraints']['notes']) { $th_2.= "<th>{$params['fields']['notes']}</th>"; }
+    $table_hdr_bufr = <<<EOT
+    <thead>
+        <tr>
+            <th class="pull-left" style="width: 8%">{$params['fields']['date']}</th>
+            <th class="pull-left" style="width: 8%">{$params['fields']['time']}</th>
+            <th class="pull-left" style="width: 20%">{$params['fields']['event']}</th>          
+            $th_1
+            $th_2      
+        </tr>    
+    </thead>
+EOT;
+
+    $table_data_bufr = "<tbody>";
+    foreach($params['data'] as $k => $row)
+    {
+        if ($duties_inc)
+        {
+            // layout with duties
+            $duty_bufr = "";
+            if ($params['constraints']['race_duty']) { $duty_bufr .= "<td>".str_replace("|", "<br>", $row['race_duty'])."</td>"; }
+            if ($params['constraints']['safety_duty']) { $duty_bufr .= "<td>".str_replace("|", "<br>", $row['safety_duty'])."</td>"; }
+            if ($params['constraints']['club_duty']) { $duty_bufr .= "<td>".str_replace("|", "<br>", $row['club_duty'])."</td>"; }
+
+
+            $table_data_bufr.= <<<EOT
+        <tr>
+            <td>{$row['date']}</td>
+            <td>{$row['time']}</td>
+            <td>{$row['event']}<br><i><span class="text-grey">{$row['notes']}</span></i></td>
+            <td>{$row['tide']}</td>
+            $duty_bufr
+        </tr>
+EOT;
+
+        }
+        else
+        {
+            // layout with no duties
+            $table_data_bufr.= <<<EOT
+        <tr>
+            <td>{$row['date']}</td>
+            <td>{$row['time']}</td>
+            <td>{$row['event']}</td>
+            <td>{$row['tide']}</td>
+            <td><i>{$row['notes']}</i></td>
+        </tr>
+EOT;
+        }
+    }
+    $table_data_bufr.= "</tbody>";
+
+    $bufr = <<<EOT
+     <!DOCTYPE html>
+     <html lang="en">
+     <head>
+        <title>{title}</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="racemanager">
+        <meta name="author" content="mark elkington">
+        
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
+        <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+        <meta http-equiv="pragma" content="no-cache" />
+
+ 
+        <style>
+           body    {font-family: Kalinga, verdana,sans-serif; font-size: 0.8em;}
+           h1      {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 250%; letter-spacing: +2px; color: rgb(44, 76, 124);}
+           h2      {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 200%; color: rgb(44, 76, 124);}
+           h3      {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 150%; color: rgb(194, 0, 0);}
+           p       {font-family: Kalinga,arial,helvetica,sans-serif; font-weight: normal; color: rgb(0, 0, 0); line-height: 1.2em; padding-bottom: 0.2em;}
+           
+           td      {display: table-cell; vertical-align: top; font-size: 0.9em;}
+           a:link  {color: rgb(44, 76, 124); text-decoration: none;}
+            
+           .title  {font-family: Kalinga,arial,helvetica,sans-serif; font-weight: bold; font-size: 250%; letter-spacing: -1px; color: rgb(44, 76, 124);}
+           .title2 {font-family: Kalinga,arial,helvetica,sans-serif; font-weight: bold; font-size: 200%; color: rgb(44, 76, 124); padding-top: 10px}
+            
+           .divider   {border-bottom: 1px solid rgb(204, 204, 204); margin-top: 5px; margin-bottom: 5px;}
+           .clearfix  {display: block;}
+           
+           .note    {font-weight: normal; color: rgb(0, 0, 0); line-height: 1.2em; margin: 0px; }
+            
+           .text-center {text-align: center;}
+           .text-right {text-align: right; padding-right: 15px; }
+           .text-left {text-align: left; padding-left: 15px; }
+           .text-grey   {color: rgb(119, 119, 119);}
+           .text-alert  {color: rgb(200, 76, 44)}
+            
+           .pull-right  {text-align: right;}
+           .pull-left   {text-align: left;}
+           .pull-center {text-align: center;}
+ 
+           .noshade   {background: none repeat scroll 0% 0% rgb(255, 255, 255);}
+           .lightshade{background: none repeat scroll 0% 0% rgb(238, 238, 238);}
+           .darkshade {background: none repeat scroll 0% 0% rgb(153, 153, 153);}
+           
+           @media all {
+	           .page-break	{ display: none; }
+           }
+
+           @media print {
+               .noprint { display:none }
+               .page-break	{ display: block; page-break-before: always; }
+           }
+         
+        </style>   
+      </head> 
+      <body>
+          
+        <div class="container-fluid">
+        
+            <!-- Body -->
+            <div class="container" >
+            {header}
+            </div>
+            
+            <div class="container" >
+                <table>
+                    $table_hdr_bufr
+                    $table_data_bufr
+                </table>
+            </div>
+            
+            <div class="container" >
+            {footer}
+            </div>
+
+        </div>
+           
+      </body>
+     </html>        
+EOT;
+
+    return $bufr;
+}
+
 function event_card_form($params = array())
 {
     $bufr = <<<EOT
@@ -25,20 +183,22 @@ function event_card_form($params = array())
                 </div>
             </div>
             
-            <div class="row margin-top-40">
+            <div class="row margin-top-20">
                 <label class="col-sm-3 control-label text-right">Include ?</label>                         
                 <div class="col-sm-8">
-                  <label class="checkbox-inline"><input type="checkbox" name="tide" value="inc" checked>&nbsp;Tide&nbsp;&nbsp;&nbsp;</label>
-                  <label class="checkbox-inline"><input type="checkbox" name="notes" value="inc" checked>&nbsp;Notes&nbsp;&nbsp;&nbsp;</label>               
+                  <label class="checkbox-inline"><input type="checkbox" name="tide" value="true" checked>&nbsp;Tide&nbsp;&nbsp;&nbsp;</label>
+                  <label class="checkbox-inline"><input type="checkbox" name="notes" value="true" checked>&nbsp;Notes&nbsp;&nbsp;&nbsp;</label>               
+                  <label class="checkbox-inline"><input type="checkbox" name="race_duty" value="true" checked>&nbsp;Racebox Duties&nbsp;&nbsp;&nbsp;</label>
+                  <label class="checkbox-inline"><input type="checkbox" name="safety_duty" value="true" checked>&nbsp;Safety Duties&nbsp;&nbsp;&nbsp;</label>
+                  <label class="checkbox-inline"><input type="checkbox" name="club_duty" value="true" checked>&nbsp;Clubhouse Duties&nbsp;&nbsp;&nbsp;</label>                               
                 </div>             
             </div>
             
-            <div class="row margin-top-40">
-                <label class="col-sm-3 control-label text-right">Include Duties</label>                                 
+            <div class="row margin-top-20">
+                <label class="col-sm-3 control-label text-right">Include Unpublished Events</label>                                 
                 <div class="col-sm-8">
-                  <label class="checkbox-inline"><input type="checkbox" name="race_duty" value="inc" checked>&nbsp;Racebox Duties&nbsp;&nbsp;&nbsp;</label>
-                  <label class="checkbox-inline"><input type="checkbox" name="safety_duty" value="inc" checked>&nbsp;Safety Duties&nbsp;&nbsp;&nbsp;</label>
-                  <label class="checkbox-inline"><input type="checkbox" name="club_duty" value="inc" checked>&nbsp;Clubhouse Duties&nbsp;&nbsp;&nbsp;</label>                 
+                  <label class="radio-inline"><input type="radio" name="scope" value="0" >&nbsp;yes&nbsp;&nbsp;&nbsp;</label>
+                  <label class="radio-inline"><input type="radio" name="scope" value="1" checked>&nbsp;no&nbsp;&nbsp;&nbsp;</label>                 
                 </div>               
             </div>
             
@@ -70,131 +230,34 @@ EOT;
     return $bufr;
 }
 
-function submit_import($params = array())
+function eventcard_state($params = array())
 {
-    $rpt_bufr = "";
-    if ($params['success']) {
-        $state = "success";
-        $title = "Import successful";
-        $rpt_bufr = <<<EOT
-            <p><strong>{rows-in-file} data records in import file</strong></p>
-            <p>Before import  <b>{records-before}</b> {import-type} records - after import <b>{records-after}</b> {import-type} records</p>
+    if ($params['state'] == 1)
+    {
+        $bufr = <<<EOT
+        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4>no published events found for period selected</h4> </div>
 EOT;
-        if ($params['insert'])
-        {
-            $rpt_bufr.= <<<EOT
-            <p><strong>Inserts: </strong>
-            {$params['insert']}</p>
+    }
+    elseif ($params['state'] == 2)
+    {
+        $bufr = <<<EOT
+        <div class="alert alert-danger" role="alert"><h3>Failed!</h3> <h4> page status not recognised - please contact System Manager </h4></div>
 EOT;
-        }
-        else
-        {
-            $rpt_bufr.= <<<EOT
-            <p><strong>Inserts: </strong>none</p>
+    }
+    elseif ($params['state'] == 3)
+    {
+        $bufr = <<<EOT
+        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4> the end date is before the start date</h4></div>
 EOT;
-        }
 
-        if ($params['update'])
-        {
-            $rpt_bufr.= <<<EOT
-            <p><strong>Updates: </strong>
-            {$params['update']}</p>
-EOT;
-        }
-        else
-        {
-            $rpt_bufr.= <<<EOT
-            <p><strong>Updates: </strong>none</p>
-EOT;
-        }
-
-        if ($params['delete'])
-        {
-            $rpt_bufr.= <<<EOT
-            <p><strong>Deletes: </strong>
-            {$params['delete']}</p>
-EOT;
-        }
-        else
-        {
-            $rpt_bufr.= <<<EOT
-            <p><strong>Deletes: </strong>none</p>
-EOT;
-        }
     }
     else
     {
-        $failed_already = false;
-        $state = "danger";
-        $title = "Import failed";
-        if (!$params['file_status'])
-        {
-            $rpt_bufr .= <<<EOT
-            <div class="alert alert-warning alert-dismissible" style="padding-left: 60px" role="alert">
-                <h3>File Problems:</h3>
-                {file-problems}
-                <h3>Suggested Fix! </h3>
-                <p>Please check your import file and make sure that it has a csv file type AND
-                the first row has field labels as defined in the import instructions for this type of data.
-                <br>[Note: the database content has not been modified.]</p>
-            </div>
+        $bufr = <<<EOT
+        <div class="alert alert-warning" role="alert"><h3>Warning!</h3> <h4> Unrecognised completion state - please check rota lists </h4></div>
 EOT;
-            $failed_already = true;
-        }
-
-        if (!$failed_already AND !$params['read_status'])
-        {
-            $rpt_bufr .= <<<EOT
-            <div class="alert alert-warning alert-dismissible" style="padding-left: 60px" role="alert">
-                <h3>File Read Problems:</h3>
-                {read-problems}
-                <h3>Suggested Fix! </h3>
-                <p>Please check your import file and make sure that it has a complete set of data fields
-                for each row of data AND the number of data fields matches the number of fields in the header for all records.
-                <br>[Note: the database content has not been modified.]</p>
-            </div>
-EOT;
-            $failed_already = true;
-        }
-
-        if (!$failed_already AND !$params['data_status'])
-        {
-            $rpt_bufr .= <<<EOT
-            <div class="alert alert-warning alert-dismissible" style="padding-left: 60px" role="alert">
-               <h3>Data Problems:</h3>
-               {data-problems}
-               <h3>Suggested Fix! </h3>
-               <p>Please correct the data in the rows reported above and try again.
-               <br>[Note: the database content has not been modified.]</p>
-            </div>
-EOT;
-            $failed_already = true;
-        }
-
-        if (!$failed_already AND !$params['import_status']) {
-            $rpt_bufr .= <<<EOT
-            <div class="alert alert-warning alert-dismissible" style="padding-left: 60px" role="alert">
-               <h3>Database Import Problems</h3>
-               {import-problems}
-               <h3>Suggested Fix!</h3>
-               <span class="text-warning">Your database may be corrupted.</span><br><br>
-               To recover from this please read the Imports section in the user guide
-               [your back up recovery file can be found at <strong>{recovery-file]}</strong> in your raceManager folder.
-            </div>
-EOT;
-        }
     }
 
-    $bufr = <<<EOT
-    <div class="panel panel-$state">
-        <div class="panel-heading">
-            <h3>$title:</h3>
-        </div>
-        <div class="panel-body" style="padding-left: 30px">
-            $rpt_bufr
-        </div>
-    </div>
-EOT;
-        return $bufr;
-
+    return $bufr;
 }
+

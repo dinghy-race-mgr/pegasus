@@ -49,19 +49,12 @@ if (!isset($_SESSION['app_init']) OR ($_SESSION['app_init'] === false))
     }
 }
 
-//echo "<pre>WEBCOLLECT: ".print_r($_SESSION,true)."</pre>";
 
-// FIXME temporary fix
-$_SESSION['db_host'] = "127.0.0.1";
-$_SESSION['db_user'] = "root";
-$_SESSION['db_pass'] = "beachcafe!99";
-$_SESSION['db_port'] = "";
-$_SESSION['db_name'] = "pegasus";
 
 // arguments
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
-if (empty($_REQUEST['contacts']))  { $_REQUEST['contacts'] = "false"; }
-if (empty($_REQUEST['notes']))     { $_REQUEST['notes'] = "false"; }
+if (empty($_REQUEST['contacts']))  { $_REQUEST['contacts'] = "true"; }
+if (empty($_REQUEST['notes']))     { $_REQUEST['notes'] = "true"; }
 if (empty($_REQUEST['dryrun']))    { $_REQUEST['dryrun'] = "false"; }
 
 $pagefields = array(
@@ -126,8 +119,6 @@ elseif (trim(strtolower($_REQUEST['pagestate'])) == "submit")
 
     if ($empty)
     {
-//        echo "collecting data<br>";
-//        html_flush();
         $sql_insert_data = "";  // used to collect data for sql insert
         $print_data      = "";  // used for dry run display
         $rota_map_err    = 0;   // count for number of rota codes not mapped
@@ -151,8 +142,6 @@ elseif (trim(strtolower($_REQUEST['pagestate'])) == "submit")
 
         if ($_REQUEST['dryrun'] == "true")   // just generate text output
         {
-//            echo "getting dryrun data<br>";
-//            html_flush();
             $bufr.= $tmpl_o->get_template("rota_synch_dryrun", array("rota_data"=>$print_data), array());
         }
         else
@@ -169,13 +158,9 @@ elseif (trim(strtolower($_REQUEST['pagestate'])) == "submit")
         $state = 2;
     }
     if (isset($state)) {
-//        echo "reporting state<br>";
-//        html_flush();
         $bufr.= $tmpl_o->get_template("rota_synch_state", array(), array("state"=>$state)); }
 
     $pagefields['body'] =  $bufr;
-//    echo "<pre>".print_r($pagefields,true)."</pre>";
-//    html_flush();
 
     // render page
     echo $tmpl_o->get_template("basic_page", $pagefields, array() );
@@ -215,8 +200,8 @@ function process_member(WebCollectResource $resource)
     $member['familyname'] = ucfirst(strtolower(trim($array["{$_SESSION['webcollect']['familyname_fld']}"])));
     $member['rota_str'] = strtolower(trim($array['form_data']["{$_SESSION['webcollect']['rota_fld']}"]));
 
-//    $stop = false;
-//    if ($member['firstname'] == "Rebecca" and $member['familyname'] == "Elkington")
+    $stop = false;   // used for triggering debugging statements
+//    if ($member['firstname'] == "Mark" and $member['familyname'] == "Elkington")
 //    {
 //        echo "<pre>".print_r($array,true)."</pre>";
 //        $stop = true;
@@ -240,12 +225,28 @@ function process_member(WebCollectResource $resource)
     if (trim($_REQUEST['notes']) == "true")
     {
         $restrictions = trim($array['form_data']["{$_SESSION['webcollect']['duty_restriction_fld']}"]);
-        $availability = trim($array['form_data']["{$_SESSION['webcollect']['duy_availability_fld']}"]);
+        $availability = trim($array['form_data']["{$_SESSION['webcollect']['duty_availability_fld']}"]);
         $member['note'] = $restrictions;
         if (!empty($availability))
         {
-            $member['note'] = $member['note']." | ".$availability;
+            $member['note'].= " | ".$availability;
         }
+//        if ($stop)
+//        {
+//            echo <<<EOT
+//            <pre>NOTES<br>
+//            r_field: {$array['form_data']["{$_SESSION['webcollect']['duty_restriction_fld']}"]}<br>
+//            o_r_field: {$array['form_data']['Duty_Restrictions_Club_use_only']}<br>
+//            r_field_name: {$_SESSION['webcollect']['duty_restriction_fld']}<br>
+//            a_field: {$array['form_data']["{$_SESSION['webcollect']['duy_availability_fld']}"]}}<br>
+//            o_a_field: {$array['form_data']['Duty_Non_Availability_Club_use_only']}<br>
+//            a_field_name: {$_SESSION['webcollect']['duy_availability_fld']}<br>
+//            restrictions: $restrictions<br>
+//            availability: $availability<br>
+//            note: {$member['note']}
+//            </pre>
+//EOT;
+//        }
     }
 
     if (!empty($member['rota']))
