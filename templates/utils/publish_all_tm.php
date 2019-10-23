@@ -144,7 +144,7 @@ EOT;
         <div class="col-sm-8 col-sm-offset-1">
             <div class="pull-left">
                 <a class="btn btn-lg btn-warning" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
-                <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
+                <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a>
             </div>
         </div>
     </div>

@@ -491,6 +491,19 @@
 									{END checkbox_column}
 
 																		
+									{BEGIN firstname_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$firstname_class}" data-field=firstname>
+									{BEGIN firstname_fieldheader}
+																				<span {$firstname_orderlinkattrs}>
+											{$label t_rotamember firstname}
+										</span>
+									{END firstname_fieldheader}
+									</th>
+									{END firstname_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN surname_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$surname_class}" data-field=surname>
 									{BEGIN surname_fieldheader}
@@ -513,45 +526,6 @@
 									{END rota_fieldheader}
 									</th>
 									{END rota_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN partner_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$partner_class}" data-field=partner>
-									{BEGIN partner_fieldheader}
-																				<span {$partner_orderlinkattrs}>
-											{$label t_rotamember partner}
-										</span>
-									{END partner_fieldheader}
-									</th>
-									{END partner_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN active_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
-									{BEGIN active_fieldheader}
-																				<span {$active_orderlinkattrs}>
-											{$label t_rotamember active}
-										</span>
-									{END active_fieldheader}
-									</th>
-									{END active_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN firstname_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$firstname_class}" data-field=firstname>
-									{BEGIN firstname_fieldheader}
-																				<span {$firstname_orderlinkattrs}>
-											{$label t_rotamember firstname}
-										</span>
-									{END firstname_fieldheader}
-									</th>
-									{END firstname_fieldheadercolumn}
 									
 									
 									
@@ -591,6 +565,19 @@
 									{END note_fieldheader}
 									</th>
 									{END note_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN active_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
+									{BEGIN active_fieldheader}
+																				<span {$active_orderlinkattrs}>
+											{$label t_rotamember active}
+										</span>
+									{END active_fieldheader}
+									</th>
+									{END active_fieldheadercolumn}
 									
 									
 									
@@ -635,6 +622,13 @@
 
 	
 
+	{BEGIN firstname_fieldcolumn}
+	<td class="bs-gridcell {$firstname_class}"  data-field=firstname {$rowstyle} {$recordattrs}>
+		{$firstname_value}
+	</td>
+{END firstname_fieldcolumn}
+
+
 	{BEGIN surname_fieldcolumn}
 	<td class="bs-gridcell {$surname_class}"  data-field=surname {$rowstyle} {$recordattrs}>
 		{$surname_value}
@@ -647,27 +641,6 @@
 		{$rota_value}
 	</td>
 {END rota_fieldcolumn}
-
-
-	{BEGIN partner_fieldcolumn}
-	<td class="bs-gridcell {$partner_class}"  data-field=partner {$rowstyle} {$recordattrs}>
-		{$partner_value}
-	</td>
-{END partner_fieldcolumn}
-
-
-	{BEGIN active_fieldcolumn}
-	<td class="bs-gridcell {$active_class}"  data-field=active {$rowstyle} {$recordattrs}>
-		{$active_value}
-	</td>
-{END active_fieldcolumn}
-
-
-	{BEGIN firstname_fieldcolumn}
-	<td class="bs-gridcell {$firstname_class}"  data-field=firstname {$rowstyle} {$recordattrs}>
-		{$firstname_value}
-	</td>
-{END firstname_fieldcolumn}
 
 
 	{BEGIN phone_fieldcolumn}
@@ -689,6 +662,13 @@
 		{$note_value}
 	</td>
 {END note_fieldcolumn}
+
+
+	{BEGIN active_fieldcolumn}
+	<td class="bs-gridcell {$active_class}"  data-field=active {$rowstyle} {$recordattrs}>
+		{$active_value}
+	</td>
+{END active_fieldcolumn}
 
 	{BEGIN endrecord_block}
 	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>

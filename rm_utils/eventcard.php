@@ -140,8 +140,8 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
             }
             $pagefields = array(
                 "title" => "Programme",
-                "header" => file_get_contents("$loc/config/eventcard_hdr.htm"),
-                "footer" => file_get_contents("$loc/config/eventcard_ftr.htm"),
+                "header" => file_get_contents("$loc/config/html/eventcard_hdr.htm"),
+                "footer" => file_get_contents("$loc/config/html/eventcard_ftr.htm"),
                 "date" => date("Y-m-d"),
                 "year" => $year
             );
