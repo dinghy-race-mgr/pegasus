@@ -15,7 +15,7 @@ $debug    = "0";
 
 // includes
 include ("config/racemanager_cfg.php");
-include ("config/$langcode-startup-lang.php");
+include ("config/lang/$langcode-startup-lang.php");
 
 // document header
 echo <<<EOT
