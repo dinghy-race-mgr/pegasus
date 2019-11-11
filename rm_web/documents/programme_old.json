@@ -1,12 +1,61 @@
 {
 "meta": {
-   "last_update": "2016-08-02T20:38",
-   "source": "raceManager",
-   "title": "Race Programme",
-   "club": "Starcross YC",
-   "first": "2016-04-04",
-   "last": "2017-04-01"
+  "last_update": "2016-08-02T20:38",
+  "source": "raceManager",
+  "title": "Race Programme",
+  "club": "Starcross YC",
+  "first": "2016-04-04",
+  "last": "2017-04-01",
+  "eventtype" : {"racing" : "racing", "training" : "training", "social" : "social", "dcruise" : "dinghy cruise", "cruise" : "keelboat cruise", "paddle" : "kayak / paddleboard", "freesail" : "free sailing", "noevent" : "no event"},
+  "racetype": {
+    "1": {
+      "code": "CS",
+      "name": "club series",
+      "desc": "Main club series format - with four main starts (assymetric, fast handicap, slow handicap, multihull) and a junior start"
+    },
+    "2": {
+      "code": "TR",
+      "name": "trophy",
+      "desc": "Race format for all club trophy races. Two main starts - monohull and multihull, followed by a junior start."
+    },
+    "3": {
+      "code": "HS",
+      "name": "handicap series",
+      "desc": "Format used for evening series.  Three main starts (Fast Handicap, Slow Handicap and Multihull) followed by a junior start."
+    },
+    "4": {
+      "code": "PR",
+      "name": "pursuit",
+      "desc": "Pursuit race - fixed time race with slowest boats starting first and faster boats starting at pre-calculated intervals."
+    },
+    "5": {
+      "code": "CR",
+      "name": "cruiser",
+      "desc": "Format for SYC cruiser races - single start handicap races"
+    },
+    "6": {
+      "code": "SQ",
+      "name": "squires",
+      "desc": "Format for Squires trophy race - still to be determined"
+    },
+    "7": {
+      "code": "RD",
+      "name": "regatta_dinghy",
+      "desc": "Format for dinghy racing in Exe Regatta - still to be determined"
+    },
+    "8": {
+      "code": "RM",
+      "name": "regatta_multihull",
+      "desc": "Format for multihull racing in Exe Regatta - still to be determined"
+    },
+    "9": {
+      "code": "OP",
+      "name": "open",
+      "desc": "Format for single fleet open meeting - one start."
+    }
+  }
 },
+
 "events": {
    "evt_1203": {
       "id": 1203,

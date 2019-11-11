@@ -2,34 +2,38 @@ body {
         background-color: #FFFFFF;
 }
 
-body, html, input {
-        font-family:Kalinga, Arial, Helvetica, sans-serif;
-        font-size:1em;
-        color: black;
+body {
+    margin-top: 40px;                           /* margin for navbar and footer */
+    margin-bottom: 40px;
+    font-family: Kalinga, Arial, sans-serif;    /* default font */
+}
+
+input {
+    font-family:Kalinga, Arial, Helvetica, sans-serif;
+    font-size:1em;
+    color: black;
 }
 
 h2 {
     font-size: 1.5em;
 }
 
-.err-symptom {
-
+a:hover {
+    cursor:pointer;
 }
 
-.err-problem {
-
+@media print
+{
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
 }
 
-.err-where {
-
-}
-
-.err-fix {
-    font-style:italic;
-    font-size: 0.8em;
-    color: blue
-}
-
+.err-problem {font-size: 1.2em; font-weight: bold; padding-bottom: 5px; color: darkred; }
+.err-symptom {}
+.err-fix {}
+.err-where { font-style:italic; font-size: 0.8em;}
 
 .menu-block {
     margin-top: 30px; 
@@ -53,28 +57,45 @@ h2 {
 }
 
 .prg_past {
-   font-size: 0.8em;
+   font-size: 1.0em;
    color: gray;
-   background-color: white;
-   font-style:italic;
+   background-color: lightgrey;
 }
 
 .prg_next {
-   font-size: 0.8em;
+   font-size: 1.0em;
    color: black;
    background-color: LemonChiffon;
 }
 
 .prg_future {
-   font-size: 0.8em;
+   font-size: 1.0em;
    color: black;
    background-color: white;
 }
 
 .prg_important {
-   font-size: 0.8em;
+   font-size: 1.0em;
    color: darkred;
    background-color: pink;
+}
+
+.prg_trophy {
+    font-size: 1.0em;
+    color: midnightblue;
+    background-color: lightsteelblue;
+}
+
+.prg_open {
+    font-size: 1.0em;
+    color: darkred;
+    background-color: pink;
+}
+
+.prg_noevent {
+    font-size: 1.0em;
+    color: darkgray;
+    background-color: white;
 }
 
 .prg_event {
@@ -83,18 +104,45 @@ h2 {
 
 .prg_notes {
    font-style:italic;
+    color: darkred;
    font-weight: normal;
 }
 
 .duty_type {
-   font-size: 0.6em;
-   color: darkgray;
-   font-weight: bold;
+   font-size: 1.0em;
+   color: steelblue;
 }
 
 .duty_person {
-   font-size: 0.6em;
-   color: black;
+   font-size: 1.0em;
+   color: darkblue;
+   font-weight: bold;
+}
+
+.pagination {
+    font-size: 1.0em;
+}
+
+.tooltip-inner {
+    background-color: #00acd6 !important;
+    /*!important is not necessary if you place custom.css at the end of your css calls. For the purpose of this demo, it seems to be required in SO snippet*/
+    color: #fff;
+}
+
+.tooltip.top .tooltip-arrow {
+    border-top-color: #00acd6;
+}
+
+.tooltip.right .tooltip-arrow {
+    border-right-color: #00acd6;
+}
+
+.tooltip.bottom .tooltip-arrow {
+    border-bottom-color: #00acd6;
+}
+
+.tooltip.left .tooltip-arrow {
+    border-left-color: #00acd6;
 }
 
 

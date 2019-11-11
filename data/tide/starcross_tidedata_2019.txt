@@ -1,0 +1,2495 @@
+0027A Starcross
+50°38'N, 3°27'W  England    01 January 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+01/01/2019
+High  02:20    3.1 m
+High  14:47    3.2 m
+Low   08:23    1.3 m
+Low   21:04    1.2 m
+
+02/01/2019
+High  03:27    3.2 m
+High  15:53    3.3 m
+Low   09:35    1.2 m
+Low   22:08    1.1 m
+
+03/01/2019
+High  04:26    3.4 m
+High  16:50    3.4 m
+Low   10:36    1.1 m
+Low   23:04    1.0 m
+
+04/01/2019
+High  05:18    3.6 m
+High  17:40    3.6 m
+Low   11:30    1.0 m
+Low   23:52    0.9 m
+
+05/01/2019
+High  06:03    3.8 m
+High  18:22    3.7 m
+Low   12:17    0.9 m
+
+06/01/2019
+High  06:42    3.9 m
+High  19:01    3.7 m
+Low   00:36    0.9 m
+Low   13:00    0.9 m
+
+07/01/2019
+High  07:17    3.9 m
+High  19:35    3.7 m
+Low   01:15    0.9 m
+Low   13:38    0.9 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    08 January 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+08/01/2019
+High  07:49    3.9 m
+High  20:07    3.6 m
+Low   01:51    0.9 m
+Low   14:11    0.9 m
+
+09/01/2019
+High  08:22    3.9 m
+High  20:41    3.5 m
+Low   02:19    0.9 m
+Low   14:39    0.9 m
+
+10/01/2019
+High  08:56    3.7 m
+High  21:15    3.4 m
+Low   02:46    1.0 m
+Low   15:05    1.0 m
+
+11/01/2019
+High  09:30    3.6 m
+High  21:49    3.2 m
+Low   03:11    1.1 m
+Low   15:31    1.1 m
+
+12/01/2019
+High  10:03    3.4 m
+High  22:25    3.1 m
+Low   03:37    1.1 m
+Low   16:00    1.1 m
+
+13/01/2019
+High  10:39    3.3 m
+High  23:05    3.0 m
+Low   04:06    1.2 m
+Low   16:33    1.2 m
+
+14/01/2019
+High  11:22    3.1 m
+High  23:55    2.9 m
+Low   04:45    1.3 m
+Low   17:19    1.3 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    15 January 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+15/01/2019
+High  12:17    3.0 m
+Low   05:40    1.4 m
+Low   18:26    1.3 m
+
+16/01/2019
+High  00:56    2.9 m
+High  13:22    3.0 m
+Low   07:05    1.4 m
+Low   19:51    1.3 m
+
+17/01/2019
+High  02:08    3.0 m
+High  14:41    3.1 m
+Low   08:29    1.3 m
+Low   21:05    1.2 m
+
+18/01/2019
+High  03:26    3.2 m
+High  15:59    3.3 m
+Low   09:42    1.1 m
+Low   22:13    1.0 m
+
+19/01/2019
+High  04:37    3.5 m
+High  17:08    3.6 m
+Low   10:48    1.0 m
+Low   23:17    0.9 m
+
+20/01/2019
+High  05:37    3.8 m
+High  18:08    3.8 m
+Low   11:50    0.8 m
+
+21/01/2019
+High  06:34    4.1 m
+High  19:04    4.0 m
+Low   00:16    0.8 m
+Low   12:48    0.7 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    22 January 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+22/01/2019
+High  07:25    4.3 m
+High  19:54    4.1 m
+Low   01:11    0.6 m
+Low   13:42    0.6 m
+
+23/01/2019
+High  08:13    4.4 m
+High  20:40    4.1 m
+Low   02:02    0.6 m
+Low   14:27    0.5 m
+
+24/01/2019
+High  08:59    4.4 m
+High  21:25    4.1 m
+Low   02:44    0.6 m
+Low   15:08    0.5 m
+
+25/01/2019
+High  09:41    4.3 m
+High  22:07    3.9 m
+Low   03:23    0.6 m
+Low   15:47    0.6 m
+
+26/01/2019
+High  10:22    4.1 m
+High  22:48    3.6 m
+Low   04:01    0.7 m
+Low   16:24    0.7 m
+
+27/01/2019
+High  11:04    3.8 m
+High  23:32    3.3 m
+Low   04:37    0.9 m
+Low   17:03    0.9 m
+
+28/01/2019
+High  11:50    3.4 m
+Low   05:17    1.1 m
+Low   17:46    1.1 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    29 January 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+29/01/2019
+High  00:24    3.1 m
+High  12:50    3.1 m
+Low   06:07    1.2 m
+Low   18:44    1.3 m
+
+30/01/2019
+High  01:31    2.9 m
+High  14:05    2.9 m
+Low   07:21    1.4 m
+Low   20:12    1.4 m
+
+31/01/2019
+High  02:46    2.9 m
+High  15:20    2.9 m
+Low   08:56    1.4 m
+Low   21:37    1.3 m
+
+01/02/2019
+High  03:54    3.1 m
+High  16:24    3.1 m
+Low   10:13    1.2 m
+Low   22:42    1.2 m
+
+02/02/2019
+High  04:52    3.3 m
+High  17:18    3.3 m
+Low   11:12    1.1 m
+Low   23:34    1.0 m
+
+03/02/2019
+High  05:40    3.6 m
+High  18:03    3.5 m
+Low   12:00    1.0 m
+
+04/02/2019
+High  06:22    3.8 m
+High  18:44    3.6 m
+Low   00:19    0.9 m
+Low   12:44    0.9 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    05 February 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+05/02/2019
+High  07:01    3.9 m
+High  19:20    3.7 m
+Low   00:59    0.9 m
+Low   13:22    0.8 m
+
+06/02/2019
+High  07:36    3.9 m
+High  19:55    3.7 m
+Low   01:35    0.8 m
+Low   13:57    0.8 m
+
+07/02/2019
+High  08:09    3.9 m
+High  20:28    3.6 m
+Low   02:06    0.8 m
+Low   14:23    0.8 m
+
+08/02/2019
+High  08:42    3.8 m
+High  20:59    3.5 m
+Low   02:31    0.9 m
+Low   14:49    0.9 m
+
+09/02/2019
+High  09:13    3.7 m
+High  21:29    3.4 m
+Low   02:54    0.9 m
+Low   15:12    0.9 m
+
+10/02/2019
+High  09:41    3.5 m
+High  21:57    3.3 m
+Low   03:17    1.0 m
+Low   15:35    1.0 m
+
+11/02/2019
+High  10:09    3.4 m
+High  22:27    3.1 m
+Low   03:43    1.0 m
+Low   16:03    1.1 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    12 February 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+12/02/2019
+High  10:44    3.2 m
+High  23:10    3.0 m
+Low   04:14    1.1 m
+Low   16:38    1.2 m
+
+13/02/2019
+High  11:35    3.0 m
+Low   04:56    1.2 m
+Low   17:29    1.3 m
+
+14/02/2019
+High  00:09    2.9 m
+High  12:41    2.9 m
+Low   06:00    1.3 m
+Low   18:54    1.3 m
+
+15/02/2019
+High  01:22    2.9 m
+High  14:03    2.9 m
+Low   07:48    1.3 m
+Low   20:33    1.3 m
+
+16/02/2019
+High  02:51    3.1 m
+High  15:35    3.1 m
+Low   09:16    1.2 m
+Low   21:51    1.1 m
+
+17/02/2019
+High  04:12    3.4 m
+High  16:52    3.5 m
+Low   10:31    1.0 m
+Low   23:01    0.9 m
+
+18/02/2019
+High  05:19    3.8 m
+High  17:54    3.8 m
+Low   11:36    0.8 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    19 February 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+19/02/2019
+High  06:17    4.1 m
+High  18:50    4.0 m
+Low   00:02    0.7 m
+Low   12:35    0.6 m
+
+20/02/2019
+High  07:11    4.4 m
+High  19:39    4.2 m
+Low   00:58    0.6 m
+Low   13:28    0.4 m
+
+21/02/2019
+High  07:58    4.5 m
+High  20:25    4.2 m
+Low   01:49    0.5 m
+Low   14:14    0.4 m
+
+22/02/2019
+High  08:42    4.5 m
+High  21:07    4.2 m
+Low   02:31    0.4 m
+Low   14:53    0.4 m
+
+23/02/2019
+High  09:24    4.4 m
+High  21:46    4.0 m
+Low   03:07    0.5 m
+Low   15:29    0.5 m
+
+24/02/2019
+High  10:01    4.1 m
+High  22:20    3.7 m
+Low   03:42    0.6 m
+Low   16:02    0.6 m
+
+25/02/2019
+High  10:37    3.7 m
+High  22:53    3.4 m
+Low   04:15    0.8 m
+Low   16:35    0.9 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    26 February 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+26/02/2019
+High  11:10    3.3 m
+High  23:28    3.1 m
+Low   04:48    1.0 m
+Low   17:09    1.1 m
+
+27/02/2019
+High  11:54    2.9 m
+Low   05:29    1.2 m
+Low   17:53    1.3 m
+
+28/02/2019
+High  00:24    2.8 m
+High  13:18    2.6 m
+Low   06:24    1.4 m
+Low   19:03    1.5 m
+
+01/03/2019
+High  02:01    2.7 m
+High  14:48    2.6 m
+Low   08:02    1.5 m
+Low   20:58    1.5 m
+
+02/03/2019
+High  03:21    2.8 m
+High  15:58    2.8 m
+Low   09:49    1.3 m
+Low   22:19    1.3 m
+
+03/03/2019
+High  04:23    3.1 m
+High  16:55    3.1 m
+Low   10:51    1.2 m
+Low   23:13    1.1 m
+
+04/03/2019
+High  05:14    3.4 m
+High  17:42    3.4 m
+Low   11:39    1.0 m
+Low   23:58    1.0 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    05 March 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+05/03/2019
+High  05:59    3.7 m
+High  18:23    3.6 m
+Low   12:22    0.9 m
+
+06/03/2019
+High  06:39    3.8 m
+High  19:01    3.7 m
+Low   00:37    0.8 m
+Low   13:01    0.8 m
+
+07/03/2019
+High  07:17    3.9 m
+High  19:36    3.7 m
+Low   01:14    0.8 m
+Low   13:35    0.7 m
+
+08/03/2019
+High  07:51    3.9 m
+High  20:08    3.7 m
+Low   01:46    0.8 m
+Low   14:04    0.7 m
+
+09/03/2019
+High  08:23    3.8 m
+High  20:39    3.7 m
+Low   02:12    0.8 m
+Low   14:28    0.8 m
+
+10/03/2019
+High  08:52    3.7 m
+High  21:05    3.6 m
+Low   02:35    0.8 m
+Low   14:50    0.8 m
+
+11/03/2019
+High  09:19    3.6 m
+High  21:30    3.5 m
+Low   02:58    0.8 m
+Low   15:14    0.9 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    12 March 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+12/03/2019
+High  09:44    3.4 m
+High  21:59    3.3 m
+Low   03:23    0.9 m
+Low   15:40    0.9 m
+
+13/03/2019
+High  10:19    3.2 m
+High  22:39    3.1 m
+Low   03:52    1.0 m
+Low   16:13    1.1 m
+
+14/03/2019
+High  11:09    3.0 m
+High  23:39    2.9 m
+Low   04:32    1.1 m
+Low   16:58    1.2 m
+
+15/03/2019
+High  12:18    2.8 m
+Low   05:31    1.3 m
+Low   18:15    1.4 m
+
+16/03/2019
+High  00:54    2.9 m
+High  13:44    2.8 m
+Low   07:20    1.3 m
+Low   20:11    1.3 m
+
+17/03/2019
+High  02:29    3.0 m
+High  15:23    3.1 m
+Low   09:00    1.2 m
+Low   21:36    1.1 m
+
+18/03/2019
+High  03:54    3.4 m
+High  16:39    3.4 m
+Low   10:17    0.9 m
+Low   22:46    0.9 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    19 March 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+19/03/2019
+High  05:01    3.8 m
+High  17:38    3.8 m
+Low   11:20    0.7 m
+Low   23:46    0.7 m
+
+20/03/2019
+High  05:58    4.1 m
+High  18:32    4.0 m
+Low   12:17    0.5 m
+
+21/03/2019
+High  06:51    4.4 m
+High  19:20    4.2 m
+Low   00:39    0.5 m
+Low   13:08    0.4 m
+
+22/03/2019
+High  07:38    4.4 m
+High  20:03    4.2 m
+Low   01:29    0.4 m
+Low   13:55    0.3 m
+
+23/03/2019
+High  08:21    4.4 m
+High  20:43    4.2 m
+Low   02:12    0.4 m
+Low   14:33    0.4 m
+
+24/03/2019
+High  09:00    4.3 m
+High  21:19    4.0 m
+Low   02:48    0.4 m
+Low   15:07    0.5 m
+
+25/03/2019
+High  09:36    4.0 m
+High  21:48    3.8 m
+Low   03:20    0.6 m
+Low   15:38    0.7 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    26 March 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+26/03/2019
+High  10:06    3.6 m
+High  22:13    3.5 m
+Low   03:51    0.8 m
+Low   16:08    0.9 m
+
+27/03/2019
+High  10:33    3.2 m
+High  22:40    3.1 m
+Low   04:22    1.0 m
+Low   16:38    1.1 m
+
+28/03/2019
+High  11:06    2.8 m
+High  23:23    2.8 m
+Low   04:58    1.2 m
+Low   17:18    1.3 m
+
+29/03/2019
+High  12:07    2.5 m
+Low   05:48    1.4 m
+Low   18:16    1.5 m
+
+30/03/2019
+High  00:45    2.6 m
+High  14:12    2.4 m
+Low   07:07    1.5 m
+Low   19:53    1.5 m
+
+31/03/2019
+High  02:42    2.7 m
+High  15:26    2.7 m
+Low   09:11    1.4 m
+Low   21:42    1.4 m
+
+01/04/2019
+High  03:49    3.0 m
+High  16:24    3.0 m
+Low   10:18    1.2 m
+Low   22:38    1.2 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    02 April 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+02/04/2019
+High  04:42    3.3 m
+High  17:12    3.3 m
+Low   11:06    1.0 m
+Low   23:24    1.0 m
+
+03/04/2019
+High  05:28    3.6 m
+High  17:54    3.5 m
+Low   11:49    0.9 m
+
+04/04/2019
+High  06:10    3.7 m
+High  18:35    3.7 m
+Low   00:05    0.9 m
+Low   12:28    0.8 m
+
+05/04/2019
+High  06:51    3.8 m
+High  19:12    3.8 m
+Low   00:43    0.8 m
+Low   13:03    0.7 m
+
+06/04/2019
+High  07:27    3.9 m
+High  19:44    3.8 m
+Low   01:16    0.7 m
+Low   13:35    0.7 m
+
+07/04/2019
+High  08:00    3.9 m
+High  20:15    3.8 m
+Low   01:48    0.7 m
+Low   14:05    0.7 m
+
+08/04/2019
+High  08:30    3.8 m
+High  20:41    3.7 m
+Low   02:15    0.7 m
+Low   14:31    0.7 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    09 April 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+09/04/2019
+High  08:59    3.7 m
+High  21:09    3.6 m
+Low   02:40    0.8 m
+Low   14:56    0.8 m
+
+10/04/2019
+High  09:29    3.5 m
+High  21:41    3.5 m
+Low   03:07    0.8 m
+Low   15:25    0.9 m
+
+11/04/2019
+High  10:07    3.3 m
+High  22:24    3.3 m
+Low   03:40    1.0 m
+Low   15:59    1.1 m
+
+12/04/2019
+High  10:59    3.0 m
+High  23:21    3.1 m
+Low   04:21    1.1 m
+Low   16:46    1.2 m
+
+13/04/2019
+High  12:05    2.8 m
+Low   05:22    1.3 m
+Low   18:03    1.4 m
+
+14/04/2019
+High  00:37    2.9 m
+High  13:36    2.8 m
+Low   07:06    1.3 m
+Low   19:54    1.3 m
+
+15/04/2019
+High  02:12    3.1 m
+High  15:11    3.1 m
+Low   08:45    1.1 m
+Low   21:19    1.1 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    16 April 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+16/04/2019
+High  03:36    3.5 m
+High  16:21    3.5 m
+Low   09:58    0.9 m
+Low   22:26    0.9 m
+
+17/04/2019
+High  04:40    3.8 m
+High  17:18    3.8 m
+Low   10:59    0.7 m
+Low   23:23    0.7 m
+
+18/04/2019
+High  05:36    4.1 m
+High  18:09    4.0 m
+Low   11:53    0.5 m
+
+19/04/2019
+High  06:28    4.3 m
+High  18:57    4.2 m
+Low   00:16    0.5 m
+Low   12:44    0.4 m
+
+20/04/2019
+High  07:16    4.3 m
+High  19:39    4.2 m
+Low   01:04    0.5 m
+Low   13:30    0.4 m
+
+21/04/2019
+High  07:57    4.2 m
+High  20:16    4.1 m
+Low   01:49    0.4 m
+Low   14:10    0.5 m
+
+22/04/2019
+High  08:35    4.1 m
+High  20:48    4.0 m
+Low   02:25    0.5 m
+Low   14:43    0.6 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    23 April 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+23/04/2019
+High  09:08    3.8 m
+High  21:15    3.8 m
+Low   02:58    0.6 m
+Low   15:14    0.7 m
+
+24/04/2019
+High  09:36    3.5 m
+High  21:39    3.5 m
+Low   03:28    0.8 m
+Low   15:43    0.9 m
+
+25/04/2019
+High  10:02    3.2 m
+High  22:09    3.2 m
+Low   03:59    1.0 m
+Low   16:12    1.1 m
+
+26/04/2019
+High  10:38    2.8 m
+High  22:51    3.0 m
+Low   04:33    1.2 m
+Low   16:49    1.3 m
+
+27/04/2019
+High  11:29    2.6 m
+High  23:50    2.7 m
+Low   05:19    1.4 m
+Low   17:43    1.5 m
+
+28/04/2019
+High  13:17    2.4 m
+Low   06:23    1.5 m
+Low   19:00    1.5 m
+
+29/04/2019
+High  01:41    2.7 m
+High  14:42    2.6 m
+Low   07:57    1.4 m
+Low   20:33    1.4 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    30 April 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+30/04/2019
+High  03:02    2.9 m
+High  15:42    2.9 m
+Low   09:19    1.3 m
+Low   21:44    1.2 m
+
+01/05/2019
+High  03:58    3.2 m
+High  16:32    3.2 m
+Low   10:15    1.1 m
+Low   22:36    1.1 m
+
+02/05/2019
+High  04:48    3.4 m
+High  17:17    3.5 m
+Low   11:02    0.9 m
+Low   23:21    0.9 m
+
+03/05/2019
+High  05:34    3.6 m
+High  18:01    3.6 m
+Low   11:44    0.8 m
+
+04/05/2019
+High  06:19    3.7 m
+High  18:41    3.8 m
+Low   00:03    0.8 m
+Low   12:24    0.7 m
+
+05/05/2019
+High  07:00    3.8 m
+High  19:18    3.8 m
+Low   00:43    0.8 m
+Low   13:03    0.7 m
+
+06/05/2019
+High  07:37    3.8 m
+High  19:51    3.9 m
+Low   01:20    0.7 m
+Low   13:41    0.7 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    07 May 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+07/05/2019
+High  08:11    3.8 m
+High  20:23    3.9 m
+Low   01:57    0.7 m
+Low   14:13    0.7 m
+
+08/05/2019
+High  08:45    3.7 m
+High  20:56    3.8 m
+Low   02:28    0.7 m
+Low   14:44    0.8 m
+
+09/05/2019
+High  09:22    3.5 m
+High  21:34    3.6 m
+Low   03:00    0.8 m
+Low   15:17    0.9 m
+
+10/05/2019
+High  10:04    3.3 m
+High  22:19    3.5 m
+Low   03:37    0.9 m
+Low   15:56    1.0 m
+
+11/05/2019
+High  10:56    3.1 m
+High  23:13    3.2 m
+Low   04:22    1.1 m
+Low   16:46    1.2 m
+
+12/05/2019
+High  12:00    2.9 m
+Low   05:24    1.2 m
+Low   17:58    1.3 m
+
+13/05/2019
+High  00:24    3.1 m
+High  13:26    2.9 m
+Low   06:51    1.2 m
+Low   19:32    1.3 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    14 May 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+14/05/2019
+High  01:52    3.2 m
+High  14:49    3.2 m
+Low   08:20    1.1 m
+Low   20:53    1.1 m
+
+15/05/2019
+High  03:10    3.4 m
+High  15:55    3.4 m
+Low   09:31    0.9 m
+Low   21:59    0.9 m
+
+16/05/2019
+High  04:14    3.7 m
+High  16:52    3.7 m
+Low   10:32    0.8 m
+Low   22:57    0.8 m
+
+17/05/2019
+High  05:11    3.9 m
+High  17:43    3.9 m
+Low   11:27    0.6 m
+Low   23:50    0.7 m
+
+18/05/2019
+High  06:03    4.0 m
+High  18:31    4.0 m
+Low   12:17    0.6 m
+
+19/05/2019
+High  06:51    4.0 m
+High  19:12    4.1 m
+Low   00:38    0.6 m
+Low   13:04    0.6 m
+
+20/05/2019
+High  07:33    4.0 m
+High  19:48    4.0 m
+Low   01:23    0.6 m
+Low   13:47    0.6 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    21 May 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+21/05/2019
+High  08:09    3.8 m
+High  20:19    3.9 m
+Low   02:04    0.6 m
+Low   14:21    0.7 m
+
+22/05/2019
+High  08:41    3.6 m
+High  20:46    3.7 m
+Low   02:37    0.7 m
+Low   14:51    0.8 m
+
+23/05/2019
+High  09:10    3.4 m
+High  21:15    3.6 m
+Low   03:07    0.9 m
+Low   15:21    1.0 m
+
+24/05/2019
+High  09:41    3.1 m
+High  21:48    3.3 m
+Low   03:39    1.0 m
+Low   15:52    1.1 m
+
+25/05/2019
+High  10:19    2.9 m
+High  22:29    3.1 m
+Low   04:12    1.2 m
+Low   16:26    1.3 m
+
+26/05/2019
+High  11:06    2.7 m
+High  23:19    2.9 m
+Low   04:53    1.3 m
+Low   17:12    1.4 m
+
+27/05/2019
+High  12:11    2.6 m
+Low   05:47    1.4 m
+Low   18:13    1.5 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    28 May 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+28/05/2019
+High  00:27    2.8 m
+High  13:34    2.7 m
+Low   06:54    1.4 m
+Low   19:28    1.4 m
+
+29/05/2019
+High  01:51    2.9 m
+High  14:44    2.9 m
+Low   08:07    1.3 m
+Low   20:37    1.3 m
+
+30/05/2019
+High  03:02    3.1 m
+High  15:41    3.1 m
+Low   09:09    1.1 m
+Low   21:37    1.2 m
+
+31/05/2019
+High  03:59    3.3 m
+High  16:33    3.3 m
+Low   10:05    1.0 m
+Low   22:31    1.0 m
+
+01/06/2019
+High  04:53    3.4 m
+High  17:21    3.5 m
+Low   10:57    0.9 m
+Low   23:21    0.9 m
+
+02/06/2019
+High  05:43    3.6 m
+High  18:08    3.7 m
+Low   11:46    0.8 m
+
+03/06/2019
+High  06:31    3.7 m
+High  18:52    3.8 m
+Low   00:09    0.8 m
+Low   12:33    0.8 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    04 June 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+04/06/2019
+High  07:16    3.8 m
+High  19:32    3.9 m
+Low   00:56    0.7 m
+Low   13:18    0.7 m
+
+05/06/2019
+High  07:57    3.8 m
+High  20:10    4.0 m
+Low   01:41    0.7 m
+Low   14:02    0.7 m
+
+06/06/2019
+High  08:38    3.8 m
+High  20:50    3.9 m
+Low   02:21    0.7 m
+Low   14:39    0.8 m
+
+07/06/2019
+High  09:20    3.6 m
+High  21:31    3.8 m
+Low   02:59    0.7 m
+Low   15:17    0.8 m
+
+08/06/2019
+High  10:05    3.5 m
+High  22:17    3.7 m
+Low   03:41    0.8 m
+Low   15:59    0.9 m
+
+09/06/2019
+High  10:55    3.3 m
+High  23:08    3.5 m
+Low   04:27    0.9 m
+Low   16:46    1.1 m
+
+10/06/2019
+High  11:54    3.1 m
+Low   05:20    1.0 m
+Low   17:45    1.2 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    11 June 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+11/06/2019
+High  00:11    3.3 m
+High  13:04    3.1 m
+Low   06:26    1.1 m
+Low   19:00    1.2 m
+
+12/06/2019
+High  01:25    3.3 m
+High  14:16    3.2 m
+Low   07:47    1.1 m
+Low   20:18    1.1 m
+
+13/06/2019
+High  02:39    3.3 m
+High  15:23    3.3 m
+Low   08:59    1.0 m
+Low   21:28    1.0 m
+
+14/06/2019
+High  03:45    3.5 m
+High  16:23    3.5 m
+Low   10:02    0.9 m
+Low   22:29    0.9 m
+
+15/06/2019
+High  04:45    3.6 m
+High  17:16    3.7 m
+Low   11:00    0.8 m
+Low   23:24    0.8 m
+
+16/06/2019
+High  05:38    3.7 m
+High  18:04    3.8 m
+Low   11:52    0.8 m
+
+17/06/2019
+High  06:26    3.7 m
+High  18:48    3.9 m
+Low   00:15    0.8 m
+Low   12:39    0.7 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    18 June 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+18/06/2019
+High  07:10    3.7 m
+High  19:24    3.9 m
+Low   01:01    0.7 m
+Low   13:23    0.8 m
+
+19/06/2019
+High  07:46    3.6 m
+High  19:56    3.8 m
+Low   01:45    0.8 m
+Low   14:02    0.8 m
+
+20/06/2019
+High  08:19    3.5 m
+High  20:26    3.7 m
+Low   02:20    0.8 m
+Low   14:33    0.9 m
+
+21/06/2019
+High  08:52    3.4 m
+High  20:59    3.6 m
+Low   02:51    0.9 m
+Low   15:03    1.0 m
+
+22/06/2019
+High  09:26    3.2 m
+High  21:33    3.5 m
+Low   03:21    1.0 m
+Low   15:33    1.1 m
+
+23/06/2019
+High  10:02    3.1 m
+High  22:11    3.3 m
+Low   03:52    1.1 m
+Low   16:03    1.2 m
+
+24/06/2019
+High  10:44    2.9 m
+High  22:54    3.1 m
+Low   04:26    1.2 m
+Low   16:38    1.3 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    25 June 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+25/06/2019
+High  11:32    2.8 m
+High  23:42    3.0 m
+Low   05:06    1.3 m
+Low   17:25    1.4 m
+
+26/06/2019
+High  12:28    2.8 m
+Low   05:59    1.3 m
+Low   18:26    1.4 m
+
+27/06/2019
+High  00:42    2.9 m
+High  13:33    2.8 m
+Low   07:05    1.3 m
+Low   19:37    1.3 m
+
+28/06/2019
+High  01:50    3.0 m
+High  14:40    3.0 m
+Low   08:13    1.2 m
+Low   20:44    1.2 m
+
+29/06/2019
+High  03:02    3.1 m
+High  15:43    3.2 m
+Low   09:15    1.1 m
+Low   21:46    1.1 m
+
+30/06/2019
+High  04:07    3.3 m
+High  16:42    3.4 m
+Low   10:15    1.0 m
+Low   22:45    1.0 m
+
+01/07/2019
+High  05:08    3.4 m
+High  17:36    3.6 m
+Low   11:13    0.9 m
+Low   23:42    0.9 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    02 July 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+02/07/2019
+High  06:04    3.6 m
+High  18:28    3.9 m
+Low   12:07    0.8 m
+
+03/07/2019
+High  06:57    3.7 m
+High  19:15    4.0 m
+Low   00:35    0.8 m
+Low   13:01    0.7 m
+
+04/07/2019
+High  07:44    3.8 m
+High  19:59    4.1 m
+Low   01:28    0.7 m
+Low   13:52    0.7 m
+
+05/07/2019
+High  08:31    3.9 m
+High  20:44    4.1 m
+Low   02:15    0.6 m
+Low   14:34    0.7 m
+
+06/07/2019
+High  09:17    3.8 m
+High  21:28    4.1 m
+Low   02:58    0.6 m
+Low   15:16    0.7 m
+
+07/07/2019
+High  10:01    3.7 m
+High  22:12    4.0 m
+Low   03:40    0.7 m
+Low   15:56    0.8 m
+
+08/07/2019
+High  10:47    3.6 m
+High  22:59    3.7 m
+Low   04:21    0.8 m
+Low   16:38    0.9 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    09 July 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+09/07/2019
+High  11:37    3.4 m
+High  23:50    3.5 m
+Low   05:05    0.9 m
+Low   17:24    1.0 m
+
+10/07/2019
+High  12:35    3.2 m
+Low   05:57    1.0 m
+Low   18:20    1.1 m
+
+11/07/2019
+High  00:54    3.3 m
+High  13:39    3.1 m
+Low   07:03    1.1 m
+Low   19:36    1.2 m
+
+12/07/2019
+High  02:05    3.2 m
+High  14:49    3.1 m
+Low   08:20    1.1 m
+Low   20:53    1.2 m
+
+13/07/2019
+High  03:17    3.2 m
+High  15:54    3.3 m
+Low   09:33    1.1 m
+Low   22:03    1.1 m
+
+14/07/2019
+High  04:21    3.3 m
+High  16:52    3.5 m
+Low   10:36    1.0 m
+Low   23:04    1.0 m
+
+15/07/2019
+High  05:17    3.4 m
+High  17:42    3.6 m
+Low   11:32    0.9 m
+Low   23:57    0.9 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    16 July 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+16/07/2019
+High  06:06    3.5 m
+High  18:25    3.8 m
+Low   12:21    0.9 m
+
+17/07/2019
+High  06:50    3.6 m
+High  19:04    3.8 m
+Low   00:45    0.8 m
+Low   13:05    0.8 m
+
+18/07/2019
+High  07:27    3.6 m
+High  19:38    3.8 m
+Low   01:28    0.8 m
+Low   13:46    0.8 m
+
+19/07/2019
+High  08:01    3.5 m
+High  20:10    3.8 m
+Low   02:05    0.8 m
+Low   14:18    0.9 m
+
+20/07/2019
+High  08:36    3.4 m
+High  20:43    3.7 m
+Low   02:36    0.9 m
+Low   14:47    0.9 m
+
+21/07/2019
+High  09:09    3.3 m
+High  21:18    3.6 m
+Low   03:03    0.9 m
+Low   15:13    1.0 m
+
+22/07/2019
+High  09:43    3.2 m
+High  21:51    3.4 m
+Low   03:30    1.0 m
+Low   15:37    1.1 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    23 July 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+23/07/2019
+High  10:18    3.1 m
+High  22:25    3.3 m
+Low   03:56    1.1 m
+Low   16:03    1.2 m
+
+24/07/2019
+High  10:55    3.0 m
+High  23:02    3.1 m
+Low   04:24    1.1 m
+Low   16:34    1.2 m
+
+25/07/2019
+High  11:38    2.9 m
+High  23:49    3.0 m
+Low   05:02    1.2 m
+Low   17:19    1.3 m
+
+26/07/2019
+High  12:32    2.8 m
+Low   05:57    1.3 m
+Low   18:29    1.4 m
+
+27/07/2019
+High  00:49    2.9 m
+High  13:38    2.9 m
+Low   07:16    1.3 m
+Low   19:57    1.3 m
+
+28/07/2019
+High  02:03    3.0 m
+High  14:55    3.1 m
+Low   08:33    1.2 m
+Low   21:09    1.2 m
+
+29/07/2019
+High  03:26    3.1 m
+High  16:07    3.3 m
+Low   09:42    1.1 m
+Low   22:17    1.0 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    30 July 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+30/07/2019
+High  04:39    3.3 m
+High  17:10    3.6 m
+Low   10:47    1.0 m
+Low   23:20    0.9 m
+
+31/07/2019
+High  05:43    3.6 m
+High  18:07    3.9 m
+Low   11:49    0.8 m
+
+01/08/2019
+High  06:40    3.8 m
+High  19:00    4.1 m
+Low   00:20    0.7 m
+Low   12:47    0.7 m
+
+02/08/2019
+High  07:32    3.9 m
+High  19:48    4.3 m
+Low   01:16    0.6 m
+Low   13:41    0.6 m
+
+03/08/2019
+High  08:19    4.0 m
+High  20:34    4.4 m
+Low   02:06    0.5 m
+Low   14:25    0.6 m
+
+04/08/2019
+High  09:05    4.0 m
+High  21:18    4.3 m
+Low   02:49    0.5 m
+Low   15:06    0.6 m
+
+05/08/2019
+High  09:48    4.0 m
+High  21:59    4.2 m
+Low   03:28    0.5 m
+Low   15:43    0.6 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    06 August 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+06/08/2019
+High  10:29    3.8 m
+High  22:40    3.9 m
+Low   04:06    0.6 m
+Low   16:20    0.8 m
+
+07/08/2019
+High  11:11    3.5 m
+High  23:23    3.5 m
+Low   04:44    0.8 m
+Low   16:59    0.9 m
+
+08/08/2019
+High  11:59    3.2 m
+Low   05:24    1.0 m
+Low   17:45    1.1 m
+
+09/08/2019
+High  00:18    3.2 m
+High  13:01    3.0 m
+Low   06:15    1.2 m
+Low   18:48    1.3 m
+
+10/08/2019
+High  01:30    2.9 m
+High  14:15    2.9 m
+Low   07:34    1.3 m
+Low   20:19    1.3 m
+
+11/08/2019
+High  02:50    2.9 m
+High  15:27    3.0 m
+Low   09:06    1.3 m
+Low   21:44    1.3 m
+
+12/08/2019
+High  04:00    3.0 m
+High  16:29    3.3 m
+Low   10:19    1.2 m
+Low   22:49    1.1 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    13 August 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+13/08/2019
+High  04:59    3.2 m
+High  17:20    3.5 m
+Low   11:16    1.1 m
+Low   23:42    1.0 m
+
+14/08/2019
+High  05:47    3.4 m
+High  18:04    3.7 m
+Low   12:04    0.9 m
+
+15/08/2019
+High  06:30    3.5 m
+High  18:44    3.8 m
+Low   00:28    0.9 m
+Low   12:48    0.9 m
+
+16/08/2019
+High  07:08    3.6 m
+High  19:19    3.9 m
+Low   01:09    0.8 m
+Low   13:27    0.8 m
+
+17/08/2019
+High  07:42    3.6 m
+High  19:53    3.9 m
+Low   01:48    0.8 m
+Low   14:01    0.8 m
+
+18/08/2019
+High  08:16    3.6 m
+High  20:26    3.8 m
+Low   02:17    0.8 m
+Low   14:27    0.9 m
+
+19/08/2019
+High  08:48    3.5 m
+High  20:58    3.7 m
+Low   02:41    0.9 m
+Low   14:49    0.9 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    20 August 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+20/08/2019
+High  09:19    3.4 m
+High  21:26    3.6 m
+Low   03:03    0.9 m
+Low   15:10    1.0 m
+
+21/08/2019
+High  09:48    3.3 m
+High  21:54    3.4 m
+Low   03:25    1.0 m
+Low   15:31    1.1 m
+
+22/08/2019
+High  10:18    3.1 m
+High  22:25    3.2 m
+Low   03:48    1.1 m
+Low   15:58    1.1 m
+
+23/08/2019
+High  10:54    3.0 m
+High  23:08    3.0 m
+Low   04:18    1.2 m
+Low   16:34    1.2 m
+
+24/08/2019
+High  11:45    2.9 m
+Low   05:00    1.3 m
+Low   17:28    1.4 m
+
+25/08/2019
+High  00:08    2.9 m
+High  12:54    2.8 m
+Low   06:11    1.4 m
+Low   19:12    1.4 m
+
+26/08/2019
+High  01:24    2.8 m
+High  14:17    3.0 m
+Low   07:59    1.3 m
+Low   20:44    1.3 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    27 August 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+27/08/2019
+High  03:00    3.0 m
+High  15:42    3.3 m
+Low   09:20    1.2 m
+Low   21:59    1.1 m
+
+28/08/2019
+High  04:22    3.3 m
+High  16:49    3.7 m
+Low   10:31    1.0 m
+Low   23:05    0.9 m
+
+29/08/2019
+High  05:27    3.6 m
+High  17:48    4.1 m
+Low   11:33    0.8 m
+
+30/08/2019
+High  06:23    3.9 m
+High  18:41    4.3 m
+Low   00:04    0.7 m
+Low   12:31    0.6 m
+
+31/08/2019
+High  07:15    4.1 m
+High  19:31    4.5 m
+Low   00:59    0.5 m
+Low   13:23    0.5 m
+
+01/09/2019
+High  08:01    4.2 m
+High  20:16    4.5 m
+Low   01:51    0.4 m
+Low   14:10    0.5 m
+
+02/09/2019
+High  08:45    4.2 m
+High  20:59    4.4 m
+Low   02:32    0.4 m
+Low   14:49    0.5 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    03 September 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+03/09/2019
+High  09:26    4.1 m
+High  21:39    4.2 m
+Low   03:09    0.5 m
+Low   15:25    0.6 m
+
+04/09/2019
+High  10:04    3.9 m
+High  22:17    3.9 m
+Low   03:44    0.6 m
+Low   15:59    0.7 m
+
+05/09/2019
+High  10:39    3.6 m
+High  22:53    3.5 m
+Low   04:18    0.8 m
+Low   16:33    0.9 m
+
+06/09/2019
+High  11:18    3.2 m
+High  23:34    3.0 m
+Low   04:53    1.1 m
+Low   17:13    1.2 m
+
+07/09/2019
+High  12:11    2.9 m
+Low   05:35    1.3 m
+Low   18:06    1.4 m
+
+08/09/2019
+High  00:53    2.7 m
+High  13:40    2.7 m
+Low   06:41    1.5 m
+Low   19:42    1.5 m
+
+09/09/2019
+High  02:26    2.6 m
+High  15:01    2.9 m
+Low   08:42    1.5 m
+Low   21:29    1.4 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    10 September 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+10/09/2019
+High  03:40    2.8 m
+High  16:06    3.2 m
+Low   10:02    1.3 m
+Low   22:32    1.2 m
+
+11/09/2019
+High  04:39    3.1 m
+High  16:58    3.5 m
+Low   10:57    1.1 m
+Low   23:21    1.0 m
+
+12/09/2019
+High  05:26    3.4 m
+High  17:42    3.7 m
+Low   11:43    1.0 m
+
+13/09/2019
+High  06:07    3.6 m
+High  18:20    3.9 m
+Low   00:05    0.9 m
+Low   12:24    0.9 m
+
+14/09/2019
+High  06:46    3.7 m
+High  18:58    4.0 m
+Low   00:45    0.8 m
+Low   13:02    0.8 m
+
+15/09/2019
+High  07:20    3.8 m
+High  19:32    4.0 m
+Low   01:20    0.8 m
+Low   13:34    0.8 m
+
+16/09/2019
+High  07:52    3.8 m
+High  20:03    3.9 m
+Low   01:51    0.8 m
+Low   14:02    0.8 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    17 September 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+17/09/2019
+High  08:23    3.7 m
+High  20:34    3.8 m
+Low   02:14    0.8 m
+Low   14:23    0.9 m
+
+18/09/2019
+High  08:52    3.6 m
+High  21:00    3.7 m
+Low   02:36    0.9 m
+Low   14:44    0.9 m
+
+19/09/2019
+High  09:18    3.5 m
+High  21:25    3.5 m
+Low   02:57    0.9 m
+Low   15:06    1.0 m
+
+20/09/2019
+High  09:44    3.3 m
+High  21:56    3.3 m
+Low   03:20    1.0 m
+Low   15:32    1.1 m
+
+21/09/2019
+High  10:20    3.2 m
+High  22:40    3.0 m
+Low   03:49    1.1 m
+Low   16:06    1.2 m
+
+22/09/2019
+High  11:14    3.0 m
+High  23:43    2.8 m
+Low   04:28    1.3 m
+Low   16:56    1.4 m
+
+23/09/2019
+High  12:23    2.9 m
+Low   05:31    1.4 m
+Low   18:39    1.5 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    24 September 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+24/09/2019
+High  01:03    2.8 m
+High  13:50    3.0 m
+Low   07:35    1.4 m
+Low   20:28    1.3 m
+
+25/09/2019
+High  02:48    3.0 m
+High  15:23    3.4 m
+Low   09:05    1.2 m
+Low   21:44    1.1 m
+
+26/09/2019
+High  04:09    3.4 m
+High  16:31    3.8 m
+Low   10:15    1.0 m
+Low   22:48    0.8 m
+
+27/09/2019
+High  05:10    3.8 m
+High  17:28    4.2 m
+Low   11:16    0.8 m
+Low   23:45    0.6 m
+
+28/09/2019
+High  06:03    4.1 m
+High  18:20    4.4 m
+Low   12:11    0.6 m
+
+29/09/2019
+High  06:54    4.3 m
+High  19:10    4.5 m
+Low   00:38    0.5 m
+Low   13:02    0.5 m
+
+30/09/2019
+High  07:39    4.3 m
+High  19:55    4.5 m
+Low   01:28    0.4 m
+Low   13:49    0.4 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    01 October 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+01/10/2019
+High  08:20    4.3 m
+High  20:36    4.4 m
+Low   02:11    0.4 m
+Low   14:27    0.5 m
+
+02/10/2019
+High  08:59    4.2 m
+High  21:15    4.2 m
+Low   02:47    0.5 m
+Low   15:02    0.6 m
+
+03/10/2019
+High  09:35    4.0 m
+High  21:49    3.8 m
+Low   03:20    0.7 m
+Low   15:34    0.8 m
+
+04/10/2019
+High  10:05    3.6 m
+High  22:19    3.4 m
+Low   03:51    0.9 m
+Low   16:08    1.0 m
+
+05/10/2019
+High  10:34    3.3 m
+High  22:52    3.0 m
+Low   04:23    1.1 m
+Low   16:44    1.2 m
+
+06/10/2019
+High  11:13    3.0 m
+High  23:48    2.6 m
+Low   05:01    1.4 m
+Low   17:32    1.5 m
+
+07/10/2019
+High  12:45    2.7 m
+Low   05:58    1.6 m
+Low   18:54    1.6 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    08 October 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+08/10/2019
+High  01:58    2.5 m
+High  14:29    2.8 m
+Low   07:56    1.6 m
+Low   21:01    1.5 m
+
+09/10/2019
+High  03:12    2.7 m
+High  15:35    3.1 m
+Low   09:32    1.4 m
+Low   22:03    1.3 m
+
+10/10/2019
+High  04:10    3.1 m
+High  16:27    3.4 m
+Low   10:26    1.2 m
+Low   22:50    1.1 m
+
+11/10/2019
+High  04:57    3.4 m
+High  17:12    3.7 m
+Low   11:11    1.1 m
+Low   23:32    0.9 m
+
+12/10/2019
+High  05:38    3.6 m
+High  17:52    3.9 m
+Low   11:51    0.9 m
+
+13/10/2019
+High  06:17    3.8 m
+High  18:31    4.0 m
+Low   00:11    0.8 m
+Low   12:29    0.8 m
+
+14/10/2019
+High  06:54    3.9 m
+High  19:07    4.0 m
+Low   00:45    0.8 m
+Low   13:02    0.8 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    15 October 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+15/10/2019
+High  07:27    3.9 m
+High  19:40    4.0 m
+Low   01:16    0.8 m
+Low   13:32    0.8 m
+
+16/10/2019
+High  07:58    3.9 m
+High  20:10    3.9 m
+Low   01:46    0.8 m
+Low   13:59    0.8 m
+
+17/10/2019
+High  08:25    3.8 m
+High  20:38    3.7 m
+Low   02:11    0.8 m
+Low   14:22    0.9 m
+
+18/10/2019
+High  08:52    3.7 m
+High  21:05    3.6 m
+Low   02:34    0.9 m
+Low   14:47    1.0 m
+
+19/10/2019
+High  09:22    3.5 m
+High  21:40    3.3 m
+Low   03:00    1.0 m
+Low   15:16    1.1 m
+
+20/10/2019
+High  10:01    3.3 m
+High  22:28    3.1 m
+Low   03:31    1.1 m
+Low   15:52    1.2 m
+
+21/10/2019
+High  10:55    3.1 m
+High  23:30    2.9 m
+Low   04:11    1.3 m
+Low   16:45    1.4 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    22 October 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+22/10/2019
+High  12:03    3.0 m
+Low   05:16    1.5 m
+Low   18:22    1.4 m
+
+23/10/2019
+High  00:51    2.8 m
+High  13:30    3.1 m
+Low   07:15    1.5 m
+Low   20:09    1.3 m
+
+24/10/2019
+High  02:35    3.1 m
+High  15:02    3.5 m
+Low   08:46    1.3 m
+Low   21:24    1.1 m
+
+25/10/2019
+High  03:50    3.5 m
+High  16:09    3.8 m
+Low   09:54    1.0 m
+Low   22:26    0.8 m
+
+26/10/2019
+High  04:48    3.8 m
+High  17:05    4.2 m
+Low   10:52    0.8 m
+Low   23:21    0.6 m
+
+27/10/2019
+High  05:41    4.1 m
+High  17:58    4.4 m
+Low   11:46    0.7 m
+
+28/10/2019
+High  06:30    4.3 m
+High  18:47    4.4 m
+Low   00:13    0.5 m
+Low   12:36    0.6 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    29 October 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+29/10/2019
+High  07:15    4.4 m
+High  19:32    4.4 m
+Low   01:01    0.5 m
+Low   13:23    0.5 m
+
+30/10/2019
+High  07:55    4.3 m
+High  20:12    4.3 m
+Low   01:46    0.5 m
+Low   14:05    0.6 m
+
+31/10/2019
+High  08:32    4.2 m
+High  20:49    4.0 m
+Low   02:23    0.6 m
+Low   14:40    0.7 m
+
+01/11/2019
+High  09:04    4.0 m
+High  21:20    3.7 m
+Low   02:56    0.8 m
+Low   15:13    0.8 m
+
+02/11/2019
+High  09:32    3.7 m
+High  21:50    3.3 m
+Low   03:26    1.0 m
+Low   15:45    1.0 m
+
+03/11/2019
+High  10:01    3.4 m
+High  22:22    3.0 m
+Low   03:57    1.2 m
+Low   16:19    1.3 m
+
+04/11/2019
+High  10:39    3.1 m
+High  23:10    2.7 m
+Low   04:34    1.4 m
+Low   17:04    1.4 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    05 November 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+05/11/2019
+High  11:37    2.9 m
+Low   05:23    1.6 m
+Low   18:07    1.6 m
+
+06/11/2019
+High  01:04    2.5 m
+High  13:31    2.8 m
+Low   06:42    1.6 m
+Low   19:53    1.5 m
+
+07/11/2019
+High  02:29    2.7 m
+High  14:49    3.0 m
+Low   08:31    1.5 m
+Low   21:13    1.4 m
+
+08/11/2019
+High  03:28    3.0 m
+High  15:44    3.3 m
+Low   09:37    1.3 m
+Low   22:04    1.2 m
+
+09/11/2019
+High  04:17    3.3 m
+High  16:32    3.5 m
+Low   10:26    1.2 m
+Low   22:47    1.0 m
+
+10/11/2019
+High  05:02    3.6 m
+High  17:17    3.7 m
+Low   11:08    1.0 m
+Low   23:28    0.9 m
+
+11/11/2019
+High  05:44    3.8 m
+High  17:59    3.9 m
+Low   11:48    0.9 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    12 November 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+12/11/2019
+High  06:23    3.9 m
+High  18:40    3.9 m
+Low   00:05    0.9 m
+Low   12:26    0.9 m
+
+13/11/2019
+High  07:01    4.0 m
+High  19:17    3.9 m
+Low   00:42    0.8 m
+Low   13:02    0.8 m
+
+14/11/2019
+High  07:35    4.0 m
+High  19:50    3.9 m
+Low   01:17    0.8 m
+Low   13:36    0.8 m
+
+15/11/2019
+High  08:06    3.9 m
+High  20:22    3.8 m
+Low   01:51    0.8 m
+Low   14:08    0.9 m
+
+16/11/2019
+High  08:38    3.9 m
+High  20:56    3.6 m
+Low   02:21    0.9 m
+Low   14:39    0.9 m
+
+17/11/2019
+High  09:12    3.7 m
+High  21:36    3.4 m
+Low   02:51    1.0 m
+Low   15:12    1.0 m
+
+18/11/2019
+High  09:55    3.6 m
+High  22:23    3.2 m
+Low   03:26    1.1 m
+Low   15:52    1.2 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    19 November 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+19/11/2019
+High  10:45    3.4 m
+High  23:21    3.0 m
+Low   04:10    1.3 m
+Low   16:46    1.3 m
+
+20/11/2019
+High  11:48    3.2 m
+Low   05:12    1.4 m
+Low   18:05    1.3 m
+
+21/11/2019
+High  00:38    3.0 m
+High  13:08    3.3 m
+Low   06:44    1.4 m
+Low   19:41    1.3 m
+
+22/11/2019
+High  02:06    3.1 m
+High  14:32    3.5 m
+Low   08:16    1.3 m
+Low   20:56    1.1 m
+
+23/11/2019
+High  03:20    3.4 m
+High  15:41    3.7 m
+Low   09:26    1.1 m
+Low   21:59    0.9 m
+
+24/11/2019
+High  04:21    3.7 m
+High  16:41    4.0 m
+Low   10:27    0.9 m
+Low   22:56    0.8 m
+
+25/11/2019
+High  05:15    4.0 m
+High  17:34    4.1 m
+Low   11:21    0.8 m
+Low   23:48    0.7 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    26 November 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+26/11/2019
+High  06:05    4.2 m
+High  18:24    4.2 m
+Low   12:13    0.7 m
+
+27/11/2019
+High  06:51    4.2 m
+High  19:10    4.2 m
+Low   00:36    0.7 m
+Low   13:00    0.7 m
+
+28/11/2019
+High  07:31    4.2 m
+High  19:50    4.0 m
+Low   01:21    0.7 m
+Low   13:44    0.7 m
+
+29/11/2019
+High  08:07    4.1 m
+High  20:26    3.8 m
+Low   02:03    0.8 m
+Low   14:22    0.8 m
+
+30/11/2019
+High  08:39    4.0 m
+High  20:58    3.6 m
+Low   02:35    0.9 m
+Low   14:55    0.9 m
+
+01/12/2019
+High  09:08    3.8 m
+High  21:29    3.3 m
+Low   03:07    1.0 m
+Low   15:27    1.1 m
+
+02/12/2019
+High  09:40    3.5 m
+High  22:03    3.1 m
+Low   03:37    1.2 m
+Low   16:01    1.2 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    03 December 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+03/12/2019
+High  10:19    3.3 m
+High  22:47    2.9 m
+Low   04:11    1.3 m
+Low   16:38    1.4 m
+
+04/12/2019
+High  11:06    3.1 m
+High  23:45    2.7 m
+Low   04:53    1.5 m
+Low   17:28    1.5 m
+
+05/12/2019
+High  12:09    2.9 m
+Low   05:49    1.5 m
+Low   18:31    1.5 m
+
+06/12/2019
+High  01:09    2.7 m
+High  13:30    2.9 m
+Low   07:04    1.5 m
+Low   19:49    1.4 m
+
+07/12/2019
+High  02:24    2.9 m
+High  14:44    3.1 m
+Low   08:21    1.4 m
+Low   20:54    1.3 m
+
+08/12/2019
+High  03:24    3.1 m
+High  15:42    3.3 m
+Low   09:23    1.3 m
+Low   21:49    1.2 m
+
+09/12/2019
+High  04:16    3.4 m
+High  16:36    3.5 m
+Low   10:17    1.2 m
+Low   22:39    1.0 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    10 December 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+10/12/2019
+High  05:05    3.6 m
+High  17:26    3.6 m
+Low   11:05    1.0 m
+Low   23:26    0.9 m
+
+11/12/2019
+High  05:51    3.8 m
+High  18:12    3.8 m
+Low   11:51    0.9 m
+
+12/12/2019
+High  06:35    3.9 m
+High  18:56    3.8 m
+Low   00:11    0.9 m
+Low   12:35    0.9 m
+
+13/12/2019
+High  07:16    4.0 m
+High  19:36    3.8 m
+Low   00:53    0.8 m
+Low   13:18    0.8 m
+
+14/12/2019
+High  07:53    4.0 m
+High  20:14    3.8 m
+Low   01:36    0.8 m
+Low   14:00    0.8 m
+
+15/12/2019
+High  08:30    4.0 m
+High  20:54    3.7 m
+Low   02:14    0.9 m
+Low   14:37    0.8 m
+
+16/12/2019
+High  09:10    3.9 m
+High  21:36    3.6 m
+Low   02:51    0.9 m
+Low   15:16    0.9 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    17 December 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+17/12/2019
+High  09:53    3.8 m
+High  22:21    3.4 m
+Low   03:30    1.0 m
+Low   15:57    1.0 m
+
+18/12/2019
+High  10:39    3.7 m
+High  23:14    3.3 m
+Low   04:12    1.1 m
+Low   16:45    1.1 m
+
+19/12/2019
+High  11:34    3.5 m
+Low   05:04    1.2 m
+Low   17:43    1.2 m
+
+20/12/2019
+High  00:17    3.1 m
+High  12:40    3.4 m
+Low   06:07    1.3 m
+Low   18:59    1.2 m
+
+21/12/2019
+High  01:29    3.1 m
+High  13:56    3.4 m
+Low   07:33    1.3 m
+Low   20:18    1.2 m
+
+22/12/2019
+High  02:44    3.3 m
+High  15:09    3.5 m
+Low   08:50    1.2 m
+Low   21:28    1.1 m
+
+23/12/2019
+High  03:51    3.5 m
+High  16:15    3.6 m
+Low   09:58    1.1 m
+Low   22:30    1.0 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    24 December 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+24/12/2019
+High  04:49    3.7 m
+High  17:13    3.8 m
+Low   10:58    0.9 m
+Low   23:26    0.9 m
+
+25/12/2019
+High  05:43    3.9 m
+High  18:05    3.9 m
+Low   11:52    0.8 m
+
+26/12/2019
+High  06:30    4.0 m
+High  18:52    3.9 m
+Low   00:16    0.8 m
+Low   12:42    0.8 m
+
+27/12/2019
+High  07:12    4.1 m
+High  19:32    3.8 m
+Low   01:02    0.8 m
+Low   13:27    0.8 m
+
+28/12/2019
+High  07:48    4.0 m
+High  20:08    3.7 m
+Low   01:45    0.8 m
+Low   14:07    0.8 m
+
+29/12/2019
+High  08:20    3.9 m
+High  20:40    3.6 m
+Low   02:21    0.9 m
+Low   14:41    0.9 m
+
+30/12/2019
+High  08:53    3.8 m
+High  21:13    3.4 m
+Low   02:51    1.0 m
+Low   15:12    1.0 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide0027A Starcross
+50°38'N, 3°27'W  England    31 December 2019  +0000
+Data Area 1-4. Europe, Northern Waters and Mediterranean   Version 5
+
+31/12/2019
+High  09:25    3.6 m
+High  21:47    3.2 m
+Low   03:21    1.1 m
+Low   15:43    1.1 m
+
+01/01/2020
+High  10:01    3.5 m
+High  22:25    3.1 m
+Low   03:51    1.2 m
+Low   16:13    1.2 m
+
+02/01/2020
+High  10:40    3.3 m
+High  23:08    2.9 m
+Low   04:22    1.3 m
+Low   16:48    1.3 m
+
+03/01/2020
+High  11:26    3.1 m
+High  23:59    2.8 m
+Low   05:00    1.4 m
+Low   17:33    1.4 m
+
+04/01/2020
+High  12:20    3.0 m
+Low   05:52    1.5 m
+Low   18:32    1.4 m
+
+05/01/2020
+High  01:02    2.8 m
+High  13:26    2.9 m
+Low   07:04    1.5 m
+Low   19:45    1.4 m
+
+06/01/2020
+High  02:13    2.9 m
+High  14:40    3.0 m
+Low   08:18    1.4 m
+Low   20:51    1.3 m
+
+
+Predicted heights are in metres above Chart Datum
+Printed by Admiralty TotalTide

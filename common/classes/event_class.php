@@ -178,7 +178,7 @@ class EVENT
     }
 
 
-    public function getevents_inperiod($fields, $start, $end, $mode, $race = false)
+    public function get_events_inperiod($fields, $start, $end, $mode, $race = false)
     {
         // FIXME - this doesn't work if the system is run in a different time zone to the database - need to use convert_tz to got from UTC to local timezone - but how do I know they are working in UTC
         // To be sure of getting published events - the $fields array should include ("active"=>"1")
@@ -208,13 +208,39 @@ class EVENT
                 $where.= implode(' AND ', $clause);
             }
         }
-        $query = "SELECT * FROM t_event $where ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
-        //u_writedbg($query, "addrace", "getevents", 123);
+
+        // get names for race formats
+        $formats = array();
+        $race_formats = $this->db->db_get_rows( "SELECT id, race_code, race_name FROM t_cfgrace" );
+        foreach ($race_formats as $row)
+        {
+            $formats["{$row['id']}"] = $row['race_name'];
+        }
+
+        $query = "SELECT id, event_date, event_start, event_order, event_name, series_code, event_type,
+                         event_format, event_entry, event_status, event_open, tide_time, tide_height, start_scheme,
+                         start_interval, ws_start, wd_start, ws_end, wd_end, event_notes, result_notes, weblink, 
+                         webname, display_code, active, upddate, updby FROM t_event 
+                  $where ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
 
         $detail = $this->db->db_get_rows( $query );
         if (empty($detail))       // nothing found
         {
             $detail = false;
+        }
+        else
+        {
+            foreach($detail as $k=>$row)
+            {
+                if (array_key_exists($row['event_format'], $formats))
+                {
+                    $detail[$k]['race_name'] = $formats[$row['event_format']];
+                }
+                else
+                {
+                    $detail[$k]['race_name'] = "";
+                }
+            }
         }
 
         return $detail;
@@ -294,34 +320,35 @@ class EVENT
         return $detail;       
     }
 
-
-    public function event_geteventduties($eventid, $dutycode = "")
-    {
-        $duties = array();
-        $query = "SELECT * FROM t_eventduty WHERE eventid = $eventid ";
-        if (!empty($dutycode))
-        { 
-            $query.= " AND dutycode = '$dutycode' ";
-        }
-        $duties = $this->db->db_get_rows( $query );
-        
-        if (empty($duties)) 
-        { 
-            $duties = false;             
-        }
-        return $duties;
-    }
-    
-    public function event_getdutyperson($eventid, $dutycode)
-    {
-        $duty_person = "";
-        $duties = $this->db->db_get_rows("SELECT * FROM t_eventduty WHERE eventid = $eventid AND dutycode='$dutycode'");
-
-        if (!empty($duties)) {
-            $duty_person = $duties[0]['person'];
-        }
-        return $duty_person;
-    }
+//// FIXME - moved to rota class (currently only used #418 on result_class.php
+//    public function event_geteventduties($eventid, $dutycode = "")
+//    {
+//        $duties = array();
+//        $query = "SELECT * FROM t_eventduty WHERE eventid = $eventid ";
+//        if (!empty($dutycode))
+//        {
+//            $query.= " AND dutycode = '$dutycode' ";
+//        }
+//        $duties = $this->db->db_get_rows( $query );
+//
+//        if (empty($duties))
+//        {
+//            $duties = false;
+//        }
+//        return $duties;
+//    }
+//
+//    // FIXME - moved to rota class - only used in #81 pickrace.php
+//    public function event_getdutyperson($eventid, $dutycode)
+//    {
+//        $duty_person = "";
+//        $duties = $this->db->db_get_rows("SELECT * FROM t_eventduty WHERE eventid = $eventid AND dutycode='$dutycode'");
+//
+//        if (!empty($duties)) {
+//            $duty_person = $duties[0]['person'];
+//        }
+//        return $duty_person;
+//    }
     
 
     public function event_addevent($fields, $duties)

@@ -39,6 +39,20 @@ class TEMPLATE
                 {body}
             </div>
         {footer}
+        
+        <!-- popover activation for all popovers -->
+        <script type="text/javascript">
+            $(document).ready(function() {
+            $("[data-toggle=popover]").popover({trigger: 'hover',html: 'true'});
+            });
+        </script>
+
+        <!-- tooltip activation for all tooltips -->
+        <script type="text/javascript">
+            $(document).ready(function() {
+            $("[data-toggle=tooltip]").tooltip({trigger: 'hover',html: 'true'});
+            });
+        </script>
         </body>
     </html>
 EOT;
@@ -67,44 +81,54 @@ EOT;
     
     public function footer($params=array())
     {
-       $html = <<<EOT
-       <div class="container">
-          <div class="row">
-             <div class="col-md-3 navbar-text">{left}</div>
-             <div class="col-md-3 navbar-text" style="text-align: center">{center}</div>
-             <div class="col-md-3 navbar-text navbar-right" style="text-align: right">{right}</div>
-          </div>
-       </div>
+        $html = <<<EOT
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3 text-left">{left}</div>
+                    <div class="col-md-6 text-center">{center}</div>
+                    <div class="col-md-3 text-right">{right}</div>
+                </div>
+            </div>
 EOT;
-       if ($params['footer_type'] == "fixed")
-       {
+
+        if ($params['footer_type'] == "fixed")
+        {
            $html = <<<EOT
-           <div class="navbar navbar-default navbar-fixed-bottom">
+           <nav class="navbar navbar-default navbar-fixed-bottom">
               $html
-           </div>
+           </nav>
 EOT;
-       }
+        }
     return $html;
     }
     
     
     public function error($params=array())
     {
-       $stop_button = $this->close_button();
-       $html = <<<EOT
-       <div class="jumbotron center-block" style="width:60%; margin-top: 60px;">
-          <h3>Problem encountered:</h3>
+        $stop_bufr = "";
+        if ($params['stop_btn'])
+        {
+           $stop_button = $this->close_button();
+           $stop_bufr = <<<EOT
+                <div class="pull-right">
+                    $stop_button
+                    
+                </div><br>
+EOT;
+        };
+        $html = <<<EOT
+        <div class="jumbotron center-block" style="width:60%; margin-top: 60px;">
+          <h1>Sorry . . .</h1>
           <div style="margin-left:20px">
              <p><span class="err-problem">{problem}</span></p>
              <p><span class="err-symptom">{symptom}</span></p>
-             <p><span class="err-where">{where}</span></p>
              <p><span class="err-fix">{fix}</span></p>
+             <p><span class="err-where">{where}</span></p>
           </div>
-          <div class="pull-right" style="padding-right: 30px">$stop_button</div>
-          <div>&nbsp;</div>
-       </div>
+          $stop_bufr
+        </div>
 EOT;
-        return $html;    
+        return $html;
     }
     
     
@@ -146,7 +170,18 @@ EOT;
        $duty = "";
        if ($params['inc_tide']) { $tide = "<th>Tide</th>"; }
        if ($params['inc_type']) { $category = "<th>Type/Format</th>"; } 
-       if ($params['inc_duty']) { $duty = "<th>Duties</th>"; }
+       if ($params['inc_duty'])
+       {
+           if ($params['inc_duty_ood_only'])
+           {
+               $duty = "<th>Race Officer</th>";
+           }
+           else
+           {
+               $duty = "<th>Duties</th>";
+           }
+
+       }
               
        $html = <<<EOT
        <thead>
@@ -168,30 +203,69 @@ EOT;
        $tide = "";
        $category = "";
        $duty = "";
-       if ($params['inc_tide']) { $tide = "<td class=\"\">{tide}</td>"; }       
-       if ($params['inc_type']) { $category = "<td class=\"\">{category}<br><span class=\"tb_format\">{subcategory}</span></td>"; }  
-       if ($params['inc_duty']) 
-       { 
-          $duty = <<<EOT
-             <td class="" style="width: 20%">
-                <button class="btn btn-info btn-xs" type="button" data-toggle="collapse" data-target="#duty{id}" 
-                    aria-expanded="false" aria-controls="duty{id}" style="min-width:100px;">Duties</button>
-                <div class="collapse{duty_show}" id="duty{id}">
-                   <div class="well" style="padding: 0px !important">
-                         <table class="table condensed">
-                         {duties}
-                         </table>
-                   </div>
-                </div>
-             </td>
+
+       if ($params['state']=="noevent")
+       {
+           $time = "<td>&nbsp;</td>";
+           $name = "<td>[ {event} ]<br><span class=\"prg_notes\">{note}</span></td>";
+       }
+       else
+       {
+           $time = "<td class=\"\">{time}</td>";
+           $name = "<td class=\"\"><b>{event}</b><br><span class=\"prg_notes\">{note}</span></td>";
+       }
+
+       if ($params['fields']['inc_tide'])
+       {
+           $tide = "<td class=\"\">{tide}</td>";
+       }
+
+       if ($params['fields']['inc_type'] and $params['state']!="noevent")
+       {
+           $category = <<<EOT
+           <td class="">
+                {category}
+                <br>
+                <span class="tb_format" data-toggle="tooltip" data-placement="right" title="{format}">
+                    {subcategory}
+                </span>
+           </td>
+
 EOT;
+       }
+       if ($params['fields']['inc_duty'] and $params['state']!="noevent")
+       {
+           if ($params['fields']['inc_duty_ood_only'])
+           {
+               $duty = <<<EOT
+                <td class="" style="width: 20%">
+                {duties} 
+                </td>
+EOT;
+           }
+           else
+           {
+               $duty = <<<EOT
+                 <td class="" style="width: 20%">
+                    <a  data-toggle="collapse" data-target="#duty{id}" 
+                    aria-expanded="false" aria-controls="duty{id}" ><b>Duties [{duty_num}]</b></a>
+                    <div class="collapse{duty_show}" id="duty{id}">
+                       <div class="well" style="padding: 0px 0px 0px 0px !important; bottom-margin: 0px !important">
+                             <table class="table condensed" style="padding: 0px 0px 0px 0px !important">
+                             {duties} 
+                             </table>
+                       </div>
+                    </div>
+                 </td>
+EOT;
+           }
        }
 
        $html = <<<EOT
           <tr class="prg_{state}">
              <td class="">{alert}{date}</td>
-             <td class="">{time}</td>
-             <td class="prg_event">{event}<br><span class="prg_notes">{note}</span></td>
+             $time
+             $name
              $category
              $tide
              $duty
@@ -206,7 +280,7 @@ EOT;
        $html = <<<EOT
        <div class="row">
          <div class="alert alert-warning center-block" role="alert" style="width: 60%">
-            <h4>No events for this period or search</h4>
+            <h4>No events for this month or search</h4>
          </div>
        </div>
 EOT;
@@ -233,11 +307,11 @@ EOT;
       if ($params['opt'] == "all") { $all_active = "class=\"active\""; }
 
       $html = <<<EOT
-      <div class="row">
+      <div class="row no-print">
          
          <div class="col-sm-9 col-md-9">
             <nav aria-label="Page navigation">
-               <ul class="pagination" style="margin-left: 20%; padding-top: 0px !important">
+               <ul class="pagination" style="margin-left: 5%; padding-top: 0px !important">
                   <li>
                      <a href="{prev_url}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
                   </li>
@@ -260,7 +334,7 @@ EOT;
             <input type="hidden" name="end" value="">
             <input type="hidden" name="opt" value="search">
             <div class="input-group" style="margin-top: 20px; margin-right: 20%;">
-               <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+               <input type="text" class="form-control" placeholder="{placeholder}" name="srch-term" id="srch-term">
                <div class="input-group-btn">
                   <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                </div>               
@@ -272,24 +346,39 @@ EOT;
 EOT;
         return $html;        
     }
-    
+
+
+    public function menu_page($params=array())
+    {
+        $html = <<<EOT
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1"> 
+                <div class="row">
+                {cards}
+                </div>
+            </div>
+        </div>
+EOT;
+        return $html;
+    }
     
     
     public function menu_card($params=array())
     {
        $html = <<<EOT
-       <a href="{link}" STYLE="text-decoration: none">
-          <div class="panel panel-widgets {color}">
-             <div id=weather>
-                <div class="panel-heading">
-                   <h2><span class="{icon}"></span> {label}</h2>
-                </div>
-                <div class=panel-body>{text}</div>
-             </div>
-          </div>
-          </a>
+        <div class="col-md-4 col-sm-4">
+            <a href="{link}" STYLE="text-decoration: none">
+              <div class="panel panel-widgets {color}">
+                 <div id=weather>
+                    <div class="panel-heading">
+                       <h2><span class="{icon}"></span> {label}</h2>
+                    </div>
+                    <div class=panel-body>{text}</div>
+                 </div>
+              </div>
+            </a>
+        </div>
 EOT;
-
        return $html;
     }
     

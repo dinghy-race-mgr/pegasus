@@ -377,7 +377,6 @@ class DB
         if (empty($code)) { return false; }
         return $code;
     }
-
     
     public function db_getinivalues($process_bool, $category="")
     {

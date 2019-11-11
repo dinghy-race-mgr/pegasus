@@ -5,70 +5,83 @@
 
 function event_card($params = array())
 {
-    // essentially two layouts - if no duties, notes go in separate column - otherwise go under even name
+// essentially two layouts - if no duties, notes go in separate column - otherwise go under even name
 
 //    echo "<pre>".print_r($params['constraints'], true)."</pre>";
-    $params['constraints']['tide'] ? $th_1 = "<th  style='width: 8%'>{$params['fields']['tide']}</th>" : $th_1 = "";
 
+    // decide which display format to use
     $duties_inc = false;
     if ($params['constraints']['race_duty'] or $params['constraints']['safety_duty'] or
-        $params['club_duty'])  { $duties_inc = true; }
-    $th_2 = "";
-    if ($params['constraints']['race_duty'])   { $th_2.= "<th class='pull-left' style='width: 15%'>{$params['fields']['race_duty']}</th>"; }
-    if ($params['constraints']['safety_duty']) { $th_2.= "<th class='pull-left' style='width: 15%'>{$params['fields']['safety_duty']}</th>"; }
-    if ($params['constraints']['club_duty'])   { $th_2.= "<th class='pull-left' style='width: 15%'>{$params['fields']['club_duty']}</th>"; }
+        $params['constraints']['club_duty'])  { $duties_inc = true; }
 
-    if (!$duties_inc and $params['constraints']['notes']) { $th_2.= "<th>{$params['fields']['notes']}</th>"; }
-    $table_hdr_bufr = <<<EOT
-    <thead>
-        <tr>
+    $params['constraints']['tide'] ? $th_tide = "<th class=\"pull-left\" style='width: 15%'>{$params['fields']['tide']}</th>" : $th_tide = "";
+    $params['constraints']['notes'] ? $th_notes = "<th class=\"pull-left\" style=\"width: 30%\">{$params['fields']['notes']}</th>" : $th_notes = "";
+
+    if ($duties_inc)  // layout with duties
+    {
+        $th_duties = "";
+        if ($params['constraints']['race_duty'])   { $th_duties.= "<th class='pull-left' style='width: 15%'>{$params['fields']['race_duty']}</th>"; }
+        if ($params['constraints']['safety_duty']) { $th_duties.= "<th class='pull-left' style='width: 15%'>{$params['fields']['safety_duty']}</th>"; }
+        if ($params['constraints']['club_duty'])   { $th_duties.= "<th class='pull-left' style='width: 15%'>{$params['fields']['club_duty']}</th>"; }
+
+
+        $table_hdr_bufr = <<<EOT
             <th class="pull-left" style="width: 8%">{$params['fields']['date']}</th>
             <th class="pull-left" style="width: 8%">{$params['fields']['time']}</th>
-            <th class="pull-left" style="width: 20%">{$params['fields']['event']}</th>          
-            $th_1
-            $th_2      
-        </tr>    
-    </thead>
+            <th class="pull-left" style="width: 25%">{$params['fields']['event']}</th>          
+            $th_tide
+            $th_duties
 EOT;
-
-    $table_data_bufr = "<tbody>";
-    foreach($params['data'] as $k => $row)
-    {
-        if ($duties_inc)
+        $table_data_bufr = "";
+        foreach($params['data'] as $k => $row)
         {
-            // layout with duties
             $duty_bufr = "";
-            if ($params['constraints']['race_duty']) { $duty_bufr .= "<td>".str_replace("|", "<br>", $row['race_duty'])."</td>"; }
+            if ($params['constraints']['race_duty'])   { $duty_bufr .= "<td>".str_replace("|", "<br>", $row['race_duty'])."</td>"; }
             if ($params['constraints']['safety_duty']) { $duty_bufr .= "<td>".str_replace("|", "<br>", $row['safety_duty'])."</td>"; }
-            if ($params['constraints']['club_duty']) { $duty_bufr .= "<td>".str_replace("|", "<br>", $row['club_duty'])."</td>"; }
+            if ($params['constraints']['club_duty'])   { $duty_bufr .= "<td>".str_replace("|", "<br>", $row['club_duty'])."</td>"; }
 
+            $params['constraints']['tide'] ? $tide_bufr = "<td>{$row['tide']}</td>" : $tide_bufr = "";
+            $params['constraints']['notes'] ? $notes_bufr = "<br><i><span class=\"text-grey\">{$row['notes']}</span></i>" : $notes_bufr = "";
 
-            $table_data_bufr.= <<<EOT
-        <tr>
-            <td>{$row['date']}</td>
-            <td>{$row['time']}</td>
-            <td>{$row['event']}<br><i><span class="text-grey">{$row['notes']}</span></i></td>
-            <td>{$row['tide']}</td>
-            $duty_bufr
-        </tr>
-EOT;
-
-        }
-        else
-        {
-            // layout with no duties
-            $table_data_bufr.= <<<EOT
-        <tr>
-            <td>{$row['date']}</td>
-            <td>{$row['time']}</td>
-            <td>{$row['event']}</td>
-            <td>{$row['tide']}</td>
-            <td><i>{$row['notes']}</i></td>
-        </tr>
+            $table_data_bufr .= <<<EOT
+                <tr>
+                    <td>{$row['date']}</td>
+                    <td>{$row['time']}</td>
+                    <td>{$row['event']}$notes_bufr</td>
+                    $tide_bufr
+                    $duty_bufr
+                </tr>
 EOT;
         }
     }
-    $table_data_bufr.= "</tbody>";
+    else    // layout with no duties
+    {
+
+        $table_hdr_bufr = <<<EOT
+            <th class="pull-left" style="width: 15%">{$params['fields']['date']}</th>
+            <th class="pull-left" style="width: 10%">{$params['fields']['time']}</th>
+            <th class="pull-left" style="width: 40%">{$params['fields']['event']}</th>          
+            $th_tide
+            $th_notes
+EOT;
+
+
+        $table_data_bufr = "";
+        foreach($params['data'] as $k => $row)
+        {
+            $params['constraints']['tide'] ? $tide_bufr = "<td>{$row['tide']}</td>" : $tide_bufr = "";
+            $params['constraints']['notes'] ? $notes_bufr = "<td><i>{$row['notes']}</i></td>" : $notes_bufr = "";
+            $table_data_bufr.= <<<EOT
+                <tr>
+                    <td>{$row['date']}</td>
+                    <td>{$row['time']}</td>
+                    <td>{$row['event']}</td>
+                    $tide_bufr
+                    $notes_bufr
+                </tr>
+EOT;
+        }
+    }
 
     $bufr = <<<EOT
      <!DOCTYPE html>
@@ -142,8 +155,12 @@ EOT;
             
             <div class="container" >
                 <table>
-                    $table_hdr_bufr
-                    $table_data_bufr
+                    <thead><tr>
+                        $table_hdr_bufr
+                    </tr></thead>
+                    <tbody>
+                        $table_data_bufr
+                    </tbody>
                 </table>
             </div>
             
@@ -235,28 +252,53 @@ function eventcard_state($params = array())
     if ($params['state'] == 1)
     {
         $bufr = <<<EOT
-        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4>no published events found for period selected</h4> </div>
+        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4>no published events found for period selected</h4>
 EOT;
     }
     elseif ($params['state'] == 2)
     {
         $bufr = <<<EOT
-        <div class="alert alert-danger" role="alert"><h3>Failed!</h3> <h4> page status not recognised - please contact System Manager </h4></div>
+        <div class="alert alert-danger" role="alert"><h3>Failed!</h3> <h4> page status not recognised - please contact System Manager </h4>
 EOT;
     }
     elseif ($params['state'] == 3)
     {
         $bufr = <<<EOT
-        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4> the end date is before the start date</h4></div>
+        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4> the end date is before the start date</h4>
 EOT;
 
     }
     else
     {
         $bufr = <<<EOT
-        <div class="alert alert-warning" role="alert"><h3>Warning!</h3> <h4> Unrecognised completion state - please check rota lists </h4></div>
+        <div class="alert alert-warning" role="alert"><h3>Warning!</h3> <h4> Unrecognised completion state - please check rota lists </h4>
 EOT;
     }
+
+    // add button into div
+    $bufr.= <<<EOT
+    <div class="row margin-top-20">
+        <div class="col-sm-12">
+            <div class="pull-right">
+                <a class="btn btn-default" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+                <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a>
+            </div>
+        </div>
+    </div>
+    
+    </div> <! end of alert>
+
+    <script language="javascript">
+    function quitBox(cmd)
+    {   
+        if (cmd=='quit')
+        {
+            open(location, '_self').close();
+        }   
+        return false;   
+    }
+    </script>
+EOT;
 
     return $bufr;
 }

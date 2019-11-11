@@ -29,6 +29,8 @@ if (!isset($_SESSION['app_init']) OR ($_SESSION['app_init'] === false))
 }
 
 require_once ("{$loc}/common/classes/db_class.php");
+require_once ("{$loc}/common/classes/rota_class.php");
+require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 
 // connect to database
@@ -37,6 +39,18 @@ $db_o = new DB();
 // set templates
 $tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","$loc/templates/utils/layouts_tm.php",
                              "$loc/templates/utils/duty_check_tm.php"));
+
+$pagefields = array(
+    "loc" => $loc,
+    "theme" => "flatly_",
+    "stylesheet" => "$loc/style/rm_utils.css",
+    "title" => "duty_check",
+    "header-left" => "raceManager",
+    "header-right" => "Duty Check",
+    "footer-left" => "",
+    "footer-center" => "",
+    "footer-right" => "",
+);
 
 
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
@@ -54,101 +68,104 @@ if ($_REQUEST['pagestate'] == "init")
         "script" => "duty_check.php?pagestate=submit",
     );
 
+    $params["duty_types"] = array();
+    $rs = $db_o->db_getsystemcodes("rota_type");
+    //echo "<pre>".print_r($rs,true)."</pre>";
+    foreach ($rs as $row)
+    {
+        $params["duty_types"][$row['code']] = $row['label'];
+    }
+    //echo "<pre>".print_r($params['duty_types'],true)."</pre>";
+
     // present form to select json file for processing (general template)
-    $pagefields = array(
-        "loc" => $loc,
-        "theme" => "flatly_",
-        "stylesheet" => "$loc/style/rm_utils.css",
-        "title" => "eventcard",
-        "header-left" => "raceManager",
-        "header-right" => "Duty Check",
-        "body" => $tmpl_o->get_template("duty_check_form", $formfields, $params),
-        "footer-left" => "",
-        "footer-center" => "",
-        "footer-right" => "",
-    );
+    $pagefields["body"] =$tmpl_o->get_template("duty_check_form", $formfields, $params);
 
     // render page
-    echo $tmpl_o->get_template("basic_page", $pagefields );
+    echo $tmpl_o->get_template("basic_page", $pagefields);
 }
 
 /* ------------ submit page ---------------------------------------------*/
 
 elseif (strtolower($_REQUEST['pagestate']) == "submit")
 {
+   // echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
+    $rota_o = NEW ROTA($db_o);
+    $event_o = new EVENT($db_o);
+
+
+    // check parameters from form
+    $state = 0;
+    $all = false;
+    // dates valid
     if (strtotime($_REQUEST['date-start']) > strtotime($_REQUEST['date-end']))
     {
-        $state = 3;
+        $state = 3;    // end date is before start date
     }
-    else
+
+    // check we have events in specified period
+    $events = $event_o->get_events_inperiod(array(), $_REQUEST['date-start'], $_REQUEST['date-end'], "live", false);
+    if (!$events)
     {
-        require_once("{$loc}/common/classes/event_class.php");
-        $event_o = new EVENT($db_o);
+        $state = 1;   // no events in selected period
+    }
 
-        // deal with parameters
-        $fields = array("date" => "Date", "time" => "Time", "event" => "Event", "tide" => "Tide", "notes" => "Notes",
-            "race_duty" => "Race Duties", "safety_duty" => "Safety Duties", "club_duty" => "Clubhouse Duties");
+    $duties = $rota_o->get_duties_inperiod(array(), $_REQUEST['date-start'], $_REQUEST['date-end']);
+    // check we have duties in specified period
+    if (!$duties)
+    {
+        $state = 4;   // no duties in period
+    }
 
-        //    echo "<pre>".print_r($_REQUEST,true)."</pre>";
+    //echo "state: $state<br>";
 
-        $constraints = array(
-            "notes"       => process_bool_parameter("notes", true),
-            "tide"        => process_bool_parameter("tide", true),
-            "race_duty"   => process_bool_parameter("race_duty", true),
-            "safety_duty" => process_bool_parameter("safety_duty", true),
-            "club_duty"   => process_bool_parameter("club_duty", true)
-        );
+    if ($state == 0)
+    {
+        // check which rotas specified - if empty or "all" included - assume all rotas
+        empty($_REQUEST['rotas']) ? $rotas = array() : $rotas = $_REQUEST['rotas'];
 
-        $_REQUEST['scope'] == "1" ? $scope = array("active" => "1") : $scope = array() ;
+        // find people in t_rotamember that match the rotas specified - remove duplicates
+        $persons = $rota_o->get_rota_members($rotas, $duplicates = false);
+        //echo "<pre> persons" . print_r($persons, true) . "</pre>";
 
-        $events = $event_o->getevents_inperiod($scope, $_REQUEST['date-start'], $_REQUEST['date-end'], "live", false);
+        if ($persons) {
+            // loop through people getting duties they have been scheduled for - add information to person array
+            foreach ($persons as $k => $person) {
+                $name = $person['firstname'] . " " . $person['familyname'];
+                $duties = $rota_o->get_duties_inperiod(array("person" => $name), $_REQUEST['date-start'], $_REQUEST['date-end']);
 
-        if ($events !== false) {
-            $i = 0;
-            foreach ($events as $k => $event) {
-                if (!empty($event['event_name'])) {
-                    $i++;
-                    $data[$i] = array(
-                        "date" => date("d-M", strtotime($event['event_date'])),
-                        "time" => $event['event_start'],
-                        "event" => $event['event_name'],
-                        "tide" => "{$event['tide_time']} [{$event['tide_height']}m] ",
-                        "notes" => $event['event_notes'],
-                        "race_duty" => "",
-                        "safety_duty" => "",
-                        "club_duty" => ""
-                    );
-
-                    if ($i == 1) {$year = date("Y", strtotime($event['event_date'])); }
-
-                    // get duties
-                    $duties = $event_o->event_geteventduties($event['id']);
-                    if ($duties)
-                    {
-                        // map them into correct output fields
-                        foreach ($duties as $duty) {
-                            $dutybin = $_SESSION['rotamap']["{$duty['dutycode']}"];
-                            $data[$i][$dutybin].= "{$duty['person']}|";
+                if ($duties) {
+                    $duty_list = "";
+                    $duty_count = 0;
+                    $ref_date = "01-01-1970";
+                    foreach ($duties as $j => $duty) {
+                        if (strtotime($ref_date) != strtotime($duty['event_date'])) {
+                            $duty_count++;
+                            $duty_list .= "|{$duty['dutyname']}: " . date("j M", strtotime($duty['event_date'])) . " ({$duty['event_name']})";
+                            $ref_date = $duty['event_date'];
                         }
-                        $data[$i]['race_duty']   = rtrim($data[$i]['race_duty'], "| ");
-                        $data[$i]['safety_duty'] = rtrim($data[$i]['safety_duty'], "| ");
-                        $data[$i]['club_duty']   = rtrim($data[$i]['club_duty'], "| ");
+
                     }
+                    $persons[$k]['duties'] = ltrim($duty_list, "|");
+                    $persons[$k]['numevents'] = count($duties);
+                    $persons[$k]['numduties'] = $duty_count;
+                } else {
+                    $persons[$k]['duties'] = "";
+                    $persons[$k]['numevents'] = 0;
+                    $persons[$k]['numduties'] = 0;
                 }
+
             }
-            $pagefields = array(
-                "title" => "Programme",
-                "header" => file_get_contents("$loc/config/eventcard_hdr.htm"),
-                "footer" => file_get_contents("$loc/config/eventcard_ftr.htm"),
-                "date" => date("Y-m-d"),
-                "year" => $year
-            );
-            echo $tmpl_o->get_template("event_card", $pagefields, array("fields" => $fields, "constraints" => $constraints, "data" => $data));
+
+            $pagefields["date"] = date("Y-m-d");
+            $pagefields["year"] = date("Y", strtotime($_REQUEST['date-start']));
+            $pagefields["body"] = $tmpl_o->get_template("duty_check_report", $pagefields, array("data" => $persons));
+            // fixme complete report
+            echo $tmpl_o->get_template("basic_page", $pagefields);
         }
         else
         {
-            // error no published events in period
-            $state = 1;
+            $state = 5;
         }
     }
 }
@@ -164,7 +181,7 @@ if ($state > 0)
         "loc" => $loc,
         "theme" => "flatly_",
         "stylesheet" => "$loc/style/rm_utils.css",
-        "title" => "eventcard",
+        "title" => "duty_check",
         "header-left" => "raceManager",
         "header-right" => "Event Card",
         "body" => "",
@@ -172,30 +189,13 @@ if ($state > 0)
         "footer-center" => "",
         "footer-right" => ""
     );
-    $pagefields['body'] = $tmpl_o->get_template("eventcard_state", array(), array("state"=>$state));
+    $pagefields['body'] = $tmpl_o->get_template("duty_check_state", array(), array("state"=>$state));
 
     // render page
     echo $tmpl_o->get_template("basic_page", $pagefields, array());
 }
 
 
-function process_bool_parameter($key, $default)
-{
-    if (empty($_REQUEST[$key]))
-    {
-        $val = false;
-    }
-    elseif($_REQUEST[$key]=="true" or $_REQUEST[$key]=="false")
-    {
-        $_REQUEST[$key] =="true"?  $val = true : $val = false ;
-    }
-    else
-    {
-        $default ? $val = true : $val = false ;
-    }
-
-    return $val;
-}
 
 
 

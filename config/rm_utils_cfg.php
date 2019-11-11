@@ -54,3 +54,24 @@ $_SESSION['rotamap'] = array(
     "galley"   => "club_duty",
     "bar"      => "club_duty",
 );
+
+$_SESSION['eventcard_fields'] = array(
+    "date" => "Date",
+    "time" => "Time",
+    "event" => "Event",
+    "tide" => "Tide",
+    "notes" => "Notes",
+    "race_duty" => "Race Duties",
+    "safety_duty" => "Safety Duties",
+    "club_duty" => "Clubhouse"
+);
+
+$_SESSION['dutycheck'] = array(
+    "max_duty" => 2
+);
+
+$_SESSION['publish'] = array(
+     "programme_loc" => "../data/programme",
+     "programme_file"=> "programme.json",
+     "transfer_loc"  => "",
+);

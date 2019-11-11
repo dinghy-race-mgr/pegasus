@@ -85,25 +85,23 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
     else
     {
         require_once("{$loc}/common/classes/event_class.php");
+        require_once("{$loc}/common/classes/rota_class.php");
         $event_o = new EVENT($db_o);
+        $rota_o = new ROTA($db_o);
 
-        // deal with parameters
-        $fields = array("date" => "Date", "time" => "Time", "event" => "Event", "tide" => "Tide", "notes" => "Notes",
-            "race_duty" => "Race Duties", "safety_duty" => "Safety Duties", "club_duty" => "Clubhouse Duties");
-
-        //    echo "<pre>".print_r($_REQUEST,true)."</pre>";
+        $duty_inc = get_default_duty_display($_SESSION['event_card_duties']);
 
         $constraints = array(
             "notes"       => process_bool_parameter("notes", true),
             "tide"        => process_bool_parameter("tide", true),
-            "race_duty"   => process_bool_parameter("race_duty", true),
-            "safety_duty" => process_bool_parameter("safety_duty", true),
-            "club_duty"   => process_bool_parameter("club_duty", true)
+            "race_duty"   => process_bool_parameter("race_duty", $duty_inc['race']),
+            "safety_duty" => process_bool_parameter("safety_duty", $duty_inc['safety']),
+            "club_duty"   => process_bool_parameter("club_duty", $duty_inc['house']),
         );
 
         $_REQUEST['scope'] == "1" ? $scope = array("active" => "1") : $scope = array() ;
 
-        $events = $event_o->getevents_inperiod($scope, $_REQUEST['date-start'], $_REQUEST['date-end'], "live", false);
+        $events = $event_o->get_events_inperiod($scope, $_REQUEST['date-start'], $_REQUEST['date-end'], "live", false);
 
         if ($events !== false) {
             $i = 0;
@@ -124,7 +122,7 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
                     if ($i == 1) {$year = date("Y", strtotime($event['event_date'])); }
 
                     // get duties
-                    $duties = $event_o->event_geteventduties($event['id']);
+                    $duties = $rota_o->get_event_duties($event['id']);
                     if ($duties)
                     {
                         // map them into correct output fields
@@ -145,7 +143,8 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
                 "date" => date("Y-m-d"),
                 "year" => $year
             );
-            echo $tmpl_o->get_template("event_card", $pagefields, array("fields" => $fields, "constraints" => $constraints, "data" => $data));
+            echo $tmpl_o->get_template("event_card", $pagefields,
+                array("fields" => $_SESSION['eventcard_fields'], "constraints" => $constraints, "data" => $data));
         }
         else
         {
@@ -199,7 +198,27 @@ function process_bool_parameter($key, $default)
     return $val;
 }
 
-
+function get_default_duty_display($setting)
+{
+    $duty = array("ood"=>false, "race"=>false, "safety"=>false, "house"=>false,);
+    $values = explode("|", $setting);
+    foreach ($values as $val)
+    {
+        if ($val == "race" or $val == "ood")
+        {
+            $duty['race'] = true;
+        }
+        elseif($val == "safety")
+        {
+            $duty['safety'] = true;
+        }
+        elseif($val == "house")
+        {
+            $duty['house'] = true;
+        }
+    }
+    return $duty;
+}
 
 
 

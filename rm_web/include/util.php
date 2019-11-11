@@ -62,7 +62,7 @@ function get_result_filename($id, $name, $date, $type)
        ((strlen($name[0]) + strlen($name[1])) > 30) ? $str = $name[0]."-".$name[1] : $name[0];
        $facet_2 = truncate(get_alphanumeric($str),30, "");
        $facet_3 = "$id";
-       $facet_4 = date("Y-m-d",strtotime($event['event_date']));
+       $facet_4 = date("Y-m-d",strtotime($date));
     }
     elseif ($type == "series")
     {
@@ -71,7 +71,7 @@ function get_result_filename($id, $name, $date, $type)
        ((strlen($name[0]) + strlen($name[1])) > 30) ? $str = $name[0]."-".$name[1] : $name[0];
        $facet_2 = truncate(get_alphanumeric($str),30, "");
        $facet_3 = get_alphanumeric($id);
-       $facet_4 = date("Y-m-d",strtotime($event['event_date']));
+       $facet_4 = date("Y-m-d",strtotime($date));
     }
     else
     {
@@ -143,4 +143,3 @@ function prettyPrint( $json )
     return $result;
 }
 
-?>

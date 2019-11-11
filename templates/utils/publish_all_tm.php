@@ -63,91 +63,163 @@ EOT;
     return $bufr;
 }
 
-function publish_all_state($params = array())
+function publish_all_report($params = array())
 {
-    $display_events = false;
-    if (!empty($params['data']))
+    $bufr = "";
+    $table_bufr = "";
+    if ($params['display'])
     {
-        $display_events = true;
-        $table_bufr = "";
-        foreach ($params['data'] as $k=>$row)
+        if (!empty($params['data']))
         {
             $table_bufr.= <<<EOT
-            <tr>
-                <td>{$row['date']}</td>
-                <td>{$row['time']}</td>
-                <td>{$row['name']}</td>
-            </tr>
+                <p><b>Events {action}ed</b></p>
+                <table class="table table-striped table-condensed">
+                    <tbody>
+EOT;
+            foreach ($params['data'] as $k=>$row)
+            {
+                $table_bufr.= <<<EOT
+                <tr><td>{$row['date']}</td><td>{$row['time']}</td><td>{$row['name']}</td></tr>
+EOT;
+            }
+            $table_bufr.= <<<EOT
+                    <tbody>
+                </table>
 EOT;
         }
     }
 
+    $params['count'] == 0 ? $txt = "{count} events {action}ed in period selected - probably because already {action}ed<br><br>" :
+        $txt = "{count} events {action}ed in period selected<br><br>" ;
 
-    if ($params['state'] == 0)
+    if ($params['file'])
     {
-        if ($params['count'] == 0)
-        {
-            $bufr = <<<EOT
-        <div class="alert alert-success" role="alert"><h3>Success!</h3> <h4>{count} events {action}ed in period selected - probably because already {action}ed </h4></div>
+        $txt.= <<<EOT
+        <div style="text-indent: 20px; margin-bottom: 10px">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> programme file created for use by web display software
+        </div>
 EOT;
-        }
-        else
-        {
-            $bufr = <<<EOT
-        <div class="alert alert-success" role="alert"><h3>Success!</h3> <h4>{count} events {action}ed in period selected </h4></div>
-EOT;
-        }
     }
-    elseif ($params['state'] == 1)
+    else
+    {
+        $txt.= <<<EOT
+        <div style="text-indent: 20px; margin-bottom: 10px">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> programme file for use by web display software - NOT created
+        </div>
+EOT;
+    }
+
+    if ($params['transfer'])
+    {
+        $txt.= <<<EOT
+        <div style="text-indent: 20px; margin-bottom: 10px">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> programme file transferred for web display software
+        </div>
+EOT;
+    }
+    else
+    {
+        $txt.= <<<EOT
+        <div style="text-indent: 20px; margin-bottom: 10px">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> programme file for web display software - NOT transferred
+        </div>
+EOT;
+    }
+
+    $bufr.= <<<EOT
+    <div class="alert alert-success" role="alert">
+        <h3>Success!</h3> 
+        <h4>$txt</h4>
+        <div class="row margin-top-20">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a class="btn btn-default" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+                    <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a>
+                </div>
+            </div>
+        </div>
+    
+    </div> <! end of alert>
+EOT;
+
+    if ($params['state'] == 4)
+    {
+        $bufr.= <<<EOT
+        <div class="alert alert-danger" role="alert">
+            <h3>Problem!</h3> 
+            <h4> failed to CREATE event programme file for website - please contact the System Administrator</h4>
+        </div>
+EOT;
+    }
+    elseif ($params['state'] == 5)
+    {
+        $bufr.= <<<EOT
+        <div class="alert alert-danger" role="alert">
+        <h3>Problem!</h3> 
+        <h4> failed to TRANSFER event programme file for website - please contact the System Administrator</h4>
+        </div>
+EOT;
+    }
+
+    $bufr.=<<<EOT
+    $table_bufr
+
+    <script language="javascript">
+    function quitBox(cmd)
+    {   
+        if (cmd=='quit')
+        {
+            open(location, '_self').close();
+        }   
+        return false;   
+    }
+    </script>
+EOT;
+
+return $bufr;
+}
+
+function publish_all_state($params = array())
+{
+    $start = date("d/m/Y", strtotime($params['args']['date-start']));
+    $end = date("d/m/Y", strtotime($params['args']['date-end']));
+    if ($params['state'] == 1)
     {
         $bufr = <<<EOT
-        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4>no events found for period selected</h4> </div>
+        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4>no events found for period selected [$start - $end]</h4>
 EOT;
     }
     elseif ($params['state'] == 2)
     {
         $bufr = <<<EOT
-        <div class="alert alert-danger" role="alert"><h3>Failed!</h3> <h4> page status not recognised - please contact System Manager </h4></div>
+        <div class="alert alert-danger" role="alert"><h3>Failed!</h3> <h4> page status not recognised - please contact System Manager </h4>
 EOT;
     }
     elseif ($params['state'] == 3)
     {
         $bufr = <<<EOT
-        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4> the end date is before the start date</h4></div>
+        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4> the end date is before the start date [$start - $end]</h4>
 EOT;
-
     }
     else
     {
         $bufr = <<<EOT
-        <div class="alert alert-warning" role="alert"><h3>Warning!</h3> <h4> Unrecognised completion state - please check rota lists </h4></div>
+        <div class="alert alert-warning" role="alert"><h3>Warning!</h3> <h4> Unrecognised completion state - please check rota lists </h4>
 EOT;
     }
 
-    if ($display_events)
-    {
-        $bufr.= <<<EOT
-     <div>
-     <p><b>Events {action}ed</b></p>
-     <table class="table table-striped table-condensed">
-        <tbody>
-            $table_bufr
-        </tbody>    
-     </table>
-     </div>
-EOT;
-    }
-
-    // add button
+    // add button into div
     $bufr.= <<<EOT
     <div class="row margin-top-20">
-        <div class="col-sm-8 col-sm-offset-1">
-            <div class="pull-left">
-                <a class="btn btn-lg btn-warning" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+        <div class="col-sm-12">
+            <div class="pull-right">
+                <a class="btn btn-default" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
                 <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a>
             </div>
         </div>
     </div>
+    
+    </div> <! end of alert>
 
     <script language="javascript">
     function quitBox(cmd)

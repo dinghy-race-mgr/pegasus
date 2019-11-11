@@ -2,62 +2,110 @@
 class PROGRAMME
 {
    
-   public function __construct($programme_file, $mode, $force)
-   {
-      $this->programme_file = $programme_file;
-      
-      // parse programme into session object
-      if (empty($_SESSION['prg']) or $force)    // if $SESSION data not created - do it
-      {         
-         $status = $this->import_programme();
-         if (!$status)                          // programme file not found or not readable
-         {
-            $_SESSION['error']['problem'] = "Cannot display current event programme";
-            $_SESSION['error']['symptom'] = "Programme file not found on system (or not readable)";
-            $_SESSION['error']['where']   = "programme_construct";
-            $_SESSION['error']['fix']     = "";
-         }          
-      }
-      
-      // set date limits for programme to be displayed
-      $this->start = date("Y-m-d");
-      $this->end   = $_SESSION['prg']['meta']['last'];
-      if ($mode == "full") { $this->start = $_SESSION['prg']['meta']['first']; }
-           
-   }
-   
-   
+    public function __construct($programme_file, $mode, $force)
+    {
+        $status = true;
+        $this->programme_file = $programme_file;
+
+        // parse programme into session object
+        if (empty($_SESSION['prg']) or $force)    // if $SESSION data not created - do it
+        {
+            $status = $this->import_programme();
+            if (!$status)                          // programme file not found or not readable
+            {
+                $_SESSION['error']['problem'] = "Cannot display current event programme";
+                $_SESSION['error']['symptom'] = "Programme file not found on system (or not readable)";
+                $_SESSION['error']['where']   = "rm_web | programme.php | __construct | line ".__LINE__;
+                $_SESSION['error']['fix']     = "";
+            }
+        }
+
+        //echo "<pre>".print_r($_SESSION['prg'],true)."</pre>";
+
+        if ($status)
+        {
+            // set date limits for programme to be displayed
+            $this->start = $_SESSION['prg']['meta']['first'];
+            $this->end   = $_SESSION['prg']['meta']['last'];
+            //if ($mode != "full") { $this->start = date("Y-m-d"); }
+        }
+    }
+
    public function set_parameters($request)
    {
-      $params = array("opt"=>"", "start"=>"", "end"=>"", "search"=>"");
-      if ($request['opt'] == "none" or empty($request['opt']))
-      {
-          $params['opt'] = "none";
-          if (!empty($request['start'])) { $params['start'] = $request['start']; }
-          if (!empty($request['end'])) { $params['end'] = $request['end']; }    
-      }
-      elseif ($request['opt'] == "search")
-      {
-          $params['opt']    = "search";
-          if (!empty($request['srch-term'])) { $params['search'] = $request['srch-term']; }      
-      }
-      elseif ($request['opt'] == "all") 
-      {
-          $params['opt'] = "all";
-      }
-      else
-      {
-          $params['opt']   = "init";
-          $params['start'] = date("Y-m-d", strtotime("first day of this month"));
-          $params['end']   = date("Y-m-d", strtotime("first day of next month"));
-      }
-      return $params;
+        // sets params for display of events on screen
+        $params = array("opt"=>"", "start"=>"", "end"=>"", "search"=>"");
+
+        // displays all events between requested start and end - used for month tab navigation
+        if ($request['opt'] == "none" or empty($request['opt']))
+        {
+            $params['opt'] = "none";
+            if (!empty($request['start'])) { $params['start'] = date("Y-m-d", strtotime($request['start'])); }
+            if (!empty($request['end'])) { $params['end'] = date("Y-m-d", strtotime($request['end'])); }
+        }
+
+        // displays all events that match search term
+        elseif ($request['opt'] == "search")  // displays all events that match results of search
+        {
+            $params['opt'] = "search";
+            if (!empty($request['srch-term'])) { $params['search'] = trim($request['srch-term']); }
+        }
+
+        // displays all events
+        elseif ($request['opt'] == "all")  // displays all events initially
+        {
+        $params['opt'] = "all";
+        }
+
+        // initial display on startup - shows current month OR if current month is outside the period covered
+        // by the programme it displays the nearest month (i.e first or last month
+        else
+        {
+            $params['opt']   = "init";
+
+            $today = date("Y-m-d");
+            $today_ts = strtotime($today);
+//            $first_ts = strtotime(date("Y-m-d", strtotime($this->start)));
+//            $end_ts = strtotime(date("Y-m-d", strtotime($this->end)));
+
+            if ($today_ts >= strtotime($this->start) and $today_ts <= strtotime($this->end))            // in period
+            {
+                //echo "<pre> in period </pre>";
+                $d = new DateTime( $today );
+                $d->modify( 'first day of this month' );
+                $params['start'] = $d->format("Y-m-d");
+                $d->modify( 'first day of next month' );
+                $params['end'] = $d->format("Y-m-d");
+            }
+            elseif ($today_ts < strtotime($this->start))                                  // before period
+            {
+                //echo "<pre> before period </pre>";
+                $d = new DateTime( $this->start );
+                $d->modify( 'first day of this month' );
+                $params['start'] = $d->format("Y-m-d");
+                $d->modify( 'first day of next month' );
+                $params['end'] = $d->format("Y-m-d");
+            }
+            elseif ($today_ts > strtotime($this->end))                                    // after period
+            {
+                //echo "<pre> after period </pre>";
+                $d = new DateTime( $this->end );
+                $d->modify( 'first day of this month' );
+                $params['start'] = $d->format("Y-m-d");
+                $d->modify( 'first day of next month' );
+                $params['end'] = $d->format("Y-m-d");
+            }
+        }
+
+        //echo "<pre>".print_r($params,true)."</pre>";
+        return $params;
    }
    
    
    public function calendar_nav($current, $params)
+
    {
-      // programme start and end - and get months between these two dates
+      // programme start and end - and get months between these two dates as an array
       $start    = new DateTime($this->start);
       $start->modify('first day of this month');
       $end      = new DateTime($this->end);
@@ -68,6 +116,7 @@ class PROGRAMME
       // current date
       $current = new DateTime($current);
       $current_mon = $current->format("m/y");
+      //$current_mon = "06/16"; FIXME - what happens if current month is before programme - set to first month
       
       // start and end of interval containing current date
       $int_start = clone $current;
@@ -78,35 +127,35 @@ class PROGRAMME
       // set limits on previous month - with earliest month constraint
       $prev_start = clone $int_start;
       $prev_start->modify('first day of previous month');
-      $prev_end = clone $int_start;
+      $prev_end   = clone $int_start;
       if ($prev_start < $start) 
       { 
          $prev_start = clone $int_start;
-         $prev_end = clone $int_end;
+         $prev_end   = clone $int_end;
       } 
       
       // set limits on next month - with latest month constraint
       $next_start = clone $int_end;
-      $next_end = clone $int_end;
+      $next_end   = clone $int_end;
       $next_end->modify('first day of next month');
       if ($next_end > $end)
       {
          $next_start = clone $int_start;
-         $next_end = clone $int_end;
+         $next_end   = clone $int_end;
       }
       
       $months = "";
       $month_baseurl = $_SERVER['PHP_SELF']."?page=programme&start=%s&end=%s&opt=%s";
       $prev_url  = sprintf($month_baseurl, $prev_start->format("Y-m-d"), $prev_end->format("Y-m-d"), "none");      
       $next_url  = sprintf($month_baseurl, $next_start->format("Y-m-d"), $next_end->format("Y-m-d"), "none");
-      $all_url = sprintf($month_baseurl, $start->format("Y-m-d"), $end->format("Y-m-d"), "all");
+      $all_url   = sprintf($month_baseurl, $start->format("Y-m-d"), $end->format("Y-m-d"), "all");
       $search_url = $_SERVER['PHP_SELF'];
       
       foreach ($period as $dt) 
       {
          $active = false;
          $active_start = "";
-         $active_end = "";
+         $active_end   = "";
          
          $month_str = $dt->format("M");
          $this_mon = $dt->format("m/y");
@@ -141,219 +190,122 @@ class PROGRAMME
       return $cal_fields;
    }
    
-   private function export_programme($event_data, $duty_data, $source, $title, $club, $datetime)
-   /* Produces programme.json file for use by rm_web
-      Assumes that events will be presented to it in date/time ascending order
-      Returns false if file not writable or no events to add - otherwise returns no. of events in file
-   */
-   {
-      $num = 0;
-      $out['prg'] = array(
-         "meta"   => array(
-             "last_update" => $datetime,
-             "source"      => $source,
-             "title"       => $title,
-             "club"        => $club,
-         ),
-         "events" => array(),
-      );
-      foreach ($event_data as $k=>$event)
-      {
-         $num++;
-         if ($num == 1)
-         {
-             $out['prg']['meta']['first'] = date("Y-m-d", strtotime($event['date']));
-         }
-         
-         $date = date("Y-m-d",strtotime($event['event_date']));
-         $time = date("H:i",strtotime($event['event_start']));
-         $hw   = date("H:i",strtotime($event['tide-time']));
-         $out['prg']['events']["ev_{$event['id']}"] = array(
-                    "id"          => $event['id'],
-                    "name"        => $event['event_name'],                 // "Spring Series 1",
-                    "note"        => $event['event_notes'],                // "First race of series",
-                    "datetime"    => $date."T".$time,                      // "2016-09-02T10:00",
-                    "category"    => $event['event_type'],                 // "racing",
-                    "subcategory" => $event['event_format'],               // "club series",
-                    "tide"        => "HW $hw {$event['tide-time']}m",      // "HW 10:45 3.4m",
-         );
-         
-         // check if event is flagged as important
-         if (array_key_exists('important', $event))
-         {
-            if ($event['important']) { $out['prg']['events']["ev_{$event['id']}"]['state'] = "important"; }
-         }            
-                  
-         // add duties for this event
-         foreach ($duty_data[$event['id']] as $duty=>$person)
-         {
-            $out['prg']['events']["ev_{$event['id']}"]['duties'][$duty] = $person;
-         }               
-      }
-      $out['prg']['meta']['last'] = date("Y-m-d", strtotime($event['date']));
-      
-      if ($num > 0)
-      {
-          // create json file
-          if (is_writable($this->programme_file))
-          {
-             $fp = fopen($this->programme_file, 'w');
-             fwrite($fp, json_encode($out));
-             fclose($fp);
-             return $num;          
-          }
-          else
-          {
-             return false;
-          }
-          
-      }
-      else
-      {
-          return false;
-      }
-   }
+//   private function export_programme($event_data, $duty_data, $source, $title, $club, $datetime)
+//   /* Produces programme_old.json file for use by rm_web
+//      Assumes that events will be presented to it in date/time ascending order
+//      Returns false if file not writable or no events to add - otherwise returns no. of events in file
+//   */
+//   {
+//      $num = 0;
+//      $out['prg'] = array(
+//         "meta"   => array(
+//             "last_update" => $datetime,
+//             "source"      => $source,
+//             "title"       => $title,
+//             "club"        => $club,
+//         ),
+//         "events" => array(),
+//      );
+//      foreach ($event_data as $k=>$event)
+//      {
+//         $num++;
+//         if ($num == 1)
+//         {
+//             $out['prg']['meta']['first'] = date("Y-m-d", strtotime($event['date']));
+//         }
+//
+//         $date = date("Y-m-d",strtotime($event['event_date']));
+//         $time = date("H:i",strtotime($event['event_start']));
+//         $hw   = date("H:i",strtotime($event['tide-time']));
+//         $out['prg']['events']["ev_{$event['id']}"] = array(
+//                    "id"          => $event['id'],
+//                    "name"        => $event['event_name'],                 // "Spring Series 1",
+//                    "note"        => $event['event_notes'],                // "First race of series",
+//                    "datetime"    => $date."T".$time,                      // "2016-09-02T10:00",
+//                    "category"    => $event['event_type'],                 // "racing",
+//                    "subcategory" => $event['event_format'],               // "club series",
+//                    "tide"        => "HW $hw {$event['tide-time']}m",      // "HW 10:45 3.4m",
+//         );
+//
+//         // check if event is flagged as important
+//         if (array_key_exists('important', $event))
+//         {
+//            if ($event['important']) { $out['prg']['events']["ev_{$event['id']}"]['state'] = "important"; }
+//         }
+//
+//         // add duties for this event
+//         foreach ($duty_data[$event['id']] as $duty=>$person)
+//         {
+//            $out['prg']['events']["ev_{$event['id']}"]['duties'][$duty] = $person;
+//         }
+//      }
+//      $out['prg']['meta']['last'] = date("Y-m-d", strtotime($event['date']));
+//
+//      if ($num > 0)
+//      {
+//          // create json file
+//          if (is_writable($this->programme_file))
+//          {
+//             $fp = fopen($this->programme_file, 'w');
+//             fwrite($fp, json_encode($out));
+//             fclose($fp);
+//             return $num;
+//          }
+//          else
+//          {
+//             return false;
+//          }
+//
+//      }
+//      else
+//      {
+//          return false;
+//      }
+//   }
    
-   private function import_programme()
-   // reads json file created with export_programme and creates session array
-   {
-      if (is_readable($this->programme_file))
-      {
-	$string = file_get_contents($this->programme_file);
-	$_SESSION['prg'] = json_decode($string, true);
-	
-	$today = new DateTime(date("Y-m-d"));
-	// add event state where required
-	$next_set = false;
-	foreach($_SESSION['prg']['events'] as $eventid=>$event)
-	{
-	    if (!array_key_exists('state', $event))
-	    {
-		$edate = new DateTime(date("Y-m-d", strtotime($event['datetime'])));   
-		if ($edate >= $today)
-		{
-		    if ($next_set)
-		    {
-		      $_SESSION['prg']['events']["$eventid"]['state'] = "future";
-		    }
-		    else
-		    {
-		      $_SESSION['prg']['events']["$eventid"]['state'] = "next";
-		      $next_set = true;
-		    }
-		}
-		else
-		{
-		    $_SESSION['prg']['events']["$eventid"]['state'] = "past";                
-		}            
-	    }          
-	}
-       }
-       else
-       {
-          return false;
-       }
-       return true;
-   }
-   
+    private function import_programme()
+    // reads json file created with export_programme and creates session array
+    {
+        $status = false;
+        if (is_readable($this->programme_file))
+        {
+            $string = file_get_contents($this->programme_file);
+            $_SESSION['prg'] = json_decode($string, true);
+            
+            //echo "<pre>".print_r($_SESSION['prg'],true)."</pre>";
 
-   
-//    public function parse_programme()
-//    // open json file and create programme array
-//    // ignore events before earliest date
-//    {  
-//    $_SESSION['prg'] = array(
-//       "meta" => array(
-// 	  "last_update" => "2016-08-02T20:38",
-// 	  "source" => "raceManager",
-// 	  "title" => "Race Programme",
-// 	  "club" => "Starcross YC",
-// 	  "first" => "2016-04-04",
-// 	  "last" => "2017-04-01",
-//       ),
-//       "events" => array(
-// 	  "evt_1203" => array(
-// 	    "id" => 1203,
-// 	    "name" => "Spring Series 1",
-// 	    "note" => "First race of series",
-// 	    "datetime" => "2016-09-02T10:00",
-// 	    "category" => "racing",
-// 	    "subcategory" => "club series",
-// 	    "tide" => "HW 10:45 3.4m",
-// 	    "duties" => array(
-// 		"race officer" => "Fred Binns",
-// 		"timekeeper" => "Joe Binns",
-// 		"safety boat 1" => "Martha Binns",
-// 		"safety boat 2" => "Joey Binns",
-// 		"safety crew 1" => "Freda Binns",
-// 		"safety crew 2" => "Maxammilion Binns",
-// 		"galley" => "Petroushca Binns",
-// 		"bar" => "Robbie Binns", 
-// 	    ),
-// 	    "state" => "past",
-// 	  ),
-// 	  "evt_1204" => array(
-// 	    "id" => 1204,
-// 	    "name" => "Patrick Kelley Trophy",
-// 	    "note" => "Pursuit race - Topper is scratch boat",
-// 	    "datetime" => "2016-09-09T14:30",
-// 	    "category" => "racing",
-// 	    "subcategory" => "trophy race",
-// 	    "tide" => "HW 13:45 4.2m",
-// 	    "duties" => array(
-// 		"race officer" => "Fred Binns",
-// 		"timekeeper" => "Joe Binns",
-// 		"safety boat 1" => "Martha Binns",
-// 		"safety boat 2" => "Joey Binns",
-// 		"safety crew 1" => "Freda Binns",
-// 		"safety crew 2" => "Maximillion Binns",
-// 		"galley" => "Petroushca Binns",
-// 		"bar" => "Robbie Binns",
-// 	    ),
-// 	    "state" => "next",
-// 	  ),
-// 	  "evt_1205" => array(
-// 	    "id" => 1205,
-// 	    "name" => "Commodore's Cruise",
-// 	    "note" => "",
-// 	    "datetime" => "2016-11-17T12:00",
-// 	    "category" => "dinghy cruise",
-// 	    "subcategory" => "up river",
-// 	    "tide" => "HW 10:45 3.4m",
-// 	    "duties" => array(
-// 		"safety boat 1" => "Martha Binns",
-// 		"safety boat 2" => "Joey Binns",
-// 		"safety crew 1" => "Freda Binns",
-// 		"safety crew 2" => "Maxammilion Binns",    
-// 	    ),   
-// 	    "state" => "future",
-// 	  ),
-// 	  "evt_1206" => array(
-// 	    "id" => 1204,
-// 	    "name" => "Beginner's trophy",
-// 	    "note" => "Pursuit race - Topper is scratch boat",
-// 	    "datetime" => "2016-10-09T14:30",
-// 	    "category" => "racing",
-// 	    "subcategory" => "trophy race",
-// 	    "tide" => "HW 13:45 4.2m",
-// 	    "duties" => array(
-// 		"race officer" => "Fred Binns",
-// 		"timekeeper" => "Joe Binns",
-// 		"safety boat 1" => "Martha Binns",
-// 		"safety boat 2" => "Joey Binns",
-// 		"safety crew 1" => "Freda Binns",
-// 		"safety crew 2" => "Maximillion Binns",
-// 		"galley" => "Petroushca Binns",
-// 		"bar" => "Robbie Elkington",
-// 	    ),
-// 	    "state" => "important",
-//           ),
-//       ),
-//     );
-//     
-//    //echo prettyPrint( json_encode($_SESSION['prg'])); 
-//    }
-   
+            $today = new DateTime(date("Y-m-d"));
+            // add event state where required
+            $next_set = false;
+            foreach($_SESSION['prg']['events'] as $eventid => $event)
+            {
+                $edate = new DateTime(date("Y-m-d", strtotime($event['date'])));
+                if ($edate >= $today)
+                {
+                    if ($next_set)
+                    {
+                        if ($event['state'] != "trophy" and $event['state'] != "open" and
+                            $event['state'] != "important" and $event['state'] != "noevent")
+                        {
+                            $_SESSION['prg']['events']["$eventid"]['state'] = "future";
+                        }
+                    }
+                    else
+                    {
+                        $_SESSION['prg']['events']["$eventid"]['state'] = "next";
+                        $next_set = true;
+                    }
+                }
+                else
+                {
+                    $_SESSION['prg']['events']["$eventid"]['state'] = "past";
+                }
+            }
+            $status = true;
+        }
+        return $status;
+    }
+
    
    public function search_programme($needle, $start, $end)
    // search programme and return target array of event ids in date order that match
@@ -416,7 +368,7 @@ class PROGRAMME
       $events = array();
       foreach ($programme as $k=>$event)
       {
-         $date = new DateTime($event['datetime']);
+         $date = new DateTime($event['date']);
          if ($date >= $search_start AND $date < $search_end)    // note assumes end date is first date after search period
          {
              $events[$k]=$event;
@@ -427,4 +379,3 @@ class PROGRAMME
    
 
 }
-?>
