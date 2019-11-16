@@ -11,7 +11,7 @@ if (f_check_exists("t_result", " eventid={$deleted_values['id']} ", $conn))
 // must not delete if status anything other than scheduled
 if ($deleted_values['event_status'] != "scheduled")
 {
-    $message = "Event is or has been in progress - cannot be deleted [status must be 'scheduled']";
+    $message = "Event is or has been 'in progress' - cannot be deleted [status must be 'scheduled']";
     $delete = false;
     // error_log("event status | ", 3, "../../logs/dbglogs/rmdebug.log");
 }

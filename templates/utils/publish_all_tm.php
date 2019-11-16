@@ -92,37 +92,36 @@ EOT;
     $params['count'] == 0 ? $txt = "{count} events {action}ed in period selected - probably because already {action}ed<br><br>" :
         $txt = "{count} events {action}ed in period selected<br><br>" ;
 
-    if ($params['file'])
-    {
-        $txt.= <<<EOT
-        <div style="text-indent: 20px; margin-bottom: 10px">
-            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> programme file created for use by web display software
-        </div>
-EOT;
-    }
-    else
-    {
-        $txt.= <<<EOT
-        <div style="text-indent: 20px; margin-bottom: 10px">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> programme file for use by web display software - NOT created
-        </div>
-EOT;
-    }
 
-    if ($params['transfer'])
+    if (strtolower($params['action']) == "publish")
     {
-        $txt.= <<<EOT
-        <div style="text-indent: 20px; margin-bottom: 10px">
-            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> programme file transferred for web display software
-        </div>
+        if ($params['file'])
+        {
+            $glyph = "glyphicon glyphicon-ok";
+            $msg   = "programme file created for use by web display software";
+        }
+        else
+        {
+            $glyph = "glyphicon glyphicon-remove";
+            $msg   = "programme file for use by web display software - NOT created";
+        }
+        $txt .= <<<EOT
+        <div style="text-indent: 20px; margin-bottom: 10px"><span class="$glyph" aria-hidden="true"></span> $msg</div>
 EOT;
-    }
-    else
-    {
-        $txt.= <<<EOT
-        <div style="text-indent: 20px; margin-bottom: 10px">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> programme file for web display software - NOT transferred
-        </div>
+
+
+        if ($params['transfer'])
+        {
+            $glyph = "glyphicon glyphicon-ok";
+            $msg   = "programme file transferred for web display software";
+        }
+        else
+        {
+            $glyph = "glyphicon glyphicon-remove";
+            $msg   = "programme file for web display software - NOT transferred";
+        }
+        $txt .= <<<EOT
+        <div style="text-indent: 20px; margin-bottom: 10px"><span class="$glyph" aria-hidden="true"></span> $msg</div>
 EOT;
     }
 

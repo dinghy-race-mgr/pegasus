@@ -29,12 +29,6 @@ TO DO
 
 Assumes that tidal data is held in table t_tide and HW times have been converted to local time
 
-Bugs
- - FIXED can't process if you are trying to do next years programme - needs to get year from start/end date
- - rounding of start times is not working well (see 28/7/19)
- - FIXED not getting good tide for 3rd 17th - wednesday
- - needs to put tide details into $pg array even if its not a good tide (do I include non-scheduled days in programme import)
- - add config check to see that there are no duplicate event code values
  */
 
 $loc  = "..";
@@ -963,20 +957,7 @@ function pg_create_csv()
         // output if array record has tidal data
         if (!empty($event['tidal_time']))
         {
-//            $out_arr = array (
-//                "id"         => "",
-//                "event_date"       => $event['date'],
-//                "event_start"       => $event['start_time'],
-//                "event_name"       => $event['event_name'],
-//                "series_code"     => $event['series_code'],
-//                "event_type"       => $event['type'],
-//                "event_format"     => $event['format'],
-//                "event_entry" => $event['entry_type'],
-//                "event_open" => $event['restricted'],
-//                "tide_time"  => $event['tidal_time'],
-//                "tide_height"=> sprintf('%0.1f', $event['tidal_height']),
-//                "event_notes"      => "",
-//                "weblink"    => ""
+            empty($event['event_name']) ? $type = "noevent" : $type = $event['type'];
 
             $out_arr = array (
                 "id"         => "",
@@ -984,7 +965,7 @@ function pg_create_csv()
                 "time"       => $event['start_time'],
                 "name"       => $event['event_name'],
                 "series"     => $event['series_code'],
-                "type"       => $event['type'],
+                "type"       => $type,
                 "format"     => $event['format'],
                 "entry_type" => $event['entry_type'],
                 "restricted" => $event['restricted'],

@@ -1,22 +1,6 @@
 <?php
 /* rm_web
 
-TO DO
-- sort out error display + stop button
-- tidy up duty display
-- tidy up no entries
-- tidy up table display
-- check responsiveness to phone and tablet
-
-- RESULTS
-  - add calendar
-  - add race 'series' nav (quick to this season's series)
-  - add search box (access to individual races - use two part search term event-year)
-  - first stab at json
-  - implement search 
-  - row display
-  - make field selection customisable
-  - check responsiveness to phone and tablet
 
 */
 

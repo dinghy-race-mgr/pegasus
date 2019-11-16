@@ -20,14 +20,11 @@ class PROGRAMME
             }
         }
 
-        //echo "<pre>".print_r($_SESSION['prg'],true)."</pre>";
-
         if ($status)
         {
             // set date limits for programme to be displayed
             $this->start = $_SESSION['prg']['meta']['first'];
             $this->end   = $_SESSION['prg']['meta']['last'];
-            //if ($mode != "full") { $this->start = date("Y-m-d"); }
         }
     }
 
@@ -54,7 +51,7 @@ class PROGRAMME
         // displays all events
         elseif ($request['opt'] == "all")  // displays all events initially
         {
-        $params['opt'] = "all";
+            $params['opt'] = "all";
         }
 
         // initial display on startup - shows current month OR if current month is outside the period covered
@@ -65,10 +62,8 @@ class PROGRAMME
 
             $today = date("Y-m-d");
             $today_ts = strtotime($today);
-//            $first_ts = strtotime(date("Y-m-d", strtotime($this->start)));
-//            $end_ts = strtotime(date("Y-m-d", strtotime($this->end)));
 
-            if ($today_ts >= strtotime($this->start) and $today_ts <= strtotime($this->end))            // in period
+            if ($today_ts >= strtotime($this->start) and $today_ts <= strtotime($this->end))  // in period
             {
                 //echo "<pre> in period </pre>";
                 $d = new DateTime( $today );
@@ -77,7 +72,7 @@ class PROGRAMME
                 $d->modify( 'first day of next month' );
                 $params['end'] = $d->format("Y-m-d");
             }
-            elseif ($today_ts < strtotime($this->start))                                  // before period
+            elseif ($today_ts < strtotime($this->start))                                      // before period
             {
                 //echo "<pre> before period </pre>";
                 $d = new DateTime( $this->start );
@@ -86,7 +81,7 @@ class PROGRAMME
                 $d->modify( 'first day of next month' );
                 $params['end'] = $d->format("Y-m-d");
             }
-            elseif ($today_ts > strtotime($this->end))                                    // after period
+            elseif ($today_ts > strtotime($this->end))                                        // after period
             {
                 //echo "<pre> after period </pre>";
                 $d = new DateTime( $this->end );
@@ -97,7 +92,6 @@ class PROGRAMME
             }
         }
 
-        //echo "<pre>".print_r($params,true)."</pre>";
         return $params;
    }
    
@@ -272,9 +266,8 @@ class PROGRAMME
             $string = file_get_contents($this->programme_file);
             $_SESSION['prg'] = json_decode($string, true);
             
-            //echo "<pre>".print_r($_SESSION['prg'],true)."</pre>";
-
             $today = new DateTime(date("Y-m-d"));
+
             // add event state where required
             $next_set = false;
             foreach($_SESSION['prg']['events'] as $eventid => $event)
@@ -327,8 +320,7 @@ class PROGRAMME
       }    
       return $events;      
    }
-   
-   
+
    private function search_substring($programme, $needle)
    {
       $events = array();
@@ -359,8 +351,7 @@ class PROGRAMME
       }
       return $events;  
    }
-   
-   
+
    private function search_date($programme, $start, $end)
    {
       $search_start = new DateTime($start);
@@ -376,6 +367,4 @@ class PROGRAMME
       }
       return $events;
    }
-   
-
 }

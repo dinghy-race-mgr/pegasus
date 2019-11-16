@@ -1,6 +1,8 @@
 <?php
 /* ----------------------------------------------------------------------------------------------
+   db_import.php
 
+   generic import script to handle racemanager import of data from external sources
 
 
 */
@@ -488,65 +490,78 @@ function val_event($i, $key, $row, $table, $fields)
         }
     }
 
-    // check fields
+
+
+    // --------------- check fields -------------------------------------------------------------------------
+
+    // event date
     if (empty($row['event_date']) OR date('Y-m-d', strtotime($row['event_date'])) !== $row['event_date'])
     {
         $err .= "date [{$row['event_date']}] is missing, not valid or wrong format -  format yyyy-mm-dd; ";
     }
 
-    if (date("H:i", strtotime($row['event_start'])) !== $row['event_start'])
+    // tide time
+    if (!empty($row['tide_time']) and (date("H:i", strtotime($row['tide_time'])) !== $row['tide_time']))
+    { $err .= "tide time is is not valid time and/or format hh:mm; "; }
+
+    // do checks if event is not a "noevent"
+    if ($row['event_type'] != "noevent")
     {
-        if (!empty($row['event_start']))
-        {
-            $err .= "start time [{$row['event_start']}] is not a valid time and/or format hh:mm; ";
+        // event start time
+        if (date("H:i", strtotime($row['event_start'])) !== $row['event_start']) {
+            if (!empty($row['event_start'])) {
+                $err .= "start time [{$row['event_start']}] is not a valid time and/or format hh:mm; ";
+            }
         }
-    }
 
-    if (empty($row['event_name']))
-    {
-        $err .= "event name missing; ";
-    }
-
-    if (!$db_o->db_checksystemcode("event_type", strtolower($row['event_type'])))
-        { $err .= "event type [{$row['event_type']}] not recognised; "; }
-
-    if (!$db_o->db_checksystemcode("event_access", strtolower($row['event_open'])))
-        { $err .= "event open setting [{$row['event_open']}] not recognised; "; }
-
-    if (strtolower($row['event_type']) == "racing")
-    {
-        // event format
-        if (empty($row['event_format']))
-        {
-            $err .= "event format code missing; ";
+        // event name
+        if (empty($row['event_name'])) {
+            $err .= "event name missing; ";
         }
-        else
-        {
-            $racecfg = $event_o->racecfg_findbyname($row['event_format']);
-            if (!$racecfg)
+
+        // event type
+        if (!$db_o->db_checksystemcode("event_type", strtolower($row['event_type']))) {
+            $err .= "event type [{$row['event_type']}] not recognised; ";
+        }
+
+        // event access
+        if (!$db_o->db_checksystemcode("event_access", strtolower($row['event_open']))) {
+            $err .= "event open setting [{$row['event_open']}] not recognised; ";
+        }
+
+
+        if (strtolower($row['event_type']) == "racing") {
+            // event format
+            if (empty($row['event_format']))
             {
-                $err .= "event format [{$row['event_format']}] not recognised; ";
+                $err .= "event format code missing; ";
             }
             else
             {
-                $row['event_format'] = $racecfg['id'];
+                $racecfg = $event_o->racecfg_findbyname($row['event_format']);
+                if (!$racecfg)
+                {
+                    $err .= "event format [{$row['event_format']}] not recognised; ";
+                }
+                else
+                {
+                    $row['event_format'] = $racecfg['id'];  // switch event format to id
+                }
+            }
+
+            // event entry
+            if (!$db_o->db_checksystemcode("entry_type", strtolower($row['event_entry']))) {
+                $err .= "entry type [{$row['event_entry']}] missing or not recognised; ";
+            }
+
+            // series code
+            if (!empty($row['series_code'])) {
+                if (!$event_o->event_getseries($row['series_code'])) {
+                    $err .= "series [{$row['series_code']}] not recognised; ";
+                }
             }
         }
-
-        // event entry
-        if (!$db_o->db_checksystemcode("entry_type", strtolower($row['event_entry'])))
-            { $err .= "entry type [{$row['event_entry']}] missing or not recognised; "; }
-
-        // series code
-        if (!empty($row['series_code']))
-        {
-            if (!$event_o->event_getseries($row['series_code']))
-                { $err .= "series [{$row['series_code']}] not recognised; "; }
-        }
     }
-
-    if (!empty($row['tide_time']) and (date("H:i", strtotime($row['tide_time'])) !== $row['tide_time']))
-        { $err .= "tide time is is not valid time and/or format hh:mm; "; }
 
     if (!empty($row['web_link']) AND filter_var($row['web_link'], FILTER_VALIDATE_URL) === false)
         { $err .= "web link is not a valid URL; "; }

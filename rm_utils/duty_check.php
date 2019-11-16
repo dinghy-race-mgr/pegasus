@@ -1,4 +1,9 @@
 <?php
+/*
+ * duty_check.php
+ * Creates report of duty allocations for each member in specified time period.
+   Report can include all members or members of specified rotas
+ */
 $loc  = "..";
 $page = "duty_check";     //
 $scriptname = basename(__FILE__);
@@ -36,6 +41,14 @@ require_once ("{$loc}/common/classes/template_class.php");
 // connect to database
 $db_o = new DB();
 
+// get duty type codes
+$duty_codes = array();
+$rs = $db_o->db_getsystemcodes("rota_type");
+foreach ($rs as $row)
+{
+    $duty_codes[$row['code']] = $row['label'];
+}
+
 // set templates
 $tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","$loc/templates/utils/layouts_tm.php",
                              "$loc/templates/utils/duty_check_tm.php"));
@@ -68,17 +81,8 @@ if ($_REQUEST['pagestate'] == "init")
         "script" => "duty_check.php?pagestate=submit",
     );
 
-    $params["duty_types"] = array();
-    $rs = $db_o->db_getsystemcodes("rota_type");
-    //echo "<pre>".print_r($rs,true)."</pre>";
-    foreach ($rs as $row)
-    {
-        $params["duty_types"][$row['code']] = $row['label'];
-    }
-    //echo "<pre>".print_r($params['duty_types'],true)."</pre>";
-
     // present form to select json file for processing (general template)
-    $pagefields["body"] =$tmpl_o->get_template("duty_check_form", $formfields, $params);
+    $pagefields["body"] =$tmpl_o->get_template("duty_check_form", $formfields, $params=array("duty_types" => $duty_codes));
 
     // render page
     echo $tmpl_o->get_template("basic_page", $pagefields);
@@ -88,11 +92,8 @@ if ($_REQUEST['pagestate'] == "init")
 
 elseif (strtolower($_REQUEST['pagestate']) == "submit")
 {
-   // echo "<pre>".print_r($_REQUEST,true)."</pre>";
-
     $rota_o = NEW ROTA($db_o);
     $event_o = new EVENT($db_o);
-
 
     // check parameters from form
     $state = 0;
@@ -117,50 +118,73 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
         $state = 4;   // no duties in period
     }
 
-    //echo "state: $state<br>";
-
     if ($state == 0)
     {
         // check which rotas specified - if empty or "all" included - assume all rotas
-        empty($_REQUEST['rotas']) ? $rotas = array() : $rotas = $_REQUEST['rotas'];
+        if (!array_key_exists("rotas", $_REQUEST))
+        {
+            $rotas = array();
+            $rota_str = "all rotas";
+        }
+        else
+        {
+            if (in_array("all", $_REQUEST['rotas']))
+            {
+                $rotas = array();
+                $rota_str = "all rotas";
+            }
+            else
+            {
+                $rotas = $_REQUEST['rotas'];
+                $rota_str = "";
+                foreach ($rotas as $rota)
+                {
+                    $rota_str.= $duty_codes[$rota].", ";
+                }
+                $rota_str = rtrim($rota_str, ", ");
+            }
+        }
 
         // find people in t_rotamember that match the rotas specified - remove duplicates
         $persons = $rota_o->get_rota_members($rotas, $duplicates = false);
-        //echo "<pre> persons" . print_r($persons, true) . "</pre>";
 
-        if ($persons) {
+        if ($persons)
+        {
             // loop through people getting duties they have been scheduled for - add information to person array
-            foreach ($persons as $k => $person) {
+            foreach ($persons as $k => $person)
+            {
                 $name = $person['firstname'] . " " . $person['familyname'];
                 $duties = $rota_o->get_duties_inperiod(array("person" => $name), $_REQUEST['date-start'], $_REQUEST['date-end']);
 
-                if ($duties) {
+                if ($duties)
+                {
                     $duty_list = "";
                     $duty_count = 0;
                     $ref_date = "01-01-1970";
                     foreach ($duties as $j => $duty) {
-                        if (strtotime($ref_date) != strtotime($duty['event_date'])) {
+                        if (strtotime($ref_date) != strtotime($duty['event_date']))
+                        {
                             $duty_count++;
                             $duty_list .= "|{$duty['dutyname']}: " . date("j M", strtotime($duty['event_date'])) . " ({$duty['event_name']})";
                             $ref_date = $duty['event_date'];
                         }
-
                     }
                     $persons[$k]['duties'] = ltrim($duty_list, "|");
                     $persons[$k]['numevents'] = count($duties);
                     $persons[$k]['numduties'] = $duty_count;
-                } else {
+                }
+                else
+                {
                     $persons[$k]['duties'] = "";
                     $persons[$k]['numevents'] = 0;
                     $persons[$k]['numduties'] = 0;
                 }
-
             }
 
             $pagefields["date"] = date("Y-m-d");
             $pagefields["year"] = date("Y", strtotime($_REQUEST['date-start']));
+            $pagefields["rotas"] = $rota_str;
             $pagefields["body"] = $tmpl_o->get_template("duty_check_report", $pagefields, array("data" => $persons));
-            // fixme complete report
             echo $tmpl_o->get_template("basic_page", $pagefields);
         }
         else
@@ -171,8 +195,7 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
 }
 else
 {
-    // error pagestate not recognised
-    $state = 2;
+    $state = 2;  // error pagestate not recognised
 }
 
 if ($state > 0)

@@ -7,11 +7,6 @@
  * 
  */
 
-/* FIXME
-- add loader to submit button
-
-
-*/
 $loc  = "..";
 $page = "Rota Synch";
 $scriptname = basename(__FILE__);
@@ -48,8 +43,6 @@ if (!isset($_SESSION['app_init']) OR ($_SESSION['app_init'] === false))
         u_exitnicely($scriptname, 0, "initialisation failure", "one or more problems with script initialisation");
     }
 }
-
-
 
 // arguments
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
@@ -100,12 +93,19 @@ elseif (trim(strtolower($_REQUEST['pagestate'])) == "submit")
     // connect to database
     $db_o = new DB();
 
-//    echo "Starting Processing<br>";
-//    html_flush();
+    // get webcollect API parameters
+    $wc = $db_o->db_getinivalues(true, "webcollect");
+    foreach ($wc as $param=>$val)
+    {
+        define("$param" , $val);
+    }
 
-    // set webcollect API parameters
-    define('ORGANISATION_SHORT_NAME' , $_SESSION['webcollect']['organisation_short_name']);
-    define('ACCESS_TOKEN', $_SESSION['webcollect']['access_token']);
+//    echo "ORGANISATION_SHORT_NAME : ".ORGANISATION_SHORT_NAME."<br>";
+//    echo "ACCESS_TOKEN : ".ACCESS_TOKEN."<br>";
+
+//    // set webcollect API parameters
+//    define('ORGANISATION_SHORT_NAME' , $_SESSION['webcollect']['organisation_short_name']);
+//    define('ACCESS_TOKEN', $_SESSION['webcollect']['access_token']);
 
     // empty database table with rotamembers
     if (trim($_REQUEST['dryrun']) == "true")

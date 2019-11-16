@@ -22,9 +22,12 @@ if ($values['event_type'] == "racing") {
 
     // check if race is part of series but no series specified
     $array = explode(" ", strtolower($values['event_name']));
-    if (in_array('series', $array) AND empty($values['series_code']))
+    if (in_array('series', $array))
     {
-        $msg .= "- event name implies a series - but no series specified<br>";
+        if (empty($values['series_code']))
+        {
+            $msg .= "- event name implies a series - but no series specified<br>";
+        }
     }
 
     // check provided series code exists
@@ -38,7 +41,6 @@ if ($values['event_type'] == "racing") {
 
     // check entry type is set
     if (empty($values['event_entry'])){ $msg.= "- race entry method must be set<br>"; }
-
 }
 elseif ($values['event_type'] == "training")
 {
@@ -78,7 +80,6 @@ if ($commit)
         $rs = db_query("SELECT * FROM t_tide WHERE date = '{$values['event_date']}'", $conn);
         $tide_rs = db_fetch_array($rs);
 
-//        $tide_rs = $tide_o->get_tide_by_date($date, false);
         if ($tide_rs)
         {
             $best_tide = get_best_tide($values['event_start'], $tide_rs['hw1_time'], $tide_rs['hw2_time']);
@@ -90,7 +91,11 @@ if ($commit)
             $values['tide_time'] = "unknown";
             $values['tide_height'] = "";
         }
+
+
+
     }
+
 
     // set defaults
     if ($mode == "add" and !empty($values['series_code']))

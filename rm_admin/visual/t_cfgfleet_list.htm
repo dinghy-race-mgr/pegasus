@@ -1,628 +1,526 @@
-<!doctype html>
-<html  {$html_attrs}>
-	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>{$pagetitle}</title>
-
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<link REL="stylesheet" href="styles/default.css" type="text/css">
-		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
-		{END rtlCSS}
-		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
-		{END styleCSSFiles}
-	</head>
-
-	<body class="{$stylename} function-list" {$bodyattrs}>
-	{BEGIN body}{$header}
-		<style>
-			{$containerCss}
-		</style>
-		{BEGIN container_menu}<nav {$menu_chiddenattr} data-pageid="{$pageid}" data-container="menu" class="navbar navbar-default ">					
-
-
-
-{BEGIN container_hdr}<div {$hdr_chiddenattr} data-pageid="{$pageid}" data-container="hdr" class=" navbar-header   "> 
-
-{BEGIN logo_block}<a href="{$home_link}" {$logo_hiddenattr} data-pageid="{$pageid}" data-brick="logo" class="navbar-brand" >{$logo}</a>
-{END logo_block}
-
-
-{BEGIN collapse_block}<button {$bsnavbarcollapse_hiddenattr} data-pageid="{$pageid}" data-brick="bsnavbarcollapse" type="button" class="navbar-toggle collapsed" data-runner-toggle="collapse" data-target=".bs-navcontrolled">	
-	<span class="sr-only">Toggle navigation</span>	
-	<span class="icon-bar"></span>					
-</button>												
-
-{END collapse_block}
-
-
-
-</div>
-{END container_hdr}
-
-
-
-
-
-
-{BEGIN container_menu_1}<div {$menu_1_chiddenattr} data-pageid="{$pageid}" data-container="menu_1" class="bs-navform navbar-collapse bs-navcontrolled bs-hidden-xs" aria-expanded="false" >												   
-{BEGIN menu_block}{$menu main horizontal}
-
-{END menu_block}
-
-
-
-
-
-{BEGIN container_more}<div {$more_chiddenattr} data-pageid="{$pageid}" data-container="more" class=" navbar-right navbar-form   "> 
-
-{BEGIN more_list}<div {$morebutton_hiddenattr} data-pageid="{$pageid}" data-brick="morebutton" class="btn-group bs-navsection">
-	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		<span class="glyphicon glyphicon-cog"></span>
-		<span class="caret"></span>
-	</button>
-	<ul class="dropdown-menu">
-		
-				
-				{BEGIN deleteselected_link}<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
-		{END deleteselected_link}
-		
-				<li role="separator" class="divider"></li>	
-
-		
-				
-				
-				
-				
-		
-		
-				
-	</ul>  
-</div>
-
-{END more_list}
-
-
-{BEGIN security_block}<span {$loggedas_hiddenattr} data-pageid="{$pageid}" data-brick="loggedas" id="login_block{$id}" class="bs-navsection">
-	{BEGIN guestloginbutton}<button class="btn btn-info" type="button" {$guestloginlink_attrs}>Login</button>
-	{END guestloginbutton}
-	{BEGIN loggedas_message}<span class="dropdown">
-			<button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<span class="glyphicon glyphicon-user"></span>	{$username}</button>
-			<ul class="dropdown-menu">
-		{BEGIN logoutbutton}<li><a href="#" {$logoutlink_attrs}>Log out</a></li>
-		{END logoutbutton}
-		
-		{BEGIN adminarea_link}<li><a href="admin_rights_list.php" {$adminarealink_attrs}>Admin Area</a></li>
-		{END adminarea_link}
-
-
-	{BEGIN changepwd_link}<li><a href="#" {$changepwdlink_attrs}>Change password</a></li>
-	{END changepwd_link}
-			</ul>
-		</span>
-	{END loggedas_message}
-</span>
-{END security_block}
-
-
-
-</div>
-{END container_more}
-
-
-
-
-
-
-
-
-{BEGIN container_more_1}<div {$more_1_chiddenattr} data-pageid="{$pageid}" data-container="more_1" class=" navbar-right navbar-form   "> 
-
-{BEGIN searchform_block}<span {$search_hiddenattr} data-pageid="{$pageid}" data-brick="search" class="form-group">
-
-		
-</span>
-{END searchform_block}
-
-
-
-</div>
-{END container_more_1}
-
-
-
-
-												</div>						{END container_menu_1}
-
-
-									</nav>{END container_menu}
-		<div class="bs-middle ">
-			<div class="bs-topmiddle">
-				
-
-{BEGIN container_breadcrumbs}<div {$breadcrumbs_chiddenattr} data-pageid="{$pageid}" data-container="breadcrumbs" class="    "> 
-
-
-
-
-{BEGIN container_bc}<div {$bc_chiddenattr} data-pageid="{$pageid}" data-container="bc" class="    "> 
-
-{BEGIN breadcrumbs}<ol class="breadcrumb">
-<li ><a href="{$home_link}"><span class="glyphicon glyphicon-home"></span></a>{$crumb_dropdown}</li>
-{BEGIN crumb}<li class="{$crumb_item_class}">
-{BEGIN crumb_title_link}<a {$crumb_attrs}>{$crumb_title}</a>
-{END crumb_title_link}
-{BEGIN crumb_title_span}<span {$crumb_attrs}>{$crumb_title}</span>
-{END crumb_title_span}	
-	{$crumb_dropdown}
-  </li>
-{END crumb}
-</ol>
-{END breadcrumbs}
-
-
-
-</div>
-{END container_bc}
-
-
-
-
-
-
-</div>
-{END container_breadcrumbs}
-
-
-
-{BEGIN container_masterinfo}<div {$masterinfo_chiddenattr} data-pageid="{$pageid}" data-container="masterinfo" class="    "> 
-
-{BEGIN mastertable_block}<div class="panel panel-info table-panel">
-	<div class="panel-heading">
-		{$master_heading}
-	</div>
-	<div class="panel-body">
-		{$showmasterfile}
-		
-	</div>
-</div>
-
-{END mastertable_block}
-
-
-
-</div>
-{END container_masterinfo}
-
-
-			</div>
-			<div class="bs-left" {$blockattr_left}>
-				
-
-
-			</div>
-			<div class="bs-center bs-screenwidth bs-minwidth">
-				
-
-{BEGIN container_gridcontrols}<div {$gridcontrols_chiddenattr} data-pageid="{$pageid}" data-container="gridcontrols" class="row rnr-rowcontainer bs-navcontrolled bs-hidden-xs">
-
-
-
-
-{BEGIN container_add_delete}<div {$add_delete_chiddenattr} data-pageid="{$pageid}" data-container="add_delete" class=" bottom-margin  col-md-6 "> 
-
-{BEGIN newrecord_controls_block}{BEGIN add_link}<a {$add_hiddenattr} data-pageid="{$pageid}" data-brick="add" type="button" class="btn btn-primary" {$addlink_attrs}>Add new</a>
-	{END add_link}
-
-	
-{END newrecord_controls_block}
-
-
-{BEGIN record_controls_block}<span {$recordcontrol_hiddenattr} data-pageid="{$pageid}" data-brick="recordcontrol">
-		{BEGIN deleteselected_link}<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
-	{END deleteselected_link}
-		</span>
-
-{END record_controls_block}
-
-
-
-</div>
-{END container_add_delete}
-
-
-
-
-
-
-
-
-{BEGIN container_gridinfo}<div {$gridinfo_chiddenattr} data-pageid="{$pageid}" data-container="gridinfo" class=" bottom-margin pull-right text-right col-md-6 "> 
-
-{BEGIN details_found}<span {$details_found_hiddenattr} data-pageid="{$pageid}" data-brick="details_found" class="form-inline form-inline-always">
-	{$records_indicator}
-	<span>
-	{BEGIN recordspp_block}{$recsPerPage}
-	{END recordspp_block}
-	</span>
-</span>
-{END details_found}
-
-
-
-
-
-</div>
-{END container_gridinfo}
-
-
-
-
-
-
-
-</div>{END container_gridcontrols}
-
-
-
-{BEGIN container_tabs}<div {$tabs_chiddenattr} data-pageid="{$pageid}" data-container="tabs" class="    "> 
-
-{BEGIN grid_tabs}<div {$bsgrid_tabs_hiddenattr} data-pageid="{$pageid}" data-brick="bsgrid_tabs">
-<ul class="nav nav-tabs">
-{$grid_tabs_content}
-</ul>
-</div>
-{END grid_tabs}
-
-
-
-</div>
-{END container_tabs}
-
-
-
-{BEGIN container_messagerow}<div {$messagerow_chiddenattr} data-pageid="{$pageid}" data-container="messagerow" class="row rnr-rowcontainer ">
-
-
-
-
-{BEGIN container_message}<div {$message_chiddenattr} data-pageid="{$pageid}" data-container="message" class="   col-md-12 "> 
-
-{BEGIN message_block}<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">{$message}</div>
-{END message_block}
-
-
-
-</div>
-{END container_message}
-
-
-
-
-
-
-</div>{END container_messagerow}
-
-
-
-{BEGIN container_center}<div {$center_chiddenattr} data-pageid="{$pageid}" data-container="center" class="    "> 
-
-
-
-
-{BEGIN container_grid}<div {$grid_chiddenattr} data-pageid="{$pageid}" data-container="grid" class="bs-grid    "> 
-
-{BEGIN grid_block}<style>
-	.bs-gridcell[data-field=id]:before {
-		content: "{$label t_cfgfleet id}";
-	}
-	.bs-gridcell[data-field=eventcfgid]:before {
-		content: "{$label t_cfgfleet eventcfgid}";
-	}
-	.bs-gridcell[data-field=start_num]:before {
-		content: "{$label t_cfgfleet start_num}";
-	}
-	.bs-gridcell[data-field=fleet_num]:before {
-		content: "{$label t_cfgfleet fleet_num}";
-	}
-	.bs-gridcell[data-field=fleet_code]:before {
-		content: "{$label t_cfgfleet fleet_code}";
-	}
-	.bs-gridcell[data-field=fleet_name]:before {
-		content: "{$label t_cfgfleet fleet_name}";
-	}
-	.bs-gridcell[data-field=fleet_desc]:before {
-		content: "{$label t_cfgfleet fleet_desc}";
-	}
-	.bs-gridcell[data-field=scoring]:before {
-		content: "{$label t_cfgfleet scoring}";
-	}
-	.bs-gridcell[data-field=py_type]:before {
-		content: "{$label t_cfgfleet py_type}";
-	}
-	.bs-gridcell[data-field=warn_signal]:before {
-		content: "{$label t_cfgfleet warn_signal}";
-	}
-	.bs-gridcell[data-field=prep_signal]:before {
-		content: "{$label t_cfgfleet prep_signal}";
-	}
-	.bs-gridcell[data-field=timelimit_abs]:before {
-		content: "{$label t_cfgfleet timelimit_abs}";
-	}
-	.bs-gridcell[data-field=timelimit_rel]:before {
-		content: "{$label t_cfgfleet timelimit_rel}";
-	}
-	.bs-gridcell[data-field=defaultlaps]:before {
-		content: "{$label t_cfgfleet defaultlaps}";
-	}
-	.bs-gridcell[data-field=defaultfleet]:before {
-		content: "{$label t_cfgfleet defaultfleet}";
-	}
-	.bs-gridcell[data-field=classinc]:before {
-		content: "{$label t_cfgfleet classinc}";
-	}
-	.bs-gridcell[data-field=onlyinc]:before {
-		content: "{$label t_cfgfleet onlyinc}";
-	}
-	.bs-gridcell[data-field=classexc]:before {
-		content: "{$label t_cfgfleet classexc}";
-	}
-	.bs-gridcell[data-field=groupinc]:before {
-		content: "{$label t_cfgfleet groupinc}";
-	}
-	.bs-gridcell[data-field=min_py]:before {
-		content: "{$label t_cfgfleet min_py}";
-	}
-	.bs-gridcell[data-field=max_py]:before {
-		content: "{$label t_cfgfleet max_py}";
-	}
-	.bs-gridcell[data-field=crew]:before {
-		content: "{$label t_cfgfleet crew}";
-	}
-	.bs-gridcell[data-field=spintype]:before {
-		content: "{$label t_cfgfleet spintype}";
-	}
-	.bs-gridcell[data-field=hulltype]:before {
-		content: "{$label t_cfgfleet hulltype}";
-	}
-	.bs-gridcell[data-field=min_helmage]:before {
-		content: "{$label t_cfgfleet min_helmage}";
-	}
-	.bs-gridcell[data-field=max_helmage]:before {
-		content: "{$label t_cfgfleet max_helmage}";
-	}
-	.bs-gridcell[data-field=min_skill]:before {
-		content: "{$label t_cfgfleet min_skill}";
-	}
-	.bs-gridcell[data-field=max_skill]:before {
-		content: "{$label t_cfgfleet max_skill}";
-	}
-	.bs-gridcell[data-field=upddate]:before {
-		content: "{$label t_cfgfleet upddate}";
-	}
-	.bs-gridcell[data-field=updby]:before {
-		content: "{$label t_cfgfleet updby}";
-	}
-</style>
-<table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
-	<thead>
-										{BEGIN grid_header}<tr class="rnr-toprow {$gridHeader_class}" >
-									{BEGIN record_header}{BEGIN listIcons_column}<TH style="width: 10%; white-space: nowrap;" rowspan="1" colspan="1" ieditcont="all"> &nbsp;</th>
-									{END listIcons_column}	
-
-																		{BEGIN checkbox_column}<th class="">
-										<input type="checkbox" {$checkboxheader_attrs}>
-									</th>
-									{END checkbox_column}
-
-																		
-									{BEGIN fleet_num_fieldheadercolumn}<th class="rnr-gridfieldlabel {$fleet_num_class}" data-field=fleet_num>
-									{BEGIN fleet_num_fieldheader}<span {$fleet_num_orderlinkattrs}>
-											{$label t_cfgfleet fleet_num}
-										</span>
-									{END fleet_num_fieldheader}
-									</th>
-									{END fleet_num_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN start_num_fieldheadercolumn}<th class="rnr-gridfieldlabel {$start_num_class}" data-field=start_num>
-									{BEGIN start_num_fieldheader}<span {$start_num_orderlinkattrs}>
-											{$label t_cfgfleet start_num}
-										</span>
-									{END start_num_fieldheader}
-									</th>
-									{END start_num_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN fleet_code_fieldheadercolumn}<th class="rnr-gridfieldlabel {$fleet_code_class}" data-field=fleet_code>
-									{BEGIN fleet_code_fieldheader}<span {$fleet_code_orderlinkattrs}>
-											{$label t_cfgfleet fleet_code}
-										</span>
-									{END fleet_code_fieldheader}
-									</th>
-									{END fleet_code_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN fleet_name_fieldheadercolumn}<th class="rnr-gridfieldlabel {$fleet_name_class}" data-field=fleet_name>
-									{BEGIN fleet_name_fieldheader}<span {$fleet_name_orderlinkattrs}>
-											{$label t_cfgfleet fleet_name}
-										</span>
-									{END fleet_name_fieldheader}
-									</th>
-									{END fleet_name_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN fleet_desc_fieldheadercolumn}<th class="rnr-gridfieldlabel {$fleet_desc_class}" data-field=fleet_desc>
-									{BEGIN fleet_desc_fieldheader}{END fleet_desc_fieldheader}
-									</th>
-									{END fleet_desc_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN scoring_fieldheadercolumn}<th class="rnr-gridfieldlabel {$scoring_class}" data-field=scoring>
-									{BEGIN scoring_fieldheader}<span {$scoring_orderlinkattrs}>
-											{$label t_cfgfleet scoring}
-										</span>
-									{END scoring_fieldheader}
-									</th>
-									{END scoring_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN py_type_fieldheadercolumn}<th class="rnr-gridfieldlabel {$py_type_class}" data-field=py_type>
-									{BEGIN py_type_fieldheader}<span {$py_type_orderlinkattrs}>
-											{$label t_cfgfleet py_type}
-										</span>
-									{END py_type_fieldheader}
-									</th>
-									{END py_type_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN endrecordheader_block}<TH class="rnr-cs" style="width: 3px;" rowspan="1" colspan="1"> 
-      &nbsp;</th>
-									
-									{END endrecordheader_block}
-									
-									{END record_header}
-									
-								</tr>
-								{END grid_header}
-
-	</thead>
-	<tbody>	
-		{BEGIN grid_row}<tr class="{$rowclass} bs-gridrow" {$rowattrs} {$rowstyle}>
-	{BEGIN grid_record}{BEGIN listIcons_column}<td class="bs-gridicons" iEditCont="all" {$rowstyle} {$recordattrs}>
-		{BEGIN edit_column}{BEGIN edit_link}<a class="glyphicon glyphicon-pencil" {$editlink_attrs} title="Edit"></a>
-	{END edit_link}
-	{END edit_column}
-
-		
-	<span data-hidden {$ieditbuttonsholder_attrs}></span>
-
-		{BEGIN copy_column}{BEGIN copy_link}<a class="glyphicon glyphicon-duplicate" {$copylink_attrs} title="Copy"></a>
-	{END copy_link}
-	{END copy_column}
-
-		{BEGIN view_column}{BEGIN view_link}<a class="glyphicon glyphicon-search" {$viewlink_attrs} title="View"></a>
-	{END view_link}
-	{END view_column}
-	</td>	
-	{END listIcons_column}	
-
-		{BEGIN checkbox_column}<td  iEditCont="checkBox" class="bs-gridcheckbox" {$rowstyle} {$recordattrs}>
-	{BEGIN checkbox}<input type="checkbox" {$checkbox_attrs}>
-	{END checkbox}
-	</td>
-	{END checkbox_column}
-
-	
-
-	{BEGIN fleet_num_fieldcolumn}<td class="bs-gridcell {$fleet_num_class}"  data-field=fleet_num {$rowstyle} {$recordattrs}>
-		{$fleet_num_value}
-	</td>
-{END fleet_num_fieldcolumn}
-
-
-	{BEGIN start_num_fieldcolumn}<td class="bs-gridcell {$start_num_class}"  data-field=start_num {$rowstyle} {$recordattrs}>
-		{$start_num_value}
-	</td>
-{END start_num_fieldcolumn}
-
-
-	{BEGIN fleet_code_fieldcolumn}<td class="bs-gridcell {$fleet_code_class}"  data-field=fleet_code {$rowstyle} {$recordattrs}>
-		{$fleet_code_value}
-	</td>
-{END fleet_code_fieldcolumn}
-
-
-	{BEGIN fleet_name_fieldcolumn}<td class="bs-gridcell {$fleet_name_class}"  data-field=fleet_name {$rowstyle} {$recordattrs}>
-		{$fleet_name_value}
-	</td>
-{$fleet_desc_value} {END fleet_name_fieldcolumn}
-
-
-	{BEGIN fleet_desc_fieldcolumn}<td class="bs-gridcell {$fleet_desc_class}"  data-field=fleet_desc {$rowstyle} {$recordattrs}>
-		{$fleet_desc_value}
-	</td>
-{END fleet_desc_fieldcolumn}
-
-
-	{BEGIN scoring_fieldcolumn}<td class="bs-gridcell {$scoring_class}"  data-field=scoring {$rowstyle} {$recordattrs}>
-		{$scoring_value}
-	</td>
-{END scoring_fieldcolumn}
-
-
-	{BEGIN py_type_fieldcolumn}<td class="bs-gridcell {$py_type_class}"  data-field=py_type {$rowstyle} {$recordattrs}>
-		{$py_type_value}
-	</td>
-{END py_type_fieldcolumn}
-
-	{BEGIN endrecord_block}<TD class="rnr-cs" style="width: 3px;" rowspan="1" colspan="1" {$endrecordblock_attrs}> &nbsp;</td>
-	{END endrecord_block}
-									
-	{END grid_record}
-
-</tr>
-{END grid_row}
-	</tbody>
-	<tfoot>
-										
-	</tfoot>
-</table>
-
-
-
-{END grid_block}
-
-
-
-</div>
-{END container_grid}
-
-
-
-
-
-
-</div>
-{END container_center}
-
-
-
-{BEGIN container_pagination}<div {$pagination_chiddenattr} data-pageid="{$pageid}" data-container="pagination" class="  text-center col-md-12 "> 
-
-{BEGIN pagination_block}<div {$pagination_hiddenattr} data-pageid="{$pageid}" data-brick="pagination">
-{$pagination}
-</div>
-{END pagination_block}
-
-
-
-</div>
-{END container_pagination}
-
-
-			</div>
-			<div class="bs-right">
-				
-			</div>
-		</div>
-		
-		{$footer}
-	{END body}
-	</body>
-</html>
+<!DOCTYPE html>
+<HTML {$html_attrs}>
+  <HEAD>
+    <META http-equiv="X-UA-Compatible" content="IE=Edge">
+    <META name="viewport" content="width=device-width, initial-scale=1.0">
+    <TITLE>
+      {$pagetitle}
+    </TITLE>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <LINK href="styles/default.css" rel="stylesheet" type="text/css">
+    {BEGIN rtlCSS}
+      <LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">
+    {END rtlCSS}
+    {BEGIN styleCSSFiles}
+      <LINK href="{$stylepath}" rel="stylesheet" type="text/css">
+    {END styleCSSFiles}
+    <META name="GENERATOR" content="MSHTML 11.00.10570.1001">
+  </HEAD>
+  <BODY class="{$stylename} function-list" {$bodyattrs}>
+    {BEGIN body}
+      {$header}
+      <STYLE>
+        {$containerCss}
+      </STYLE>
+      {BEGIN container_menu}
+        <NAV class="navbar navbar-default" data-container="menu" data-pageid="{$pageid}" {$menu_chiddenattr}>
+          {BEGIN container_hdr}
+            <DIV class="navbar-header" data-container="hdr" data-pageid="{$pageid}" {$hdr_chiddenattr}>
+              {BEGIN logo_block}
+                <A class="navbar-brand" href="{$home_link}" data-brick="logo" data-pageid="{$pageid}" {$logo_hiddenattr}>
+                  {$logo}
+                </A>
+              {END logo_block}
+              {BEGIN collapse_block}
+                <BUTTON class="navbar-toggle collapsed" type="button" data-brick="bsnavbarcollapse" data-pageid="{$pageid}" data-target=".bs-navcontrolled" data-runner-toggle="collapse" {$bsnavbarcollapse_hiddenattr}>
+                  <SPAN class="sr-only">
+                    Toggle navigation
+                  </SPAN>
+                  <SPAN class="icon-bar">
+                  </SPAN>
+                </BUTTON>
+              {END collapse_block}
+            </DIV>
+          {END container_hdr}
+          {BEGIN container_menu_1}
+            <DIV class="bs-navform navbar-collapse bs-navcontrolled bs-hidden-xs" aria-expanded="false" data-container="menu_1" data-pageid="{$pageid}" {$menu_1_chiddenattr}>
+              {BEGIN menu_block}
+                {$menu main horizontal}
+              {END menu_block}
+              {BEGIN container_more}
+                <DIV class="navbar-right navbar-form" data-container="more" data-pageid="{$pageid}" {$more_chiddenattr}>
+                  {BEGIN more_list}
+                    <DIV class="btn-group bs-navsection" data-brick="morebutton" data-pageid="{$pageid}" {$morebutton_hiddenattr}>
+                      <BUTTON class="btn btn-default dropdown-toggle" aria-expanded="false" aria-haspopup="true" type="button" data-toggle="dropdown">
+                        <SPAN class="glyphicon glyphicon-cog">
+                        </SPAN>
+                        <SPAN class="caret">
+                        </SPAN>
+                      </BUTTON>
+                      <UL class="dropdown-menu">
+                        {BEGIN deleteselected_link}
+                          <LI class="massButton{$id} disabled">
+                            <A href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>
+                              Delete selected
+                            </A>
+                          </LI>
+                        {END deleteselected_link}
+                        <LI class="divider" role="separator">
+                        </LI>
+                      </UL>
+                    </DIV>
+                  {END more_list}
+                  {BEGIN security_block}
+                    <SPAN class="bs-navsection" id="login_block{$id}" data-brick="loggedas" data-pageid="{$pageid}" {$loggedas_hiddenattr}>
+                      {BEGIN guestloginbutton}
+                        <BUTTON class="btn btn-info" type="button" {$guestloginlink_attrs}>
+                          Login
+                        </BUTTON>
+                      {END guestloginbutton}
+                      {BEGIN loggedas_message}
+                        <SPAN class="dropdown">
+                          <BUTTON class="btn btn-info dropdown-toggle" aria-expanded="false" aria-haspopup="true" type="button" data-toggle="dropdown">
+                            <SPAN class="glyphicon glyphicon-user">
+                            </SPAN>
+                            {$username}
+                          </BUTTON>
+                          <UL class="dropdown-menu">
+                            {BEGIN logoutbutton}
+                              <LI>
+                                <A href="#" {$logoutlink_attrs}>
+                                  Log out
+                                </A>
+                              </LI>
+                            {END logoutbutton}
+                            {BEGIN adminarea_link}
+                              <LI>
+                                <A href="admin_rights_list.php" {$adminarealink_attrs}>
+                                  Admin Area
+                                </A>
+                              </LI>
+                            {END adminarea_link}
+                            {BEGIN changepwd_link}
+                              <LI>
+                                <A href="#" {$changepwdlink_attrs}>
+                                  Change password
+                                </A>
+                              </LI>
+                            {END changepwd_link}
+                          </UL>
+                        </SPAN>
+                      {END loggedas_message}
+                    </SPAN>
+                  {END security_block}
+                </DIV>
+              {END container_more}
+              {BEGIN container_more_1}
+                <DIV class="navbar-right navbar-form" data-container="more_1" data-pageid="{$pageid}" {$more_1_chiddenattr}>
+                  {BEGIN searchform_block}
+                    <SPAN class="form-group" data-brick="search" data-pageid="{$pageid}" {$search_hiddenattr}>
+                    </SPAN>
+                  {END searchform_block}
+                </DIV>
+              {END container_more_1}
+            </DIV>
+          {END container_menu_1}
+        </NAV>
+      {END container_menu}
+      <DIV class="bs-middle">
+        <DIV class="bs-topmiddle">
+          {BEGIN container_breadcrumbs}
+            <DIV class=" " data-container="breadcrumbs" data-pageid="{$pageid}" {$breadcrumbs_chiddenattr}>
+              {BEGIN container_bc}
+                <DIV class=" " data-container="bc" data-pageid="{$pageid}" {$bc_chiddenattr}>
+                  {BEGIN breadcrumbs}
+                    <OL class="breadcrumb">
+                      <LI>
+                        <A href="{$home_link}">
+                          <SPAN class="glyphicon glyphicon-home">
+                          </SPAN>
+                        </A>
+                        {$crumb_dropdown}
+                      </LI>
+                      {BEGIN crumb}
+                        <LI class="{$crumb_item_class}">
+                          {BEGIN crumb_title_link}
+                            <A {$crumb_attrs}>
+                              {$crumb_title}
+                            </A>
+                          {END crumb_title_link}
+                          {BEGIN crumb_title_span}
+                            <SPAN {$crumb_attrs}>
+                              {$crumb_title}
+                            </SPAN>
+                          {END crumb_title_span}
+                          {$crumb_dropdown}
+                        </LI>
+                      {END crumb}
+                    </OL>
+                  {END breadcrumbs}
+                </DIV>
+              {END container_bc}
+            </DIV>
+          {END container_breadcrumbs}
+          {BEGIN container_masterinfo}
+            <DIV class=" " data-container="masterinfo" data-pageid="{$pageid}" {$masterinfo_chiddenattr}>
+              {BEGIN mastertable_block}
+                <DIV class="panel panel-info table-panel">
+                  <DIV class="panel-heading">
+                    {$master_heading}
+                  </DIV>
+                  <DIV class="panel-body">
+                    {$showmasterfile}
+                  </DIV>
+                </DIV>
+              {END mastertable_block}
+            </DIV>
+          {END container_masterinfo}
+        </DIV>
+        <DIV class="bs-left" {$blockattr_left}>
+        </DIV>
+        <DIV class="bs-center bs-screenwidth bs-minwidth">
+          {BEGIN container_gridcontrols}
+            <DIV class="row rnr-rowcontainer bs-navcontrolled bs-hidden-xs" data-container="gridcontrols" data-pageid="{$pageid}" {$gridcontrols_chiddenattr}>
+              {BEGIN container_add_delete}
+                <DIV class="bottom-margin col-md-6" data-container="add_delete" data-pageid="{$pageid}" {$add_delete_chiddenattr}>
+                  {BEGIN newrecord_controls_block}
+                    {BEGIN add_link}
+                      <A class="btn btn-primary" type="button" data-brick="add" data-pageid="{$pageid}" {$add_hiddenattr} {$addlink_attrs}>
+                        Add new
+                      </A>
+                    {END add_link}
+                  {END newrecord_controls_block}
+                  {BEGIN record_controls_block}
+                    <SPAN data-brick="recordcontrol" data-pageid="{$pageid}" {$recordcontrol_hiddenattr}>
+                      {BEGIN deleteselected_link}
+                        <BUTTON disabled class="btn btn-default" type="button" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>
+                          Delete
+                        </BUTTON>
+                      {END deleteselected_link}
+                    </SPAN>
+                  {END record_controls_block}
+                </DIV>
+              {END container_add_delete}
+              {BEGIN container_gridinfo}
+                <DIV class="bottom-margin pull-right text-right col-md-6" data-container="gridinfo" data-pageid="{$pageid}" {$gridinfo_chiddenattr}>
+                  {BEGIN details_found}
+                    <SPAN class="form-inline form-inline-always" data-brick="details_found" data-pageid="{$pageid}" {$details_found_hiddenattr}>
+                      {$records_indicator}
+                      <SPAN>
+                        {BEGIN recordspp_block}
+                          {$recsPerPage}
+                        {END recordspp_block}
+                      </SPAN>
+                    </SPAN>
+                  {END details_found}
+                </DIV>
+              {END container_gridinfo}
+            </DIV>
+          {END container_gridcontrols}
+          {BEGIN container_tabs}
+            <DIV class=" " data-container="tabs" data-pageid="{$pageid}" {$tabs_chiddenattr}>
+              {BEGIN grid_tabs}
+                <DIV data-brick="bsgrid_tabs" data-pageid="{$pageid}" {$bsgrid_tabs_hiddenattr}>
+                  <UL class="nav nav-tabs">
+                    {$grid_tabs_content}
+                  </UL>
+                </DIV>
+              {END grid_tabs}
+            </DIV>
+          {END container_tabs}
+          {BEGIN container_messagerow}
+            <DIV class="row rnr-rowcontainer" data-container="messagerow" data-pageid="{$pageid}" {$messagerow_chiddenattr}>
+              {BEGIN container_message}
+                <DIV class="col-md-12" data-container="message" data-pageid="{$pageid}" {$message_chiddenattr}>
+                  {BEGIN message_block}
+                    <DIV class="alert {$message_class}" role="alert" data-brick="message" data-pageid="{$pageid}" {$message_hiddenattr}>
+                      {$message}
+                    </DIV>
+                  {END message_block}
+                </DIV>
+              {END container_message}
+            </DIV>
+          {END container_messagerow}
+          {BEGIN container_center}
+            <DIV class=" " data-container="center" data-pageid="{$pageid}" {$center_chiddenattr}>
+              {BEGIN container_grid}
+                <DIV class="bs-grid" data-container="grid" data-pageid="{$pageid}" {$grid_chiddenattr}>
+                  {BEGIN grid_block}
+                    <STYLE>
+                      .bs-gridcell[data-field=id]:before {
+                      content: "{$label t_cfgfleet id}";
+                      }
+                      .bs-gridcell[data-field=eventcfgid]:before {
+                      content: "{$label t_cfgfleet eventcfgid}";
+                      }
+                      .bs-gridcell[data-field=start_num]:before {
+                      content: "{$label t_cfgfleet start_num}";
+                      }
+                      .bs-gridcell[data-field=fleet_num]:before {
+                      content: "{$label t_cfgfleet fleet_num}";
+                      }
+                      .bs-gridcell[data-field=fleet_code]:before {
+                      content: "{$label t_cfgfleet fleet_code}";
+                      }
+                      .bs-gridcell[data-field=fleet_name]:before {
+                      content: "{$label t_cfgfleet fleet_name}";
+                      }
+                      .bs-gridcell[data-field=fleet_desc]:before {
+                      content: "{$label t_cfgfleet fleet_desc}";
+                      }
+                      .bs-gridcell[data-field=scoring]:before {
+                      content: "{$label t_cfgfleet scoring}";
+                      }
+                      .bs-gridcell[data-field=py_type]:before {
+                      content: "{$label t_cfgfleet py_type}";
+                      }
+                      .bs-gridcell[data-field=warn_signal]:before {
+                      content: "{$label t_cfgfleet warn_signal}";
+                      }
+                      .bs-gridcell[data-field=prep_signal]:before {
+                      content: "{$label t_cfgfleet prep_signal}";
+                      }
+                      .bs-gridcell[data-field=timelimit_abs]:before {
+                      content: "{$label t_cfgfleet timelimit_abs}";
+                      }
+                      .bs-gridcell[data-field=timelimit_rel]:before {
+                      content: "{$label t_cfgfleet timelimit_rel}";
+                      }
+                      .bs-gridcell[data-field=defaultlaps]:before {
+                      content: "{$label t_cfgfleet defaultlaps}";
+                      }
+                      .bs-gridcell[data-field=defaultfleet]:before {
+                      content: "{$label t_cfgfleet defaultfleet}";
+                      }
+                      .bs-gridcell[data-field=classinc]:before {
+                      content: "{$label t_cfgfleet classinc}";
+                      }
+                      .bs-gridcell[data-field=onlyinc]:before {
+                      content: "{$label t_cfgfleet onlyinc}";
+                      }
+                      .bs-gridcell[data-field=classexc]:before {
+                      content: "{$label t_cfgfleet classexc}";
+                      }
+                      .bs-gridcell[data-field=groupinc]:before {
+                      content: "{$label t_cfgfleet groupinc}";
+                      }
+                      .bs-gridcell[data-field=min_py]:before {
+                      content: "{$label t_cfgfleet min_py}";
+                      }
+                      .bs-gridcell[data-field=max_py]:before {
+                      content: "{$label t_cfgfleet max_py}";
+                      }
+                      .bs-gridcell[data-field=crew]:before {
+                      content: "{$label t_cfgfleet crew}";
+                      }
+                      .bs-gridcell[data-field=spintype]:before {
+                      content: "{$label t_cfgfleet spintype}";
+                      }
+                      .bs-gridcell[data-field=hulltype]:before {
+                      content: "{$label t_cfgfleet hulltype}";
+                      }
+                      .bs-gridcell[data-field=min_helmage]:before {
+                      content: "{$label t_cfgfleet min_helmage}";
+                      }
+                      .bs-gridcell[data-field=max_helmage]:before {
+                      content: "{$label t_cfgfleet max_helmage}";
+                      }
+                      .bs-gridcell[data-field=min_skill]:before {
+                      content: "{$label t_cfgfleet min_skill}";
+                      }
+                      .bs-gridcell[data-field=max_skill]:before {
+                      content: "{$label t_cfgfleet max_skill}";
+                      }
+                      .bs-gridcell[data-field=upddate]:before {
+                      content: "{$label t_cfgfleet upddate}";
+                      }
+                      .bs-gridcell[data-field=updby]:before {
+                      content: "{$label t_cfgfleet updby}";
+                      }
+                    </STYLE>
+                    <TABLE class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" data-brick="grid" data-pageid="{$pageid}" {$grid_hiddenattr}>
+                      <THEAD>
+                        {BEGIN grid_header}
+                          <TR class="rnr-toprow {$gridHeader_class}">
+                            {BEGIN record_header}
+                              {BEGIN listIcons_column}
+                                <TH style="width: 10%; white-space: nowrap;" rowspan="1" colspan="1" ieditcont="all">
+                                  &nbsp;
+                                </TH>
+                              {END listIcons_column}
+                              {BEGIN checkbox_column}
+                                <TH>
+                                  <INPUT type="checkbox" {$checkboxheader_attrs}>
+                                </TH>
+                              {END checkbox_column}
+                              {BEGIN fleet_num_fieldheadercolumn}
+                                <TH class="rnr-gridfieldlabel {$fleet_num_class}" data-field="fleet_num">
+                                  {BEGIN fleet_num_fieldheader}
+                                    <SPAN {$fleet_num_orderlinkattrs}>
+                                      {$label t_cfgfleet fleet_num}
+                                    </SPAN>
+                                  {END fleet_num_fieldheader}
+                                </TH>
+                              {END fleet_num_fieldheadercolumn}
+                              {BEGIN start_num_fieldheadercolumn}
+                                <TH class="rnr-gridfieldlabel {$start_num_class}" data-field="start_num">
+                                  {BEGIN start_num_fieldheader}
+                                    <SPAN {$start_num_orderlinkattrs}>
+                                      {$label t_cfgfleet start_num}
+                                    </SPAN>
+                                  {END start_num_fieldheader}
+                                </TH>
+                              {END start_num_fieldheadercolumn}
+                              {BEGIN fleet_code_fieldheadercolumn}
+                                <TH class="rnr-gridfieldlabel {$fleet_code_class}" data-field="fleet_code">
+                                  {BEGIN fleet_code_fieldheader}
+                                    <SPAN {$fleet_code_orderlinkattrs}>
+                                      {$label t_cfgfleet fleet_code}
+                                    </SPAN>
+                                  {END fleet_code_fieldheader}
+                                </TH>
+                              {END fleet_code_fieldheadercolumn}
+                              {BEGIN fleet_name_fieldheadercolumn}
+                                <TH class="rnr-gridfieldlabel {$fleet_name_class}" data-field="fleet_name">
+                                  {BEGIN fleet_name_fieldheader}
+                                    <SPAN {$fleet_name_orderlinkattrs}>
+                                      {$label t_cfgfleet fleet_name}
+                                    </SPAN>
+                                  {END fleet_name_fieldheader}
+                                </TH>
+                              {END fleet_name_fieldheadercolumn}
+                              {BEGIN fleet_desc_fieldheadercolumn}
+                                <TH class="rnr-gridfieldlabel {$fleet_desc_class}" data-field="fleet_desc">
+                                  {BEGIN fleet_desc_fieldheader}
+                                  {END fleet_desc_fieldheader}
+                                </TH>
+                              {END fleet_desc_fieldheadercolumn}
+                              {BEGIN scoring_fieldheadercolumn}
+                                <TH class="rnr-gridfieldlabel {$scoring_class}" data-field="scoring">
+                                  {BEGIN scoring_fieldheader}
+                                    <SPAN {$scoring_orderlinkattrs}>
+                                      {$label t_cfgfleet scoring}
+                                    </SPAN>
+                                  {END scoring_fieldheader}
+                                </TH>
+                              {END scoring_fieldheadercolumn}
+                              {BEGIN py_type_fieldheadercolumn}
+                                <TH class="rnr-gridfieldlabel {$py_type_class}" data-field="py_type">
+                                  {BEGIN py_type_fieldheader}
+                                    <SPAN {$py_type_orderlinkattrs}>
+                                      {$label t_cfgfleet py_type}
+                                    </SPAN>
+                                  {END py_type_fieldheader}
+                                </TH>
+                              {END py_type_fieldheadercolumn}
+                              {BEGIN endrecordheader_block}
+                                <TH class="rnr-cs" style="width: 3px;" rowspan="1" colspan="1">
+                                  &nbsp;
+                                </TH>
+                              {END endrecordheader_block}
+                            {END record_header}
+                          </TR>
+                        {END grid_header}
+                      </THEAD>
+                      <TBODY>
+                        {BEGIN grid_row}
+                          <TR class="{$rowclass} bs-gridrow" {$rowattrs} {$rowstyle}>
+                            {BEGIN grid_record}
+                              {BEGIN listIcons_column}
+                                <TD class="bs-gridicons" ieditcont="all" {$rowstyle} {$recordattrs}>
+                                  {BEGIN edit_column}
+                                    {BEGIN edit_link}
+                                      <A title="Edit" class="glyphicon glyphicon-pencil" {$editlink_attrs}>
+                                      </A>
+                                    {END edit_link}
+                                  {END edit_column}
+                                  <SPAN data-hidden {$ieditbuttonsholder_attrs}>
+                                  </SPAN>
+                                  {BEGIN copy_column}
+                                    {BEGIN copy_link}
+                                      <A title="Copy" class="glyphicon glyphicon-duplicate" {$copylink_attrs}>
+                                      </A>
+                                    {END copy_link}
+                                  {END copy_column}
+                                  {BEGIN view_column}
+                                    {BEGIN view_link}
+                                      <A title="View" class="glyphicon glyphicon-search" {$viewlink_attrs}>
+                                      </A>
+                                    {END view_link}
+                                  {END view_column}
+                                </TD>
+                              {END listIcons_column}
+                              {BEGIN checkbox_column}
+                                <TD class="bs-gridcheckbox" ieditcont="checkBox" {$rowstyle} {$recordattrs}>
+                                  {BEGIN checkbox}
+                                    <INPUT type="checkbox" {$checkbox_attrs}>
+                                  {END checkbox}
+                                </TD>
+                              {END checkbox_column}
+                              {BEGIN fleet_num_fieldcolumn}
+                                <TD class="bs-gridcell {$fleet_num_class}" data-field="fleet_num" {$rowstyle} {$recordattrs}>
+                                  {$fleet_num_value}
+                                </TD>
+                              {END fleet_num_fieldcolumn}
+                              {BEGIN start_num_fieldcolumn}
+                                <TD class="bs-gridcell {$start_num_class}" data-field="start_num" {$rowstyle} {$recordattrs}>
+                                  {$start_num_value}
+                                </TD>
+                              {END start_num_fieldcolumn}
+                              {BEGIN fleet_code_fieldcolumn}
+                                <TD class="bs-gridcell {$fleet_code_class}" data-field="fleet_code" {$rowstyle} {$recordattrs}>
+                                  {$fleet_code_value}
+                                </TD>
+                              {END fleet_code_fieldcolumn}
+                              <TD class="bs-gridcell {$fleet_name_class}" data-field="fleet_name" {$rowstyle} {$recordattrs}>
+                                {$fleet_name_value}
+                              </TD>
+                              {BEGIN fleet_desc_fieldcolumn}
+                                <TD class="bs-gridcell {$fleet_desc_class}" data-field="fleet_desc" {$rowstyle} {$recordattrs}>
+                                  {$fleet_desc_value}
+                                </TD>
+                              {END fleet_desc_fieldcolumn}
+                              {BEGIN scoring_fieldcolumn}
+                                <TD class="bs-gridcell {$scoring_class}" data-field="scoring" {$rowstyle} {$recordattrs}>
+                                  {$scoring_value}
+                                </TD>
+                              {END scoring_fieldcolumn}
+                              {BEGIN py_type_fieldcolumn}
+                                <TD class="bs-gridcell {$py_type_class}" data-field="py_type" {$rowstyle} {$recordattrs}>
+                                  {$py_type_value}
+                                </TD>
+                              {END py_type_fieldcolumn}
+                              {BEGIN endrecord_block}
+                                <TD class="rnr-cs" style="width: 3px;" rowspan="1" colspan="1" {$endrecordblock_attrs}>
+                                  &nbsp;
+                                </TD>
+                              {END endrecord_block}
+                            {END grid_record}
+                          </TR>
+                        {END grid_row}
+                      </TBODY>
+                      <TFOOT>
+                      </TFOOT>
+                    </TABLE>
+                  {END grid_block}
+                </DIV>
+              {END container_grid}
+            </DIV>
+          {END container_center}
+          {BEGIN container_pagination}
+            <DIV class="text-center col-md-12" data-container="pagination" data-pageid="{$pageid}" {$pagination_chiddenattr}>
+              {BEGIN pagination_block}
+                <DIV data-brick="pagination" data-pageid="{$pageid}" {$pagination_hiddenattr}>
+                  {$pagination}
+                </DIV>
+              {END pagination_block}
+            </DIV>
+          {END container_pagination}
+        </DIV>
+        <DIV class="bs-right">
+        </DIV>
+      </DIV>
+      {$footer}
+    {END body}
+  </BODY>
+</HTML>

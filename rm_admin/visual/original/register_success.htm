@@ -2,6 +2,7 @@
 <html  {$html_attrs}>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{$pagetitle}</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -12,68 +13,151 @@
 		{BEGIN styleCSSFiles}
 		<link REL="stylesheet" href="{$stylepath}" type="text/css">
 		{END styleCSSFiles}
-		{BEGIN pageCSSFiles}
-		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
-		{END pageCSSFiles}
 	</head>
-	
+
 	<body class="{$stylename} function-register_success" {$bodyattrs}>
 	{BEGIN body}
 		{$header}
-	<div class="rnr-page">
-		<div class="rnr-top {$blockclass_top}">
-			
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
 
-{BEGIN container_register}
-<div class="rnr-c rnr-cv rnr-c-register">
+{BEGIN container_page}
+<div {$page_chiddenattr} data-pageid="{$pageid}" data-container="page" class="container    "> 
+
+
+
+
+{BEGIN container_page_1}
+<div {$page_1_chiddenattr} data-pageid="{$pageid}" data-container="page_1" class=" bs-standalone-page  col-md-6 col-md-offset-3"> 
+
+
+
+
+{BEGIN container_panel}
+<div {$panel_chiddenattr} data-pageid="{$pageid}" data-container="panel" class=" bs-pagepanel panel panel-primary   "> 
+
+
+
+
+{BEGIN container_header}
+<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class=" panel-heading   "> 
 
 {BEGIN regheader}
-<div  class="rnr-brickcontents style2 rnr-b-regheader {$brickclass_regheader}"><span>	{$pagetitlelabel  register_success}
-</span></div>{END regheader}
+<h3 class="panel-title" {$regheader_hiddenattr} data-pageid="{$pageid}" data-brick="regheader" >
+{$pagetitlelabel  register_success}
+</h3>
+{END regheader}
 
 
 
-<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+</div>
+{END container_header}
+
+
+
+
+
+
+
+
+{BEGIN container_body}
+<div {$body_chiddenattr} data-pageid="{$pageid}" data-container="body" class=" panel-body   "> 
+
+
+
 
 {BEGIN container_fields}
-<div class="rnr-c rnr-cv rnr-c-fields">
+<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class="   col-md-12 "> 
 
 {BEGIN activation_block}
-<div  class="rnr-brickcontents style1 rnr-b-activation {$brickclass_activation}">Your registration was successful.<br>An email has been sent to <b>{$email}</b> containing further instructions. Click on the link provided in the email to complete the registration.</div>{END activation_block}
+<div {$activation_hiddenattr} data-pageid="{$pageid}" data-brick="activation" class="alert {$message_class}">
+Your registration was successful.<br>An email has been sent to <b>{$email}</b> containing further instructions. Click on the link provided in the email to complete the registration.
+</div>
+{END activation_block}
 
-
-{BEGIN registered_block}
-<div  class="rnr-brickcontents style1 rnr-b-registered {$brickclass_registered}"><a href="login.php" class="rnr-button main" {$loginlink_attrs}>Proceed to login page</a>
-<a href="#" class="rnr-button main" {$closewindow_attrs}>Close window</a></div>{END registered_block}
 
 
 </div>
 {END container_fields}
 
+
+
+
+
+
+
+
+{BEGIN container_header_1}
+<div {$header_1_chiddenattr} data-pageid="{$pageid}" data-container="header_1" class="   col-md-8 col-md-offset-4"> 
+
+{BEGIN registered_block}
+<span {$registered_hiddenattr} data-pageid="{$pageid}" data-brick="registered">
+	<a href="login.php" class="btn btn-primary" {$loginlink_attrs}>Proceed to login page</a>
+	{BEGIN close_win_btn}
+	<a href="#" class="btn btn-default" {$closewindow_attrs}>Close window</a>
+	{END close_win_btn}
+</span>
+{END registered_block}
+
+
+
 </div>
+{END container_header_1}
+
+
+
+
 
 
 </div>
-{END container_register}
+{END container_body}
+
+
+
+
+
+
+</div>
+{END container_panel}
+
+
+
+
+
+
+</div>
+{END container_page_1}
+
+
+
+
+
+
+</div>
+{END container_page}
 
 
 		</div>
-		<div class="rnr-middle">
-			<div class="rnr-left {$blockclass_left}">
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
 				
 			</div>
-			<div class="rnr-center {$blockclass_center}">
+			<div class="bs-left" {$blockattr_left}>
 				
 			</div>
-			<div class="rnr-right {$blockclass_right}">
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
 				
 			</div>
 		</div>
-		<div class="rnr-bottom {$blockclass_bottom}">
-			<!--%%bottom%%-->
+		<DIV class="bs-bottom">
+        
 		</div>
-	</div>
-		
 		{$footer}
 	{END body}
 	</body>

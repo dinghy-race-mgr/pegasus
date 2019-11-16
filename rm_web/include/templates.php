@@ -16,18 +16,18 @@ class TEMPLATE
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <link rel="shortcut icon" href="{loc}/images/favicon.ico">
-        <link rel="stylesheet" href="{loc}/oss/bootstrap/css/bootstrap.min.css" >
-        <link rel="stylesheet" href="{loc}/oss/bootstrap/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="{loc}/oss/bs-validator/dist/css/formValidation.min.css">
+        <link rel="shortcut icon" href="{ossloc}/common/images/favicon.ico">
+        <link rel="stylesheet" href="{ossloc}/common/oss/bootstrap/css/bootstrap.min.css" >
+        <link rel="stylesheet" href="{ossloc}/common/oss/bootstrap/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{ossloc}/common/oss/bs-validator/dist/css/formValidation.min.css">
 
-        <script type="text/javascript" src="{loc}/oss/jquery/jquery.min.js"></script>
-        <script type="text/javascript" src="{loc}/oss/bs-validator/dist/js/formValidation.min.js"></script>
-        <script type="text/javascript" src="{loc}/oss/bs-validator/dist/js/framework/bootstrap.min.js"></script>
-        <script type="text/javascript" src="{loc}/oss/bs-validator/dist/js/addons/mandatoryIcon.js"></script>
+        <script type="text/javascript" src="{ossloc}/common/oss/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="{ossloc}/common/oss/bs-validator/dist/js/formValidation.min.js"></script>
+        <script type="text/javascript" src="{ossloc}/common/oss/bs-validator/dist/js/framework/bootstrap.min.js"></script>
+        <script type="text/javascript" src="{ossloc}/common/oss/bs-validator/dist/js/addons/mandatoryIcon.js"></script>
 
-        <script type="text/javascript" src="{loc}/oss/bootstrap/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="{loc}/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
+        <script type="text/javascript" src="{ossloc}/common/oss/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="{ossloc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
 
         <!-- Custom styles for this template -->
         <link href="{loc}/custom.css" rel="stylesheet">
@@ -168,17 +168,17 @@ EOT;
        $tide = "";
        $category = "";
        $duty = "";
-       if ($params['inc_tide']) { $tide = "<th>Tide</th>"; }
-       if ($params['inc_type']) { $category = "<th>Type/Format</th>"; } 
+       if ($params['inc_tide']) { $tide = "<th width=\"15%\">Tide</th>"; }
+       if ($params['inc_type']) { $category = "<th width=\"15%\">Type/Format</th>"; }
        if ($params['inc_duty'])
        {
            if ($params['inc_duty_ood_only'])
            {
-               $duty = "<th>Race Officer</th>";
+               $duty = "<th width=\"25%\">Race Officer</th>";
            }
            else
            {
-               $duty = "<th>Duties</th>";
+               $duty = "<th width=\"25%\">Duties</th>";
            }
 
        }
@@ -186,9 +186,9 @@ EOT;
        $html = <<<EOT
        <thead>
           <tr class="bg-primary" style="font-size: 0.8em;"> 
-             <th>Date</th> 
-             <th>Time</th> 
-             <th>Event</th> 
+             <th width="10%">Date</th> 
+             <th width="10%">Time</th> 
+             <th width="25%">Event</th> 
              $category
              $tide
              $duty             
@@ -224,8 +224,7 @@ EOT;
        {
            $category = <<<EOT
            <td class="">
-                {category}
-                <br>
+                {category} / 
                 <span class="tb_format" data-toggle="tooltip" data-placement="right" title="{format}">
                     {subcategory}
                 </span>
@@ -233,20 +232,26 @@ EOT;
 
 EOT;
        }
+
+       $info = "";
+       if ($params['info'])
+       {
+           $info = <<<EOT
+                <a href="{info}" target="_blank">{infolbl}</a>
+EOT;
+       }
+
        if ($params['fields']['inc_duty'] and $params['state']!="noevent")
        {
            if ($params['fields']['inc_duty_ood_only'])
            {
                $duty = <<<EOT
-                <td class="" style="width: 20%">
-                {duties} 
-                </td>
+                {duties}
 EOT;
            }
            else
            {
                $duty = <<<EOT
-                 <td class="" style="width: 20%">
                     <a  data-toggle="collapse" data-target="#duty{id}" 
                     aria-expanded="false" aria-controls="duty{id}" ><b>Duties [{duty_num}]</b></a>
                     <div class="collapse{duty_show}" id="duty{id}">
@@ -256,7 +261,6 @@ EOT;
                              </table>
                        </div>
                     </div>
-                 </td>
 EOT;
            }
        }
@@ -268,12 +272,14 @@ EOT;
              $name
              $category
              $tide
-             $duty
+             <td class="" style="width: 20%">
+                $duty<br>
+                $info
+             </td>
          </tr>
 EOT;
         return $html;    
     }
-
 
     public function tb_prg_none($params=array())
     {
@@ -388,7 +394,7 @@ EOT;
        <div class="jumbotron center-block" style="width:60%; margin-top: 60px;">
           <div class="row">
              <div class="col-md-6">
-                 <img src="./images/uc_hat_t.png" alt="under construction" height="200" width="200"> 
+                 <img src="{ossloc}/common/images/web_graphics/uc_hat_t.png" alt="under construction" height="200" width="200"> 
              </div>
              <div class="col-md-6">
                 <p><b>{title}</b></p>

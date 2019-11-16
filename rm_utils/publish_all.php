@@ -123,6 +123,8 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
             $state = 1;  // error no events in period
         }
 
+        $file_status = false;
+        $transfer_status = false;
         if ($state == 0 and strtolower($_REQUEST['action']) == "publish")  // create  programme file and transfer if required
         {
             $file_status = create_programme_file();
@@ -137,7 +139,8 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
         }
         // output report on script
         $pagefields['body'] = $tmpl_o->get_template("publish_all_report", array("count"=>$count, "action"=>$_REQUEST['action']),
-            array("display"=>true, "state"=>$state, "count"=>$count, "file"=>$file_status, "transfer"=>$transfer_status, "data"=> $data));
+            array("display"=>true, "state"=>$state, "count"=>$count, "action"=>$_REQUEST['action'],
+                  "file"=>$file_status, "transfer"=>$transfer_status, "data"=> $data));
     }
 }
 
@@ -221,16 +224,18 @@ function create_programme_file()
 
 
             $out['events']["evt_{$event['id']}"] = array(
-                "id" => $event['id'],
-                "name" => $event['event_name'],
-                "note" => $event['event_notes'],
-                "date" => date("Y-m-d", strtotime($event['event_date'])),
-                "time"        => $event['event_start'],
-                "category"    => $event['event_type'],
-                "subcategory" => $event['race_name'],
-                "tide" =>  "HW ".$event['tide_time']." ".$event['tide_height']."m",
-                "state"=> $state,
-                "duties" => array()
+                "id"             => $event['id'],
+                "name"           => $event['event_name'],
+                "note"           => $event['event_notes'],
+                "date"           => date("Y-m-d", strtotime($event['event_date'])),
+                "time"           => $event['event_start'],
+                "category"       => $event['event_type'],
+                "subcategory"    => $event['race_name'],
+                "tide"           =>  "HW ".$event['tide_time']." - ".$event['tide_height']."m",
+                "info"           => $event['weblink'],
+                "infolbl"        => $event['webname'],
+                "state"          => $state,
+                "duties"         => array()
             );
             // get and add allocated duties
             $duties = $rota_o->get_event_duties($event['id']);

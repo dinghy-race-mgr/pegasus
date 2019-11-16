@@ -70,13 +70,13 @@ class ROTA
 
         if ($duplicates)
         {
-            $query = "SELECT *  FROM t_rotamember WHERE $where AND active = 1 ORDER BY familyname ASC, firstname ASC";
+            $query = "SELECT * FROM t_rotamember WHERE $where AND active = 1 ORDER BY familyname ASC, firstname ASC";
         }
         else
         {
-            $query = "SELECT *  FROM t_rotamember WHERE $where AND active = 1 GROUP BY familyname, firstname ORDER BY familyname ASC, firstname ASC";
+            $query = "SELECT * FROM t_rotamember WHERE $where AND active = 1 GROUP BY familyname, firstname ORDER BY familyname ASC, firstname ASC";
         }
-        //echo "<pre>$query</pre>";
+        echo "<pre>$query</pre>";
         $detail = $this->db->db_get_rows($query);
 
         if (empty($detail))

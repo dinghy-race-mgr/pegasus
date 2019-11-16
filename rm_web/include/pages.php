@@ -8,15 +8,12 @@ class PAGES
        include ("./include/util.php");
        $this->tmpl_o = new TEMPLATE();
        $this->cfg = $cfg;
-
    }
    
    public function pg_menu()
    {
       // clear parsed data
       unset($_SESSION['prg']); 
-
-      //echo "<pre>".print_r($this->cfg,true)."</pre>";
 
       // work out how many 'pages' have been configured
       $num_pages = 0;
@@ -63,6 +60,7 @@ class PAGES
             }
           $fields = array(
               "loc"    => $this->cfg['loc'],
+              "ossloc" => "..",
               "window" => "raceManager",
               "header" => $this->get_header(),
               "margin-top"=> "80px",
@@ -82,11 +80,8 @@ class PAGES
             $this->pg_none($_SESSION['error']);
             exit();
         }
-        //echo "<pre>".print_r($this->cfg['programme'],true)."</pre>";
-        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
-        $params = $prog->set_parameters($_REQUEST);
-        //echo "<pre>".print_r($params,true)."</pre>";
 
+        $params = $prog->set_parameters($_REQUEST);
         empty($params['start']) ? $current_date = date("Y-m-d") : $current_date = $params['start'] ;
       
         // calendar navigation
@@ -135,12 +130,20 @@ class PAGES
                     }
                 }
 
-
-
                 $format = "";
                 if ($event['category'] == "racing")
                 {
                     $format = $_SESSION['prg']['meta']['racetype'][$event['subcategory']]['desc'];
+                }
+
+                $info_present = false;
+                if (!empty($event['info']))
+                {
+                    $info_present = true;
+                    if (empty($event['infolbl']))
+                    {
+                        $event['infolbl'] = "more information";
+                    }
                 }
 
                 $evt_fields = array(
@@ -155,6 +158,8 @@ class PAGES
                     "subcategory" => $event['subcategory'],
                     "format"      => $format,
                     "tide"        => $event['tide'],
+                    "info"        => $event['info'],
+                    "infolbl"     => $event['infolbl'],
                     "duties"      => $duty_info,
                     "duty_num"    => $duty_count
                 );
@@ -163,7 +168,7 @@ class PAGES
                 $this->cfg["programme"]['duty_display'] ? $evt_fields['duty_show'] = ".in" : $evt_fields['duty_show'] = "";
 
                 $table_data.= $this->get_template("tb_prg_data", $evt_fields,
-                    array("fields" => $this->cfg["programme"]['fields'], "state" => $event['state']));
+                    array("fields" => $this->cfg["programme"]['fields'], "state" => $event['state'], "info" => $info_present));
             }
             $table_head = "";
             if ($this->cfg['programme']['table_hdr'])
@@ -176,6 +181,7 @@ class PAGES
 
         $fields = array(
             "loc"    => $this->cfg['loc'],
+            "ossloc" => "..",
             "window" => "raceManager",
             "header" => $this->get_header("PROGRAMME", "menu"),
             "margin-top"=> "50px",
@@ -190,10 +196,12 @@ class PAGES
    {
        $fields = array(
            "loc"    => $this->cfg['loc'],
+           "ossloc" => "..",
            "window" => "raceManager",
            "header" => $this->get_header("RACE RESULTS", "menu"),
            "margin-top"=> "50px",
-           "body"   => $this->under_construction(array("title" => "Race Results Page:", "info" => "We are still working on the results page")),
+           "body"   => $this->under_construction(array("ossloc" => "..", "title" => "Race Results Page:",
+                                                       "info" => "We are still working on the results page")),
            "footer" => $this->get_footer(),
        );
        echo $this->get_template("layout_master", $fields, array());
@@ -203,10 +211,12 @@ class PAGES
    {
       $fields = array(
          "loc"    => $this->cfg['loc'],
+         "ossloc" => "..",
          "window" => "raceManager",
          "header" => $this->get_header("PY ANALYSIS", "menu"),
          "margin-top"=> "50px",
-         "body"   => $this->under_construction(array("title" => "PY Analysis Page:", "info" => "We are still working on PY analysis page")),
+         "body"   => $this->under_construction(array("ossloc" => "..", "title" => "PY Analysis Page:",
+                                                     "info" => "We are still working on PY analysis page")),
          "footer" => $this->get_footer(),     
       );      
       echo $this->get_template("layout_master", $fields, array());   
@@ -300,4 +310,3 @@ class PAGES
    }
 
 }
-?>

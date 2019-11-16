@@ -1,6 +1,8 @@
 <?php
 /*
-  html templates for csv import utility
+  duty_check_tm.php
+  Templates for rm_utils/duty_check script
+
 */
 
 
@@ -79,7 +81,6 @@ EOT;
 function duty_check_report($params = array())
 {
     $bufr = "";
-    //echo "<pre>".print_r($params, true)."</pre>";
 
     $rows = "";
     foreach($params['data'] as $k=>$row)
@@ -110,7 +111,8 @@ EOT;
 
     $bufr.=<<<EOT
     <div class="container"></div>
-        <h1>Duty Check Report</h1>
+        <h1>Duty Check Report </h1>
+        <h3>[{rotas}]</h3>
         <table class="table table-condensed">
             <tr><thead>
                 <th width="25%">Member</th>
