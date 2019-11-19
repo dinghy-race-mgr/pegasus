@@ -39,6 +39,7 @@ $today = date("Y-m-d");
 require_once ("{$loc}/common/lib/util_lib.php");
 
 session_start();
+unset($_SESSION);
 
 // initialise session if this is first call
 if (!isset($_SESSION['app_init']) OR ($_SESSION['app_init'] === false))
@@ -123,6 +124,8 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
     if ($cfg)
     {
         $cfg['settings']['year'] = date("Y", strtotime($_REQUEST['date-start']));
+        $_SESSION['types'] = explode("|", $cfg['settings']['types']);
+        //echo "<pre>".print_r($cfg,true)."</pre>";
         $json_err = pg_config_validation();
     }
     else
@@ -137,8 +140,6 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
     }
     else
     {
-        $_SESSION['types'] = explode("|", $cfg['settings']['types']);
-
         // create list of events to be scheduled that are relevant to the period to be programmed
         $cfgevent = pg_get_event_list($_REQUEST['date-start'], $_REQUEST['date-end']);
 
@@ -149,8 +150,10 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
         // get days which will potentially have scheduled events and create empty records
         pg_get_days($_REQUEST['date-start'], $_REQUEST['date-end'], $days_of_week);
 
+
         // add days for one off events on fixed days if they don't exist
         pg_get_fixed_dates($_REQUEST['date-start'], $_REQUEST['date-end'], $cfg);
+
 
         if ($_SESSION['debug']) {echo "--- BLANK PROGRAMME CREATED -----------------------------------<br>";}
         // allocate fixed (open) events
@@ -164,8 +167,10 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
         // now allocate individual events - replacing series events if necessary
         if ($_SESSION['debug']) {echo "--- SINGLE EVENTS (RACING) ADDED -------------------------------<br>";}
         pg_allocate_fixed_events();
+
         if ($_SESSION['debug']) {echo "--- SINGLE EVENTS (NON_RACING) ADDED ---------------------------<br>";}
         pg_allocate_fixed_nonracing();
+        if ($_SESSION['debug']) {echo "<pre>".print_r($pg,true)."</pre>";}
 
         // now check if any days with just a series event could have more than one event
         if ($cfg['settings']['multiple_races']['include'] == "yes")
@@ -644,50 +649,58 @@ function pg_allocate_open_events()
                 $num_days = 0;
                 $date = $open['date']['value'];   // set initial date
 
-                // loop over number of days for event
-                while ($num_days < $open['date']['num_days']) {
-                    $tidal = assess_tide($open, $date);
-                    //echo "<pre>".print_r($tidal,true)."</pre>";
-                    $event_data = allocate_event("open", $open, $tidal, $j, $open['time']['start_delta']);
-                    //echo "<pre>".print_r($event_data,true)."</pre>";
+                if (in_period($_REQUEST['date-start'], $_REQUEST['date-end'], $date)) {
+                    // loop over number of days for event
+                    while ($num_days < $open['date']['num_days']) {
+                        $tidal = assess_tide($open, $date);
+                        //echo "<pre>".print_r($tidal,true)."</pre>";
+                        $event_data = allocate_event("open", $open, $tidal, $j, $open['time']['start_delta']);
+                        //echo "<pre>".print_r($event_data,true)."</pre>";
 
-                    if ($event_data) {
-                        $k = is_date_in_programme($date);
+                        if ($event_data) {
+                            $k = is_date_in_programme($date);
 
-                        if ($k) {
-                            if ($_SESSION['debug']) {echo " - overwriting $date<br>";}
-                            $pg[$k] = array_merge($pg[$k], $event_data);
-                            $num_days++;
-                            $num_events++;
+                            if ($k) {
+                                if ($_SESSION['debug']) {
+                                    echo " - overwriting $date<br>";
+                                }
+                                $pg[$k] = array_merge($pg[$k], $event_data);
+                                $num_days++;
+                                $num_events++;
 
-                        } else {
-                            if ($_SESSION['debug']) {echo " - creating new $date<br>";}
-                            $event_data['date'] = date("Y-m-d", strtotime($date));
-                            $pg[] = $event_data;
-                            $num_days++;
-                            $num_events++;
-                        }
-                        // add additional events on that day
-                        $start_time =  $event_data['start_time'];
-                        while ($num_events < $open['type']['num_events'])
+                            } else {
+                                if ($_SESSION['debug']) {
+                                    echo " - creating new $date<br>";
+                                }
+                                $event_data['date'] = date("Y-m-d", strtotime($date));
+                                $pg[] = $event_data;
+                                $num_days++;
+                                $num_events++;
+                            }
+                            // add additional events on that day
+                            $start_time = $event_data['start_time'];
+                            while ($num_events < $open['type']['num_events']) {
+                                $event_data['date'] = date("Y-m-d", strtotime($date));
+                                // change start time
+                                $start_time = date('H:i', strtotime($start_time . '+1 hour'));
+                                if ($_SESSION['debug']) {
+                                    echo "start: $start_time <br>";
+                                }
+                                $event_data['start_time'] = $start_time;
+                                $pg[] = $event_data;
+                                $num_events++;
+                                if ($_SESSION['debug']) {
+                                    echo "adding extra event (events: $num_events, days: $num_days)<br>";
+                                }
+                            }
+
+                            // get next date
+                            $num_events = 0;
+                            $date = date('Y-m-d', strtotime($date . ' +1 day'));
+                        } else   // not getting event data so stop
                         {
-                            $event_data['date'] = date("Y-m-d", strtotime($date));
-                            // change start time
-                            $start_time = date('H:i', strtotime($start_time.'+1 hour'));
-                            if ($_SESSION['debug']) {echo "start: $start_time <br>";}
-                            $event_data['start_time'] = $start_time;
-                            $pg[] = $event_data;
-                            $num_events++;
-                            if ($_SESSION['debug']) {echo "adding extra event (events: $num_events, days: $num_days)<br>";}
+                            break;
                         }
-
-                        // get next date
-                        $num_events = 0;
-                        $date = date('Y-m-d', strtotime($date . ' +1 day'));
-                    }
-                    else   // not getting event data so stop
-                    {
-                        break;
                     }
                 }
             }
@@ -762,6 +775,7 @@ function pg_allocate_fixed_nonracing()
             ( $event['type']['category'] == "social" or $event['type']['category'] == "training"))
         {
             $date = $event['date']['value'];
+
             if ($event['date']['type'] == "fixed")
             {
                 if (in_period($_REQUEST['date-start'], $_REQUEST['date-end'], $date))
@@ -774,8 +788,12 @@ function pg_allocate_fixed_nonracing()
             {
                 $weekday = $event['date']['day'];
                 $nearest_day = get_nearest_day($weekday, $date);                 // get nearest day
-                $allocated = allocated_fixed_nonracing($event, $nearest_day, $j);     // try to allocate it
-                if ($_SESSION['debug']) {echo " - nearest: $nearest_day allocated: $allocated<br>";}
+                if (in_period($_REQUEST['date-start'], $_REQUEST['date-end'], $nearest_day)) {
+                    $allocated = allocated_fixed_nonracing($event, $nearest_day, $j);     // try to allocate it
+                    if ($_SESSION['debug']) {
+                        echo " - nearest: $nearest_day allocated: $allocated<br>";
+                    }
+                }
             }
         }
     }
@@ -788,7 +806,6 @@ function pg_allocate_fixed_events()
     // deal with fixed date events
     foreach ($cfg['single_events'] as $j => $event)
     {
-
         if (strtolower($event['status'] == "schedule") and
             $event['date']['type'] == "fixed" and
             $event['type']['category'] == "racing")
@@ -812,6 +829,8 @@ function pg_allocate_fixed_events()
             // tries to allocate nearest relevant  day - if that is not a good tide tries the next nearest day
             // if still bad tide - give up
         {
+
+
             $date = $event['date']['value'];
             if (in_period($_REQUEST['date-start'], $_REQUEST['date-end'], $date))
             {
@@ -1457,7 +1476,7 @@ function allocate_event($type, $data, $tidal, $event_code, $start_delta = "")
 
     if (!empty($data['type']['code']))
     {
-        $series_code = $data['type']['code']."_".substr($cfg['settings']['year'], -2);
+        $series_code = $data['type']['code']."-".substr($cfg['settings']['year'], -2);
     }
 
     $event = array(
@@ -1491,7 +1510,7 @@ function allocated_fixed_nonracing($event, $date, $event_code)
     global $pg;
 
     $allocated = false;
-    if ($_SESSION['debug']) {echo " ++++ {$event['name']}<br>";}
+    if ($_SESSION['debug']) {echo " ++++++ {$event['name']}<br>";}
     $key = is_date_in_programme($date);
     $event_data = allocate_event("event", $event, array(), $event_code);
     if ($key and $pg[$key]['state']=="X")

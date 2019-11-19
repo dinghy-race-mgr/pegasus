@@ -500,16 +500,6 @@
 		<a>
 		  <div class="checkbox">
 			<label>
-			  <input type="checkbox" id="hide_active" checked="checked" value="1" data-field="active">
-			  <span>{$label t_event active}</span>
-			</label>
-		</div>
-		</a>
-		</li>
-		<li>
-		<a>
-		  <div class="checkbox">
-			<label>
 			  <input type="checkbox" id="hide_id" checked="checked" value="1" data-field="id">
 			  <span>{$label t_event id}</span>
 			</label>
@@ -673,6 +663,9 @@
 	.bs-gridcell[data-field=active]:before {
 		content: "{$label t_event active}";
 	}
+	.bs-gridcell[data-field=series_root]:before {
+		content: "{$label t_event series_root}";
+	}
 </style>
 <table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
 	<thead>
@@ -819,19 +812,6 @@
 									{END weblink_fieldheader}
 									</th>
 									{END weblink_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN active_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
-									{BEGIN active_fieldheader}
-																				<span {$active_orderlinkattrs}>
-											{$label t_event active}
-										</span>
-									{END active_fieldheader}
-									</th>
-									{END active_fieldheadercolumn}
 									
 									
 									
@@ -984,13 +964,6 @@
 		{$weblink_value}
 	</td>
 {END weblink_fieldcolumn}
-
-
-	{BEGIN active_fieldcolumn}
-	<td class="bs-gridcell {$active_class}"  data-field=active {$rowstyle} {$recordattrs}>
-		{$active_value}
-	</td>
-{END active_fieldcolumn}
 
 
 	{BEGIN id_fieldcolumn}

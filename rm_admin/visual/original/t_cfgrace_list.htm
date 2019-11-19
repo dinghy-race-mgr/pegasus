@@ -339,6 +339,9 @@
 	.bs-gridcell[data-field=id]:before {
 		content: "{$label t_cfgrace id}";
 	}
+	.bs-gridcell[data-field=id2]:before {
+		content: "{$label t_cfgrace id2}";
+	}
 	.bs-gridcell[data-field=race_code]:before {
 		content: "{$label t_cfgrace race_code}";
 	}
@@ -470,6 +473,19 @@
 									
 									
 									
+									{BEGIN id2_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$id2_class}" data-field=id2>
+									{BEGIN id2_fieldheader}
+																				<span {$id2_orderlinkattrs}>
+											{$label t_cfgrace id2}
+										</span>
+									{END id2_fieldheader}
+									</th>
+									{END id2_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN endrecordheader_block}
 									<th class="rnr-cs">&nbsp;</th>
 									
@@ -579,6 +595,13 @@
 		{$active_value}
 	</td>
 {END active_fieldcolumn}
+
+
+	{BEGIN id2_fieldcolumn}
+	<td class="bs-gridcell {$id2_class}"  data-field=id2 {$rowstyle} {$recordattrs}>
+		{$id2_value}
+	</td>
+{END id2_fieldcolumn}
 
 	{BEGIN endrecord_block}
 	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>

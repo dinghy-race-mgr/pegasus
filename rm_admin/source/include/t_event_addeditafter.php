@@ -1,21 +1,28 @@
 <?php
 $msg = "";
-isset($oldvalues) ? $mode = "edit" : $mode = "add";
-$values['event_date'] = date("Y-m-d", strtotime($values['event_date']));
-
-// individual field checks
+// check if series in event name but no series specified
+$array = explode(" ", strtolower($values['event_name']));
 if ($values['event_type'] == "racing")
 {
-    // if series code specified but series ot mentioned in name - get user to check
-    $array = explode(" ", strtolower($values['event_name']));
-    if (!in_array('series', $array) AND !empty($values['series_code'])) {
-        $msg .= "- it is not clear whether this event is part of a series of race - if not please remove the series 
-                code - if it is please check you have the correct series code<br>";
+    if (in_array('series', $array))
+    {
+        if (empty($values['series_code']))
+        {
+            $msg.= "JUST CHECKING...\\nevent name implies a series - but no series is specified.\\n\\nIf this is supposed to be a series event please go back and edit the event.";
+        }
+    }
+    else
+    {
+        if (!empty($values['series_code']))
+        {
+            $msg.= "JUST CHECKING...\\na series is specified but a series is not indicated in the event name (e.g Spring Series).\\n\\nIf this is not supposed to be a series event please  go back and edit the event.";
+        }
     }
 }
-$message = "<span style=\"white-space: normal\">WARNINGS:<br>$msg </span>";
 
 
-
-
+if (!empty($msg))
+{
+    echo "<script type='text/javascript'>alert(\"$msg\");</script>";
+}
 

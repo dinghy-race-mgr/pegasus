@@ -38,23 +38,23 @@
 	</div>
 </div>
 {END event_type_tabfieldblock}
-{BEGIN series_code_tabfieldblock}
+{BEGIN series_root_tabfieldblock}
 <div class="container">
-	<div class="form-group in-tab {$fielddispclass_series_code}" data-fieldname="series_code" data-signal-error-for="series_code{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_series_code}">
-			{BEGIN series_code_label}{$label t_event series_code}{END series_code_label}
+	<div class="form-group in-tab {$fielddispclass_series_root}" data-fieldname="series_root" data-signal-error-for="series_root{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_series_root}">
+			{BEGIN series_root_label}{$label t_event series_root}{END series_root_label}
 		</label>
 		<div class="col-md-6 " >
-			{$series_code_editcontrol}
+			{$series_root_editcontrol}
 		</div>
-		<div class="col-md-3 help-block " data-helpfor="series_code">
+		<div class="col-md-3 help-block " data-helpfor="series_root">
 			<div class="text-muted" >
-			{$tooltip t_event series_code}
+			{$tooltip t_event series_root}
 			</div>
 		</div>
 	</div>
 </div>
-{END series_code_tabfieldblock}
+{END series_root_tabfieldblock}
 {BEGIN event_open_tabfieldblock}
 <div class="container">
 	<div class="form-group in-tab {$fielddispclass_event_open}" data-fieldname="event_open" data-signal-error-for="event_open{$id}" >

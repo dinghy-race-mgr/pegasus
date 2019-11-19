@@ -20,15 +20,15 @@ if ($values['event_type'] == "racing") {
         $msg .= "- default start scheme has changed and the start interval must be set<br>";
     }
 
-    // check if race is part of series but no series specified
-    $array = explode(" ", strtolower($values['event_name']));
-    if (in_array('series', $array))
-    {
-        if (empty($values['series_code']))
-        {
-            $msg .= "- event name implies a series - but no series specified<br>";
-        }
-    }
+//    // check if race is part of series but no series specified
+//    $array = explode(" ", strtolower($values['event_name']));
+//    if (in_array('series', $array))
+//    {
+//        if (empty($values['series_code']))
+//        {
+//            $msg .= "- event name implies a series - but no series specified<br>";
+//        }
+//    }
 
     // check provided series code exists
     if (!empty($values['series_code']) and ($values['series_code']))
@@ -91,26 +91,23 @@ if ($commit)
             $values['tide_time'] = "unknown";
             $values['tide_height'] = "";
         }
-
-
-
     }
 
-
-    // set defaults
-    if ($mode == "add" and !empty($values['series_code']))
+    if ($values['event_type'] != "racing")
     {
-        $values['series_code'] = $values['series_code']."-".date("y", strtotime($values['event_date']));
+        $values['series_code'] = "";
+        $values['start_scheme'] = "";
+        $values['start_interval'] = "";
     }
+
     $values['updby']      = $_SESSION['UserID'];
     $values['upddate']    = NOW();
-    // error_log("start addbefore 103: ".print_r($values,true), 3, "../../logs/dbglogs/rmdebug.log");
-
 }
 else
 {
     $message = "<span style=\"white-space: normal\">WARNINGS:<br>$msg </span>";
 }
+
 
 
 
