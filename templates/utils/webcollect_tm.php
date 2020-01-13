@@ -4,9 +4,49 @@
  *
  */
 
-/*
- * xxxx
- */
+
+function berth_synch_report($params = array())
+{
+    if ($params['status'] != "0")
+    {
+        $alert = <<<EOT
+        <div class="alert alert-danger" role="alert">
+            FAILED to create csv file correctly  [ failure mode: {$params['status']} ]
+        </div>
+EOT;
+    }
+    else
+    {
+        $alert = <<<EOT
+        <div class="alert alert-success" role="alert">
+            <a class="btn btn-default btn-lg" href="{file}" role="button" >Download CSV File</a>
+        </div>
+EOT;
+    }
+
+    // get data rows
+    $bufr = <<<EOT
+    <div class="jumbotron" style="margin-top: 40px;">
+        <h3>Beth Report Summary</h3>
+        <p>
+            <dl class="dl-horizontal">
+                <dt>members processed</dt><dd>{member_input}</dd>
+                <dt>berth records created</dt><dd>{member_output}</dd>
+            </dl>        
+        </p>        
+    </div>
+    $alert
+    The table below provides a summary of the berth records in the output file<br><br>
+    <table class="table table-condensed table-hover">
+    <thead><tr><th width="25%">member</th><th width="25%">berth</th><th width="25%">boat</th><th width="25%">sticker</th></tr></thead>
+    <tbody>
+    {berth_data}
+    </tbody></table>
+EOT;
+
+    return $bufr;
+}
+
 function rota_synch_totals($params = array())
 {
     $bufr = <<<EOT

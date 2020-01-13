@@ -125,6 +125,21 @@ class ENTRY
         }
     }
 
+    public function get_signon_for_events($eventlist)
+    {
+        $detail = array();
+        $query = "SELECT * FROM `t_entry` WHERE eventid = '$eventid' AND competitorid = '$competitorid' ORDER BY upddate ASC";
+        $detail = $this->db->db_get_rows( $query );
+        if (empty($detail))
+        {
+            return false;
+        }
+        else
+        {
+            return $detail;
+        }
+    }
+
     public function add_signoff($competitorid, $action_type, $protest)
     {
         $status = false;

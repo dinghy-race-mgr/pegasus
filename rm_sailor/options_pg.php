@@ -23,52 +23,30 @@ $event_o = new EVENT($db_o);    // set event class
 $tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php", "../templates/sailor/search_tm.php"));
 
 // get event details - in case they have changed
-$_SESSION['events'] = get_event_details($_SESSION['eventid']);
+$_SESSION['events'] = get_event_details($_SESSION['event_passed']);
 
-if ($_SESSION['usage'] == "single")      // single user use
+if ($_SESSION['sailor']['id'] != 0)   // we know the sailor
 {
-   if ($_SESSION['sailor']['id'] != 0)   // we know the sailor
-   {
-       if (!empty($_SESSION['option']))    // user has requested specific option at start up
+  $boat = set_boat_details();
+  $option_fields['boat-label'] = $tmpl_o->get_template("boat_label", $boat, array("change"=>true));
+
+  $current_options = $_SESSION['option_cfg'];
+  if ($_SESSION['events']['numevents'] < 1)
+  {
+      // remove options that are not relevant if no races
+      foreach($_SESSION['option_race_cfg'] as $k => $r)
       {
-          header("Location: {$_SESSION['option']}_pg.php");
-          exit();
+          if (key_exists($r, $current_options)) { unset($current_options[$r]); }
       }
-      else                               // display valid options
-      {
-          $boat = set_boat_details();
-          $option_fields['boat-label'] = $tmpl_o->get_template("boat_label", $boat, array("change"=>true));
+  }
 
-//          $option_fields['no-events'] = $tmpl_o->get_template("noevents", array(), $_SESSION['events']);
+  $_SESSION['pagefields']['body'] = $tmpl_o->get_template("options", $option_fields, array("options" => $current_options, "numevents" => $_SESSION['events']['numevents']));
+  echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
+  exit();
 
-          $current_options = $_SESSION['option_cfg'];
-          if ($_SESSION['events']['numevents'] < 1)
-          {
-              foreach($_SESSION['option_race_cfg'] as $k => $r)
-              {
-                  if (key_exists($r, $current_options))
-                  {
-                      unset($current_options[$r]);
-                  }
-              }
-          }
-
-          $_SESSION['pagefields']['body'] = $tmpl_o->get_template("options", $option_fields, $current_options);
-          echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
-          exit();
-      }
-   }
-   else
-   {
-       header("Location: boatsearch_pg.php");
-       exit();
-   }
 }
-else                                      // club multi-user use
+else
 {
-    header("Location: boatsearch_pg.php");
-    exit();
+   header("Location: boatsearch_pg.php");
+   exit();
 }
-
-
-?>

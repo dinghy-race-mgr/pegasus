@@ -17,9 +17,14 @@
  *    cleanup  -   |Y|N| if set to Y removes old export files of this type - defaults to Y
  */
 
+$loc  = "..";
+$page = "dutyman event export";
 define('BASE', dirname(__FILE__) . '/');
-$target_dir = "../data/dutyman/";
-$filename = "dutyman_event_import_".date("Y_m_d_H_i").".csv";
+
+require_once ("$loc/config/rm_utils_cfg.php");
+$target_dir = $_SESSION['dutyman']['loc']."/";
+$filename = str_replace("date", date("YmdHi"), $_SESSION['dutyman']['event_file']);
+$filepath = $target_dir.$filename;
 
 /******************************************************/
 session_start();
@@ -211,9 +216,7 @@ if ($cleanup)
 	foreach (GLOB("dutyman_event_*.csv") AS $file) { unlink($file); }
 }
 
-	
 // now create csv file
-$filepath = $target_dir.$filename;
 $fp = fopen($filepath, 'wb');
 
 if ($format == "short")

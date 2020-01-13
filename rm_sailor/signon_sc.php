@@ -57,8 +57,8 @@ foreach ($_SESSION['events']['details'] as $eventid => $race)
             $entry = $_SESSION["entries"][$eventid];
 
             $chgsailnum = u_change($_SESSION['sailor']['chg-sailnum'], $_SESSION['sailor']['sailnum']);
-            $chghelm = u_change($_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['helmname']);
-            $chgcrew = u_change($_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['crewname']);
+            $chghelm    = u_change($_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['helmname']);
+            $chgcrew    = u_change($_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['crewname']);
 
             // add to entry table  $eventid, $event_detail
             $entry_o = new ENTRY($db_o, $eventid, $_SESSION['events']['details'][$eventid]);

@@ -20,6 +20,11 @@ require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 
+// arguments
+$mode = "";
+if ((isset($_REQUEST['mode']) ? $_REQUEST['mode'] : null) === "entryset") { $mode = "entryset"; }
+
+
 // connect to database to get event information
 $db_o = new DB();
 $tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php", "../templates/sailor/signon_tm.php"));
@@ -37,7 +42,7 @@ if ($_SESSION['events']['numevents'] > 0)
     $signon_entry_list = set_event_status_list($_SESSION['events']['details'], $_SESSION['entries']);
     $signon_fields["try-again-script"] = "options_pg.php";
     $signon_fields["try-again-label"]  = "Back to Options";
-
+    //echo "<pre>EVENT-LIST<br>".print_r($signon_entry_list,true)."</pre>";
     $_SESSION['pagefields']['body'] = $tmpl_o->get_template("signon", $signon_fields,
         array('state'=>"submitentry", 'event-list'=>$signon_entry_list));
 }
@@ -65,4 +70,3 @@ else  // display page
     echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 }
 
-?>

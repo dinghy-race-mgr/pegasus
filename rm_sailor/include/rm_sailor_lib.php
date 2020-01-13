@@ -1,10 +1,8 @@
 <?php
 
-function get_event_details($eventid_list)
+function get_event_details($eventid_list = array())
 {
     global $event_o;
-
-    // FIXME - seems a bit wasteful to get this every time I return to options - if this is slow try another approach
 
     /* event information held in array
        numevents - number of racing events either scheduled for today or specified as a parameter
@@ -186,34 +184,38 @@ function get_entry_information($sailorid, $events)
     return $data;
 }
 
+function get_options_map($page)
+{
+    $opt_map = array(
+        "boatsearch" => array("addboat"),
+        "signon"     => array("boatsearch", "editboat", "signoff", "rememberme"),
+        "signoff"    => array("boatsearch", "rememberme"),
+        "addboat"    => array("boatsearch", ),
+        "change"     => array(),
+        "editboat"   => array("boatsearch"),
+        "protest"    => array("boatsearch"),
+        "rememberme" => array("boatsearch"),
+    );
+
+    return $opt_map["$page"];
+}
+
 function get_options_arr()
 {
-// initialising options in the order they should appear in menus
+// setting available options
     $options = array();
-    if ($_SESSION['sailor_signon'])
-    {
-        $options['signon'] = array("label" => "Sign On", "url" => "signon_pg.php", "active" => true);
-    }
-    if ($_SESSION['sailor_signoff'])
-    {
-        $options['signoff'] = array("label" => "Sign Off/Retire", "url" => "signoff_pg.php", "active" => true);
-    }
-    if ($_SESSION['sailor_addboat'])
-    {
-        $options['addboat'] = array("label" => "Add New Boat", "url" => "addboat_pg.php", "active" => true);
-    }
-    if ($_SESSION['sailor_editboat'])
-    {
-        $options['editboat'] = array("label" => "Change Boat Details", "url" => "editboat_pg.php", "active" => true);
-    }
-    if ($_SESSION['sailor_results'])
-    {
-        $options['results'] = array("label" => "Get Results", "url" => "results_pg.php", "active" => true);
-    }
-    if ($_SESSION['sailor_protest'])
-    {
-        $options['protest'] = array("label" => "register Protest", "url" => "protest_pg.php", "active" => true);
-    }
+
+    $options['boatsearch'] = array("label" => "Search Boats", "url" => "boatsearch_pg.php", "tip" => "", "active" => true);
+    $options['signon']     = array("label" => "Sign On", "url" => "signon_pg.php", "tip" => "",  "active" => $_SESSION['sailor_signon']);
+    $options['signoff']    = array("label" => "Sign Off/Retire", "url" => "signoff_pg.php", "tip" => "",  "active" => $_SESSION['sailor_signoff']);
+    $options['addboat']    = array("label" => "Add New Boat", "url" => "addboat_pg.php", "tip" => "",  "active" => $_SESSION['sailor_addboat']);
+    $options['editboat']   = array("label" => "Change Boat Details", "url" => "editboat_pg.php", "tip" => "",  "active" => $_SESSION['sailor_editboat']);
+    $options['results']    = array("label" => "Get Results", "url" => "results_pg.php", "tip" => "",  "active" => $_SESSION['sailor_results']);
+    $options['protest']    = array("label" => "Submit Protest", "url" => "protest_pg.php", "tip" => "",  "active" => $_SESSION['sailor_protest']);
+    $options['hideboat']   = array("label" => "Hide Boat", "url" => "hideboat_sc.php", "active" => $_SESSION['sailor_hideboat'],
+                                   "tip" => "Click here to remove this boat from future searches - but it will remain in the racemanager archive");
+    $options['rememberme'] = array("label" => "Remember Me", "url" => "rememberme_sc.php", "active" => $_SESSION['sailor_rememberme'],
+                                   "tip" => "Click here to set this as the boat you usually sail.");
 
     return $options;
 }
@@ -247,6 +249,9 @@ function set_boat_details()
 
 function set_event_status_list($events, $entries)
 {
+//    echo "<pre>EVENTS<br>".print_r($events,true)."</pre>";
+//    echo "<pre>ENTRIES<br>".print_r($entries,true)."</pre>";
+
     $event_arr = array();
     foreach ($events as $eventid=>$event)
     {
@@ -341,4 +346,3 @@ function set_result_data($sailorid, $events)
     }
     return $arr;
 }
-?>

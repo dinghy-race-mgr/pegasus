@@ -4,16 +4,11 @@
 function signon($params = array())
 {
     $bufr = "";
-
-    //$bufr.= "<pre>".print_r($params, true)."</pre>";
-
     $event_bufr = "";
     $confirm_bufr = "";
     $instruction_bufr = "";
-    if ($params['state'] == "noevents")
-    {
-        $event_bufr.= $params['event-list]'];
-    }
+
+    if ($params['state'] == "noevents") { $event_bufr.= $params['event-list]'];}
 
     elseif ($params['state'] == "submitentry")
     {

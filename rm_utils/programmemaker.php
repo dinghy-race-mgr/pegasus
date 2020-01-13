@@ -32,7 +32,7 @@ Assumes that tidal data is held in table t_tide and HW times have been converted
  */
 
 $loc  = "..";
-$page = "programmeMaker";     //
+$page = "programmeMaker";
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
 
@@ -1012,8 +1012,9 @@ function pg_display_events($start, $end, $file, $csv_status)
 
     if ($csv_status == 0)
     {
-        //$csv_file = $_SESSION['basepath']."/tmp/{$cfg['file']}";
-        $csv_file = "../tmp/{$cfg['file']}";
+        $file = str_replace("date", date("YmdHi"), $_SESSION['pmaker']['export_file']);
+        $path = $_SESSION['pmaker']['loc'];
+        $csv_file = $path."/".$file;
         $bufr.=<<<EOT
         <div class="pull-right"><a class="btn btn-primary btn-lg" href="$csv_file" role="button" >Create Import File</a></div>
 EOT;

@@ -111,14 +111,25 @@ class COMPETITOR
        foreach($words as $word)
        {
            $word = trim($word);
+
            if ($word == "" or ctype_space($word)) // empty or whitespace
            {
                continue;
            }
 
-           if (ctype_digit($word))       // its an integer - therefore likely to be a sailnumber
+           if (ctype_digit($word))       // its an integer - could be sailnumber or class
            {
-               $sailnum = $word;
+               $result = $this->db->db_get_rows("SELECT id FROM t_class WHERE classname LIKE '$word%'");
+               if ($result)               // number string is a known class name
+               {
+                   $class = $word;
+                   continue;
+               }
+               else
+               {
+                   $sailnum = $word;
+                   continue;
+               }
            }
            else
            {
@@ -134,30 +145,33 @@ class COMPETITOR
                    if ($result)           // string is known name in table containing helm's names
                    {
                        $helm = $word;
+                       continue;
                    }
                }
            }
 
-           if ($sailnum OR $class OR $helm)
-           {
-               break;
-           }
+//           if ($sailnum OR $class OR $helm)
+//           {
+//               break;
+//           }
        }
 
        // construct where clause for query
-       $where = "";
+       $clause = array();
        if ($class)
        {
-           $where.= " classname LIKE '$class%' ";
+           $clause[] = " classname LIKE '$class%' ";
        }
-       elseif ($sailnum)
+       if ($sailnum)
        {
-           $where.= " sailnum LIKE '$sailnum' or boatnum LIKE '$sailnum' ";
+           $clause[] = " sailnum LIKE '$sailnum' or boatnum LIKE '$sailnum' ";
        }
-       elseif ($helm)
+       if ($helm)
        {
-           $where.= " helm LIKE '%$helm%' ";
+           $clause[] = " helm LIKE '%$helm%' ";
        }
+       $where = implode(" AND ", $clause);
+
 
        if (empty($where))
        {
@@ -168,8 +182,9 @@ class COMPETITOR
            $query = "SELECT a.id, classname, sailnum, helm, a.crew
                   FROM `t_competitor` as a
                   JOIN t_class as b ON a.classid=b.id
-                  WHERE 1=0 OR ( $where AND a.active = 1)
+                  WHERE 1=0 OR ( ($where) AND a.active = 1)
                   ORDER BY  classname, sailnum * 1";
+           u_writedbg($query, __FILE__, __FUNCTION__, __LINE__, false);
            $result = $this->db->db_get_rows($query);
        }
 
@@ -324,7 +339,25 @@ class COMPETITOR
         return $status;
     }
 
+    public function hide_competitor($id)
+    {
+        $fields['active'] = 0;
+        $numupdate = $this->db->db_update('t_competitor', $fields, array("id" => $id));
+        if ($numupdate >= 1)
+        {
+            $status = "updated";
+        }
+        elseif ($numupdate == 0)
+        {
+            $status = "nochange";
+        }
+        else
+        {
+            $status = "failed";
+        }
+        return $status;
+    }
 
 }
 
-?>
+

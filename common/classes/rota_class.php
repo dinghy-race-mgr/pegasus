@@ -76,7 +76,7 @@ class ROTA
         {
             $query = "SELECT * FROM t_rotamember WHERE $where AND active = 1 GROUP BY familyname, firstname ORDER BY familyname ASC, firstname ASC";
         }
-        echo "<pre>$query</pre>";
+        //echo "<pre>$query</pre>";
         $detail = $this->db->db_get_rows($query);
 
         if (empty($detail))
@@ -87,7 +87,12 @@ class ROTA
         return $detail;
     }
 
-
+    public function get_event_duty($eventid, $dutycode)
+    {
+        $query = "SELECT * FROM t_eventduty WHERE eventid = $eventid  AND dutycode = '$dutycode' ";
+        $duty = $this->db->db_get_rows( $query );
+        return $duty;
+    }
     public function get_event_duties($eventid, $dutycode = "")
     {
         $duty_codes = $this->db->db_getsystemcodes("rota_type");
@@ -109,7 +114,17 @@ class ROTA
         }
         else
         {
-            foreach ($duties as $k=>$duty) { $duties[$k]['dutyname'] = $codes["{$duty['dutycode']}"]; }
+            foreach ($duties as $k=>$duty)
+            {
+                if (!empty($codes["{$duty['dutycode']}"]))
+                {
+                    $duties[$k]['dutyname'] = $codes["{$duty['dutycode']}"];
+                }
+                else
+                {
+                    $duties[$k]['dutyname'] = "UNKNOWN ({$duty['dutycode']})";
+                }
+            }
         }
         return $duties;
     }
@@ -148,11 +163,9 @@ class ROTA
             $where.= implode(' AND ', $clause);
         }
 
-        $query = "SELECT dutycode, person, phone, email, notes, b.event_name, b.event_date FROM t_eventduty as a 
+        $query = "SELECT id, dutycode, person, phone, email, notes, b.event_name, b.event_date FROM t_eventduty as a 
                   JOIN t_event as b ON a.eventid=b.id  
                   WHERE $where ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
-        //u_writedbg($query, "addrace", "getevents", 123);
-        //echo "<pre>$query</pre>";
 
         $detail = $this->db->db_get_rows( $query );
         if (empty($detail))       // nothing found
@@ -174,7 +187,76 @@ class ROTA
 
         return $detail;
     }
-}
-    
 
-?>
+    public function get_rota_member($fullname, $id = "")
+    {
+        $fullname= trim($fullname);
+
+        if (!empty($id))
+        {
+            $where = "id = $id AND active = 1";
+        }
+        elseif (empty($fullname))
+        {
+            $where = "";
+        }
+        else
+        {
+            $pos = strpos($fullname, " ");
+            if ($pos === false)
+            {
+                $where = "familyname = '$fullname' AND active = 1";
+            }
+            else
+            {
+                $first = substr($fullname, 0, $pos);
+                $last = substr($fullname, $pos + 1);
+                $where = "firstname = '$first' AND familyname = '$last' AND active = 1";
+            }
+        }
+        if ($where)
+        {
+            $detail = $this->db->db_get_row("SELECT * FROM t_rotamember WHERE $where");
+        }
+        else
+        {
+            $detail = false;
+        }
+        return $detail;
+    }
+
+    public function swap_duty($dutyid, $rotaid)
+    {
+        $status = true;
+        if (!empty($eventid) and !empty($rotaid))
+        {
+            // get rota record data
+            $rota = get_rota_member("", $rotaid);
+            if ($rota)
+            {
+                $upd_var = array(
+                    "person" => ucfirst(trim($rota['firstname']))." ".ucwords(trim($rota['familyname'])),
+                    "phone"  => $rota['phone'],
+                    "email"  => $rota['email'],
+                    "notes"  => $rota['notw'],
+                );
+                $upd = $this->db->db_update( "t_eventduty", $upd_var, array("id"=>$dutyid) );
+                if ($upd < 1) {$status = false;}
+            }
+            else
+            {
+                $status = false;
+            }
+        }
+        else
+        {
+            $status = false;
+        }
+        return $status;
+    }
+
+}
+
+
+
+

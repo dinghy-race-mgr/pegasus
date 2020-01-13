@@ -100,13 +100,6 @@ elseif (trim(strtolower($_REQUEST['pagestate'])) == "submit")
         define("$param" , $val);
     }
 
-//    echo "ORGANISATION_SHORT_NAME : ".ORGANISATION_SHORT_NAME."<br>";
-//    echo "ACCESS_TOKEN : ".ACCESS_TOKEN."<br>";
-
-//    // set webcollect API parameters
-//    define('ORGANISATION_SHORT_NAME' , $_SESSION['webcollect']['organisation_short_name']);
-//    define('ACCESS_TOKEN', $_SESSION['webcollect']['access_token']);
-
     // empty database table with rotamembers
     if (trim($_REQUEST['dryrun']) == "true")
     {
@@ -194,59 +187,38 @@ function process_member(WebCollectResource $resource)
     );
   
     $array = json_decode(json_encode($resource), true);  // convert into array
-//    echo "<pre>".print_r($_REQUEST,true)."</pre>";
 
-    $member['firstname'] = ucfirst(strtolower(trim($array["{$_SESSION['webcollect']['firstname_fld']}"])));
-    $member['familyname'] = ucfirst(strtolower(trim($array["{$_SESSION['webcollect']['familyname_fld']}"])));
-    $member['rota_str'] = strtolower(trim($array['form_data']["{$_SESSION['webcollect']['rota_fld']}"]));
-
-    $stop = false;   // used for triggering debugging statements
-//    if ($member['firstname'] == "Mark" and $member['familyname'] == "Elkington")
-//    {
-//        echo "<pre>".print_r($array,true)."</pre>";
-//        $stop = true;
-//    }
-
-    // translate each webcollect rota code into a raceManager rota code
-    $member['rota'] = map_rota_code($member['rota_str'], $stop);
-
-//    if ($stop)
-//    {
-//        echo "<pre>ROTA ARRAY".print_r($member['rota'],true)."</pre>";
-//    }
-
-
-    if (trim($_REQUEST['contacts']) == "true")
+    // check if member is to be ignored for rotas (e.g exempt or resigning)
+    if (in_array(strtolower($array['form_data']["{$_SESSION['webcollect']['rota_status_fld']}"]),
+        $_SESSION['webcollect']['rota_ignore_values']))
     {
-        $member['phone'] = strtolower(trim($array["{$_SESSION['webcollect']['phone_fld']}"]));
-        $member['email'] = strtolower(trim($array["{$_SESSION['webcollect']['email_fld']}"]));
+        $member['rota'] = "";
     }
-
-    if (trim($_REQUEST['notes']) == "true")
+    else
     {
-        $restrictions = trim($array['form_data']["{$_SESSION['webcollect']['duty_restriction_fld']}"]);
-        $availability = trim($array['form_data']["{$_SESSION['webcollect']['duty_availability_fld']}"]);
-        $member['note'] = $restrictions;
-        if (!empty($availability))
+        $member['firstname'] = ucfirst(strtolower(trim($array["{$_SESSION['webcollect']['firstname_fld']}"])));
+        $member['familyname'] = ucfirst(strtolower(trim($array["{$_SESSION['webcollect']['familyname_fld']}"])));
+        $member['rota_str'] = strtolower(trim($array['form_data']["{$_SESSION['webcollect']['rota_fld']}"]));
+
+        // translate each webcollect rota code into a raceManager rota code
+        $member['rota'] = map_rota_code($member['rota_str'], $stop);
+
+        if (trim($_REQUEST['contacts']) == "true")
         {
-            $member['note'].= " | ".$availability;
+            $member['phone'] = strtolower(trim($array["{$_SESSION['webcollect']['phone_fld']}"]));
+            $member['email'] = strtolower(trim($array["{$_SESSION['webcollect']['email_fld']}"]));
         }
-//        if ($stop)
-//        {
-//            echo <<<EOT
-//            <pre>NOTES<br>
-//            r_field: {$array['form_data']["{$_SESSION['webcollect']['duty_restriction_fld']}"]}<br>
-//            o_r_field: {$array['form_data']['Duty_Restrictions_Club_use_only']}<br>
-//            r_field_name: {$_SESSION['webcollect']['duty_restriction_fld']}<br>
-//            a_field: {$array['form_data']["{$_SESSION['webcollect']['duy_availability_fld']}"]}}<br>
-//            o_a_field: {$array['form_data']['Duty_Non_Availability_Club_use_only']}<br>
-//            a_field_name: {$_SESSION['webcollect']['duy_availability_fld']}<br>
-//            restrictions: $restrictions<br>
-//            availability: $availability<br>
-//            note: {$member['note']}
-//            </pre>
-//EOT;
-//        }
+
+        if (trim($_REQUEST['notes']) == "true")
+        {
+            $restrictions = trim($array['form_data']["{$_SESSION['webcollect']['duty_restriction_fld']}"]);
+            $availability = trim($array['form_data']["{$_SESSION['webcollect']['duty_availability_fld']}"]);
+            $member['note'] = $restrictions;
+            if (!empty($availability))
+            {
+                $member['note'].= " | ".$availability;
+            }
+        }
     }
 
     if (!empty($member['rota']))
@@ -254,11 +226,7 @@ function process_member(WebCollectResource $resource)
         $member_output++;
 
         $rotas = explode(",", $member['rota']);
-//        if ($stop)
-//        {
-//            echo count($rotas);
-//            exit();
-//        }
+
         foreach ($rotas as $k=>$rota)
         {
             $rota_str = array_search($rota, $_SESSION['webcollect']['rota_code_map']);
@@ -275,7 +243,6 @@ EOT;
             }
             else
             {
-
                 $sql_insert_data.= <<<EOT
 	        ("{$member['firstname']}", "{$member['familyname']}", "$rota", "{$member['phone']}", "{$member['email']}", 
 	         "{$member['note']}", "1", "rota_synch_wc"),
@@ -283,11 +250,6 @@ EOT;
             }
         }
     }
-//    echo "<pre>MEMBER: ".print_r($member, true)."</pre>";
-//    echo "<pre>SQL INSERT: ".$sql_insert_data."</pre>";
-//    echo "<pre>PRINT: ".$print_data."</pre>";
-//    html_flush();
-//    exit(111);
 }
 
 function map_rota_code($rota_str, $dbg)

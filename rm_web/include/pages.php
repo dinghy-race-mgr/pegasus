@@ -73,7 +73,7 @@ class PAGES
 
     public function pg_programme()
     {
-        $prog = new PROGRAMME($this->cfg['programme']['json'], "full", false);
+        $prog = new PROGRAMME($this->cfg['loc'],$this->cfg['programme']['json'], "full", false);
 
         if (array_key_exists("error", $_SESSION))
         {
@@ -124,9 +124,9 @@ class PAGES
                 }
                 else
                 {
-                    foreach ($event['duties'] as $duty => $person)
+                    foreach ($event['duties'] as $k => $duty)
                     {
-                         $duty_info .= $this->get_template("tb_prg_duty", array("duty" => $duty, "person" => $person), array());
+                         $duty_info .= $this->get_template("tb_prg_duty", array("duty" => $duty['duty'], "person" => $duty['person']), array());
                     }
                 }
 
@@ -146,12 +146,16 @@ class PAGES
                     }
                 }
 
+                $time = date("H:i", strtotime($event['time']));
+                if ($time == "00:00")  { $time = " - "; }
+
+
                 $evt_fields = array(
                     "state"       => $event['state'],
                     "alert"       => $alert,
                     "id"          => $id,
                     "date"        => date("D d M", strtotime($event['date'])),
-                    "time"        => date("H:i", strtotime($event['time'])),
+                    "time"        => $time,
                     "event"       => $event['name'],
                     "note"        => $event['note'],
                     "category"    => $_SESSION['prg']['meta']['eventtype'][$event['category']],
@@ -179,12 +183,15 @@ class PAGES
             $body.= $this->get_template("tb_prg_table", array("header"=>$table_head, "data"=>$table_data), array("condensed"=>false));
         }
 
+        $this->cfg['menubar'] ? $top = "50px" : $top = "0px" ;
+        $this->cfg['menubar'] ? $bstyle = "" : $bstyle = "margin-top:0px !important" ;
         $fields = array(
             "loc"    => $this->cfg['loc'],
             "ossloc" => "..",
             "window" => "raceManager",
             "header" => $this->get_header("PROGRAMME", "menu"),
-            "margin-top"=> "50px",
+            "body_style" => $bstyle,
+            "margin-top"=> $top,
             "body"   => $body,
             "footer" => $this->get_footer(),
         );
@@ -194,12 +201,15 @@ class PAGES
  
    public function pg_results()
    {
+       $this->cfg['menubar'] ? $top = "50px" : $top = "0px" ;
+       $this->cfg['menubar'] ? $bstyle = "" : $bstyle = "margin-top:0px !important" ;
        $fields = array(
            "loc"    => $this->cfg['loc'],
            "ossloc" => "..",
            "window" => "raceManager",
            "header" => $this->get_header("RACE RESULTS", "menu"),
-           "margin-top"=> "50px",
+           "body_style" => $bstyle,
+           "margin-top"=> $top,
            "body"   => $this->under_construction(array("ossloc" => "..", "title" => "Race Results Page:",
                                                        "info" => "We are still working on the results page")),
            "footer" => $this->get_footer(),
@@ -209,12 +219,15 @@ class PAGES
    
    public function pg_pyanalysis()
    {
-      $fields = array(
+       $this->cfg['menubar'] ? $top = "50px" : $top = "0px" ;
+       $this->cfg['menubar'] ? $bstyle = "" : $bstyle = "margin-top:0px !important" ;
+       $fields = array(
          "loc"    => $this->cfg['loc'],
          "ossloc" => "..",
          "window" => "raceManager",
          "header" => $this->get_header("PY ANALYSIS", "menu"),
-         "margin-top"=> "50px",
+         "body_style" => $bstyle,
+         "margin-top"=> $top,
          "body"   => $this->under_construction(array("ossloc" => "..", "title" => "PY Analysis Page:",
                                                      "info" => "We are still working on PY analysis page")),
          "footer" => $this->get_footer(),     
@@ -231,12 +244,16 @@ class PAGES
          $error['fix'] = "Please contact your raceManager administrator ..."; 
       }
       $body = $this->get_template("error", $error, array("stop_btn"=>true));
-      
+
+      $this->cfg['menubar'] ? $top = "50px" : $top = "0px" ;
+      $this->cfg['menubar'] ? $bstyle = "" : $bstyle = "margin-top:0px !important" ;
       $fields = array(
          "loc"    => $this->cfg['loc'],
+         "ossloc" => "..",
          "window" => "raceManager",
          "header" => $this->get_header("", "menu"),
-         "margin-top"=> "50px",
+         "body_style" => $bstyle,
+         "margin-top"=> $top,
          "body"   => $body,
          "footer" => $this->get_footer(),  
       );      

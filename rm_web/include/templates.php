@@ -33,7 +33,7 @@ class TEMPLATE
         <link href="{loc}/custom.css" rel="stylesheet">
 
         </head>
-        <body >
+        <body style="{body_style}">
         {header}
             <div class="container-fluid" style="margin-top:{margin-top};">
                 {body}

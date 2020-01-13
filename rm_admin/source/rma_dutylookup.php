@@ -18,4 +18,3 @@ while ($data = db_fetch_array($rs)) {
 error_log("call: ".print_r($result,true),3,"aaaa_debug.log");
 echo json_encode($result);
 
-?>

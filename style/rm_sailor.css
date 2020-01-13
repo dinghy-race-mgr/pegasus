@@ -7,16 +7,34 @@ body {
   font-family: Kalinga, Arial, sans-serif;    /* default font */
 }
 
+.form-large{
+  font-size: 40px;
+}
+
+.form-large .control-label{
+  padding-top: 20px;
+  padding-bottom: 20px;
+  line-height: normal;
+}
+
+.form-large input, .form-large  button{
+  font-size: 40px;
+  padding: 20px;
+  height: auto;
+  line-height: normal;
+}
+
 /* typographic styles */
 .rm-page { color: lightgrey; }
 .rm-pagebold { color: lightgrey; font-size:2.0em; font-weight: bold; }
 .rm-hamburger  { color: lightgrey; font-size:2.0em; }
 
-.rm-text-bg {font-weight: bold; font-size:1.8em;}
-.rm-text-md {font-size:1.6em;}
-.rm-text-sm {font-size:1.0em;}
+.rm-text-bg {font-size:2.0em;}
+.rm-text-md {font-size:1.8em;}
+.rm-text-sm {font-size:1.2em;}
 .rm-text-space {padding-top:5px; padding-bottom: 5px; }
 .rm-text-highlight {color: yellow; }
+.rm-text-bold {font-weight: bold;}
 .rm-text-capitalise {text-transform: capitalize;}
 
 
@@ -43,9 +61,9 @@ body {
 
 .divider-line { height: 10px; border: none;}
 
-::-webkit-input-placeholder { color: slateblue !important; font-weight: normal !important; font-style: italic; text-align: right; font-size: 0.8em;}
-.form-control::-moz-placeholder { color: slateblue !important;  font-weight: normal !important; font-style: italic; text-align: right; font-size: 0.8em;}
-:-ms-input-placeholder { color: slateblue !important;  font-weight: normal !important; font-style: italic; text-align: right; font-size: 0.8em;}
+::-webkit-input-placeholder { color: darkgrey !important; font-weight: normal !important; text-align: left; font-size: 40px;}
+.form-control::-moz-placeholder { color: darkgrey !important;  font-weight: normal !important; font-style: italic; text-align: left; font-size: 40px;}
+:-ms-input-placeholder { color: darkgrey !important;  font-weight: normal !important; font-style: italic; text-align: left; font-size: 40px;}
 
 input[type=checkbox] {
   transform: scale(2.0); /* All browsers except webkit*/

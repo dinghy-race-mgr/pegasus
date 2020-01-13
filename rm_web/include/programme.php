@@ -2,7 +2,7 @@
 class PROGRAMME
 {
    
-    public function __construct($programme_file, $mode, $force)
+    public function __construct($loc, $programme_file, $mode, $force)
     {
         $status = true;
         $this->programme_file = $programme_file;
@@ -10,7 +10,8 @@ class PROGRAMME
         // parse programme into session object
         if (empty($_SESSION['prg']) or $force)    // if $SESSION data not created - do it
         {
-            $status = $this->import_programme();
+            $status = $this->import_programme($loc);
+            //echo "<pre>".print_r($_SESSION['prg'],true)."</pre>";
             if (!$status)                          // programme file not found or not readable
             {
                 $_SESSION['error']['problem'] = "Cannot display current event programme";
@@ -91,6 +92,8 @@ class PROGRAMME
                 $params['end'] = $d->format("Y-m-d");
             }
         }
+
+        //echo "<pre> {$params['opt']} {$params['start']} {$params['end']}</pre>";
 
         return $params;
    }
@@ -257,13 +260,17 @@ class PROGRAMME
 //      }
 //   }
    
-    private function import_programme()
+    private function import_programme($loc)
     // reads json file created with export_programme and creates session array
     {
         $status = false;
         if (is_readable($this->programme_file))
         {
-            $string = file_get_contents($this->programme_file);
+            // get absolute file path for json file
+            $absolute_file = substr_replace($loc,'', strrpos($loc, '/')).ltrim($this->programme_file, ".");
+            //echo "<pre>$absolute_file</pre>";
+            // get contents - use dummy query to prevent caching
+            $string = file_get_contents($absolute_file."?dev=".rand(1,1000));
             $_SESSION['prg'] = json_decode($string, true);
             
             $today = new DateTime(date("Y-m-d"));
@@ -330,9 +337,9 @@ class PROGRAMME
          {
             if ($prop == "duties")     // check in duties array
             {
-               foreach($value as $role=>$person)
+               foreach($value as $role=>$duty)
                {
-                  if (stripos($person, $needle) !== FALSE)
+                  if (stripos($duty['person'], $needle) !== FALSE OR stripos($duty['duty'], $needle))
                   {
                      $events[$k] = $event;
                      break 2;

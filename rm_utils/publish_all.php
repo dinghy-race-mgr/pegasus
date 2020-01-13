@@ -49,7 +49,7 @@ if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
 
 $pagefields = array(
     "loc" => $loc,
-    "theme" => "flatly_",
+    "theme" => "",
     "stylesheet" => "$loc/style/rm_utils.css",
     "title" => "publish/unpublish events",
     "header-left" => $_SESSION['sys_name'],
@@ -243,7 +243,7 @@ function create_programme_file()
             {
                 foreach ($duties as $k=>$duty)
                 {
-                    $out['events']["evt_{$event['id']}"]['duties']["{$duty['dutyname']}"] = $duty['person'];
+                    $out['events']["evt_{$event['id']}"]['duties'][] = array("duty"=>$duty['dutyname'], "person"=> $duty['person']);
                 }
             }
         }
@@ -253,9 +253,21 @@ function create_programme_file()
         $out['meta']['num_events'] = $count;
     }
 
-    // echo "<pre>".print_r($out,true)."</pre>";
-    $file = $_SESSION['publish']['programme_loc'].'/'.$_SESSION['publish']['programme_file'];
-    $status = file_put_contents($file, json_encode($out));
+    $file = $_SESSION['publish']['file'];
+    $path = $_SESSION['publish']['loc'];
+    $csv_file = $path."/".str_replace("date", date("YmdHi"), $file);
+    $latest_file = $path."/programme_latest.json";
+    $status = file_put_contents($csv_file, json_encode($out));
+
+    if ($status)
+    {
+        // delete/create 'latest' file
+        foreach (GLOB($latest_file) AS $file) { unlink($file); }
+        if (!copy($csv_file, $latest_file))
+        {
+            $status = false;
+        }
+    }
 
     return $status;
 }

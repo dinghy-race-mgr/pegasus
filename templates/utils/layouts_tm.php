@@ -157,42 +157,5 @@ EOT;
 
 
 
- function options_hamburger($params = array())
-     /*
-      * Produces hamburger options menu for use in header with a customisable options list
-      */
- {
-     $bufr = "";
-     $options = false;
 
-     $opts_bufr = "";
-     foreach ($_SESSION['option_cfg'] as $func => $opt)
-     {
-         if ($opt['active'])
-         {
-             $options = true;
-             $opts_bufr .= <<<EOT
-                <li class=""><a href="{$opt['url']}">{$opt['label']}</a></li>
-EOT;
-         }
-     }
-
-     if ($options)
-     {
-         $bufr.= <<<EOT
-          <div class="pull-right">
-              <div class="btn-group">
-                  <button type="submit" class="btn btn-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <span class="glyphicon glyphicon-menu-hamburger rm-hamburger" > </span>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-right">
-                    $opts_bufr
-                  </ul>
-              </div>
-          </div>
-EOT;
-     }
-
-     return $bufr;
- }
 

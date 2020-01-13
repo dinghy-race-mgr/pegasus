@@ -5,8 +5,6 @@
    ---------------------------------------------------------------------------------------------
 */
 
-
-
 // these might change on the page
 $langcode = "en";
 if (!empty($_REQUEST['lang'])) {$langcode = $_REQUEST['lang'];}
@@ -14,6 +12,8 @@ $mode     = "live";
 $debug    = "0";
 
 // includes
+include ("common/lib/util_lib.php");
+u_initconfigfile("config/common.ini");
 include ("config/racemanager_cfg.php");
 include ("config/lang/$langcode-startup-lang.php");
 
