@@ -46,13 +46,20 @@ $event_o = new EVENT($db_o);
 // get events for today - or from list passed as arguments
 $_SESSION['events'] = get_event_details($_SESSION['event_passed']);
 
-if ($_SESSION['events']['numevents'] <= 0)
+if ($_SESSION['events']['numevents'] == 0)
 {
-    $events_bufr = $tmpl_o->get_template("noevents", array(), $_SESSION['events']);
+    $events_bufr = $tmpl_o->get_template("no_events", array(), $_SESSION['events']);
+}
+elseif ($_SESSION['events']['numevents'] > 0)
+{
+    $events_bufr = $tmpl_o->get_template("list_events", array(), $_SESSION['events']);
 }
 else
 {
-    $events_bufr = $tmpl_o->get_template("listevents", array(), $_SESSION['events']);
+    $events_bufr = $tmpl_o->get_template("error_msg",
+        array("error"=> "Race Configuration Error",
+              "detail"=> "The system configuration for today's race is invalid",
+              "action" => "Please contact the race Officer to enter the race"), $_SESSION['events']);
 }
 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boatsearch_form", array("events_bufr"=>$events_bufr));
 $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(), array("options" => $options));

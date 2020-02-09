@@ -22,12 +22,11 @@ function under_construction($params=array())
                 <div class="col-md-6">
                     <img src="../common/images/web_graphics/uc_hat_t.png" alt="under construction" height="200" width="200">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 ">
                     <p><b>{title}</b></p>
                     <p>{info}</p>
                 </div>
             </div>
-            <div>&nbsp;</div>
         </div>
 EOT;
     return $html;

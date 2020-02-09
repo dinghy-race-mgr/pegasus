@@ -390,10 +390,7 @@ function u_requestdbg($arg_list, $file, $function, $line, $inline=false)
     {
        u_writedbg("Arguments...".$msg, $file, $function, $line);
     }
-
-
 }
-
 
 function u_startsyslog($scriptname, $app)
 {
@@ -524,7 +521,6 @@ function u_initconfigfile($inifile)
                {
                   $_SESSION["email"][$i] = $email;
                   $i++;
-
                }
            }
            else

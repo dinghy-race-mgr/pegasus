@@ -140,19 +140,36 @@ class ENTRY
         }
     }
 
-    public function add_signoff($competitorid, $action_type, $protest)
+    public function add_declare($competitorid)
     {
         $status = false;
         $fields = array(
-            "action"         => $action_type,
+            "action"         => "declare",
             "status"         => "N",
             "eventid"        => $this->eventid,
             "competitorid"   => $competitorid,
             "memberid"       => "",               // future use
-            "protest"        => $protest
+            "protest"        => ""
         );
         $insert_rs = $this->db->db_insert("t_entry", $fields);
-        if ($insert_rs) { $status = $action_type; }
+        if ($insert_rs) { $status = "declare"; }
+
+        return $status;
+    }
+
+    public function add_retire($competitorid)
+    {
+        $status = false;
+        $fields = array(
+            "action"         => "retire",
+            "status"         => "N",
+            "eventid"        => $this->eventid,
+            "competitorid"   => $competitorid,
+            "memberid"       => "",               // future use
+            "protest"        => ""
+        );
+        $insert_rs = $this->db->db_insert("t_entry", $fields);
+        if ($insert_rs) { $status = "retire"; }
 
         return $status;
     }

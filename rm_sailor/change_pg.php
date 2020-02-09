@@ -23,7 +23,7 @@ u_initpagestart(0,"changen_pg",false);   // starts session and sets error report
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 
-$tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php", "../templates/sailor/signon_tm.php"));
+$tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php", "../templates/sailor/race_tm.php"));
 
 if (empty($_SESSION['sailor']['change']))
 {

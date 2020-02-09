@@ -37,6 +37,7 @@ $field_set = array(
     "dob"         => $_SESSION['sailor_boat_dob'],
     "skill_level" => $_SESSION['sailor_boat_skill'],
 );
+
 // set initial values
 $addboatfields = array(
     "classid"     => "", "boatnum"     => "", "sailnum"     => "",  "boatname"    => "",
@@ -64,4 +65,3 @@ $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boat_fm", $addboatfield
 // render page
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();
-?>

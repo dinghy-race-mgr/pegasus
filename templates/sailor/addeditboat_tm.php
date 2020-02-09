@@ -64,9 +64,9 @@ EOT;
     // boat details
     $boat_bufr = <<<EOT
     <div class="form-group form-condensed">
-        <label for="classid" class="rm-form-label control-label $lbl_width">Class</label>
+        <label for="classid" class="rm-form-label control-label $lbl_width text-success">Class</label>
         <div class="selectfieldgroup $fld_width">
-            <select name="classid" class="form-control input-lg " required data-fv-notempty-message="choose the class of boat" id="classid" >
+            <select name="classid" class="form-control input-md " required data-fv-notempty-message="choose the class of boat" id="classid" >
                 {$params['class_list']}
             </select>
         </div>
@@ -74,21 +74,21 @@ EOT;
     <div class="form-group form-condensed">
         <label for="helm" class="rm-form-label control-label $lbl_width">&nbsp;</label>
         <div class="inputfieldgroup $fld_width">
-            <input name="sailnum" autocomplete="off" type="text" class="form-control input-lg " id="sailnum" value="{sailnum}"
+            <input name="sailnum" autocomplete="off" type="text" class="form-control input-md " id="sailnum" value="{sailnum}"
                    placeholder="sail number e.g 12345 ..." required data-fv-notempty-message="sail number is required">
         </div>
     </div> 
     <div class="form-group form-condensed">
         <label for="boatname" class="rm-form-label control-label $lbl_width">&nbsp;</label> 
         <div class="inputfieldgroup $fld_width">     
-            <input name="boatname" autocomplete="off" type="text" class="form-control input-lg" id="boatname" value="{boatname}"
+            <input name="boatname" autocomplete="off" type="text" class="form-control input-md" id="boatname" value="{boatname}"
                    placeholder="boat name ...">
         </div>
     </div>
     <div class="form-group form-condensed">
         <label for="classid" class="rm-form-label control-label $lbl_width">&nbsp;</label> 
         <div class="inputfieldgroup  $fld_width">
-            <input name="club" autocomplete="off" type="text" class="form-control input-lg " id="club" value="{club}"
+            <input name="club" autocomplete="off" type="text" class="form-control input-md " id="club" value="{club}"
                    placeholder="home club e.g Starcross YC ..." required data-fv-notempty-message="club name is required">
         </div>       
     </div>
@@ -203,7 +203,7 @@ EOT;
     $bufr = <<<EOT
     <div class="rm-form-style">   
         <div class="row">     
-            <div class="col-xs-10 col-sm-10 col-md-8 col-lg-8 alert alert-info"  role="alert">$instruction_bufr</div>
+            <div class="text-success"><h3>$instruction_bufr</h3></div>
         </div>
     
         <style type="text/css">
@@ -227,7 +227,7 @@ EOT;
             $crew_bufr
     
             <div class="pull-right margin-top-20">
-                <button type="button" class="btn btn-default btn-lg" onclick="location.href = 'options_pg.php';">
+                <button type="button" class="btn btn-default btn-lg" onclick="location.href = 'boatsearch_pg.php';">
                     <span class="glyphicon glyphicon-remove"></span>&nbsp;Cancel
                 </button>
                 

@@ -65,7 +65,7 @@ if ($numcompetitors == 0)  // none found
 }
 elseif ($numcompetitors == 1)  // one match found - go straight to requested function with no display or display details
 {
-    $target = sprintf($script,$competitors[0]['id'],$_SESSION['option']);
+    $target = sprintf($pick_script, $competitors[0]['id'], $_SESSION['option']);
     header("Location: $target");
     exit();
 }

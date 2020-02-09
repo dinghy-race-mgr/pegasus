@@ -100,8 +100,11 @@ $_SESSION['pagefields'] = array(
 // check which options are configured
 $_SESSION['option'] = "";                                                            // start option
 $_SESSION['option_cfg'] = get_options_arr();                                         // available options
-$_SESSION['option_race_cfg'] = array("signon", "signoff", "results", "protest");     // options only relevant if race
+$_SESSION['option_race_cfg'] = array("race", "results", "protest");     // options only relevant if race
 $_SESSION['numoptions'] = count($_SESSION['option_cfg']);
+
+//echo "<pre>".print_r($_SESSION,true)."</pre>";
+//exit();
 
 if ($_SESSION['numoptions'] < 1)
 {

@@ -54,7 +54,7 @@ if (isset($_REQUEST['compid']) and is_numeric($_REQUEST['compid']))
         }
         else
         {
-            header("Location: signon_pg.php");
+            header("Location: race_pg.php");
             exit();
         }
     }

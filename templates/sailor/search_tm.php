@@ -5,32 +5,23 @@ function boatsearch_form($params = array())
     $bufr = <<<EOT
         <div class="margin-top-20">
             
-                <div class="row">
-                   <div class="col-xs-9 col-xs-offset-1 col-sm-9 col-sm-offset-1 col-md-8 col-md-offset-1 col-lg-8 col-lg-offset-1">
-                        <form id="sailnumform" class="form-large" action="boatsearch_sc.php" method="post" role="search" autocomplete="off">
-                        <div class="input-group">
-                          <input id="sailnum" autocomplete="off" class="form-control input-lg" 
-                          type="text" placeholder="sail number, class or helm name" name="sailnum" />
-                          <span class="input-group-btn">
-                                <button class="btn btn-warning btn-lg" type="submit">
-                                    &nbsp;&nbsp;<span class="glyphicon glyphicon-search" aria-hidden="true" style="vertical-align: middle"></span>&nbsp;&nbsp;
-                                </button>
-                          </span>
-                        </div>
-                        </form>
-                        <br><br>
-                        {events_bufr}
-                   </div>
-<!--                   <div class="rm-text-bg text-center">
-                        <a href="boatsearch_pg.php">
-                            <span class="btn btn-xs btn-success" style="font-size: 1.2em">
-                                <span class="glyphicon glyphicon-menu-left"></span> start again
-                            </span>
-                        </a> 
-                   </div> --!>
-                </div> 
-            
-            
+            <div class="row">
+               <div class="col-xs-9 col-xs-offset-1 col-sm-9 col-sm-offset-1 col-md-8 col-md-offset-1 col-lg-8 col-lg-offset-1">
+                    <form id="sailnumform" class="form-large" action="boatsearch_sc.php" method="post" role="search" autocomplete="off">
+                    <div class="input-group">
+                      <input id="sailnum" autocomplete="off" class="form-control input-lg" 
+                      type="text" placeholder="sail number, class or helm name" name="sailnum" />
+                      <span class="input-group-btn">
+                            <button class="btn btn-warning btn-lg" type="submit">
+                                &nbsp;&nbsp;<span class="glyphicon glyphicon-search" aria-hidden="true" style="vertical-align: middle"></span>&nbsp;&nbsp;
+                            </button>
+                      </span>
+                    </div>
+                    </form>
+                    <br><br>
+                    {events_bufr}
+               </div>
+            </div>            
         </div> 
         <br>        
 EOT;
@@ -115,7 +106,10 @@ EOT;
         $lbufr.= <<<EOT
         <div class="row margin-top-10">
             <div class="col-xs-8 col-xs-offset-1 col-sm-8 col-sm-offset-1 col-md-8 col-md-offset-1 col-lg-6 col-lg-offset-2">
-                <a href="$script" class="btn btn-info btn-block btn-lg active" role="button"><strong>$boat<br>$team</strong></a>
+                <a href="$script" class="btn btn-default btn-block btn-md active" role="button">
+                    <h2>$boat</h2>
+                    <h3><span style="font-size: 110%">$team</span></h3>
+                </a>
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 " style="padding-top: 20px">
                $hide_bfr
@@ -130,7 +124,7 @@ EOT;
     $bufr.=<<<EOT
     <div class="row page-title">
         <div class="col-xs-12 col-xs-offset-0 col-sm-11 col-sm-offset-1 col-md-11 col-md-offset-1 col-lg-11 col-lg-offset-1">
-            <h3>More than one boat matching <b>"{searchstr}"</b> found - click the one you want</h3><br>
+            <h2 class="text-success">boats matching <b>"{searchstr}"</b> - click the one you want to race</h2><br>
         </div>
     </div>
     $lbufr
@@ -147,31 +141,7 @@ EOT;
     return $bufr;
 }
 
-function listevents($params = array())
-{
-    $bufr = "";
 
-    // list events
-    $event_table = "";
-    foreach ($params['details'] as $k => $row)
-    {
-        $event_table.= <<<EOT
-                <tr>
-                    <td><h3>{$row['event_name']}</h3></td>
-                    <td><h3>{$row['event_start']}</h3></td>
-                </tr>
-EOT;
-    }
-
-    $bufr.= <<<EOT
-         <h4>{$_SESSION['events']['numevents']} race(s) today</h4>
-         <table class="table">
-            $event_table
-         </table>
-EOT;
-
-    return $bufr;
-}
 
 
 

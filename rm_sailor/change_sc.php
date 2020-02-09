@@ -76,7 +76,7 @@ else         // system error - action not set or not recognised
     exit();
 }
 
-header("Location: signon_pg.php?");
+header("Location: race_pg.php?");
 exit();
 
 ?>

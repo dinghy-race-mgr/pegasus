@@ -1,6 +1,6 @@
 <?php
 /**
- * signon_pg.php
+ * race_pg.php
  *
  *   
  * 
@@ -27,7 +27,7 @@ if ((isset($_REQUEST['mode']) ? $_REQUEST['mode'] : null) === "entryset") { $mod
 
 // connect to database to get event information
 $db_o = new DB();
-$tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php", "../templates/sailor/signon_tm.php"));
+$tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php", "../templates/sailor/race_tm.php"));
 
 // update information on entries
 $_SESSION['entries'] = get_entry_information($_SESSION['sailor']['id'], $_SESSION['events']['details']);
@@ -37,19 +37,15 @@ $signon_fields = set_boat_details();
 $signon_fields["boat-label"] = $tmpl_o->get_template("boat_label", $signon_fields, array("change"=>true));
 
 if ($_SESSION['events']['numevents'] > 0)
-
 {
     $signon_entry_list = set_event_status_list($_SESSION['events']['details'], $_SESSION['entries']);
-    $signon_fields["try-again-script"] = "options_pg.php";
-    $signon_fields["try-again-label"]  = "Back to Options";
-    //echo "<pre>EVENT-LIST<br>".print_r($signon_entry_list,true)."</pre>";
     $_SESSION['pagefields']['body'] = $tmpl_o->get_template("signon", $signon_fields,
         array('state'=>"submitentry", 'event-list'=>$signon_entry_list));
 }
 
 else  // no events today - nothing to sign on
 {
-    $event_list = $tmpl_o->get_template("noevents", array(), $_SESSION['events']);
+    $event_list = $tmpl_o->get_template("no_events", array(), $_SESSION['events']);
     $_SESSION['pagefields']['body'] = $tmpl_o->get_template("signon", $signon_fields,
                                       array('state' => "noevents", 'event-list' => $event_list));
 }
@@ -57,7 +53,7 @@ else  // no events today - nothing to sign on
 if (empty($_SESSION['pagefields']['body']))  // we have an error
 {
     $error_fields = array(
-        "error"  => "Fatal Error: invalid state for sign on page",
+        "error"  => "Fatal Error: invalid state for race page",
         "detail" => "",
         "action" => "Please report error to your raceManager administrator",
     );

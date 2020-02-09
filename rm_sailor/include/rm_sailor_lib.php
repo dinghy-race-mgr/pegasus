@@ -31,51 +31,66 @@ function get_event_details($eventid_list = array())
     }
 
     // get fleet info for each event
+    $error = false;
     foreach ($data['details'] as $k => $event)
     {
         // get fleet details for this event
         $fleetcfg = $event_o->event_getfleetcfg($event['event_format']);
 
-        foreach ($fleetcfg as $j => $fleet)
+        if (!$fleetcfg)
         {
-            // add to array
-            $data['details'][$k]['fleetcfg'][$fleet['fleet_num']] = array(
-                "fleetnum"    => $fleet['fleet_num'],
-                "startnum"    => $fleet['start_num'],
-                "code"        => $fleet['fleet_code'],
-                "name"        => $fleet['fleet_name'],
-                "desc"        => $fleet['fleet_desc'],
-                "scoring"     => strtolower($fleet['scoring']),
-                "pytype"      => strtolower($fleet['py_type']),
-                "warnsignal"  => $fleet['warn_signal'],
-                "prepsignal"  => $fleet['prep_signal'],
-                "timelimitabs"=> $fleet['timelimit_abs'],
-                "timelimitrel"=> $fleet['timelimit_rel'],
-                "defaultlaps" => $fleet['defaultlaps'],
-                "defaultfleet"=> $fleet['defaultfleet'],
-                "classinc"    => $fleet['classinc'],
-                "onlyinc"     => $fleet['onlyinc'],
-                "classexc"    => $fleet['classexc'],
-                "groupinc"    => $fleet['groupinc'],
-                "minpy"       => $fleet['min_py'],
-                "maxpy"       => $fleet['max_py'],
-                "crew"        => $fleet['crew'],
-                "spintype"    => $fleet['spintype'],
-                "hulltype"    => $fleet['hulltype'],
-                "minhelmage"  => $fleet['min_helmage'],
-                "maxhelmage"  => $fleet['max_helmage'],
-                "minskill"    => $fleet['min_skill'],
-                "maxskill"    => $fleet['max_skill']
-            );
+            $error = true;
+        }
+        else
+        {
+            foreach ($fleetcfg as $j => $fleet) {
+                // add to array
+                $data['details'][$k]['fleetcfg'][$fleet['fleet_num']] = array(
+                    "fleetnum" => $fleet['fleet_num'],
+                    "startnum" => $fleet['start_num'],
+                    "code" => $fleet['fleet_code'],
+                    "name" => $fleet['fleet_name'],
+                    "desc" => $fleet['fleet_desc'],
+                    "scoring" => strtolower($fleet['scoring']),
+                    "pytype" => strtolower($fleet['py_type']),
+                    "warnsignal" => $fleet['warn_signal'],
+                    "prepsignal" => $fleet['prep_signal'],
+                    "timelimitabs" => $fleet['timelimit_abs'],
+                    "timelimitrel" => $fleet['timelimit_rel'],
+                    "defaultlaps" => $fleet['defaultlaps'],
+                    "defaultfleet" => $fleet['defaultfleet'],
+                    "classinc" => $fleet['classinc'],
+                    "onlyinc" => $fleet['onlyinc'],
+                    "classexc" => $fleet['classexc'],
+                    "groupinc" => $fleet['groupinc'],
+                    "minpy" => $fleet['min_py'],
+                    "maxpy" => $fleet['max_py'],
+                    "crew" => $fleet['crew'],
+                    "spintype" => $fleet['spintype'],
+                    "hulltype" => $fleet['hulltype'],
+                    "minhelmage" => $fleet['min_helmage'],
+                    "maxhelmage" => $fleet['max_helmage'],
+                    "minskill" => $fleet['min_skill'],
+                    "maxskill" => $fleet['max_skill']
+                );
+            }
         }
     }
 
-    // get number of events
-    if ($data['details']) { $data['numevents'] = count($data['details']); }
+    if ($error)
+    {
+        $data['numevents'] = -1;
+    }
+    else
+    {
+        // get number of events
+        if ($data['details']) { $data['numevents'] = count($data['details']); }
 
-    // get details of next event
-    $rs = $event_o->event_getnextevent(date("Y-m-d"));
-    if ($rs) { $data['nextevent'] = $rs; }
+        // get details of next event
+        $rs = $event_o->event_getnextevent(date("Y-m-d"));
+        if ($rs) { $data['nextevent'] = $rs; }
+    }
+
     return $data;
 }
 
@@ -206,8 +221,8 @@ function get_options_arr()
     $options = array();
 
     $options['boatsearch'] = array("label" => "Search Boats", "url" => "boatsearch_pg.php", "tip" => "", "active" => true);
-    $options['signon']     = array("label" => "Sign On", "url" => "signon_pg.php", "tip" => "",  "active" => $_SESSION['sailor_signon']);
-    $options['signoff']    = array("label" => "Sign Off/Retire", "url" => "signoff_pg.php", "tip" => "",  "active" => $_SESSION['sailor_signoff']);
+    $options['race']     = array("label" => "Sign On", "url" => "race_pg.php", "tip" => "",  "active" => $_SESSION['sailor_race']);
+    $options['cruise']    = array("label" => "Sign Off/Retire", "url" => "signoff_pg.php", "tip" => "",  "active" => $_SESSION['sailor_cruise']);
     $options['addboat']    = array("label" => "Add New Boat", "url" => "addboat_pg.php", "tip" => "",  "active" => $_SESSION['sailor_addboat']);
     $options['editboat']   = array("label" => "Change Boat Details", "url" => "editboat_pg.php", "tip" => "",  "active" => $_SESSION['sailor_editboat']);
     $options['results']    = array("label" => "Get Results", "url" => "results_pg.php", "tip" => "",  "active" => $_SESSION['sailor_results']);
@@ -219,6 +234,17 @@ function get_options_arr()
 
     return $options;
 }
+
+function get_boat_changes()
+{
+    $changes = array();
+    $changes['helm']    = u_change($_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['helmname']);
+    $changes['crew']    = u_change($_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['crewname']);
+    $changes['sailnum'] = u_change($_SESSION['sailor']['chg-sailnum'], $_SESSION['sailor']['sailnum']);
+
+    return $changes;
+}
+
 
 function set_boat_details()
 {
@@ -249,7 +275,7 @@ function set_boat_details()
 
 function set_event_status_list($events, $entries)
 {
-//    echo "<pre>EVENTS<br>".print_r($events,true)."</pre>";
+//echo "<pre>EVENTS<br>".print_r($events,true)."</pre>";
 //    echo "<pre>ENTRIES<br>".print_r($entries,true)."</pre>";
 
     $event_arr = array();
@@ -282,12 +308,36 @@ function set_event_status_list($events, $entries)
                 }
             }
         }
+
+        if ($event['event_status'] == "scheduled" OR $event['event_status'] == "selected")
+        {
+            $txt = "not started";
+        }
+        elseif ($event['event_status'] == "running")  // FIXME - I may need to check race-status rather than event-status
+        {
+            $txt = "in progress";
+        }
+        elseif ($event['event_status'] == "sailed " OR $event['event_status'] == "complete")
+        {
+            $txt = "complete";
+        }
+        elseif ( $event['event_status'] == "abandoned" OR $event['event_status'] == "cancelled")
+        {
+            $txt = $event['event_status'];
+        }
+        else
+        {
+            $txt = "unknown";
+        }
+
         $event_arr[$eventid] = array(
             "name"         => $event['event_name'],
             "time"         => $event['event_start'],
             "start"        => $entries[$eventid]['allocate']['start'],
+            "signon"       => $event['event_entry'],
             "entry-status" => $entry_status,
-            "event-status" => $event['event_status']
+            "event-status" => $event['event_status'],
+            "event-status-txt" => $txt
         );
     }
     return $event_arr;

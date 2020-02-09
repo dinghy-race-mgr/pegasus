@@ -90,6 +90,49 @@ EOT;
  }
 
 
+function under_construction($params=array())
+    /*
+     FIELDS
+        title  :  title for under construction note
+        info   :  detail for under construction note
+
+     PARAMS
+        none
+     */
+{
+    if ($params['back_button'])
+    {
+        $back_button = <<<EOT
+        <div class="pull-right margin-top-20">
+            <button type="button" class="btn btn-warning btn-lg" onclick="location.href = '{$params['back_url']}';">
+                <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;back
+        </button>
+EOT;
+    }
+    else
+    {
+        $back_button = "";
+    }
+
+    $html = <<<EOT
+        <div class="jumbotron center-block" style="width:60%; margin-top: 60px; background-color: darkgrey">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="../common/images/web_graphics/uc_hat_t.png" alt="under construction" height="200" width="200">
+                </div>
+                <div class="col-md-6 text-default">
+                    <p><b>{title}</b></p>
+                    <p>{info}</p>
+                    $back_button
+                </div>
+            </div>
+            <div>&nbsp;</div>
+        </div>
+EOT;
+    return $html;
+}
+
+
  function options($params = array())
  {
 
@@ -177,7 +220,6 @@ EOT;
 
  function error_msg($params = array())
  {
-     // TBD - see pick boat
      $bufr = <<<EOT
         <div class="row margin-top-10">
            <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
@@ -186,7 +228,7 @@ EOT;
                     <h3>{error}</h3>
                     <h4>{detail}</h4>
                     <hr>
-                    <h3 class="pull-right">{action}</h3> 
+                    <h3 class="text-right">{action}</h3> 
                </div>
            </div>
         </div>
@@ -201,15 +243,22 @@ function boat_label($params = array())
     if ($params['change'])
     {
         $bufr.= <<<EOT
-        <div class="list-group">
-            <a href="change_pg.php?sailnum={sailnum}&crew={crew}&helm={helm}" class="list-group-item list-group-item-info ">
+        <!--div class="list-group">
+            <a href="change_pg.php?sailnum={sailnum}&crew={crew}&helm={helm}" class="list-group-item list-group-item-default ">
                 <h3>{class} {sailnum}</h3>
                 <h4><span style="font-size: 110%">{team}</span></h4>
                 <span class="badge progress-bar-danger" style="font-size: 120%">
-                    <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Change&nbsp;&nbsp;
+                    <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Change Crew / Sail No.&nbsp;&nbsp;
                 </span>
             </a>
-        </div>
+        </div -->
+        <a href="change_pg.php?sailnum={sailnum}&crew={crew}&helm={helm}" class="btn btn-default btn-block btn-md active" role="button">
+            <h2 class="pull-left">{class} {sailnum}</h2>
+            <h3>{team}</h3>
+            <span class="badge progress-bar-danger pull-right" style="font-size: 120%">
+                <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Change Crew / Sail No.&nbsp;&nbsp;
+            </span>
+        </a>
 EOT;
     }
     else
@@ -227,7 +276,7 @@ EOT;
     return $bufr;
 }
 
-function noevents($params = array())
+function no_events($params = array())
 {
     $bufr = <<<EOT
          <div class="rm-text-space">
@@ -242,12 +291,41 @@ EOT;
         $start = "[ {$_SESSION['events']['nextevent']['event_start']} ]";
 
         $bufr.= <<<EOT
-         <div class="rm-text-space">
+         <div class="rm-text-space margin-left-40">
             <span class="rm-text-md">next race is </span><br>                
             <span class="rm-text-md rm-text-highlight"> $name - $date  $start </span>
          </div>
 EOT;
     }
+
+    return $bufr;
+}
+
+function list_events($params = array())
+{
+    $bufr = "";
+
+    // list events
+    $event_table = "";
+    foreach ($params['details'] as $k => $row)
+    {
+          $event_table.= <<<EOT
+                <tr>
+                    <td class="rm-text-md rm-text-trunc" width="50%">{$row['event_name']}</td>
+                    <td class="rm-text-md" width="20%">{$row['event_start']}</td>
+                    <td class="rm-text-md" width="40%">{$row['race_name']}</td>
+                </tr>
+EOT;
+    }
+
+    $bufr.= <<<EOT
+         <h2 class="text-success">{$_SESSION['events']['numevents']} race(s) today</h2>
+         <div class="margin-left-40">
+             <table class="table" width="100%" style="table-layout: fixed">
+                $event_table
+             </table>
+         </div>
+EOT;
 
     return $bufr;
 }
