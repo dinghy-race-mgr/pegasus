@@ -242,20 +242,13 @@ function boat_label($params = array())
     // boat details
     if ($params['change'])
     {
+        empty($params['change_set']) ? $change_color = "" : $change_color = "red";
+
         $bufr.= <<<EOT
-        <!--div class="list-group">
-            <a href="change_pg.php?sailnum={sailnum}&crew={crew}&helm={helm}" class="list-group-item list-group-item-default ">
-                <h3>{class} {sailnum}</h3>
-                <h4><span style="font-size: 110%">{team}</span></h4>
-                <span class="badge progress-bar-danger" style="font-size: 120%">
-                    <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Change Crew / Sail No.&nbsp;&nbsp;
-                </span>
-            </a>
-        </div -->
         <a href="change_pg.php?sailnum={sailnum}&crew={crew}&helm={helm}" class="btn btn-default btn-block btn-md active" role="button">
             <h2 class="pull-left">{class} {sailnum}</h2>
             <h3>{team}</h3>
-            <span class="badge progress-bar-danger pull-right" style="font-size: 120%">
+            <span class="badge pull-right" style="font-size: 120%; background-color: $change_color;">
                 <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Change Crew / Sail No.&nbsp;&nbsp;
             </span>
         </a>
@@ -309,13 +302,26 @@ function list_events($params = array())
     $event_table = "";
     foreach ($params['details'] as $k => $row)
     {
-          $event_table.= <<<EOT
-                <tr>
-                    <td class="rm-text-md rm-text-trunc" width="50%">{$row['event_name']}</td>
-                    <td class="rm-text-md" width="20%">{$row['event_start']}</td>
-                    <td class="rm-text-md" width="40%">{$row['race_name']}</td>
-                </tr>
+        if ($row['event_status'] != "cancelled")
+        {
+            $event_table.= <<<EOT
+            <tr>
+                <td class="rm-text-md rm-text-trunc" width="50%">{$row['event_name']}</td>
+                <td class="rm-text-md" width="20%">{$row['event_start']}</td>
+                <td class="rm-text-md" width="40%">{$row['race_name']}</td>
+            </tr>
 EOT;
+        }
+        else
+        {
+            $event_table.= <<<EOT
+            <tr>
+                <td class="rm-text-md rm-text-trunc" width="50%">{$row['event_name']}</td>
+                <td class="rm-text-md text-warning" colspan="2">*** race is CANCELLED ***</td>
+            </tr>
+EOT;
+        }
+
     }
 
     $bufr.= <<<EOT

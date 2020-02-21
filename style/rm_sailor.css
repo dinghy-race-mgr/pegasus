@@ -62,11 +62,14 @@ body {
 .rm_form-label { font-size: 1.5em !important; padding-top: 10px !important;}
 .rm-form-field { font-weight: bold;}
 
+.rm-form-input-lg { font-size: 2.5em !important;  }
+.rm-form-input-md { font-size: 1.5em !important;  }
+
 .divider-line { height: 10px; border: none;}
 
-::-webkit-input-placeholder { color: orange !important; font-weight: normal !important; font-style: italic; text-align: left; font-size: 1.5em;}
-.form-control::-moz-placeholder { color: orange !important;  font-weight: normal !important; font-style: italic; text-align: left; font-size: 1.5em;}
-:-ms-input-placeholder { color: orange !important;  font-weight: normal !important; font-style: italic; text-align: left; font-size: 1.5em;}
+::-webkit-input-placeholder { color: orange !important; font-weight: normal !important; font-style: italic; text-align: left; font-size: 1.0em;}
+.form-control::-moz-placeholder { color: orange !important;  font-weight: normal !important; font-style: italic; text-align: left; font-size: 1.0em;}
+:-ms-input-placeholder { color: orange !important;  font-weight: normal !important; font-style: italic; text-align: left; font-size: 1.0em;}
 
 input[type=checkbox] {
   transform: scale(2.0); /* All browsers except webkit*/

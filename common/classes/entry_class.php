@@ -67,6 +67,9 @@ class ENTRY
          * $crew and/or $sailnum only set if temporary change required
          */
     {
+//        echo "<pre>ARGS: |$competitorid|$allocate|$helm|$crew|$sailnum|</pre>";
+//        exit();
+
         $status = "fail";
         if (empty($competitorid) OR !is_numeric($competitorid))  // check we have a competitor id - if not return error
         {
@@ -157,11 +160,11 @@ class ENTRY
         return $status;
     }
 
-    public function add_retire($competitorid)
+    public function add_retire($competitorid, $mode = "retire")
     {
         $status = false;
         $fields = array(
-            "action"         => "retire",
+            "action"         => $mode,
             "status"         => "N",
             "eventid"        => $this->eventid,
             "competitorid"   => $competitorid,
@@ -169,7 +172,7 @@ class ENTRY
             "protest"        => ""
         );
         $insert_rs = $this->db->db_insert("t_entry", $fields);
-        if ($insert_rs) { $status = "retire"; }
+        if ($insert_rs) { $status = $mode; }
 
         return $status;
     }

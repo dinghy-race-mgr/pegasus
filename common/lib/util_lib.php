@@ -275,12 +275,6 @@ function u_timeresolution($resolution, $time)
     global $lang;
     global $loc;
     
-    $link = "";
-    if (strpos($script, "rbx")!== false)
-    {
-       $link  = "<a class=\"btn btn-primary btn-sm\" href=\"rbx_pg_pickrace.php\" role=\"button\">Return</a>";  
-    }
-    
     echo <<<EOT
     <!DOCTYPE html>
     <html lang="en">
@@ -301,12 +295,11 @@ function u_timeresolution($resolution, $time)
       <body>
         <div class="container" style="margin-top: 50px;">
             <div class="jumbotron">
-              <h1>{$lang['sys']['apology']}</h1>
-              <p>{$lang['err']['sys000']}</p>
+              <h1>Sorry</h1>
+              <p>we have encountered an unexpected error</p>
               <p class="text-danger">$error</p>
               <br>
               <p>
-                  $link
                   <span class="pull-right"><small><i>$msg [script: $script]</i></small></span>
               </p>
             </div>

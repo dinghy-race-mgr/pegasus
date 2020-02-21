@@ -94,36 +94,31 @@ function get_event_details($eventid_list = array())
     return $data;
 }
 
-function set_event_status()
-{
+//function num_entries_requested($params)
+//{
+//    $i = 0;
+//    foreach ($_SESSION['events']['details'] as $eventid=>$race)
+//    {
+//        if (isset($params["race$eventid"]))
+//        {
+//            if ($params["race$eventid"]=="on") { $i++; }
+//        }
+//    }
+//    return $i;
+//}
 
-}
-
-function num_entries_requested($params)
-{
-    $i = 0;
-    foreach ($_SESSION['events']['details'] as $eventid=>$race)
-    {
-        if (isset($params["race$eventid"]))
-        {
-            if ($params["race$eventid"]=="on") { $i++; }
-        }
-    }
-    return $i;
-}
-
-function count_entries($entries)
-{
-    $i = 0;
-    foreach($entries as $entry)
-    {
-        if ($entry['entered'] == true)
-        {
-            $i++;
-        }
-    }
-    return $i;
-}
+//function count_entries($entries)
+//{
+//    $i = 0;
+//    foreach($entries as $entry)
+//    {
+//        if ($entry['entered'] == true)
+//        {
+//            $i++;
+//        }
+//    }
+//    return $i;
+//}
 
 function get_entry_information($sailorid, $events)
 {
@@ -139,25 +134,16 @@ function get_entry_information($sailorid, $events)
         // get fleet allocation for this sailor
         $alloc = $entry_o->allocate($_SESSION['sailor']);
 
-        $event_o = new EVENT($db_o);
-
-        // check if race is closed
-        $e = $event_o->event_getevent($eventid);
-        $event_status = "";
-        if ($e)
-        {
-            $event_status = $e['event_status'];
-        }
-
         $data[$eventid] = array(
             "sailorid"     => $sailorid,
             "event-name"   => $event['event_name'],
             "start-time"   => $event['event_start'],
             "allocate"     => $alloc,
             "entered"      => false,
+            "updated"      => false,
             "declare"      => "",
             "protest"      => false,
-            "event-status" => $event_status
+            "event-status" => $event['event_status']
         );
 
         // check position or code in race
@@ -183,11 +169,14 @@ function get_entry_information($sailorid, $events)
             // loop through t_entry records
             foreach ($records as $k => $r)
             {
-                if ($r['action'] == "enter" or $r['action'] == "update")
+                if ($r['action'] == "enter" )
                 {
                     $data[$eventid]['entered'] = true;
                 }
-
+                elseif ($r['action'] == "update")
+                {
+                    $data[$eventid]['updated'] = true;
+                }
                 elseif ($r['action'] == "declare" or $r['action'] == "retire")
                 {
                     $data[$eventid]['declare'] = $r['action'];
@@ -200,11 +189,11 @@ function get_entry_information($sailorid, $events)
 }
 
 function get_options_map($page)
+    // FIXME do I still need this
 {
     $opt_map = array(
         "boatsearch" => array("addboat"),
-        "signon"     => array("boatsearch", "editboat", "signoff", "rememberme"),
-        "signoff"    => array("boatsearch", "rememberme"),
+        "race"     => array("boatsearch", "editboat", "rememberme"),
         "addboat"    => array("boatsearch", ),
         "change"     => array(),
         "editboat"   => array("boatsearch"),
@@ -235,15 +224,15 @@ function get_options_arr()
     return $options;
 }
 
-function get_boat_changes()
-{
-    $changes = array();
-    $changes['helm']    = u_change($_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['helmname']);
-    $changes['crew']    = u_change($_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['crewname']);
-    $changes['sailnum'] = u_change($_SESSION['sailor']['chg-sailnum'], $_SESSION['sailor']['sailnum']);
-
-    return $changes;
-}
+//function get_boat_changes()
+//{
+//    $changes = array();
+//    $changes['helm']    = u_change($_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['helmname']);
+//    $changes['crew']    = u_change($_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['crewname']);
+//    $changes['sailnum'] = u_change($_SESSION['sailor']['chg-sailnum'], $_SESSION['sailor']['sailnum']);
+//
+//    return $changes;
+//}
 
 
 function set_boat_details()
@@ -273,12 +262,13 @@ function set_boat_details()
     return $boat;
 }
 
-function set_event_status_list($events, $entries)
+function set_event_status_list($events, $entries, $action = array())
 {
-//echo "<pre>EVENTS<br>".print_r($events,true)."</pre>";
-//    echo "<pre>ENTRIES<br>".print_r($entries,true)."</pre>";
+    $evstatuscode = array("scheduled" => 1, "selected" => 2,"running" => 3,
+        "sailed" => 4, "complete" => 5,"abandoned" => 6, "cancelled" => 7,);
 
     $event_arr = array();
+
     foreach ($events as $eventid=>$event)
     {
         $entry_status = "";
@@ -292,7 +282,7 @@ function set_event_status_list($events, $entries)
         }
         elseif ($entries[$eventid]['entered'])
         {
-            $entry_status = "entered";
+            $entries[$eventid]['updated'] ? $entry_status = "updated": $entry_status = "entered";
         }
         else // not entered
         {
@@ -309,21 +299,28 @@ function set_event_status_list($events, $entries)
             }
         }
 
-        if ($event['event_status'] == "scheduled" OR $event['event_status'] == "selected")
+        $entry_alert = "";
+        if (!empty($action))
         {
-            $txt = "not started";
+            if ($action['event'] == $eventid)
+            {
+                if ($action['status'] == "err") { $entry_alert = "FAILED - {$action['msg']}"; }
+            }
         }
-        elseif ($event['event_status'] == "running")  // FIXME - I may need to check race-status rather than event-status
+
+        $status_map = array(
+            "scheduled" => "not started",
+            "selected"  => "not started",
+            "running"   => "in progress",
+            "sailed"    => "finishing",
+            "complete"  => "complete",
+            "abandoned" => "abandoned",
+            "cancelled" => "cancelled",
+        );
+
+        if (key_exists($event['event_status'], $status_map))
         {
-            $txt = "in progress";
-        }
-        elseif ($event['event_status'] == "sailed " OR $event['event_status'] == "complete")
-        {
-            $txt = "complete";
-        }
-        elseif ( $event['event_status'] == "abandoned" OR $event['event_status'] == "cancelled")
-        {
-            $txt = $event['event_status'];
+            $txt = $status_map[$event['event_status']];
         }
         else
         {
@@ -336,8 +333,11 @@ function set_event_status_list($events, $entries)
             "start"        => $entries[$eventid]['allocate']['start'],
             "signon"       => $event['event_entry'],
             "entry-status" => $entry_status,
+            "entry-updated"=> $entries[$eventid]['updated'],
+            "entry-alert"  => $entry_alert,
             "event-status" => $event['event_status'],
-            "event-status-txt" => $txt
+            "event-status-txt" => $txt,
+            "event-status-code" => $evstatuscode[$event['event_status']]
         );
     }
     return $event_arr;

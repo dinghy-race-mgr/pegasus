@@ -7,16 +7,19 @@ function boatsearch_form($params = array())
             
             <div class="row">
                <div class="col-xs-9 col-xs-offset-1 col-sm-9 col-sm-offset-1 col-md-8 col-md-offset-1 col-lg-8 col-lg-offset-1">
-                    <form id="sailnumform" class="form-large" action="boatsearch_sc.php" method="post" role="search" autocomplete="off">
-                    <div class="input-group">
-                      <input id="sailnum" autocomplete="off" class="form-control input-lg" 
-                      type="text" placeholder="sail number, class or helm name" name="sailnum" />
-                      <span class="input-group-btn">
-                            <button class="btn btn-warning btn-lg" type="submit">
-                                &nbsp;&nbsp;<span class="glyphicon glyphicon-search" aria-hidden="true" style="vertical-align: middle"></span>&nbsp;&nbsp;
-                            </button>
-                      </span>
-                    </div>
+                    <form id="sailnumform" class="form-inline" action="boatsearch_sc.php" method="post" role="search" autocomplete="off">
+                        <div class="form-group">
+                          <div class="input-group">
+                            
+                              <input id="sailnum" autocomplete="off" class="form-control input-lg rm-form-input-lg" style="min-width: 600px"
+                              type="text" placeholder="sail number, class or helm name" name="sailnum" />
+                          </div>
+                          
+                          <button class="btn btn-warning btn-lg" type="submit" >
+                            &nbsp;&nbsp;<span class="glyphicon glyphicon-search" aria-hidden="true" ></span>&nbsp;&nbsp;
+                          </button>
+ 
+                        </div>
                     </form>
                     <br><br>
                     {events_bufr}
@@ -43,7 +46,7 @@ function search_nonfound_response($params = array())
     
     <div class="row">
         <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
-            <h4 class="rm-text-md">If you think there should be a boat matching your search in the system<br>please contact the race officer<br><br>Otherwise &hellip;</h4>
+            <h4 class="rm-text-md">If you think there should be a boat matching your search in the system please contact the race officer<br><br>Otherwise &hellip;</h4>
         </div>
     </div>
     
@@ -124,17 +127,15 @@ EOT;
     $bufr.=<<<EOT
     <div class="row page-title">
         <div class="col-xs-12 col-xs-offset-0 col-sm-11 col-sm-offset-1 col-md-11 col-md-offset-1 col-lg-11 col-lg-offset-1">
-            <h2 class="text-success">boats matching <b>"{searchstr}"</b> - click the one you want to race</h2><br>
+            <h2 class="text-success">boats matching <b>"{searchstr}"</b> - click the one you want to use</h2><br>
         </div>
     </div>
     $lbufr
 
-    <div class="row margin-top-40">
-        <div class="col-xs-6 col-xs-offset-3 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">
-            <a href="boatsearch_pg.php" class="btn btn-warning btn-block btn-lg active rm-text-md" role="button" >
-                <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Search again ...
-            </a>
-        </div>
+    <div class="margin-top-40">
+        <a href="boatsearch_pg.php" class="btn btn-warning btn-md active rm-text-md pull-right role="button" >
+            <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Start Again ...
+        </a>
     </div>
 
 EOT;

@@ -797,11 +797,11 @@ class EVENT
         {
             return "complete";
         }
-        elseif(in_array($currentstatus, array("selected","running","sailed")))
+        elseif(in_array($currentstatus, array("running","sailed")))
         {
             return "running";
         }
-        elseif(in_array($currentstatus, array("scheduled")))
+        elseif(in_array($currentstatus, array("scheduled", "selected")))
         {
             return "notstarted";
         }
@@ -809,6 +809,20 @@ class EVENT
         {
             return "unknown";
         }
+    }
+
+    public function get_event_state_sequence($current_status)
+    {
+        $num = 0;
+        if ($current_status == "scheduled")     { $num = 1; }
+        elseif ($current_status == "selected")  { $num = 2; }
+        elseif ($current_status == "running")   { $num = 3; }
+        elseif ($current_status == "sailed")    { $num = 4; }
+        elseif ($current_status == "complete")  { $num = 5; }
+        elseif ($current_status == "abandoned") { $num = 6; }
+        elseif ($current_status == "cancelled") { $num = 7; }
+
+        return $num;
     }
     
 

@@ -1,203 +1,81 @@
 <?php
 
 
-function signon($params = array())
+function race_control($params = array())
 {
     $bufr = "";
     $event_bufr = "";
     $instruction_bufr = "";
 
-    if ($params['state'] == "noevents") { $event_bufr.= $params['event-list]']; }
+    if ($params['state'] == "noevents")
+    {
+        $event_bufr.= $params['event-list]'];
+    }
 
     elseif ($params['state'] == "submitentry")
     {
         $event_list = "";
-
-        // loop over events
-        foreach ($params['event-list'] as $eventid => $row)
+        foreach ($params['event-list'] as $eventid => $row)    // loop over events
         {
-//            echo "<pre>
-//                event name: {$row['name']} {$row['time']} $eventid
-//                signon type: {$row['signon']}
-//                entry status: {$row['entry-status']}
-//                event status: {$row['event-status']}
-//                </pre>";
-
             // race identity
-            $col1 = $row['time']." - ".$row['name'];                    // race identity
+            $race_txt = $row['time']." - ".$row['name'];
 
-            // signon button
-            if (empty($row['entry-status']))
-            {
-                $col2 = <<<EOT
-                <a href="race_sc.php?opt=signon&event=$eventid" type='button' class='rm-text-xs btn btn-success btn-sm'>Sign On</a>
-EOT;
-            }
-            else
-            {
-                if ($row['entry-status'] == "entered" OR $row['entry-status'] == "signed off" OR $row['entry-status'] == "retired")
-                {
-                    $col2 = <<<EOT
-                <a href="race_sc.php?opt=signon&event=$eventid" type='button' class='rm-text-xs btn btn-default btn-sm disabled'>Sign On</a>
-EOT;
-                }
-                else
-                {
-                    $col2 = <<<EOT
-                <a href="race_sc.php?opt=signon&event=$eventid" type='button' class='rm-text-xs btn btn-default btn-md disabled' >Sign On</a>
-                <!-- span class='glyphicon glyphicon-remove'  aria-hidden='true'></span -->
-EOT;
-                }
-             }
-
-            // signoff button
-            if (empty($row['entry-status']) )
-            {
-                $col3 = <<<EOT
-                <a href="race_sc.php?opt=declare&event=$eventid" type='button' class='rm-text-xs btn btn-warning btn-sm disabled' 
-                >Sign Off</a>
-EOT;
-            }
-            elseif ($row['entry-status'] == "entered")
-            {
-                $col3 = <<<EOT
-                <a href="race_sc.php?opt=declare&event=$eventid" type='button' class='rm-text-xs btn btn-warning btn-sm' 
-                >Sign Off</a>
-EOT;
-            }
-            elseif ($row['entry-status'] == "signed off")
-            {
-                $col3 = <<<EOT
-                <a href="race_sc.php?opt=declare&event=$eventid" type='button' class='rm-text-xs btn btn-default btn-sm disabled' 
-                ><span class='glyphicon glyphicon-ok'  aria-hidden='true'></span></a>
-EOT;
-            }
-            else
-            {
-                $col3 = <<<EOT
-                <a href="race_sc.php?opt=declare&event=$eventid" type='button' class='rm-text-xs btn btn-default btn-sm disabled' 
-                ><span class='glyphicon glyphicon-remove'  aria-hidden='true'></span></a>
-EOT;
-            }
-
-            // retire
-            if (empty($row['entry-status']) )
-            {
-                $col4 = <<<EOT
-                <a href="race_sc.php?opt=retire&event=$eventid" type='button' class='rm-text-xs btn btn-danger btn-sm disabled' 
-                >&nbsp;Retire&nbsp;</a>
-EOT;
-            }
-            elseif ($row['entry-status'] == "entered")
-            {
-                $col4 = <<<EOT
-                <a href="race_sc.php?opt=retire&event=$eventid" type='button' class='rm-text-xs btn btn-danger btn-sm' 
-                >&nbsp;Retire&nbsp;</a>
-EOT;
-            }
-            elseif ($row['entry-status'] == "retired")
-            {
-                $col4 = <<<EOT
-                <a href="race_sc.php?opt=retire&event=$eventid" type='button' class='rm-text-xs btn btn-danger btn-sm disabled' 
-                ><span class='glyphicon glyphicon-ok'  aria-hidden='true'></span></a>
-EOT;
-            }
-            else
-            {
-                $col4 = <<<EOT
-                <a href="race_sc.php?opt=retire&event=$eventid" type='button' class='rm-text-xs btn btn-danger btn-sm disabled' 
-                ><span class='glyphicon glyphicon-remove'  aria-hidden='true'></span></a>
-EOT;
-            }
-
-            // entry status
-            if (empty($row['entry-status']))
-            {
-                $col5_top = "";
-            }
-            elseif ($row['entry-status'] == "entered")
-            {
-                $col5_top = $row['entry-status']." - start ".$row['start'];
-            }
-            else
-            {
-                $col5_top = $row['entry-status'];
-            }
-
-            // event status
-            $col5_bot = "race: ".$row['event-status-txt'];
-
-            // results option    fixme - disabled when race not started or not finished
-            if ($_SESSION['sailor_results'])
-            {
-                $col6 = <<<EOT
-            <a href="results_pg.php?event=$eventid&mode=list" type='button' title="results" class="btn btn-md btn-success"><span class='rm-text-md glyphicon glyphicon-list-alt'  aria-hidden='true'></span></a>           
-EOT;
-            }
-            else
-            {
-                $col6 = "&nbsp;";
-            }
-
-
-            // protest option   fixme - disabled when race not started
-            if ($_SESSION['sailor_protest'])
-            {
-                $col7 = <<<EOT
-            <a href="protest_pg.php?event=$eventid" type='button' title="protest" class="btn btn-md btn-success"><span class='rm-text-md glyphicon glyphicon-pencil'  aria-hidden='true'></span></a>
-            
-EOT;
-            }
-            else
-            {
-                $col7 = "&nbsp;";
-            }
-
-            $event_list.=<<<EOT
-             <tr style="min-height: 2em">
-                <td width="25%" class="rm-text-sm rm-table-event-list rm-text-trunc">$col1</td>   <!-- event title -->
-EOT;
-            if ($row['signon'] == "signon")
+            if ($row['event-status'] == "cancelled")
             {
                 $event_list.=<<<EOT
-                <td width="12%" class="rm-text-md rm-table-event-list">$col2</td>   <!--  signon   -->
-                <td width="12%" class="rm-table-event-list">&nbsp;</td>   <!--  signoff   -->
-                <td width="12%" class="rm-table-event-list">&nbsp</td>   <!--  retire   -->  
-                <td width="20%" class="rm-text-sm rm-table-event-list text-success">$col5_top
-                <br><span class="text-warning">$col5_bot</span></td>   <!--  entry status --> 
+                <tr style="height: 8em !important;">
+                <td width="25%" class="rm-text-sm rm-text-trunc">$race_txt</td>
+                <td width="66%" class="rm-text-md text-warning" colspan="7">this race is CANCELLED</td>                     
+                </tr>
 EOT;
             }
-            elseif ($row['signon'] == "signon-retire")
+            elseif($row['event-status'] == "abandoned")
             {
+                // protest option
+                $protest_btn = protest_btn($_SESSION['sailor_protest'], $eventid, $row['event-status-code'], $row['entry-status']);
+
                 $event_list.=<<<EOT
-                <td width="12%" class="rm-text-md rm-table-event-list">$col2</td>   <!--  signon   -->
-                <td width="12%" class="rm-text-md rm-table-event-list">&nbsp;</td>   <!--  signoff   -->
-                <td width="12%" class="rm-text-md rm-table-event-list">$col4</td>   <!--  retire-->  
-                <td width="20%" class="rm-text-sm rm-table-event-list text-success">$col5_top
-                <br><span class="text-warning">$col5_bot</span></td>   <!--  entry status -->
-EOT;
-            }
-            elseif ($row['signon'] == "signon-declare")
-            {
-                $event_list.=<<<EOT
-                <td width="15%" class="rm-text-md rm-table-event-list">$col2</td>   <!--  signon   -->
-                <td width="15%" class="rm-text-md rm-table-event-list">$col3</td>   <!--  signoff -->
-                <td width="15%" class="rm-text-md rm-table-event-list">$col4</td>   <!--  retire-->
-                <td width="20%" class="rm-text-sm rm-table-event-list text-success">$col5_top
-                <br><span class="text-warning">$col5_bot</span></td>   <!--  entry status -->
+                <tr style="height: 8em !important;">
+                <td width="25%" class="rm-text-sm rm-text-trunc">$race_txt</td>
+                <td width="56%" class="rm-text-md text-warning" colspan="5">this race is ABANDONED</td>   
+                <td width="5%" class="rm-text-md ">$protest_btn</td>                   
+                </tr>
 EOT;
             }
             else
             {
-                $event_list.=<<<EOT
-                <td width="30%" class="rm-text-md rm-table-event-list">Please check with Race Officer for entry procedure</td>   <!--  signon   -->             
+                // signon button
+                $signon_btn = signon_btn($eventid, $row['event-status-code'], $row['entry-status']);
+
+                // declare (signoff) button
+                $declare_btn = declare_btn($row['signon'], $eventid, $row['event-status-code'], $row['entry-status']);
+
+                // retire
+                $retire_btn = retire_btn($row['signon'], $eventid, $row['event-status-code'], $row['entry-status']);
+
+                // entry status
+                $entry_status_txt = entry_status_txt($row['entry-status'], $row['entry-alert'], $row['start']);
+
+                // event status
+                $event_status_txt = "race: " . $row['event-status-txt'];
+
+                // results option
+                $results_btn = results_btn($_SESSION['sailor_results'], $eventid, $row['event-status-code'], $row['entry-status']);
+
+                // protest option
+                $protest_btn = protest_btn($_SESSION['sailor_protest'], $eventid, $row['event-status-code'], $row['entry-status']);
+
+                $event_list .= <<<EOT
+                <tr style="height: 8em !important;">
+                <td width="25%" class="rm-text-sm rm-text-trunc" >$race_txt</td>
+                <td width="30%" class="rm-text-md">$signon_btn &nbsp; $declare_btn &nbsp; $retire_btn</td>
+                <td width="20%" class="rm-text-sm text-success">$entry_status_txt
+                    <br><span class="text-warning">$event_status_txt</span></td>   
+                <td width="5%" class="rm-text-md ">$results_btn</td>   
+                <td width="5%" class="rm-text-md ">$protest_btn</td>                     
+                </tr>
 EOT;
             }
-            $event_list.=<<<EOT
-                <td width="5%" class="rm-text-md rm-table-event-list">$col6</td>   <!--  results option -->    
-                <td width="5%" class="rm-text-md rm-table-event-list">$col7</td>   <!--  results option -->                     
-             </tr>
-EOT;
         }
 
         $event_bufr.= <<<EOT
@@ -208,6 +86,10 @@ EOT;
             </form>
 EOT;
     }
+    else
+    {
+            // deal with unknown state - error
+    }
 
     $bufr.= <<<EOT
      <div class="row">
@@ -217,103 +99,202 @@ EOT;
      </div>
      
      <div class="row margin-top-10">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ">   
+        <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">   
             $instruction_bufr        
             $event_bufr
         </div>
+     </div>
+
+     <div class="margin-top-40">
+            <a href="boatsearch_pg.php" class="btn btn-warning btn-md active rm-text-sm pull-right" role="button" >
+                <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Start Again ...
+            </a>
      </div>
 EOT;
 
     return $bufr;
 }
 
-function get_entry_status_text($status, $start)
+function entry_status_txt($en_state, $en_alert, $start)
 {
-    if ($status == "entered" )
+    if (empty($en_alert))
     {
-        $txt = "<span class='glyphicon glyphicon-ok'  aria-hidden='true'></span> start $start ";
-    }
-    elseif($status == "retired" OR $status == "signed off")  // racing
-    {
-        $txt = "<span class='glyphicon glyphicon-ok'  aria-hidden='true'></span> $status";
-    }
-    elseif ($status == "not eligible" OR $status == "class not recognised")      // ineligible
-    {
-        $txt = "<span class='glyphicon glyphicon-remove'  aria-hidden='true'></span> $status";
+        $txt = $en_state;
+        if ($en_state == "entered") { $txt .= " - start " . $start; }
+        elseif ($en_state == "updated") { $txt .= " - start " . $start; }
     }
     else
     {
-        $txt = "";
+        $txt = $en_alert;
     }
-
     return $txt;
 }
 
-//function signon_race_confirm($params = array())
-//{
-//    ($params['status'] == "update" or $params['status'] == "enter") ? $glyph = "glyphicon-ok" : $glyph = "glyphicon-remove";
-//
-//    $bufr = <<<EOT
-//        <tr>
-//            <td><h4>{name}</h4></td>
-//            <td><h4>{start-time}</h4></td>
-//            <td><h4>{text}</h4></td>
-//            <td><span class="glyphicon $glyph rm-glyph-bg"  aria-hidden="true"></span></td>
-//        </tr>
-//EOT;
-//    return $bufr;
-//}
-//
-//
-//function signon_confirm($params=array())
-//{
-//    $bufr = "";
-//    if ($params['status'])
-//    {
-//        $confirm_msg = <<<EOT
-//        <div class="row margin-top-10">
-//           <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-//               <div class="alert alert-success rm-text-md" role="alert"> All done . . . have a good race </div>
-//           </div>
-//        </div>
-//EOT;
-//
-//    }
-//    else
-//        $confirm_msg = <<<EOT
-//        <div class="row margin-top-10">
-//           <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-//               <div class="alert alert-danger rm-text-md" role="alert"> There was a problem with your race entry<br> . . . please contact the race officer </div>
-//           </div>
-//        </div>
-//
-//EOT;
-//
-//    // render the page
-//    $bufr.=<<<EOT
-//     <!-- boat details -->
-//     <div class="row">
-//        <div class="col-xs-12 col-xs-offset-0 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-//            {boat-label}
-//        </div>
-//     </div>
-//
-//     <!-- events -->
-//     <div class="row margin-top-10">
-//          <div class="col-xs-12 col-xs-offset-0 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-//            <table class="table table-condensed">
-//                {event-list}
-//            </table>
-//          </div>
-//     </div>
-//
-//     <!-- confirm message -->
-//     $confirm_msg
-//EOT;
-//
-//    return $bufr;
-//}
+function signon_btn($eventid, $ev_state, $en_state)
+{
+    $mode = "";
+    if ($ev_state <=2)    // race not started
+    {
+        if (empty($en_state))  // not entered yet - green button
+        {
+            $mode = "btn-success";
+            $label = "Sign On";
+        }
+        elseif ($en_state == "entered" or $en_state == "updated")     // update entry
+        {
+            $mode = "btn-info";
+            $label = "Update";
+        }
+    }
 
+    if (empty($mode))                  // otherwise not allowed to enter - disabled button
+    {
+        $mode = "btn-default disabled";
+        $label = "Sign On";
+    }
+
+    $bufr = <<<EOT
+        <a href="race_sc.php?opt=signon&event=$eventid" type='button' 
+        class='rm-text-xs btn btn-sm $mode' >$label</a>
+EOT;
+
+    return $bufr;
+}
+
+function declare_btn($signon, $eventid, $ev_state, $en_state)
+{
+    $mode = "";
+    if ($signon == "signon-declare")
+    {
+        if (empty($en_state) or $ev_state < 3)    // button disabled if not entered or race not started
+        {
+            $mode = "btn-default disabled";
+        }
+        elseif ($ev_state >= 3 and $ev_state <= 5  and ($en_state == "entered" or $en_state == "updated"
+                                                        or $en_state == "retired"))
+        {
+            $mode = "btn-warning";
+        }
+        elseif ($en_state == "signed off")
+        {
+            $mode = "btn-default disabled";
+        }
+    }
+
+    if (empty($mode))
+    {
+        $bufr = "";
+    }
+    else
+    {
+        $bufr = <<<EOT
+            <a href="race_sc.php?opt=declare&event=$eventid" type='button' 
+            class='rm-text-xs btn btn-sm $mode' >Sign Off</a>
+EOT;
+    }
+
+    return $bufr;
+}
+
+function retire_btn($signon, $eventid, $ev_state, $en_state)
+{
+    $mode = "";
+    $action = "retire";
+
+    if ($signon == "signon-declare" or $signon == "signon-retire")
+    {
+        if (empty($en_state))
+        {
+            $mode = "btn-default disabled";
+        }
+        elseif ($ev_state < 5  and ($en_state == "entered" or $en_state == "updated"
+                                    or $en_state == "signed off" or $en_state == "declared"))
+        {
+                $mode = "btn-danger";
+        }
+        else
+        {
+            $mode = "btn-default disabled";
+        }
+    }
+
+    if (empty($mode))
+    {
+        $bufr = "";
+    }
+    else
+    {
+        $bufr = <<<EOT
+        <a href="race_sc.php?opt=$action&event=$eventid" type='button' 
+        class='rm-text-xs btn btn-sm $mode'>&nbsp;Retire&nbsp;</a>
+EOT;
+    }
+    return $bufr;
+}
+
+function results_btn($opt, $eventid, $ev_state, $en_state)
+{
+    $mode = "";
+    if($opt)
+    {
+        if ($ev_state >= 4 and $ev_state <= 5 and ($en_state == "retired" or $en_state == "signed off"
+                                                  or $en_state == "entered" or $en_state == "updated"))
+        {
+            $mode = "btn-success";
+        }
+        else
+        {
+            $mode = "btn-default disabled";
+        }
+    }
+
+    if (empty($mode))
+    {
+        $bufr = "&nbsp;";
+    }
+    else
+    {
+        $bufr = <<<EOT
+        <a href="results_pg.php?event=$eventid&mode=list" type='button' title="results" class="btn btn-md $mode">
+        <span class='rm-text-md glyphicon glyphicon-list-alt'  aria-hidden='true'></span></a>           
+EOT;
+    }
+
+
+
+    return $bufr;
+}
+
+function protest_btn($opt, $eventid, $ev_state, $en_state)
+{
+    $mode = "";
+    if ($opt)
+    {
+        if ($ev_state >= 1 and ($en_state == "retired" or $en_state == "signed off"
+                                or $en_state == "entered" or $en_state == "updated"))
+        {
+            $mode = "btn-success";
+        }
+        else
+        {
+            $mode = "btn-default disabled";
+        }
+    }
+
+    if (empty($mode))                // protest option not set
+    {
+        $bufr = "&nbsp;";
+    }
+    else
+    {
+        $bufr = <<<EOT
+        <a href="protest_pg.php?event=$eventid" type='button' title="protest" class="btn btn-md $mode">
+        <span class='rm-text-md glyphicon glyphicon-pencil'  aria-hidden='true'></span></a>
+EOT;
+    }
+
+    return $bufr;
+}
 
 
 function change_fm($params = array())
