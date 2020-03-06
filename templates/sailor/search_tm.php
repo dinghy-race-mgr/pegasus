@@ -9,10 +9,10 @@ function boatsearch_form($params = array())
                <div class="col-xs-9 col-xs-offset-1 col-sm-9 col-sm-offset-1 col-md-8 col-md-offset-1 col-lg-8 col-lg-offset-1">
                     <form id="sailnumform" class="form-inline" action="boatsearch_sc.php" method="post" role="search" autocomplete="off">
                         <div class="form-group">
-                          <div class="input-group">
-                            
-                              <input id="sailnum" autocomplete="off" class="form-control input-lg rm-form-input-lg" style="min-width: 600px"
-                              type="text" placeholder="sail number, class or helm name" name="sailnum" />
+                          <label class="text-success"><h2>Boat search&nbsp;&nbsp;&nbsp;</h2></label>
+                          <div class="input-group">                              
+                              <input id="sailnum" autocomplete="off" class="form-control input-lg rm-form-input-lg placeholder-lg" style="min-width: 600px"
+                              type="text" placeholder="sail number, class or surname" name="sailnum" />
                           </div>
                           
                           <button class="btn btn-warning btn-lg" type="submit" >
@@ -24,7 +24,12 @@ function boatsearch_form($params = array())
                     <br><br>
                     {events_bufr}
                </div>
-            </div>            
+               
+                
+            </div>
+            <a href="addboat_pg.php" class="btn btn-info btn-md rm-text-bg pull-right" role="button">
+                <strong><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> &nbsp;Add new boat ...</strong>
+            </a>            
         </div> 
         <br>        
 EOT;
@@ -35,8 +40,19 @@ function search_nonfound_response($params = array())
 {
     $bufr = "";
 
+    $addboat_bufr = "";
+    if ($params['addboat'])
+    {
+        $addboat_bufr = <<<EOT
+            <a href="addboat_pg.php" class="btn btn-block btn-info btn-md rm-text-bg" role="button">
+                <strong><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> &nbsp;Add new boat ...</strong>
+            </a>
+EOT;
+
+    }
+
     $bufr.= <<<EOT
-    <div class="row margin-top-40">
+    <div class="row margin-top-20">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 ">
             <div class="alert alert-danger rm-text-bg" role="alert">
                 <h2><b>Sorry! </b></h2> <p>no boats found matching your search .... <b>"{searchstr}"</b></p>
@@ -46,19 +62,20 @@ function search_nonfound_response($params = array())
     
     <div class="row">
         <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
-            <h4 class="rm-text-md">If you think there should be a boat matching your search in the system please contact the race officer<br><br>Otherwise &hellip;</h4>
+            <h4 class="rm-text-md">If you think there should be a boat matching your search in the system please contact the race officer &nbsp;&nbsp;-&nbsp;&nbsp; otherwise &hellip;</h4>
         </div>
     </div>
     
     <div class="row margin-top-10">
         <div class="col-xs-6 col-xs-offset-3 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">
-            <a href="{retryscript}" class="btn btn-block btn-warning btn-lg rm-text-bg" role="button">
+            <a href="{retryscript}" class="btn btn-block btn-warning btn-md rm-text-bg" role="button">
                 <strong><span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Search again ...</strong>
             </a>
+            <br>
+            $addboat_bufr           
         </div>
     </div>
 EOT;
-
 
     return $bufr;
 }

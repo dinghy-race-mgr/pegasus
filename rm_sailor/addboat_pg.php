@@ -28,6 +28,7 @@ require_once ("{$loc}/common/classes/boat_class.php");
 $db_o = new DB();
 $tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php", "../templates/sailor/addeditboat_tm.php"));
 
+$options = set_page_options("addboat");
 
 // set optional fields     FIXME - this will eventually be part of configuration
 
@@ -61,7 +62,7 @@ $skill_lut = u_selectcodelist($db_o->db_getsystemcodes("competitor_skill"), "");
 
 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boat_fm", $addboatfields,
     array("mode" => "add", "fields" => $field_set, "class_list" => $class_lut, "skill_list" => $skill_lut));
-
+$_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(), array("options" => $options));
 // render page
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();

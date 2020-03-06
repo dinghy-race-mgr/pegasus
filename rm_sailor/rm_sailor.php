@@ -33,7 +33,11 @@ session_start();
 session_unset();
 $init_status = u_initialisation("$loc/config/racemanager_cfg.php", "$loc/config/rm_sailor_cfg.php", $loc, $scriptname);
 
-if ($init_status)
+if (!$init_status)
+{
+    error_stop("initialisation");
+}
+else
 {
     // set timezone
     if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
@@ -41,10 +45,12 @@ if ($init_status)
     // error reporting - full for development
     $_SESSION['sys_type'] == "live" ? error_reporting(E_ERROR) : error_reporting(E_ALL);
 
-    // start log     FIXME - how will this work for each user - might onl be necessary for multi use
+    // start log
     $_SESSION['syslog'] = "$loc/logs/syslogs/".$_SESSION['syslog'];
     error_log(date('H:i:s')." -- RM_SAILOR --------------------".PHP_EOL, 3, $_SESSION['syslog']);
     $_SESSION['dbglog'] = "$loc/logs/dbglogs/".$_SESSION['app_name']."_".date("Y-m-d").".log";
+
+    // start debug log if required
 
     // set database initialisation (t_ini) into SESSION
     $db_o = new DB();
@@ -52,32 +58,8 @@ if ($init_status)
     {
         $_SESSION[$k] = $v;
     }
+}
 
-    // get links from database  FIXME - not sure I need this
-    $_SESSION['clublink'] = $db_o->db_getlinks("sailor");                // database link information (t_link)
-}
-else {
-    // no options configured in ini file - report error and stop
-    u_writelog("Fatal Error: failed to initialise rm_sailor", "");
-    $error_fields = array(
-        "error"  => "Failed to initialise application",
-        "detail" => "",
-        "action" => "Please report this error to your raceManager administrator",
-    );
-    $_SESSION['pagefields'] = array(
-        "title" => "rm_sailor",
-        "loc" => $loc,
-        "stylesheet" => "$loc/style/rm_sailor.css",
-        "header-left" => "",
-        "header-center" => "raceManager",
-        "header-right" => "",
-        "body" => $tmpl_o->get_template("error_msg", $error_fields),
-        "footer-left" => "",
-        "footer-center" => "",
-        "footer-right" => ""
-    );
-    echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
-}
 
 // initialise standard parameters   //
 initialise_params($_REQUEST);
@@ -85,7 +67,7 @@ initialise_params($_REQUEST);
 // initialise standard page layout
 $_SESSION['pagefields'] = array(
     "title" => "rm_sailor",
-    "theme" => "flatly_",
+    "theme" => $_SESSION['sailor_theme'],
     "loc" => $loc,
     "stylesheet" => "$loc/style/rm_sailor.css",
     "header-left" => $_SESSION['clubcode'],
@@ -108,19 +90,12 @@ $_SESSION['numoptions'] = count($_SESSION['option_cfg']);
 
 if ($_SESSION['numoptions'] < 1)
 {
-    // no options configured in ini file - report error and stop
-    u_writelog("Fatal Error: no options configured for rm_sailor", "");
-    $error_fields = array(
-        "error"  => "Fatal Error: no options configured for rm_sailor",
-        "detail" => "",
-        "action" => "Please report error to your raceManager administrator",
-    );
-    $_SESSION['pagefields']['body'] = $tmpl_o->get_template("error_msg", $error_fields);
-    echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
+    error_stop("no_options");
 }
 else
 {
     if ($_SESSION['debug']) { u_requestdbg($_SESSION, __FILE__, __FUNCTION__, __LINE__, false); }
+
     // redirect
     header("Location: boatsearch_pg.php?");
 }
@@ -130,7 +105,7 @@ exit();
 function initialise_params($arg)
 {
     // does the application work for multiple users (multi) or a single user (single)
-    $_SESSION['usage'] = "multi";
+    $_SESSION['usage'] = "multi";   // FIXME - should be passed
     $_SESSION['sailor']['id'] = 0;
     if (!empty($arg['usage']))
     {
@@ -171,4 +146,46 @@ function initialise_params($arg)
     {
         $_SESSION['event_passed'] = explode(",", $arg['event']);
     }
+}
+
+function error_stop($cause)
+{
+    global $tmpl_o;
+
+    if ($cause == "initialisation")
+    {
+        // no options configured in ini file - report error and stop
+        u_writelog("Fatal Error: failed to initialise rm_sailor", "");
+        $error_fields = array(
+            "error"  => "Failed to initialise application",
+            "detail" => "",
+            "action" => "Please report this error to your raceManager administrator",
+        );
+    }
+    elseif ($cause == "no_options")
+    {
+        // no options configured in ini file - report error and stop
+        u_writelog("Fatal Error: no options configured for rm_sailor", "");
+        $error_fields = array(
+            "error"  => "Fatal Error: no options configured for rm_sailor",
+            "detail" => "",
+            "action" => "Please report error to your raceManager administrator",
+        );
+    }
+
+    $_SESSION['pagefields'] = array(
+        "title" => "rm_sailor",
+        "theme" => "",
+        "loc" => $loc,
+        "stylesheet" => "$loc/style/rm_sailor.css",
+        "header-left" => "",
+        "header-center" => "raceManager",
+        "header-right" => "",
+        "body" => $tmpl_o->get_template("error_msg", $error_fields),
+        "footer-left" => "",
+        "footer-center" => "",
+        "footer-right" => ""
+    );
+    echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
+    exit();
 }

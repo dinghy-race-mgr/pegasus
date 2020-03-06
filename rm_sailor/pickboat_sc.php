@@ -38,7 +38,7 @@ if (isset($_REQUEST['compid']) and is_numeric($_REQUEST['compid']))
     $competitors = $comp_o->comp_findcompetitor(array("id"=>$_REQUEST['compid']));
     $competitors ? $numcompetitors = count($competitors) : $numcompetitors = 0;
 
-    if ($numcompetitors==1)  // not found - this should not be possible so close
+    if ($numcompetitors==1)  // found
     {
         $_SESSION['sailor'] = $competitors[0];
         $_SESSION['sailor']['change'] = false;
@@ -46,7 +46,7 @@ if (isset($_REQUEST['compid']) and is_numeric($_REQUEST['compid']))
         $_SESSION['sailor']['chg-helm'] = "";
         $_SESSION['sailor']['chg-crew'] = "";
 
-        // if no races today - go to options
+        // if no races today - go to options  FIXME - shouldn't need this
         if ($_SESSION['events']['numevents'] <= 0)
         {
             header("Location: options_pg.php");
@@ -54,7 +54,7 @@ if (isset($_REQUEST['compid']) and is_numeric($_REQUEST['compid']))
         }
         else
         {
-            header("Location: race_pg.php");
+            header("Location: race_pg.php?state=init");
             exit();
         }
     }

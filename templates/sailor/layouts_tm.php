@@ -23,7 +23,6 @@
             
             <link rel="shortcut icon" href="{loc}/common/images/favicon.ico">             
             <link rel="stylesheet"    href="{loc}/common/oss/bootstrap/css/{theme}bootstrap.min.css" >      
-            <!-- <link rel="stylesheet"    href="{loc}/common/oss/bootstrap/css/bootstrap-theme.min.css"> -->
             <link rel="stylesheet"    href="{loc}/common/oss/bs-dialog/css/bootstrap-dialog.min.css">
                     
             <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>

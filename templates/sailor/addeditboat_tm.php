@@ -66,29 +66,29 @@ EOT;
     <div class="form-group form-condensed">
         <label for="classid" class="rm-form-label control-label $lbl_width text-success">Class</label>
         <div class="selectfieldgroup $fld_width">
-            <select name="classid" class="form-control input-md " required data-fv-notempty-message="choose the class of boat" id="classid" >
+            <select name="classid" class="form-control input-md placeholder-md" required data-fv-notempty-message="choose the class of boat" id="classid" >
                 {$params['class_list']}
             </select>
         </div>
     </div>
     <div class="form-group form-condensed">
-        <label for="helm" class="rm-form-label control-label $lbl_width">&nbsp;</label>
+        <label for="sailnum" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label>
         <div class="inputfieldgroup $fld_width">
-            <input name="sailnum" autocomplete="off" type="text" class="form-control input-md " id="sailnum" value="{sailnum}"
+            <input name="sailnum" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="sailnum" value="{sailnum}"
                    placeholder="sail number e.g 12345 ..." required data-fv-notempty-message="sail number is required">
         </div>
     </div> 
     <div class="form-group form-condensed">
-        <label for="boatname" class="rm-form-label control-label $lbl_width">&nbsp;</label> 
+        <label for="boatname" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label> 
         <div class="inputfieldgroup $fld_width">     
-            <input name="boatname" autocomplete="off" type="text" class="form-control input-md" id="boatname" value="{boatname}"
+            <input name="boatname" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="boatname" value="{boatname}"
                    placeholder="boat name ...">
         </div>
     </div>
     <div class="form-group form-condensed">
-        <label for="classid" class="rm-form-label control-label $lbl_width">&nbsp;</label> 
+        <label for="club" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label> 
         <div class="inputfieldgroup  $fld_width">
-            <input name="club" autocomplete="off" type="text" class="form-control input-md " id="club" value="{club}"
+            <input name="club" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="club" value="{club}"
                    placeholder="home club e.g Starcross YC ..." required data-fv-notempty-message="club name is required">
         </div>       
     </div>
@@ -100,9 +100,9 @@ EOT;
     {
         $helm_dob_bufr.= <<<EOT
         <div class="form-group form-condensed">
-            <label for="helm_dob" class="rm-form-label control-label $lbl_width">&nbsp;</label> 
+            <label for="helm_dob" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label> 
             <div class="inputfieldgroup $fld_width">     
-                <input name="helm_dob" autocomplete="off" type="text" class="form-control input-lg" id="helm_dob" value="{helm_dob}"
+                <input name="helm_dob" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="helm_dob" value="{helm_dob}"
                        placeholder="date of birth - dd/mm/yyyy ...">
             </div>
         </div> 
@@ -115,9 +115,9 @@ EOT;
     {
         $helm_email_bufr .= <<<EOT
         <div class="form-group form-condensed">
-            <label for="helm_email" class="rm-form-label control-label $lbl_width">&nbsp;</label> 
+            <label for="helm_email" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label> 
             <div class="inputfieldgroup $fld_width">     
-                <input name="helm_email" autocomplete="off" type="email" class="form-control input-lg" id="helm_email" value="{helm_email}"
+                <input name="helm_email" autocomplete="off" type="email" class="form-control input-md placeholder-md" id="helm_email" value="{helm_email}"
                        placeholder="email address ..." data-fv-emailaddress-message="provide a valid email address">
             </div>
         </div> 
@@ -130,9 +130,9 @@ EOT;
     {
         $skill_bufr.= <<<EOT
         <div class="form-group form-condensed">
-            <label for="classid" class="rm-form-label control-label $lbl_width">Class</label>
+            <label for="skill_level" class="rm-form-label control-label $lbl_width text-success">Class</label>
             <div class="selectfieldgroup $fld_width">
-                <select name="skill_level" class="form-control input-lg " required data-fv-notempty-message="choose your skill level" id="skill_level" >
+                <select name="skill_level" class="form-control input-md placeholder-md" required data-fv-notempty-message="choose your skill level" id="skill_level" >
                     {$params['skill_list']}
                 </select>
             </div>
@@ -146,9 +146,9 @@ EOT;
     {
         $crew_dob_bufr.= <<<EOT
         <div class="form-group form-condensed">
-            <label for="crew_dob" class="rm-form-label control-label $lbl_width">&nbsp;</label> 
+            <label for="crew_dob" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label> 
             <div class="inputfieldgroup $fld_width">     
-                <input name="crew_dob" autocomplete="off" type="text" class="form-control input-lg" id="crew_dob" value="{crew_dob}"
+                <input name="crew_dob" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="crew_dob" value="{crew_dob}"
                        placeholder="date of birth - dd/mm/yyyy ...">
             </div>
         </div> 
@@ -161,9 +161,9 @@ EOT;
     {
         $crew_email_bufr.= <<<EOT
         <div class="form-group form-condensed">
-            <label for="crew_email" class="rm-form-label control-label $lbl_width">&nbsp;</label> 
+            <label for="crew_email" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label> 
             <div class="inputfieldgroup $fld_width">     
-                <input name="crew_email" autocomplete="off" type="email" class="form-control input-lg" id="crew_email" value="{crew_email}"
+                <input name="crew_email" autocomplete="off" type="email" class="form-control input-md placeholder-md" id="crew_email" value="{crew_email}"
                        placeholder="email address ..." data-fv-emailaddress-message="provide a valid email address">
             </div>
         </div> 
@@ -172,10 +172,10 @@ EOT;
 
     $helm_bufr = <<<EOT
     <div class="form-group form-condensed">
-        <label for="helm" class="rm-form-label control-label $lbl_width">Helm</label>
+        <label for="helm" class="rm-form-label control-label $lbl_width text-success">Helm</label>
         <div class="inputfieldgroup $fld_width">
             <div>
-            <input name="helm" autocomplete="off" type="text" class="form-control input-lg " id="helm" value="{helm}"
+            <input name="helm" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="helm" value="{helm}"
                    placeholder="name - e.g. Fred Flintstone ..." required data-fv-notempty-message="helm name is required">
             </div>
             $helm_dob_bufr
@@ -187,10 +187,10 @@ EOT;
 
     $crew_bufr = <<<EOT
     <div class="form-group form-condensed">
-        <label for="crew" class="rm-form-label control-label $lbl_width">Crew</label>
+        <label for="crew" class="rm-form-label control-label $lbl_width text-success">Crew</label>
         <div class="$fld_width">
             <div>
-            <input name="crew" autocomplete="off" type="text" class="form-control input-lg " id="crew" value="{crew}"
+            <input name="crew" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="crew" value="{crew}"
                    placeholder="name - e.g. Barney Rubble ...">
             </div>
             $crew_dob_bufr
@@ -299,7 +299,12 @@ function addboat_duplicate($params = array())
                 <p><small>If it is not recognised when searching the system please contact your system administrator</small></p>
             </div>
         </div>
-     </div>
+    </div>
+    <div class="row margin-top-40">
+    <a href="boatsearch_pg.php" class="btn btn-warning btn-md rm-text-bg pull-right" role="button">
+        <strong><span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Search again ...</strong>
+    </a>
+    </div>
 EOT;
 
     return $bufr;

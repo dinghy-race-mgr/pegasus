@@ -106,8 +106,8 @@ EOT;
      </div>
 
      <div class="margin-top-40">
-            <a href="boatsearch_pg.php" class="btn btn-warning btn-md active rm-text-sm pull-right" role="button" >
-                <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Start Again ...
+            <a href="boatsearch_pg.php" class="btn btn-info btn-md rm-text-bg pull-right" role="button" >
+                <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Done ...
             </a>
      </div>
 EOT;

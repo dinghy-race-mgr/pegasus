@@ -67,10 +67,14 @@ body {
 
 .divider-line { height: 10px; border: none;}
 
-::-webkit-input-placeholder { color: orange !important; font-weight: normal !important; font-style: italic; text-align: left; font-size: 1.0em;}
-.form-control::-moz-placeholder { color: orange !important;  font-weight: normal !important; font-style: italic; text-align: left; font-size: 1.0em;}
-:-ms-input-placeholder { color: orange !important;  font-weight: normal !important; font-style: italic; text-align: left; font-size: 1.0em;}
+/* required asterisks */
+.form-control-feedback {color: deeppink !important;}
 
+/*
+::-webkit-input-placeholder { color: darkgray !important; font-style: italic !important; text-align: left; font-size: 1.0em;}
+.form-control::-moz-placeholder { color: darkgray !important;  font-style: italic !important; text-align: left; font-size: 1.0em;}
+:-ms-input-placeholder { color: darkgray !important;  font-style: italic !important; text-align: left; font-size: 1.0em;}
+*/
 input[type=checkbox] {
   transform: scale(2.0); /* All browsers except webkit*/
   -webkit-transform: scale(2.0);  /* Webkit browsers*/
@@ -80,5 +84,39 @@ input[type=radio] {
   transform: scale(1.7); /* All browsers except webkit*/
   -webkit-transform: scale(1.7); /* Webkit browsers*/
 }
-
 .hover:hover{background-color: lightyellow; color: black;}
+
+/* placeholder styling */
+.placeholder-lg::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: darkgray; font-style: italic; font-size: 0.8em;
+}
+.placeholder-lg:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: darkgray; opacity: 1; font-style: italic; font-size: 0.8em;
+}
+.placeholder-lg::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: darkgray; opacity: 1; font-style: italic; font-size: 0.8em;
+}
+.placeholder-lg:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: darkgray; ; font-style: italic; font-size: 0.8em;
+}
+
+.placeholder-md::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: darkgray; font-style: italic; font-size: 1.2em;
+}
+.placeholder-md:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: darkgray; opacity: 1; font-style: italic; font-size: 1.2em;
+}
+.placeholder-md::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: darkgray; opacity: 1; font-style: italic; font-size: 1.2em;
+}
+.placeholder-md:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: darkgray; ; font-style: italic; font-size: 1.2em;
+}

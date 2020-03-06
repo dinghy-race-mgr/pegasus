@@ -1,5 +1,20 @@
 <?php
 
+function set_page_options($page)
+{
+    $opt_map = get_options_map($page);
+    $options = array();
+    foreach ($opt_map as $opt)
+    {
+        if (array_key_exists($opt, $_SESSION['option_cfg']))
+        {
+            $options[] = $_SESSION['option_cfg'][$opt];
+        }
+    }
+    return $options;
+}
+
+
 function get_event_details($eventid_list = array())
 {
     global $event_o;
@@ -193,12 +208,14 @@ function get_options_map($page)
 {
     $opt_map = array(
         "boatsearch" => array("addboat"),
-        "race"     => array("boatsearch", "editboat", "rememberme"),
-        "addboat"    => array("boatsearch", ),
+        "pickboat"   => array("boatsearch", "addboat"),
+        "race"       => array("boatsearch", "editboat", "rememberme"),
+        "cruise"     => array("boatsearch", "editboat", "rememberme"),
+        "addboat"    => array("boatsearch"),
         "change"     => array(),
         "editboat"   => array("boatsearch"),
-        "protest"    => array("boatsearch"),
-        "rememberme" => array("boatsearch"),
+        "results"    => array("boatsearch"),
+        "protest"    => array("boatsearch")
     );
 
     return $opt_map["$page"];
@@ -210,8 +227,8 @@ function get_options_arr()
     $options = array();
 
     $options['boatsearch'] = array("label" => "Search Boats", "url" => "boatsearch_pg.php", "tip" => "", "active" => true);
-    $options['race']     = array("label" => "Sign On", "url" => "race_pg.php", "tip" => "",  "active" => $_SESSION['sailor_race']);
-    $options['cruise']    = array("label" => "Sign Off/Retire", "url" => "signoff_pg.php", "tip" => "",  "active" => $_SESSION['sailor_cruise']);
+    $options['race']       = array("label" => "Sign On", "url" => "race_pg.php", "tip" => "",  "active" => $_SESSION['sailor_race']);
+    $options['cruise']     = array("label" => "Sign Off/Retire", "url" => "signoff_pg.php", "tip" => "",  "active" => $_SESSION['sailor_cruise']);
     $options['addboat']    = array("label" => "Add New Boat", "url" => "addboat_pg.php", "tip" => "",  "active" => $_SESSION['sailor_addboat']);
     $options['editboat']   = array("label" => "Change Boat Details", "url" => "editboat_pg.php", "tip" => "",  "active" => $_SESSION['sailor_editboat']);
     $options['results']    = array("label" => "Get Results", "url" => "results_pg.php", "tip" => "",  "active" => $_SESSION['sailor_results']);

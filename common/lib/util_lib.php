@@ -28,6 +28,12 @@
 
 // NOT SORTED YET
 
+function u_htmlflush($bufr)
+{
+    $bufr = str_repeat("\n",4096);
+    return $bufr;
+}
+
 function u_array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
     $sort_col = array();
     foreach ($arr as $key=> $row) {

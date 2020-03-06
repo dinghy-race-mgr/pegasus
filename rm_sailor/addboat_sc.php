@@ -65,4 +65,3 @@ else                             // report other failure
 // generate confirmation page
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();
-?>

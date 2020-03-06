@@ -26,19 +26,12 @@ u_initpagestart(0,"boatsearch_pg",false);   // starts session and sets error rep
 
 $tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php", "../templates/sailor/search_tm.php"));
 
-$opt_map = get_options_map("boatsearch");
-$options = array();
-foreach ($opt_map as $opt)
-{
-    if (array_key_exists($opt, $_SESSION['option_cfg']))
-    {
-        $options[] = $_SESSION['option_cfg'][$opt];
-    }
-}
+$options = set_page_options("boatsearch");
 
 // clear entry
 unset($_SESSION['entry']);
 unset($_SESSION['races']);
+unset($_SESSION['competitors']);
 
 $db_o = new DB();
 $event_o = new EVENT($db_o);
