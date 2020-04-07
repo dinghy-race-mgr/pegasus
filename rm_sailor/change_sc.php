@@ -76,7 +76,16 @@ else         // system error - action not set or not recognised
     exit();
 }
 
-header("Location: race_pg.php?");
+if ($_SESSION['mode'] == "race")
+{
+    header("Location: race_pg.php?");
+}
+else
+{
+    header("Location: cruise_pg.php?");
+}
+
+
 exit();
 
 ?>

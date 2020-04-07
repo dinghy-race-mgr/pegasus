@@ -46,7 +46,7 @@ if (isset($_REQUEST['compid']) and is_numeric($_REQUEST['compid']))
         $_SESSION['sailor']['chg-helm'] = "";
         $_SESSION['sailor']['chg-crew'] = "";
 
-        // if no races today - go to options  FIXME - shouldn't need this
+        // if no races today - go to options  FIXME - shouldn't need this - go back to search?
         if ($_SESSION['events']['numevents'] <= 0)
         {
             header("Location: options_pg.php");
@@ -54,7 +54,14 @@ if (isset($_REQUEST['compid']) and is_numeric($_REQUEST['compid']))
         }
         else
         {
-            header("Location: race_pg.php?state=init");
+            if ($_SESSION['mode'] == "cruise")
+            {
+                header("Location: cruise_pg.php?state=init");
+            }
+            else
+            {
+                header("Location: race_pg.php?state=init");
+            }
             exit();
         }
     }

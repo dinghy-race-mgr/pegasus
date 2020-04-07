@@ -44,7 +44,6 @@ else
     );
 }
 
-
 $editboat_params = array(
     "points_allocation" => $_SESSION['points_allocation'],
     "singlehander"      => $_SESSION['sailor']['crew'] == 1,

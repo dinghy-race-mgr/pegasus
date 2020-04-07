@@ -30,16 +30,27 @@ $tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php", "../templates
 
 $options = set_page_options("addboat");
 
-// set optional fields     FIXME - this will eventually be part of configuration
+// set optional fields using flags from racemanager.ini
+if ($_SESSION['mode'] == "cruise")
+{
+    $field_set = array(
+        "helm_email"  => $_SESSION['sailor_boat_h_email'],
+        "crew_email"  => $_SESSION['sailor_boat_c_email'],
+        "dob"         => $_SESSION['sailor_boat_dob'],
+        "skill_level" => $_SESSION['sailor_boat_skill'],
+    );
+}
+else
+{
+    $field_set = array(
+        "helm_email"  => $_SESSION['sailor_boat_h_email'],
+        "crew_email"  => $_SESSION['sailor_boat_c_email'],
+        "dob"         => $_SESSION['sailor_boat_dob'],
+        "skill_level" => $_SESSION['sailor_boat_skill'],
+    );
+}
 
-$field_set = array(
-    "helm_email"  => $_SESSION['sailor_boat_h_email'],
-    "crew_email"  => $_SESSION['sailor_boat_c_email'],
-    "dob"         => $_SESSION['sailor_boat_dob'],
-    "skill_level" => $_SESSION['sailor_boat_skill'],
-);
-
-// set initial values
+// set initial values for all fields
 $addboatfields = array(
     "classid"     => "", "boatnum"     => "", "sailnum"     => "",  "boatname"    => "",
     "helm"        => "", "helm_dob"    => "", "helm_email"  => "",
@@ -57,11 +68,11 @@ $addboatfields = array(
 // create class and skill drop downs
 $class_o = new BOAT($db_o);
 $class_list = $class_o->boat_getclasslist();
-$class_lut  = u_selectlist($class_list);
+$class_lut  = u_selectlist($class_list, "", array("unknown" => "unknown"));
 $skill_lut = u_selectcodelist($db_o->db_getsystemcodes("competitor_skill"), "");
 
 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boat_fm", $addboatfields,
-    array("mode" => "add", "fields" => $field_set, "class_list" => $class_lut, "skill_list" => $skill_lut));
+    array("mode" => $_SESSION['mode'], "action" => "add", "fields" => $field_set, "class_list" => $class_lut, "skill_list" => $skill_lut));
 $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(), array("options" => $options));
 // render page
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);

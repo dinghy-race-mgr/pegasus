@@ -960,9 +960,19 @@ function u_selectcodelist($codelist, $selected="")
     return $bufr;
 }
 
-function u_selectlist($list, $selected="")
+function u_selectlist($list, $selected="", $top = array())
+    // added top to allow for 'other' type options
 {
     $bufr = "<option value=\"\" >please select ...</option>";
+
+    if (!empty($top))
+    {
+        foreach ($top as $k => $v)
+        {
+            $bufr.= "<option value=\"$k\" >$v</option>";
+        }
+    }
+
     foreach ($list as $key=>$opt)
     {
         ($opt == $selected) ? $selectstr = "selected" : $selectstr = "";

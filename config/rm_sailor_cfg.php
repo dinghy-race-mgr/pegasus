@@ -16,3 +16,4 @@ $_SESSION['sql_debug']     = false;                           // set to true to 
 $_SESSION['syslog'] = "sailor_".date("Y-m-d").".log";         // sys log  - only used when in club mode
 
 $_SESSION['sailor_race_sleep_delay'] = 4;
+$_SESSION['sailor_cruise_sleep_delay'] = 20;

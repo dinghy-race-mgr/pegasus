@@ -29,11 +29,12 @@ memberid 	varchar(20)	    NONE 		NULL
 
 function boat_fm($params = array())
 {
+    $label_col = "text-info";
     $lbl_width  = "col-xs-2";
     $fld_width  = "col-xs-6";
     $fld_narrow = "col-xs-3";
 
-    if ($params['mode'] == "edit")
+    if ($params['action'] == "edit")
     {
         $instruction_bufr = "Edit boat details &hellip;";
         $post_script = "editboat_sc.php";
@@ -64,7 +65,7 @@ EOT;
     // boat details
     $boat_bufr = <<<EOT
     <div class="form-group form-condensed">
-        <label for="classid" class="rm-form-label control-label $lbl_width text-success">Class</label>
+        <label for="classid" class="rm-form-label control-label $lbl_width $label_col">Class</label>
         <div class="selectfieldgroup $fld_width">
             <select name="classid" class="form-control input-md placeholder-md" required data-fv-notempty-message="choose the class of boat" id="classid" >
                 {$params['class_list']}
@@ -72,21 +73,21 @@ EOT;
         </div>
     </div>
     <div class="form-group form-condensed">
-        <label for="sailnum" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label>
+        <label for="sailnum" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label>
         <div class="inputfieldgroup $fld_width">
             <input name="sailnum" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="sailnum" value="{sailnum}"
                    placeholder="sail number e.g 12345 ..." required data-fv-notempty-message="sail number is required">
         </div>
     </div> 
     <div class="form-group form-condensed">
-        <label for="boatname" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label> 
+        <label for="boatname" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label> 
         <div class="inputfieldgroup $fld_width">     
             <input name="boatname" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="boatname" value="{boatname}"
                    placeholder="boat name ...">
         </div>
     </div>
     <div class="form-group form-condensed">
-        <label for="club" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label> 
+        <label for="club" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label> 
         <div class="inputfieldgroup  $fld_width">
             <input name="club" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="club" value="{club}"
                    placeholder="home club e.g Starcross YC ..." required data-fv-notempty-message="club name is required">
@@ -100,7 +101,7 @@ EOT;
     {
         $helm_dob_bufr.= <<<EOT
         <div class="form-group form-condensed">
-            <label for="helm_dob" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label> 
+            <label for="helm_dob" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label> 
             <div class="inputfieldgroup $fld_width">     
                 <input name="helm_dob" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="helm_dob" value="{helm_dob}"
                        placeholder="date of birth - dd/mm/yyyy ...">
@@ -115,7 +116,7 @@ EOT;
     {
         $helm_email_bufr .= <<<EOT
         <div class="form-group form-condensed">
-            <label for="helm_email" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label> 
+            <label for="helm_email" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label> 
             <div class="inputfieldgroup $fld_width">     
                 <input name="helm_email" autocomplete="off" type="email" class="form-control input-md placeholder-md" id="helm_email" value="{helm_email}"
                        placeholder="email address ..." data-fv-emailaddress-message="provide a valid email address">
@@ -130,7 +131,7 @@ EOT;
     {
         $skill_bufr.= <<<EOT
         <div class="form-group form-condensed">
-            <label for="skill_level" class="rm-form-label control-label $lbl_width text-success">Class</label>
+            <label for="skill_level" class="rm-form-label control-label $lbl_width $label_col">Class</label>
             <div class="selectfieldgroup $fld_width">
                 <select name="skill_level" class="form-control input-md placeholder-md" required data-fv-notempty-message="choose your skill level" id="skill_level" >
                     {$params['skill_list']}
@@ -146,7 +147,7 @@ EOT;
     {
         $crew_dob_bufr.= <<<EOT
         <div class="form-group form-condensed">
-            <label for="crew_dob" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label> 
+            <label for="crew_dob" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label> 
             <div class="inputfieldgroup $fld_width">     
                 <input name="crew_dob" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="crew_dob" value="{crew_dob}"
                        placeholder="date of birth - dd/mm/yyyy ...">
@@ -161,7 +162,7 @@ EOT;
     {
         $crew_email_bufr.= <<<EOT
         <div class="form-group form-condensed">
-            <label for="crew_email" class="rm-form-label control-label $lbl_width text-success">&nbsp;</label> 
+            <label for="crew_email" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label> 
             <div class="inputfieldgroup $fld_width">     
                 <input name="crew_email" autocomplete="off" type="email" class="form-control input-md placeholder-md" id="crew_email" value="{crew_email}"
                        placeholder="email address ..." data-fv-emailaddress-message="provide a valid email address">
@@ -172,7 +173,7 @@ EOT;
 
     $helm_bufr = <<<EOT
     <div class="form-group form-condensed">
-        <label for="helm" class="rm-form-label control-label $lbl_width text-success">Helm</label>
+        <label for="helm" class="rm-form-label control-label $lbl_width $label_col">Helm</label>
         <div class="inputfieldgroup $fld_width">
             <div>
             <input name="helm" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="helm" value="{helm}"
@@ -187,7 +188,7 @@ EOT;
 
     $crew_bufr = <<<EOT
     <div class="form-group form-condensed">
-        <label for="crew" class="rm-form-label control-label $lbl_width text-success">Crew</label>
+        <label for="crew" class="rm-form-label control-label $lbl_width $label_col">Crew</label>
         <div class="$fld_width">
             <div>
             <input name="crew" autocomplete="off" type="text" class="form-control input-md placeholder-md" id="crew" value="{crew}"
@@ -201,10 +202,10 @@ EOT;
 
 
     $bufr = <<<EOT
-    <div class="rm-form-style">   
+    <div class="rm-form-style">  
         <div class="row">     
-            <div class="text-success"><h3>$instruction_bufr</h3></div>
-        </div>
+            <div class="col-xs-10 col-sm-10 col-md-8 col-lg-8 alert alert-info"  role="alert">$instruction_bufr</div>
+        </div> 
     
         <style type="text/css">
            #editboatForm  .inputfieldgroup .form-control-feedback { top: 0; right: -30px; }

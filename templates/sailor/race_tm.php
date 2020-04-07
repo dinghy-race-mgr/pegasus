@@ -299,8 +299,9 @@ EOT;
 
 function change_fm($params = array())
 {
-    $lbl_width  = "col-xs-3";
-    $fld_width  = "col-xs-7";
+    $label_col = "text-info";
+    $lbl_width  = "col-xs-2";
+    $fld_width  = "col-xs-6";
     $fld_narrow = "col-xs-3";
 
     // deal with helm if points accumulated by boat
@@ -309,7 +310,7 @@ function change_fm($params = array())
     {
     $helm_bufr.= <<<EOT
     <div class="form-group form-condensed">
-        <label for="helm" class="rm-form-label control-label $lbl_width">Helm</label>
+        <label for="helm" class="rm-form-label control-label $lbl_width $label_col">Helm</label>
         <div class="$fld_width">
             <input name="helm" autocomplete="off" type="text" class="form-control input-lg rm-form-field" id="idhelm" value="{helm}">
         </div>
@@ -323,13 +324,24 @@ EOT;
     {
     $crew_bufr.= <<<EOT
     <div class="form-group form-condensed">
-        <label for="crew" class="rm-form-label control-label $lbl_width">Crew</label>
+        <label for="crew" class="rm-form-label control-label $lbl_width $label_col">Crew</label>
         <div class="$fld_width">
             <input name="crew" autocomplete="off" type="text" class="form-control input-lg rm-form-field" id="idcrew" value="{crew}" >
         </div>
     </div>
 EOT;
     }
+
+    // sail number
+    $sail_bufr = <<<EOT
+    <div class="form-group form-condensed">
+        <label for="sailnum" class="rm-form-label control-label $lbl_width  $label_col">Sail No.</label>
+        <div class="$fld_narrow">
+            <input name="sailnum" autocomplete="off" type="text" class="form-control input-lg rm-form-field" id="idsailnum" value="{sailnum}" >
+        </div>
+    </div>
+EOT;
+
 
     $bufr = <<<EOT
     <div class="rm-form-style">
@@ -345,14 +357,8 @@ EOT;
     
             $crew_bufr
     
-            <div class="form-group form-condensed">
-                <label for="sailnum" class="rm-form-label control-label $lbl_width">Sail No.</label>
-                <div class="$fld_narrow">
-                    <input name="sailnum" autocomplete="off" type="text" class="form-control input-lg rm-form-field" id="idsailnum" value="{sailnum}" >
-                </div>
-            </div>
-    
-    
+            $sail_bufr
+      
             <div class="row margin-top-20">
                 <div class = "col-xs-10 col-xs-offset-3 col-sm-10  col-sm-offset-3 col-md-8  col-md-offset-2 col-lg-8 col-lg-offset-3">
                     <label class="radio-inline">
@@ -361,7 +367,7 @@ EOT;
                     </label>
                     <label class="radio-inline">
                         <input type="radio" name="scope" class="rm-form-label" value="perm">
-                        &nbsp;Today and all future races
+                        &nbsp;Today and in the future
                     </label>
                 </div>
             </div>

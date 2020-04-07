@@ -264,7 +264,7 @@ function process_member(WebCollectResource $resource)
                     //"membership"   => $sub['provides_membership'],
                     //"renew"        => $sub['renew'],
                     "berth" => $sub['form_data']['Berth_Number'],
-                    "reg_no" => $sub['form_data']['Boat_SYC_Reg_No'],
+                    "reg_no" => $sub['form_data']['SYC_Reg_No'],
                     "class" => $sub['form_data']['Boat_Class'],
                     "colour" => $sub['form_data']['Hull_Colour'],
                     "sail_no" => $sub['form_data']['Sail_No'],

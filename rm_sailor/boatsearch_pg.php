@@ -24,7 +24,7 @@ require_once ("./include/rm_sailor_lib.php");
 
 u_initpagestart(0,"boatsearch_pg",false);   // starts session and sets error reporting
 
-$tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php", "../templates/sailor/search_tm.php"));
+$tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php", "../templates/sailor/search_tm.php", "../templates/sailor/cruise_tm.php"));
 
 $options = set_page_options("boatsearch");
 
@@ -37,7 +37,17 @@ $db_o = new DB();
 $event_o = new EVENT($db_o);
 
 // get events for today - or from list passed as arguments
-$_SESSION['events'] = get_event_details($_SESSION['event_passed']);
+if ($_SESSION['mode'] == 'race')
+{
+    $_SESSION['events'] = get_event_details($_SESSION['event_passed']);
+}
+else
+{
+    $_SESSION['events'] = get_cruise_details(true);  // FIXME needs configurable argument
+    require_once ("{$loc}/common/classes/tide_class.php");
+    $tide_o = new TIDE($db_o);
+    $_SESSION['tide'] = $tide_o->get_tide_by_date(date("Y-m-d"));
+}
 
 if ($_SESSION['events']['numevents'] == 0)
 {
@@ -45,7 +55,14 @@ if ($_SESSION['events']['numevents'] == 0)
 }
 elseif ($_SESSION['events']['numevents'] > 0)
 {
-    $events_bufr = $tmpl_o->get_template("list_events", array(), $_SESSION['events']);
+    if ($_SESSION['mode'] == 'race')
+    {
+        $events_bufr = $tmpl_o->get_template("list_events", array(), $_SESSION['events']);
+    }
+    else
+    {
+        $events_bufr = $tmpl_o->get_template("list_tide", array(), $_SESSION['tide']);
+    }
 }
 else
 {

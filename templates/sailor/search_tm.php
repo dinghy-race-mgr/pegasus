@@ -6,19 +6,21 @@ function boatsearch_form($params = array())
         <div class="margin-top-20">
             
             <div class="row">
-               <div class="col-xs-9 col-xs-offset-1 col-sm-9 col-sm-offset-1 col-md-8 col-md-offset-1 col-lg-8 col-lg-offset-1">
+               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-lg-offset-2">
                     <form id="sailnumform" class="form-inline" action="boatsearch_sc.php" method="post" role="search" autocomplete="off">
                         <div class="form-group">
                           <label class="text-success"><h2>Boat search&nbsp;&nbsp;&nbsp;</h2></label>
                           <div class="input-group">                              
-                              <input id="sailnum" autocomplete="off" class="form-control input-lg rm-form-input-lg placeholder-lg" style="min-width: 600px"
+                              <input id="sailnum" autocomplete="off" class="form-control input-lg rm-form-input-lg placeholder-lg" style="min-width: 500px"
                               type="text" placeholder="sail number, class or surname" name="sailnum" />
+                              
+                              <span class="input-group-btn">
+                                 <button class="btn btn-warning btn-lg" type="submit">
+                                     &nbsp;&nbsp;<span class="glyphicon glyphicon-search" aria-hidden="true" ></span>&nbsp;&nbsp;
+                                 </button>
+                              </span>
                           </div>
                           
-                          <button class="btn btn-warning btn-lg" type="submit" >
-                            &nbsp;&nbsp;<span class="glyphicon glyphicon-search" aria-hidden="true" ></span>&nbsp;&nbsp;
-                          </button>
- 
                         </div>
                     </form>
                     <br><br>
@@ -27,9 +29,12 @@ function boatsearch_form($params = array())
                
                 
             </div>
+            <div class="margin-top-40">
             <a href="addboat_pg.php" class="btn btn-info btn-md rm-text-bg pull-right" role="button">
                 <strong><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> &nbsp;Add new boat ...</strong>
-            </a>            
+                
+            </a>   
+            </div>         
         </div> 
         <br>        
 EOT;

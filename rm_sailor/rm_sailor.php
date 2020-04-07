@@ -104,12 +104,13 @@ exit();
 
 function initialise_params($arg)
 {
+
     // does the application work for multiple users (multi) or a single user (single)
-    $_SESSION['usage'] = "multi";   // FIXME - should be passed
+    $_SESSION['usage'] = "multi";
     $_SESSION['sailor']['id'] = 0;
     if (!empty($arg['usage']))
     {
-        if (strtolower($arg['access']) == "single")
+        if (strtolower($arg['usage']) == "single")
         {
             $_SESSION['usage'] = "single";
             // FIXME need to get user id from a cookie
@@ -121,12 +122,23 @@ function initialise_params($arg)
     }
 
     // is the application going to run on live events or demo events
-    $_SESSION['mode'] = "live";
+    $_SESSION['demo'] = "live";
+    if (!empty($arg['demo']))
+    {
+        if (strtolower($arg['demo']) == "demo")
+        {
+            $_SESSION['demo']="demo";
+        }
+    }
+
+    // set whether cruise or race mode
+    $_SESSION['mode'] = "race";
     if (!empty($arg['mode']))
     {
-        if (strtolower($arg['mode']) == "demo")
+        if (strtolower($arg['mode']) == "cruise")
         {
-            $_SESSION['mode']="demo";
+            $_SESSION['mode']="cruise";
+            $_SESSION['usage'] = "multi";      // can't use cruiser option in single mode
         }
     }
 

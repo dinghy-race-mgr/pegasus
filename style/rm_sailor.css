@@ -68,7 +68,8 @@ body {
 .divider-line { height: 10px; border: none;}
 
 /* required asterisks */
-.form-control-feedback {color: deeppink !important;}
+/*.form-control-feedback {color: deeppink !important;}*/
+.form-control-feedback {color: #3498db !important;}
 
 /*
 ::-webkit-input-placeholder { color: darkgray !important; font-style: italic !important; text-align: left; font-size: 1.0em;}
