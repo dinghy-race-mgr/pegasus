@@ -1,8 +1,6 @@
 <?php
 /**
- * editboat_sc.php - adds entry for selected races
- * 
- *
+ *  Processes change to boat details submitted through editboat_pg
  * 
  */
 $loc        = "..";       
@@ -33,37 +31,32 @@ $editboatfields = array(
     "team" => u_getteamname($_REQUEST['helm'], $_REQUEST['crew'])
 );
 
-// do post race validation - none identified at the moment
-
 // update competitor record in competitor table - checks for duplicate
 $status = $comp_o->comp_updatecompetitor($_SESSION['sailor']['id'], $_REQUEST);
 
 // create confirmation response
-if ($status != "failed")         // report success
-{
+if ($status != "failed") {         // report success
     // update sailor session details
     $competitors = $comp_o->comp_findcompetitor(array("id"=>$_SESSION['sailor']['id']));
-    if ($competitors)
-    {
+    if ($competitors) {
         $_SESSION['sailor'] = $competitors[0];
-        $_SESSION['sailor']['change'] = false;
+        $_SESSION['sailor']['change'] = true;
         $_SESSION['sailor']['chg-sailnum'] = "";
         $_SESSION['sailor']['chg-helm'] = "";
         $_SESSION['sailor']['chg-crew'] = "";
 
-        $_SESSION['pagefields']['body'] = $tmpl_o->get_template("editboat_success", $editboatfields, array());
-    }
-    else  // report failure
-    {
-        $_SESSION['pagefields']['body'] = $tmpl_o->get_template("editboat_fail", $editboatfields, array());
+        $template = "editboat_success";
+
+    } else { // report failure
+        $template = "editboat_fail";
     }
 }
 else                 // report failure
 {
-    $_SESSION['pagefields']['body'] = $tmpl_o->get_template("editboat_fail", $editboatfields, array());
+    $template = "editboat_fail";
 }
 
-// generate confirmation page
+// assemble and render page (header set in editboat_pg)
+$_SESSION['pagefields']['body'] = $tmpl_o->get_template($template, $editboatfields, array());
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();
-?>

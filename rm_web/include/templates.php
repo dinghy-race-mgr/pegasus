@@ -1,6 +1,6 @@
 <?php
 
-class TEMPLATE
+class WEB_TEMPLATE
 {
 
     public function layout_master($params=array())

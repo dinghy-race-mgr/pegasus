@@ -34,6 +34,13 @@ function u_htmlflush($bufr)
     return $bufr;
 }
 
+function u_2darray_search($array, $field, $match)
+{
+    $keys = array_keys(array_column($array, $field), $match);
+
+    return $keys;
+}
+
 function u_array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
     $sort_col = array();
     foreach ($arr as $key=> $row) {
@@ -911,6 +918,7 @@ function u_growlProcess($eventid, $page)
 
     if (!empty($_SESSION["e_$eventid"]['growl']["$page"]))
     {
+        // FIXME - this is ugly - get the internal bit first and then top and tail it
         $html.= <<<EOT
         <script>
         $(function() {

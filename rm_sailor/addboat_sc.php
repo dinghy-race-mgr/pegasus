@@ -1,6 +1,6 @@
 <?php
 /**
- * addboat_sc.php - adds entry for selected races
+ * Processes input from add boat form
  * 
  *
  * 
@@ -40,28 +40,28 @@ $addboatfields = array(
 $status = $comp_o->comp_addcompetitor($_REQUEST);
 
 // create confirmation response
-if ($status['code'] == 0)         // report success
-{
-    $_SESSION['pagefields']['body'] = $tmpl_o->get_template("addboat_success", $addboatfields, array());
+if ($status['code'] == 0) {      // report success
+    $template = "addboat_success";
 
     // switch to this boat as active sailor
-    $competitors = $comp_o->comp_findcompetitor(array("id"=>$status['id']));
+    $competitors = $comp_o->comp_findcompetitor(array("id" => $status['id']));
     $_SESSION['sailor'] = $competitors[0];
 
     $_SESSION['sailor']['change'] = false;
     $_SESSION['sailor']['chg-sailnum'] = "";
     $_SESSION['sailor']['chg-helm'] = "";
     $_SESSION['sailor']['chg-crew'] = "";
-}
-elseif ($status['code'] == 2)    // report duplicate
-{
-    $_SESSION['pagefields']['body'] = $tmpl_o->get_template("addboat_duplicate", $addboatfields, array());
-}
-else                             // report other failure
-{
-    $_SESSION['pagefields']['body'] = $tmpl_o->get_template("addboat_fail", $addboatfields, array());
+//    FIXME - need to add other fields with flags to turn them off and on)
+
+} elseif ($status['code'] == 2) {   // report duplicate
+    $template = "addboat_duplicate";
+
+} else  {                           // report other failure
+    $template = "addboat_fail";
 }
 
-// generate confirmation page
+// assemble and render page (header assigned in addboat_pg.php
+$_SESSION['pagefields']['body'] = $tmpl_o->get_template($template, $addboatfields, array("mode" => $_SESSION['mode']));
+
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();

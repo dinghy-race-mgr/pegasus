@@ -1,6 +1,6 @@
 <?php
-/*
- * html layouts for rm_sailor application
+/**
+ * General templates for use in rm_sailor application
  *
  */
 
@@ -41,14 +41,14 @@
             <link href="{stylesheet}" rel="stylesheet"> 
       
           </head>
-          <body class="{$_SESSION['background']}" style="padding-top:10px; padding-bottom: 10px" >
+          <body class="{$_SESSION['background']}" style="padding-top:5px; padding-bottom: 10px" >
             <div class="container-fluid">
             <!-- Header -->
-                <div class="container-fluid" style="border-bottom: 1px solid white; margin-bottom: 10px">
+                <div class="container-fluid" style="border-bottom: 1px solid white; margin-bottom: 5px">
                     <div class="row">
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-left rm-pagebold">{header-left}</div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center rm-pagebold">{header-center}</div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-right">{header-right}</div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-left rm-text-sm">{header-left}</div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center rm-text-md text-success">{header-center}</div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-right rm-text-sm">{header-right}</div>
                     </div>   
                 </div>
             
@@ -89,27 +89,79 @@ EOT;
  }
 
 
-function under_construction($params=array())
-    /*
-     FIELDS
-        title  :  title for under construction note
-        info   :  detail for under construction note
-
-     PARAMS
-        none
-     */
+function change_fm($params = array())
 {
-    if ($params['back_button'])
-    {
+    $label_colour = "text-info";
+    $label_width  = "col-xs-2";
+
+    $formbufr = "";
+    foreach ($params['change'] as $field => $fieldspec) {
+        if (!$fieldspec['status']) { // this field is not configured
+            continue;
+        }
+
+        if (key_exists("evtype", $fieldspec)) { // field is configured but is not relevant to events today
+            if (strpos($params['evtypes'], $fieldspec['evtype']) === false) {
+                continue;
+            }
+        }
+
+        $placeholder = "";
+        if (array_key_exists("placeholder", $fieldspec)) {
+            $placeholder = "placeholder=\"{$fieldspec['placeholder']}\"";
+        }
+        $value = "{" . $field . "}";
+
+        $formbufr .= <<<EOT
+        <div class="form-group form-condensed">
+            <label for="$field" class="rm-form-label control-label $label_width $label_colour">{$fieldspec['label']}</label>
+            <div class="{$fieldspec['width']}">
+                <input name="$field" autocomplete="off" type="text" class="form-control input-lg rm-form-field" 
+                 id="id$field" $placeholder value="$value">
+            </div>
+        </div>
+EOT;
+    }
+
+    $bufr = <<<EOT
+    <div class="rm-form-style">
+    
+        <div class="row">     
+            <div class="col-xs-10 col-sm-10 col-md-8 col-lg-8 alert alert-info"  role="alert">Change details for today ...</div>
+        </div>
+    
+        <form id="changeboatForm" class="form-horizontal" action="change_sc.php" method="post">
+    
+            $formbufr
+            <input name="compid" type="hidden" value="{compid}">
+    
+            <div class="pull-right margin-top-20">
+                <button type="button" class="btn btn-default btn-lg" style="margin-right: 10px" onclick="history.go(-1);">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;Cancel
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="submit" class="btn btn-warning btn-lg" >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;<b>Change Details</b>
+                </button>
+            </div>
+    
+        </form>
+    </div>
+EOT;
+    return $bufr;
+}
+
+
+function under_construction($params=array())
+{
+    if ($params['back_button']) {
         $back_button = <<<EOT
         <div class="pull-right margin-top-20">
             <button type="button" class="btn btn-warning btn-lg" onclick="location.href = '{$params['back_url']}';">
-                <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;back
+                <span class="glyphicon glyphicon-chevron-left"></span> back
         </button>
 EOT;
-    }
-    else
-    {
+    } else {
         $back_button = "";
     }
 
@@ -132,68 +184,58 @@ EOT;
 }
 
 
- function options($params = array())
- {
-
-     if ($params['numevents'] != 0)
-     {
-         $msg = "{$params['numevents']} race(s) today";
-     }
-     else
-     {
-         $msg = "No races today";
-     }
-
-     $bufr = <<<EOT
-        <div class="row">
-            <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">   
-               {boat-label}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2"> 
-                <h3>$msg</h3>
-            </div>
-        </div>
-EOT;
-
-     // options
-     foreach ($params['options'] as $k => $opt)
-     {
-         if ($opt['active'])
-         {
-            $bufr.= <<<EOT
-            <div class="row margin-top-10">
-                <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
-                    <a href="{$opt['url']}" class="btn btn-warning btn-block btn-lg rm-text-bg" role="button" 
-                       data-toggle="tooltip" data-placement="right" title="{$opt['tip']}">
-                       <strong>{$opt['label']}</strong></a>
-                </div>
-            </div>
-EOT;
-         }
-     }
-     return $bufr;
- }
-
+// FIXME is this still used
+//function options($params = array())
+//{
+//
+//     if ($params['numevents'] != 0) {
+//         $msg = "{$params['numevents']} race(s) today";
+//     } else {
+//         $msg = "No races today";
+//     }
+//
+//     $bufr = <<<EOT
+//        <div class="row">
+//            <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
+//               {boat-label}
+//            </div>
+//        </div>
+//        <div class="row">
+//            <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
+//                <h3>$msg</h3>
+//            </div>
+//        </div>
+//EOT;
+//
+//    // options
+//    foreach ($params['options'] as $k => $opt) {
+//     if ($opt['active']) {
+//         $bufr .= <<<EOT
+//        <div class="row margin-top-10">
+//            <div class="col-xs-8 col-xs-offset-2 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+//                <a href="{$opt['url']}" class="btn btn-warning btn-block btn-lg rm-text-bg" role="button"
+//                   data-toggle="tooltip" data-placement="right" title="{$opt['tip']}">
+//                   <strong>{$opt['label']}</strong></a>
+//            </div>
+//        </div>
+//EOT;
+//     }
+// }
+// return $bufr;
+//}
 
 
 function options_hamburger($params = array())
-    /*
-     * Produces hamburger options menu for use in header with a customisable options list
-     */
 {
     $bufr = "";
     $options = false;
 
     $opts_bufr = "";
-    foreach ($params["options"] as $opt)
-    {
-        if ($opt['active'])
-        {
+    foreach ($params["options"] as $opt) {
+        if ($opt['active']) {
             $options = true;
             $opts_bufr .= <<<EOT
-                <li class="rm-text-bg"><a href="{$opt['url']}">{$opt['label']}</a></li>
+                <li class="rm-text-sm"><a href="{$opt['url']}">{$opt['label']}</a></li>
 EOT;
         }
     }
@@ -204,7 +246,7 @@ EOT;
           <div class="pull-right">
               <div class="btn-group">
                   <button type="submit" class="btn btn-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <span class="glyphicon glyphicon-menu-hamburger rm-hamburger" > </span>
+                    <span class="glyphicon glyphicon-menu-hamburger rm-text-sm" > </span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right">
                     $opts_bufr
@@ -217,45 +259,46 @@ EOT;
     return $bufr;
 }
 
- function error_msg($params = array())
- {
-     $bufr = <<<EOT
-        <div class="row margin-top-10">
-           <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-               <div class="alert alert-danger" role="alert"> 
-                    <h1>Sorry ...</h1>
-                    <h3>{error}</h3>
-                    <h4>{detail}</h4>
-                    <hr>
-                    <h3 class="text-right">{action}</h3> 
-               </div>
+function error_msg($params = array())
+{
+    $bufr = <<<EOT
+    <div class="row margin-top-10">
+       <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+           <div class="alert alert-danger" role="alert"> 
+                <h1>Sorry ...</h1>
+                <h3>{error}</h3>
+                <h4>{detail}</h4>
+                <hr>
+                <h3 class="text-right">{action}</h3> 
            </div>
-        </div>
+       </div>
+    </div>
 EOT;
-     return $bufr;
+    return $bufr;
 }
 
 function boat_label($params = array())
 {
     $bufr = "";
     // boat details
-    if ($params['change'])
-    {
+    if ($params['change']) {
         empty($params['change_set']) ? $change_color = "" : $change_color = "red";
 
-        $bufr.= <<<EOT
-        <a href="change_pg.php?sailnum={sailnum}&crew={crew}&helm={helm}" class="btn btn-default btn-block btn-md active" role="button">
-            <h2 class="pull-left">{class} {sailnum}</h2>
-            <h3>{team}</h3>
+        $bufr .= <<<EOT
+        <a href="change_pg.php?sailnum={sailnum}&crew={crew}&helm={helm}" class="btn btn-default btn-block btn-md" role="button">
+            <!-- <h2 class="pull-left">{class} {sailnum}</h2>
+            <h3>{team}</h3> -->
+            <p class="rm-text-trunc">
+                <span class="rm-text-bg">{class} {sailnum} - </span>
+                <span class="rm-text-md">{team}</span>
+            </p>
             <span class="badge pull-right" style="font-size: 120%; background-color: $change_color;">
-                <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Change Crew / Sail No.&nbsp;&nbsp;
+                <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Change Details For Today&nbsp;&nbsp;
             </span>
         </a>
 EOT;
-    }
-    else
-    {
-        $bufr.= <<<EOT
+    } else {
+        $bufr .= <<<EOT
              <div class="list-group">
                  <div class="list-group-item list-group-item-info ">
                     <h3>{class} {sailnum}</h3>
@@ -271,22 +314,19 @@ EOT;
 function no_events($params = array())
 {
     $bufr = <<<EOT
-         <div class="rm-text-space">
-            <span class="rm-text-bg">No races today &hellip;</span> 
-         </div>
+        <div class="rm-text-space"><span class="rm-text-bg">No races today &hellip;</span> </div>
 EOT;
 
-    if ($params['nextevent'])
-    {
-        $name  = $params['nextevent']['event_name'];
-        $date  = date("jS F",strtotime($params['nextevent']['event_date']));
+    if ($params['nextevent']) {
+        $name = $params['nextevent']['event_name'];
+        $date = date("jS F", strtotime($params['nextevent']['event_date']));
         $start = "[ {$_SESSION['events']['nextevent']['event_start']} ]";
 
-        $bufr.= <<<EOT
-         <div class="rm-text-space margin-left-40">
-            <span class="rm-text-md">next race is </span><br>                
-            <span class="rm-text-md rm-text-highlight"> $name - $date  $start </span>
-         </div>
+        $bufr .= <<<EOT
+            <div class="rm-text-space margin-left-40">
+                <span class="rm-text-md">next race is </span><br>                
+                <span class="rm-text-md rm-text-highlight"> $name - $date  $start </span>
+            </div>
 EOT;
     }
 
@@ -299,28 +339,23 @@ function list_events($params = array())
 
     // list events
     $event_table = "";
-    foreach ($params['details'] as $k => $row)
-    {
-        if ($row['event_status'] != "cancelled")
-        {
-            $event_table.= <<<EOT
+    foreach ($params['details'] as $k => $row) {
+        if ($row['event_status'] != "cancelled") {
+            $event_table .= <<<EOT
             <tr>
                 <td class="rm-text-md rm-text-trunc" width="50%">{$row['event_name']}</td>
                 <td class="rm-text-md" width="20%">{$row['event_start']}</td>
                 <td class="rm-text-md" width="40%">{$row['race_name']}</td>
             </tr>
 EOT;
-        }
-        else
-        {
-            $event_table.= <<<EOT
+        } else {
+            $event_table .= <<<EOT
             <tr>
                 <td class="rm-text-md rm-text-trunc" width="50%">{$row['event_name']}</td>
                 <td class="rm-text-md text-warning" colspan="2">*** race is CANCELLED ***</td>
             </tr>
 EOT;
         }
-
     }
 
     $bufr.= <<<EOT

@@ -184,7 +184,7 @@ class COMPETITOR
                   JOIN t_class as b ON a.classid=b.id
                   WHERE 1=0 OR ( ($where) AND a.active = 1)
                   ORDER BY  classname, sailnum * 1";
-           u_writedbg($query, __FILE__, __FUNCTION__, __LINE__, false);
+           //u_writedbg($query, __FILE__, __FUNCTION__, __LINE__, false);
            $result = $this->db->db_get_rows($query);
        }
 

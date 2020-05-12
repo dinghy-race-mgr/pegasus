@@ -1,30 +1,11 @@
 <?php
 
-/*
+/**
+ * Templates for adding a new boat or editing an existing boat
  *
+ * Currently only the mandatory fields are included and the remaining fields are hidden/defaulted or not used
  *
-*classid 	int(10)	        NO
-*boatnum 	varchar(20) 	NO
-*sailnum 	varchar(20)	    NO
-*boatname 	varchar(60)	    OPTIONAL
-*helm 	varchar(40)	        NO
-*helm_dob 	date	        OPTIONAL
-*helm_email 	varchar(100)	OPTIONAL
-*crew 	varchar(40)	YES 	OPTIONAL
-*crew_dob 	date	YES 	OPTIONAL
-*crew_email 	varchar(100)	OPTIONAL
-*club 	varchar(60)	    OPTIONAL
-*personal_py 	int(5)	    SET AUTO
-skill_level 	varchar(20)	OPTIONAL
-*flight 	varchar(20)	        NONE
-*regular 	tinyint(1)	    HIDDEN 		0
-*last_entry 	date	        NONE
-*last_event 	int(11)	        NONE
-*active 	tinyint(1)	        HIDDEN 	1
-*prizelist 	varchar(200)	NONE 		NULL
-*grouplist 	varchar(100)	NONE 		NULL
-memberid 	varchar(20)	    NONE 		NULL
-*updby 	varchar(20)	        HIDDEN 		"rm_sailor"
+ * FIXME - need to find way to make included fields configurable by the end user
  */
 
 function boat_fm($params = array())
@@ -34,14 +15,11 @@ function boat_fm($params = array())
     $fld_width  = "col-xs-6";
     $fld_narrow = "col-xs-3";
 
-    if ($params['action'] == "edit")
-    {
+    if ($params['action'] == "edit") {
         $instruction_bufr = "Edit boat details &hellip;";
         $post_script = "editboat_sc.php";
         $btn_label = "Change Details";
-    }
-    else
-    {
+    } else {
         $instruction_bufr = "Add boat details &hellip;";
         $post_script = "addboat_sc.php";
         $btn_label = "Add Boat";
@@ -112,8 +90,7 @@ EOT;
 
     // helm email details
     $helm_email_bufr = "";
-    if ($params['fields']['helm_email'])
-    {
+    if ($params['fields']['helm_email']) {
         $helm_email_bufr .= <<<EOT
         <div class="form-group form-condensed">
             <label for="helm_email" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label> 
@@ -127,9 +104,8 @@ EOT;
 
     // skill details
     $skill_bufr = "";
-    if ($params['fields']['skill_level'])
-    {
-        $skill_bufr.= <<<EOT
+    if ($params['fields']['skill_level']) {
+        $skill_bufr .= <<<EOT
         <div class="form-group form-condensed">
             <label for="skill_level" class="rm-form-label control-label $lbl_width $label_col">Class</label>
             <div class="selectfieldgroup $fld_width">
@@ -143,9 +119,8 @@ EOT;
 
     // crew dob details
     $crew_dob_bufr = "";
-    if ($params['fields']['dob'])
-    {
-        $crew_dob_bufr.= <<<EOT
+    if ($params['fields']['dob']) {
+        $crew_dob_bufr .= <<<EOT
         <div class="form-group form-condensed">
             <label for="crew_dob" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label> 
             <div class="inputfieldgroup $fld_width">     
@@ -158,9 +133,8 @@ EOT;
 
     // crew email details
     $crew_email_bufr = "";
-    if ($params['fields']['crew_email'])
-    {
-        $crew_email_bufr.= <<<EOT
+    if ($params['fields']['crew_email']) {
+        $crew_email_bufr .= <<<EOT
         <div class="form-group form-condensed">
             <label for="crew_email" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label> 
             <div class="inputfieldgroup $fld_width">     
@@ -200,7 +174,7 @@ EOT;
     </div>
 EOT;
 
-
+    // composite template
     $bufr = <<<EOT
     <div class="rm-form-style">  
         <div class="row">     
@@ -255,21 +229,30 @@ EOT;
     return $bufr;
 }
 
+
 function addboat_success($params = array())
 {
+    if ($params['mode'] == "race") {
+        $txt = "You can now enter this boat for races (and cruises!)";
+    } else {
+        $txt = "You can now enter this boat for cruises (and races!)";
+    }
+
+
     $bufr = <<<EOT
      <div class="row margin-top-40">
         <div class="col-xs-8 col-xs-offset-2 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">   
             <div class="alert alert-success rm-text-md" role="alert"> 
                 <h2>New boat added &hellip;</h2>
                 <p><b>{class} {sailnum}<br>{team}</b></p> 
-                <p>You can now enter this boat for future races</p>
+                <p>$txt</p>
             </div>
         </div>
      </div>
 EOT;
     return $bufr;
 }
+
 
 function addboat_fail($params = array())
 {
@@ -279,14 +262,15 @@ function addboat_fail($params = array())
             <div class="alert alert-danger rm-text-md" role="alert"> 
                 <h2>Failed to add boat &hellip;</h2>
                 <p><b>{class} {sailnum}<br>{team}</b></p> 
-                <p>This may be due to the unavailability of the raceManager server - try again later or contact your system administrator</p>
+                <p>This may be due to the unavailability of the raceManager server - 
+                   try again later or contact your system administrator</p>
             </div>
         </div>
      </div>
 EOT;
     return $bufr;
-
 }
+
 
 function addboat_duplicate($params = array())
 {
@@ -297,7 +281,7 @@ function addboat_duplicate($params = array())
                 <h2>Duplicate boat &hellip;</h2> 
                 <p> <b>{class} {sailnum} / {helm}</b><br></p> 
                 <p>This boat is already registered </p>
-                <p><small>If it is not recognised when searching the system please contact your system administrator</small></p>
+                <p>If it is not recognised when searching the system please contact your system administrator</p>
             </div>
         </div>
     </div>
@@ -310,6 +294,7 @@ EOT;
 
     return $bufr;
 }
+
 
 function editboat_success($params = array())
 {
@@ -324,9 +309,9 @@ function editboat_success($params = array())
      </div>
 EOT;
 
-
     return $bufr;
 }
+
 
 function editboat_fail($params = array())
 {
@@ -341,5 +326,6 @@ function editboat_fail($params = array())
         </div>
      </div>
 EOT;
+
     return $bufr;
 }

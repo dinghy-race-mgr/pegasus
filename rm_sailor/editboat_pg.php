@@ -1,14 +1,6 @@
 <?php
 /**
- * editboat_pg - allows sailor to edit boat details
- * 
- * Boat registered must be one of the recognised classes.
- * 
- * @author Mark Elkington <mark.elkington@blueyonder.co.uk>
- * 
- * %%copyright%%
- * %%license%%
- *   
+ * Makes permanent changes to a boat details
  * 
  */
 $loc        = "..";
@@ -44,19 +36,17 @@ $field_set = array(
 $comp_o = new COMPETITOR($db_o);
 $editboatfields = $comp_o->get_competitor($_SESSION['sailor']['id']);
 
-//echo "<pre>".print_r($editboatfields,true)."</pre>";
-//exit();
-
 // create class and skill drop downs
 $class_o = new BOAT($db_o);
 $class_list = $class_o->boat_getclasslist();
 $class_lut  = u_selectlist($class_list, $_SESSION['sailor']['classname']);
 $skill_lut = u_selectcodelist($db_o->db_getsystemcodes("competitor_skill"), "default");
 
+// assemble and render page
+$_SESSION['pagefields']['header-center'] = $_SESSION['pagename']['edit'];
+$_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(),
+    array("options" => set_page_options("addboat")));
 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boat_fm", $editboatfields,
     array("mode" => "edit", "fields" => $field_set, "class_list" => $class_lut, "skill_list" => $skill_lut));
-
-// render page
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();
-?>

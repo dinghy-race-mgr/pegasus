@@ -6,7 +6,7 @@ class PAGES
    {
        include ("./include/templates.php");
        include ("./include/util.php");
-       $this->tmpl_o = new TEMPLATE();
+       $this->tmpl_o = new WEB_TEMPLATE();
        $this->cfg = $cfg;
    }
    

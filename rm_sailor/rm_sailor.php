@@ -1,8 +1,6 @@
 <?php
 /**
- * rm_sailor - system initialisation functionality
- * 
- * @abstract application initialisation for sailor functionality
+ * rm_sailor initialisation
  * 
  * @author Mark Elkington <mark.elkington@blueyonder.co.uk>
  * 
@@ -10,7 +8,8 @@
  * %%license%%
  *
  * @param string  usage   usage type [multi|single]                     (default: multi)
- * @param string  mode    operating mode [live|demo]                    (default: live)
+ * @param string  mode    domain  [cruise|race]                         (default: race)
+ * @param string  demo    operating mode [live|demo]                    (default: live)
  * @param string  debug   debug level [0|1|2]                           (default: 0)
  * @param string  event   list of event ids (e.g 101,123,145)           (optional)
  * $param string  sailor  competitor id for sailor                      (optional - only relevant for usage:single)
@@ -60,7 +59,6 @@ else
     }
 }
 
-
 // initialise standard parameters   //
 initialise_params($_REQUEST);
 
@@ -70,19 +68,19 @@ $_SESSION['pagefields'] = array(
     "theme" => $_SESSION['sailor_theme'],
     "loc" => $loc,
     "stylesheet" => "$loc/style/rm_sailor.css",
-    "header-left" => $_SESSION['clubcode'],
-    "header-center" => "raceManager SAILOR",
+    "header-left" => "raceManager SAILOR",
+    "header-center" => "",
     "header-right" => "",
     "body" => "",
-    "footer-left" => $_SESSION['sys_name'] . " " . $_SESSION['sys_version'],
+    "footer-left" => $_SESSION['clubname'],
     "footer-center" => "",
-    "footer-right" => $_SESSION['sys_copyright']
+    "footer-right" => $_SESSION['sys_copyright'].": ".$_SESSION['sys_name'] ." ". $_SESSION['sys_version']
 );
 
-// check which options are configured
-$_SESSION['option'] = "";                                                            // start option
-$_SESSION['option_cfg'] = get_options_arr();                                         // available options
-$_SESSION['option_race_cfg'] = array("race", "results", "protest");     // options only relevant if race
+// check which options are configured  FIXME check if this is still relevant
+$_SESSION['option'] = "";                                              // start option
+$_SESSION['option_cfg'] = get_options_arr();                           // available options
+$_SESSION['option_race_cfg'] = array("race", "results", "protest");    // options only relevant if race
 $_SESSION['numoptions'] = count($_SESSION['option_cfg']);
 
 //echo "<pre>".print_r($_SESSION,true)."</pre>";
@@ -96,8 +94,7 @@ else
 {
     if ($_SESSION['debug']) { u_requestdbg($_SESSION, __FILE__, __FUNCTION__, __LINE__, false); }
 
-    // redirect
-    header("Location: boatsearch_pg.php?");
+    header("Location: boatsearch_pg.php?");  // redirect to first page
 }
 $db_o->db_disconnect();
 exit();
@@ -123,46 +120,39 @@ function initialise_params($arg)
 
     // is the application going to run on live events or demo events
     $_SESSION['demo'] = "live";
-    if (!empty($arg['demo']))
-    {
-        if (strtolower($arg['demo']) == "demo")
-        {
-            $_SESSION['demo']="demo";
+    if (!empty($arg['demo'])) {
+        if (strtolower($arg['demo']) == "demo") {
+            $_SESSION['demo'] = "demo";
         }
     }
 
     // set whether cruise or race mode
     $_SESSION['mode'] = "race";
-    if (!empty($arg['mode']))
-    {
-        if (strtolower($arg['mode']) == "cruise")
-        {
-            $_SESSION['mode']="cruise";
+    if (!empty($arg['mode'])) {
+        if (strtolower($arg['mode']) == "cruise") {
+            $_SESSION['mode'] = "cruise";
             $_SESSION['usage'] = "multi";      // can't use cruiser option in single mode
         }
     }
 
     // do we want debug messages
     $_SESSION['debug'] = 0;               //<-- no debug as default
-    if (!empty($arg['debug']))
-    {
-        if (is_numeric($arg['debug']) AND $arg['debug'] >=0 AND $arg['debug']<=2)
-        {
+    if (!empty($arg['debug'])) {
+        if (is_numeric($arg['debug']) AND $arg['debug'] >= 0 AND $arg['debug'] <= 2) {
             $_SESSION['debug'] = $arg['debug'];
         }
     }
 
     // are we going to use a fixed set of events
     $_SESSION['event_passed'] = array();
-    if (array_key_exists('event',$arg))
-    {
+    if (array_key_exists('event', $arg)) {
         $_SESSION['event_passed'] = explode(",", $arg['event']);
     }
 }
 
 function error_stop($cause)
 {
-    global $tmpl_o;
+    global $tmpl_o, $loc;
 
     if ($cause == "initialisation")
     {

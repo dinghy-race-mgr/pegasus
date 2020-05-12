@@ -1,7 +1,7 @@
 <?php
 /**
  * options_pg - script that allows user to select the function they need
- *
+ * FIXME  - no longer used
  *   
 
  */

@@ -1,15 +1,9 @@
 <?php
 /**
- * addboat_pg - allows sailor to register new boat
+ * Allows user to register new boat
  * 
  * Boat registered must be one of the recognised classes.
- * 
- * @author Mark Elkington <mark.elkington@blueyonder.co.uk>
- * 
- * %%copyright%%
- * %%license%%
- *   
- * 
+ *
  */
 $loc        = "..";
 $page       = "addboat";
@@ -19,7 +13,7 @@ require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("./include/rm_sailor_lib.php");
 
 u_initpagestart(0,"addboat_pg",false);   // starts session and sets error reporting
-// libraries
+
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/boat_class.php");
@@ -28,24 +22,20 @@ require_once ("{$loc}/common/classes/boat_class.php");
 $db_o = new DB();
 $tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php", "../templates/sailor/addeditboat_tm.php"));
 
-$options = set_page_options("addboat");
-
+// FIXME needs to be configurable
 // set optional fields using flags from racemanager.ini
-if ($_SESSION['mode'] == "cruise")
-{
+if ($_SESSION['mode'] == "cruise") {
     $field_set = array(
-        "helm_email"  => $_SESSION['sailor_boat_h_email'],
-        "crew_email"  => $_SESSION['sailor_boat_c_email'],
-        "dob"         => $_SESSION['sailor_boat_dob'],
+        "helm_email" => $_SESSION['sailor_boat_h_email'],
+        "crew_email" => $_SESSION['sailor_boat_c_email'],
+        "dob" => $_SESSION['sailor_boat_dob'],
         "skill_level" => $_SESSION['sailor_boat_skill'],
     );
-}
-else
-{
+} else {
     $field_set = array(
-        "helm_email"  => $_SESSION['sailor_boat_h_email'],
-        "crew_email"  => $_SESSION['sailor_boat_c_email'],
-        "dob"         => $_SESSION['sailor_boat_dob'],
+        "helm_email" => $_SESSION['sailor_boat_h_email'],
+        "crew_email" => $_SESSION['sailor_boat_c_email'],
+        "dob" => $_SESSION['sailor_boat_dob'],
         "skill_level" => $_SESSION['sailor_boat_skill'],
     );
 }
@@ -71,9 +61,12 @@ $class_list = $class_o->boat_getclasslist();
 $class_lut  = u_selectlist($class_list, "", array("unknown" => "unknown"));
 $skill_lut = u_selectcodelist($db_o->db_getsystemcodes("competitor_skill"), "");
 
+// assemble and render page
+$_SESSION['pagefields']['header-center'] = $_SESSION['pagename']['add'];
+$_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(),
+    array("options" => set_page_options("addboat")));
 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boat_fm", $addboatfields,
     array("mode" => $_SESSION['mode'], "action" => "add", "fields" => $field_set, "class_list" => $class_lut, "skill_list" => $skill_lut));
-$_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(), array("options" => $options));
-// render page
+
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();

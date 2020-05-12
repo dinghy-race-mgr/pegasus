@@ -1,15 +1,14 @@
 <?php
 /**
- * change_sc.php - deals with changes to boat details
- * 
- * @
+ * change_sc.php - processes submissions of change form from change_pg.php
  *
  */
 $loc        = "..";       
-$page       = "change_sc";
+$page       = "change";
 $scriptname = basename(__FILE__);
 $date       = date("Y-m-d");      
 require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("./include/rm_sailor_lib.php");
 
 u_initpagestart(0,"change_sc",false);   // starts session and sets error reporting
 
@@ -20,72 +19,19 @@ require_once ("{$loc}/common/classes/comp_class.php");
 
 $tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php"));
 
-// check if change is temporary or permanent
-if ($_REQUEST['scope']=="perm" OR $_REQUEST['scope']=="temp")        // details changed
-{
-    $update_fields = array();
-    $_SESSION['sailor']['change']  =  $_REQUEST['scope'];
-
-    $_SESSION['sailor']['chg-sailnum'] = ucwords(strtolower(u_change($_REQUEST['sailnum'], $_SESSION['sailor']['sailnum'])));
-    if ($_SESSION['sailor']['chg-sailnum']) { $update_fields['sailno'] = $_SESSION['sailor']['chg-sailnum']; }
-
-    $_SESSION['sailor']['chg-helm'] = ucwords(strtolower(u_change($_REQUEST['helm'], $_SESSION['sailor']['helmname'])));
-    if ($_SESSION['sailor']['chg-helm']) { $update_fields['helm'] = $_SESSION['sailor']['chg-helm']; }
-
-    $_SESSION['sailor']['chg-crew'] = ucwords(strtolower(u_change($_REQUEST['crew'], $_SESSION['sailor']['crewname'])));
-    if ($_SESSION['sailor']['chg-crew']) { $update_fields['crew'] = $_SESSION['sailor']['chg-crew']; }
-    
-    // if permanent change - update t_competitor
-    if ($_REQUEST['scope']=="perm")
-    {
-        $db_o = new DB(); 
-        $comp_o = new COMPETITOR($db_o);
-        $status = $comp_o->comp_updatecompetitor($_SESSION['sailor']['id'], $update_fields);
-        
-        if ($status != "failed")
-        {
-            $_SESSION['sailor']['sailnum']  = u_change($_SESSION['sailor']['chg-sailnum'], $_SESSION['sailor']['sailnum']);
-            $_SESSION['sailor']['helmname'] = u_change($_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['helm']);
-            $_SESSION['sailor']['crewname'] = u_change($_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['crew']);
-        }
-        else
-        {
-            $_SESSION['pagefields']['body'] = $tmpl_o->get_template("error_msg", array(
-                "error"  => "Unable to change boat details",
-                "detail" => "",
-                "action" => "Please report error to your raceManager administrator"));
-            echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
-            exit();
+// process each field
+foreach ($_SESSION['change_fm'] as $field => $fieldspec) {
+    if ($fieldspec['status'] and array_key_exists($field, $_REQUEST)) {
+        if (!empty($_REQUEST[$field])) {
+            $_SESSION['sailor'][$field] = $_REQUEST[$field];
+            $_SESSION['sailor']['change'] = true;
         }
     }
-    else
-    {
-        if ($_SESSION['sailor']['chg-helm']) { $_SESSION['sailor']['helmname'] = $_SESSION['sailor']['chg-helm']; }
-        if ($_SESSION['sailor']['chg-crew']) { $_SESSION['sailor']['crewname'] = $_SESSION['sailor']['chg-crew']; }
-        if ($_SESSION['sailor']['chg-sailnum']) { $_SESSION['sailor']['sailnum'] = $_SESSION['sailor']['chg-sailnum']; }
-    }
-} 
-
-else         // system error - action not set or not recognised
-{
-    $_SESSION['pagefields']['body'] = $tmpl_o->get_template("error_msg", array(
-        "error"  => "Type of change undefined",
-        "detail" => "Change scope [{$_REQUEST['scope']}] not recognised",
-        "action" => "Please report error to your raceManager administrator"));
-    echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
-    exit();
 }
 
-if ($_SESSION['mode'] == "race")
-{
-    header("Location: race_pg.php?");
-}
-else
-{
-    header("Location: cruise_pg.php?");
-}
+if ($_SESSION['sailor']['chg-helm'])    { $_SESSION['sailor']['helmname'] = $_SESSION['sailor']['chg-helm']; }
+if ($_SESSION['sailor']['chg-crew'])    { $_SESSION['sailor']['crewname'] = $_SESSION['sailor']['chg-crew']; }
+if ($_SESSION['sailor']['chg-sailnum']) { $_SESSION['sailor']['sailnum'] = $_SESSION['sailor']['chg-sailnum']; }
 
-
-exit();
-
-?>
+// redirect to relevant page according to mode
+sailor_redirect($_SESSION['mode'], "race_pg.php?", "cruise_pg.php?" );

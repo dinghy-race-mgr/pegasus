@@ -28,73 +28,99 @@ class CRUISE
     }
 
 
-    public function add_cruiser($cruise_type, $boatid, $helm, $crew, $sailnum)
+    public function add_cruise($cruise_type, $sailor)
         /*
          * Adds entry record to t_cruise
-         * $helm, $crew and/or $sailnum only set if temporary change required
+         * incorporates configured 'change' fields for events on this day
          */
     {
         $status = "fail";
-        if (empty($boatid) OR !is_numeric($boatid))  // check we have a competitor id - if not return error
+        if (empty($sailor['id']) OR !is_numeric($sailor['id']))  // if no sailor id - return error
         {
-            $status =  false;
-        }
-        else
-        {
-            $chk_cruise = $this->get_cruiser($cruise_type, $boatid);
+            $status = false;
 
-            if (!$chk_cruise)
-            {
+        } else {                                                 // we have sailor
+            // check if they have all registered for this event
+            $chk_cruise = $this->get_cruise($cruise_type, $sailor['id']);
+            if (!$chk_cruise) {
                 $action_type = "register";
-            }
-            else
-            {
+            } else {
                 $action_type = "update";
-                $delete_rs = $this->db->db_delete( "t_cruise", $where = array("id" => $chk_cruise[0]['id'] ) );
+                // delete existing record
+                $rs = $this->db->db_delete("t_cruise", $where = array("id" => $chk_cruise['id']));
             }
 
+            // fixed fields
             $fields = array(
-                "cruise_type"    => $cruise_type,
-                "cruise_date"    => $this->today,
-                "time_in"        => date("H:i"),
-                "boatid"         => $boatid,
-                "action"         => $action_type,
-                "change_helm"    => $helm,            // only required for temp change
-                "change_crew"    => $crew,            // only required for temp change
-                "change_sailnum" => $sailnum,         // only required for temp change
-                "updby"          => "rm_sailor"
+                "cruise_type" => $cruise_type,
+                "cruise_date" => $this->today,
+                "time_in" => date("H:i"),
+                "boatid" => $sailor['id'],
+                "action" => $action_type,
+                "updby" => "rm_sailor"
             );
 
+            // change fields
+            foreach ($_SESSION['change_fm'] as $field => $spec) {
+                if ($spec['status']) {
+                    $fields[$field] = $sailor[$field];
+                }
+            }
+
             $insert_rs = $this->db->db_insert("t_cruise", $fields);
-            if ($insert_rs) { $status = $action_type; }
+            if ($insert_rs) {
+                $status = $action_type;
+            }
         }
         return $status;
     }
 
 
-    public function end_cruiser($personid, $type)
+    public function end_cruise($boatid, $type)
     {
         $detail = array();
         $set = array("time_out" => date("H:i"), "action" => "declare");
-        $where = array("cruise_date" => $this->today, "boatid" => $personid, "cruise_type" => $type);
+        $where = array("cruise_date" => $this->today, "boatid" => $boatid, "cruise_type" => $type);
         $num_records = $this->db->db_update( "t_cruise", $set, $where, 1 );
         $num_records > 0 ? $status = true : $status = false;
         return $status;
     }
 
-    public function get_cruiser($cruise_type, $boatid)
+    public function get_cruise($cruise_type, $boatid)
     {
         $detail = array();
-        $query = "SELECT * FROM `t_cruise` WHERE cruise_date = '{$this->today}' AND cruise_type = '$cruise_type' 
-                  AND boatid = '$boatid' ORDER BY upddate ASC";
-        //echo "<pre>$query</pre>";
-        $detail = $this->db->db_get_rows( $query );
-        if (empty($detail))
-        {
+        $query = "SELECT * FROM `t_cruise` WHERE cruise_date = '{$this->today}' AND cruise_type = '$cruise_type' AND boatid = '$boatid'";
+        $detail = $this->db->db_get_row($query);
+
+        if (empty($detail)) {
             return false;
+        } else {
+            return $detail;
         }
-        else
-        {
+    }
+
+    public function get_cruises($boatid)
+    {
+        $detail = array();
+        $query = "SELECT * FROM `t_cruise` WHERE cruise_date = '{$this->today}' AND boatid = '$boatid' ORDER BY upddate DESC";
+        $detail = $this->db->db_get_rows($query);
+
+        if (empty($detail)) {
+            return false;
+        } else {
+            return $detail;
+        }
+    }
+
+    public function get_latest_changes($boatid)
+    {
+        $detail = array();
+        $query = "SELECT * FROM `t_cruise` WHERE cruise_date = '{$this->today}' AND boatid = '$boatid' ORDER BY upddate DESC LIMIT 1";
+        $detail = $this->db->db_get_row($query);
+
+        if (empty($detail)) {
+            return false;
+        } else {
             return $detail;
         }
     }

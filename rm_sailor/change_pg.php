@@ -1,15 +1,7 @@
 <?php
 /**
- * mob_pg_change.php - allows user to change details for signon
- * 
- * Allows sail number and/or crew to be changed 
- *  
- * @author Mark Elkington <mark.elkington@blueyonder.co.uk>
- * 
- * %%copyright%%
- * %%license%%
- *   
- * 
+ * Allows a user to change boat/crew details for today's events
+ *
  */
 $loc        = "..";       
 $page       = "change";
@@ -17,40 +9,45 @@ $scriptname = basename(__FILE__);
 $date       = date("Y-m-d");
 require_once ("{$loc}/common/lib/util_lib.php");
 
-u_initpagestart(0,"changen_pg",false);   // starts session and sets error reporting
+u_initpagestart(0,"change_pg",false);   // starts session and sets error reporting
 
 // libraries
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 
-$tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php", "../templates/sailor/race_tm.php"));
+$tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php"));
 
-if (empty($_SESSION['sailor']['change']))
-{
-    $editboat_fields = array(
-        "compid" => $_SESSION['sailor']['id'],
-        "helm"   => $_SESSION['sailor']['helmname'],
-        "crew"   => $_SESSION['sailor']['crewname'],
-        "sailnum"=> $_SESSION['sailor']['sailnum']
-    );
+$change_fields = array();
+foreach ($_SESSION['change_fm'] as $field => $spec) {
+    if ($spec['status']) {
+        $change_fields[$field] = $_SESSION['sailor'][$field];
+    }
 }
-else
-{
-    $editboat_fields = array(
-        "compid"  => $_SESSION['sailor']['id'],
-        "helm"    => u_pick($_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['helmname']),
-        "crew"    => u_pick($_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['crewname']),
-        "sailnum" => u_pick($_SESSION['sailor']['chg-sailnum'], $_SESSION['sailor']['sailnum'])
-    );
+$change_fields["compid"]      = $_SESSION['sailor']['id'];
+$change_fields["chg-helm"]    = u_pick($_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['helmname']);
+$change_fields["chg-crew"]    = u_pick($_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['crewname']);
+$change_fields["chg-sailnum"] = u_pick($_SESSION['sailor']['chg-sailnum'], $_SESSION['sailor']['sailnum']);
+
+$event_str = "";
+foreach ($_SESSION['events']['details'] as $event) {
+    $event_str .= $event['event_type'] . "|";
 }
 
-$editboat_params = array(
-    "points_allocation" => $_SESSION['points_allocation'],
-    "singlehander"      => $_SESSION['sailor']['crew'] == 1,
+$change_params = array(
+    "mode"    => $_SESSION['mode'],
+    "evtypes"  => $event_str,
+    "change"  => $_SESSION['change_fm']
 );
 
-$_SESSION['pagefields']['body'] = $tmpl_o->get_template("change_fm", $editboat_fields, $editboat_params);
+if ($_SESSION['sailor']['crew'] == 1) {
+    $_SESSION['change_fm']['crew']['status'] = false;
+}
+
+// assemble and render page
+$_SESSION['pagefields']['header-center'] = $_SESSION['pagename']['change'];
+$_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(),
+                                                                array("options" => set_page_options("change")));
+$_SESSION['pagefields']['body'] = $tmpl_o->get_template("change_fm", $change_fields, $change_params);
+
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
-
-
-?>
+exit();

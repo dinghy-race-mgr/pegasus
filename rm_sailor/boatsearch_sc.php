@@ -1,27 +1,24 @@
 <?php
 /**
- * boarsearch_sc - searches for boat for signon
+ * Processes search request for boat
  * 
- * Searches for an exact match on sail number.  If one found
- * goes directly to confirm page.  If none found reports none 
- * found and allow user to return to try again.  If more
- * than one found allows user to select one or try again.
+ * free text search for boats based on search string containing one or more of class name,
+ * helms surname and sail number
  * 
- * @author Mark Elkington <mark.elkington@blueyonder.co.uk>
+ * @author Mark Elkington %%email%%
  * 
  * %%copyright%%
  * %%license%%
- *   
- * 
+ *
  */
 $loc        = "..";       
-$page       = "boatsearch_sc";
+$page       = "boatsearch";
 $scriptname = basename(__FILE__);
 $date       = date("Y-m-d");
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("./include/rm_sailor_lib.php");
 
-u_initpagestart(0,"rm_sailor",false);   // starts session and sets error reporting
+u_initpagestart(0,"boatsearch_sc",false);   // starts session and sets error reporting
 
 // libraries
 require_once ("{$loc}/common/classes/db_class.php");
@@ -31,38 +28,12 @@ require_once ("{$loc}/common/classes/comp_class.php");
 $db_o = new DB();
 $comp_o = new COMPETITOR($db_o); 
 
-// check for match on sailnumber
+// check for match on quey string (sailnumber, surname or class)
 $searchstr = trim($_REQUEST['sailnum']);
 $_SESSION['competitors'] = $comp_o->comp_searchcompetitor($searchstr);
 
+// go to selection of boat
 header("Location: pickboat_pg.php?sailnum=$searchstr");
 exit();
 
-//if ($competitors)  {  $numcompetitors = count($competitors);  }
-//
-//u_writedbg("numcompetitors: $numcompetitors", __FILE__, __FUNCTION__, __LINE__, false);
-//
-//if ($numcompetitors == 0)  // none found
-//{
-//   $pbufr = $tmpl_o->get_template("search_nonfound_response",
-//       array("searchstr"=>$searchstr, "retryscript"=>"boatsearch_pg.php"));
-//
-//}
-//elseif ($numcompetitors == 1)  // one match found - go straight to requested function with no display or display details
-//{
-//    $target = sprintf($pick_script, $competitors[0]['id'], $_SESSION['option']);
-//    header("Location: $target");
-//    exit();
-//}
-//
-//else  // more than one competitor match found - user has to pick
-//{
-//    $pbufr = $tmpl_o->get_template("search_manyfound_response",
-//        array("searchstr"=>$searchstr, "option"=>$_SESSION['option']),
-//        array("pickscript"=>$pick_script, "hidescript"=>$hide_script, "data"=>$competitors,
-//              "opt_cfg"=>$_SESSION['option_cfg']) );
-//}
-//
-//$_SESSION['pagefields']['body'] = $pbufr;
-//echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields'] );
 
