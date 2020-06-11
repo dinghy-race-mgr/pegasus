@@ -166,7 +166,7 @@ class EVENT
         return $detail;       
     }
     
-    public function event_getnextevent($date)
+    public function event_getnextevent($date, $race = false)
     /*
     Finds the next event from today - ignores demo events
     */
@@ -178,8 +178,12 @@ class EVENT
 
         $where  = " WHERE event_name NOT LIKE '%DEMO%' and event_status='scheduled' 
                     and event_date>='$date' and event_type != 'noevent' and active = 1 ";
+        if ($race)
+        {
+            $where.= "and event_type = 'racing' ";
+        }
+
         $query = "SELECT * FROM t_event $where ORDER BY event_date ASC LIMIT 1";
-        //echo "<pre>$query</pre>";
         $detail = $this->db->db_get_row( $query );
         if (empty($detail))       // nothing found
         { 

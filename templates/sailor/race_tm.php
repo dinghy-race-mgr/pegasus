@@ -17,26 +17,39 @@ function race_control($params = array())
         $event_list = "";
         foreach ($params['event-list'] as $eventid => $row) {   // loop over events
             // race identity
-            $race_txt = $row['time'] . " - " . $row['name'];
+            $race_txt = $row['time'] . "<br>" . $row['name'];
 
             if ($row['event-status'] == "cancelled") {                // race is cancelled
                 $event_list .= <<<EOT
-                <tr style="height: 8em !important;">
-                <td width="25%" class="rm-text-sm rm-text-trunc">$race_txt</td>
-                <td width="66%" class="rm-text-md text-warning" colspan="7">this race is CANCELLED</td>                     
-                </tr>
+                <div class="row margin-top-20">
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-lg-offset-1">
+                        <span class="rm-text-sm rm-text-trunc text-success">$race_txt</span>
+                    </div>
+                    <div class="col-xs-9 col-sm-9 col-md-9 col-lg-7">
+                        <span class="rm-text-md text-warning">this race is CANCELLED</span>
+                    </div>                     
+                </div>
 EOT;
+
             } elseif ($row['event-status'] == "abandoned") {          // race is abandoned
 
                 // protest option
-                $protest_btn = protest_btn($_SESSION['sailor_protest'], $eventid, $row['event-status-code'], $row['entry-status']);
+                $protest_btn = protest_btn($_SESSION['sailor_protest'], $eventid, $row['event-status-code'],
+                                           $row['entry-status'], $params['opt_cfg']['protest']['tip']);
 
                 $event_list .= <<<EOT
-                <tr style="height: 8em !important;">
-                <td width="25%" class="rm-text-sm rm-text-trunc">$race_txt</td>
-                <td width="56%" class="rm-text-md text-warning" colspan="5">this race is ABANDONED</td>   
-                <td width="5%" class="rm-text-md ">$protest_btn</td>                   
-                </tr>
+                <div class="row margin-top-20">
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-lg-offset-1">
+                        <span class="rm-text-sm rm-text-trunc text-success">$race_txt</span>
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-5">
+                        <span class="rm-text-md text-warning">this race is ABANDONED</span>
+                    </div>
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-2">
+                        <span class="rm-text-md">$protest_btn</span>
+                    </div>
+                </div>
+
 EOT;
             } else {                                                   // race is happening
                 // signon button
@@ -49,7 +62,7 @@ EOT;
                 $retire_btn = retire_btn($row['signon'], $eventid, $row['event-status-code'], $row['entry-status']);
 
                 // entry status
-                $entry_status_txt = entry_status_txt($row['entry-status'], $row['entry-alert'], $row['start']);
+                $entry_status_txt = entry_status_txt($row['entry-status'], $row['entry-alert'], $row['start'], $row['update-num']);
 
                 // event status
                 $event_status_txt = "race: " . $row['event-status-txt'];
@@ -58,17 +71,32 @@ EOT;
                 $results_btn = results_btn($_SESSION['sailor_results'], $eventid, $row['event-status-code'], $row['entry-status']);
 
                 // protest option
-                $protest_btn = protest_btn($_SESSION['sailor_protest'], $eventid, $row['event-status-code'], $row['entry-status']);
+                $protest_btn = protest_btn($_SESSION['sailor_protest'], $eventid, $row['event-status-code'],
+                                           $row['entry-status'], $params['opt_cfg']['protest']['tip']);
 
                 $event_list .= <<<EOT
-                <tr style="height: 8em !important;">
-                <td width="25%" class="rm-text-sm rm-text-trunc" >$race_txt</td>
-                <td width="30%" class="rm-text-md">$signon_btn &nbsp; $declare_btn &nbsp; $retire_btn</td>
-                <td width="20%" class="rm-text-sm text-success">$entry_status_txt
-                    <br><span class="text-warning">$event_status_txt</span></td>   
-                <td width="5%" class="rm-text-md ">$results_btn</td>   
-                <td width="5%" class="rm-text-md ">$protest_btn</td>                     
-                </tr>
+                <div class="row margin-top-20">
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                        <span class="rm-text-sm rm-text-trunc">$race_txt</span>
+                    </div>
+                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                        <div class="row rm-text-md">
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">$signon_btn</div>
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">$declare_btn</div>
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">$retire_btn</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                        <span class="rm-text-sm text-success">$entry_status_txt</span><br>
+                        <span class="rm-text-sm text-warning">$event_status_txt</span>
+                    </div>
+                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+                        <span class="rm-text-md">$results_btn</span>
+                    </div>
+                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+                        <span class="rm-text-md">$protest_btn</span>
+                    </div>                   
+                </div>
 EOT;
             }
         }
@@ -81,43 +109,65 @@ EOT;
             </form>
 EOT;
         $bufr.= <<<EOT
-            <div class="row">
-                <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">   
+            <div class="row margin-top-10">
+                <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">   
                     {boat-label}
                 </div>
             </div>
             
             <div class="row margin-top-10">
-                <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">   
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">   
                     $instruction_bufr        
                     $event_bufr
                 </div>
             </div>
             
+            <hr>
             <div class="margin-top-40">
-                <a href="boatsearch_pg.php" class="btn btn-info btn-md rm-text-bg pull-right" role="button" >
-                    <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Done ...
-                </a>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                    <a href="search_pg.php" class="btn btn-info btn-sm rm-text-sm" role="button" >
+                        <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Done ...
+                    </a>
+                </div>
             </div>
 EOT;
 
     } else {
-        // deal with unknown state - error   FIXME go to standard error page with a restart button
-        $bufr .= "error";
+        // deal with unknown state - error
+        $bufr = <<<EOT
+        <div class="row margin-top-40">
+            <div class="col-xs-8 col-xs-offset-2 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">   
+                <div class="alert alert-danger rm-text-md" role="alert"> 
+                    <h2>Fatal Error: Unrecognised page state;</h2>
+                    <p>Page state encounered was - {$params['state']}</p> 
+                    <p><small>Please contact your system administrator </small></p>
+                    
+                    <div class="pull-right" style="padding-right: 20px !important">
+                        <button type="button" class="btn btn-primary btn-md" onclick="location.href = 'index.php';">
+                            <span class="glyphicon glyphicon-chevron-left"></span> back
+                        </button>
+                    </div>           
+                </div>
+            </div>
+        </div>
+EOT;
     }
 
     return $bufr;
 }
 
 
-function entry_status_txt($en_state, $en_alert, $start)
+function entry_status_txt($en_state, $en_alert, $start, $update_num)
 {
     if (empty($en_alert)) {
         $txt = $en_state;
+        $start_txt = u_numordinal($start)." start" ;
+        $update_txt = "";
+        if ($update_num > 0) { $update_txt = "[$update_num]"; }
         if ($en_state == "entered") {
-            $txt .= " - start " . $start;
+            $txt .= ": $start_txt ";
         } elseif ($en_state == "updated") {
-            $txt .= " - start " . $start;
+            $txt .= " entry $update_txt: $start_txt ";
         }
     } else {
         $txt = $en_alert;
@@ -213,6 +263,8 @@ EOT;
 
 function results_btn($opt, $eventid, $ev_state, $en_state)
 {
+    global $params;
+
     $mode = "";
     if ($opt) {
         if ($ev_state >= 4 and $ev_state <= 5 and ($en_state == "retired" or $en_state == "signed off"
@@ -227,7 +279,8 @@ function results_btn($opt, $eventid, $ev_state, $en_state)
         $bufr = "&nbsp;";
     } else {
         $bufr = <<<EOT
-        <a href="results_pg.php?event=$eventid&mode=list" type='button' title="results" class="btn btn-md $mode">
+        <a href="results_pg.php?event=$eventid&mode=list" data-toggle="tooltip" data-placement="top" 
+            title="{$params['opt_cfg']['results']['tip']}" type='button' class="btn btn-md $mode">
         <span class='rm-text-md glyphicon glyphicon-list-alt'  aria-hidden='true'></span></a>           
 EOT;
     }
@@ -235,8 +288,9 @@ EOT;
     return $bufr;
 }
 
-function protest_btn($opt, $eventid, $ev_state, $en_state)
+function protest_btn($opt, $eventid, $ev_state, $en_state, $tip)
 {
+
     $mode = "";
     if ($opt) {
         if ($ev_state >= 1 and ($en_state == "retired" or $en_state == "signed off"
@@ -251,7 +305,8 @@ function protest_btn($opt, $eventid, $ev_state, $en_state)
         $bufr = "&nbsp;";
     } else {
         $bufr = <<<EOT
-        <a href="protest_pg.php?event=$eventid" type='button' title="protest" class="btn btn-md $mode">
+        <a href="protest_pg.php?event=$eventid" data-toggle="tooltip" data-placement="top" 
+            title="$tip" type='button' class="btn btn-md $mode">
         <span class='rm-text-md glyphicon glyphicon-pencil'  aria-hidden='true'></span></a>
 EOT;
     }
@@ -259,67 +314,4 @@ EOT;
     return $bufr;
 }
 
-// FIXME is this required
-//function change_fm($params = array())
-//{
-//    $label_colour = "text-info";
-//    $label_width  = "col-xs-2";
-//
-//    $formbufr = "";
-//    foreach ($params['change'] as $field => $fieldspec)
-//    {
-//        if (!$fieldspec['status']) { // this field is not configured
-//            continue;
-//        }
-//
-//        if (key_exists("evtype", $fieldspec)){ // field is configured but is not relevant to events today
-//            if (strpos($params['evtypes'], $fieldspec['evtype']) === false) {
-//                continue;
-//            }
-//        }
-//
-//        $placeholder = "";
-//        if (array_key_exists("placeholder", $fieldspec)) {
-//            $placeholder = "placeholder=\"{$fieldspec['placeholder']}\"";
-//        }
-//        $value = "{".$field."}";
-//
-//        $formbufr.= <<<EOT
-//        <div class="form-group form-condensed">
-//            <label for="$field" class="rm-form-label control-label $label_width $label_colour">{$fieldspec['label']}</label>
-//            <div class="{$fieldspec['width']}">
-//                <input name="$field" autocomplete="off" type="text" class="form-control input-lg rm-form-field"
-//                 id="id$field" $placeholder value="$value">
-//            </div>
-//        </div>
-//EOT;
-//    }
-//
-//    $bufr = <<<EOT
-//    <div class="rm-form-style">
-//
-//        <div class="row">
-//            <div class="col-xs-10 col-sm-10 col-md-8 col-lg-8 alert alert-info"  role="alert">Change details for today ...</div>
-//        </div>
-//
-//        <form id="changeboatForm" class="form-horizontal" action="change_sc.php" method="post">
-//
-//            $formbufr
-//            <input name="compid" type="hidden" value="{compid}">
-//
-//            <div class="pull-right margin-top-20">
-//                <button type="button" class="btn btn-default btn-lg" style="margin-right: 10px" onclick="history.go(-1);">
-//                    <span class="glyphicon glyphicon-remove"></span>&nbsp;Cancel
-//                </button>
-//                &nbsp;&nbsp;&nbsp;&nbsp;
-//                <button type="submit" class="btn btn-warning btn-lg" >
-//                    <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;<b>Change Details</b>
-//                </button>
-//            </div>
-//
-//        </form>
-//    </div>
-//EOT;
-//    return $bufr;
-//}
 

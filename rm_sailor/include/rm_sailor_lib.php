@@ -1,6 +1,9 @@
 <?php
 
+// ADMINISTRATION FUNCTIONS --------------------------------------------------------------------------------------------
+
 function sailor_redirect($mode, $racelink, $cruiselink)
+    // directs application to next page depending on race/cruise mode
 {
     if ($mode == "race") {
         header("Location: $racelink");
@@ -11,10 +14,10 @@ function sailor_redirect($mode, $racelink, $cruiselink)
 }
 
 function set_page_options($page)
+    // gets options that should be shown on menu for specified page
 {
-    $opt_map = get_options_map($page);
     $options = array();
-    foreach ($opt_map as $opt) {
+    foreach ($_SESSION['options_map'][$page] as $opt) {
         if (array_key_exists($opt, $_SESSION['option_cfg'])) {
             $options[] = $_SESSION['option_cfg'][$opt];
         }
@@ -22,70 +25,115 @@ function set_page_options($page)
     return $options;
 }
 
-function get_cruise_details($eventtypes, $addevent = true)
+function get_entry_information($sailorid, $events)
+    // gets entry data using different functions for race and cruise mode
 {
-    global $event_o;
-
-//  event information held in array
-//       numevents - number of cruising events either scheduled for today or specified as a parameter
-//       nextevent - <not used> - empty array
-//       details   - 2D array with 1 array for each event.  The event includes key information for the
-//                   the event , and details of the configuration for each fleet in the event.  If $addevent
-//                   is true then add a dummy event for free cruising.
-
-    $data = array("numevents" => 0, "nextevent" => array(), "details" => array(), );
-
-    if ($addevent) {
-        // create dummy event for free sailing
-        $data['details'][0] = array(
-            "event_date" => date("Y-m-d"),
-            "event_start" => date("H:i"),
-            "event_name" => "personal cruising",
-            "event_type" => "individual",
-            "event_format" => "",
-            "event_status" => "scheduled",
-            "event_entry" => "signon",
-            "event_open" => "club",
-            "tide_time" => "",
-            "tide_height" => "",
-            "event_notes" => "",
-        );
+    if ($_SESSION['mode'] == "cruise") {
+        $data = get_cruise_entry_data($sailorid, $events);
+    } else {
+        $data = get_race_entry_data($sailorid, $events);
     }
-
-    // add any cruising events for today in the programme
-    $rs = $event_o->event_getevents(array("event_date"=>date("Y-m-d")),$_SESSION['demo'], false);
-
-    if ($rs) {
-        $i = 0;
-        foreach ($rs as $k => $detail) {
-            $i++;
-            // check if this event type is configured for the cruising mode
-            if (strpos($eventtypes, $detail['event_type']) !== false) {
-                $data['details'][$i] = array(
-                    "event_date" => $detail['event_date'],
-                    "event_start" => $detail['event_start'],
-                    "event_name" => $detail['event_name'],
-                    "event_type" => $detail['event_type'],
-                    "event_format" => $detail['event_type'],
-                    "event_status" => $detail['event_status'],
-                    "event_entry" => $detail['event_entry'],
-                    "event_open" => $detail['event_open'],
-                    "tide_time" => $detail['tide_time'],
-                    "tide_height" => $detail['tide_height'],
-                    "event_notes" => $detail['event_notes'],
-                );
-            }
-        }
-    }
-
-    // get number of events
-    if ($data['details']) { $data['numevents'] = count($data['details']); }
 
     return $data;
 }
 
+function add_auto_continue($usage, $delay, $external, $target_url)
+    // adds an automatic return to the search page when usage mode is "multi"
+    // delay before return is set in the rm_sailor_cfg.php file
+{
+    if ($usage == "multi") {          // multi user session
+        $delay = $delay * 1000;       // convert delay to millisecs
+        if ($external) {              // double it if coming from somewhere other than this page
+            $delay = $delay * 2;
+        }
+    }
+
+    // add jump to target page after delay
+    $bufr = str_repeat("\n",4096);
+    if ($delay > 0) {
+        $bufr .= <<<EOT
+            <script>
+                $(document).ready(function () {
+                window.setTimeout(function () {
+                    location.replace('$target_url');
+                }, $delay);
+            });
+            </script>
+EOT;
+    }
+
+    return $bufr;
+}
+
+function check_argument($arg, $mode, $check, $default = "")
+{
+    // tests $_REQUEST argument for existence and sets values or defaults accordingly.
+    // e.g
+    // $external = check_argument("state", "setbool", "init", true)
+    // $action['event'] = check_argument("event", "set", "", 0)
+
+    if (key_exists($arg, $_REQUEST)) {  // if key exists do checks according to mode
+        if ($mode == "set") {
+            empty($_REQUEST[$arg]) ? $val = $default : $val = $_REQUEST[$arg];
+        }
+        elseif ($mode =="checkset") {
+            $_REQUEST[$arg] == $check ? $val = $_REQUEST[$arg] : $val = $default;
+        }
+        elseif ($mode == "setbool") {
+            $_REQUEST[$arg] == $check ? $val = true : $val = false;
+        }
+        elseif ($mode == "checkint") {
+            ctype_digit($_REQUEST[$arg]) ? $val = $_REQUEST[$arg] : $val = false;
+        }
+
+    } else {  // if key doesn't exist set to default if provided
+        empty($default) ? $val = "" : $val = $default;
+    }
+
+    return $val;
+}
+
+function check_valueinlist ($val, $list)
+    // case insensitive check if value in list of values (in array)
+{
+    $result = false;
+    $search_list = array_map('strtolower', $list);
+    if (in_array(strtolower($val), $search_list)) {
+        $result = true;
+    }
+
+    return $result;
+}
+
+function set_boat_details()
+    // creates and updates sailor details
+{
+    if (empty($_SESSION['sailor']['change'])) {
+        $boat = array(
+            "id" => $_SESSION['sailor']['id'],
+            "class" => $_SESSION['sailor']['classname'],
+            "sailnum" => $_SESSION['sailor']['sailnum'],
+            "helm" => $_SESSION['sailor']['helmname'],
+            "crew" => $_SESSION['sailor']['crewname']
+        );
+    } else {
+        $boat = array(
+            "id" => $_SESSION['sailor']['id'],
+            "class" => $_SESSION['sailor']['classname'],
+            "sailnum" => u_pick($_SESSION['sailor']['chg-sailnum'], $_SESSION['sailor']['sailnum']),
+            "helm" => u_pick($_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['helmname']),
+            "crew" => u_pick($_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['crewname'])
+        );
+    }
+    $boat['team'] = u_conv_team($boat['helm'], $boat['crew'], 0);
+
+    return $boat;
+}
+
+// RACE FUNCTIONS ------------------------------------------------------------------------------------------------------
 
 function get_event_details($eventid_list = array())
+    // gets racing event details from database (t_event)
 {
     global $event_o;
 
@@ -167,7 +215,7 @@ function get_event_details($eventid_list = array())
         }
 
         // get details of next event
-        $rs = $event_o->event_getnextevent(date("Y-m-d"));
+        $rs = $event_o->event_getnextevent(date("Y-m-d"), true);
         if ($rs) {
             $data['nextevent'] = $rs;
         }
@@ -176,64 +224,8 @@ function get_event_details($eventid_list = array())
     return $data;
 }
 
-function get_entry_information($sailorid, $events)
-{
-    //Gets entry status by parsing the content of the t_entry table.
-    if ($_SESSION['mode'] == "cruise") {
-        $data = get_cruise_entry_data($sailorid, $events);
-    } else {
-        $data = get_race_entry_data($sailorid, $events);
-    }
-
-    return $data;
-}
-
-function get_cruise_entry_data($sailorid, $events)
-{
-    global $db_o;
-    $data = array();
-
-    // loop over events - including free sailing (eventid = 0)
-    foreach ($events as $eventid => $event) {
-        $cruise_o = new CRUISE($db_o, date("Y-m-d"));
-
-        $data[$eventid] = array(
-            "sailorid" => $sailorid,
-            "event-name" => $event['event_name'],
-            "start-time" => $event['event_start'],
-            "entered" => false,
-            "updated" => false,
-            "declare" => false
-        );
-
-        $cruise = $cruise_o->get_cruise($event['event_type'], $sailorid);
-        // loop through t_cruise records
-        if ($cruise) {
-
-            if ($cruise['action'] == "register") {
-                $data[$eventid]['entered'] = true;
-            } elseif ($cruise['action'] == "update") {
-                $data[$eventid]['updated'] = true;
-            } elseif ($cruise['action'] == "declare") {
-                $data[$eventid]['declare'] = true;
-            }
-
-//            foreach ($cruises as $k => $r) {
-//                if ($r['action'] == "register") {
-//                    $data[$eventid]['entered'] = true;
-//                } elseif ($r['action'] == "update") {
-//                    $data[$eventid]['updated'] = true;
-//                } elseif ($r['action'] == "declare") {
-//                    $data[$eventid]['declare'] = true;
-//                }
-//            }
-        }
-    }
-
-    return $data;
-}
-
 function get_race_entry_data($sailorid, $events)
+    // gets details on sailor with regard to today's races using the t_entry table
 {
     global $db_o;
 
@@ -273,11 +265,16 @@ function get_race_entry_data($sailorid, $events)
 
         if ($records) {
             // loop through t_entry records
+            $count = 0;
+
             foreach ($records as $k => $r) {
                 if ($r['action'] == "enter") {
                     $data[$eventid]['entered'] = true;
+
                 } elseif ($r['action'] == "update") {
                     $data[$eventid]['updated'] = true;
+                    $count++;
+
                 } elseif ($r['action'] == "declare" or $r['action'] == "retire") {
                     $data[$eventid]['declare'] = $r['action'];
                     if ($r['protest']) {
@@ -285,113 +282,18 @@ function get_race_entry_data($sailorid, $events)
                     }
                 }
             }
+            $data[$eventid]['update_num'] = $count;
         }
     }
+
     return $data;
 }
 
-function get_options_map($page)
-    // FIXME do I still need this
-{
-    $opt_map = array(
-        "boatsearch" => array("addboat"),
-        "pickboat"   => array("boatsearch", "addboat"),
-        "race"       => array("boatsearch", "editboat", "rememberme"),
-        "cruise"     => array("boatsearch", "editboat", "rememberme"),
-        "addboat"    => array("boatsearch"),
-        "change"     => array(),
-        "editboat"   => array("boatsearch"),
-        "results"    => array("boatsearch"),
-        "protest"    => array("boatsearch")
-    );
-
-    return $opt_map["$page"];
-}
-
-function get_options_arr()
-{
-// setting available options  FIXME is this still needed
-    $options = array();
-
-    $options['boatsearch'] = array("label" => "Search Boats", "url" => "boatsearch_pg.php", "tip" => "", "active" => true);
-    $options['race']       = array("label" => "Sign On", "url" => "race_pg.php", "tip" => "",  "active" => $_SESSION['sailor_race']);
-    $options['cruise']     = array("label" => "Sign Off/Retire", "url" => "signoff_pg.php", "tip" => "",  "active" => $_SESSION['sailor_cruise']);
-    $options['addboat']    = array("label" => "Add New Boat", "url" => "addboat_pg.php", "tip" => "",  "active" => $_SESSION['sailor_addboat']);
-    $options['editboat']   = array("label" => "Change Boat Details", "url" => "editboat_pg.php", "tip" => "",  "active" => $_SESSION['sailor_editboat']);
-    $options['results']    = array("label" => "Get Results", "url" => "results_pg.php", "tip" => "",  "active" => $_SESSION['sailor_results']);
-    $options['protest']    = array("label" => "Submit Protest", "url" => "protest_pg.php", "tip" => "",  "active" => $_SESSION['sailor_protest']);
-    $options['hideboat']   = array("label" => "Hide Boat", "url" => "hideboat_sc.php", "active" => $_SESSION['sailor_hideboat'],
-                                   "tip" => "Click here to remove this boat from future searches - but it will remain in the racemanager archive");
-    $options['rememberme'] = array("label" => "Remember Me", "url" => "rememberme_sc.php", "active" => $_SESSION['sailor_rememberme'],
-                                   "tip" => "Click here to set this as the boat you usually sail.");
-
-    return $options;
-}
-
-
-function set_boat_details()
-{
-    if (empty($_SESSION['sailor']['change'])) {
-        $boat = array(
-            "id" => $_SESSION['sailor']['id'],
-            "class" => $_SESSION['sailor']['classname'],
-            "sailnum" => $_SESSION['sailor']['sailnum'],
-            "helm" => $_SESSION['sailor']['helmname'],
-            "crew" => $_SESSION['sailor']['crewname']
-        );
-    } else {
-        $boat = array(
-            "id" => $_SESSION['sailor']['id'],
-            "class" => $_SESSION['sailor']['classname'],
-            "sailnum" => u_pick($_SESSION['sailor']['chg-sailnum'], $_SESSION['sailor']['sailnum']),
-            "helm" => u_pick($_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['helmname']),
-            "crew" => u_pick($_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['crewname'])
-        );
-    }
-    $boat['team'] = u_conv_team($boat['helm'], $boat['crew'], 0);
-
-    return $boat;
-}
-
-function set_cruise_status_list($events, $entries, $action = array())
-{
-    $event_arr = array();
-
-    foreach ($events as $eventid => $event) {
-        $entry_status = "";
-
-        if ($entries[$eventid]['declare'] == "declare") {
-            $entry_status = "returned";
-        } elseif ($entries[$eventid]['updated']) {
-            $entry_status = "updated";
-        } elseif ($entries[$eventid]['entered']) {
-            $entry_status = "registered";
-        }
-
-        $entry_alert = "";
-        if (!empty($action)) {
-            if ($action['event'] == $eventid AND $action['status'] == "err") {
-                $entry_alert = "FAILED - {$action['msg']}";
-            }
-        }
-
-        $event_arr[$eventid] = array(
-            "name" => $event['event_name'],
-            "time" => $event['event_start'],
-            "signon" => $event['event_entry'],
-            "cruise-type" => $event['event_type'],
-            "entry-status" => $entry_status,
-            "entry-updated" => $entries[$eventid]['updated'],
-            "entry-alert" => $entry_alert
-        );
-    }
-    return $event_arr;
-}
-
 function set_event_status_list($events, $entries, $action = array())
+    // set race status for each event (for current sailor)
 {
     $evstatuscode = array("scheduled" => 1, "selected" => 2,"running" => 3,
-                          "sailed" => 4, "complete" => 5,"abandoned" => 6, "cancelled" => 7,);
+        "sailed" => 4, "complete" => 5,"abandoned" => 6, "cancelled" => 7,);
 
     $event_arr = array();
 
@@ -452,11 +354,16 @@ function set_event_status_list($events, $entries, $action = array())
             "event-status-txt" => $txt,
             "event-status-code" => $evstatuscode[$event['event_status']]
         );
+
+        key_exists("update_num", $entries[$eventid]) ? $event_arr[$eventid]['update-num'] = $entries[$eventid]['update_num']
+                    : $event_arr[$eventid]['update-num'] = 0;
     }
     return $event_arr;
 }
 
+
 function set_result_data($sailorid, $events)
+    // get results for current sailor in all races today
 {
     global $db_o;
 
@@ -508,65 +415,285 @@ function set_result_data($sailorid, $events)
 }
 
 
-function add_auto_continue($usage, $delay, $external, $target_url)
+function get_race_entries($sailorid, $today)
+    // get last entry for current sailor in t_entry
 {
-    if ($usage == "multi") {          // multi user session
-        $delay = $delay * 1000;       // convert delay to millisecs
-        if ($external) {              // double it if coming from somewhere other than this page
-            $delay = $delay * 2;
-        }
+    global $db_o;
+
+    $detail = array();
+    $query = "SELECT * FROM t_entry WHERE DATE(`upddate`) = '$today' AND competitorid = $sailorid ORDER BY upddate DESC LIMIT 1";
+    $detail = $db_o->db_get_row($query);
+
+    if (empty($detail)) {
+        return false;
+    } else {
+        return $detail;
+    }
+}
+
+function process_signon($eventid)
+    // processes action of sign on for an event on the race control page
+{
+    global $db_o;
+
+    $entry = $_SESSION["entries"][$eventid];
+
+    // add to entry table
+    $entry_o = new ENTRY($db_o, $eventid, $_SESSION['events']['details'][$eventid]);
+    $status = $entry_o->add_signon($_SESSION['sailor']['id'], $entry['allocate']['status'],
+        $_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['chg-sailnum'], "rm_sailor");
+
+    if ($status == "update" OR $status == "enter") {
+        empty($_SESSION['sailor']['chg-helm']) ? $chg_helm = "" : $chg_helm = "*";
+        empty($_SESSION['sailor']['chg-crew']) ? $chg_crew = "" : $chg_crew = "*";
+        empty($_SESSION['sailor']['chg-sailnum']) ? $chg_sailnum = "" : $chg_sailnum = "*";
+        u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> $chg_sailnum | {$_SESSION['sailor']['helmname']} -> $chg_helm | {$_SESSION['sailor']['crewname']} -> $chg_crew | $status", "");
+        $success = true;
+    } else {
+        u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} | entry failed [reason: $status]", "");
+        $success = false;
     }
 
-    // add jump to target page after delay
-    $bufr = str_repeat("\n",4096);
-    if ($delay > 0) {
-        $bufr .= <<<EOT
-            <script>
-                $(document).ready(function () {
-                window.setTimeout(function () {
-                    location.replace('$target_url');
-                }, $delay);
-            });
-            </script>
-EOT;
+    return $success;
+}
+
+function process_declare($eventid)
+    // processes action of declaration for an event on the race control page
+{
+    global $db_o;
+
+    // update entry array
+    $_SESSION['entries'][$eventid]['declare'] =  "declare";
+
+    // add record to entry table to record declaration
+    $entry_o = new ENTRY($db_o, $eventid, $_SESSION['events']['details'][$eventid]);
+    $status = $entry_o->add_declare($_SESSION['sailor']['id']);
+
+    if ($status == "declare") {
+        // create log record
+        u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | declared", "");
+        $success = true;
+    } else {
+        // create log record of failure
+        u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | declare FAILED", "");
+        $success = false;
     }
 
-    return $bufr;
+    return $success;
+}
+
+function process_retire($eventid)
+    // processes action of retirement for an event on the race control page
+{
+    global $db_o;
+
+    // update entry array
+    $_SESSION['entries'][$eventid]['declare'] =  "retire";
+
+    // add record to entry table to record declaration
+    $entry_o = new ENTRY($db_o, $eventid, $_SESSION['events']['details'][$eventid]);
+    $status = $entry_o->add_retire($_SESSION['sailor']['id']);
+
+    if ($status == "retire") {
+        // create log record
+        u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | retired", "");
+        $success = true;
+    } else {
+        // create log record of failure
+        u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | retirement FAILED", "");
+        $success = false;
+    }
+
+    return $success;
 }
 
 
-function check_argument($arg, $mode, $check, $default = "")
-{
-    // tests $_REQUEST argument for existence and sets values or defaults accordingly.
-    //
-    // e.g
-    //
-    // $external = check_argument("state", "setbool", "init", true)
-    // $action['event'] = check_argument("event", "set", "", 0)
 
-    $val = $default;
-    if (key_exists($arg, $_REQUEST)) {
-        if ($mode == "set") {
-            empty($_REQUEST[$arg]) ? $val = $default : $val = $_REQUEST[$arg];
-        }
-        elseif ($mode == "setbool") {
-            $_REQUEST[$arg] == $check ? $val = true : $val = false;
-        }
-        elseif ($mode == "checkint") {
-            ctype_digit($_REQUEST[$arg]) ? $val = $arg : $val = false;
+
+
+// CRUISE FUNCTIONS ----------------------------------------------------------------------------------------------------
+
+function get_cruise_details($eventtypes, $addevent = true)
+    // gets cruising event details from database (t_event)
+{
+    global $event_o;
+
+//  event information held in array
+//       numevents - number of cruising events either scheduled for today or specified as a parameter
+//       nextevent - <not used> - empty array
+//       details   - 2D array with 1 array for each event.  The event includes key information for the
+//                   the event , and details of the configuration for each fleet in the event.  If $addevent
+//                   is true then add a dummy event for free cruising.
+
+    $data = array("numevents" => 0, "nextevent" => array(), "details" => array(), );
+
+    if ($addevent) {
+        // create dummy event for free sailing
+        $data['details'][0] = array(
+            "event_date" => date("Y-m-d"),
+            "event_start" => date("H:i"),
+            "event_name" => "personal cruising",
+            "event_type" => "individual",
+            "event_format" => "",
+            "event_status" => "scheduled",
+            "event_entry" => "signon",
+            "event_open" => "club",
+            "tide_time" => "",
+            "tide_height" => "",
+            "event_notes" => "",
+        );
+    }
+
+    // add any cruising events for today in the programme
+    $rs = $event_o->event_getevents(array("event_date"=>date("Y-m-d")),$_SESSION['demo'], false);
+
+    if ($rs) {
+        $i = 0;
+        foreach ($rs as $k => $detail) {
+            $i++;
+            // check if this event type is configured for the cruising mode
+            if (strpos($eventtypes, $detail['event_type']) !== false) {
+                $data['details'][$i] = array(
+                    "event_date" => $detail['event_date'],
+                    "event_start" => $detail['event_start'],
+                    "event_name" => $detail['event_name'],
+                    "event_type" => $detail['event_type'],
+                    "event_format" => $detail['event_type'],
+                    "event_status" => $detail['event_status'],
+                    "event_entry" => $detail['event_entry'],
+                    "event_open" => $detail['event_open'],
+                    "tide_time" => $detail['tide_time'],
+                    "tide_height" => $detail['tide_height'],
+                    "event_notes" => $detail['event_notes'],
+                );
+            }
         }
     }
 
-    return $val;
+    // get number of events
+    if ($data['details']) { $data['numevents'] = count($data['details']); }
+
+    return $data;
 }
 
-function check_valueinlist ($val, $list)
+function get_cruise_entry_data($sailorid, $events)
+    // gets details on sailor with regard to today's cruises using the t_cruise table
 {
-    $result = false;
-    $search_list = array_map('strtolower', $list);
-    if (in_array(strtolower($val), $search_list)) {
-        $result = true;
+    global $db_o;
+    $data = array();
+
+    // loop over events - including free sailing (eventid = 0)
+    foreach ($events as $eventid => $event) {
+        $cruise_o = new CRUISE($db_o, date("Y-m-d"));
+
+        $data[$eventid] = array(
+            "sailorid" => $sailorid,
+            "event-name" => $event['event_name'],
+            "start-time" => $event['event_start'],
+            "entered" => false,
+            "updated" => false,
+            "declare" => false
+        );
+
+        $cruise = $cruise_o->get_cruise($event['event_type'], $sailorid);
+        // loop through t_cruise records
+        if ($cruise) {
+            if ($cruise['action'] == "register") {
+                $data[$eventid]['entered'] = true;
+            } elseif ($cruise['action'] == "update") {
+                $data[$eventid]['updated'] = true;
+            } elseif ($cruise['action'] == "declare") {
+                $data[$eventid]['declare'] = true;
+            }
+        }
     }
 
-    return $result;
+    return $data;
+}
+
+function set_cruise_status_list($events, $entries, $action = array())
+    // set cruise status for each event (for current sailor)
+{
+    $event_arr = array();
+
+    foreach ($events as $eventid => $event) {
+        $entry_status = "";
+
+        if ($entries[$eventid]['declare'] == "declare") {
+            $entry_status = "returned";
+        } elseif ($entries[$eventid]['updated']) {
+            $entry_status = "updated";
+        } elseif ($entries[$eventid]['entered']) {
+            $entry_status = "registered";
+        }
+
+        $entry_alert = "";
+        if (!empty($action)) {
+            if ($action['event'] == $eventid AND $action['status'] == "err") {
+                $entry_alert = "FAILED - {$action['msg']}";
+            }
+        }
+
+        $event_arr[$eventid] = array(
+            "name" => $event['event_name'],
+            "time" => $event['event_start'],
+            "signon" => $event['event_entry'],
+            "cruise-type" => $event['event_type'],
+            "event-status" => $event['event_status'],
+            "entry-status" => $entry_status,
+            "entry-updated" => $entries[$eventid]['updated'],
+            "entry-alert" => $entry_alert
+        );
+    }
+    return $event_arr;
+}
+
+
+function process_cruise_signon($cruise_type, $sailor)
+    // processes action of register for sailor on a cruise
+{
+    global $db_o;
+    global $date;
+
+    // add to entry table
+    $cruise_o = new CRUISE($db_o, $date);
+    $status = $cruise_o->add_cruise($cruise_type, $sailor);
+
+    if ($status == "update" OR $status == "register") {
+        u_writelog("cruise: $cruise_type $date| {$_SESSION['sailor']['classname']} 
+        | {$_SESSION['sailor']['sailnum']} | {$_SESSION['sailor']['helmname']}  
+        | {$_SESSION['sailor']['crewname']} | $status", "");
+        $success = $status;
+    } else {
+        u_writelog("cruise: $cruise_type $date | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} | registration failed [reason: $status]", "");
+        $success = false;
+    }
+
+    return $success;
+}
+
+
+function process_cruise_declare($cruise_type, $eventid)
+    // processes action of return for sailor on a cruise
+{
+    global $db_o;
+    global $date;
+
+    // update entry array
+    $_SESSION['entries'][$eventid]['declare'] =  "declare";
+
+    // add record to entry table to record declaration - replacing original record
+    $entry_o = new CRUISE($db_o, $date);
+    $status = $entry_o->end_cruise($_SESSION['sailor']['id'], $cruise_type);
+    if ($status) {
+        // create log record
+        u_writelog("cruise: $cruise_type $date | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | return declared", "");
+        $success = "declare";
+    } else {
+        // create log record of failure
+        u_writelog("cruise: $cruise_type $date | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | return declaration FAILED", "");
+        $success = false;
+    }
+
+    return $success;
 }

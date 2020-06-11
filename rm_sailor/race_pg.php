@@ -59,51 +59,27 @@ if ($_SESSION['events']['numevents'] > 0)
     $signon_entry_list = set_event_status_list($_SESSION['events']['details'], $_SESSION['entries'], $action);
 
     $_SESSION['pagefields']['body'] = $tmpl_o->get_template("race_control", $race_fields,
-        array('state'=>"submitentry", 'event-list'=>$signon_entry_list));
+        array('state'=>"submitentry", 'event-list'=>$signon_entry_list, 'opt_cfg' =>$_SESSION['option_cfg'] ));
 }
 
 else  // no events today - nothing to deal with
 {
     $event_list = $tmpl_o->get_template("no_events", array(), $_SESSION['events']);
     $_SESSION['pagefields']['body'] = $tmpl_o->get_template("race_control", $race_fields,
-                                      array('state' => "noevents", 'event-list' => $event_list));
+             array('state' => "noevents", 'event-list' => $event_list) );
 }
 
 // assemble and render page
-$_SESSION['pagefields']['header-center'] = $_SESSION['pagename']['race'];
-$_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(), array("options" => set_page_options("racee")));
+$_SESSION['pagefields']['header-center'] = $_SESSION['option_cfg'][$page]['pagename'];
+$_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(),
+    array("page" => $page, "options" => set_page_options($page)));
 
 // add automated timed return to search page if usage and delay are configured
 $_SESSION['pagefields']['body'].= add_auto_continue($_SESSION['usage'], $_SESSION['sailor_race_sleep_delay'],
-    $external, "boatsearch_pg.php");
+    $external, "search_pg.php");
 
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();
 
-//$_SESSION['pagefields']['body'].= str_repeat("\n",4096);
-//$delay = 0;
-//if ($sleep AND $_SESSION['usage'] = "multi")  // not arriving from search function (pickboat)
-//{
-//    $delay = $_SESSION['sailor_race_sleep_delay'] * 3000;
-//}
-//elseif ($_SESSION['usage'] = "multi")   // arriving after using function on race page
-//{
-//    $delay = $_SESSION['sailor_race_sleep_delay'] * 1000;
-//}
-//
-//if ($delay > 0)
-//{
-//    $_SESSION['pagefields']['body'].= <<<EOT
-//    <script>
-//        $(document).ready(function () {
-//        // Handler for .ready() called.
-//        window.setTimeout(function () {
-//            location.replace('boatsearch_pg.php');
-//        }, $delay);
-//    });
-//    </script>
-//EOT;
-//}
-// add automated timed return to search page if usage and delay are configured
 
 

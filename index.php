@@ -90,7 +90,7 @@ echo <<<EOT
 <div class="container">
   <div class="row">
     <div class="col-md-3">
-      <a class="btn btn-primary btn-block" href="rm_sailor/rm_sailor.php?mode=race" target="_blank" role="button">
+      <a class="btn btn-primary btn-block" href="./rm_sailor/index.php" target="_blank" role="button">
          <span style="font-size: 1.7em;">{$lang['menu']['sailor']}</span>
       </a>
       <p style="margin-top: 1.0em;">{$lang['msg']['sailor-text']}</p>

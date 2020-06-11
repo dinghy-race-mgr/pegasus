@@ -8,6 +8,7 @@ $page       = "change";
 $scriptname = basename(__FILE__);
 $date       = date("Y-m-d");
 require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("./include/rm_sailor_lib.php");
 
 u_initpagestart(0,"change_pg",false);   // starts session and sets error reporting
 
@@ -44,9 +45,9 @@ if ($_SESSION['sailor']['crew'] == 1) {
 }
 
 // assemble and render page
-$_SESSION['pagefields']['header-center'] = $_SESSION['pagename']['change'];
+$_SESSION['pagefields']['header-center'] = $_SESSION['option_cfg'][$page]['pagename'];
 $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(),
-                                                                array("options" => set_page_options("change")));
+                                                                array("page" => $page, "options" => set_page_options($page)));
 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("change_fm", $change_fields, $change_params);
 
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);

@@ -183,18 +183,26 @@ function u_conv_result($code, $points)
 
 function u_numordinal ($number)
 {
-     if ($_SESSION['lang']=="en")
+     if (key_exists("lang", $_SESSION))
      {
-        $ends = array('th','st','nd','rd','th','th','th','th','th','th');
-     }
-     elseif($_SESSION['lang']=="fr")
-     {
-        $ends = array('eme','er','eme','eme','eme','eme','eme','eme','eme','eme');        
+         if ($_SESSION['lang']=="en")
+         {
+             $ends = array('th','st','nd','rd','th','th','th','th','th','th');
+         }
+         elseif($_SESSION['lang']=="fr")
+         {
+             $ends = array('eme','er','eme','eme','eme','eme','eme','eme','eme','eme');
+         }
+         else
+         {
+             $ends = array('th','st','nd','rd','th','th','th','th','th','th');
+         }
      }
      else
      {
-        $ends = array('th','st','nd','rd','th','th','th','th','th','th');
+         $ends = array('th','st','nd','rd','th','th','th','th','th','th');
      }
+
      if (($number %100) >= 11 && ($number%100) <= 13)
      {
         $abbreviation = $number.$ends[0];
@@ -971,7 +979,9 @@ function u_selectcodelist($codelist, $selected="")
 function u_selectlist($list, $selected="", $top = array())
     // added top to allow for 'other' type options
 {
-    $bufr = "<option value=\"\" >please select ...</option>";
+    $bufr = <<<EOT
+        <option value="" disabled selected hidden>Please select &hellip;</option>
+EOT;
 
     if (!empty($top))
     {
@@ -984,7 +994,9 @@ function u_selectlist($list, $selected="", $top = array())
     foreach ($list as $key=>$opt)
     {
         ($opt == $selected) ? $selectstr = "selected" : $selectstr = "";
-        $bufr.= "<option value=\"$key\" $selectstr>$opt</option>";
+        $bufr.= <<<EOT
+            <option value="$key" $selectstr>$opt</option>"
+EOT;
     }
     return $bufr;
 }

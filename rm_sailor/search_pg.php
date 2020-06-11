@@ -13,7 +13,7 @@
  *   
  */
 $loc        = "..";       
-$page       = "boatsearch";
+$page       = "search";
 $scriptname = basename(__FILE__);
 $date       = date("Y-m-d");
 require_once ("{$loc}/common/lib/util_lib.php");
@@ -22,10 +22,17 @@ require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("./include/rm_sailor_lib.php");
 
-u_initpagestart(0,"boatsearch_pg",false);   // starts session and sets error reporting
+u_initpagestart(0,"search_pg",false);   // starts session and sets error reporting
 
 $tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php", "../templates/sailor/search_tm.php",
                               "../templates/sailor/cruise_tm.php"));
+
+// check we are still on the same day as the application started - if not restart
+if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
+if (date('Ymd', $_SESSION['app_start']) !== date('Ymd')) {
+    $i++;
+    header("Location: rm_sailor.php?mode={$_SESSION['mode']}&demo={$_SESSION['demo']}&usage={$_SESSION['usage']}&debug={$_SESSION['debug']}");
+}
 
 // clear stored details
 unset($_SESSION['entry']);
@@ -61,20 +68,17 @@ if ($_SESSION['events']['numevents'] == 0) {
     $events_bufr = $tmpl_o->get_template("error_msg",
         array("error" => "Race Configuration Error",
             "detail" => "The system configuration for today's race(s) is invalid",
-            "action" => "Please contact the race Officer to enter the race"), $_SESSION['events']);
+            "action" => "Please contact the race Officer to enter the race",
+            "url" => "index.php"), array("restart"=>true)
+    );
 }
 
 //prepare and render page
-$_SESSION['pagefields']['header-center'] = $_SESSION['pagename']['search'];
+$_SESSION['pagefields']['header-center'] = $_SESSION['option_cfg'][$page]['pagename'];
 $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(),
-    array("options" => set_page_options("boatsearch")));
+    array("page" => $page, "options" => set_page_options($page)));
 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boatsearch_fm", array("events_bufr"=>$events_bufr));
 
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields'] );
 exit();
-    
-// set focus on search field
-//echo <<<EOT
-//    <script>$("#sailnum").focus();</script>
-//EOT;
 

@@ -24,6 +24,10 @@ body {
   line-height: normal;
 }
 
+/* dummy badge styles (pseudo bootstrap 4)*/
+.badge-info {font-weight: normal !important; color: white !important; background-color: #3498DB !important;}
+.badge-warning {font-weight: normal !important; color: white  !important; background-color: #F39C12 !important;}
+
 /* typographic styles */
 .rm-page { color: lightgrey; }
 .rm-pagebold { color: lightgrey; font-size:2.0em; font-weight: bold; }
@@ -37,7 +41,7 @@ body {
 .rm-text-highlight {color: yellow; }
 .rm-text-bold {font-weight: bold;}
 .rm-text-capitalise {text-transform: capitalize;}
-.rm-text-trunc {white-space: nowrap !important; text-overflow: ellipsis  !important; overflow: hidden  !important}
+.rm-text-trunc {white-space: nowrap !important; text-overflow: ellipsis  !important; overflow: hidden !important}
 
 
 .rm-table-col-title {font-weight:bold; font-size: 1.2em; color: yellow; text-transform: capitalize;}
@@ -52,7 +56,7 @@ body {
 .margin-top-05 { margin-top: 0.5em; }
 .margin-top-10 { margin-top: 1.0em; }
 .margin-top-20 { margin-top: 2.0em; }
-.margin-top-40 { margin-top: 4.0em; }
+.margin-top-30 { margin-top: 3.0em; }
 .margin-bot-40 { margin-bottom: 4.0em; }
 .margin-left-40 { margin-left: 40px; }
 
@@ -60,10 +64,10 @@ body {
 
 .rm-form-style { font-size: 1.5em !important; }
 .rm_form-label { font-size: 1.5em !important; padding-top: 10px !important;}
-.rm-form-field { font-weight: bold;}
+.rm-form-field { font-size: 1.5em !important; font-weight: bold;}
 
-.rm-form-input-lg { font-size: 2.5em !important;  }
-.rm-form-input-md { font-size: 1.5em !important;  }
+.rm-form-input-lg { font-size: 2.0em !important;  }
+.rm-form-input-md { font-size: 1.3em !important;  }
 
 .divider-line { height: 10px; border: none;}
 
@@ -90,34 +94,34 @@ input[type=radio] {
 /* placeholder styling */
 .placeholder-lg::-webkit-input-placeholder {
   /* WebKit, Blink, Edge */
-  color: darkgray; font-style: italic; font-size: 0.8em;
+  color: darkgray; font-style: italic; font-size: 1.2em;
 }
 .placeholder-lg:-moz-placeholder {
   /* Mozilla Firefox 4 to 18 */
-  color: darkgray; opacity: 1; font-style: italic; font-size: 0.8em;
+  color: darkgray; opacity: 1; font-style: italic; font-size: 1.2em;
 }
 .placeholder-lg::-moz-placeholder {
   /* Mozilla Firefox 19+ */
-  color: darkgray; opacity: 1; font-style: italic; font-size: 0.8em;
+  color: darkgray; opacity: 1; font-style: italic; font-size: 1.2em;
 }
 .placeholder-lg:-ms-input-placeholder {
   /* Internet Explorer 10-11 */
-  color: darkgray; ; font-style: italic; font-size: 0.8em;
+  color: darkgray; ; font-style: italic; font-size: 1.2em;
 }
 
 .placeholder-md::-webkit-input-placeholder {
   /* WebKit, Blink, Edge */
-  color: darkgray; font-style: italic; font-size: 1.2em;
+  color: darkgray; font-style: italic; font-size: 0.8em;
 }
 .placeholder-md:-moz-placeholder {
   /* Mozilla Firefox 4 to 18 */
-  color: darkgray; opacity: 1; font-style: italic; font-size: 1.2em;
+  color: darkgray; opacity: 1; font-style: italic; font-size: 0.8em;
 }
 .placeholder-md::-moz-placeholder {
   /* Mozilla Firefox 19+ */
-  color: darkgray; opacity: 1; font-style: italic; font-size: 1.2em;
+  color: darkgray; opacity: 1; font-style: italic; font-size: 0.8em;
 }
 .placeholder-md:-ms-input-placeholder {
   /* Internet Explorer 10-11 */
-  color: darkgray; ; font-style: italic; font-size: 1.2em;
+  color: darkgray; ; font-style: italic; font-size: 0.8em;
 }

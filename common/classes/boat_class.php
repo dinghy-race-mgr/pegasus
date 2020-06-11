@@ -66,14 +66,14 @@ class BOAT
     
     public function boat_getclasslist($popular=false)
     {
-        $popular ? $order = "popular DESC, classname," : $order = "classname";
+        $popular ? $order = "popular DESC, classname ASC" : $order = "classname ASC";
 
         $query = "SELECT id, classname FROM t_class WHERE active = 1 ORDER BY $order";
         $detail = $this->db->db_get_rows( $query );
 
         if (empty($detail))
         {
-            return 0;
+            return array();
         }
         else
         {

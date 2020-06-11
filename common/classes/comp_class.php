@@ -124,23 +124,17 @@ class COMPETITOR
                {
                    $class = $word;
                    continue;
-               }
-               else
-               {
+               } else {
                    $sailnum = $word;
                    continue;
                }
-           }
-           else
-           {
+           } else {
                $result = $this->db->db_get_rows("SELECT id FROM t_class WHERE classname LIKE '$word%'");
                if ($result)               // string is a known class name
                {
                    $class = $word;
                    continue;
-               }
-               else
-               {
+               } else {
                    $result = $this->db->db_get_rows("SELECT id FROM t_competitor WHERE helm LIKE '%$word%'");
                    if ($result)           // string is known name in table containing helm's names
                    {
@@ -158,33 +152,29 @@ class COMPETITOR
 
        // construct where clause for query
        $clause = array();
-       if ($class)
-       {
+       if ($class) {
            $clause[] = " classname LIKE '$class%' ";
        }
-       if ($sailnum)
-       {
+       if ($sailnum) {
            $clause[] = " sailnum LIKE '$sailnum' or boatnum LIKE '$sailnum' ";
        }
-       if ($helm)
-       {
+       if ($helm) {
            $clause[] = " helm LIKE '%$helm%' ";
        }
        $where = implode(" AND ", $clause);
 
 
-       if (empty($where))
-       {
+       if (empty($where)) {
            $result = array();
-       }
-       else
-       {
+       } else {
            $query = "SELECT a.id, classname, sailnum, helm, a.crew
                   FROM `t_competitor` as a
                   JOIN t_class as b ON a.classid=b.id
                   WHERE 1=0 OR ( ($where) AND a.active = 1)
                   ORDER BY  classname, sailnum * 1";
-           //u_writedbg($query, __FILE__, __FUNCTION__, __LINE__, false);
+//           echo "<pre>".$query."</pre>";
+//           exit();
+//           u_writedbg($query, __FILE__, __FUNCTION__, __LINE__, false);
            $result = $this->db->db_get_rows($query);
        }
 
@@ -222,6 +212,7 @@ class COMPETITOR
                   FROM `t_competitor` as a
                   JOIN `t_class` as b ON a.classid=b.id
                   WHERE $where AND a.`active` = 1";
+        // echo "<pre>".$query."</pre>";
         $detail = $this->db->db_get_rows($query);
         if (empty($detail)) {
             $detail = false;

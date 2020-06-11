@@ -34,8 +34,6 @@ $addboatfields = array(
     "helm"    => ucwords($_REQUEST['helm'])
 );
 
-// do field validation - none identified at the moment
-
 // add boat to competitor table - checks for duplicate
 $status = $comp_o->comp_addcompetitor($_REQUEST);
 
@@ -61,7 +59,8 @@ if ($status['code'] == 0) {      // report success
 }
 
 // assemble and render page (header assigned in addboat_pg.php
-$_SESSION['pagefields']['body'] = $tmpl_o->get_template($template, $addboatfields, array("mode" => $_SESSION['mode']));
+$_SESSION['pagefields']['body'] = $tmpl_o->get_template($template, $addboatfields,
+                                           array("mode" => $_SESSION['mode'], "restart" => true));
 
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();

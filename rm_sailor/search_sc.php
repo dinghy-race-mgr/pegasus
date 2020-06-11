@@ -29,11 +29,11 @@ $db_o = new DB();
 $comp_o = new COMPETITOR($db_o); 
 
 // check for match on quey string (sailnumber, surname or class)
-$searchstr = trim($_REQUEST['sailnum']);
+$searchstr = trim($_REQUEST['searchstr']);
 $_SESSION['competitors'] = $comp_o->comp_searchcompetitor($searchstr);
 
 // go to selection of boat
-header("Location: pickboat_pg.php?sailnum=$searchstr");
+header("Location: pickboat_pg.php?searchstr=$searchstr");
 exit();
 
 

@@ -286,6 +286,7 @@ class DB
         }
 
         if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
+        //echo "<pre>".$query."</pre>";
         $update = $this->link->query( $query );
         $num_rows = $this->link->affected_rows;         // might be zero if no records changed
 

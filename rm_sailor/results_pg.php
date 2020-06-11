@@ -71,9 +71,10 @@ if ($eventid) {
             $error_fields = array(
                 "error"=>"The results page mode is not valid |{value}|",
                 "detail"=>"value was - $display",
-                "action" =>"Please report this to your system administrator"
+                "action" =>"Please report this to your system administrator",
+                "url" => "index.php"
             );
-            $_SESSION['pagefields']['body'] = $tmpl_o->get_template("error_msg", $error_fields);
+            $_SESSION['pagefields']['body'] = $tmpl_o->get_template("error_msg", $error_fields, array("restart"=>true));
         }
 
         if ($no_results) {
@@ -84,10 +85,14 @@ if ($eventid) {
     $error_fields = array(
         "error"=>"No event specified for the results",
         "detail"=>"",
-        "action" =>"Please report this to your system administrator"
+        "action" =>"Please report this to your system administrator",
+        "url" => "index.php"
     );
-    $_SESSION['pagefields']['body'] = $tmpl_o->get_template("error_msg", $error_fields);
+    $_SESSION['pagefields']['body'] = $tmpl_o->get_template("error_msg", $error_fields, array("restart"=>true));
 }
 
+$_SESSION['pagefields']['header-center'] = $_SESSION['option_cfg'][$page]['pagename'];
+$_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(),
+    array("page" => $page, "options" => set_page_options($page)));
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();

@@ -50,7 +50,7 @@ if (in_array($opt, $valid_opt) AND $cruise_type) {
     if ($opt == "register")   // register start of cruise
     {
         // u_writedbg("REGISTER\n", __FILE__, __FUNCTION__, __LINE__, false);
-        $success = process_signon($cruise_type, $_SESSION['sailor']);
+        $success = process_cruise_signon($cruise_type, $_SESSION['sailor']);
         if ($success) {
             $status = "ok";
             $action = "update";
@@ -58,7 +58,7 @@ if (in_array($opt, $valid_opt) AND $cruise_type) {
     } elseif ($opt == "declare")  // record return from cruise
     {
         // u_writedbg("DECLARE\n", __FILE__, __FUNCTION__, __LINE__, false);
-        $success = process_declare($cruise_type, $eventid);
+        $success = process_cruise_declare($cruise_type, $eventid);
         if ($success) {
             $status = "ok";
         }
@@ -74,49 +74,3 @@ header("Location: cruise_pg.php?event=$eventid&action=$action&status=$status&msg
 exit();
 
 
-function process_signon($cruise_type, $sailor)
-{
-    global $db_o;
-    global $date;
-
-    // add to entry table
-    $cruise_o = new CRUISE($db_o, $date);
-    $status = $cruise_o->add_cruise($cruise_type, $sailor);
-
-    if ($status == "update" OR $status == "register") {
-        u_writelog("cruise: $cruise_type $date| {$_SESSION['sailor']['classname']} 
-        | {$_SESSION['sailor']['sailnum']} | {$_SESSION['sailor']['helmname']}  
-        | {$_SESSION['sailor']['crewname']} | $status", "");
-        $success = $status;
-    } else {
-        u_writelog("cruise: $cruise_type $date | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} | registration failed [reason: $status]", "");
-        $success = false;
-    }
-
-    return $success;
-}
-
-
-function process_declare($cruise_type, $eventid)
-{
-    global $db_o;
-    global $date;
-
-    // update entry array
-    $_SESSION['entries'][$eventid]['declare'] =  "declare";
-
-    // add record to entry table to record declaration - replacing original record
-    $entry_o = new CRUISE($db_o, $date);
-    $status = $entry_o->end_cruise($_SESSION['sailor']['id'], $cruise_type);
-    if ($status) {
-        // create log record
-        u_writelog("cruise: $cruise_type $date | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | return declared", "");
-        $success = "declare";
-    } else {
-        // create log record of failure
-        u_writelog("cruise: $cruise_type $date | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | return declaration FAILED", "");
-        $success = false;
-    }
-
-    return $success;
-}

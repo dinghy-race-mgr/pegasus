@@ -57,14 +57,14 @@ $addboatfields = array(
 
 // create class and skill drop downs
 $class_o = new BOAT($db_o);
-$class_list = $class_o->boat_getclasslist();
-$class_lut  = u_selectlist($class_list, "", array("unknown" => "unknown"));
+$class_list = $class_o->boat_getclasslist(true);
+$class_lut  = u_selectlist($class_list, "");
 $skill_lut = u_selectcodelist($db_o->db_getsystemcodes("competitor_skill"), "");
 
 // assemble and render page
-$_SESSION['pagefields']['header-center'] = $_SESSION['pagename']['add'];
+$_SESSION['pagefields']['header-center'] = $_SESSION['option_cfg'][$page]['pagename'];
 $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(),
-    array("options" => set_page_options("addboat")));
+    array("page" => $page, "options" => set_page_options($page)));
 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boat_fm", $addboatfields,
     array("mode" => $_SESSION['mode'], "action" => "add", "fields" => $field_set, "class_list" => $class_lut, "skill_list" => $skill_lut));
 

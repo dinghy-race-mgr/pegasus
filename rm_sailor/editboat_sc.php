@@ -34,6 +34,7 @@ $editboatfields = array(
 // update competitor record in competitor table - checks for duplicate
 $status = $comp_o->comp_updatecompetitor($_SESSION['sailor']['id'], $_REQUEST);
 
+$status = "failed";
 // create confirmation response
 if ($status != "failed") {         // report success
     // update sailor session details
@@ -57,6 +58,6 @@ else                 // report failure
 }
 
 // assemble and render page (header set in editboat_pg)
-$_SESSION['pagefields']['body'] = $tmpl_o->get_template($template, $editboatfields, array());
+$_SESSION['pagefields']['body'] = $tmpl_o->get_template($template, $editboatfields, array("restart" => true));
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();

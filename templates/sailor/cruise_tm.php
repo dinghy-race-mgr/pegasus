@@ -9,14 +9,26 @@ function cruise_control($params = array())
     $bufr = "";
     $instruction_bufr = "<br>";
 
-    if ($params['state'] == "submitentry") {
-        $event_list = "";
-        foreach ($params['event-list'] as $eventid => $row)    // loop over events
-        {
-            $cruise_type = $row['cruise-type'];
+    $event_list = "";
+    $end_message = "";
+    foreach ($params['event-list'] as $eventid => $row)    // loop over events
+    {
+        $cruise_type = $row['cruise-type'];
 
-            // event identity
-            //$event_time = $row['time'] . " - " . $row['name'];   FIXME - is this required
+        if ($row['event-status'] == "cancelled") {
+
+            $event_list .= <<<EOT
+        
+            <div class="row margin-top-20">
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-lg-offset-1">
+                    <span class="rm-text-sm rm-text-trunc text-success">{$row['time']}<br>{$row['name']}</span>
+                </div>
+                <div class="col-xs-9 col-sm-9 col-md-9 col-lg-7">
+                    <span class="rm-text-sm rm-text-trunc text-warning">this event is CANCELLED</span>
+                </div>
+            </div>
+EOT;
+        } else {
 
             // signon button
             $signon_btn = signon_btn($eventid, $row['entry-status'], $cruise_type);
@@ -34,62 +46,59 @@ function cruise_control($params = array())
             $event_list .= <<<EOT
             <div class="row margin-top-20">
                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 col-lg-offset-1">
-                  <span class="rm-text-sm rm-text-trunc text-success">{$row['time']}<br>{$row['name']}</span>
+                    <span class="rm-text-sm rm-text-trunc">{$row['time']}<br>{$row['name']}</span>
                 </div>
                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-2">
-                  <span class="rm-text-sm rm-text-trunc text-success">$signon_btn</span>
+                    <span class="rm-text-sm text-success">$signon_btn</span>
                 </div>
 EOT;
             if ($params['declare_opt']) {
                 $event_list .= <<<EOT
                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-2">
-                  <span class="rm-text-sm rm-text-trunc text-success">$declare_btn</span>
+                    <span class="rm-text-sm text-success">$declare_btn</span>
                 </div>
 EOT;
             }
 
             $event_list .= <<<EOT
                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                      <span class="rm-text-sm rm-text-trunc text-warning">$entry_status_txt</span>
+                    <span class="rm-text-sm rm-text-trunc text-warning">$entry_status_txt</span>
                 </div>
             </div>
 EOT;
-
-            // composite template
-            $bufr.= <<<EOT
-            <div class="row margin-top-10">
-                <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">   
-                {boat-label}
-                </div>
-            </div>
-            
-            <div class="row margin-top-10">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">   
-                    $instruction_bufr  
-                    <form id="confirmform" action="course_sc.php" method="post" role="submit" autocomplete="off">      
-                        $event_list
-                    </form>
-                    <hr>
-                    <p class="rm-text-sm text-warning ">$end_message</p>
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
-                    <a href="boatsearch_pg.php" class="btn btn-info btn-md rm-text-bg pull-right" role="button" >
-                        <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Done ...
-                    </a>
-                </div>
-            </div>
-EOT;
-
-            return $bufr;
         }
-    } else {
-        // deal with unknown state - error   FIXME go to standard error page with a restart button
-        $bufr .= "error";
-        return $bufr;
     }
+
+    // build complete template
+    $bufr.= <<<EOT
+    <div class="row margin-top-10">
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">   
+        {boat-label}
+        </div>
+    </div>
+    
+    <div class="row margin-top-10">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">   
+            $instruction_bufr  
+            <form id="confirmform" action="course_sc.php" method="post" role="submit" autocomplete="off">      
+                $event_list
+            </form>
+            <hr>
+            <p class="rm-text-sm text-warning ">$end_message</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+            <a href="search_pg.php" class="btn btn-info btn-sm rm-text-sm" role="button" >
+                <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Done ...
+            </a>
+        </div>
+    </div>
+EOT;
+
+    return $bufr;
+
 }
 
 

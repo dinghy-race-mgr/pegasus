@@ -61,7 +61,7 @@ class ENTRY
     }
 
 
-    public function add_signon($competitorid, $allocate, $helm, $crew, $sailnum)
+    public function add_signon($competitorid, $allocate, $helm, $crew, $sailnum, $source="")
         /*
          * Adds entry record to t_entry
          * $crew and/or $sailnum only set if temporary change required
@@ -77,7 +77,7 @@ class ENTRY
         }
         else
         {
-            if ($allocate)                                         // - check if the competitor is eligible for this race
+            if ($allocate)                                         // competitor is eligible for this race
             {
                 $this->chk_signon($this->eventid, $competitorid) ? $action_type = "update" : $action_type = "enter";
 
@@ -87,9 +87,10 @@ class ENTRY
                     "eventid"        => $this->eventid,
                     "competitorid"   => $competitorid,
                     "memberid"       => "",               // future use
-                    "change_helm"    => $helm,            // only required for temp change
-                    "change_crew"    => $crew,            // only required for temp change
-                    "change_sailnum" => $sailnum,         // only required for temp change
+                    "chg-helm"       => $helm,            // only required for temp change
+                    "chg-crew"       => $crew,            // only required for temp change
+                    "chg-sailnum"    => $sailnum,         // only required for temp change
+                    "updby"          => $source
                 );
                 $insert_rs = $this->db->db_insert("t_entry", $fields);
                 if ($insert_rs) { $status = $action_type; }
@@ -128,22 +129,23 @@ class ENTRY
         }
     }
 
-    public function get_signon_for_events($eventlist)
-    {
-        $detail = array();
-        $query = "SELECT * FROM `t_entry` WHERE eventid = '$eventid' AND competitorid = '$competitorid' ORDER BY upddate ASC";
-        $detail = $this->db->db_get_rows( $query );
-        if (empty($detail))
-        {
-            return false;
-        }
-        else
-        {
-            return $detail;
-        }
-    }
+//    public function get_signon_for_events($eventlist)
+//    FIXME - WHAT IS THIS DOING
+//    {
+//        $detail = array();
+//        $query = "SELECT * FROM `t_entry` WHERE eventid = '$eventid' AND competitorid = '$competitorid' ORDER BY upddate ASC";
+//        $detail = $this->db->db_get_rows( $query );
+//        if (empty($detail))
+//        {
+//            return false;
+//        }
+//        else
+//        {
+//            return $detail;
+//        }
+//    }
 
-    public function add_declare($competitorid)
+    public function add_declare($competitorid, $source="")
     {
         $status = false;
         $fields = array(
@@ -152,7 +154,8 @@ class ENTRY
             "eventid"        => $this->eventid,
             "competitorid"   => $competitorid,
             "memberid"       => "",               // future use
-            "protest"        => ""
+            "protest"        => "",
+            "updby"          => $source
         );
         $insert_rs = $this->db->db_insert("t_entry", $fields);
         if ($insert_rs) { $status = "declare"; }
@@ -160,19 +163,20 @@ class ENTRY
         return $status;
     }
 
-    public function add_retire($competitorid, $mode = "retire")
+    public function add_retire($competitorid, $source = "")
     {
         $status = false;
         $fields = array(
-            "action"         => $mode,
+            "action"         => "retire",
             "status"         => "N",
             "eventid"        => $this->eventid,
             "competitorid"   => $competitorid,
             "memberid"       => "",               // future use
-            "protest"        => ""
+            "protest"        => "",
+            "updby"          => $source
         );
         $insert_rs = $this->db->db_insert("t_entry", $fields);
-        if ($insert_rs) { $status = $mode; }
+        if ($insert_rs) { $status = "retire"; }
 
         return $status;
     }
