@@ -11,7 +11,30 @@ function race_control($params = array())
     $instruction_bufr = "";
 
     if ($params['state'] == "noevents") {
-        $event_bufr .= $params['event-list]'];
+        $event_bufr .= $params['event-list'];
+        $bufr.= <<<EOT
+            <div class="row margin-top-10">
+                <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">   
+                    {boat-label}
+                </div>
+            </div>
+            
+            <div class="row margin-top-10">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">   
+                    $instruction_bufr        
+                    $event_bufr
+                </div>
+            </div>
+            
+            <hr>
+            <div class="margin-top-40">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                    <a href="search_pg.php" class="btn btn-info btn-sm rm-text-sm" role="button" >
+                        <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Done ...
+                    </a>
+                </div>
+            </div>
+EOT;
 
     } elseif ($params['state'] == "submitentry") {
         $event_list = "";
@@ -134,7 +157,7 @@ EOT;
 
     } else {
         // deal with unknown state - error
-        $bufr = <<<EOT
+        $bufr.= <<<EOT
         <div class="row margin-top-40">
             <div class="col-xs-8 col-xs-offset-2 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">   
                 <div class="alert alert-danger rm-text-md" role="alert"> 
@@ -161,13 +184,15 @@ function entry_status_txt($en_state, $en_alert, $start, $update_num)
 {
     if (empty($en_alert)) {
         $txt = $en_state;
-        $start_txt = u_numordinal($start)." start" ;
-        $update_txt = "";
-        if ($update_num > 0) { $update_txt = "[$update_num]"; }
+        empty($start) ? $start_txt = "" : $start_txt = u_numordinal($start)." start" ;
+
         if ($en_state == "entered") {
             $txt .= ": $start_txt ";
         } elseif ($en_state == "updated") {
+            $update_num > 0 ? $update_txt = "[$update_num]" : $update_txt = "";
             $txt .= " entry $update_txt: $start_txt ";
+        } elseif ($en_state == "not eligible" or $en_state == "class not recognised") {
+            $txt = "<span class='text-danger'>$txt</span>";
         }
     } else {
         $txt = $en_alert;

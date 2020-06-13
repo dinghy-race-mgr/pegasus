@@ -592,7 +592,9 @@ function get_cruise_entry_data($sailorid, $events)
             "start-time" => $event['event_start'],
             "entered" => false,
             "updated" => false,
-            "declare" => false
+            "declare" => false,
+            "start-cruise" => "",
+            "end-cruise" => "",
         );
 
         $cruise = $cruise_o->get_cruise($event['event_type'], $sailorid);
@@ -605,6 +607,8 @@ function get_cruise_entry_data($sailorid, $events)
             } elseif ($cruise['action'] == "declare") {
                 $data[$eventid]['declare'] = true;
             }
+            $data[$eventid]['start-cruise'] = date("H:i", strtotime($cruise['time_in']));
+            $data[$eventid]['end-cruise'] = date("H:i", strtotime($cruise['time_out']));
         }
     }
 
@@ -642,8 +646,11 @@ function set_cruise_status_list($events, $entries, $action = array())
             "event-status" => $event['event_status'],
             "entry-status" => $entry_status,
             "entry-updated" => $entries[$eventid]['updated'],
-            "entry-alert" => $entry_alert
+            "entry-alert" => $entry_alert,
+            "time_in" => $entries[$eventid]['start-cruise'],
+            "time_out" => $entries[$eventid]['end-cruise']
         );
+
     }
     return $event_arr;
 }

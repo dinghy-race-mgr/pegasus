@@ -286,9 +286,10 @@ class DB
         }
 
         if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
-        //echo "<pre>".$query."</pre>";
+
         $update = $this->link->query( $query );
         $num_rows = $this->link->affected_rows;         // might be zero if no records changed
+        // echo "<pre>".$query."<br>".$num_rows."</pre>";
 
         if( $this->link->error )
         {
@@ -306,9 +307,9 @@ class DB
         {
             foreach( $tables as $table )
             {
-                $truncate = "TRUNCATE TABLE `".trim($table)."`";
+                $query = "TRUNCATE TABLE `".trim($table)."`";
                 if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
-                $this->link->query( $truncate );
+                $this->link->query( $query );
                 if( !$this->link->error )
                 {
                     $truncated++;
@@ -540,4 +541,4 @@ class DB
     
 }
 
-?>
+

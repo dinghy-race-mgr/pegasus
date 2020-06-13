@@ -37,7 +37,7 @@ EOT;
             $declare_btn = declare_btn($params['declare_opt'], $eventid, $row['entry-status'], $cruise_type);
 
             // entry status
-            $entry_status_txt = entry_status_txt($row['entry-status'], $row['entry-alert']);
+            $entry_status_txt = entry_status_txt($row['entry-status'], $row['entry-alert'], $row['time_in'], $row['time_out']);
 
             // end message
             $end_message = end_message($row['entry-status']);
@@ -104,25 +104,32 @@ EOT;
 
 function end_message($entry_status)
 {
-
     if ($entry_status == "registered") {
-        $end_message = "Be careful - have a good sail";
+        $txt = "Be careful - have a good sail";
     } elseif ($entry_status == "updated") {
-        $end_message = "Thanks for the update - have a good sail";
+        $txt = "Thanks for the update - have a good sail";
     } elseif ($entry_status == "returned") {
-        $end_message = "All done thank you";
+        $txt = "All done thank you";
     } else {
-        $end_message = "";
+        $txt = "";
     }
 
-    return $end_message;
+    return $txt;
 }
 
 
-function entry_status_txt($entry_status, $entry_alert)
+function entry_status_txt($entry_status, $entry_alert, $time_in, $time_out)
 {
     if (empty($entry_alert)) {
-        $txt = $entry_status;
+        if ($entry_status == "registered") {
+            $txt = "Registered &nbsp; [ $time_in ]";
+        } elseif ($entry_status == "updated") {
+            $txt = "Details Updated &nbsp; [ $time_in ]";
+        } elseif ($entry_status == "returned") {
+            $txt = "Back Ashore &nbsp; [ $time_out ]";
+        } else {
+            $txt = "";
+        }
     } else {
         $txt = $entry_alert;
     }

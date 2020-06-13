@@ -293,9 +293,10 @@ class COMPETITOR
     }
 
 
-    public function comp_updatecompetitor($id, $fields)
+    public function comp_updatecompetitor($id, $fields, $updater = "")
     {
         $status = false;
+        empty("$updater") ? $fields['updby'] = "unknown" : $fields['updby'] = $updater;
 
         if (array_key_exists('club', $fields))
         {

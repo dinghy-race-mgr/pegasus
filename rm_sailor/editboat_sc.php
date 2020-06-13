@@ -32,9 +32,8 @@ $editboatfields = array(
 );
 
 // update competitor record in competitor table - checks for duplicate
-$status = $comp_o->comp_updatecompetitor($_SESSION['sailor']['id'], $_REQUEST);
+$status = $comp_o->comp_updatecompetitor($_SESSION['sailor']['id'], $_REQUEST, "rm_sailor");
 
-$status = "failed";
 // create confirmation response
 if ($status != "failed") {         // report success
     // update sailor session details
