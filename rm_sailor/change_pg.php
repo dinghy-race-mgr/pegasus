@@ -33,6 +33,7 @@ $event_str = "";
 foreach ($_SESSION['events']['details'] as $event) {
     $event_str .= $event['event_type'] . "|";
 }
+$event_str = rtrim($event_str, "|");
 
 $change_params = array(
     "mode"    => $_SESSION['mode'],

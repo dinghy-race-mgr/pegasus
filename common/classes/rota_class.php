@@ -93,6 +93,7 @@ class ROTA
         $duty = $this->db->db_get_rows( $query );
         return $duty;
     }
+
     public function get_event_duties($eventid, $dutycode = "")
     {
         $duty_codes = $this->db->db_getsystemcodes("rota_type");
@@ -163,7 +164,7 @@ class ROTA
             $where.= implode(' AND ', $clause);
         }
 
-        $query = "SELECT id, dutycode, person, phone, email, notes, b.event_name, b.event_date FROM t_eventduty as a 
+        $query = "SELECT a.id, dutycode, person, phone, email, notes, b.event_name, b.event_date FROM t_eventduty as a 
                   JOIN t_event as b ON a.eventid=b.id  
                   WHERE $where ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
 

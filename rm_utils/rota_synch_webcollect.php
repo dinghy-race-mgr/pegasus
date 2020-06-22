@@ -25,7 +25,7 @@ require_once("{$loc}/common/classes/template_class.php");
 $tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","$loc/templates/utils/layouts_tm.php", "$loc/templates/utils/webcollect_tm.php"));
 
 // initialise session if this is first call
-if (!isset($_SESSION['app_init']) OR ($_SESSION['app_init'] === false))
+if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
 {
     $init_status = u_initialisation("$loc/config/racemanager_cfg.php", "$loc/config/rm_utils_cfg.php", $loc, $scriptname);
 
@@ -37,6 +37,9 @@ if (!isset($_SESSION['app_init']) OR ($_SESSION['app_init'] === false))
         // start log
         $_SESSION['syslog'] = "$loc/logs/adminlogs/".$_SESSION['syslog'];
         error_log(date('H:i:s')." -- ROTA SYNCH --------------------".PHP_EOL, 3, $_SESSION['syslog']);
+
+        // set initialisation flag
+        $_SESSION['util_app_init'] = true;
     }
     else
     {

@@ -240,10 +240,90 @@ class EVENT
     }
 
 
+    // FIXME - get events functions needs tidying up - this is an attempt at a more generic core function
+    public function get_events($type, $status, $period = array(), $constraints = array())
+        /*
+         * returns an array of event records
+         *    type - 'all' or 'not_noevent' or specified 'event_type'
+         *    status - 'active', 'not_active', 'demo', 'all'
+         *    period - array with start and end keys for inclusive date period - if empty not applied
+         *    constraints - array with field specific constraints
+         *
+         */
+    {
+        $select = "SELECT id, event_date, event_start, event_order, event_name, series_code, event_type,
+                         event_format, event_entry, event_status, event_open, tide_time, tide_height, start_scheme,
+                         start_interval, ws_start, wd_start, ws_end, wd_end, event_notes, result_notes, weblink, 
+                         webname, display_code, active, upddate, updby FROM t_event";
+        $order =  " ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
+        $where = "1=1";
+        $where_period = "";
+        $where_type = "";
+        $where_status = "";
+        $where_constraints = "";
+
+        if (!empty($period))
+        {
+            $where_period = " AND `event_date`>='".date("Y-m-d", strtotime($period['start'])).
+                "' AND `event_date`<='".date("Y-m-d", strtotime($period['end']))."'";
+        }
+
+        if ($type != "all") {
+            if ($type == "not_noevent") {
+                $where_type = " AND `event_type` != 'noevent'";
+            } elseif ($type == "racing") {
+                $where_type = " AND event_format > 0 AND event_type ='racing'";
+            } else {
+                $where_type = " AND `event_type` = '$type'";
+            }
+        }
+
+        if ($status != "all") {
+            if ($status == "active") {
+                $where_status = " AND `active` = 1 AND event_name NOT LIKE '%DEMO%'";
+            } elseif ($status == "not_active") {
+                $where_status = " AND `active` = 0 AND event_name NOT LIKE '%DEMO%'";
+            } elseif ($status == "demo") {
+                $where_status = " AND `event_name` LIKE '%DEMO%'";
+            }
+        }
+
+        if ($constraints) {
+            $clause = array();
+            foreach ($constraints as $field => $value) {
+                $clause[] = "`$field` = '$value'";
+            }
+            $where_constraints .= implode(' AND ', $clause);
+        }
+
+        $query = $select." WHERE $where $where_period $where_type $where_status $where_constraints ".$order;
+        //echo "<pre>$query</pre>";
+
+        $detail = $this->db->db_get_rows( $query );
+        
+        if (empty($detail))       // nothing found
+        {
+            $detail = false;
+        } else {
+            $formats = $this->event_geteventformats(true);    // get names for race formats
+            foreach ($detail as $k => $row) {
+                if (array_key_exists($row['event_format'], $formats)) {
+                    $detail[$k]['race_name'] = $formats[$row['event_format']];
+                } else {
+                    $detail[$k]['race_name'] = "";
+                }
+            }
+        }
+
+        return $detail;
+    }
+
+
     public function get_events_inperiod($fields, $start, $end, $mode, $race = false)
     {
         // FIXME - this doesn't work if the system is run in a different time zone to the database - need to use convert_tz to got from UTC to local timezone - but how do I know they are working in UTC
-        // To be sure of getting published events - the $fields array should include ("active"=>"1")
+        // TODO - change this to re-use the core of get_events
+        // To get just published events - the $fields array should include ("active"=>"1")
 
         $formats = $this->event_geteventformats(true);    // get names for race formats
 
@@ -309,7 +389,7 @@ class EVENT
     public function event_getevents($fields, $mode, $race = false)
     {    
         // FIXME - this doesn't work if the system is run in a different time zone to the database - need to use convert_tz to got from UTC to local timezone - but how do I know they are working in UTC
-
+        // TODO - change this to re-use the core of get_events
         $formats = $this->event_geteventformats(true);    // get names for race formats
 
         if ($mode=="demo")

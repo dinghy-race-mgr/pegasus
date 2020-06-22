@@ -71,7 +71,10 @@
 		<span class="caret"></span>
 	</button>
 	<ul class="dropdown-menu">
-		
+				{BEGIN editselected_link}
+		<li class="massButton{$id} disabled"><a href="#" {$editselectedlink_attrs} {$editselectedlink_span} >Edit selected</a></li>
+		{END editselected_link}
+
 				{BEGIN exportselected_link}
 		<li class="massButton{$id} disabled"><a href="#" {$exportselectedlink_attrs} {$exportselectedlink_span} >Export selected</a></li>
 		{END exportselected_link}
@@ -269,7 +272,13 @@
 		{BEGIN deleteselected_link}
 	<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
 	{END deleteselected_link}
-		</span>
+			{BEGIN saveall_link}
+		<button type="button" class="btn btn-primary" {$savealllink_attrs} {$savealllink_span}>Save all</button>
+	{END saveall_link}
+	{BEGIN cancelall_link}
+		<button type="button" class="btn btn-default" {$cancelalllink_attrs} {$cancelalllink_span}>Cancel</button>
+	{END cancelall_link}
+</span>
 
 {END record_controls_block}
 
@@ -502,6 +511,16 @@
 			<label>
 			  <input type="checkbox" id="hide_id" checked="checked" value="1" data-field="id">
 			  <span>{$label t_event id}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_active" checked="checked" value="1" data-field="active">
+			  <span>{$label t_event active}</span>
 			</label>
 		</div>
 		</a>
@@ -829,6 +848,19 @@
 									
 									
 									
+									{BEGIN active_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
+									{BEGIN active_fieldheader}
+																				<span {$active_orderlinkattrs}>
+											{$label t_event active}
+										</span>
+									{END active_fieldheader}
+									</th>
+									{END active_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN endrecordheader_block}
 									<th class="rnr-cs">&nbsp;</th>
 									
@@ -852,7 +884,12 @@
 	{END edit_link}
 	{END edit_column}
 
-		
+		{BEGIN inlineedit_column}
+	{BEGIN inlineedit_link}
+			<a class="glyphicon glyphicon-edit" {$inlineeditlink_attrs} title="Inline Edit"></a>
+	{END inlineedit_link}
+	{END inlineedit_column}
+	
 	<span data-hidden {$ieditbuttonsholder_attrs}></span>
 
 		{BEGIN copy_column}
@@ -971,6 +1008,13 @@
 		{$id_value}
 	</td>
 {END id_fieldcolumn}
+
+
+	{BEGIN active_fieldcolumn}
+	<td class="bs-gridcell {$active_class}"  data-field=active {$rowstyle} {$recordattrs}>
+		{$active_value}
+	</td>
+{END active_fieldcolumn}
 
 	{BEGIN endrecord_block}
 	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>

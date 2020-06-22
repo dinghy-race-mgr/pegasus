@@ -6,7 +6,7 @@
 
     --------------------------------------------------------------------------------------
 */
-$_SESSION['app_name'] = "utils";                        // name of application
+$_SESSION['app_name'] = "utils";        // name of application
 
 $_SESSION['app_db'] = false;            // no application specific database stored parameters
 

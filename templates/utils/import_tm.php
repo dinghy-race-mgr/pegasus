@@ -84,7 +84,7 @@ EOT;
         else
         {
             $rpt_bufr.= <<<EOT
-            <p><strong>Updates: </strong>none</p>
+            <p><strong>Updates: </strong>none (no changes necessary)</p>
 EOT;
         }
 

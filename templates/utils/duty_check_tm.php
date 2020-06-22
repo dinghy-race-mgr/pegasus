@@ -89,7 +89,8 @@ function duty_check_report($params = array())
         $row['duties'] = str_replace("|", "<br>", $row['duties']);
 
         $row_stripe = "";
-        if ($row['numduties'] >= 1 ) { $row_stripe = "warning"; }
+        if ($row['numduties'] == 0 ) { $row_stripe = "warning"; }
+        if ($row['numduties'] >= 1 ) { $row_stripe = "success"; }
         if ($row['numduties'] > $_SESSION['dutycheck']['max_duty']) { $row_stripe = "danger"; }
 
 

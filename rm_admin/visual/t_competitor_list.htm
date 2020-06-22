@@ -218,6 +218,8 @@
 
 
 
+
+
 ]
                       {END mastertable_block}
 
@@ -360,6 +362,9 @@
 	.bs-gridcell[data-field=boatname]:before {
 		content: "{$label t_competitor boatname}";
 	}
+	.bs-gridcell[data-field=hullcolour]:before {
+		content: "{$label t_competitor hullcolour}";
+	}
 	.bs-gridcell[data-field=helm]:before {
 		content: "{$label t_competitor helm}";
 	}
@@ -368,6 +373,9 @@
 	}
 	.bs-gridcell[data-field=helm_email]:before {
 		content: "{$label t_competitor helm_email}";
+	}
+	.bs-gridcell[data-field=telephone]:before {
+		content: "{$label t_competitor telephone}";
 	}
 	.bs-gridcell[data-field=crew]:before {
 		content: "{$label t_competitor crew}";
@@ -434,6 +442,28 @@
 
 																		{BEGIN t_competitor_dtable_column}<th >&nbsp;</th>
 									{END t_competitor_dtable_column}
+									
+									{BEGIN hullcolour_fieldheadercolumn}<th class="rnr-gridfieldlabel {$hullcolour_class}" data-field=hullcolour>
+									{BEGIN hullcolour_fieldheader}<span {$hullcolour_orderlinkattrs}>
+											{$label t_competitor hullcolour}
+										</span>
+									{END hullcolour_fieldheader}
+									</th>
+									{END hullcolour_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN telephone_fieldheadercolumn}<th class="rnr-gridfieldlabel {$telephone_class}" data-field=telephone>
+									{BEGIN telephone_fieldheader}<span {$telephone_orderlinkattrs}>
+											{$label t_competitor telephone}
+										</span>
+									{END telephone_fieldheader}
+									</th>
+									{END telephone_fieldheadercolumn}
+									
+									
+									
 									
 									{BEGIN active_fieldheadercolumn}<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
 									{BEGIN active_fieldheader}<span {$active_orderlinkattrs}>
@@ -595,6 +625,18 @@
 	
 	</td>
 	{END t_competitor_dtable_column}
+
+
+	{BEGIN hullcolour_fieldcolumn}<td class="bs-gridcell {$hullcolour_class}"  data-field=hullcolour {$rowstyle} {$recordattrs}>
+		{$hullcolour_value}
+	</td>
+{END hullcolour_fieldcolumn}
+
+
+	{BEGIN telephone_fieldcolumn}<td class="bs-gridcell {$telephone_class}"  data-field=telephone {$rowstyle} {$recordattrs}>
+		{$telephone_value}
+	</td>
+{END telephone_fieldcolumn}
 
 
 	{BEGIN active_fieldcolumn}<td class="bs-gridcell {$active_class}"  data-field=active {$rowstyle} {$recordattrs}>

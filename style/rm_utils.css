@@ -17,6 +17,7 @@ body {
 .rm-text-bg {font-weight: bold; font-size:1.8em;}
 .rm-text-md {font-size:1.6em;}
 .rm-text-sm {font-size:1.0em;}
+.rm-text-xs {font-size:0.8em;}
 .rm-text-space {padding-top:5px; padding-bottom: 5px; }
 .rm-text-highlight {color: yellow; }
 .rm-text-capitalise {text-transform: capitalize;}

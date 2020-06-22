@@ -76,8 +76,8 @@ else
         "chg-crew"    => array("status" => true, "width" => "col-xs-6", "label" => "Crew name(s)"),
         "chg-sailnum" => array("status" => true, "width" => "col-xs-3", "label" => "Sail No."),
         "chg-numcrew"=> array("status" => true, "width" => "col-xs-3", "label" => "Total crew",
-                           "placeholder" => "number of people in boat...", "evtype"=> "freesail"),
+                           "placeholder" => "number of people in boat...", "evtype"=> "individual|freesail|dcruise"),
         "chg-contact" => array("status" => true, "width" => "col-xs-6", "label" => "Contact Details",
-                           "placeholder" => "contact mobile number", "evtype"=> "freesail"),
+                           "placeholder" => "contact mobile number", "evtype"=> "individual|freesail|dcruise"),
     );
 }

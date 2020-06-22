@@ -101,7 +101,7 @@ function change_fm($params = array())
         }
 
         if (key_exists("evtype", $fieldspec)) { // field is configured but is not relevant to events today
-            if (strpos($params['evtypes'], $fieldspec['evtype']) === false) {
+            if (strpos($fieldspec['evtype'], $params['evtypes']) === false) {
                 continue;
             }
         }
