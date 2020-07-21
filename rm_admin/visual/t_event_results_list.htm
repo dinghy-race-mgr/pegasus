@@ -1,317 +1,102 @@
-<!doctype html>
-<html  {$html_attrs}>
-	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>{$pagetitle}</title>
+<!DOCTYPE html>
+<HTML {$html_attrs}><HEAD> 
+<META http-equiv="X-UA-Compatible" content="IE=Edge"> 
+<META name="viewport" content="width=device-width, initial-scale=1.0"> 
+<TITLE>{$pagetitle}</TITLE> 
+<META http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+<LINK href="styles/default.css" rel="stylesheet" type="text/css"> {BEGIN rtlCSS}<LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">{END rtlCSS} {BEGIN styleCSSFiles}<LINK href="{$stylepath}" rel="stylesheet" type="text/css">{END styleCSSFiles}      
+<META name="GENERATOR" content="MSHTML 11.00.10570.1001"></HEAD> 
+<BODY class="{$stylename} function-list" {$bodyattrs}>{BEGIN body}
 
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<link REL="stylesheet" href="styles/default.css" type="text/css">
-		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
-		{END rtlCSS}
-		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
-		{END styleCSSFiles}
-	</head>
-
-	<body class="{$stylename} function-list" {$bodyattrs}>
-	{BEGIN body}{$header}
-		<style>
+{$header} 
+<STYLE>
 			{$containerCss}
-		</style>
-		{BEGIN container_menu}<nav {$menu_chiddenattr} data-pageid="{$pageid}" data-container="menu" class="navbar navbar-default ">					
-
-
-
-{BEGIN container_hdr}<div {$hdr_chiddenattr} data-pageid="{$pageid}" data-container="hdr" class=" navbar-header   "> 
-
-{BEGIN logo_block}<a href="{$home_link}" {$logo_hiddenattr} data-pageid="{$pageid}" data-brick="logo" class="navbar-brand" >{$logo}</a>
-{END logo_block}
-
-
-{BEGIN collapse_block}<button {$bsnavbarcollapse_hiddenattr} data-pageid="{$pageid}" data-brick="bsnavbarcollapse" type="button" class="navbar-toggle collapsed" data-runner-toggle="collapse" data-target=".bs-navcontrolled">	
-	<span class="sr-only">Toggle navigation</span>	
-	<span class="icon-bar"></span>					
-</button>												
-
-{END collapse_block}
-
-
-
-</div>
-{END container_hdr}
-
-
-
-
-
-
-{BEGIN container_menu_1}<div {$menu_1_chiddenattr} data-pageid="{$pageid}" data-container="menu_1" class="bs-navform navbar-collapse bs-navcontrolled bs-hidden-xs" aria-expanded="false" >												   
-{BEGIN menu_block}{$menu main horizontal}
-
-{END menu_block}
-
-
-
-
-
-{BEGIN container_more}<div {$more_chiddenattr} data-pageid="{$pageid}" data-container="more" class=" navbar-right navbar-form   "> 
-
-{BEGIN more_list}<div {$morebutton_hiddenattr} data-pageid="{$pageid}" data-brick="morebutton" class="btn-group bs-navsection">
-	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		<span class="glyphicon glyphicon-cog"></span>
-		<span class="caret"></span>
-	</button>
-	<ul class="dropdown-menu">
-		
-				
-				{BEGIN deleteselected_link}<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
-		{END deleteselected_link}
-		
-				<li role="separator" class="divider"></li>	
-
-				{BEGIN asearch_link}<li><a href="t_event_results_search.php" {$advsearchlink_attrs}>Advanced search</a></li>
-		{END asearch_link}
-
-				{BEGIN searchPanelTopButtons}<li><a href=# id="showOptPanel{$id}">Show search panel</a></li>
-		{END searchPanelTopButtons}	
-		
-				
-				
-				
-		
-		
-				
-	</ul>  
-</div>
-
-{END more_list}
-
-
-{BEGIN security_block}<span {$loggedas_hiddenattr} data-pageid="{$pageid}" data-brick="loggedas" id="login_block{$id}" class="bs-navsection">
-	{BEGIN guestloginbutton}<button class="btn btn-info" type="button" {$guestloginlink_attrs}>Login</button>
-	{END guestloginbutton}
-	{BEGIN loggedas_message}<span class="dropdown">
-			<button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<span class="glyphicon glyphicon-user"></span>	{$username}</button>
-			<ul class="dropdown-menu">
-		{BEGIN logoutbutton}<li><a href="#" {$logoutlink_attrs}>Log out</a></li>
-		{END logoutbutton}
-		
-		{BEGIN adminarea_link}<li><a href="admin_rights_list.php" {$adminarealink_attrs}>Admin Area</a></li>
-		{END adminarea_link}
-
-
-	{BEGIN changepwd_link}<li><a href="#" {$changepwdlink_attrs}>Change password</a></li>
-	{END changepwd_link}
-			</ul>
-		</span>
-	{END loggedas_message}
-</span>
-{END security_block}
-
-
-
-</div>
-{END container_more}
-
-
-
-
-
-
-
-
-{BEGIN container_more_1}<div {$more_1_chiddenattr} data-pageid="{$pageid}" data-container="more_1" class=" navbar-right navbar-form   "> 
-
-{BEGIN searchform_block}<span {$search_hiddenattr} data-pageid="{$pageid}" data-brick="search" class="form-group">
-
-	{$simpleSearchFieldCombo}
-	
-	{$simpleSearchTypeCombo}
- <div  class="input-group">
-{BEGIN searchform_text}<input type="search" class="form-control" {$searchfor_attrs} size="25">
-{END searchform_text}
-	<span class="input-group-btn">
-	{BEGIN searchform_showall}<button class="btn btn-default" {$showAllCont_attrs} {$showallbutton_attrs} title="Show all">
-			<span class="glyphicon glyphicon-remove"></span>
-		</button>
-	{END searchform_showall}
-	{BEGIN searchform_search}<button {$searchbutton_attrs} class="btn btn-primary" >
-		<span class="glyphicon glyphicon-search"></span>
-	</button>
-	{END searchform_search}
-	</span>
-</div>
-		
-</span>
-{END searchform_block}
-
-
-
-</div>
-{END container_more_1}
-
-
-
-
-												</div>						{END container_menu_1}
-
-
-									</nav>{END container_menu}
-		<div class="bs-middle ">
-			<div class="bs-topmiddle">
-				
-
-{BEGIN container_breadcrumbs}<div {$breadcrumbs_chiddenattr} data-pageid="{$pageid}" data-container="breadcrumbs" class="    "> 
-
-
-
-
-{BEGIN container_bc}<div {$bc_chiddenattr} data-pageid="{$pageid}" data-container="bc" class="    "> 
-
-{BEGIN breadcrumbs}<ol class="breadcrumb">
-<li ><a href="{$home_link}"><span class="glyphicon glyphicon-home"></span></a>{$crumb_dropdown}</li>
-{BEGIN crumb}<li class="{$crumb_item_class}">
-{BEGIN crumb_title_link}<a {$crumb_attrs}>{$crumb_title}</a>
-{END crumb_title_link}
-{BEGIN crumb_title_span}<span {$crumb_attrs}>{$crumb_title}</span>
-{END crumb_title_span}	
-	{$crumb_dropdown}
-  </li>
-{END crumb}
-</ol>
-{END breadcrumbs}
-
-
-
-</div>
-{END container_bc}
-
-
-
-
-
-
-</div>
-{END container_breadcrumbs}
-
-
-
-
-			</div>
-			<div class="bs-left" {$blockattr_left}>
-				
-
-
-			</div>
-			<div class="bs-center bs-screenwidth bs-minwidth">
-				
-
-{BEGIN container_gridcontrols}<div {$gridcontrols_chiddenattr} data-pageid="{$pageid}" data-container="gridcontrols" class="row rnr-rowcontainer bs-navcontrolled bs-hidden-xs">
-
-
-
-
-{BEGIN container_add_delete}<div {$add_delete_chiddenattr} data-pageid="{$pageid}" data-container="add_delete" class=" bottom-margin  col-md-6 "> 
-
-{BEGIN newrecord_controls_block}{END newrecord_controls_block}
-
-
-{BEGIN record_controls_block}<span {$recordcontrol_hiddenattr} data-pageid="{$pageid}" data-brick="recordcontrol">
-		{BEGIN deleteselected_link}<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
-	{END deleteselected_link}
-		</span>
-
-{END record_controls_block}
-
-
-
-</div>
-{END container_add_delete}
-
-
-
-
-
-
-
-
-{BEGIN container_gridinfo}<div {$gridinfo_chiddenattr} data-pageid="{$pageid}" data-container="gridinfo" class=" bottom-margin pull-right text-right col-md-6 "> 
-
-{BEGIN details_found}<span {$details_found_hiddenattr} data-pageid="{$pageid}" data-brick="details_found" class="form-inline form-inline-always">
-	{$records_indicator}
-	<span>
-	{BEGIN recordspp_block}{$recsPerPage}
-	{END recordspp_block}
-	</span>
-</span>
-{END details_found}
-
-
-
-
-
-</div>
-{END container_gridinfo}
-
-
-
-
-
-
-
-</div>{END container_gridcontrols}
-
-
-
-{BEGIN container_tabs}<div {$tabs_chiddenattr} data-pageid="{$pageid}" data-container="tabs" class="    "> 
-
-{BEGIN grid_tabs}<div {$bsgrid_tabs_hiddenattr} data-pageid="{$pageid}" data-brick="bsgrid_tabs">
-<ul class="nav nav-tabs">
-{$grid_tabs_content}
-</ul>
-</div>
-{END grid_tabs}
-
-
-
-</div>
-{END container_tabs}
-
-
-
-{BEGIN container_messagerow}<div {$messagerow_chiddenattr} data-pageid="{$pageid}" data-container="messagerow" class="row rnr-rowcontainer ">
-
-
-
-
-{BEGIN container_message}<div {$message_chiddenattr} data-pageid="{$pageid}" data-container="message" class="   col-md-12 "> 
-
-{BEGIN message_block}<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">{$message}</div>
-{END message_block}
-
-
-
-</div>
-{END container_message}
-
-
-
-
-
-
-</div>{END container_messagerow}
-
-
-
-{BEGIN container_center}<div {$center_chiddenattr} data-pageid="{$pageid}" data-container="center" class="    "> 
-
-
-
-
-{BEGIN container_grid}<div {$grid_chiddenattr} data-pageid="{$pageid}" data-container="grid" class="bs-grid    "> 
-
-{BEGIN grid_block}<style>
+		</STYLE>
+ {BEGIN container_menu}<NAV class="navbar navbar-default" data-container="menu" data-pageid="{$pageid}" {$menu_chiddenattr}>
+{BEGIN container_hdr}<DIV class="navbar-header" data-container="hdr" data-pageid="{$pageid}" {$hdr_chiddenattr}>{BEGIN logo_block}<A class="navbar-brand" href="{$home_link}" data-brick="logo" data-pageid="{$pageid}" {$logo_hiddenattr}>{$logo}</A> {END logo_block}{BEGIN collapse_block}<BUTTON class="navbar-toggle collapsed" type="button" data-brick="bsnavbarcollapse" data-pageid="{$pageid}" data-target=".bs-navcontrolled" data-runner-toggle="collapse" {$bsnavbarcollapse_hiddenattr}><SPAN class="sr-only">Toggle 
+navigation</SPAN>	<SPAN class="icon-bar"></SPAN></BUTTON>	{END collapse_block}</DIV>
+{END container_hdr}{BEGIN container_menu_1}<DIV class="bs-navform navbar-collapse bs-navcontrolled bs-hidden-xs" aria-expanded="false" data-container="menu_1" data-pageid="{$pageid}" {$menu_1_chiddenattr}>
+{BEGIN menu_block}{$menu main horizontal}{END menu_block}{BEGIN container_more}<DIV class="navbar-right navbar-form" data-container="more" data-pageid="{$pageid}" {$more_chiddenattr}>
+{BEGIN more_list}<DIV class="btn-group bs-navsection" data-brick="morebutton" data-pageid="{$pageid}" {$morebutton_hiddenattr}><BUTTON class="btn btn-default dropdown-toggle" aria-expanded="false" aria-haspopup="true" type="button" data-toggle="dropdown"><SPAN class="glyphicon glyphicon-cog"></SPAN> <SPAN class="caret"></SPAN> </BUTTON> 
+<UL class="dropdown-menu">
+  {BEGIN asearch_link}<LI><A href="t_event_results_search.php" {$advsearchlink_attrs}>Advanced search</A></LI>
+  {END asearch_link}{BEGIN searchPanelTopButtons}<LI><A id="showOptPanel{$id}" href="#">Show search panel</A></LI>{END searchPanelTopButtons}</UL></DIV> {END more_list}{BEGIN security_block}<SPAN class="bs-navsection" id="login_block{$id}" data-brick="loggedas" data-pageid="{$pageid}" {$loggedas_hiddenattr}>{BEGIN guestloginbutton}<BUTTON class="btn btn-info" type="button" {$guestloginlink_attrs}>Login</BUTTON> 
+{END guestloginbutton}{BEGIN loggedas_message}<SPAN class="dropdown"><BUTTON class="btn btn-info dropdown-toggle" aria-expanded="false" aria-haspopup="true" type="button" data-toggle="dropdown"><SPAN class="glyphicon glyphicon-user"></SPAN>	
+{$username}</BUTTON> 
+<UL class="dropdown-menu">
+  {BEGIN logoutbutton}<LI><A href="#" {$logoutlink_attrs}>Log out</A></LI>
+  {END logoutbutton}{BEGIN adminarea_link}<LI><A href="admin_rights_list.php" {$adminarealink_attrs}>Admin Area</A></LI>
+  {END adminarea_link}{BEGIN changepwd_link}<LI><A href="#" {$changepwdlink_attrs}>Change password</A></LI>{END changepwd_link}</UL></SPAN> {END loggedas_message}</SPAN> 
+{END security_block}</DIV>
+{END container_more}{BEGIN container_more_1}<DIV class="navbar-right navbar-form" data-container="more_1" data-pageid="{$pageid}" {$more_1_chiddenattr}>{BEGIN searchform_block}<SPAN class="form-group" data-brick="search" data-pageid="{$pageid}" {$search_hiddenattr}>
+{$simpleSearchFieldCombo} 
+{$simpleSearchTypeCombo} 
+<DIV class="input-group">{BEGIN searchform_text}<INPUT class="form-control" type="search" size="25" {$searchfor_attrs}>{END searchform_text} 
+<SPAN class="input-group-btn">{BEGIN searchform_showall}<BUTTON title="Show all" class="btn btn-default" {$showAllCont_attrs} {$showallbutton_attrs}><SPAN class="glyphicon glyphicon-remove"></SPAN> </BUTTON> {END searchform_showall}{BEGIN searchform_search}<BUTTON class="btn btn-primary" {$searchbutton_attrs}><SPAN class="glyphicon glyphicon-search"></SPAN> 
+</BUTTON> {END searchform_search}</SPAN> </DIV> </SPAN> {END searchform_block}</DIV>{END container_more_1}</DIV>{END container_menu_1}</NAV>
+{END container_menu}<DIV class="bs-middle">
+<DIV class="bs-topmiddle">
+{BEGIN container_breadcrumbs}<DIV class=" " data-container="breadcrumbs" data-pageid="{$pageid}" {$breadcrumbs_chiddenattr}>
+{BEGIN container_bc}<DIV class=" " data-container="bc" data-pageid="{$pageid}" {$bc_chiddenattr}>
+{BEGIN breadcrumbs}<OL class="breadcrumb">
+  <LI><A href="{$home_link}"><SPAN class="glyphicon glyphicon-home"></SPAN></A>
+  {$crumb_dropdown}</LI> 
+  {BEGIN crumb}<LI class="{$crumb_item_class}"> {BEGIN crumb_title_link}<A {$crumb_attrs}>
+  {$crumb_title}</A> {END crumb_title_link}{BEGIN crumb_title_span}<SPAN {$crumb_attrs}>
+  {$crumb_title}</SPAN>	 
+  {END crumb_title_span}{$crumb_dropdown} </LI> {END crumb}</OL>{END breadcrumbs}</DIV>{END container_bc}</DIV>{END container_breadcrumbs}</DIV>
+<DIV class="bs-left" {$blockattr_left}></DIV> 
+<DIV class="bs-center bs-screenwidth bs-minwidth">
+{BEGIN container_gridcontrols}<DIV class="row rnr-rowcontainer bs-navcontrolled bs-hidden-xs" data-container="gridcontrols" data-pageid="{$pageid}" {$gridcontrols_chiddenattr}>
+{BEGIN container_add_delete}<DIV class="bottom-margin col-md-6" data-container="add_delete" data-pageid="{$pageid}" {$add_delete_chiddenattr}>{BEGIN record_controls_block}<SPAN data-brick="recordcontrol" data-pageid="{$pageid}" {$recordcontrol_hiddenattr}></SPAN> 
+{END record_controls_block}</DIV>
+{END container_add_delete}{BEGIN container_gridinfo}<DIV class="bottom-margin pull-right text-right col-md-6" data-container="gridinfo" data-pageid="{$pageid}" {$gridinfo_chiddenattr}>{BEGIN details_found}<SPAN class="form-inline form-inline-always" data-brick="details_found" data-pageid="{$pageid}" {$details_found_hiddenattr}>
+{$records_indicator} <SPAN>{BEGIN recordspp_block}
+{$recsPerPage}{END recordspp_block} </SPAN> </SPAN> 
+{END details_found}{BEGIN field_hide_panel}<DIV title="Show/hide columns" class="keep-open btn-group" id="fildhidepanel{$id}" data-brick="bsfieldhidepanel" data-pageid="{$pageid}" {$bsfieldhidepanel_hiddenattr}><BUTTON class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"><I class="glyphicon glyphicon-th-list"></I> <SPAN class="caret"></SPAN></BUTTON> 
+<UL class="dropdown-menu dropdown-left" role="menu">
+  <LI><A>
+  <DIV class="checkbox"><LABEL><INPUT id="hide_event_date" type="checkbox" 
+  checked="checked" value="1" data-field="event_date"> <SPAN>
+  {$label t_event_results event_date}</SPAN> </LABEL> </DIV></A></LI>
+  <LI><A>
+  <DIV class="checkbox"><LABEL><INPUT id="hide_event_name" type="checkbox" 
+  checked="checked" value="1" data-field="event_name"> <SPAN>
+  {$label t_event_results event_name}</SPAN> </LABEL> </DIV></A></LI>
+  <LI><A>
+  <DIV class="checkbox"><LABEL><INPUT id="hide_event_start" type="checkbox" 
+  checked="checked" value="1" data-field="event_start"> <SPAN>
+  {$label t_event_results event_start}</SPAN> </LABEL> </DIV></A></LI>
+  <LI><A>
+  <DIV class="checkbox"><LABEL><INPUT id="hide_event_format" type="checkbox" 
+  checked="checked" value="1" data-field="event_format"> <SPAN>
+  {$label t_event_results event_format}</SPAN> </LABEL> </DIV></A></LI>
+  <LI><A>
+  <DIV class="checkbox"><LABEL><INPUT id="hide_event_status" type="checkbox" 
+  checked="checked" value="1" data-field="event_status"> <SPAN>
+  {$label t_event_results event_status}</SPAN> </LABEL> </DIV></A></LI>
+  <LI><A>
+  <DIV class="checkbox"><LABEL><INPUT id="hide_series_code" type="checkbox" 
+  checked="checked" value="1" data-field="series_code"> <SPAN>
+  {$label t_event_results series_code}</SPAN> </LABEL> </DIV></A></LI>
+  <LI><A>
+  <DIV class="checkbox"><LABEL><INPUT id="hide_result_notes" type="checkbox" 
+  checked="checked" value="1" data-field="result_notes"> <SPAN>
+  {$label t_event_results result_notes}</SPAN> </LABEL> </DIV></A></LI></UL></DIV> {END field_hide_panel}</DIV>
+{END container_gridinfo}{BEGIN container_gridinfo_sort}<DIV class="bottom-margin pull-right text-right col-md-12" data-container="gridinfo_sort" data-pageid="{$pageid}" {$gridinfo_sort_chiddenattr}>
+{BEGIN reorder_records}<DIV class="form-inline sortby-ctrl" data-brick="reorder_records" data-pageid="{$pageid}" {$reorder_records_hiddenattr}> Sort by&nbsp;
+{$sortByDropdown} </DIV> {END reorder_records}</DIV>{END container_gridinfo_sort}</DIV>
+{END container_gridcontrols}{BEGIN container_tabs}<DIV class=" " data-container="tabs" data-pageid="{$pageid}" {$tabs_chiddenattr}>
+{BEGIN grid_tabs}<DIV data-brick="bsgrid_tabs" data-pageid="{$pageid}" {$bsgrid_tabs_hiddenattr}>
+<UL class="nav nav-tabs">
+  {$grid_tabs_content} </UL></DIV>{END grid_tabs}</DIV>
+{END container_tabs}{BEGIN container_messagerow}<DIV class="row rnr-rowcontainer" data-container="messagerow" data-pageid="{$pageid}" {$messagerow_chiddenattr}>
+{BEGIN container_message}<DIV class="col-md-12" data-container="message" data-pageid="{$pageid}" {$message_chiddenattr}>
+{BEGIN message_block}<DIV class="alert {$message_class}" role="alert" data-brick="message" data-pageid="{$pageid}" {$message_hiddenattr}>
+{$message}</DIV>{END message_block}</DIV>{END container_message}</DIV>
+{END container_messagerow}{BEGIN container_center}<DIV class=" " data-container="center" data-pageid="{$pageid}" {$center_chiddenattr}>
+{BEGIN container_grid}<DIV class="bs-grid" data-container="grid" data-pageid="{$pageid}" {$grid_chiddenattr}>{BEGIN grid_block}
+<STYLE>
 	.bs-gridcell[data-field=id]:before {
 		content: "{$label t_event_results id}";
 	}
@@ -384,281 +169,59 @@
 	.bs-gridcell[data-field=updby]:before {
 		content: "{$label t_event_results updby}";
 	}
-</style>
-<table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
-	<thead>
-										{BEGIN grid_header}<tr class="rnr-toprow {$gridHeader_class}" >
-									{BEGIN record_header}{BEGIN listIcons_column}<TH style="width: 102px; white-space: nowrap;" ieditcont="all">
-                              &nbsp;
-                            </th>
-									{END listIcons_column}	
-
-																		{BEGIN checkbox_column}<th class="">
-										<input type="checkbox" {$checkboxheader_attrs}>
-									</th>
-									{END checkbox_column}
-
-																		{BEGIN t_event_results_dtable_column}<th >&nbsp;</th>
-									{END t_event_results_dtable_column}
-									
-									{BEGIN event_date_fieldheadercolumn}<th class="rnr-gridfieldlabel {$event_date_class}" data-field=event_date>
-									{BEGIN event_date_fieldheader}<span {$event_date_orderlinkattrs}>
-											{$label t_event_results event_date}
-										</span>
-									{END event_date_fieldheader}
-									</th>
-									{END event_date_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN series_code_fieldheadercolumn}<th class="rnr-gridfieldlabel {$series_code_class}" data-field=series_code>
-									{BEGIN series_code_fieldheader}<span {$series_code_orderlinkattrs}>
-											{$label t_event_results series_code}
-										</span>
-									{END series_code_fieldheader}
-									</th>
-									{END series_code_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN event_name_fieldheadercolumn}<th class="rnr-gridfieldlabel {$event_name_class}" data-field=event_name>
-									{BEGIN event_name_fieldheader}<span {$event_name_orderlinkattrs}>
-											{$label t_event_results event_name}
-										</span>
-									{END event_name_fieldheader}
-									</th>
-									{END event_name_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN event_start_fieldheadercolumn}<th class="rnr-gridfieldlabel {$event_start_class}" data-field=event_start>
-									{BEGIN event_start_fieldheader}<span {$event_start_orderlinkattrs}>
-											{$label t_event_results event_start}
-										</span>
-									{END event_start_fieldheader}
-									</th>
-									{END event_start_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN event_format_fieldheadercolumn}<th class="rnr-gridfieldlabel {$event_format_class}" data-field=event_format>
-									{BEGIN event_format_fieldheader}<span {$event_format_orderlinkattrs}>
-											{$label t_event_results event_format}
-										</span>
-									{END event_format_fieldheader}
-									</th>
-									{END event_format_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN event_open_fieldheadercolumn}<th class="rnr-gridfieldlabel {$event_open_class}" data-field=event_open>
-									{BEGIN event_open_fieldheader}<span {$event_open_orderlinkattrs}>
-											{$label t_event_results event_open}
-										</span>
-									{END event_open_fieldheader}
-									</th>
-									{END event_open_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN event_status_fieldheadercolumn}<th class="rnr-gridfieldlabel {$event_status_class}" data-field=event_status>
-									{BEGIN event_status_fieldheader}<span {$event_status_orderlinkattrs}>
-											{$label t_event_results event_status}
-										</span>
-									{END event_status_fieldheader}
-									</th>
-									{END event_status_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN result_notes_fieldheadercolumn}<th class="rnr-gridfieldlabel {$result_notes_class}" data-field=result_notes>
-									{BEGIN result_notes_fieldheader}<span {$result_notes_orderlinkattrs}>
-											{$label t_event_results result_notes}
-										</span>
-									{END result_notes_fieldheader}
-									</th>
-									{END result_notes_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN endrecordheader_block}<TH class="rnr-cs" style="width: 3px;">
-                              &nbsp;
-                            </th>
-									
-									{END endrecordheader_block}
-									
-									{END record_header}
-									
-								</tr>
-								{END grid_header}
-
-	</thead>
-	<tbody>	
-		{BEGIN grid_row}<tr class="{$rowclass} bs-gridrow" {$rowattrs} {$rowstyle}>
-	{BEGIN grid_record}{BEGIN listIcons_column}<td class="bs-gridicons" iEditCont="all" {$rowstyle} {$recordattrs}>
-		{BEGIN edit_column}{BEGIN edit_link}<a class="glyphicon glyphicon-pencil" {$editlink_attrs} title="Edit"></a>
-	{END edit_link}
-	{END edit_column}
-
-		
-	<span data-hidden {$ieditbuttonsholder_attrs}></span>
-
-	
-		</td>	
-	{END listIcons_column}	
-
-		{BEGIN checkbox_column}<td  iEditCont="checkBox" class="bs-gridcheckbox" {$rowstyle} {$recordattrs}>
-	{BEGIN checkbox}<input type="checkbox" {$checkbox_attrs}>
-	{END checkbox}
-	</td>
-	{END checkbox_column}
-
-		{BEGIN t_event_results_dtable_column}<td class="rnr-nowrap bs-griddetails" {$rowstyle} {$recordattrs}>
-	
-			{BEGIN t_message_dtable_link}<span>
-			<a {$t_message_dtablelink_attrs}>
-			Messages
-							<span {$t_message_childnumber_attr} dir="ltr">
-				{BEGIN t_message_childcount}
-					({$t_message_childnumber})
-				{END t_message_childcount}</span>
-			</a>
-						<br/>
-		</span>
-		{END t_message_dtable_link}
-		{BEGIN t_resultfile_dtable_link}<span>
-			<a {$t_resultfile_dtablelink_attrs}>
-			Result Files
-						</a>
-						<BR>
-                                </span>
-		{END t_resultfile_dtable_link}
-		{BEGIN t_result_dtable_link}<span>
-			<a {$t_result_dtablelink_attrs}>
-			Results
-							<span {$t_result_childnumber_attr} dir="ltr">
-				{BEGIN t_result_childcount}
-					({$t_result_childnumber})
-				{END t_result_childcount}</span>
-			</a>
-						<BR>
-                                </span>
-		{END t_result_dtable_link}
-
-	
-	</td>
-	{END t_event_results_dtable_column}
-
-
-	{BEGIN event_date_fieldcolumn}<td class="bs-gridcell {$event_date_class}"  data-field=event_date {$rowstyle} {$recordattrs}>
-		{$event_date_value}
-	</td>
-{END event_date_fieldcolumn}
-
-
-	{BEGIN series_code_fieldcolumn}<td class="bs-gridcell {$series_code_class}"  data-field=series_code {$rowstyle} {$recordattrs}>
-		{$series_code_value}
-	</td>
-{END series_code_fieldcolumn}
-
-
-	{BEGIN event_name_fieldcolumn}<td class="bs-gridcell {$event_name_class}"  data-field=event_name {$rowstyle} {$recordattrs}>
-		{$event_name_value}
-	</td>
-{END event_name_fieldcolumn}
-
-
-	{BEGIN event_start_fieldcolumn}<td class="bs-gridcell {$event_start_class}"  data-field=event_start {$rowstyle} {$recordattrs}>
-		{$event_start_value}
-	</td>
-{END event_start_fieldcolumn}
-
-
-	{BEGIN event_format_fieldcolumn}<td class="bs-gridcell {$event_format_class}"  data-field=event_format {$rowstyle} {$recordattrs}>
-		{$event_format_value}
-	</td>
-{END event_format_fieldcolumn}
-
-
-	{BEGIN event_open_fieldcolumn}<td class="bs-gridcell {$event_open_class}"  data-field=event_open {$rowstyle} {$recordattrs}>
-		{$event_open_value}
-	</td>
-{END event_open_fieldcolumn}
-
-
-	{BEGIN event_status_fieldcolumn}<td class="bs-gridcell {$event_status_class}"  data-field=event_status {$rowstyle} {$recordattrs}>
-		{$event_status_value}
-	</td>
-{END event_status_fieldcolumn}
-
-
-	{BEGIN result_notes_fieldcolumn}<td class="bs-gridcell {$result_notes_class}"  data-field=result_notes {$rowstyle} {$recordattrs}>
-		{$result_notes_value}
-	</td>
-{END result_notes_fieldcolumn}
-
-	{BEGIN endrecord_block}<TD class="rnr-cs" style="width: 3px;" {$endrecordblock_attrs}>
-                              &nbsp;
-                            </td>
-	{END endrecord_block}
-									
-	{END grid_record}
-
-</tr>
-{END grid_row}
-	</tbody>
-	<tfoot>
-										
-	</tfoot>
-</table>
-
-
-
-{END grid_block}
-
-
-
-</div>
-{END container_grid}
-
-
-
-
-
-
-</div>
-{END container_center}
-
-
-
-{BEGIN container_pagination}<div {$pagination_chiddenattr} data-pageid="{$pageid}" data-container="pagination" class="  text-center col-md-12 "> 
-
-{BEGIN pagination_block}<div {$pagination_hiddenattr} data-pageid="{$pageid}" data-brick="pagination">
-{$pagination}
-</div>
-{END pagination_block}
-
-
-
-</div>
-{END container_pagination}
-
-
-			</div>
-			<div class="bs-right">
-				
-			</div>
-		</div>
-		
-		{$footer}
-	{END body}
-	</body>
-</html>
+</STYLE>
+ 
+<TABLE class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" data-brick="grid" data-pageid="{$pageid}" {$grid_hiddenattr}>
+  <THEAD>{BEGIN grid_header}
+  <TR class="rnr-toprow {$gridHeader_class}">{BEGIN record_header}
+    {BEGIN listIcons_column}<TH style="width: 102px; white-space: nowrap;" ieditcont="all"> 
+      &nbsp;</TH>
+    {END listIcons_column}{BEGIN t_event_results_dtable_column}<TH>&nbsp;</TH>
+    {END t_event_results_dtable_column}{BEGIN event_date_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$event_date_class}" data-field="event_date">{BEGIN event_date_fieldheader}<SPAN {$event_date_orderlinkattrs}>
+      {$label t_event_results event_date} </SPAN> {END event_date_fieldheader}</TH>
+    {END event_date_fieldheadercolumn}{BEGIN event_name_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$event_name_class}" data-field="event_name">{BEGIN event_name_fieldheader}<SPAN {$event_name_orderlinkattrs}>
+      {$label t_event_results event_name} </SPAN> {END event_name_fieldheader}</TH>
+    {END event_name_fieldheadercolumn}{BEGIN event_start_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$event_start_class}" data-field="event_start">{BEGIN event_start_fieldheader}<SPAN {$event_start_orderlinkattrs}>
+      {$label t_event_results event_start} </SPAN> {END event_start_fieldheader}</TH>
+    {END event_start_fieldheadercolumn}{BEGIN event_format_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$event_format_class}" data-field="event_format">{BEGIN event_format_fieldheader}<SPAN {$event_format_orderlinkattrs}>
+      {$label t_event_results event_format} </SPAN> {END event_format_fieldheader}</TH>
+    {END event_format_fieldheadercolumn}{BEGIN event_status_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$event_status_class}" data-field="event_status">{BEGIN event_status_fieldheader}<SPAN {$event_status_orderlinkattrs}>
+      {$label t_event_results event_status} </SPAN> {END event_status_fieldheader}</TH>
+    {END event_status_fieldheadercolumn}{BEGIN series_code_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$series_code_class}" data-field="series_code">{BEGIN series_code_fieldheader}<SPAN {$series_code_orderlinkattrs}>
+      {$label t_event_results series_code} </SPAN> {END series_code_fieldheader}</TH>
+    {END series_code_fieldheadercolumn}{BEGIN result_notes_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$result_notes_class}" data-field="result_notes">{BEGIN result_notes_fieldheader}<SPAN {$result_notes_orderlinkattrs}>
+      {$label t_event_results result_notes} </SPAN> {END result_notes_fieldheader}</TH>
+    {END result_notes_fieldheadercolumn}{BEGIN endrecordheader_block}<TH class="rnr-cs" style="width: 3px;"> &nbsp;
+</TH>{END endrecordheader_block}{END record_header}</TR>{END grid_header}</THEAD>
+  <TBODY>
+  {BEGIN grid_row}<TR class="{$rowclass} bs-gridrow" {$rowattrs} {$rowstyle}>{BEGIN grid_record}
+    {BEGIN listIcons_column}<TD class="bs-gridicons" style="width: 5%; white-space: nowrap;" ieditcont="all" {$rowstyle} {$recordattrs}>{BEGIN edit_column}{BEGIN edit_link}<A title="Edit" class="glyphicon glyphicon-pencil" {$editlink_attrs}></A> {END edit_link}{END edit_column}<SPAN data-hidden {$ieditbuttonsholder_attrs}></SPAN> </TD>
+    {END listIcons_column}{BEGIN t_event_results_dtable_column}<TD class="rnr-nowrap bs-griddetails" style="width: 10%; white-space: nowrap;" {$rowstyle} {$recordattrs}>{BEGIN dtables_link}<A title="Show details" class="glyphicon glyphicon-th-list {$dtables_link_class}" {$dtables_link_attrs}></A> 
+      {BEGIN t_message_childcount}<A title="Messages" class="{$t_message_dlink_class}" {$t_message_link_attrs}><SPAN class="details-badge badge t_message_badge" {$t_message_childnumber_attr}>
+      {$t_message_childnumber} </SPAN></A> {END t_message_childcount}{BEGIN t_resultfile_childcount}<A title="Result Files" class="{$t_resultfile_dlink_class}" {$t_resultfile_link_attrs}><SPAN class="details-badge badge t_resultfile_badge" {$t_resultfile_childnumber_attr}>
+      {$t_resultfile_childnumber} </SPAN></A> {END t_resultfile_childcount}{BEGIN t_result_childcount}<A title="Results" class="{$t_result_dlink_class}" {$t_result_link_attrs}><SPAN class="details-badge badge t_result_badge" {$t_result_childnumber_attr}>
+      {$t_result_childnumber} </SPAN></A>{END t_result_childcount}{END dtables_link} </TD>
+    {END t_event_results_dtable_column}{BEGIN event_date_fieldcolumn}<TD class="bs-gridcell {$event_date_class}" data-field="event_date" {$rowstyle} {$recordattrs}>
+      {$event_date_value} </TD>
+    {END event_date_fieldcolumn}{BEGIN event_name_fieldcolumn}<TD class="bs-gridcell {$event_name_class}" data-field="event_name" {$rowstyle} {$recordattrs}>
+      {$event_name_value} </TD>
+    {END event_name_fieldcolumn}{BEGIN event_start_fieldcolumn}<TD class="bs-gridcell {$event_start_class}" data-field="event_start" {$rowstyle} {$recordattrs}>
+      {$event_start_value} </TD>
+    {END event_start_fieldcolumn}{BEGIN event_format_fieldcolumn}<TD class="bs-gridcell {$event_format_class}" data-field="event_format" {$rowstyle} {$recordattrs}>
+      {$event_format_value} </TD>
+    {END event_format_fieldcolumn}{BEGIN event_status_fieldcolumn}<TD class="bs-gridcell {$event_status_class}" data-field="event_status" {$rowstyle} {$recordattrs}>
+      {$event_status_value} </TD>
+    {END event_status_fieldcolumn}{BEGIN series_code_fieldcolumn}<TD class="bs-gridcell {$series_code_class}" data-field="series_code" {$rowstyle} {$recordattrs}>
+      {$series_code_value} 
+    </TD>{END series_code_fieldcolumn}
+    {BEGIN result_notes_fieldcolumn}<TD class="bs-gridcell {$result_notes_class}" style="width: 15%; white-space: normal;" data-field="result_notes" {$rowstyle} {$recordattrs}> 
+      {$result_notes_value} 
+    </TD>{END result_notes_fieldcolumn} 
+    {BEGIN endrecord_block}<TD class="rnr-cs" style="width: 3px;" {$endrecordblock_attrs}> 
+      &nbsp;</TD>{END endrecord_block}{END grid_record}</TR>{END grid_row}</TBODY>
+  <TFOOT></TFOOT></TABLE>{END grid_block}</DIV>{END container_grid}</DIV>
+{END container_center}{BEGIN container_pagination}<DIV class="text-center col-md-12" data-container="pagination" data-pageid="{$pageid}" {$pagination_chiddenattr}>
+{BEGIN pagination_block}<DIV data-brick="pagination" data-pageid="{$pageid}" {$pagination_hiddenattr}>
+{$pagination} </DIV>{END pagination_block}</DIV>{END container_pagination}</DIV> 
+<DIV class="bs-right"></DIV></DIV>
+{$footer}{END body} </BODY></HTML>

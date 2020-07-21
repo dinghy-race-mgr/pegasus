@@ -178,7 +178,7 @@
 
 {BEGIN container_masterinfo}<div {$masterinfo_chiddenattr} data-pageid="{$pageid}" data-container="masterinfo" class="    "> 
 
-{BEGIN mastertable_block}<div class="panel panel-info table-panel">
+{BEGIN mastertable_block}<div class="panel panel-default table-panel">
 	<div class="panel-heading">
 		{$master_heading}
 	</div>
@@ -187,7 +187,7 @@
 		
 	</div>
 </div>
-
+<br>
 {END mastertable_block}
 
 
@@ -338,6 +338,12 @@
 	.bs-gridcell[data-field=upddate]:before {
 		content: "{$label t_resultfile upddate}";
 	}
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_resultfile updby}";
+	}
+	.bs-gridcell[data-field=createdate]:before {
+		content: "{$label t_resultfile createdate}";
+	}
 </style>
 <table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
 	<thead>
@@ -351,28 +357,6 @@
 									{END checkbox_column}
 
 																		
-									{BEGIN id_fieldheadercolumn}<th class="rnr-gridfieldlabel {$id_class}" data-field=id>
-									{BEGIN id_fieldheader}<span {$id_orderlinkattrs}>
-											{$label t_resultfile id}
-										</span>
-									{END id_fieldheader}
-									</th>
-									{END id_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN eventid_fieldheadercolumn}<th class="rnr-gridfieldlabel {$eventid_class}" data-field=eventid>
-									{BEGIN eventid_fieldheader}<span {$eventid_orderlinkattrs}>
-											{$label t_resultfile eventid}
-										</span>
-									{END eventid_fieldheader}
-									</th>
-									{END eventid_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN result_type_fieldheadercolumn}<th class="rnr-gridfieldlabel {$result_type_class}" data-field=result_type>
 									{BEGIN result_type_fieldheader}<span {$result_type_orderlinkattrs}>
 											{$label t_resultfile result_type}
@@ -428,17 +412,6 @@
 									
 									
 									
-									{BEGIN upddate_fieldheadercolumn}<th class="rnr-gridfieldlabel {$upddate_class}" data-field=upddate>
-									{BEGIN upddate_fieldheader}<span {$upddate_orderlinkattrs}>
-											{$label t_resultfile upddate}
-										</span>
-									{END upddate_fieldheader}
-									</th>
-									{END upddate_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN endrecordheader_block}<th class="rnr-cs">&nbsp;</th>
 									
 									{END endrecordheader_block}
@@ -471,18 +444,6 @@
 
 	
 
-	{BEGIN id_fieldcolumn}<td class="bs-gridcell {$id_class}"  data-field=id {$rowstyle} {$recordattrs}>
-		{$id_value}
-	</td>
-{END id_fieldcolumn}
-
-
-	{BEGIN eventid_fieldcolumn}<td class="bs-gridcell {$eventid_class}"  data-field=eventid {$rowstyle} {$recordattrs}>
-		{$eventid_value}
-	</td>
-{END eventid_fieldcolumn}
-
-
 	{BEGIN result_type_fieldcolumn}<td class="bs-gridcell {$result_type_class}"  data-field=result_type {$rowstyle} {$recordattrs}>
 		{$result_type_value}
 	</td>
@@ -511,12 +472,6 @@
 		{$result_status_value}
 	</td>
 {END result_status_fieldcolumn}
-
-
-	{BEGIN upddate_fieldcolumn}<td class="bs-gridcell {$upddate_class}"  data-field=upddate {$rowstyle} {$recordattrs}>
-		{$upddate_value}
-	</td>
-{END upddate_fieldcolumn}
 
 	{BEGIN endrecord_block}<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
 	{END endrecord_block}

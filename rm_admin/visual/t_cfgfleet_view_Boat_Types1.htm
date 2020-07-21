@@ -4,6 +4,76 @@
 
 
 <div class="container">
+{BEGIN min_py_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_min_py}" data-fieldname="min_py" >
+		<label class=" control-label" for="{$labelfor_min_py}">
+			{$label t_cfgfleet min_py}
+		</label>
+		<div class="" >
+			{$min_py_value}
+		</div>
+	</div>
+
+
+
+              PY Range
+            
+                 fast: &nbsp; - &nbsp;&nbsp;
+                slow: {$max_py_value}
+              {END min_py_tabfieldblock}
+{BEGIN max_py_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_max_py}" data-fieldname="max_py" >
+		<label class=" control-label" for="{$labelfor_max_py}">
+			{$label t_cfgfleet max_py}
+		</label>
+		<div class="" >
+			{$max_py_value}
+		</div>
+	</div>
+{END max_py_tabfieldblock}
+{BEGIN hulltype_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_hulltype}" data-fieldname="hulltype" >
+		<label class=" control-label" for="{$labelfor_hulltype}">
+			{$label t_cfgfleet hulltype}
+		</label>
+		<div class="" >
+			{$hulltype_value}
+		</div>
+	</div>
+{END hulltype_tabfieldblock}
+{BEGIN spintype_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_spintype}" data-fieldname="spintype" >
+		<label class=" control-label" for="{$labelfor_spintype}">
+			{$label t_cfgfleet spintype}
+		</label>
+		<div class="" >
+			{$spintype_value}
+		</div>
+	</div>
+{END spintype_tabfieldblock}
+{BEGIN crew_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_crew}" data-fieldname="crew" >
+		<label class=" control-label" for="{$labelfor_crew}">
+			{$label t_cfgfleet crew}
+		</label>
+		<div class="" >
+			{$crew_value}
+		</div>
+	</div>
+{END crew_tabfieldblock}
+{BEGIN defaultfleet_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_defaultfleet}" data-fieldname="defaultfleet" >
+		<label class=" control-label" for="{$labelfor_defaultfleet}">
+			{$label t_cfgfleet defaultfleet}
+		</label>
+		<div class="" >
+			{$defaultfleet_value}
+		</div>
+	</div>
+{END defaultfleet_tabfieldblock}
+{BEGIN classexc_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_classexc}" data-fieldname="classexc" >
+		<label class=" control-label" for="{$labelfor_classexc}">
+			{$label t_cfgfleet classexc}
+		</label>
+		<div class="" >
+			{$classexc_value}
+		</div>
+	</div>
+{END classexc_tabfieldblock}
 {BEGIN classinc_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_classinc}" data-fieldname="classinc" >
 		<label class=" control-label" for="{$labelfor_classinc}">
 			{$label t_cfgfleet classinc}
@@ -23,74 +93,6 @@
 		</div>
 	</div>
 {END onlyinc_tabfieldblock}
-{BEGIN classexc_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_classexc}" data-fieldname="classexc" >
-		<label class=" control-label" for="{$labelfor_classexc}">
-			{$label t_cfgfleet classexc}
-		</label>
-		<div class="" >
-			{$classexc_value}
-		</div>
-	</div>
-{END classexc_tabfieldblock}
-{BEGIN min_py_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_min_py}" data-fieldname="min_py" >
-		<label class=" control-label" for="{$labelfor_min_py}">
-			{$label t_cfgfleet min_py}
-		</label>
-		<div class="" >
-			{$min_py_value}
-		</div>
-	</div>
-
-              PY Range
-            
-                 fast: &nbsp; - &nbsp;&nbsp;
-                slow: {$max_py_value}
-              {END min_py_tabfieldblock}
-{BEGIN max_py_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_max_py}" data-fieldname="max_py" >
-		<label class=" control-label" for="{$labelfor_max_py}">
-			{$label t_cfgfleet max_py}
-		</label>
-		<div class="" >
-			{$max_py_value}
-		</div>
-	</div>
-{END max_py_tabfieldblock}
-{BEGIN crew_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_crew}" data-fieldname="crew" >
-		<label class=" control-label" for="{$labelfor_crew}">
-			{$label t_cfgfleet crew}
-		</label>
-		<div class="" >
-			{$crew_value}
-		</div>
-	</div>
-{END crew_tabfieldblock}
-{BEGIN spintype_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_spintype}" data-fieldname="spintype" >
-		<label class=" control-label" for="{$labelfor_spintype}">
-			{$label t_cfgfleet spintype}
-		</label>
-		<div class="" >
-			{$spintype_value}
-		</div>
-	</div>
-{END spintype_tabfieldblock}
-{BEGIN hulltype_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_hulltype}" data-fieldname="hulltype" >
-		<label class=" control-label" for="{$labelfor_hulltype}">
-			{$label t_cfgfleet hulltype}
-		</label>
-		<div class="" >
-			{$hulltype_value}
-		</div>
-	</div>
-{END hulltype_tabfieldblock}
-{BEGIN defaultfleet_tabfieldblock}<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_defaultfleet}" data-fieldname="defaultfleet" >
-		<label class=" control-label" for="{$labelfor_defaultfleet}">
-			{$label t_cfgfleet defaultfleet}
-		</label>
-		<div class="" >
-			{$defaultfleet_value}
-		</div>
-	</div>
-{END defaultfleet_tabfieldblock}
 </div>
 
 

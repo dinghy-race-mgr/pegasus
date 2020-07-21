@@ -4,38 +4,42 @@
 <div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class="    "> 
 
 
-<div class="container">
-{BEGIN groupinc_tabfieldblock}
-	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_groupinc}" data-fieldname="groupinc" >
-		<label class=" control-label" for="{$labelfor_groupinc}">
-			{$label t_cfgfleet groupinc}
-		</label>
-		<div class="" >
-			{$groupinc_value}
-		</div>
-	</div>
-{END groupinc_tabfieldblock}
 {BEGIN min_helmage_tabfieldblock}
-	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_min_helmage}" data-fieldname="min_helmage" >
-		<label class=" control-label" for="{$labelfor_min_helmage}">
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_min_helmage}" data-fieldname="min_helmage">
+		<label class="col-md-3 text-right">
 			{$label t_cfgfleet min_helmage}
 		</label>
-		<div class="" >
+		<div class="col-md-6 bs-horizontal-value fieldvalue_min_helmage " >
 			{$min_helmage_value}
 		</div>
 	</div>
+</div>
 {END min_helmage_tabfieldblock}
 {BEGIN max_helmage_tabfieldblock}
-	<div class="bs-viewcontrolgroup col-md-6 {$fielddispclass_max_helmage}" data-fieldname="max_helmage" >
-		<label class=" control-label" for="{$labelfor_max_helmage}">
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_max_helmage}" data-fieldname="max_helmage">
+		<label class="col-md-3 text-right">
 			{$label t_cfgfleet max_helmage}
 		</label>
-		<div class="" >
+		<div class="col-md-6 bs-horizontal-value fieldvalue_max_helmage " >
 			{$max_helmage_value}
 		</div>
 	</div>
-{END max_helmage_tabfieldblock}
 </div>
+{END max_helmage_tabfieldblock}
+{BEGIN groupinc_tabfieldblock}
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_groupinc}" data-fieldname="groupinc">
+		<label class="col-md-3 text-right">
+			{$label t_cfgfleet groupinc}
+		</label>
+		<div class="col-md-6 bs-horizontal-value fieldvalue_groupinc " >
+			{$groupinc_value}
+		</div>
+	</div>
+</div>
+{END groupinc_tabfieldblock}
 
 
 

@@ -49,7 +49,8 @@ $addboatfields = array(
     "personal_py" => "", "skill_level" => "1",
     "flight"      => "",
     "regular"     => "",
-    "last_entry"  => "", "last_event"  => "", "active"      => "1",
+//    "last_entry"  => "", "last_event"  => "",  // to avoid setting invalid dates
+    "active"      => "1",
     "prizelist"   => "", "grouplist"   => "",
     "memberid"    => "",
     "updby"       => "rm_sailor",

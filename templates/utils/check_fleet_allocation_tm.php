@@ -59,7 +59,7 @@ EOT;
                 <div class="col-sm-8 col-sm-offset-1">
                     <div class="pull-left">
                         <a class="btn btn-lg btn-warning" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
-                        <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
+                        <span class="glyphicon glyphicon-backward"></span>&nbsp;&nbsp;<b>Back</b></a>
                     </div>
                     <div class="pull-right">
                         <button type="submit" class="btn btn-lg btn-primary"  style="min-width: 200px;" >
@@ -87,8 +87,6 @@ function check_fleet_allocation_report($params = array())
 {
     $bufr = "";
 
-    //echo "<pre>".print_r($params['data'],true)."</pre>";
-    // table header style='width: 200px; display:inline-block !important'
     $thead_bufr = "<tr><thead><th >Classes</th>";
     foreach($params['formats'] as $format)
     {
@@ -116,8 +114,16 @@ EOT;
 
     $bufr.=<<<EOT
     <div class="container"></div>
-        <h1>Fleet Allocation Report </h1>
-        <p>Allocation is reported as 'start number' / 'fleet number' for each race format</p>
+        <div class="row">
+        <div class="col-xs-10 col-sm-8 col-md-8 col-lg-8">
+            <h1>Fleet Allocation Report </h1>
+            <p>Allocation is reported as 'start number' / 'fleet number' for each race format</p>
+        </div>
+            <div class="col-xs-2 col-sm-4 col-md-4 col-lg-4">
+                <a class="btn btn-md btn-warning pull-right" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+                <span class="glyphicon glyphicon-backward"></span>&nbsp;&nbsp;<b>Back</b></a>
+            </div>
+        </div>
         <table class="table table-condensed" >
             $thead_bufr
             <tbody>
@@ -128,6 +134,16 @@ EOT;
         <div><p class="pull-right"><small>Report generated - {date}</small></p></div>
 
     </div>
+    <script language="javascript">
+        function quitBox(cmd)
+        {   
+            if (cmd=='quit')
+            {
+                open(location, '_self').close();
+            }   
+            return false;   
+        }
+    </script>
 EOT;
 
     return $bufr;

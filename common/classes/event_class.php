@@ -262,7 +262,7 @@ class EVENT
         $where_status = "";
         $where_constraints = "";
 
-        if (!empty($period))
+        if (!empty($period) and $status != "demo")
         {
             $where_period = " AND `event_date`>='".date("Y-m-d", strtotime($period['start'])).
                 "' AND `event_date`<='".date("Y-m-d", strtotime($period['end']))."'";
@@ -640,7 +640,7 @@ class EVENT
     {       
         $fields['eventid'] = $eventid;
         // check for mandatory fields
-        if (empty($fields['eventid']) OR empty($fields['name']) OR empty($fields['subject']) OR empty($fields['message']) OR empty($fields['status']))
+        if (empty($fields['name']) OR empty($fields['subject']) OR empty($fields['message']) OR empty($fields['status']))
         {
             return false;
         }        

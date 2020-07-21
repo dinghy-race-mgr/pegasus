@@ -1,4 +1,16 @@
-<SPAN class="psus-masterlist">
-  {$pagetitlelabel t_cfgrace masterlist}
-</span>
-<br>
+
+
+<DIV {$pageattrs}>
+{BEGIN container_column}<DIV class="rnr-c rnr-ch rnr-c-column">
+{BEGIN masterlist_title}<DIV class="style1 rnr-bl rnr-b-masterprintheader {$brickclass_masterprintheader}"><SPAN>
+{$pagetitlelabel t_cfgrace masterprint}</SPAN></DIV>
+{END masterlist_title}<DIV class="rnr-hfiller"></DIV></DIV>
+{END container_column}{BEGIN container_mastergrid}<TABLE class="table rnr-b-mastergridfields rnr-gridtable" data-brick="bsmasterprintgrid" data-pageid="{$pageid}" {$bsmasterprintgrid_hiddenattr}>
+  <THEAD></THEAD>
+  <TBODY>
+  <TR>
+    <TD class="{$race_code_class}" rowspan="1" colspan="1">
+      {$race_code_mastervalue}</TD> 
+    <TD class="{$race_name_class}" rowspan="1" colspan="1">
+      {$race_name_mastervalue}</TD></TR></TBODY></TABLE>{END container_mastergrid}</DIV>
+{$pagetitlelabel t_cfgrace masterlist}	 

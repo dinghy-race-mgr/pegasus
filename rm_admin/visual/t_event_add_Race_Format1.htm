@@ -1,39 +1,79 @@
+<div {$pageattrs}>
 
-<DIV {$pageattrs}>
-{BEGIN container_tabfields}<DIV class="form-horizontal" data-container="tabfields" data-pageid="{$pageid}" {$tabfields_chiddenattr}>
-{BEGIN event_format_tabfieldblock}<DIV class="container">
-<DIV class="form-group in-tab {$fielddispclass_event_format}" data-signal-error-for="event_format{$id}" data-fieldname="event_format"><LABEL class="col-md-3 control-label" for="{$labelfor_event_format}">{BEGIN event_format_label}
-{$label t_event event_format}{END event_format_label} 
-</LABEL> 
-<DIV class="col-md-6">
-{$event_format_editcontrol} </DIV>
-<DIV class="col-md-3 help-block" data-helpfor="event_format">
-<DIV class="text-muted">
-{$tooltip t_event event_format} </DIV></DIV></DIV></DIV>
-{END event_format_tabfieldblock}{BEGIN event_entry_tabfieldblock}<DIV class="container">
-<DIV class="form-group in-tab {$fielddispclass_event_entry}" data-signal-error-for="event_entry{$id}" data-fieldname="event_entry"><LABEL class="col-md-3 control-label" for="{$labelfor_event_entry}">{BEGIN event_entry_label}
-{$label t_event event_entry}{END event_entry_label} 
-</LABEL> 
-<DIV class="col-md-6">
-{$event_entry_editcontrol} </DIV>
-<DIV class="col-md-3 help-block" data-helpfor="event_entry">
-<DIV class="text-muted">
-{$tooltip t_event event_entry} 
-</DIV></DIV></DIV></DIV>{END event_entry_tabfieldblock}
-{BEGIN start_scheme_tabfieldblock}<DIV class="container"> 
-{$event t_event_snippet_startfields} 
-<DIV class="form-group in-tab {$fielddispclass_start_scheme}" data-signal-error-for="start_scheme{$id}" data-fieldname="start_scheme"><LABEL class="col-md-3 control-label" for="{$labelfor_start_scheme}">{BEGIN start_scheme_label}
-{$label t_event start_scheme}{END start_scheme_label} </LABEL> 
-<DIV class="col-md-6">
-{$start_scheme_editcontrol} </DIV>
-<DIV class="col-md-3 help-block" data-helpfor="start_scheme">
-<DIV class="text-muted">
-{$tooltip t_event start_scheme} </DIV></DIV></DIV></DIV>{END start_scheme_tabfieldblock} 
-{BEGIN start_interval_tabfieldblock}<DIV class="container">
-<DIV class="form-group in-tab {$fielddispclass_start_interval}" data-signal-error-for="start_interval{$id}" data-fieldname="start_interval"><LABEL class="col-md-3 control-label" for="{$labelfor_start_interval}">{BEGIN start_interval_label}
-{$label t_event start_interval}{END start_interval_label} </LABEL> 
-<DIV class="col-md-6">
-{$start_interval_editcontrol} </DIV>
-<DIV class="col-md-3 help-block" data-helpfor="start_interval">
-<DIV class="text-muted">
-{$tooltip t_event start_interval} </DIV></DIV></DIV></DIV>{END start_interval_tabfieldblock}</DIV>{END container_tabfields}</DIV>
+{BEGIN container_tabfields}<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
+
+
+{BEGIN event_format_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_event_format}" data-fieldname="event_format" data-signal-error-for="event_format{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_event_format}">
+			{BEGIN event_format_label}{$label t_event event_format}{END event_format_label}
+		</label>
+		<div class="col-md-6 " >
+			{$event_format_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="event_format">
+			<div class="text-muted" >
+			{$tooltip t_event event_format}
+			</div>
+		</div>
+	</div>
+</div>
+{END event_format_tabfieldblock}
+{BEGIN event_entry_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_event_entry}" data-fieldname="event_entry" data-signal-error-for="event_entry{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_event_entry}">
+			{BEGIN event_entry_label}{$label t_event event_entry}{END event_entry_label}
+		</label>
+		<div class="col-md-6 " >
+			{$event_entry_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="event_entry">
+			<div class="text-muted" >
+			{$tooltip t_event event_entry}
+			</div>
+		</div>
+	</div>
+</div>
+{END event_entry_tabfieldblock}
+{BEGIN start_scheme_tabfieldblock}<div class="container">
+	{$event t_event_snippet_startfields} 
+<div class="form-group in-tab {$fielddispclass_start_scheme}" data-fieldname="start_scheme" data-signal-error-for="start_scheme{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_start_scheme}">
+			{BEGIN start_scheme_label}{$label t_event start_scheme}{END start_scheme_label}
+		</label>
+		<div class="col-md-6 " >
+			{$start_scheme_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="start_scheme">
+			<div class="text-muted" >
+			{$tooltip t_event start_scheme}
+			</div>
+		</div>
+	</div>
+</div>
+{END start_scheme_tabfieldblock}
+{BEGIN start_interval_tabfieldblock}<div class="container">
+	<div class="form-group in-tab {$fielddispclass_start_interval}" data-fieldname="start_interval" data-signal-error-for="start_interval{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_start_interval}">
+			{BEGIN start_interval_label}{$label t_event start_interval}{END start_interval_label}
+		</label>
+		<div class="col-md-6 " >
+			{$start_interval_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="start_interval">
+			<div class="text-muted" >
+			{$tooltip t_event start_interval}
+			</div>
+		</div>
+	</div>
+</div>
+{END start_interval_tabfieldblock}
+
+
+
+
+
+</div>
+{END container_tabfields}
+
+</div>

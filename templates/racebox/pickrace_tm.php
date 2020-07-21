@@ -1,7 +1,7 @@
 <?php
 
 /**
- * oickrace_tm.php
+ * pickrace_tm.php
  *
  * @abstract Custom templates for the pickrace page
  *
@@ -16,6 +16,72 @@
  *    no_races
  *    fm_addrace
  */
+
+function pickrace_navbar($params=array())
+{
+    $club_menu = "";
+    if (!empty($_SESSION['clublink']))
+    {
+        foreach ($_SESSION['clublink'] as $data) {
+            $club_menu .= <<<EOT
+                            <li ><a href="{$data['url']}" target="_blank">{$data['label']}</a></li>
+EOT;
+        }
+    }
+
+    $html = <<<EOT
+       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+           <div class="" style="margin-left:10px; margin-right:10px;">
+               <div class="navbar-header">
+                    <a class="navbar-brand rm-brand-title" href="#" target="_blank">
+                        <span style="padding-right: 60px">{brand}</span>
+                    </a>
+               </div>
+
+               <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav pull-right">
+                        <li>
+                            <a href="help_pg.php?eventid={eventid}&page={page}&menu=false" >
+                               <span class="rm-navmenu">help</span>
+                            </a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                               <span class="rm-navmenu">{$_SESSION['clubcode']} <span class="caret"></span></span>
+                            </a>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                $club_menu
+                            </ul>
+                        </li>
+                    </ul>
+               </div>
+           </div>
+       </div>
+EOT;
+    return $html;
+}
+
+
+function demo_button($params = array())
+{
+    $demo = "btn-default";
+    $live = "btn-warning";
+    if ($params['mode'] == "demo")
+    {
+        $demo = "btn-warning";
+        $live = "btn-default";
+    }
+
+    $bufr = <<<EOT
+        <form id="demoswitch" class="form-horizontal" action="#" method="post">
+            <div class="btn-group btn-toggle pull-left"> 
+                <a class="btn btn-sm $demo" style="width: 100px; font-weight: bold" href="rm_racebox.php?mode=demo">Demo</a>
+                <a class="btn btn-sm $live" style="width: 100px; font-weight: bold" href="rm_racebox.php?mode=live">Live </a>
+            </div>
+        </form>
+EOT;
+    return $bufr;
+}
 
 function race_panel($field=array())
 {
@@ -39,7 +105,14 @@ function race_panel($field=array())
                         </div>
 
                         <div class="col-sm-3 col-md-3 {'text'}" >
-                            {viewbufr}
+                            <p class="big-text">
+                                <small>race format: &nbsp;</small><br><b>{raceformat}&nbsp;&nbsp;&nbsp;</b>
+                            </p>
+                            <div data-toggle="popover" data-content="{popover}" data-placement="top">
+                                <a role="button" href="" data-toggle="modal" data-target="#format{eventid}Modal">
+                                <span class="glyphicon glyphicon-list-alt" style="font-size: 1.5em;"></span>
+                            </a>
+                            </div>                            
                         </div>
 
                         <div class="col-sm-3 col-md-3" {bpopup}>
@@ -55,23 +128,22 @@ EOT;
 }
 
 
-function race_format($param=array())
-{
-    $html = <<<EOT
-
-         <p class="big-text">
-            <small>race format: &nbsp;</small><br>
-            <b>{raceformat}&nbsp;&nbsp;&nbsp;</b>
-         </p>
-         <div data-toggle="popover" data-content="{popover}" data-placement="top">
-            <a role="button" href="" data-toggle="modal" data-target="#format{eventid}Modal">
-                <span class="glyphicon glyphicon-list-alt" style="font-size: 1.5em;"></span>
-            </a>
-         </div>
-EOT;
-
-    return $html;
-}
+//function race_format($param=array())
+//{
+//    $html = <<<EOT
+//         <p class="big-text">
+//            <small>race format: &nbsp;</small><br>
+//            <b>{raceformat}&nbsp;&nbsp;&nbsp;</b>
+//         </p>
+//         <div data-toggle="popover" data-content="{popover}" data-placement="top">
+//            <a role="button" href="" data-toggle="modal" data-target="#format{eventid}Modal">
+//                <span class="glyphicon glyphicon-list-alt" style="font-size: 1.5em;"></span>
+//            </a>
+//         </div>
+//EOT;
+//
+//    return $html;
+//}
 
 function no_races($param=array())
 {
@@ -82,8 +154,8 @@ function no_races($param=array())
         <div class="jumbotron margin-top-40">
             <div class="row">
                 <div class="col-md-9" >
-                    <h2>{msg1}</h2>
-                    <h4>{msg2}</h4>
+                    <h2>No races scheduled today</h2>
+                    <h4>Want to create a race? - use the <span class="text-primary">Add Race Today</span> button</h4>
                 </div>
                 <div class="col-md-3" >
                     {support_team}
@@ -209,5 +281,3 @@ EOT;
 
     return $html;
 }
-
-?>

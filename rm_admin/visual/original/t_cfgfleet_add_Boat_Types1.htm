@@ -1,162 +1,146 @@
 <div {$pageattrs}>
 
 {BEGIN container_tabfields}
-<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
+<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form   "> 
 
 
-{BEGIN classinc_tabfieldblock}
 <div class="container">
-	<div class="form-group in-tab {$fielddispclass_classinc}" data-fieldname="classinc" data-signal-error-for="classinc{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_classinc}">
-			{BEGIN classinc_label}{$label t_cfgfleet classinc}{END classinc_label}
-		</label>
-		<div class="col-md-6 " >
-			{$classinc_editcontrol}
-		</div>
-		<div class="col-md-3 help-block " data-helpfor="classinc">
-			<div class="text-muted" >
-			{$tooltip t_cfgfleet classinc}
-			</div>
-		</div>
-	</div>
-</div>
-{END classinc_tabfieldblock}
-{BEGIN onlyinc_tabfieldblock}
-<div class="container">
-	<div class="form-group in-tab {$fielddispclass_onlyinc}" data-fieldname="onlyinc" data-signal-error-for="onlyinc{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_onlyinc}">
-			{BEGIN onlyinc_label}{$label t_cfgfleet onlyinc}{END onlyinc_label}
-		</label>
-		<div class="col-md-6 " >
-			{$onlyinc_editcontrol}
-		</div>
-		<div class="col-md-3 help-block " data-helpfor="onlyinc">
-			<div class="text-muted" >
-			{$tooltip t_cfgfleet onlyinc}
-			</div>
-		</div>
-	</div>
-</div>
-{END onlyinc_tabfieldblock}
-{BEGIN classexc_tabfieldblock}
-<div class="container">
-	<div class="form-group in-tab {$fielddispclass_classexc}" data-fieldname="classexc" data-signal-error-for="classexc{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_classexc}">
-			{BEGIN classexc_label}{$label t_cfgfleet classexc}{END classexc_label}
-		</label>
-		<div class="col-md-6 " >
-			{$classexc_editcontrol}
-		</div>
-		<div class="col-md-3 help-block " data-helpfor="classexc">
-			<div class="text-muted" >
-			{$tooltip t_cfgfleet classexc}
-			</div>
-		</div>
-	</div>
-</div>
-{END classexc_tabfieldblock}
 {BEGIN min_py_tabfieldblock}
-<div class="container">
-	<div class="form-group in-tab {$fielddispclass_min_py}" data-fieldname="min_py" data-signal-error-for="min_py{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_min_py}">
+	<div class="form-group col-md-6 {$fielddispclass_min_py}" data-fieldname="min_py" data-signal-error-for="min_py{$id}" >
+		<label class=" control-label" for="{$labelfor_min_py}">
 			{BEGIN min_py_label}{$label t_cfgfleet min_py}{END min_py_label}
 		</label>
-		<div class="col-md-6 " >
+		<div class="" >
 			{$min_py_editcontrol}
 		</div>
-		<div class="col-md-3 help-block " data-helpfor="min_py">
+		<div class="help-block " data-helpfor="min_py">
 			<div class="text-muted" >
 			{$tooltip t_cfgfleet min_py}
 			</div>
 		</div>
 	</div>
-</div>
 {END min_py_tabfieldblock}
 {BEGIN max_py_tabfieldblock}
-<div class="container">
-	<div class="form-group in-tab {$fielddispclass_max_py}" data-fieldname="max_py" data-signal-error-for="max_py{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_max_py}">
+	<div class="form-group col-md-6 {$fielddispclass_max_py}" data-fieldname="max_py" data-signal-error-for="max_py{$id}" >
+		<label class=" control-label" for="{$labelfor_max_py}">
 			{BEGIN max_py_label}{$label t_cfgfleet max_py}{END max_py_label}
 		</label>
-		<div class="col-md-6 " >
+		<div class="" >
 			{$max_py_editcontrol}
 		</div>
-		<div class="col-md-3 help-block " data-helpfor="max_py">
+		<div class="help-block " data-helpfor="max_py">
 			<div class="text-muted" >
 			{$tooltip t_cfgfleet max_py}
 			</div>
 		</div>
 	</div>
-</div>
 {END max_py_tabfieldblock}
-{BEGIN crew_tabfieldblock}
-<div class="container">
-	<div class="form-group in-tab {$fielddispclass_crew}" data-fieldname="crew" data-signal-error-for="crew{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_crew}">
-			{BEGIN crew_label}{$label t_cfgfleet crew}{END crew_label}
-		</label>
-		<div class="col-md-6 " >
-			{$crew_editcontrol}
-		</div>
-		<div class="col-md-3 help-block " data-helpfor="crew">
-			<div class="text-muted" >
-			{$tooltip t_cfgfleet crew}
-			</div>
-		</div>
-	</div>
-</div>
-{END crew_tabfieldblock}
-{BEGIN spintype_tabfieldblock}
-<div class="container">
-	<div class="form-group in-tab {$fielddispclass_spintype}" data-fieldname="spintype" data-signal-error-for="spintype{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_spintype}">
-			{BEGIN spintype_label}{$label t_cfgfleet spintype}{END spintype_label}
-		</label>
-		<div class="col-md-6 " >
-			{$spintype_editcontrol}
-		</div>
-		<div class="col-md-3 help-block " data-helpfor="spintype">
-			<div class="text-muted" >
-			{$tooltip t_cfgfleet spintype}
-			</div>
-		</div>
-	</div>
-</div>
-{END spintype_tabfieldblock}
 {BEGIN hulltype_tabfieldblock}
-<div class="container">
-	<div class="form-group in-tab {$fielddispclass_hulltype}" data-fieldname="hulltype" data-signal-error-for="hulltype{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_hulltype}">
+	<div class="form-group col-md-6 {$fielddispclass_hulltype}" data-fieldname="hulltype" data-signal-error-for="hulltype{$id}" >
+		<label class=" control-label" for="{$labelfor_hulltype}">
 			{BEGIN hulltype_label}{$label t_cfgfleet hulltype}{END hulltype_label}
 		</label>
-		<div class="col-md-6 " >
+		<div class="" >
 			{$hulltype_editcontrol}
 		</div>
-		<div class="col-md-3 help-block " data-helpfor="hulltype">
+		<div class="help-block " data-helpfor="hulltype">
 			<div class="text-muted" >
 			{$tooltip t_cfgfleet hulltype}
 			</div>
 		</div>
 	</div>
-</div>
 {END hulltype_tabfieldblock}
+{BEGIN spintype_tabfieldblock}
+	<div class="form-group col-md-6 {$fielddispclass_spintype}" data-fieldname="spintype" data-signal-error-for="spintype{$id}" >
+		<label class=" control-label" for="{$labelfor_spintype}">
+			{BEGIN spintype_label}{$label t_cfgfleet spintype}{END spintype_label}
+		</label>
+		<div class="" >
+			{$spintype_editcontrol}
+		</div>
+		<div class="help-block " data-helpfor="spintype">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet spintype}
+			</div>
+		</div>
+	</div>
+{END spintype_tabfieldblock}
+{BEGIN crew_tabfieldblock}
+	<div class="form-group col-md-6 {$fielddispclass_crew}" data-fieldname="crew" data-signal-error-for="crew{$id}" >
+		<label class=" control-label" for="{$labelfor_crew}">
+			{BEGIN crew_label}{$label t_cfgfleet crew}{END crew_label}
+		</label>
+		<div class="" >
+			{$crew_editcontrol}
+		</div>
+		<div class="help-block " data-helpfor="crew">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet crew}
+			</div>
+		</div>
+	</div>
+{END crew_tabfieldblock}
 {BEGIN defaultfleet_tabfieldblock}
-<div class="container">
-	<div class="form-group in-tab {$fielddispclass_defaultfleet}" data-fieldname="defaultfleet" data-signal-error-for="defaultfleet{$id}" >
-		<label class="col-md-3 control-label" for="{$labelfor_defaultfleet}">
+	<div class="form-group col-md-6 {$fielddispclass_defaultfleet}" data-fieldname="defaultfleet" data-signal-error-for="defaultfleet{$id}" >
+		<label class=" control-label" for="{$labelfor_defaultfleet}">
 			{BEGIN defaultfleet_label}{$label t_cfgfleet defaultfleet}{END defaultfleet_label}
 		</label>
-		<div class="col-md-6 " >
+		<div class="" >
 			{$defaultfleet_editcontrol}
 		</div>
-		<div class="col-md-3 help-block " data-helpfor="defaultfleet">
+		<div class="help-block " data-helpfor="defaultfleet">
 			<div class="text-muted" >
 			{$tooltip t_cfgfleet defaultfleet}
 			</div>
 		</div>
 	</div>
-</div>
 {END defaultfleet_tabfieldblock}
+{BEGIN classexc_tabfieldblock}
+	<div class="form-group col-md-6 {$fielddispclass_classexc}" data-fieldname="classexc" data-signal-error-for="classexc{$id}" >
+		<label class=" control-label" for="{$labelfor_classexc}">
+			{BEGIN classexc_label}{$label t_cfgfleet classexc}{END classexc_label}
+		</label>
+		<div class="" >
+			{$classexc_editcontrol}
+		</div>
+		<div class="help-block " data-helpfor="classexc">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet classexc}
+			</div>
+		</div>
+	</div>
+{END classexc_tabfieldblock}
+{BEGIN classinc_tabfieldblock}
+	<div class="form-group col-md-6 {$fielddispclass_classinc}" data-fieldname="classinc" data-signal-error-for="classinc{$id}" >
+		<label class=" control-label" for="{$labelfor_classinc}">
+			{BEGIN classinc_label}{$label t_cfgfleet classinc}{END classinc_label}
+		</label>
+		<div class="" >
+			{$classinc_editcontrol}
+		</div>
+		<div class="help-block " data-helpfor="classinc">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet classinc}
+			</div>
+		</div>
+	</div>
+{END classinc_tabfieldblock}
+{BEGIN onlyinc_tabfieldblock}
+	<div class="form-group col-md-6 {$fielddispclass_onlyinc}" data-fieldname="onlyinc" data-signal-error-for="onlyinc{$id}" >
+		<label class=" control-label" for="{$labelfor_onlyinc}">
+			{BEGIN onlyinc_label}{$label t_cfgfleet onlyinc}{END onlyinc_label}
+		</label>
+		<div class="" >
+			{$onlyinc_editcontrol}
+		</div>
+		<div class="help-block " data-helpfor="onlyinc">
+			<div class="text-muted" >
+			{$tooltip t_cfgfleet onlyinc}
+			</div>
+		</div>
+	</div>
+{END onlyinc_tabfieldblock}
+</div>
 
 
 

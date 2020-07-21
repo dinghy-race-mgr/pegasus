@@ -71,10 +71,7 @@
 		<span class="caret"></span>
 	</button>
 	<ul class="dropdown-menu">
-				{BEGIN editselected_link}
-		<li class="massButton{$id} disabled"><a href="#" {$editselectedlink_attrs} {$editselectedlink_span} >Edit selected</a></li>
-		{END editselected_link}
-
+		
 				{BEGIN exportselected_link}
 		<li class="massButton{$id} disabled"><a href="#" {$exportselectedlink_attrs} {$exportselectedlink_span} >Export selected</a></li>
 		{END exportselected_link}
@@ -158,6 +155,9 @@
 {BEGIN searchform_block}
 <span {$search_hiddenattr} data-pageid="{$pageid}" data-brick="search" class="form-group">
 
+	{$simpleSearchFieldCombo}
+	
+	{$simpleSearchTypeCombo}
  <div  class="input-group">
 {BEGIN searchform_text}
 	<input type="search" class="form-control" {$searchfor_attrs} size="25">
@@ -240,7 +240,7 @@
 <div {$masterinfo_chiddenattr} data-pageid="{$pageid}" data-container="masterinfo" class="    "> 
 
 {BEGIN mastertable_block}
-<div class="panel panel-info table-panel">
+<div class="panel panel-default table-panel">
 	<div class="panel-heading">
 		{$master_heading}
 	</div>
@@ -249,7 +249,7 @@
 		
 	</div>
 </div>
-
+<br>
 {END mastertable_block}
 
 
@@ -261,71 +261,6 @@
 			</div>
 			<div class="bs-left" {$blockattr_left}>
 				
-
-{BEGIN container_left}
-<div {$left_chiddenattr} data-pageid="{$pageid}" data-container="left" class="    "> 
-
-{BEGIN searchPanel}
-<div {$searchpanel_hiddenattr} data-pageid="{$pageid}" data-brick="searchpanel" class="searchOptions panel panel-primary searchPanelContainer " {$srchOpt_attrs} >
-	<!-- Search panel content -->
-	
-	<div class="panel-heading">
-		<div class="btn-group" id="addSearchFieldButton{$id}">
-			<button id="showHideControlChooseMenu{$id}" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			Search in
-			<span class="caret"></span>
-			</button>
-		</div>
-
-		
-		<div class="btn-group searchpanel-options" id="searchPanelOptions{$id}">
-			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<span class="glyphicon glyphicon glyphicon-option-vertical"></span>
-			</button>
-			<ul class="dropdown-menu dropdown-left">
-				<li id="showHideSearchType{$id}" {$showHideCtrlsOpt_attrs}><a>Show options</a></li>
-				<li role="separator" class="divider"></li>
-				<li class="srchCritTop" style="display: none;"><a><input type="radio" name="srchType{$id}" id="radioAll" {$all_checkbox}><label for="radioAll"><span class="glyphicon">&nbsp;</span>all conditions</label></a></li>
-				<li class="srchCritTop" style="display: none;"><a><input type="radio" name="srchType{$id}" id="radioAny" {$any_checkbox}><label for="radioAny"><span class="glyphicon">&nbsp;</span>any condition</label></a></li>
-				<li role="separator" class="divider"></li>
-				<li><a class="close-button"><span class="glyphicon glyphicon-remove">&nbsp;</span>hide</a></li>
-			</ul>
-		</div>
-	
-		
-		</div>
-	<div class="panel-body controlsBlock" {$bottomSearchButt_attrs} >
-
-
-		
-		{BEGIN searchCtrlBlock}
-		<div class="srchPanelRow form-group" {$filterRow_attrs}>
-			<label>{$fLabel}</label>	{$delCtrlButt}
-				<span class="rnr-searchtype">{$searchtype}</span>
-				<span class="rnr-searchcontrol">{$searchcontrol}</span>
-				<span class="rnr-searchcontrol">{$searchcontrol1}</span>
-		</div>
-		{END searchCtrlBlock}
-
-
-	</div>
-	
-	<div class="panel-footer bottomSearchButt" {$bottomSearchButt_attrs}>
-		<button class="btn btn-primary" id="searchButton{$id}" {$searchbutton_attrs}>Search</button>
-		<button class="btn btn-default" {$showAllCont_attrs} {$showallbutton_attrs}>
-		Show all
-		</button>
-	</div>
-</div>
-
-
-{END searchPanel}
-
-
-
-
-</div>
-{END container_left}
 
 
 			</div>
@@ -355,13 +290,7 @@
 		{BEGIN deleteselected_link}
 	<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
 	{END deleteselected_link}
-			{BEGIN saveall_link}
-		<button type="button" class="btn btn-primary" {$savealllink_attrs} {$savealllink_span}>Save all</button>
-	{END saveall_link}
-	{BEGIN cancelall_link}
-		<button type="button" class="btn btn-default" {$cancelalllink_attrs} {$cancelalllink_span}>Cancel</button>
-	{END cancelall_link}
-</span>
+		</span>
 
 {END record_controls_block}
 
@@ -453,11 +382,141 @@
 {END print_friendly}
 
 
+{BEGIN field_hide_panel}
+<div {$bsfieldhidepanel_hiddenattr} data-pageid="{$pageid}" data-brick="bsfieldhidepanel" id="fildhidepanel{$id}" class="keep-open btn-group" title="Show/hide columns">
+	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button"><i class="glyphicon glyphicon-th-list"></i> <span class="caret"></span></button>
+	<ul role="menu" class="dropdown-menu dropdown-left">
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_class" checked="checked" value="1" data-field="class">
+			  <span>{$label t_result class}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_sailnum" checked="checked" value="1" data-field="sailnum">
+			  <span>{$label t_result sailnum}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_fleet" checked="checked" value="1" data-field="fleet">
+			  <span>{$label t_result fleet}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_declaration" checked="checked" value="1" data-field="declaration">
+			  <span>{$label t_result declaration}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_lap" checked="checked" value="1" data-field="lap">
+			  <span>{$label t_result lap}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_etime" checked="checked" value="1" data-field="etime">
+			  <span>{$label t_result etime}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_code" checked="checked" value="1" data-field="code">
+			  <span>{$label t_result code}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_penalty" checked="checked" value="1" data-field="penalty">
+			  <span>{$label t_result penalty}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_points" checked="checked" value="1" data-field="points">
+			  <span>{$label t_result points}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_note" checked="checked" value="1" data-field="note">
+			  <span>{$label t_result note}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+	</ul>
+</div>
+
+{END field_hide_panel}
+
 
 
 </div>
 {END container_gridinfo}
 
+
+
+
+
+
+
+
+{BEGIN container_gridinfo_sort}
+<div {$gridinfo_sort_chiddenattr} data-pageid="{$pageid}" data-container="gridinfo_sort" class=" bottom-margin pull-right text-right col-md-12 "> 
+
+{BEGIN reorder_records}
+<div {$reorder_records_hiddenattr} data-pageid="{$pageid}" data-brick="reorder_records" class="form-inline sortby-ctrl">
+Sort by&nbsp;{$sortByDropdown}
+</div>
+
+{END reorder_records}
+
+
+
+</div>
+{END container_gridinfo_sort}
 
 
 
@@ -593,6 +652,9 @@
 	.bs-gridcell[data-field=updby]:before {
 		content: "{$label t_result updby}";
 	}
+	.bs-gridcell[data-field=createdate]:before {
+		content: "{$label t_result createdate}";
+	}
 </style>
 <table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
 	<thead>
@@ -610,45 +672,6 @@
 									{END checkbox_column}
 
 																		
-									{BEGIN apn_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$apn_class}" data-field=apn>
-									{BEGIN apn_fieldheader}
-																				<span {$apn_orderlinkattrs}>
-											{$label t_result apn}
-										</span>
-									{END apn_fieldheader}
-									</th>
-									{END apn_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN fleet_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$fleet_class}" data-field=fleet>
-									{BEGIN fleet_fieldheader}
-																				<span {$fleet_orderlinkattrs}>
-											{$label t_result fleet}
-										</span>
-									{END fleet_fieldheader}
-									</th>
-									{END fleet_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN race_type_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$race_type_class}" data-field=race_type>
-									{BEGIN race_type_fieldheader}
-																				<span {$race_type_orderlinkattrs}>
-											{$label t_result race_type}
-										</span>
-									{END race_type_fieldheader}
-									</th>
-									{END race_type_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN class_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$class_class}" data-field=class>
 									{BEGIN class_fieldheader}
@@ -675,15 +698,28 @@
 									
 									
 									
-									{BEGIN helm_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$helm_class}" data-field=helm>
-									{BEGIN helm_fieldheader}
-																				<span {$helm_orderlinkattrs}>
-											{$label t_result helm}
+									{BEGIN fleet_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$fleet_class}" data-field=fleet>
+									{BEGIN fleet_fieldheader}
+																				<span {$fleet_orderlinkattrs}>
+											{$label t_result fleet}
 										</span>
-									{END helm_fieldheader}
+									{END fleet_fieldheader}
 									</th>
-									{END helm_fieldheadercolumn}
+									{END fleet_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN declaration_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$declaration_class}" data-field=declaration>
+									{BEGIN declaration_fieldheader}
+																				<span {$declaration_orderlinkattrs}>
+											{$label t_result declaration}
+										</span>
+									{END declaration_fieldheader}
+									</th>
+									{END declaration_fieldheadercolumn}
 									
 									
 									
@@ -753,19 +789,6 @@
 									
 									
 									
-									{BEGIN declaration_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$declaration_class}" data-field=declaration>
-									{BEGIN declaration_fieldheader}
-																				<span {$declaration_orderlinkattrs}>
-											{$label t_result declaration}
-										</span>
-									{END declaration_fieldheader}
-									</th>
-									{END declaration_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN note_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$note_class}" data-field=note>
 									{BEGIN note_fieldheader}
@@ -802,12 +825,7 @@
 	{END edit_link}
 	{END edit_column}
 
-		{BEGIN inlineedit_column}
-	{BEGIN inlineedit_link}
-			<a class="glyphicon glyphicon-edit" {$inlineeditlink_attrs} title="Inline Edit"></a>
-	{END inlineedit_link}
-	{END inlineedit_column}
-	
+		
 	<span data-hidden {$ieditbuttonsholder_attrs}></span>
 
 		{BEGIN copy_column}
@@ -834,27 +852,6 @@
 
 	
 
-	{BEGIN apn_fieldcolumn}
-	<td class="bs-gridcell {$apn_class}"  data-field=apn {$rowstyle} {$recordattrs}>
-		{$apn_value}
-	</td>
-{END apn_fieldcolumn}
-
-
-	{BEGIN fleet_fieldcolumn}
-	<td class="bs-gridcell {$fleet_class}"  data-field=fleet {$rowstyle} {$recordattrs}>
-		{$fleet_value}
-	</td>
-{END fleet_fieldcolumn}
-
-
-	{BEGIN race_type_fieldcolumn}
-	<td class="bs-gridcell {$race_type_class}"  data-field=race_type {$rowstyle} {$recordattrs}>
-		{$race_type_value}
-	</td>
-{END race_type_fieldcolumn}
-
-
 	{BEGIN class_fieldcolumn}
 	<td class="bs-gridcell {$class_class}"  data-field=class {$rowstyle} {$recordattrs}>
 		{$class_value}
@@ -869,11 +866,18 @@
 {END sailnum_fieldcolumn}
 
 
-	{BEGIN helm_fieldcolumn}
-	<td class="bs-gridcell {$helm_class}"  data-field=helm {$rowstyle} {$recordattrs}>
-		{$helm_value}
+	{BEGIN fleet_fieldcolumn}
+	<td class="bs-gridcell {$fleet_class}"  data-field=fleet {$rowstyle} {$recordattrs}>
+		{$fleet_value}
 	</td>
-{END helm_fieldcolumn}
+{END fleet_fieldcolumn}
+
+
+	{BEGIN declaration_fieldcolumn}
+	<td class="bs-gridcell {$declaration_class}"  data-field=declaration {$rowstyle} {$recordattrs}>
+		{$declaration_value}
+	</td>
+{END declaration_fieldcolumn}
 
 
 	{BEGIN lap_fieldcolumn}
@@ -909,13 +913,6 @@
 		{$points_value}
 	</td>
 {END points_fieldcolumn}
-
-
-	{BEGIN declaration_fieldcolumn}
-	<td class="bs-gridcell {$declaration_class}"  data-field=declaration {$rowstyle} {$recordattrs}>
-		{$declaration_value}
-	</td>
-{END declaration_fieldcolumn}
 
 
 	{BEGIN note_fieldcolumn}

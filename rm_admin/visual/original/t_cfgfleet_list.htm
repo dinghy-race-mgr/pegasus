@@ -204,7 +204,7 @@
 <div {$masterinfo_chiddenattr} data-pageid="{$pageid}" data-container="masterinfo" class="    "> 
 
 {BEGIN mastertable_block}
-<div class="panel panel-info table-panel">
+<div class="panel panel-default table-panel">
 	<div class="panel-heading">
 		{$master_heading}
 	</div>
@@ -213,7 +213,7 @@
 		
 	</div>
 </div>
-
+<br>
 {END mastertable_block}
 
 
@@ -464,19 +464,6 @@
 									{END checkbox_column}
 
 																		
-									{BEGIN fleet_num_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$fleet_num_class}" data-field=fleet_num>
-									{BEGIN fleet_num_fieldheader}
-																				<span {$fleet_num_orderlinkattrs}>
-											{$label t_cfgfleet fleet_num}
-										</span>
-									{END fleet_num_fieldheader}
-									</th>
-									{END fleet_num_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN start_num_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$start_num_class}" data-field=start_num>
 									{BEGIN start_num_fieldheader}
@@ -486,6 +473,19 @@
 									{END start_num_fieldheader}
 									</th>
 									{END start_num_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN fleet_num_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$fleet_num_class}" data-field=fleet_num>
+									{BEGIN fleet_num_fieldheader}
+																				<span {$fleet_num_orderlinkattrs}>
+											{$label t_cfgfleet fleet_num}
+										</span>
+									{END fleet_num_fieldheader}
+									</th>
+									{END fleet_num_fieldheadercolumn}
 									
 									
 									
@@ -605,18 +605,18 @@
 
 	
 
-	{BEGIN fleet_num_fieldcolumn}
-	<td class="bs-gridcell {$fleet_num_class}"  data-field=fleet_num {$rowstyle} {$recordattrs}>
-		{$fleet_num_value}
-	</td>
-{END fleet_num_fieldcolumn}
-
-
 	{BEGIN start_num_fieldcolumn}
 	<td class="bs-gridcell {$start_num_class}"  data-field=start_num {$rowstyle} {$recordattrs}>
 		{$start_num_value}
 	</td>
 {END start_num_fieldcolumn}
+
+
+	{BEGIN fleet_num_fieldcolumn}
+	<td class="bs-gridcell {$fleet_num_class}"  data-field=fleet_num {$rowstyle} {$recordattrs}>
+		{$fleet_num_value}
+	</td>
+{END fleet_num_fieldcolumn}
 
 
 	{BEGIN fleet_code_fieldcolumn}

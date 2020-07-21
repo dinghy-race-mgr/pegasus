@@ -62,11 +62,11 @@ if ($_SESSION['events']['numevents'] > 0)
         array('state'=>"submitentry", 'event-list'=>$signon_entry_list, 'opt_cfg' =>$_SESSION['option_cfg'] ));
 }
 
-else  // no events today - nothing to deal with
+else
 {
     $event_list = $tmpl_o->get_template("no_events", array(), $_SESSION['events']);
     $_SESSION['pagefields']['body'] = $tmpl_o->get_template("race_control", $race_fields,
-             array('state' => "noevents", 'event-list' => $event_list) );
+        array('state' => "noevents", 'event-list' => $event_list) );
 }
 
 // assemble and render page

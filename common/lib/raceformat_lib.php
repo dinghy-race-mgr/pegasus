@@ -394,7 +394,7 @@ function createprintbutton($eventid, $print)
         $html = <<<EOT
         <a class="btn btn-primary active pull-right" role="button"
            href="race_format_pg.php?eventid=$eventid" target="_BLANK" style="width: 200px" >
-           {$lang['app']['printable']}  &raquo;
+           print friendly &raquo;
         </a>
 EOT;
     }

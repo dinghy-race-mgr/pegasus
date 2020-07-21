@@ -59,270 +59,82 @@
 
 
 <div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
-	{BEGIN active_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_active} bs-viewform-group" data-fieldname="active">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_active}">
-			{$label t_competitor active}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$active_value}&nbsp;
+	<div class="container">	
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_New_section1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_New_section1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_New_section1_xtrclass}" role="tabpanel"  {$section_New_section1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section New_section1}
+		  </div>
 		</div>
 	</div>
-</div>
-{END active_fieldblock}
-	{BEGIN trackerid_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_trackerid} bs-viewform-group" data-fieldname="trackerid">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_trackerid}">
-			{$label t_competitor trackerid}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$trackerid_value}&nbsp;
+
+	</div>
+	<div class="container">	
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Helm_Details1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Helm_Details1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Helm_Details1_xtrclass}" role="tabpanel"  {$section_Helm_Details1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Helm_Details1}
+		  </div>
 		</div>
 	</div>
-</div>
-{END trackerid_fieldblock}
-	{BEGIN hullcolour_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_hullcolour} bs-viewform-group" data-fieldname="hullcolour">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_hullcolour}">
-			{$label t_competitor hullcolour}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$hullcolour_value}&nbsp;
+
+	</div>
+	<div class="container">	
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Crew_Details1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Crew_Details1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Crew_Details1_xtrclass}" role="tabpanel"  {$section_Crew_Details1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Crew_Details1}
+		  </div>
 		</div>
 	</div>
-</div>
-{END hullcolour_fieldblock}
-	{BEGIN telephone_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_telephone} bs-viewform-group" data-fieldname="telephone">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_telephone}">
-			{$label t_competitor telephone}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$telephone_value}&nbsp;
+
+	</div>
+	<div class="container">	
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Other_Details1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Other_Details1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Other_Details1_xtrclass}" role="tabpanel"  {$section_Other_Details1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Other_Details1}
+		  </div>
 		</div>
 	</div>
-</div>
-{END telephone_fieldblock}
-	{BEGIN classid_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_classid} bs-viewform-group" data-fieldname="classid">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_classid}">
-			{$label t_competitor classid}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$classid_value}&nbsp;
-		</div>
+
 	</div>
-</div>
-{END classid_fieldblock}
-	{BEGIN boatnum_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_boatnum} bs-viewform-group" data-fieldname="boatnum">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_boatnum}">
-			{$label t_competitor boatnum}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$boatnum_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END boatnum_fieldblock}
-	{BEGIN boatname_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_boatname} bs-viewform-group" data-fieldname="boatname">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_boatname}">
-			{$label t_competitor boatname}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$boatname_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END boatname_fieldblock}
-	{BEGIN club_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_club} bs-viewform-group" data-fieldname="club">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_club}">
-			{$label t_competitor club}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$club_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END club_fieldblock}
-	{BEGIN helm_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_helm} bs-viewform-group" data-fieldname="helm">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_helm}">
-			{$label t_competitor helm}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$helm_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END helm_fieldblock}
-	{BEGIN helm_dob_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_helm_dob} bs-viewform-group" data-fieldname="helm_dob">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_helm_dob}">
-			{$label t_competitor helm_dob}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$helm_dob_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END helm_dob_fieldblock}
-	{BEGIN helm_email_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_helm_email} bs-viewform-group" data-fieldname="helm_email">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_helm_email}">
-			{$label t_competitor helm_email}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$helm_email_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END helm_email_fieldblock}
-	{BEGIN crew_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_crew} bs-viewform-group" data-fieldname="crew">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_crew}">
-			{$label t_competitor crew}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$crew_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END crew_fieldblock}
-	{BEGIN crew_dob_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_crew_dob} bs-viewform-group" data-fieldname="crew_dob">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_crew_dob}">
-			{$label t_competitor crew_dob}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$crew_dob_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END crew_dob_fieldblock}
-	{BEGIN crew_email_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_crew_email} bs-viewform-group" data-fieldname="crew_email">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_crew_email}">
-			{$label t_competitor crew_email}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$crew_email_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END crew_email_fieldblock}
-	{BEGIN personal_py_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_personal_py} bs-viewform-group" data-fieldname="personal_py">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_personal_py}">
-			{$label t_competitor personal_py}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$personal_py_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END personal_py_fieldblock}
-	{BEGIN skill_level_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_skill_level} bs-viewform-group" data-fieldname="skill_level">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_skill_level}">
-			{$label t_competitor skill_level}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$skill_level_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END skill_level_fieldblock}
-	{BEGIN regular_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_regular} bs-viewform-group" data-fieldname="regular">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_regular}">
-			{$label t_competitor regular}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$regular_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END regular_fieldblock}
-	{BEGIN flight_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_flight} bs-viewform-group" data-fieldname="flight">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_flight}">
-			{$label t_competitor flight}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$flight_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END flight_fieldblock}
-	{BEGIN grouplist_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_grouplist} bs-viewform-group" data-fieldname="grouplist">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_grouplist}">
-			{$label t_competitor grouplist}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$grouplist_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END grouplist_fieldblock}
-	{BEGIN prizelist_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_prizelist} bs-viewform-group" data-fieldname="prizelist">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_prizelist}">
-			{$label t_competitor prizelist}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$prizelist_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END prizelist_fieldblock}
-	{BEGIN last_entry_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_last_entry} bs-viewform-group" data-fieldname="last_entry">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_last_entry}">
-			{$label t_competitor last_entry}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$last_entry_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END last_entry_fieldblock}
-	{BEGIN last_event_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_last_event} bs-viewform-group" data-fieldname="last_event">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_last_event}">
-			{$label t_competitor last_event}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$last_event_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END last_event_fieldblock}
 </div>
 
 

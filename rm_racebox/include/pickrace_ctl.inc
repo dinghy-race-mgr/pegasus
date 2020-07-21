@@ -59,8 +59,8 @@ $btn_addrace = array(
     "fields"  => array(
         "id"          => "addrace",
         "style"       => "primary",
-        "size"        => "md",
-        "label"       => "Add Race Today",
+        "size"        => "lg",
+        "label"       => " Add Race Today",
         "glyph"       => "glyphicon-plus-sign",
         "g-pos"       => "left",
         "popover"     => "click to add a new race for today",
@@ -142,5 +142,3 @@ $mdl_format = array(
         ),
 );
 
-
-?>

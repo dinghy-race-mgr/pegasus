@@ -93,7 +93,14 @@
 		<li><a href=# id="showOptPanel{$id}">Show search panel</a></li>
 		{END searchPanelTopButtons}	
 		
-				
+				<li role="separator" class="divider"></li>	
+		{BEGIN saveSeachButton}
+		<li><a href=# id="saveSearch{$id}"  >Save search</a></li>
+		{END saveSeachButton}
+		{BEGIN savedSeachesButton}
+		<li><a {$saveSearchButtonAttrs} id="savedSearches{$id}">Saved searches:</a></li>
+		{END savedSeachesButton}
+		
 				<li role="separator" class="divider"></li>	
 		
 				
@@ -310,11 +317,121 @@
 
 
 
+{BEGIN field_hide_panel}
+<div {$bsfieldhidepanel_hiddenattr} data-pageid="{$pageid}" data-brick="bsfieldhidepanel" id="fildhidepanel{$id}" class="keep-open btn-group" title="Show/hide columns">
+	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button"><i class="glyphicon glyphicon-th-list"></i> <span class="caret"></span></button>
+	<ul role="menu" class="dropdown-menu dropdown-left">
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_classname" checked="checked" value="1" data-field="classname">
+			  <span>{$label t_class classname}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_info" checked="checked" value="1" data-field="info">
+			  <span>{$label t_class info}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_nat_py" checked="checked" value="1" data-field="nat_py">
+			  <span>{$label t_class nat_py}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_local_py" checked="checked" value="1" data-field="local_py">
+			  <span>{$label t_class local_py}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_popular" checked="checked" value="1" data-field="popular">
+			  <span>{$label t_class popular}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_category" checked="checked" value="1" data-field="category">
+			  <span>{$label t_class category}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_crew" checked="checked" value="1" data-field="crew">
+			  <span>{$label t_class crew}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_active" checked="checked" value="1" data-field="active">
+			  <span>{$label t_class active}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+	</ul>
+</div>
+
+{END field_hide_panel}
+
 
 
 </div>
 {END container_gridinfo}
 
+
+
+
+
+
+
+
+{BEGIN container_gridinfo_sort}
+<div {$gridinfo_sort_chiddenattr} data-pageid="{$pageid}" data-container="gridinfo_sort" class=" bottom-margin pull-right text-right col-md-12 "> 
+
+{BEGIN reorder_records}
+<div {$reorder_records_hiddenattr} data-pageid="{$pageid}" data-brick="reorder_records" class="form-inline sortby-ctrl">
+Sort by&nbsp;{$sortByDropdown}
+</div>
+
+{END reorder_records}
+
+
+
+</div>
+{END container_gridinfo_sort}
 
 
 
@@ -504,6 +621,19 @@
 									
 									
 									
+									{BEGIN popular_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$popular_class}" data-field=popular>
+									{BEGIN popular_fieldheader}
+																				<span {$popular_orderlinkattrs}>
+											{$label t_class popular}
+										</span>
+									{END popular_fieldheader}
+									</th>
+									{END popular_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN category_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$category_class}" data-field=category>
 									{BEGIN category_fieldheader}
@@ -526,19 +656,6 @@
 									{END crew_fieldheader}
 									</th>
 									{END crew_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN popular_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$popular_class}" data-field=popular>
-									{BEGIN popular_fieldheader}
-																				<span {$popular_orderlinkattrs}>
-											{$label t_class popular}
-										</span>
-									{END popular_fieldheader}
-									</th>
-									{END popular_fieldheadercolumn}
 									
 									
 									
@@ -658,6 +775,13 @@
 {END local_py_fieldcolumn}
 
 
+	{BEGIN popular_fieldcolumn}
+	<td class="bs-gridcell {$popular_class}"  data-field=popular {$rowstyle} {$recordattrs}>
+		{$popular_value}
+	</td>
+{END popular_fieldcolumn}
+
+
 	{BEGIN category_fieldcolumn}
 	<td class="bs-gridcell {$category_class}"  data-field=category {$rowstyle} {$recordattrs}>
 		{$category_value}
@@ -670,13 +794,6 @@
 		{$crew_value}
 	</td>
 {END crew_fieldcolumn}
-
-
-	{BEGIN popular_fieldcolumn}
-	<td class="bs-gridcell {$popular_class}"  data-field=popular {$rowstyle} {$recordattrs}>
-		{$popular_value}
-	</td>
-{END popular_fieldcolumn}
 
 
 	{BEGIN active_fieldcolumn}

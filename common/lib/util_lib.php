@@ -553,19 +553,20 @@ function u_initconfigfile($inifile)
 function u_initsetparams($lang, $mode, $debug)
 {
     global $loc;
-    
-    if (!empty($lang)) 
+
+    $_SESSION['lang'] = "en";
+    if (!empty($lang))
     { 
-        if (file_exists("$loc/config/$lang-racebox-lang.php"))
+        if (file_exists("$loc/config/lang/$lang-racebox-lang.php"))
         {
             $_SESSION['lang'] = $lang;
         }
     }
-    else
-    {
-        $_SESSION['lang'] = "en";
-        u_writelog("ERROR: requested language file does not exist - using english default", 0);
-    } 
+//    else
+//    {
+//        $_SESSION['lang'] = "en";
+//        u_writelog("ERROR: requested language file does not exist - using english default", 0);
+//    }
     
     $_SESSION['mode'] = "live";  //<-- live as default
     if (!empty($mode))
@@ -578,13 +579,13 @@ function u_initsetparams($lang, $mode, $debug)
     {
         if (is_numeric($debug) AND $debug>=0 AND $debug<=2) { $_SESSION['debug'] = $debug; }
     }
-    u_writelog("parameters: lang = {$_SESSION['lang']}, mode = {$_SESSION['mode']}, debug = {$_SESSION['debug']}", 0);    
+//    u_writelog("parameters: lang = {$_SESSION['lang']}, mode = {$_SESSION['mode']}, debug = {$_SESSION['debug']}", 0);
 }
 
 
 function u_initpagestart($eventid, $page, $menu)
 {
-    session_start();                                    // start session
+    //session_start();                                    // start session
     date_default_timezone_set($_SESSION['timezone']);   // set timezone
     
     // error reporting - full for development

@@ -72,7 +72,10 @@
 	</button>
 	<ul class="dropdown-menu">
 		
-				
+				{BEGIN exportselected_link}
+		<li class="massButton{$id} disabled"><a href="#" {$exportselectedlink_attrs} {$exportselectedlink_span} >Export selected</a></li>
+		{END exportselected_link}
+		
 				{BEGIN deleteselected_link}
 		<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
 		{END deleteselected_link}
@@ -88,9 +91,13 @@
 		{END searchPanelTopButtons}	
 		
 				
-				
-				
+				<li role="separator" class="divider"></li>	
 		
+				
+				{BEGIN export_link}
+		<li><a target="_blank" href="t_code_result_export.php"  {$exportlink_attrs}>Export results</a></li>
+		{END export_link}
+
 		
 				
 	</ul>  
@@ -404,6 +411,9 @@
 	.bs-gridcell[data-field=updby]:before {
 		content: "{$label t_code_result updby}";
 	}
+	.bs-gridcell[data-field=createdate]:before {
+		content: "{$label t_code_result createdate}";
+	}
 </style>
 <table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
 	<thead>
@@ -456,6 +466,45 @@
 									{END info_fieldheader}
 									</th>
 									{END info_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN scoring_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$scoring_class}" data-field=scoring>
+									{BEGIN scoring_fieldheader}
+																				<span {$scoring_orderlinkattrs}>
+											{$label t_code_result scoring}
+										</span>
+									{END scoring_fieldheader}
+									</th>
+									{END scoring_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN rank_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$rank_class}" data-field=rank>
+									{BEGIN rank_fieldheader}
+																				<span {$rank_orderlinkattrs}>
+											{$label t_code_result rank}
+										</span>
+									{END rank_fieldheader}
+									</th>
+									{END rank_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN active_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
+									{BEGIN active_fieldheader}
+																				<span {$active_orderlinkattrs}>
+											{$label t_code_result active}
+										</span>
+									{END active_fieldheader}
+									</th>
+									{END active_fieldheadercolumn}
 									
 									
 									
@@ -529,6 +578,27 @@
 		{$info_value}
 	</td>
 {END info_fieldcolumn}
+
+
+	{BEGIN scoring_fieldcolumn}
+	<td class="bs-gridcell {$scoring_class}"  data-field=scoring {$rowstyle} {$recordattrs}>
+		{$scoring_value}
+	</td>
+{END scoring_fieldcolumn}
+
+
+	{BEGIN rank_fieldcolumn}
+	<td class="bs-gridcell {$rank_class}"  data-field=rank {$rowstyle} {$recordattrs}>
+		{$rank_value}
+	</td>
+{END rank_fieldcolumn}
+
+
+	{BEGIN active_fieldcolumn}
+	<td class="bs-gridcell {$active_class}"  data-field=active {$rowstyle} {$recordattrs}>
+		{$active_value}
+	</td>
+{END active_fieldcolumn}
 
 	{BEGIN endrecord_block}
 	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>

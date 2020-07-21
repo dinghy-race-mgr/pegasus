@@ -90,8 +90,8 @@ EOT;
             <meta name="author" content="">
 
             <link   rel="shortcut icon"    href="{loc}/common/images/favicon.ico">
-            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap/css/bootstrap.min.css" >
-            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap/css/bootstrap-theme.min.css">
+            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap/css/flatly_bootstrap.min.css" >
+            <!-- link   rel="stylesheet"       href="{loc}/common/oss/bootstrap/css/bootstrap-theme.min.css" -->
             <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bootstrap/js/bootstrap.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
@@ -230,23 +230,148 @@ EOT;
 
 }
 
+function racebox_navbar($params=array())
+    /*
+     * fields
+     *    eventid
+     *    brand
+     *    clubcode
+     *    website
+     *    page
+     *    scoring
+     */
+{
 
+    $state = array (
+        "dashboard"     =>"rm-navmenu",
+        "race"          =>"rm-navmenu",
+        "entries"       =>"rm-navmenu",
+        "start"         =>"rm-navmenu",
+        "timer"         =>"rm-navmenu",
+        "pursuit"       =>"rm-navmenu",
+        "results"       =>"rm-navmenu",
+        "help"          =>"rm-navmenu",
+        "club"          =>"rm-navmenu",
+    );
+    $state["{$params['page']}"] = "rm-navmenu-active";
+
+// setup club menu
+    $club_menu = "";
+    if (!empty($_SESSION['clublink']))
+    {
+        foreach ($_SESSION['clublink'] as $data) {
+            $club_menu .= <<<EOT
+                            <li ><a href="{$data['url']}" target="_blank">{$data['label']}</a></li>
+EOT;
+        }
+    }
+
+// setup pursuit finish menu option
+    $pursuit = "";
+    if ($params['pursuit'])
+    {
+        $pursuit = <<<EOT
+            <li>
+                <a href="pursuit_pg.php?eventid={eventid}&menu=true" >
+                   <span class="{$state['pursuit']}">pursuit</span>
+                </a>
+            </li>
+EOT;
+    }
+
+    $html = <<<EOT
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+             <div class="" style="margin-left:15px; margin-right:15px;">
+                  <div class="navbar-header" style="min-width:25%">
+                       <a class="navbar-brand rm-brand-title" href="{$_SESSION['sys_website']}" target="_blank">
+                           <span style="padding-right: 40px">{brand}</span>
+                       </a>
+                  </div>
+
+                  <div class="collapse navbar-collapse">
+                      <ul class="nav navbar-nav" >
+                          <li>
+                              <a href="pickrace_pg.php?eventid={eventid}&menu=true" >
+                                  <span class="{$state['dashboard']}"><i>programme</i></span>
+                              </a>
+                          </li>
+
+                          <li>
+                              <a href="race_pg.php?eventid={eventid}&menu=true" >
+                                  <span class="{$state['race']}">race admin</span>
+                              </a>
+                          </li>
+
+                          <li>
+                              <a href="entries_pg.php?eventid={eventid}&menu=true" >
+                                  <span class="{$state['entries']}">entries</span>
+                              </a>
+                          </li>
+
+                          <li>
+                              <a href="start_pg.php?eventid={eventid}&menu=true" >
+                                  <span class="{$state['start']}">start</span>
+                              </a>
+                          </li>
+
+                          <li>
+                              <a href="timer_pg.php?eventid={eventid}&menu=true" >
+                                  <span class="{$state['timer']}">time laps</span>
+                              </a>
+                          </li>
+
+                          $pursuit
+
+                          <li>
+                              <a href="results_pg.php?eventid={eventid}&menu=true" >
+                                  <span class="{$state['results']}">results</span>
+                              </a>
+                          </li>
+
+                      </ul>
+
+                      <ul class="nav navbar-nav pull-right">
+                          <li>
+                              <a href="help_pg.php?eventid={eventid}&page={page}&menu=true" >
+                                  <span class="{$state['help']}">help</span>
+                              </a>
+                          </li>
+                          <li class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                  <span class="{$state['club']}">{$_SESSION['clubcode']} <span class="caret"></span></span>
+                              </a>
+                              <ul class="dropdown-menu" role="menu">
+                                  <li >&nbsp;&nbsp;<b>Local information &hellip;</b></li>
+                                  <li class="divider"></li>
+                                  $club_menu
+                              </ul>
+                          </li>
+                          <li>
+                              <div id="clockdisplay" style="width:100px; color:orange; font-size:150%; font-weight: bold; text-align: right; padding-top:12px"></div>
+                          </li>
+                      </ul>
+
+                  </div>
+             </div>
+        </div>
+EOT;
+    return $html;
+}
 
 
 
 function support_team($params = array())
 {
     $html = <<<EOT
-    <a class="btn btn-default" role="button" data-content="{info}" data-toggle="popover"
-        data-placement="bottom" href="#" data-original-title="<b>{label}</b>">
+    <a class="btn btn-default" role="button" data-content="Click here for local help" data-toggle="popover"
+        data-placement="bottom" href="{link}" data-original-title="<b>Support Team</b>">
         <h4>
             <span class="glyphicon glyphicon-user text-primary" style="font-size: 2em;"></span>
             <span class="glyphicon glyphicon-user text-danger"  style="font-size: 2em;"></span>
         </h4>
-        {label}
+        Support Team
     </a>
 EOT;
     return $html;
 }
 
-?>

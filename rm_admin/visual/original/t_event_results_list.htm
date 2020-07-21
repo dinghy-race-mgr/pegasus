@@ -73,12 +73,8 @@
 	<ul class="dropdown-menu">
 		
 				
-				{BEGIN deleteselected_link}
-		<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
-		{END deleteselected_link}
+				
 		
-				<li role="separator" class="divider"></li>	
-
 				{BEGIN asearch_link}
 		<li><a href="t_event_results_search.php" {$advsearchlink_attrs}>Advanced search</a></li>
 		{END asearch_link}
@@ -253,10 +249,7 @@
 
 {BEGIN record_controls_block}
 <span {$recordcontrol_hiddenattr} data-pageid="{$pageid}" data-brick="recordcontrol">
-		{BEGIN deleteselected_link}
-	<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
-	{END deleteselected_link}
-		</span>
+			</span>
 
 {END record_controls_block}
 
@@ -288,11 +281,111 @@
 
 
 
+{BEGIN field_hide_panel}
+<div {$bsfieldhidepanel_hiddenattr} data-pageid="{$pageid}" data-brick="bsfieldhidepanel" id="fildhidepanel{$id}" class="keep-open btn-group" title="Show/hide columns">
+	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button"><i class="glyphicon glyphicon-th-list"></i> <span class="caret"></span></button>
+	<ul role="menu" class="dropdown-menu dropdown-left">
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_event_date" checked="checked" value="1" data-field="event_date">
+			  <span>{$label t_event_results event_date}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_event_name" checked="checked" value="1" data-field="event_name">
+			  <span>{$label t_event_results event_name}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_event_start" checked="checked" value="1" data-field="event_start">
+			  <span>{$label t_event_results event_start}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_event_format" checked="checked" value="1" data-field="event_format">
+			  <span>{$label t_event_results event_format}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_event_status" checked="checked" value="1" data-field="event_status">
+			  <span>{$label t_event_results event_status}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_series_code" checked="checked" value="1" data-field="series_code">
+			  <span>{$label t_event_results series_code}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_result_notes" checked="checked" value="1" data-field="result_notes">
+			  <span>{$label t_event_results result_notes}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+	</ul>
+</div>
+
+{END field_hide_panel}
+
 
 
 </div>
 {END container_gridinfo}
 
+
+
+
+
+
+
+
+{BEGIN container_gridinfo_sort}
+<div {$gridinfo_sort_chiddenattr} data-pageid="{$pageid}" data-container="gridinfo_sort" class=" bottom-margin pull-right text-right col-md-12 "> 
+
+{BEGIN reorder_records}
+<div {$reorder_records_hiddenattr} data-pageid="{$pageid}" data-brick="reorder_records" class="form-inline sortby-ctrl">
+Sort by&nbsp;{$sortByDropdown}
+</div>
+
+{END reorder_records}
+
+
+
+</div>
+{END container_gridinfo_sort}
 
 
 
@@ -441,12 +534,7 @@
 									<th iEditCont="all">&nbsp;</th>
 									{END listIcons_column}	
 
-																		{BEGIN checkbox_column}
-									<th class="">
-										<input type="checkbox" {$checkboxheader_attrs}>
-									</th>
-									{END checkbox_column}
-
+									
 																		{BEGIN t_event_results_dtable_column}
 									<th >&nbsp;</th>
 									{END t_event_results_dtable_column}
@@ -460,19 +548,6 @@
 									{END event_date_fieldheader}
 									</th>
 									{END event_date_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN series_code_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$series_code_class}" data-field=series_code>
-									{BEGIN series_code_fieldheader}
-																				<span {$series_code_orderlinkattrs}>
-											{$label t_event_results series_code}
-										</span>
-									{END series_code_fieldheader}
-									</th>
-									{END series_code_fieldheadercolumn}
 									
 									
 									
@@ -516,19 +591,6 @@
 									
 									
 									
-									{BEGIN event_open_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$event_open_class}" data-field=event_open>
-									{BEGIN event_open_fieldheader}
-																				<span {$event_open_orderlinkattrs}>
-											{$label t_event_results event_open}
-										</span>
-									{END event_open_fieldheader}
-									</th>
-									{END event_open_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN event_status_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$event_status_class}" data-field=event_status>
 									{BEGIN event_status_fieldheader}
@@ -538,6 +600,19 @@
 									{END event_status_fieldheader}
 									</th>
 									{END event_status_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN series_code_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$series_code_class}" data-field=series_code>
+									{BEGIN series_code_fieldheader}
+																				<span {$series_code_orderlinkattrs}>
+											{$label t_event_results series_code}
+										</span>
+									{END series_code_fieldheader}
+									</th>
+									{END series_code_fieldheadercolumn}
 									
 									
 									
@@ -585,50 +660,39 @@
 		</td>	
 	{END listIcons_column}	
 
-		{BEGIN checkbox_column}
-	<td  iEditCont="checkBox" class="bs-gridcheckbox" {$rowstyle} {$recordattrs}>
-	{BEGIN checkbox}
-	<input type="checkbox" {$checkbox_attrs}>
-	{END checkbox}
-	</td>
-	{END checkbox_column}
-
+	
 		{BEGIN t_event_results_dtable_column}
 	<td class="rnr-nowrap bs-griddetails" {$rowstyle} {$recordattrs}>
 	
-			{BEGIN t_message_dtable_link}
-		<span>
-			<a {$t_message_dtablelink_attrs}>
-			Messages
-							<span {$t_message_childnumber_attr} dir="ltr">
-				{BEGIN t_message_childcount}
-					({$t_message_childnumber})
-				{END t_message_childcount}</span>
-			</a>
-						<br/>
-		</span>
-		{END t_message_dtable_link}
-		{BEGIN t_resultfile_dtable_link}
-		<span>
-			<a {$t_resultfile_dtablelink_attrs}>
-			Result Files
-						</a>
-						<br/>
-		</span>
-		{END t_resultfile_dtable_link}
-		{BEGIN t_result_dtable_link}
-		<span>
-			<a {$t_result_dtablelink_attrs}>
-			Results
-							<span {$t_result_childnumber_attr} dir="ltr">
-				{BEGIN t_result_childcount}
-					({$t_result_childnumber})
-				{END t_result_childcount}</span>
-			</a>
-						<br/>
-		</span>
-		{END t_result_dtable_link}
-
+			{BEGIN dtables_link}
+		
+							
+				
+							
+				
+							
+				
+				<a {$dtables_link_attrs} class="glyphicon glyphicon-th-list {$dtables_link_class}" title="Show details"></a>
+								{BEGIN t_message_childcount}
+				<a {$t_message_link_attrs} class="{$t_message_dlink_class}" title="Messages">
+					<span class="details-badge badge t_message_badge" {$t_message_childnumber_attr}>
+						{$t_message_childnumber}
+					</span></a>
+				{END t_message_childcount}
+								{BEGIN t_resultfile_childcount}
+				<a {$t_resultfile_link_attrs} class="{$t_resultfile_dlink_class}" title="Result Files">
+					<span class="details-badge badge t_resultfile_badge" {$t_resultfile_childnumber_attr}>
+						{$t_resultfile_childnumber}
+					</span></a>
+				{END t_resultfile_childcount}
+								{BEGIN t_result_childcount}
+				<a {$t_result_link_attrs} class="{$t_result_dlink_class}" title="Results">
+					<span class="details-badge badge t_result_badge" {$t_result_childnumber_attr}>
+						{$t_result_childnumber}
+					</span></a>
+				{END t_result_childcount}
+		{END dtables_link}
+	
 	
 	</td>
 	{END t_event_results_dtable_column}
@@ -639,13 +703,6 @@
 		{$event_date_value}
 	</td>
 {END event_date_fieldcolumn}
-
-
-	{BEGIN series_code_fieldcolumn}
-	<td class="bs-gridcell {$series_code_class}"  data-field=series_code {$rowstyle} {$recordattrs}>
-		{$series_code_value}
-	</td>
-{END series_code_fieldcolumn}
 
 
 	{BEGIN event_name_fieldcolumn}
@@ -669,18 +726,18 @@
 {END event_format_fieldcolumn}
 
 
-	{BEGIN event_open_fieldcolumn}
-	<td class="bs-gridcell {$event_open_class}"  data-field=event_open {$rowstyle} {$recordattrs}>
-		{$event_open_value}
-	</td>
-{END event_open_fieldcolumn}
-
-
 	{BEGIN event_status_fieldcolumn}
 	<td class="bs-gridcell {$event_status_class}"  data-field=event_status {$rowstyle} {$recordattrs}>
 		{$event_status_value}
 	</td>
 {END event_status_fieldcolumn}
+
+
+	{BEGIN series_code_fieldcolumn}
+	<td class="bs-gridcell {$series_code_class}"  data-field=series_code {$rowstyle} {$recordattrs}>
+		{$series_code_value}
+	</td>
+{END series_code_fieldcolumn}
 
 
 	{BEGIN result_notes_fieldcolumn}

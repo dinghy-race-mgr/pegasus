@@ -53,24 +53,80 @@
 
 <div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
 	<div class="container">	
-				<div class="panel with-tabs panel-default form-tabs">
-		<div class="panel-heading">
-		{$tabgroup_Identification1_header}
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Identification1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Identification1_label}
+			</a>
+		  </h4>
 		</div>
-		<div class="panel-body">
-		{$TabGroup Identification1}&nbsp;		
+		<div  class="panel-collapse collapse {$section_Identification1_xtrclass}" role="tabpanel"  {$section_Identification1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Identification1}
+		  </div>
 		</div>
 	</div>
-			
+
 	</div>
 	<div class="container">	
-						
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Race_Config1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Race_Config1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Race_Config1_xtrclass}" role="tabpanel"  {$section_Race_Config1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Race_Config1}
+		  </div>
+		</div>
+	</div>
+
 	</div>
 	<div class="container">	
-						
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Boat_Types1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Boat_Types1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Boat_Types1_xtrclass}" role="tabpanel"  {$section_Boat_Types1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Boat_Types1}
+		  </div>
+		</div>
+	</div>
+
 	</div>
 	<div class="container">	
-						
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Competitor_Type1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Competitor_Type1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Competitor_Type1_xtrclass}" role="tabpanel"  {$section_Competitor_Type1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Competitor_Type1}
+		  </div>
+		</div>
+	</div>
+
 	</div>
 </div>
 

@@ -9,6 +9,8 @@
 
 $_SESSION['app_name']      = "racebox";
 
+$_SESSION['syslog'] = "racebox_".date("Y-m-d").".log";                   // sys log file
+
 $_SESSION['race_states']    = array("scheduled", "selected", "running", "sailed", "completed", "cancelled", "abandoned");
 
 $_SESSION['timer_options'] = array( 

@@ -1,75 +1,117 @@
 <div {$pageattrs}>
 
-{BEGIN container_1}
+{BEGIN container_tabfields}
+<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
 
 
-
-<table class="fieldGrid">
 {BEGIN regular_tabfieldblock}
-<tr class="{$fielddispclass_regular}" data-fieldname="regular">
-	<td class="style1 rnr-label">
-		{BEGIN regular_label}{$label t_competitor regular}{END regular_label}
-	</td>
-	<td class="rnr-control style3">
-		{$regular_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_regular}" data-fieldname="regular" data-signal-error-for="regular{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_regular}">
+			{BEGIN regular_label}{$label t_competitor regular}{END regular_label}
+		</label>
+		<div class="col-md-6 " >
+			{$regular_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="regular">
+			<div class="text-muted" >
+			{$tooltip t_competitor regular}
+			</div>
+		</div>
+	</div>
+</div>
 {END regular_tabfieldblock}
 {BEGIN personal_py_tabfieldblock}
-<tr class="{$fielddispclass_personal_py}" data-fieldname="personal_py">
-	<td class="style1 rnr-label">
-		{BEGIN personal_py_label}{$label t_competitor personal_py}{END personal_py_label}
-	</td>
-	<td class="rnr-control style3">
-		{$personal_py_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_personal_py}" data-fieldname="personal_py" data-signal-error-for="personal_py{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_personal_py}">
+			{BEGIN personal_py_label}{$label t_competitor personal_py}{END personal_py_label}
+		</label>
+		<div class="col-md-6 " >
+			{$personal_py_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="personal_py">
+			<div class="text-muted" >
+			{$tooltip t_competitor personal_py}
+			</div>
+		</div>
+	</div>
+</div>
 {END personal_py_tabfieldblock}
 {BEGIN skill_level_tabfieldblock}
-<tr class="{$fielddispclass_skill_level}" data-fieldname="skill_level">
-	<td class="style1 rnr-label">
-		{BEGIN skill_level_label}{$label t_competitor skill_level}{END skill_level_label}
-	</td>
-	<td class="rnr-control style3">
-		{$skill_level_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_skill_level}" data-fieldname="skill_level" data-signal-error-for="skill_level{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_skill_level}">
+			{BEGIN skill_level_label}{$label t_competitor skill_level}{END skill_level_label}
+		</label>
+		<div class="col-md-6 " >
+			{$skill_level_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="skill_level">
+			<div class="text-muted" >
+			{$tooltip t_competitor skill_level}
+			</div>
+		</div>
+	</div>
+</div>
 {END skill_level_tabfieldblock}
 {BEGIN flight_tabfieldblock}
-<tr class="{$fielddispclass_flight}" data-fieldname="flight">
-	<td class="style1 rnr-label">
-		{BEGIN flight_label}{$label t_competitor flight}{END flight_label}
-	</td>
-	<td class="rnr-control style3">
-		{$flight_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_flight}" data-fieldname="flight" data-signal-error-for="flight{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_flight}">
+			{BEGIN flight_label}{$label t_competitor flight}{END flight_label}
+		</label>
+		<div class="col-md-6 " >
+			{$flight_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="flight">
+			<div class="text-muted" >
+			{$tooltip t_competitor flight}
+			</div>
+		</div>
+	</div>
+</div>
 {END flight_tabfieldblock}
 {BEGIN grouplist_tabfieldblock}
-<tr class="{$fielddispclass_grouplist}" data-fieldname="grouplist">
-	<td class="style1 rnr-label">
-		{BEGIN grouplist_label}{$label t_competitor grouplist}{END grouplist_label}
-	</td>
-	<td class="rnr-control style3">
-		{$grouplist_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_grouplist}" data-fieldname="grouplist" data-signal-error-for="grouplist{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_grouplist}">
+			{BEGIN grouplist_label}{$label t_competitor grouplist}{END grouplist_label}
+		</label>
+		<div class="col-md-6 " >
+			{$grouplist_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="grouplist">
+			<div class="text-muted" >
+			{$tooltip t_competitor grouplist}
+			</div>
+		</div>
+	</div>
+</div>
 {END grouplist_tabfieldblock}
 {BEGIN prizelist_tabfieldblock}
-<tr class="{$fielddispclass_prizelist}" data-fieldname="prizelist">
-	<td class="style1 rnr-label">
-		{BEGIN prizelist_label}{$label t_competitor prizelist}{END prizelist_label}
-	</td>
-	<td class="rnr-control style3">
-		{$prizelist_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_prizelist}" data-fieldname="prizelist" data-signal-error-for="prizelist{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_prizelist}">
+			{BEGIN prizelist_label}{$label t_competitor prizelist}{END prizelist_label}
+		</label>
+		<div class="col-md-6 " >
+			{$prizelist_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="prizelist">
+			<div class="text-muted" >
+			{$tooltip t_competitor prizelist}
+			</div>
+		</div>
+	</div>
+</div>
 {END prizelist_tabfieldblock}
-</table>
 
 
 
 
-{END container_1}
+
+</div>
+{END container_tabfields}
 
 </div>
