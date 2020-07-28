@@ -21,6 +21,14 @@ while( $data = db_fetch_array($rs))
         {
             $value = $keys['id'];
         }
+        elseif ($field == "min_py" AND empty($value))
+        {
+            $value = 0;
+        }
+        elseif ($field == "max_py" AND empty($value))
+        {
+            $value = 2000;
+        }
 
         $fields[] = "`".$field."`";
         $values[] = "'".addslashes($value)."'";

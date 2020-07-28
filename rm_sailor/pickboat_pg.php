@@ -35,7 +35,7 @@ if ($_SESSION['competitors']) { $numcompetitors = count($_SESSION['competitors']
 
 if ($numcompetitors == 0) { // none found
    $pbufr = $tmpl_o->get_template("search_nonfound_response",
-       array("searchstr"=>$searchstr, "retryscript"=>"search_pg.php"), array("addboat"=>$_SESSION['option_cfg']['addboat']));
+       array("searchstr"=>$searchstr, "retryscript"=>"search_pg.php"), array("add_btn"=>$_SESSION['option_cfg']['addboat']['active']));
 
 }  elseif ($numcompetitors == 1) { // one match found - go straight to requested function with no display or display details
     $target = sprintf($pick_script, $_SESSION['competitors'][0]['id']);

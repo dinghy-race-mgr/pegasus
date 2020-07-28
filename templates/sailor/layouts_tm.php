@@ -127,7 +127,7 @@ EOT;
     <div class="rm-form-style">
     
         <div class="row">     
-            <div class="col-xs-10 col-sm-10 col-md-8 col-lg-8 alert alert-info"  role="alert">Change details TEMPORARILY (just for today) ...</div>
+            <div class="col-xs-10 col-sm-10 col-md-8 col-lg-8 alert alert-info"  role="alert">Change details TEMPORARILY (just for these events) ...</div>
         </div>
     
         <form id="changeboatForm" class="form-horizontal" action="change_sc.php" method="post">
@@ -272,7 +272,7 @@ function boat_label($params = array())
                 <span class="rm-text-md">{team}</span>
             </p>
             <span class="badge pull-right $change_style rm-text-sm" >
-                <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Change Details For Today&nbsp;&nbsp;
+                <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Change Details&nbsp;&nbsp;
             </span>
         </a>
 EOT;
@@ -337,8 +337,11 @@ EOT;
         }
     }
 
+    $params['event_day'] != date("Y-m-d") ? $when = "on ".date("l jS F", strtotime($params['event_day'])) : $when = "today";
+    $params['numevents'] == 1 ? $num = "1 race" : $num = $params['numevents']." races";
+
     $bufr.= <<<EOT
-         <h2 class="text-success">{$_SESSION['events']['numevents']} race(s) today</h2>
+         <h2 class="text-success">$num $when</h2>
          <div>
              <table class="table" width="100%" style="table-layout: fixed">
                 $event_table

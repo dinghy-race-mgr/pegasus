@@ -42,8 +42,9 @@ unset($_SESSION['competitors']);
 // get events for today - or from list passed as arguments
 $db_o = new DB();
 $event_o = new EVENT($db_o);
+
 if ($_SESSION['mode'] == 'race') {
-    $_SESSION['events'] = get_event_details($_SESSION['event_passed']);
+    $_SESSION['events'] = get_event_details($_SESSION['sailor_event_window'], $_SESSION['event_passed']);
 } else {
     $_SESSION['events'] = get_cruise_details($_SESSION['sailor_cruiser_eventtypes'], true);
 }
@@ -77,7 +78,8 @@ if ($_SESSION['events']['numevents'] == 0) {
 $_SESSION['pagefields']['header-center'] = $_SESSION['option_cfg'][$page]['pagename'];
 $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(),
     array("page" => $page, "options" => set_page_options($page)));
-$_SESSION['pagefields']['body'] = $tmpl_o->get_template("boatsearch_fm", array("events_bufr"=>$events_bufr));
+$_SESSION['pagefields']['body'] = $tmpl_o->get_template("boatsearch_fm",
+    array("events_bufr"=>$events_bufr), array("add_btn"=>$_SESSION['option_cfg']['addboat']['active']));
 
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields'] );
 exit();

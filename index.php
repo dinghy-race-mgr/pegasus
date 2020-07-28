@@ -71,7 +71,7 @@ echo <<<EOT
       <div class="container" >
         <div class="row">
            <div class="col-md-7">
-               <h1><img src="common/images/logos/rmlogo-md.jpg"> raceManager</h1>
+               <h1><img src="common/images/logos/rmlogo-md.jpg"> raceManager HELLO</h1>
                <p>{$lang['msg']['maintitle']}</p>
            </div>
            <div class="col-md-5">

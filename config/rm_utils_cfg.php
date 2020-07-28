@@ -51,6 +51,7 @@ $_SESSION['rotamap'] = array(
     "ood_p"    => "race_duty",
     "ood_a"    => "race_duty",
     "ood_c"    => "race_duty",
+    "ood_b"    => "race_duty",
     "safety_d" => "safety_duty",
     "safety_c" => "safety_duty",
     "galley"   => "club_duty",

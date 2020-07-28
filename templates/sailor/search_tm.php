@@ -5,6 +5,18 @@
 
 function boatsearch_fm($params = array())
 {
+    $add_btn_bufr = "";
+    if ($params['add_btn'])
+    {
+        $add_btn_bufr = <<<EOT
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding-top: 15px !important">
+            <a href="addboat_pg.php" class="btn btn-info btn-sm rm-text-sm pull-right" role="button">
+                <strong><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> &nbsp;Add new boat ...</strong>                        
+            </a> 
+        </div> 
+EOT;
+    }
+
     $bufr = <<<EOT
         <div class="margin-top-20">            
             <div class="row">
@@ -24,11 +36,7 @@ function boatsearch_fm($params = array())
                         </div>
                     </form>
                 </div>    
-                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding-top: 15px !important">
-                    <a href="addboat_pg.php" class="btn btn-info btn-sm rm-text-sm pull-right" role="button">
-                        <strong><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> &nbsp;Add new boat ...</strong>                        
-                    </a> 
-                </div>                 
+                $add_btn_bufr                
             </div>
             <div class="row margin-top-30">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
@@ -50,7 +58,7 @@ function search_nonfound_response($params = array())
     $bufr = "";
 
     $addboat_bufr = "";
-    if ($params['addboat']) {
+    if ($params['add_btn']) {
         $addboat_bufr = <<<EOT
             <a href="addboat_pg.php" class="btn btn-block btn-info btn-md rm-text-bg" role="button">
                 <strong><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> &nbsp;Add new boat ...</strong>

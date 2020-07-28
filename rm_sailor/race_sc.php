@@ -27,7 +27,7 @@ $db_o = new DB();
 $event_o = new EVENT($db_o);
 
 // update event details
-$_SESSION['events'] = get_event_details($_SESSION['event_passed']);
+$_SESSION['events'] = get_event_details($_SESSION['sailor_event_window'], $_SESSION['event_passed']);
 $event_status = $_SESSION['events']['details'][$_REQUEST['event']]['event_status'];
 
 // arguments

@@ -228,6 +228,16 @@ function u_truncatestring ($string, $length, $dots = "...")
 
 }
 
+function u_daysdiff($datestr1, $datestr2)
+{
+    // gets no. of days between two dates
+    $date1 = new DateTime(date("Y-m-d", strtotime($datestr1)));
+    $date2 = new DateTime(date("Y-m-d", strtotime($datestr2)));
+    $interval = $date1->diff($date2);
+
+    return $interval->days;
+}
+
 function u_roundminutes($time, $resolution)
 /*
  * rounds minutes in time (hh:mm) to nearest number of minutes defined by
@@ -585,7 +595,7 @@ function u_initsetparams($lang, $mode, $debug)
 
 function u_initpagestart($eventid, $page, $menu)
 {
-    //session_start();                                    // start session
+    session_start();                                    // start session
     date_default_timezone_set($_SESSION['timezone']);   // set timezone
     
     // error reporting - full for development

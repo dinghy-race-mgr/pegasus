@@ -88,11 +88,7 @@ $_SESSION['pagefields'] = array(
 $count = 0;
 foreach ($_SESSION['option_cfg'] as $option => $cfg) {
     if ($option != "search" and $option != "pick" and $option != "change") { // must be configured
-        if (!$cfg['active']) {
-            unset($_SESSION['option_cfg']["$option"]);
-        } else {
-            $count++;
-        }
+       $count++;
     }
 }
 $_SESSION['numoptions'] = $count;

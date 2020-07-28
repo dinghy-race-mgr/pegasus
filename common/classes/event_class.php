@@ -414,23 +414,17 @@ class EVENT
         }
 
         $query = "SELECT * FROM t_event $where AND event_type != 'noevent' AND active = 1 ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
+        //echo "<pre>$query</pre>";
         //u_writedbg($query, "addrace", "getevents", 123);
 
-        $detail = $this->db->db_get_rows( $query );
-        if (empty($detail))       // nothing found
-        { 
-            $detail = false; 
-        }
-        else
-        {
-            foreach($detail as $k=>$row)
-            {
-                if (array_key_exists($row['event_format'], $formats))
-                {
+        $detail = $this->db->db_get_rows($query);
+        if (empty($detail))    {   // nothing found
+            $detail = false;
+        } else {
+            foreach ($detail as $k => $row) {
+                if (array_key_exists($row['event_format'], $formats)) {
                     $detail[$k]['race_name'] = $formats[$row['event_format']];
-                }
-                else
-                {
+                } else {
                     $detail[$k]['race_name'] = "";
                 }
             }
