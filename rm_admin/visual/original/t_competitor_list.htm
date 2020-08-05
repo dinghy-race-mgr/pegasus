@@ -602,20 +602,17 @@ Sort by&nbsp;{$sortByDropdown}
 	.bs-gridcell[data-field=trackerid]:before {
 		content: "{$label t_competitor trackerid}";
 	}
-	.bs-gridcell[data-field=updby]:before {
-		content: "{$label t_competitor updby}";
-	}
 	.bs-gridcell[data-field=upddate]:before {
 		content: "{$label t_competitor upddate}";
 	}
-	.bs-gridcell[data-field=classname]:before {
-		content: "{$label t_competitor classname}";
-	}
-	.bs-gridcell[data-field=cast_t_competitor_sailnum_as_int_]:before {
-		content: "{$label t_competitor cast_t_competitor_sailnum_as_int_}";
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_competitor updby}";
 	}
 	.bs-gridcell[data-field=createdate]:before {
 		content: "{$label t_competitor createdate}";
+	}
+	.bs-gridcell[data-field=classname]:before {
+		content: "{$label t_competitor classname}";
 	}
 </style>
 <table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
@@ -793,7 +790,12 @@ Sort by&nbsp;{$sortByDropdown}
 		
 	<span data-hidden {$ieditbuttonsholder_attrs}></span>
 
-	
+		{BEGIN copy_column}
+	{BEGIN copy_link}
+			<a class="glyphicon glyphicon-duplicate" {$copylink_attrs} title="Copy"></a>
+	{END copy_link}
+	{END copy_column}
+
 		{BEGIN view_column}
 	{BEGIN view_link}
 			<a class="glyphicon glyphicon-search" {$viewlink_attrs} title="View"></a>

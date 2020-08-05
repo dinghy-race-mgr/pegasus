@@ -1,75 +1,117 @@
 <div {$pageattrs}>
 
-{BEGIN container_1}
+{BEGIN container_tabfields}
+<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
 
 
-
-<table class="fieldGrid">
 {BEGIN classid_tabfieldblock}
-<tr class="{$fielddispclass_classid}" data-fieldname="classid">
-	<td class="style1 rnr-label">
-		{BEGIN classid_label}{$label t_competitor classid}{END classid_label}
-	</td>
-	<td class="rnr-control style3">
-		{$classid_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_classid}" data-fieldname="classid" data-signal-error-for="classid{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_classid}">
+			{BEGIN classid_label}{$label t_competitor classid}{END classid_label}
+		</label>
+		<div class="col-md-6 " >
+			{$classid_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="classid">
+			<div class="text-muted" >
+			{$tooltip t_competitor classid}
+			</div>
+		</div>
+	</div>
+</div>
 {END classid_tabfieldblock}
 {BEGIN boatnum_tabfieldblock}
-<tr class="{$fielddispclass_boatnum}" data-fieldname="boatnum">
-	<td class="style1 rnr-label">
-		{BEGIN boatnum_label}{$label t_competitor boatnum}{END boatnum_label}
-	</td>
-	<td class="rnr-control style3">
-		{$boatnum_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_boatnum}" data-fieldname="boatnum" data-signal-error-for="boatnum{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_boatnum}">
+			{BEGIN boatnum_label}{$label t_competitor boatnum}{END boatnum_label}
+		</label>
+		<div class="col-md-6 " >
+			{$boatnum_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="boatnum">
+			<div class="text-muted" >
+			{$tooltip t_competitor boatnum}
+			</div>
+		</div>
+	</div>
+</div>
 {END boatnum_tabfieldblock}
-{BEGIN sailnum_tabfieldblock}
-<tr class="{$fielddispclass_sailnum}" data-fieldname="sailnum">
-	<td class="style1 rnr-label">
-		{BEGIN sailnum_label}{$label t_competitor sailnum}{END sailnum_label}
-	</td>
-	<td class="rnr-control style3">
-		{$sailnum_editcontrol}&nbsp;
-	</td>
-</tr>
-{END sailnum_tabfieldblock}
 {BEGIN boatname_tabfieldblock}
-<tr class="{$fielddispclass_boatname}" data-fieldname="boatname">
-	<td class="style1 rnr-label">
-		{BEGIN boatname_label}{$label t_competitor boatname}{END boatname_label}
-	</td>
-	<td class="rnr-control style3">
-		{$boatname_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_boatname}" data-fieldname="boatname" data-signal-error-for="boatname{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_boatname}">
+			{BEGIN boatname_label}{$label t_competitor boatname}{END boatname_label}
+		</label>
+		<div class="col-md-6 " >
+			{$boatname_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="boatname">
+			<div class="text-muted" >
+			{$tooltip t_competitor boatname}
+			</div>
+		</div>
+	</div>
+</div>
 {END boatname_tabfieldblock}
 {BEGIN club_tabfieldblock}
-<tr class="{$fielddispclass_club}" data-fieldname="club">
-	<td class="style1 rnr-label">
-		{BEGIN club_label}{$label t_competitor club}{END club_label}
-	</td>
-	<td class="rnr-control style3">
-		{$club_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_club}" data-fieldname="club" data-signal-error-for="club{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_club}">
+			{BEGIN club_label}{$label t_competitor club}{END club_label}
+		</label>
+		<div class="col-md-6 " >
+			{$club_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="club">
+			<div class="text-muted" >
+			{$tooltip t_competitor club}
+			</div>
+		</div>
+	</div>
+</div>
 {END club_tabfieldblock}
-{BEGIN status_tabfieldblock}
-<tr class="{$fielddispclass_status}" data-fieldname="status">
-	<td class="style1 rnr-label">
-		{BEGIN status_label}{$label t_competitor status}{END status_label}
-	</td>
-	<td class="rnr-control style3">
-		{$status_editcontrol}&nbsp;
-	</td>
-</tr>
-{END status_tabfieldblock}
-</table>
+{BEGIN hullcolour_tabfieldblock}
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_hullcolour}" data-fieldname="hullcolour" data-signal-error-for="hullcolour{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_hullcolour}">
+			{BEGIN hullcolour_label}{$label t_competitor hullcolour}{END hullcolour_label}
+		</label>
+		<div class="col-md-6 " >
+			{$hullcolour_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="hullcolour">
+			<div class="text-muted" >
+			{$tooltip t_competitor hullcolour}
+			</div>
+		</div>
+	</div>
+</div>
+{END hullcolour_tabfieldblock}
+{BEGIN trackerid_tabfieldblock}
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_trackerid}" data-fieldname="trackerid" data-signal-error-for="trackerid{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_trackerid}">
+			{BEGIN trackerid_label}{$label t_competitor trackerid}{END trackerid_label}
+		</label>
+		<div class="col-md-6 " >
+			{$trackerid_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="trackerid">
+			<div class="text-muted" >
+			{$tooltip t_competitor trackerid}
+			</div>
+		</div>
+	</div>
+</div>
+{END trackerid_tabfieldblock}
 
 
 
 
-{END container_1}
+
+</div>
+{END container_tabfields}
 
 </div>

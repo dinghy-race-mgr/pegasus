@@ -110,8 +110,14 @@ EOT;
                         </div>
                     </div>
                     <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                        <span class="rm-text-sm text-success">$entry_status_txt</span><br>
-                        <span class="rm-text-sm text-warning">$event_status_txt</span>
+                        <div style="float: left; display: block !important; width: 100%;"> 
+                            <div class="alert alert-warning" style="padding: 1px 5px 1px 5px !important ; margin-bottom: 1px !important">
+                                <span class="rm-text-sm">$entry_status_txt</span>
+                            </div>
+                            <div>
+                                <span class="rm-text-sm text-warning">$event_status_txt</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
                         <span class="rm-text-md">$results_btn</span>
@@ -183,14 +189,14 @@ EOT;
 function entry_status_txt($en_state, $en_alert, $start, $update_num)
 {
     if (empty($en_alert)) {
-        $txt = $en_state;
+        $txt = strtoupper($en_state);
         empty($start) ? $start_txt = "" : $start_txt = u_numordinal($start)." start" ;
 
         if ($en_state == "entered") {
             $txt .= ": $start_txt ";
         } elseif ($en_state == "updated") {
             $update_num > 0 ? $update_txt = "[$update_num]" : $update_txt = "";
-            $txt .= " entry $update_txt: $start_txt ";
+            $txt .= " $update_txt: $start_txt ";
         } elseif ($en_state == "not eligible" or $en_state == "class not recognised") {
             $txt = "<span class='text-danger'>$txt</span>";
         }

@@ -32,26 +32,33 @@ empty($_REQUEST['mapevent']) ? $mapevent = $eventid : $mapevent = (int)$_REQUEST
 // connect to database
 $db_o = new DB();
 
-echo "<pre>SIGNON MAPPING for event: $eventid (mapped to RM9 event $mapevent)</pre>>";
+echo "<pre>SIGNON MAPPING for event: $eventid (mapped to RM9 event $mapevent)</pre>";
 
-$query = "SELECT * FROM t_entry WHERE eventid = $eventid ORDER BY competitorid ASC, createdate ASC ";
-//echo $query."<br>";
+$query = "SELECT action, eventid, competitorid, `chg-crew`, `chg-sailnum`, classid, classname, b.sailnum, helm, 
+b.crew from t_entry as a JOIN t_competitor as b ON a.competitorid=b.id JOIN t_class as c ON b.classid=c.id
+ORDER BY competitorid ASC, FIELD(action, 'enter', 'update', 'retire')";
 $data = $db_o->db_get_rows($query);
 
 $outdata = array();
+$d_data = array();
 $j = 0;
 $r = 0;
 $k = 0;
 $compid = 0;
+echo "<pre><table><tbody>";
 foreach ($data as $row)
 {
-    if ((int)$row['competitorid'] != $compid and $compid != 0 and !empty($out))
+    if ((int)$row['competitorid'] != $compid and $compid != 0)
     {
         $j++;
         // changing boat - output data for previous boat
-        $outdata[$j] = $out;
+        if(!empty($out))
+        {
+            $outdata[$j] = $out;
+        }
         unset($out);
-        echo "output </pre>";
+        display_row($d_data);
+        unset($d_data);
     }
 
     if ($row['action'] == "enter")
@@ -69,10 +76,20 @@ foreach ($data as $row)
             "updateby"  => "rm_sailor",
         );
 
+        empty($row['chg-crew']) ?  $crew = $row['crew'] : $crew = "{$row['crew']} [{$row['chg-crew']}]";
+        empty($row['chg-sailnum']) ? $sailnum = $row['sailnum'] : $sailnum = "{$row['sailnum']} [{$row['chg-sailnum']}]";
+
+        $d_data = array(
+            "class" => $row['classname'],
+            "sailnum" => $sailnum,
+            "helm"    => $row['helm'],
+            "crew"    => $crew,
+            "id"      => $compid,
+            "action"  => "enter"
+        );
+
         if (!empty($row['chg-crew'])) { $out['crew'] = $row['chg-crew']; }
         if (!empty($row['chg-sailnum'])) { $out['sailnum'] = $row['chg-sailnum']; }
-
-        echo "<pre>$k - Processing for comp:$compid - ";
     }
     elseif ($row['action'] == "update" and (int)$row['competitorid'] == $compid )
     {
@@ -82,13 +99,13 @@ foreach ($data as $row)
         {
             $out['change'] = "temp";
         }
-        echo "updating - ";
+        $d_data['action'].= " - update";
     }
     elseif ($row['action'] == "retire" and (int)$row['competitorid'] == $compid )
     {
         unset($out);
         $r++;
-        echo "retired </pre>";
+        $d_data['action'].= " - <b>RETIRED</b>";
     }
 }
 
@@ -98,12 +115,12 @@ if (!empty($out))
     // changing boat - output data for previous boat
     $outdata[$j] = $out;
     unset($out);
-    echo "output </pre>";
+    display_row($d_data);
 }
 
-echo "<pre>records processed: ".count($data)."| entries made:$j | retirements: $r</pre>";
+echo "</tbody></table></pre>";
 
-echo "<pre>".print_r($outdata,true)."</pre>";
+echo "<pre>records processed: ".count($data)."| entries made:$j | retirements: $r</pre>";
 
 // output sql
 
@@ -121,3 +138,17 @@ echo "<pre>".print_r($sql,true)."</pre>";
 
 exit("<pre>COMPLETE</pre>");
 
+function display_row($data)
+{
+    echo <<<EOT
+    <tr>
+        <td>{$data['class']}</td>
+        <td>{$data['sailnum']}</td>
+        <td>{$data['helm']}</td>
+        <td>{$data['crew']}</td>
+        <td>{$data['id']}</td>
+        <td>{$data['action']}</td>
+    </tr>
+EOT;
+
+}

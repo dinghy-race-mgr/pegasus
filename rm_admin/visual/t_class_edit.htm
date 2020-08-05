@@ -2,6 +2,7 @@
 <HTML {$html_attrs}>
   <HEAD>
     <META http-equiv="X-UA-Compatible" content="IE=Edge">
+    <META name="viewport" content="width=device-width, initial-scale=1.0">
     <TITLE>
       {$pagetitle}
     </TITLE>
@@ -13,192 +14,296 @@
     {BEGIN styleCSSFiles}
       <LINK href="{$stylepath}" rel="stylesheet" type="text/css">
     {END styleCSSFiles}
-    {BEGIN pageCSSFiles}
-      <LINK href="{$pagestylepath}" rel="stylesheet" type="text/css">
-    {END pageCSSFiles}
-    <META name="GENERATOR" content="MSHTML 11.00.9600.18036">
+    <META name="GENERATOR" content="MSHTML 11.00.10570.1001">
   </HEAD>
   <BODY class="{$stylename} function-edit" {$bodyattrs}>
     {BEGIN body}
       {$header}
-      <DIV class="rnr-page">
-        <DIV class="rnr-top {$blockclass_top}">
-          {BEGIN container_all}
-            <DIV class="rnr-c rnr-cv rnr-c-all">
-              <DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_add} rnr-wrapper rnr-cbw-add">
-                {BEGIN container_add}
-                  <DIV class="rnr-c rnr-cv rnr-c-add">
-                    {BEGIN editheader}
-                      <DIV class="rnr-brickcontents style2 rnr-b-editheader {$brickclass_editheader}">
-                        <SPAN>
-                          <H1>
-                            {$pagetitlelabel t_class edit}
-                          </H1>
-                        </SPAN>
-                      </DIV>
-                    {END editheader}
-                    {BEGIN message_block}
-                      <DIV class="rnr-brickcontents style1 rnr-b-message {$brickclass_message}">
-                        <DIV class="rnr-message">
-                          {$message}
-                        </DIV>
-                      </DIV>
-                    {END message_block}
-                    <DIV class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
-                      {BEGIN container_fields}
-                        <DIV class="rnr-c rnr-cv rnr-c-fields" style="min-height: 484px; min-width: 799px;">
-                          <DIV class="rnr-ff-block rnr-ff-container rnr-brickcontents style1 rnr-b-editfields2_atop {$brickclass_editfields2_atop}" style="background-position: 0% 0%; width: 744px; height: 443px; overflow: auto; position: relative; background-image: linear-gradient(0turn, rgb(243, 245, 245), rgb(226, 230, 231)); background-attachment: scroll; background-repeat: repeat; background-color: transparent;">
-                            <DIV class="rnr-ff-cwrap" style="left: 50px; top: 20px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class classname}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 50px; top: 40px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$classname_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 51px; top: 72px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class acronym}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 51px; top: 90px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$acronym_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 51px; top: 126px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class info}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 90px; top: 120px; width: 270px; height: 60px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$info_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 220px; top: 70px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class popular}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 220px; top: 90px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$popular_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 50px; top: 190px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class nat_py}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 50px; top: 210px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$nat_py_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 220px; top: 190px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class local_py}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 220px; top: 210px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$local_py_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 50px; top: 250px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class rya_id}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 120px; top: 250px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$rya_id_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 440px; top: 50px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class category}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 520px; top: 50px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$category_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 440px; top: 90px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class crew}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 520px; top: 90px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$crew_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 440px; top: 130px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class spinnaker}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 520px; top: 130px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$spinnaker_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 440px; top: 170px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class rig}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 520px; top: 170px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$rig_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 440px; top: 210px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class engine}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 520px; top: 210px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$engine_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 440px; top: 250px; line-height: normal; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$label t_class keel}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="left: 520px; top: 250px; line-height: 1; font-family: Verdana, sans-serif; font-size: 12px; font-style: normal; font-weight: 400; position: absolute;">
-                              {$keel_editcontrol}
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="margin: 0px; padding: 0px; left: 10px; top: 10px; width: auto; height: auto; position: absolute;">
-                              <SPAN class="rnr-ff-text">
-                                <BR>
-                              </SPAN>
-                            </DIV>
-                            <DIV class="rnr-ff-cwrap" style="margin: 0px; padding: 0px; left: 430px; top: 10px; width: 200px; height: auto; font-size: small; position: absolute;">
-                              <SPAN class="rnr-ff-text">
-                                <STRONG>Classification</STRONG>
-                              </SPAN>
-                            </DIV>
-                          </DIV>
-                          {BEGIN editbuttons}
-                            <DIV class="rnr-brickcontents style2 rnr-b-editbuttons {$brickclass_editbuttons}">
-                              <DIV class="rnr-buttons-right">
-                                {BEGIN prev_button}
-                                  <A class="rnr-button {$prevbutton_class}" href="#" {$prevbutton_attrs}>
-                                    <<<
-                                  </A>
-                                {END prev_button}
-                                {BEGIN next_button}
-                                  <A class="rnr-button {$nextbutton_class}" href="#" {$nextbutton_attrs}>
-                                    >>>
-                                  </A>
-                                {END next_button}
-                              </DIV>
-                              <DIV class="rnr-buttons-left">
-                                {BEGIN save_button}
-                                  <A class="rnr-button main" href="#" {$savebutton_attrs}>
-                                    Save
-                                  </A>
-                                {END save_button}
-                                {BEGIN reset_button}
-                                  <A class="rnr-button" href="#" {$resetbutton_attrs}>
-                                    Reset
-                                  </A>
-                                {END reset_button}
-                                {BEGIN back_button}
-                                  <A class="rnr-button" href="#" {$backbutton_attrs}>
-                                    Back to list
-                                  </A>
-                                {END back_button}
-                                {BEGIN close_button}
-                                  <A class="rnr-button" href="#" {$closebutton_attrs}>
-                                    Close window
-                                  </A>
-                                {END close_button}
-                                {BEGIN view_page_button}
-                                  <A class="rnr-button" href="#" {$view_page_button_attrs}>
-                                    View
-                                  </A>
-                                {END view_page_button}
-                              </DIV>
-                            </DIV>
-                          {END editbuttons}
-                        </DIV>
-                      {END container_fields}
+      <STYLE>
+        {$containerCss}
+      </STYLE>
+      <DIV class="bs-top">
+        {BEGIN container_editpage}
+          <DIV class="container" data-container="editpage" data-pageid="{$pageid}" {$editpage_chiddenattr}>
+            {BEGIN container_header}
+              <DIV class="col-md-9 col-md-offset-3" data-container="header" data-pageid="{$pageid}" {$header_chiddenattr}>
+                {BEGIN editheader}
+                  <H2 data-brick="editheader" data-pageid="{$pageid}" {$editheader_hiddenattr}>
+                    {$pagetitlelabel t_class edit}
+                  </H2>
+                  {BEGIN printtabheader}
+                    <H4>
+                      {$printtabheader_text}
+                    </H4>
+                  {END printtabheader}
+                {END editheader}
+              </DIV>
+            {END container_header}
+            {BEGIN container_message}
+              <DIV class="col-md-6 col-md-offset-3" data-container="message" data-pageid="{$pageid}" {$message_chiddenattr}>
+                {BEGIN message_block}
+                  <DIV class="alert {$message_class}" role="alert" data-brick="message" data-pageid="{$pageid}" {$message_hiddenattr}>
+                    <H5>
+                      {$message}
+                    </H5>
+                    <DIV>
+                      {BEGIN back_button}
+                        <BUTTON class="btn btn-sm btn-default" {$backbutton_attrs}>
+                          Back to list
+                        </BUTTON>
+                      {END back_button}
+                      {BEGIN view_page_button}
+                        <BUTTON class="btn btn-sm btn-default" {$view_page_button_attrs}>
+                          View
+                        </BUTTON>
+                      {END view_page_button}
                     </DIV>
                   </DIV>
-                {END container_add}
+                {END message_block}
+              </DIV>
+            {END container_message}
+          </DIV>
+        {END container_editpage}
+        {BEGIN container_fields}
+          <DIV class="col-md-12" data-container="fields" data-pageid="{$pageid}" {$fields_chiddenattr}>
+            <DIV class="form-horizontal" role="form" data-brick="editfields" data-pageid="{$pageid}" {$editfields_hiddenattr}>
+              {BEGIN classname_fieldblock}
+                <DIV class="container">
+                  <DIV class="form-group {$fielddispclass_classname}" data-signal-error-for="classname{$id}" data-fieldname="classname">
+                    <LABEL class="col-md-3 control-label" for="{$labelfor_classname}">
+                      {BEGIN classname_label}
+                        {$label t_class classname}
+                      {END classname_label}
+                    </LABEL>
+                    <DIV class="col-md-5">
+                      {$classname_editcontrol}
+                    </DIV>
+                    <DIV class="col-md-4 help-block" data-helpfor="classname">
+                      <DIV class="text-muted">
+                        {$tooltip t_class classname}
+                      </DIV>
+                    </DIV>
+                  </DIV>
+                </DIV>
+              {END classname_fieldblock}
+              {BEGIN acronym_fieldblock}
+                <DIV class="container">
+                  <DIV class="form-group {$fielddispclass_acronym}" data-signal-error-for="acronym{$id}" data-fieldname="acronym">
+                    <LABEL class="col-md-3 control-label" for="{$labelfor_acronym}">
+                      {BEGIN acronym_label}
+                        {$label t_class acronym}
+                      {END acronym_label}
+                    </LABEL>
+                    <DIV class="col-md-5">
+                      {$acronym_editcontrol}
+                    </DIV>
+                    <DIV class="col-md-4 help-block" data-helpfor="acronym">
+                      <DIV class="text-muted">
+                        {$tooltip t_class acronym}
+                      </DIV>
+                    </DIV>
+                  </DIV>
+                </DIV>
+              {END acronym_fieldblock}
+              {BEGIN info_fieldblock}
+                <DIV class="container">
+                  <DIV class="form-group {$fielddispclass_info}" data-signal-error-for="info{$id}" data-fieldname="info">
+                    <LABEL class="col-md-3 control-label" for="{$labelfor_info}">
+                      {BEGIN info_label}
+                        {$label t_class info}
+                      {END info_label}
+                    </LABEL>
+                    <DIV class="col-md-5">
+                      {$info_editcontrol}
+                    </DIV>
+                    <DIV class="col-md-4 help-block" data-helpfor="info">
+                      <DIV class="text-muted">
+                        {$tooltip t_class info}
+                      </DIV>
+                    </DIV>
+                  </DIV>
+                </DIV>
+              {END info_fieldblock}
+              {BEGIN nat_py_fieldblock}
+                <DIV class="container">
+                  <DIV class="form-group {$fielddispclass_nat_py}" data-signal-error-for="nat_py{$id}" data-fieldname="nat_py">
+                    <LABEL class="col-md-3 control-label" for="{$labelfor_nat_py}">
+                      {BEGIN nat_py_label}
+                        {$label t_class nat_py}
+                      {END nat_py_label}
+                    </LABEL>
+                    <DIV class="col-md-5">
+                      {$nat_py_editcontrol}
+                    </DIV>
+                    <DIV class="col-md-4 help-block" data-helpfor="nat_py">
+                      <DIV class="text-muted">
+                        {$tooltip t_class nat_py}
+                      </DIV>
+                    </DIV>
+                  </DIV>
+                </DIV>
+              {END nat_py_fieldblock}
+              {BEGIN local_py_fieldblock}
+                <DIV class="container">
+                  <DIV class="form-group {$fielddispclass_local_py}" data-signal-error-for="local_py{$id}" data-fieldname="local_py">
+                    <LABEL class="col-md-3 control-label" for="{$labelfor_local_py}">
+                      {BEGIN local_py_label}
+                        {$label t_class local_py}
+                      {END local_py_label}
+                    </LABEL>
+                    <DIV class="col-md-5">
+                      {$local_py_editcontrol}
+                    </DIV>
+                    <DIV class="col-md-4 help-block" data-helpfor="local_py">
+                      <DIV class="text-muted">
+                        {$tooltip t_class local_py}
+                      </DIV>
+                    </DIV>
+                  </DIV>
+                </DIV>
+              {END local_py_fieldblock}
+              {BEGIN popular_fieldblock}
+                <DIV class="container">
+                  <DIV class="form-group {$fielddispclass_popular}" data-signal-error-for="popular{$id}" data-fieldname="popular">
+                    <LABEL class="col-md-3 control-label" for="{$labelfor_popular}">
+                      {BEGIN popular_label}
+                        {$label t_class popular}
+                      {END popular_label}
+                    </LABEL>
+                    <DIV class="col-md-5">
+                      {$popular_editcontrol}
+                    </DIV>
+                    <DIV class="col-md-4 help-block" data-helpfor="popular">
+                      <DIV class="text-muted">
+                        {$tooltip t_class popular}
+                      </DIV>
+                    </DIV>
+                  </DIV>
+                </DIV>
+              {END popular_fieldblock}
+              {BEGIN active_fieldblock}
+                <DIV class="container">
+                  <DIV class="form-group {$fielddispclass_active}" data-signal-error-for="active{$id}" data-fieldname="active">
+                    <LABEL class="col-md-3 control-label" for="{$labelfor_active}">
+                      {BEGIN active_label}
+                        {$label t_class active}
+                      {END active_label}
+                    </LABEL>
+                    <DIV class="col-md-5" style="14px 0 0 !important">
+                      {$active_editcontrol}
+                    </DIV>
+                    <DIV class="col-md-4 help-block" data-helpfor="active">
+                      <DIV class="text-muted">
+                        {$tooltip t_class active}
+                      </DIV>
+                    </DIV>
+                  </DIV>
+                </DIV>
+              {END active_fieldblock}
+              <DIV class="container">
+                <DIV class="panel panel-default form-section">
+                  <DIV class="panel-heading" role="tab" data-toggle="collapse" {$section_Classification_Details1_headattrs}>
+                    <!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+                    <H4 class="panel-title">
+                      <A role="button">
+                        {$section_Classification_Details1_label}
+                      </A>
+                    </H4>
+                  </DIV>
+                  <DIV class="panel-collapse collapse {$section_Classification_Details1_xtrclass}" role="tabpanel" {$section_Classification_Details1_attrs}>
+                    <!-- id="collapseOne" aria-labelledby="headingOne" -->
+                    <DIV class="panel-body">
+                      {$Section Classification_Details1}
+                    </DIV>
+                  </DIV>
+                </DIV>
               </DIV>
             </DIV>
-          {END container_all}
-        </DIV>
-        <DIV class="rnr-middle">
-          <DIV class="rnr-left {$blockclass_left}">
           </DIV>
-          <DIV class="rnr-center {$blockclass_center}">
+        {END container_fields}
+        {BEGIN container_bottombuttons}
+          <DIV class="container" data-container="bottombuttons" data-pageid="{$pageid}" {$bottombuttons_chiddenattr}>
+            {BEGIN container_buttons}
+              <DIV class="form-group" data-container="buttons" data-pageid="{$pageid}" {$buttons_chiddenattr}>
+                {BEGIN container_leftbuttons}
+                  <DIV class="col-md-3 col-md-offset-3" data-container="leftbuttons" data-pageid="{$pageid}" {$leftbuttons_chiddenattr}>
+                    {BEGIN editbuttons}
+                      {BEGIN save_button}
+                        <BUTTON class="btn btn-primary" {$savebutton_attrs}>
+                          Save
+                        </BUTTON>
+                      {END save_button}
+                      {BEGIN back_button}
+                        <BUTTON class="btn btn-default" {$backbutton_attrs}>
+                          Back to list
+                        </BUTTON>
+                      {END back_button}
+                      {BEGIN close_button}
+                        <A class="btn btn-default" href="#" {$closebutton_attrs}>
+                          Cancel
+                        </A>
+                      {END close_button}
+                    {END editbuttons}
+                  </DIV>
+                {END container_leftbuttons}
+                {BEGIN container_leftbuttons_1}
+                  <DIV class="text-right col-md-3" data-container="leftbuttons_1" data-pageid="{$pageid}" {$leftbuttons_1_chiddenattr}>
+                    {BEGIN righteditbuttons}
+                      <DIV class="btn-group" role="group">
+                        {BEGIN prev_button}
+                          <BUTTON class="btn btn-default {$prevbutton_class}" {$prevbutton_attrs}>
+                            <SPAN class="glyphicon glyphicon-chevron-left">
+                            </SPAN>
+                          </BUTTON>
+                        {END prev_button}
+                        {BEGIN next_button}
+                          <BUTTON class="btn btn-default {$nextbutton_class}" {$nextbutton_attrs}>
+                            <SPAN class="glyphicon glyphicon-chevron-right">
+                            </SPAN>
+                          </BUTTON>
+                        {END next_button}
+                        <DIV class="btn-group dropup" role="group">
+                          <BUTTON class="btn btn-default dropdown-toggle" aria-expanded="false" aria-haspopup="true" data-toggle="dropdown">
+                            <SPAN class="glyphicon glyphicon-menu-hamburger">
+                            </SPAN>
+                          </BUTTON>
+                          <UL class="dropdown-menu dropdown-left">
+                            {BEGIN reset_button}
+                              <LI>
+                                <A href="#" {$resetbutton_attrs}>
+                                  Reset
+                                </A>
+                              </LI>
+                            {END reset_button}
+                            {BEGIN view_page_button}
+                              <LI>
+                                <A href="#" {$view_page_button_attrs}>
+                                  View
+                                </A>
+                              </LI>
+                            {END view_page_button}
+                          </UL>
+                        </DIV>
+                      </DIV>
+                    {END righteditbuttons}
+                  </DIV>
+                {END container_leftbuttons_1}
+              </DIV>
+            {END container_buttons}
           </DIV>
-          <DIV class="rnr-right {$blockclass_right}">
-          </DIV>
+        {END container_bottombuttons}
+      </DIV>
+      <DIV class="bs-middle">
+        <DIV class="bs-topmiddle">
         </DIV>
-        <DIV class="rnr-bottom {$blockclass_bottom}">
+        <DIV class="bs-left" {$blockattr_left}>
         </DIV>
+        <DIV class="bs-center">
+        </DIV>
+        <DIV class="bs-right">
+        </DIV>
+      </DIV>
+      <DIV class="bs-bottom">
       </DIV>
       {$footer}
     {END body}

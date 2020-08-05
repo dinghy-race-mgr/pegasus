@@ -8,7 +8,7 @@
 */
 
 session_start();
-include ("../classes/db_class.php")            // include database interface
+include ("../classes/db_class.php");            // include database interface
 
 echo "<b>COMPETITOR TRANSFER:</b><br>";
  
@@ -32,15 +32,15 @@ $db_o->db_disconnect();
 
 /* to database */
 $_SESSION['db_host'] = "localhost";
-$_SESSION['db_user'] = "root";
-$_SESSION['db_pass'] = ""; 
+$_SESSION['db_user'] = "rmuser";
+$_SESSION['db_pass'] = "pegasus";
 $_SESSION['db_name'] = "pegasus";
 
 $db_o = new DB();
 echo " -> connected to PEGASUS database<br>";
 
 // empty t_entry table
-$db_o->db_truncate( array("t_competitor") )
+$db_o->db_truncate( array("t_competitor") );
 echo " -> emptied competitor table<br>";
 
 // loop over signon records
@@ -51,11 +51,11 @@ foreach ($rs as $k=>$row)
 {
     $new = array();
     // check if competitor already exists
-    $comp = $db_o->db_get_row("SELECT * FROM t_competitor WHERE memberid = {$row['competitorid']}")
+    $comp = $db_o->db_get_row("SELECT * FROM t_competitor WHERE memberid = {$row['competitorid']}");
     
     if (!empty($comp))  // delete existing record
     {
-       $db_o->db_delete( t_competitor, $where = array("id"=>$comp["id"]), $limit = '' )
+       $db_o->db_delete( t_competitor, $where = array("id"=>$comp["id"]), $limit = '' );
     }
     
     // get id for class from Pegasus database
@@ -63,8 +63,8 @@ foreach ($rs as $k=>$row)
     
     if (empty($class))     // don't add if class is not known
     {
-      $skip_count++
-      echo = " --- skipped: class not found [{$row["boatClass"]} {$row["sailNumber"]} - {$row["helmName"]}]<br>";
+      $skip_count++;
+      echo  " --- skipped: class not found [{$row["boatClass"]} {$row["sailNumber"]} - {$row["helmName"]}]<br>";
     }
     else
     {

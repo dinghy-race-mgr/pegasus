@@ -1,4 +1,4 @@
 id,classid,sailnum,boatname,helm,helm_dob,helm_email,crew,crew_dob,crew_email,club,skill_level,personal_py,flight,regular,prizelist,grouplist,memberid
-0,Merlin Rocket,3718,,Mark elkington,07/06/1956,"mark.elkington@blueyonder.co.uk",sarah roberts,,,Starcross YC,5,968,flight3,1,"senior, parentchild",senior,SYC123456
+0,Merlin Rocket,3718,,Mark elkington,07/06/1956,mark.elkington@blueyonder.co.uk,sarah roberts,,,Starcross YC,5,968,flight3,1,"senior, parentchild",senior,SYC123456
 0,Laser,123456,,fred honcho,,,,,,,,,,,,,
 0,RS400,438,,ralph wogan,,,,,,exmouth sailing club,4,,,,,starttorace,

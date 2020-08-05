@@ -87,36 +87,35 @@
 	.bs-gridcell[data-field=trackerid]:before {
 		content: "{$label t_competitor trackerid}";
 	}
-	.bs-gridcell[data-field=updby]:before {
-		content: "{$label t_competitor updby}";
-	}
 	.bs-gridcell[data-field=upddate]:before {
 		content: "{$label t_competitor upddate}";
 	}
-	.bs-gridcell[data-field=classname]:before {
-		content: "{$label t_competitor classname}";
-	}
-	.bs-gridcell[data-field=cast_t_competitor_sailnum_as_int_]:before {
-		content: "{$label t_competitor cast_t_competitor_sailnum_as_int_}";
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_competitor updby}";
 	}
 	.bs-gridcell[data-field=createdate]:before {
 		content: "{$label t_competitor createdate}";
 	}
+	.bs-gridcell[data-field=classname]:before {
+		content: "{$label t_competitor classname}";
+	}
 </style>
 <table {$masterlistgrid_hiddenattr} data-pageid="{$pageid}" data-brick="masterlistgrid" class="table rnr-b-mastergridfields rnr-gridtable bs-flexgrid" >
 		<thead>
-		</thead>
+		<tr>
+			<th class="{$classid_class}">{$label t_competitor classid}</th>
+			<th class="{$boatnum_class}">{$label t_competitor boatnum}</th>
+			<th class="{$helm_class}">{$label t_competitor helm}</th>
+			<th class="{$crew_class}">{$label t_competitor crew}</th>
+		</tr>
+	</thead>
 	
 	<tbody>
 		<tr>
-			<TD class="{$classid_class} bs-gridcell" rowspan="1" colspan="1" data-field="classid">
-      {$classid_mastervalue}</td>
-			<TD class="{$boatnum_class} bs-gridcell" rowspan="1" colspan="1" data-field="boatnum">
-      {$boatnum_mastervalue}</td>
-			<TD class="{$helm_class} bs-gridcell" rowspan="1" colspan="1" data-field="helm">
-      {$helm_mastervalue}</td>
-			<TD class="{$crew_class} bs-gridcell" rowspan="1" colspan="1" data-field="crew">
-      {$crew_mastervalue}</td>
+			<td class="{$classid_class} bs-gridcell" data-field=classid>{$classid_mastervalue}</td>
+			<td class="{$boatnum_class} bs-gridcell" data-field=boatnum>{$boatnum_mastervalue}</td>
+			<td class="{$helm_class} bs-gridcell" data-field=helm>{$helm_mastervalue}</td>
+			<td class="{$crew_class} bs-gridcell" data-field=crew>{$crew_mastervalue}</td>
 		</tr>
 	</tbody>
 

@@ -220,10 +220,10 @@ function get_dated_event($future_window)
     $err = false;
     $today = date("Y-m-d");
     $data = array("mode" => "dated", "numevents" => 0, "event_day"=> "", "nextevent" => array(), "details" => array());
-    //echo "<pre>|$future_window|{$_SESSION['demo']}|</pre>";
+
     // check if any race events today and the next event
-//    $rs = $event_o->event_getevents(array("event_date" => $today), $_SESSION['demo'], true);
-    $rs = $event_o->get_events("racing", "active", array("start"=>$today, "end"=>$today));
+    !empty($_SESSION['demo']) and $_SESSION['demo']=="demo" ? $status = "demo" : $status = "active";
+    $rs = $event_o->get_events("racing", $status, array("start"=>$today, "end"=>$today));
     //echo "<pre> RS: ".print_r($rs,true)."</pre>";
     $nrs = $event_o->event_getnextevent(date("Y-m-d"), true);
     //echo "<pre> NRS: ".print_r($rs,true)."</pre>";
@@ -241,7 +241,6 @@ function get_dated_event($future_window)
         }
 
         // if I don't have an $event_day set and future events are permitted - check if next event lies in permitted window
-        //echo "<pre>|$today|$next_event_day|$future_window|</pre>";
         if (empty($data['event_day']) and !empty($next_event_day) and $future_window > 0) {
             $diffdays = u_daysdiff(date("Y-m-d"), $next_event_day);
             //echo "<pre>|$diffdays|</pre>";
@@ -252,7 +251,6 @@ function get_dated_event($future_window)
         }
     }
 
-    //echo "<pre>EVENTDAY: {$data['event_day']}</pre>";
     if ($rs) {
         // get event configurations
         foreach ($rs as $k => $event) {
@@ -295,83 +293,6 @@ function get_event_details($event_window, $eventid_list = array())
     }
 
     return $events;
-
-
-//    if (!empty($eventid_list)) {                         // if event id has values - get details for those events
-//        foreach ($eventid_list as $k => $id) {
-//            $rs = $event_o->event_getevent($id, true);   // get event if it is a racing event
-//            if ($rs) {
-//                $data['details'][$rs['id']] = $rs;
-//            }
-//        }
-//    } else {                                              // else get event details for all races today
-//        $rs = $event_o->event_getevents(array("event_date" => date("Y-m-d")), $_SESSION['demo'], true);
-//        if ($rs) {
-//            foreach ($rs as $k => $detail) {
-//                $data['details'][$detail['id']] = $detail;
-//            }
-//        }
-//    }
-
-//    // get fleet info for each event
-//    $error = false;
-//    foreach ($data['details'] as $k => $event) {
-//        // get fleet details for this event
-//        $fleetcfg = $event_o->event_getfleetcfg($event['event_format']);
-//
-//        if (!$fleetcfg) {
-//            $error = true;
-//        } else {
-//            foreach ($fleetcfg as $j => $fleet) {
-//                // add to array
-//                $data['details'][$k]['fleetcfg'][$fleet['fleet_num']] = array(
-//                    "fleetnum" => $fleet['fleet_num'],
-//                    "startnum" => $fleet['start_num'],
-//                    "code" => $fleet['fleet_code'],
-//                    "name" => $fleet['fleet_name'],
-//                    "desc" => $fleet['fleet_desc'],
-//                    "scoring" => strtolower($fleet['scoring']),
-//                    "pytype" => strtolower($fleet['py_type']),
-//                    "warnsignal" => $fleet['warn_signal'],
-//                    "prepsignal" => $fleet['prep_signal'],
-//                    "timelimitabs" => $fleet['timelimit_abs'],
-//                    "timelimitrel" => $fleet['timelimit_rel'],
-//                    "defaultlaps" => $fleet['defaultlaps'],
-//                    "defaultfleet" => $fleet['defaultfleet'],
-//                    "classinc" => $fleet['classinc'],
-//                    "onlyinc" => $fleet['onlyinc'],
-//                    "classexc" => $fleet['classexc'],
-//                    "groupinc" => $fleet['groupinc'],
-//                    "minpy" => $fleet['min_py'],
-//                    "maxpy" => $fleet['max_py'],
-//                    "crew" => $fleet['crew'],
-//                    "spintype" => $fleet['spintype'],
-//                    "hulltype" => $fleet['hulltype'],
-//                    "minhelmage" => $fleet['min_helmage'],
-//                    "maxhelmage" => $fleet['max_helmage'],
-//                    "minskill" => $fleet['min_skill'],
-//                    "maxskill" => $fleet['max_skill']
-//                );
-//            }
-//        }
-//    }
-//
-//    if ($error) {
-//        $data['numevents'] = -1;
-//    } else {
-//        // get number of events
-//        if ($data['details']) {
-//            $data['numevents'] = count($data['details']);
-//        }
-//
-//        // get details of next event
-//        $rs = $event_o->event_getnextevent(date("Y-m-d"), true);
-//        if ($rs) {
-//            $data['nextevent'] = $rs;
-//        }
-//    }
-//
-//    return $data;
 }
 
 function get_race_entry_data($sailorid, $events)
@@ -656,8 +577,6 @@ function process_retire($eventid)
 
     return $success;
 }
-
-
 
 
 

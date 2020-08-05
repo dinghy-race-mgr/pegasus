@@ -49,6 +49,8 @@ if ($_SESSION['mode'] == 'race') {
     $_SESSION['events'] = get_cruise_details($_SESSION['sailor_cruiser_eventtypes'], true);
 }
 
+// echo "<pre>".print_r($_SESSION,true)."</pre>";
+
 // get tide details
 require_once("{$loc}/common/classes/tide_class.php");
 $tide_o = new TIDE($db_o);

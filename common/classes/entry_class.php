@@ -172,7 +172,7 @@ class ENTRY
             "eventid"        => $this->eventid,
             "competitorid"   => $competitorid,
             "memberid"       => "",               // future use
-            "protest"        => "",
+            "protest"        => 0,
             "updby"          => $source
         );
         $insert_rs = $this->db->db_insert("t_entry", $fields);

@@ -83,6 +83,29 @@
 
 
 
+
+{BEGIN container_steps}
+<div {$steps_chiddenattr} data-pageid="{$pageid}" data-container="steps" class="   col-md-12 "> 
+
+
+<ul {$multistep_nav_add_hiddenattr} data-pageid="{$pageid}" data-brick="multistep_nav_add" class="nav nav-pills nav-justified" {$stepnav_attrs} data-stepcontrol>
+	<li role="presentation"><a href="#">Class Details
+</a></li>
+	<li role="presentation"><a href="#">Classification Details
+</a></li>
+</ul>
+
+
+
+
+</div>
+{END container_steps}
+
+
+
+
+
+
 </div>
 {END container_editpage}
 
@@ -93,204 +116,11 @@
 
 
 <div {$addfields_hiddenattr} data-pageid="{$pageid}" data-brick="addfields" class="form-horizontal" role="form">
-			{BEGIN classname_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_classname}" data-fieldname="classname" data-signal-error-for="classname{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_classname}">
-		{BEGIN classname_label}{$label t_class classname}{END classname_label}
-	</label>
-	<div class="col-md-5" >
-		{$classname_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="classname">
-		<div class="text-muted" >
-		{$tooltip t_class classname}
-		</div>
-	</div>
+	<div>
+				
+		{$Step Class_Details1}
+		{$Step Classification_Details1}
 </div>
-</div>
-{END classname_fieldblock}
-
-			{BEGIN info_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_info}" data-fieldname="info" data-signal-error-for="info{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_info}">
-		{BEGIN info_label}{$label t_class info}{END info_label}
-	</label>
-	<div class="col-md-5" >
-		{$info_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="info">
-		<div class="text-muted" >
-		{$tooltip t_class info}
-		</div>
-	</div>
-</div>
-</div>
-{END info_fieldblock}
-
-			{BEGIN nat_py_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_nat_py}" data-fieldname="nat_py" data-signal-error-for="nat_py{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_nat_py}">
-		{BEGIN nat_py_label}{$label t_class nat_py}{END nat_py_label}
-	</label>
-	<div class="col-md-5" >
-		{$nat_py_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="nat_py">
-		<div class="text-muted" >
-		{$tooltip t_class nat_py}
-		</div>
-	</div>
-</div>
-</div>
-{END nat_py_fieldblock}
-
-			{BEGIN local_py_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_local_py}" data-fieldname="local_py" data-signal-error-for="local_py{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_local_py}">
-		{BEGIN local_py_label}{$label t_class local_py}{END local_py_label}
-	</label>
-	<div class="col-md-5" >
-		{$local_py_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="local_py">
-		<div class="text-muted" >
-		{$tooltip t_class local_py}
-		</div>
-	</div>
-</div>
-</div>
-{END local_py_fieldblock}
-
-			{BEGIN popular_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_popular}" data-fieldname="popular" data-signal-error-for="popular{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_popular}">
-		{BEGIN popular_label}{$label t_class popular}{END popular_label}
-	</label>
-	<div class="col-md-5" >
-		{$popular_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="popular">
-		<div class="text-muted" >
-		{$tooltip t_class popular}
-		</div>
-	</div>
-</div>
-</div>
-{END popular_fieldblock}
-
-			{BEGIN category_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_category}" data-fieldname="category" data-signal-error-for="category{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_category}">
-		{BEGIN category_label}{$label t_class category}{END category_label}
-	</label>
-	<div class="col-md-5" >
-		{$category_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="category">
-		<div class="text-muted" >
-		{$tooltip t_class category}
-		</div>
-	</div>
-</div>
-</div>
-{END category_fieldblock}
-
-			{BEGIN crew_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_crew}" data-fieldname="crew" data-signal-error-for="crew{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_crew}">
-		{BEGIN crew_label}{$label t_class crew}{END crew_label}
-	</label>
-	<div class="col-md-5" >
-		{$crew_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="crew">
-		<div class="text-muted" >
-		{$tooltip t_class crew}
-		</div>
-	</div>
-</div>
-</div>
-{END crew_fieldblock}
-
-			{BEGIN spinnaker_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_spinnaker}" data-fieldname="spinnaker" data-signal-error-for="spinnaker{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_spinnaker}">
-		{BEGIN spinnaker_label}{$label t_class spinnaker}{END spinnaker_label}
-	</label>
-	<div class="col-md-5" >
-		{$spinnaker_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="spinnaker">
-		<div class="text-muted" >
-		{$tooltip t_class spinnaker}
-		</div>
-	</div>
-</div>
-</div>
-{END spinnaker_fieldblock}
-
-			{BEGIN rig_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_rig}" data-fieldname="rig" data-signal-error-for="rig{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_rig}">
-		{BEGIN rig_label}{$label t_class rig}{END rig_label}
-	</label>
-	<div class="col-md-5" >
-		{$rig_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="rig">
-		<div class="text-muted" >
-		{$tooltip t_class rig}
-		</div>
-	</div>
-</div>
-</div>
-{END rig_fieldblock}
-
-			{BEGIN engine_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_engine}" data-fieldname="engine" data-signal-error-for="engine{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_engine}">
-		{BEGIN engine_label}{$label t_class engine}{END engine_label}
-	</label>
-	<div class="col-md-5" >
-		{$engine_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="engine">
-		<div class="text-muted" >
-		{$tooltip t_class engine}
-		</div>
-	</div>
-</div>
-</div>
-{END engine_fieldblock}
-
-			{BEGIN keel_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_keel}" data-fieldname="keel" data-signal-error-for="keel{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_keel}">
-		{BEGIN keel_label}{$label t_class keel}{END keel_label}
-	</label>
-	<div class="col-md-5" >
-		{$keel_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="keel">
-		<div class="text-muted" >
-		{$tooltip t_class keel}
-		</div>
-	</div>
-</div>
-</div>
-{END keel_fieldblock}
-
 
 </div>
 
@@ -318,6 +148,9 @@
 <div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
 
 {BEGIN addbuttons}
+	{BEGIN nextStepButton}
+	<button class="btn btn-primary" {$nextstep_button_attrs}>Next</button>
+	{END nextStepButton}
 	{BEGIN save_button}
 	<button class="btn btn-primary" {$savebutton_attrs}>Save</button>
 	{END save_button}

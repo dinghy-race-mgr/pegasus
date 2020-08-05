@@ -173,6 +173,7 @@ class EVENT
     {
         // FIXME - this doesn't work if the system is run in a different time zone to the database - need to use convert_tz to got from UTC to local timezone - but how do I know they are working in UTC
         // FIXME - should this have active = 1 by default
+        // FIXME - doesn't handle demo
 
         $formats = $this->event_geteventformats(true);    // get names for race formats
 
@@ -184,6 +185,7 @@ class EVENT
         }
 
         $query = "SELECT * FROM t_event $where ORDER BY event_date ASC LIMIT 1";
+        //echo "<pre>$query</pre>";
         $detail = $this->db->db_get_row( $query );
         if (empty($detail))       // nothing found
         { 
