@@ -28,7 +28,7 @@ $searchstr = trim($_REQUEST['searchstr']);
 $pick_script = "pickboat_sc.php?searchstr=".$_REQUEST['searchstr']."&sailor=%u";
 $hide_script = "hideboat_sc.php?searchstr=".$_REQUEST['searchstr']."&sailor=%u";
 $remember_script = "rememberme.php?searchstr=".$_REQUEST['searchstr']."&sailor=%u";
-$tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php", "../templates/sailor/search_tm.php"));
+$tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php", "./templates/search_tm.php"));
 
 // check number of competitors found
 if ($_SESSION['competitors']) { $numcompetitors = count($_SESSION['competitors']);  }

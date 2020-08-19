@@ -16,7 +16,7 @@ u_initpagestart(0,"change_pg",false);   // starts session and sets error reporti
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 
-$tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php"));
+$tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php"));
 
 $change_fields = array();
 foreach ($_SESSION['change_fm'] as $field => $spec) {

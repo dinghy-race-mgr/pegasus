@@ -19,7 +19,6 @@ function fm_addcompetitor($params = array())
             <label class="$lbl_width control-label">boat class</label>
             <div class="$fld_width selectfieldgroup">
                 <select class="form-control" name="classid" required data-fv-notempty-message="choose the class of boat">
-                     <option value=""> pick one &hellip; </option>
                      $class_list
                 </select>
             </div>
@@ -90,7 +89,7 @@ function fm_addclass($params = array())
     $html = <<<EOT
     <div class="alert alert-danger alert-dismissable" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <b>Care</b> - please provide accurate information so that the class is allocated to the correct fleet.
+        <b>Care</b> - please provide accurate information so that the class will be allocated to the correct fleet.
     </div>
 
     <!-- field #1 - class name -->
@@ -122,7 +121,6 @@ function fm_addclass($params = array())
         <label class="$lbl_width control-label">boat type</label>
         <div class="$fld_width selectfieldgroup">
             <select class="form-control" name="category" required data-fv-notempty-message="choose one of these options">
-                 <option value="">&hellip; pick one </option>
                  $category_list
             </select>
         </div>
@@ -133,7 +131,6 @@ function fm_addclass($params = array())
         <label class="$lbl_width control-label">no. of crew</label>
         <div class="$fld_width selectfieldgroup">
             <select class="form-control" name="crew" required data-fv-notempty-message="choose one of these options">
-                 <option value="">&hellip; pick one </option>
                  $crew_list
             </select>
         </div>
@@ -144,7 +141,6 @@ function fm_addclass($params = array())
         <label class="$lbl_width control-label">rig type</label>
         <div class="$fld_width selectfieldgroup">
             <select class="form-control" name="rig" required data-fv-notempty-message="choose one of these options">
-                 <option value="">&hellip; pick one </option>
                  $rig_list
             </select>
         </div>
@@ -155,7 +151,6 @@ function fm_addclass($params = array())
         <label class="$lbl_width control-label">spinnaker type</label>
         <div class="$fld_width selectfieldgroup">
             <select class="form-control" name="spinnaker" required data-fv-notempty-message="choose one of these options">
-                 <option value="">&hellip; pick one </option>
                  $spinnaker_list
             </select>
         </div>
@@ -166,7 +161,6 @@ function fm_addclass($params = array())
         <label class="$lbl_width control-label">engine</label>
         <div class="$fld_width selectfieldgroup">
             <select class="form-control" name="engine" required data-fv-notempty-message="choose one of these options">
-                 <option value="">&hellip; pick one </option>
                  $engine_list
             </select>
         </div>
@@ -177,7 +171,6 @@ function fm_addclass($params = array())
         <label class="$lbl_width control-label">keel</label>
         <div class="$fld_width selectfieldgroup">
             <select class="form-control" name="keel" required data-fv-notempty-message="choose one of these options">
-                 <option value="">&hellip; pick one </option>
                  $keel_list
             </select>
         </div>
@@ -255,22 +248,23 @@ EOT;
     return $html;
 }
 
-function addentry_search_result($params, $results)
+function addentry_search_result($params)
 {
     $html = "";
-    $num_results = count($results);
+    $num_results = count($params);
     if ($num_results <= 0) // nothing found
     {
         $html.= <<<EOT
-        <p class="text-danger bg-danger text-center" style="margin: 20px 20% 0px 20%; padding: 10px 0px 10px 0px ">
+        <div class="alert alert-info" role="alert">no boats found - try again</div>
+        <!--p class="text-danger bg-danger text-center" style="margin: 20px 20% 0px 20%; padding: 10px 0px 10px 0px ">
             &nbsp;no boats found - try again&nbsp;
-        </p>
+        </p -->
 EOT;
     }
     else                      // results found
     {
         $rows = "";
-        foreach ($results as $result)
+        foreach ($params as $result)
         {
             $team = u_truncatestring(rtrim($result['helm'] . "/" . $result['crew'], "/"), 32);
             $button = <<<EOT
@@ -305,49 +299,51 @@ EOT;
     return $html;
 }
 
-function addentry_boats_entered($params, $data)
+function addentry_boats_entered($params)
 {
     $html = "";
 
-    if ($data['pagestate']=="init")
-    {
-        $html.=<<<EOT
-        <p class="text-primary">entered boats listed here &hellip;</p>
+    if ($params['pagestate'] == "init") {
+        $html .= <<<EOT
+        <div class="well">
+            <p class="text-info lead">entered boats listed here &hellip;</p>
+        </div>
 EOT;
-    }
-    else
-    {
-        if (isset($data['entries']))
-        {
-            $num_entries = count($data['entries']);
-            $html.= sprintf("<p class=\"text-primary\"><i>%d entered in this session &hellip;</i></p>", $num_entries);
-            foreach ($data['entries'] as $entry)
-            {
-                if (substr_count($entry, "fail")>0 or substr_count($entry, "error")>0 )     // error or not found
-                {
-                    $html.= <<<EOT
-                    <p class="bg-danger text-danger">&nbsp;$entry</p>
+    } else {
+        if (isset($data['entries'])) {
+            $num_entries = count($params['entries']);
+            $html .= <<<EOT
+            <div class="well">
+            <p class="text-info lead"><i>$num_entries entered in this session &hellip;</i></p>
 EOT;
-                }
-                else                                                                        // entry found
+            foreach ($params['entries'] as $entry) {
+                if (substr_count($entry, "fail") > 0 or substr_count($entry, "error") > 0)     // error or not found
                 {
-                    $html.= <<<EOT
-                    <p class="bg-success text-success">&nbsp;$entry</p>
+                    $html .= <<<EOT
+                    <p class="bg-danger">&nbsp;$entry</p>
+EOT;
+                } else                                                                        // entry found
+                {
+                    $html .= <<<EOT
+                    <p class="bg-success">&nbsp;$entry</p>
 EOT;
                 }
             }
-        }
-        else
-        {
-            $html.=<<<EOT
-            <p class="text-primary">none entered so far &hellip;</p>
+            $html .= "</div>";
+        } else {
+            $html .= <<<EOT
+            <div class="well">
+                <p class="text-info lead">none entered so far &hellip;</p>
+            </div>
 EOT;
         }
 
         if (isset($data['error']))  // display error
         {
-            $html.=<<<EOT
-            <p class="bg-danger text-danger">&nbsp;{$data['error']}</p>
+            $html .= <<<EOT
+            <div class="well">
+                <p class="bg-danger text-danger">&nbsp;{$params['error']}</p>
+            </div>
 EOT;
         }
     }
@@ -355,9 +351,10 @@ EOT;
 }
 
 
-function entry_tabs($params = array(), $entries)
+function entry_tabs($params = array())
 {
     $eventid = $params['eventid'];
+    $entries = $params['entries'];
 
     $tabs = "";
     $panels = "";
@@ -367,10 +364,10 @@ function entry_tabs($params = array(), $entries)
         $fleet_count = count($entries[$i]);
 
         $tabs.= <<<EOT
-        <li role="presentation" class="">
+        <li role="presentation" class="lead">
               &nbsp;
               <a href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">
-              {$fleet['name']} ({$fleet_count})
+              {$fleet['name']} [{$fleet_count}]
               </a>
               &nbsp;
         </li>
@@ -379,9 +376,7 @@ EOT;
         {
             $panels .= <<<EOT
             <div role="tabpanel" class="tab-pane" id="fleet$i">
-                <div class="alert alert-warning" role="alert" style="margin-left: 0%; margin-right: 40%; text-align: center;">
-                   <span><b>no entries in the {$fleet['name']} fleet yet</b></span><br>
-                </div>
+                <div class="well well-sm lead"><span>no entries in the {$fleet['name']} fleet yet</span></div>
             </div>
 EOT;
         }
@@ -477,7 +472,7 @@ EOT;
 
     $html = <<<EOT
     <div class="margin-top-10" role="tabpanel">
-        <ul class="nav nav-pills red" role="tablist">
+        <ul class="nav nav-pills entry" role="tablist">
            $tabs
         </ul>
         <div class="tab-content">
@@ -489,4 +484,3 @@ EOT;
 }
 
 
-?>

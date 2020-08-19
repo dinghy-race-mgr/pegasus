@@ -32,7 +32,7 @@ $action = array(
 // connect to database to get event information
 $db_o = new DB();
 $event_o = new EVENT($db_o);
-$tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php", "../templates/sailor/cruise_tm.php"));
+$tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php", "./templates/cruise_tm.php"));
 
 // update event details
 $_SESSION['events'] = get_cruise_details($_SESSION['sailor_cruiser_eventtypes'], true);

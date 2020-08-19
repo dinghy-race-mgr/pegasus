@@ -33,6 +33,8 @@ $loc  = "..";
 $page = "Rota Synch";
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
+$styletheme = "flatly_";
+$stylesheet = "./style/rm_utils.css";
 
 session_start();
 
@@ -43,7 +45,7 @@ require_once("{$loc}/common/classes/event_class.php");
 require_once("{$loc}/common/classes/rota_class.php");
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","$loc/templates/utils/layouts_tm.php", "$loc/templates/utils/dutyman_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/dutyman_tm.php"));
 
 // initialise session if this is first call
 if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
@@ -75,8 +77,8 @@ empty($_REQUEST['pagestate']) ?  $pagestate = "init" : $pagestate = $_REQUEST['p
 
 $pagefields = array(
     "loc"           => $loc,
-    "theme"         => "flatly_",
-    "stylesheet"    => "$loc/style/rm_utils.css",
+    "theme"         => $styletheme,
+    "stylesheet"    => $stylesheet,
     "title"         => "Duty Synchronisation",
     "header-left"   => "raceManager",
     "header-right"  => "synchronise duty info from dutyman ...",

@@ -393,9 +393,10 @@ EOT;
         );
 
         $event_o = new EVENT($this->db);
+        $rota_o = new ROTA($this->db);
 
         // get all events from startdate
-        $events = $event_o->geteventsfromdate($startdate);
+        $events = $event_o->geteventsfromdate($startdate);  // what if start date is empty
 
         $inventory["events"] = array();
         foreach ($events as $event) {
@@ -415,7 +416,7 @@ EOT;
             );
 
             // get duties
-            $duties = $event_o->event_geteventduties($event['id']);
+            $duties = $rota_o->get_event_duties($event['id']);
             $dutyarray = array();
             foreach ($duties as $duty) {
                 $dutyarray[] = array(

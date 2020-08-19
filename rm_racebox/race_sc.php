@@ -23,7 +23,7 @@ $eventid   = (!empty($_REQUEST['eventid']))? $_REQUEST['eventid']: "";
 $pagestate = (!empty($_REQUEST['pagestate']))? $_REQUEST['pagestate']: "";
 
 u_initpagestart($eventid, $page, "");                               // starts session and sets error reporting
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");     // language file
+include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");     // language file
 
 if ($eventid AND $pagestate)
 {
@@ -32,14 +32,14 @@ if ($eventid AND $pagestate)
     require_once ("{$loc}/common/classes/entry_class.php");
     require_once ("{$loc}/common/classes/race_class.php");
 
-    include("../templates/racebox/growls.php");                           // confirmation message definitions
+    include("./templates/growls.php");                           // confirmation message definitions
 
     $db_o = new DB;
     $event_o = new EVENT($db_o);
     $race_o = new RACE($db_o, $eventid);
 
     // eventname
-    $event = $event_o->event_getevent($eventid);
+    $event = $event_o->get_event_byid($eventid);
 
     if ($event)
     {

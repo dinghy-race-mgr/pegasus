@@ -32,7 +32,7 @@ $action = array(
 // connect to database to get event information
 $db_o = new DB();
 $event_o = new EVENT($db_o);
-$tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php", "../templates/sailor/race_tm.php"));
+$tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php", "./templates/race_tm.php"));
 
 // update event details
 $_SESSION['events'] = get_event_details($_SESSION['sailor_event_window'], $_SESSION['event_passed']);

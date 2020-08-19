@@ -49,7 +49,7 @@ $event_o = new EVENT($db_o);            // event object
 $race_o  = new RACE($db_o, $eventid);   // race object
 
 
-$event = $event_o->event_getevent($eventid);
+$event = $event_o->get_event_byid($eventid);
 
 
 if ($pagestate == "init")    // display information collection form
@@ -330,7 +330,7 @@ function display_options_form($loc, $eventid)
 {
     global $event_o, $db_o, $tmpl_o;
     // get current wind/notes settings in case this is not the first publish
-    $event = $event_o->event_getevent($eventid);
+    $event = $event_o->get_event_byid($eventid);
 
     // generate form
     $speed_codes = $db_o->db_getsystemcodes("wind_speed");

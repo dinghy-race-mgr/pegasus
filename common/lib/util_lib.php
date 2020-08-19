@@ -28,6 +28,33 @@
 
 // NOT SORTED YET
 
+function u_checkarg($arg, $mode, $check, $default = "")
+{
+    // tests $_REQUEST argument for existence and sets values or defaults accordingly.
+    // e.g
+    // $external = u_checkarg("state", "setbool", "init", true)
+    // $action['event'] = u_checkarg("event", "set", "", 0)
+
+    if (key_exists($arg, $_REQUEST)) {  // if key exists do checks according to mode
+        if ($mode == "set") {
+            empty($_REQUEST[$arg]) ? $val = $default : $val = $_REQUEST[$arg];
+        } elseif ($mode == "checkset") {
+            $_REQUEST[$arg] == $check ? $val = $_REQUEST[$arg] : $val = $default;
+        } elseif ($mode == "setbool") {
+            $_REQUEST[$arg] == $check ? $val = true : $val = false;
+        } elseif ($mode == "checkint") {
+            ctype_digit($_REQUEST[$arg]) ? $val = $_REQUEST[$arg] : $val = false;
+        } elseif ($mode == "checkintnotzero") {
+            ctype_digit($_REQUEST[$arg]) and $_REQUEST[$arg] ? $val = $_REQUEST[$arg] : $val = false;
+        }
+
+    } else {  // if key doesn't exist set to default if provided
+        empty($default) ? $val = "" : $val = $default;
+    }
+
+    return $val;
+}
+
 function u_htmlflush($bufr)
 {
     $bufr = str_repeat("\n",4096);
@@ -316,13 +343,14 @@ function u_timeresolution($resolution, $time)
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="shortcut icon" href="{$loc}/common/images/favicon.ico">             
-        <link rel="stylesheet"    href="{$loc}/common/oss/bootstrap/css/bootstrap.min.css" >      
-        <link rel="stylesheet"    href="{$loc}/common/oss/bootstrap/css/bootstrap-theme.min.css">
+        <link rel="stylesheet"    href="{$loc}/common/oss/bootstrap341/css/bootstrap.min.css" >      
+        <link rel="stylesheet"    href="{$loc}/common/oss/bootstrap341/css/bootstrap-theme.min.css">
                 
         <script type="text/javascript" src="{$loc}/common/oss/jquery/jquery.min.js"></script>
-        <script type="text/javascript" src="{$loc}/common/oss/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="{$loc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
     
       </head>
+      
       <body>
         <div class="container" style="margin-top: 50px;">
             <div class="jumbotron">
@@ -602,11 +630,12 @@ function u_initpagestart($eventid, $page, $menu)
     $_SESSION['sys_type'] == "live" ? error_reporting(E_ERROR) : error_reporting(E_ALL);
     
     // add line to indicate change of page
-    if ($menu)
-    {
-        unset($_REQUEST['menu']);
-        u_writelog("**** $page page ", $eventid);
-    }
+    if ($menu) { u_writelog("**** $page page ", $eventid); }
+//    if ($menu)
+//    {
+//        unset($_REQUEST['menu']);
+//        u_writelog("**** $page page ", $eventid);
+//    }
 }
 
 

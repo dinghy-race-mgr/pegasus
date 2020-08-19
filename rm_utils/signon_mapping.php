@@ -13,6 +13,7 @@ $page = "signon_mapping";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
 session_start();
+
 // configuration - rm_sailor database
 $_SESSION['db_host'] = "127.0.0.1";
 $_SESSION['db_user'] = "rmuser";

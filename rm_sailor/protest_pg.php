@@ -16,7 +16,7 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 
 $db_o = new DB();
-$tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php", "../templates/sailor/protest_tm.php"));
+$tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php", "./templates/protest_tm.php"));
 
 // check arguments
 $eventid = check_argument("event", "checkint", "");

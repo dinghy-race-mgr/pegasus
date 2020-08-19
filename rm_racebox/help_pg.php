@@ -16,32 +16,27 @@ $page       = "help";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-u_initpagestart($_REQUEST['eventid'], $page, $_REQUEST['menu']);  // starts session and sets error reporting
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");   // language file
-if ($_SESSION['debug'] == 2) { u_sessionstate($scriptname, $page, $_REQUEST['eventid']); }
+$eventid = u_checkarg("eventid", "checkintnotzero","");
+$menu = u_checkarg("menu", "setbool", "true", "");
+$helppage = u_checkarg("page", "set", "", "help");
 
-empty($_REQUEST['eventid']) ? $eventid = "" : $eventid = $_REQUEST['eventid'];
-empty($_REQUEST['page']) ? $helppage = "" : $helppage = $_REQUEST['page'];
-empty($_REQUEST['menu']) ? $menu = "" : $menu = $_REQUEST['menu'];
+u_initpagestart($_REQUEST['eventid'], $page, true);  // starts session and sets error reporting
+include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");   // language file
 
+// classes
 require_once("{$loc}/common/classes/db_class.php");
 require_once("{$loc}/common/classes/template_class.php");
 
-$tmpl_o = new TEMPLATE(array("../templates/general_tm.php",
-    "../templates/racebox/layouts_tm.php",
-    "../templates/racebox/navbar_tm.php"));
+//templates
+$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/help_tm.php"));
 
 // buttons/modals
 include("./include/help_ctl.inc");
 
 // ----- navbar -----------------------------------------------------------------------------
-$fields = array(
-    "eventid"  => $eventid,
-    "brand"    => "raceBox HELP ",
-    "page"     => $page,
-    "pursuit"  => $_SESSION["e_$eventid"]['pursuit'],
-);
-$nbufr = $tmpl_o->get_template("racebox_navbar", $fields);
+$fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
+$params = array("page" => $helppage, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
+$nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
 
 // database connection
 $db_o = new DB;
@@ -54,9 +49,10 @@ $db_o->db_disconnect();
 
 // ----- render page -------------------------------------------------------------------------
 $fields = array(
-    "title"      => "racebox",
+    "title"      => $_SESSION["e_$eventid"]['ev_label'],
+    "theme"      => $_SESSION['racebox_theme'],
     "loc"        => $loc,
-    "stylesheet" => "$loc/style/rm_racebox.css",
+    "stylesheet" => "./style/rm_racebox.css",
     "navbar"     => $nbufr,
     "l_top"      => $body,
     "l_mid"      => "",
@@ -65,14 +61,16 @@ $fields = array(
     "r_mid"      => "",
     "r_bot"      => "",
     "footer"     => "",
-    "page"       => $page,
-    "refresh"    => 0,
-    "l_width"    => 10,
-    "forms"      => true,
-    "tables"     => true,
     "body_attr"  => "onload=\"startTime()\""
 );
-echo $tmpl_o->get_template("two_col_page", $fields);
+$params = array(
+    "page"      => $page,
+    "refresh"   => 0,
+    "l_width"   => 9,
+    "forms"     => true,
+    "tables"    => true,
+);
+echo $tmpl_o->get_template("two_col_page", $fields, $params);
 
 
 

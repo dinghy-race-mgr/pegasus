@@ -19,45 +19,53 @@
 
 function pickrace_navbar($params=array())
 {
+    // setup club menu
     $club_menu = "";
-    if (!empty($_SESSION['clublink']))
-    {
-        foreach ($_SESSION['clublink'] as $data) {
+    if (!empty($params['links'])) {
+        foreach ($params['links'] as $link) {
             $club_menu .= <<<EOT
-                            <li ><a href="{$data['url']}" target="_blank">{$data['label']}</a></li>
+            <li ><a href="{$link['url']}" target="_blank">{$link['label']}</a></li>
 EOT;
         }
     }
 
-    $html = <<<EOT
-       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-           <div class="" style="margin-left:10px; margin-right:10px;">
-               <div class="navbar-header">
-                    <a class="navbar-brand rm-brand-title" href="#" target="_blank">
-                        <span style="padding-right: 60px">{brand}</span>
-                    </a>
-               </div>
 
-               <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav pull-right">
-                        <li>
-                            <a href="help_pg.php?eventid={eventid}&page={page}&menu=false" >
-                               <span class="rm-navmenu">help</span>
-                            </a>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                               <span class="rm-navmenu">{$_SESSION['clubcode']} <span class="caret"></span></span>
-                            </a>
-                            <ul class="dropdown-menu pull-right" role="menu">
-                                $club_menu
-                            </ul>
-                        </li>
+    $html = <<<EOT
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{rm-website}">{brand}</a>
+        </div>
+    
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="help_pg.php?eventid={eventid}&page={page}&menu=false" >
+                       <span class="rm-navmenu">help</span>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                       <span class="rm-navmenu">{$_SESSION['clubcode']} <span class="caret"></span></span>
+                    </a>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        $club_menu
                     </ul>
-               </div>
-           </div>
-       </div>
+                </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 EOT;
+
+
     return $html;
 }
 
@@ -91,33 +99,34 @@ function race_panel($field=array())
         <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1">
             <div class="panel {style} ">
                 <div class="panel-heading">
-                    <h3 ><b>{eventname}</b><span class="pull-right">&hellip; {label}</span></h3>
+                    <h3 ><b>{eventname}</b><span class="pull-right" style="font-size: smaller">&hellip; {label}</span></h3>
                 </div>
                 <div class="panel-body" >
                     <div class="row">
 
-                        <div class="col-sm-3 col-md-3 {'text'}">
-                            <p class="big-text"><small>race officer: &nbsp;</small><br><b>{oodname}</b></p>
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                            <p class="">race officer: &nbsp;</p><h4><b>{oodname}</b></h4>
                         </div>
 
-                        <div class="col-sm-3 col-md-3 {'text'}">
-                            <p class="big-text"><small>start time: &nbsp;</small><br><b>{starttime} {tidetime}</b></p>
+                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                            <p class="">start time: &nbsp;</p><h4><b>{starttime}</b> &nbsp;<span style="font-size: smaller">{tidetime}</span></h4>
                         </div>
 
-                        <div class="col-sm-3 col-md-3 {'text'}" >
-                            <p class="big-text">
-                                <small>race format: &nbsp;</small><br><b>{raceformat}&nbsp;&nbsp;&nbsp;</b>
-                            </p>
-                            <div data-toggle="popover" data-content="{popover}" data-placement="top">
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                            <p class="">race format: &nbsp;</p><h4><b>{raceformat}&nbsp;&nbsp;&nbsp;</b></h4>                         
+                        </div>
+                        
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                            <div class="col-sm-6 col-md-6" data-toggle="popover" data-content="race format details" data-placement="top">
                                 <a role="button" href="" data-toggle="modal" data-target="#format{eventid}Modal">
-                                <span class="glyphicon glyphicon-list-alt" style="font-size: 1.5em;"></span>
-                            </a>
-                            </div>                            
+                                <span class="glyphicon glyphicon-list-alt" style="vertical-align: middle; font-size: 3em" ></span>
+                                </a>
+                            </div>
                         </div>
-
-                        <div class="col-sm-3 col-md-3" {bpopup}>
-                            <a href="{blink}" class="btn btn-block {bstyle} big-text" target="_SELF">{blabel}</a>
+                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" {bpopup}>
+                            <a href="{blink}" class="btn btn-block {bstyle}" style="font-size: larger" target="_SELF">{blabel}</a>
                         </div>
+                        
                     </div> <!-- row -->
                 </div> <!-- panel body -->
             </div> <!-- panel -->
@@ -178,7 +187,7 @@ function fm_addrace($params=array())
 
     $today = date("Y-m-d");
 
-    $event_formats = $event_o->event_geteventformats(true);
+    $event_formats = $event_o->get_event_formats(true);
     $event_format_select = u_selectlist($event_formats);
 
     $entry_types = $db_o->db_getsystemcodes("entry_type");

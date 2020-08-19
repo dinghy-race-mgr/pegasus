@@ -10,36 +10,41 @@ $loc        = "..";                               // relative path from script t
 $page       = "race_format";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
-require_once ("{$loc}/common/lib/rm_lib.php");
-require_once ("{$loc}/common/lib/raceformat_lib.php");
+
 
 u_initpagestart("", $page, false);
-if ($_SESSION['debug']==2) { u_sessionstate($scriptname, $page, 0); }
+//if ($_SESSION['debug']==2) { u_sessionstate($scriptname, $page, 0); }
 
 // libraries
+require_once ("{$loc}/common/lib/rm_lib.php");
+require_once ("{$loc}/common/lib/raceformat_lib.php");
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
+require_once ("{$loc}/common/classes/rota_class.php");
 
 // database connection
 $db_o = new DB;
-$tmpl_o  = new TEMPLATE(array("../templates/general_tm.php",
-    "../templates/racebox/layouts_tm.php",
-    "../templates/racebox/navbar_tm.php",
-    "../templates/racebox/pickrace_tm.php"));
+
+// initialising templates
+$tmpl_o  = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/entries_tm.php"));
 
 // initialising language
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");
+include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
+
+// initialising controls
+//include ("./include/race_ctl.inc");
 
 $eventid = $_REQUEST['eventid'];
 
 // get event information for today
 $event_o  = new EVENT($db_o);
-$event = $event_o->event_getevent($eventid);
+$rota_o  = new ROTA($db_o);
+$event = $event_o->get_event_byid($eventid);
 
 $racecfg = $event_o->event_getracecfg($eventid, $event['event_format']);
 
-$duties = $event_o->event_geteventduties($eventid, "");
+$duties = $rota_o->get_event_duties($eventid);
 $viewbufr = createdutypanel($duties, $eventid, "in");
 $fleetcfg = $event_o->event_getfleetcfg($event['event_format']);
 $viewbufr.= createfleetpanel ($fleetcfg, $eventid, "in");
@@ -65,4 +70,3 @@ $fields = array(
 );
 echo $tmpl_o->get_template("basic_page", $fields);
 
-?>

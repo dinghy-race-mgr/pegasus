@@ -19,7 +19,7 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 
 $db_o = new DB();
-$tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php"));
+$tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php"));
 
 // check arguments
 $sailorid = check_argument("sailor", "checkint", "");

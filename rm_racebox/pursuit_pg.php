@@ -48,7 +48,7 @@ $tmpl_o = new TEMPLATE(array("../templates/general_tm.php",
 // database connection
 $db_o = new DB;
 $event_o = new EVENT($db_o);
-$event = $event_o->event_getevent($eventid);
+$event = $event_o->get_event_byid($eventid);
 
 // page controls
 include ("./include/pursuit_ctl.inc");

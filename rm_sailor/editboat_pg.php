@@ -20,7 +20,7 @@ require_once ("{$loc}/common/classes/comp_class.php");
 
 // connect to database to get event information
 $db_o = new DB();
-$tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php", "../templates/sailor/addeditboat_tm.php"));
+$tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php", "./templates/addeditboat_tm.php"));
 
 // set optional fields     FIXME - this will eventually be part of configuration
 $field_set = array(

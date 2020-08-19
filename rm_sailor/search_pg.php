@@ -24,8 +24,7 @@ require_once ("./include/rm_sailor_lib.php");
 
 u_initpagestart(0,"search_pg",false);   // starts session and sets error reporting
 
-$tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php", "../templates/sailor/search_tm.php",
-                              "../templates/sailor/cruise_tm.php"));
+$tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php", "./templates/search_tm.php", "./templates/cruise_tm.php"));
 
 // check we are still on the same day as the application started - if not restart
 if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }

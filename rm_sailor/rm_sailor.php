@@ -25,7 +25,7 @@ require_once ("{$loc}/common/classes/template_class.php");
 require_once ("./include/rm_sailor_lib.php");
 
 // create template object
-$tmpl_o = new TEMPLATE(array( "../templates/sailor/layouts_tm.php"));
+$tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php"));
 
 // initialisation
 session_start();
@@ -74,7 +74,7 @@ $_SESSION['pagefields'] = array(
     "theme" => $_SESSION['sailor_theme'],
     "background" => $_SESSION['background'],
     "loc" => $loc,
-    "stylesheet" => "$loc/style/rm_sailor.css",
+    "stylesheet" => "./style/rm_sailor.css",
     "header-left" => "raceManager SAILOR",
     "header-center" => "",
     "header-right" => "",

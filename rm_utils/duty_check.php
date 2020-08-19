@@ -8,6 +8,8 @@ $loc  = "..";
 $page = "duty_check";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
+$styletheme = "flatly_";
+$stylesheet = "./style/rm_utils.css";
 
 require_once ("{$loc}/common/lib/util_lib.php");
 
@@ -53,13 +55,12 @@ foreach ($rs as $row)
 }
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","$loc/templates/utils/layouts_tm.php",
-                             "$loc/templates/utils/duty_check_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/duty_check_tm.php"));
 
 $pagefields = array(
     "loc" => $loc,
-    "theme" => "flatly_",
-    "stylesheet" => "$loc/style/rm_utils.css",
+    "theme" => $styletheme,
+    "stylesheet" => $stylesheet,
     "title" => "duty_check",
     "header-left" => "raceManager",
     "header-right" => "Duty Check",

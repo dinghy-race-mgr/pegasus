@@ -1,12 +1,6 @@
 /* custom styles for rm_racebox application
 -------------------------------------------------- */
 
-/* theme colours
-    danger = #B92C28
-    primary = #2B669A
-
-*/
-
 
 html {
   position: relative;
@@ -40,7 +34,7 @@ body > .container {
 .margin-right-40 {margin-right: 40px;}
 
 /* text styles */
-.big-text { font-size: 1.2em; }
+/*.big-text { font-size: 1.2em; }*/
 
 
 /* tables */
@@ -60,7 +54,9 @@ body > .container {
 
 /* forms */
 .help-block { font-size:  0.8em; color: blue; }
+.form-control { border: 1px solid darkgrey !important}
 .form-condensed { margin-bottom: 7px; }
+.form-control-feedback { padding-left: 20px; font-size: 0.7em; color: #B92C28; }
 
 /* right hand page buttons */
 #rhcol .btn {text-align: left !important;}
@@ -70,12 +66,15 @@ body > .container {
 .bg-warning-modal  {background-color: #EB9316; color: white;}
 .bg-primary-modal {background-color: #2B669A; color: white;}
 .modal-footer {margin-top: 0px; padding: 5px 20px 10px; }
+.modal-close { font-size: 18px !important; color: white !important; text-shadow: none  !important;
+    filter: none  !important; opacity: 1.0  !important; }
+.modal-lg {width: 1100px !important}
+.modal-md {width: 800px !important}
+.modal-sm {width: 600px !important}
 
 /* navpills */
-.red li.active a,
-.red li.active a:focus,
-.red li.active a:hover {
-    background-color: red;
+.entry li.active a, .entry li.active a:focus, .entry li.active a:hover {
+    background-color: darkred;
 }
 
 /* drop down menu */
@@ -83,13 +82,7 @@ body > .container {
 .dropdown-menu > li > a { padding:1px 10px !important;}
 
 /* modal close */
-.modal-close {
-    font-size: 18px !important;
-    color: yellow !important;
-    text-shadow: none  !important;
-    filter: none  !important;
-    opacity: 1.0  !important;
-}
+
 
 /* timer page row classes */
 .table > tbody > tr.finished {background-color: #e6e6e6; color: darkgrey;}
@@ -100,9 +93,6 @@ body > .container {
 .truncate {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 
 .inline-button {padding: 0px 5px 0px 5px;}
-
-.racestate-title {font-size: 1.1em; font-weight: bold; color: #46658b; vertical-align: middle !important;}
-.racestate-text  {font-size: 1.1em; font-weight: bold; color: #616161; vertical-align: middle !important;}
 
 /* sidebar
 #sidebar .affix {
@@ -168,34 +158,28 @@ body > .container {
 
 /* style for navbar brand link */
 .rm-brand-title {
-    font-family: Trebuchet MS, Arial, sans-serif;
-    font-size: 160%;
-    color: orange;    
+    font-size: 160% !important;;
 }
 
 /* styles for navbar menu items */
 .rm-navmenu {
-    font-family: Trebuchet MS, Arial, sans-serif;
-    font-size: 140%;
-    color:  white;
+    font-size: 160%; color: white;
 }
 
 .rm-navmenu:hover {
-    font-family: Trebuchet MS, Arial, sans-serif;
-    font-size: 140%;
     color: orange;
 }
 
 .rm-navmenu-active {
-    font-family: Trebuchet MS, Arial, sans-serif;
-    font-size: 140%;
-    color:  red;
+    font-size: 160%; color:  red;
 }
 
 .rm-navmenu-active:hover {
-    font-family: Trebuchet MS, Arial, sans-serif;
-    font-size: 140%;
     color: orange;
+}
+
+.rm-navmenu-right {
+    font-size: 160%;;
 }
 
 @media (min-width: 1600px){

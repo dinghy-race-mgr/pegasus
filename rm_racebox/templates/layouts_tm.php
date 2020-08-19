@@ -22,8 +22,6 @@ function two_col_page($params = array())
         $refresh = "<meta http-equiv=\"refresh\" content=\"{$params['refresh']}\">";
     }
 
-    isset($params['body_attr']) ? $body_attr = $params['body_attr'] : $body_attr = "";
-
     isset($params["l_width"]) ? $l_width = $params["l_width"] : $l_width = 10;         // set column widths
     $r_width = 12 - $l_width;
 
@@ -90,10 +88,9 @@ EOT;
             <meta name="author" content="">
 
             <link   rel="shortcut icon"    href="{loc}/common/images/favicon.ico">
-            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap/css/flatly_bootstrap.min.css" >
-            <!-- link   rel="stylesheet"       href="{loc}/common/oss/bootstrap/css/bootstrap-theme.min.css" -->
+            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap341/css/{theme}bootstrap.min.css" >
             <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>
-            <script type="text/javascript" src="{loc}/common/oss/bootstrap/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="{loc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
             <script type="text/javascript" src="{loc}/common/scripts/clock.js"></script>
 
@@ -104,7 +101,7 @@ EOT;
             <link href="{stylesheet}" rel="stylesheet">
 
     </head>
-    <body $body_attr>
+    <body class="{body_attr}">
         $countdown
         {navbar}
         <div class="container-fluid" role="main">
@@ -116,11 +113,9 @@ EOT;
                 </div>
                 <div id="rhcol" class="col-md-$r_width col-sm-$r_width col-xs-$r_width">
                     <div class="margin-top-20">
-
                         {r_top}
                         {r_mid}
                         {r_bot}
-
                     </div>
                 </div>
             </div>
@@ -187,19 +182,19 @@ EOT;
             <meta name="author" content="">
 
             <link   rel="shortcut icon"    href="{loc}/common/images/favicon.ico">
-            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap/css/bootstrap.min.css" >
-            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap/css/bootstrap-theme.min.css">
+            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap341/css/bootstrap.min.css" >
+            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap341/css/bootstrap-theme.min.css">
             <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>
-            <script type="text/javascript" src="{loc}/common/oss/bootstrap/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="{loc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
 
             $formval_hdr
 
-            <!-- Custom styles for this template -->
-            <link href="{stylesheet}" rel="stylesheet">
+            <!-- Custom styles for this template 
+            <link href="{stylesheet}" rel="stylesheet">-->
 
     </head>
-    <body>
+    <body class="{body_attr}">
         <script type="text/javascript" src="../common/oss/countuptimer/dist/jquery.countdown.js"></script>
         {navbar}
         <div class="container-fluid" role="main">
@@ -231,129 +226,85 @@ EOT;
 }
 
 function racebox_navbar($params=array())
-    /*
-     * fields
-     *    eventid
-     *    brand
-     *    clubcode
-     *    website
-     *    page
-     *    scoring
-     */
 {
-
-    $state = array (
-        "dashboard"     =>"rm-navmenu",
-        "race"          =>"rm-navmenu",
-        "entries"       =>"rm-navmenu",
-        "start"         =>"rm-navmenu",
-        "timer"         =>"rm-navmenu",
-        "pursuit"       =>"rm-navmenu",
-        "results"       =>"rm-navmenu",
-        "help"          =>"rm-navmenu",
-        "club"          =>"rm-navmenu",
+    $options = array(
+//        "1" => array("name" => "dashboard", "label" => "programme", "target" => "pickrace_pg.php"),
+        "2" => array("name" => "race", "label" => "status", "target" => "race_pg.php"),
+        "3" => array("name" => "entries", "label" => "entries", "target" => "entries_pg.php"),
+        "4" => array("name" => "start", "label" => "start", "target" => "start_pg.php"),
+        "5" => array("name" => "timer", "label" => "timer", "target" => "timer_pg.php"),
+        "6" => array("name" => "pursuit", "label" => "pursuit", "target" => "pursuit_pg.php"),
+        "7" => array("name" => "results", "label" => "results", "target" => "results_pg.php"),
     );
-    $state["{$params['page']}"] = "rm-navmenu-active";
+
+
+    $option_bufr = "";
+    foreach ($options as $k=> $option)
+    {
+        if ($option['name'] == "pursuit" and !$params['pursuit']) {
+            continue;
+        }
+        $params['page'] == $option['name'] ? $state = "rm-navmenu-active" : $state = "rm-navmenu" ;
+        $option_bufr.= <<<EOT
+        <li>
+            <a href="{$option['target']}?eventid={eventid}&menu=true" >
+              <span class="$state" >{$option['label']}</span>
+            </a>
+        </li>
+EOT;
+    }
 
 // setup club menu
     $club_menu = "";
-    if (!empty($_SESSION['clublink']))
-    {
-        foreach ($_SESSION['clublink'] as $data) {
+    if (!empty($params['links'])) {
+        foreach ($params['links'] as $link) {
             $club_menu .= <<<EOT
-                            <li ><a href="{$data['url']}" target="_blank">{$data['label']}</a></li>
+            <li ><a href="{$link['url']}" target="_blank">{$link['label']}</a></li>
 EOT;
         }
     }
 
-// setup pursuit finish menu option
-    $pursuit = "";
-    if ($params['pursuit'])
-    {
-        $pursuit = <<<EOT
-            <li>
-                <a href="pursuit_pg.php?eventid={eventid}&menu=true" >
-                   <span class="{$state['pursuit']}">pursuit</span>
-                </a>
-            </li>
-EOT;
-    }
-
     $html = <<<EOT
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-             <div class="" style="margin-left:15px; margin-right:15px;">
-                  <div class="navbar-header" style="min-width:25%">
-                       <a class="navbar-brand rm-brand-title" href="{$_SESSION['sys_website']}" target="_blank">
-                           <span style="padding-right: 40px">{brand}</span>
-                       </a>
-                  </div>
+    
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand rm-brand-title" href="pickrace_pg.php?eventid={eventid}&page={page}&menu=true" target="_blank">
+        <span class="text-success" style="padding-right: 40px">{brand}</span>
+      </a>
+    </div>
 
-                  <div class="collapse navbar-collapse">
-                      <ul class="nav navbar-nav" >
-                          <li>
-                              <a href="pickrace_pg.php?eventid={eventid}&menu=true" >
-                                  <span class="{$state['dashboard']}"><i>programme</i></span>
-                              </a>
-                          </li>
-
-                          <li>
-                              <a href="race_pg.php?eventid={eventid}&menu=true" >
-                                  <span class="{$state['race']}">race admin</span>
-                              </a>
-                          </li>
-
-                          <li>
-                              <a href="entries_pg.php?eventid={eventid}&menu=true" >
-                                  <span class="{$state['entries']}">entries</span>
-                              </a>
-                          </li>
-
-                          <li>
-                              <a href="start_pg.php?eventid={eventid}&menu=true" >
-                                  <span class="{$state['start']}">start</span>
-                              </a>
-                          </li>
-
-                          <li>
-                              <a href="timer_pg.php?eventid={eventid}&menu=true" >
-                                  <span class="{$state['timer']}">time laps</span>
-                              </a>
-                          </li>
-
-                          $pursuit
-
-                          <li>
-                              <a href="results_pg.php?eventid={eventid}&menu=true" >
-                                  <span class="{$state['results']}">results</span>
-                              </a>
-                          </li>
-
-                      </ul>
-
-                      <ul class="nav navbar-nav pull-right">
-                          <li>
-                              <a href="help_pg.php?eventid={eventid}&page={page}&menu=true" >
-                                  <span class="{$state['help']}">help</span>
-                              </a>
-                          </li>
-                          <li class="dropdown">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                  <span class="{$state['club']}">{$_SESSION['clubcode']} <span class="caret"></span></span>
-                              </a>
-                              <ul class="dropdown-menu" role="menu">
-                                  <li >&nbsp;&nbsp;<b>Local information &hellip;</b></li>
-                                  <li class="divider"></li>
-                                  $club_menu
-                              </ul>
-                          </li>
-                          <li>
-                              <div id="clockdisplay" style="width:100px; color:orange; font-size:150%; font-weight: bold; text-align: right; padding-top:12px"></div>
-                          </li>
-                      </ul>
-
-                  </div>
-             </div>
-        </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        $option_bufr
+      </ul>
+      
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="help_pg.php?eventid={eventid}&page={$params['page']}&menu=true" >
+              <span class="rm-navmenu-right text-success">help</span>
+          </a>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+              <span class="rm-navmenu-right text-success">{club} <span class="caret"></span></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+              <li ><b>Local stuff &hellip;</b></li>
+              <li class="divider"></li>
+              $club_menu
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 EOT;
     return $html;
 }

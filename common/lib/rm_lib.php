@@ -30,12 +30,13 @@ function r_initialiseevent($mode, $eventid)
      */
 {
     $status = "ok";
-    
+
     // establish database and event objects   
-    $db_o     = new DB();
-    $event_o  = new EVENT($db_o); 
-    $race_o   = new RACE($db_o, $eventid); 
-    
+    $db_o = new DB();
+    $event_o = new EVENT($db_o);
+    $rota_o = new ROTA($db_o);
+    //$race_o   = new RACE($db_o, $eventid);
+
     // empty dynamic database tables if a reset
 //    if ($mode == "init" or $mode == "reset")
 //    {
@@ -55,93 +56,84 @@ function r_initialiseevent($mode, $eventid)
 //            $set  =  0;
 //        }
 //    }
-    
+
     // set up codes from drop downs     // FIXME is there a more efficient way to do this
-    $_SESSION['startcodes']  = $db_o->db_getresultcodes("start");
-    $_SESSION['timercodes']  = $db_o->db_getresultcodes("timer");
+    $_SESSION['startcodes'] = $db_o->db_getresultcodes("start");
+    $_SESSION['timercodes'] = $db_o->db_getresultcodes("timer");
     $_SESSION['resultcodes'] = $db_o->db_getresultcodes("result");
-    
+
     // setup where list of codes to continue timing
     $codelist = $db_o->db_getresultcodes("timing");
     $_SESSION['timercodelist'] = "";
-    foreach ($codelist as $row)
-    {
-        $_SESSION['timercodelist'].= "'{$row['code']}'}'";
-    }   
-    
-    // get event details
-    $event_rs = $event_o->event_getevent($eventid);
-    if ($event_rs AND $event_rs['event_type']=="racing")  // we have information on the specified event and it is a race
-    {        
-        // FIXME - deal with event not being part of series OR series not being valid
-        $series_rs = $event_o->event_getseries($event_rs['series_code']);   // get series information
-        $ood_rs = $event_o->event_geteventduties($eventid, "ood_p");          // get OOD information
-        r_seteventinsession($eventid, $event_rs, $series_rs, $ood_rs);      // add event and ood information to session
-        
-        // deal with status
-        if ($_SESSION["e_$eventid"]['ev_status']=="scheduled" or $mode=="reset")
-        {
-            $result =  $event_o->event_updatestatus($eventid, "selected");
-        }
-                                
+    foreach ($codelist as $row) {
+        $_SESSION['timercodelist'] .= "'{$row['code']}'}'";
     }
-    else
-    {
-        $status = "event_error";
-    }
-    
-    // get race configuration details   
-    $racecfg_rs = $event_o->event_getracecfg($eventid, $_SESSION["e_$eventid"]['ev_format']);
-    if ($racecfg_rs and $racecfg_rs['active']==1)
-    {      
-        //get fleet configuration for this race format
-        $fleetcfg_rs = $event_o->event_getfleetcfg($_SESSION["e_$eventid"]['ev_format']);
 
-        // add race configuration to session
-        $fleetnum = count($fleetcfg_rs);
-        r_setraceinsession($eventid, $racecfg_rs, $fleetnum);   
-        
-        // clear any database fleet status records relating to the fleets if this is first initialisation
-        if ($_SESSION["e_$eventid"]['ev_status'] == "scheduled")  // FIXME won't work on reset
+    // get event details
+    $event_rs = $event_o->get_event_byid($eventid);
+
+    if ($status == "ok") {
+        if ($event_rs AND $event_rs['event_type'] == "racing")  // we have information on the specified event and it is a race
         {
-            r_clearfleetdb($db_o, $eventid);
-        }                
-               
-        if ($fleetcfg_rs)
-        {
-            // loop over each fleet
-            foreach ($fleetcfg_rs as $fleet)
+            // FIXME - deal with event not being part of series OR series not being valid
+            $series_rs = $event_o->event_getseries($event_rs['series_code']);   // get series information
+            $ood_rs = $rota_o->get_event_duties($eventid, "ood_p");             // get OOD information
+            r_seteventinsession($eventid, $event_rs, $series_rs, $ood_rs);      // add event and ood information to session
+
+            // deal with status
+            if ($_SESSION["e_$eventid"]['ev_status'] == "scheduled" or $mode == "reset") {
+                $result = $event_o->event_updatestatus($eventid, "selected");
+            }
+        } else {
+            $status = "event_error";
+        }
+    }
+
+
+    // if we have the event - get the race configuration details
+    if ($status == "ok") {
+        $racecfg_rs = $event_o->event_getracecfg($eventid, $_SESSION["e_$eventid"]['ev_format']);
+        if ($racecfg_rs AND $racecfg_rs['active'] == 1) {
+            //get fleet configuration for this race format and add to session
+            $fleetcfg_rs = $event_o->event_getfleetcfg($_SESSION["e_$eventid"]['ev_format']);
+            $fleetnum = count($fleetcfg_rs);
+            r_setraceinsession($eventid, $racecfg_rs, $fleetnum);
+
+            // clear any database fleet status records relating to the fleets if this is first initialisation
+            if ($_SESSION["e_$eventid"]['ev_status'] == "scheduled")  // FIXME won't work on reset
             {
-                $i = $fleet['fleet_num'];
-                // add fleet information to session
-                r_initfleetsession($eventid, $i, $fleet);
-                
-                // add information to t_racestate if this is first initialisation or a reset
-                r_initfleetdb ($db_o, $eventid, $i, $fleet, $racecfg_rs['start_scheme'], $racecfg_rs['start_interval'], $mode);
- 
-             } 
-             // now determine if timer has been started.   FIXME = this won't work if you close the browser - need to get this from racestate'
-             if ($_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']!="00:00:00")
-             {
-                $_SESSION["e_$eventid"]['timerstart'] = strtotime($_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']) - r_getstartdelay(1, $_SESSION["e_$eventid"]['ev_startscheme'], $_SESSION["e_$eventid"]['ev_startint']);
-                // u_writedbg ("timer reset to".date($_SESSION["e_$eventid"]['timerstart']),__FILE__,__FUNCTION__,__LINE__);
-             }                                          
-        }
-        else
-        {
-            $status = "fleet_error";
+                r_clearfleetdb($db_o, $eventid);
+            }
+
+            if ($fleetcfg_rs) {
+                // loop over each fleet
+                foreach ($fleetcfg_rs as $fleet) {
+                    $i = $fleet['fleet_num'];
+                    // add fleet information to session
+                    r_initfleetsession($eventid, $i, $fleet);
+
+                    // add information to t_racestate if this is first initialisation or a reset
+                    r_initfleetdb($db_o, $eventid, $i, $fleet, $racecfg_rs['start_scheme'], $racecfg_rs['start_interval'], $mode);
+
+                }
+                // now determine if timer has been started.   FIXME = this won't work if you close the browser - need to get this from racestate'
+                if ($_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime'] != "00:00:00") {$_SESSION["e_$eventid"]['timerstart'] =
+                    strtotime($_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']) - r_getstartdelay(1, $_SESSION["e_$eventid"]['ev_startscheme'], $_SESSION["e_$eventid"]['ev_startint']);
+                }
+            } else {
+                $status = "fleet_error";
+            }
+        } else {
+            $status = "race_error";
         }
     }
-    else
-    {
-        $status = "race_error";
-    }
-    
-    // check event status - if scheduled, update status to selected in database and session 
-    if ($_SESSION["e_$eventid"]['ev_status'] == "scheduled")
-    {
-       $eventchange = $event_o->event_updatestatus($eventid, "selected");
-       $_SESSION["e_$eventid"]['ev_status'] = "selected";
+
+    if ($status == "ok") {
+        // check event status - if scheduled, update status to selected in database and session
+        if ($_SESSION["e_$eventid"]['ev_status'] == "scheduled") {
+            $eventchange = $event_o->event_updatestatus($eventid, "selected");
+            $_SESSION["e_$eventid"]['ev_status'] = "selected";
+        }
     }
        
     // disconnect database
@@ -149,7 +141,6 @@ function r_initialiseevent($mode, $eventid)
     
     return $status;
 }
-
 
 
 function r_seteventinsession($eventid, $event, $series_rs, $ood_rs = array())
@@ -183,6 +174,8 @@ function r_seteventinsession($eventid, $event, $series_rs, $ood_rs = array())
     $_SESSION["e_$eventid"]['exit']           = false;
     
     // derived variables
+    empty($event['event_order']) ? $label = $event['event_start'] : $label = $event['event_order'];
+    $_SESSION["e_$eventid"]['ev_label'] = "Race $label";
     empty($event['series_code']) ?  $_SESSION["e_$eventid"]['ev_seriesname'] = "" :
                                     $_SESSION["e_$eventid"]['ev_seriesname'] = $series_rs['seriesname'];
     

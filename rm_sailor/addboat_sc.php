@@ -24,7 +24,7 @@ require_once ("{$loc}/common/classes/comp_class.php");
 $db_o   = new DB();
 $comp_o = new COMPETITOR($db_o);
 $boat_o = new BOAT($db_o);
-$tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php", "../templates/sailor/addeditboat_tm.php"));
+$tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php", "./templates/addeditboat_tm.php"));
 
 // set up confirmation fields
 $addboatfields = array(

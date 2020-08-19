@@ -37,20 +37,6 @@
 */
 
 // ----- ADD RACE --------------------------------------------------
-//$btn_addrace = array(
-//    "id"          => "addrace",
-//    "style"       => "primary",
-//    "size"        => "md",
-//    "label"       => "Add Race Today",
-//    "glyph"       => "glyphicon-plus-sign",
-//    "g-pos"       => "left",
-//    "popover"     => "click to add a new race for today",
-//    "pop-pos"     => "left",
-//    "disabled"    => "",
-//    "block"       => "btn-block",
-//    "top-margin"  => "margin-top-10",
-//);
-
 $btn_addrace = array(
     "label"   => true,
     "glyph"   => true,
@@ -70,24 +56,6 @@ $btn_addrace = array(
         "top-margin"  => "margin-top-10",
     ),
 );
-
-//$mdl_addrace = array(
-//    "id"          => "addrace",
-//    "size"        => "lg",
-//    "style"       => "primary",
-//    "title"       => "Add Race Today",
-//    "body"        => "",
-//    "form"        => true,
-//    "script"      => "",
-//    "action"      => "pickrace_sc.php?pagestate=addrace",
-//    "target"      => "",
-//    "onsubmit"    => "",
-//    "close-lbl"   => "nope",
-//    "reset-lbl"   => "",
-//    "submit-lbl"  => "add race",
-//    "reload"      => true,
-//    "footer"      => "",
-//);
 
 $mdl_addrace = array(
     "form"    => true,

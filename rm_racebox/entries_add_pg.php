@@ -1,7 +1,7 @@
 <?php
 
 /* ------------------------------------------------------------
-   rbx_pg_addentry
+   entries_add_pg.php
    
    Allows OOD to pick competiors from database for adding to 
    either just the current race or all races today.
@@ -13,32 +13,37 @@
    ------------------------------------------------------------
 */
 
-$loc        = "..";                                                // <--- relative path from script to top level folder
+$loc        = "..";
 $page       = "addentry";     // 
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
+
+$eventid = u_checkarg("eventid", "checkintnotzero","");
+$page_state = u_checkarg("pagestate", "set","");
+
+u_initpagestart($_REQUEST['eventid'], $page, "");
+include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
+
+if (!$eventid) {
+    u_exitnicely("entries_add_pg", $eventid, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
+        "please contact your raceManager administrator");
+}
+
+if (empty($page_state)) {
+    u_exitnicely("entries_add_pg", $eventid, "the page state has not been set",
+        "please contact your raceManager administrator");
+}
+
+// classes
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 
-u_initpagestart($_REQUEST['eventid'], $page, $_REQUEST['menu']);   // starts session and sets error reporting
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");    // language file
-
-$eventid   = $_REQUEST['eventid'];
-$page_state = $_REQUEST['pagestate'];
-
-if (empty($page_state) OR empty($eventid))
-{
-    u_exitnicely("entries_add_pg", $eventid, "errornum", "eventid or pagestate are missing");
-}
-
 // templates
-$tmpl_o = new TEMPLATE(array("../templates/general_tm.php",
-    "../templates/racebox/layouts_tm.php",
-    "../templates/racebox/entries_tm.php"));
-
+$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/entries_tm.php"));
 include("./include/entries_ctl.inc");
 
-$db_o    = new DB;              // create database object
+// create database object
+$db_o    = new DB;
 
 /* --------------  LEFT HAND COLUMN -------------------------------------------------------------- */
 // search box
@@ -48,31 +53,32 @@ $lbufr = $tmpl_o->get_template("fm_addentry", array("eventid" => $eventid));
 if ($page_state == "pick")    // display search results
 {
     $num_results = count($_SESSION["e_$eventid"]['enter_opt']);
-    $data = $_SESSION["e_$eventid"]['enter_opt'];
+    $params = $_SESSION["e_$eventid"]['enter_opt'];
 //    if ($num_results > 0)
 //    {
-//       $data = array(
+//       $params = array(
 //           "found" => $num_results,
 //           "competitors" =>$_SESSION["e_$eventid"]['enter_opt'],
 //       );
 //    }
-    $lbufr.= $tmpl_o->get_template("addentry_search_result", array("eventid" =>$eventid), $data);
+    $lbufr.= $tmpl_o->get_template("addentry_search_result", array("eventid" =>$eventid), $params);
 }
 
 /* --------------  RIGHT HAND COLUMN -------------------------------------------------------------- */
 
-$data = array(
+$params = array(
     "pagestate" => $page_state,
     "entries"   => isset($_SESSION["e_$eventid"]['enter_rst']) ? $_SESSION["e_$eventid"]['enter_rst'] : array(),
     "error"     => isset($_SESSION["e_$eventid"]['enter_err']) ? $_SESSION["e_$eventid"]['enter_err'] : null,
 );
 if (isset($_SESSION["e_$eventid"]['enter_err'])) { unset($_SESSION["e_$eventid"]['enter_err']); }
-$rbufr = $tmpl_o->get_template("addentry_boats_entered", array(), $data);
+$rbufr = $tmpl_o->get_template("addentry_boats_entered", array(), $params);
 
 $fields = array(
     "title"      => "racebox",
+    "theme"      => $_SESSION['racebox_theme'],
     "loc"        => $loc,
-    "stylesheet" => "$loc/style/rm_racebox.css",
+    "stylesheet" => "./style/rm_racebox.css",
     "navbar"     => "",
     "l_top"      => "",
     "l_mid"      => $lbufr,
@@ -88,6 +94,13 @@ $fields = array(
     "tables"    => true,
     "body_attr" => ""
 );
-echo $tmpl_o->get_template("two_col_page", $fields);
 
-?>
+$params = array(
+    "page"      => $page,
+    "refresh"   => 0,
+    "l_width"   => 8,
+    "forms"     => true,
+    "tables"    => true,
+);
+
+echo $tmpl_o->get_template("two_col_page", $fields, $params);

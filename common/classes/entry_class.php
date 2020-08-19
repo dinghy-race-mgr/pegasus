@@ -54,9 +54,22 @@ class ENTRY
     //Method: construct class object
     public function __construct(DB $db, $eventid, $event_detail)
     {
+
+
         $this->db = $db;
         $this->eventid = $eventid;
-        $this->fleets = $event_detail['fleetcfg'];
+
+        // FIXME - this is ugly needs to be a consistent structure across all apps
+        if (key_exists("fl_1", $event_detail))   // using racebox format
+        {
+            for ($i = 1; $i <= $event_detail['rc_numfleets']; $i++) {
+                $this->fleets[$i] = $event_detail["fl_$i"];
+            }
+        }
+        else                                     // using rm_sailor format
+        {
+            $this->fleets = $event_detail['fleetcfg'];
+        }
         $this->numfleets = count($this->fleets);
     }
 

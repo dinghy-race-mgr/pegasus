@@ -25,7 +25,7 @@ require_once ("{$loc}/common/classes/result_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 
 $db_o = new DB();
-$tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php", "../templates/sailor/results_tm.php"));
+$tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php", "./templates/results_tm.php"));
 
 // check arguments
 $eventid = check_argument("state", "checkint", "");

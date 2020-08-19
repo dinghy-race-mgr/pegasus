@@ -16,6 +16,8 @@ $loc  = "..";
 $page = "check_fleet_allocation";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
+$styletheme = "flatly_";
+$stylesheet = "./style/rm_utils.css";
 
 require_once ("{$loc}/common/lib/util_lib.php");
 
@@ -58,16 +60,15 @@ $event_o = new EVENT($db_o);
 $classes = $boat_o->boat_getclasslist();
 
 // get race format names
-$formats = $event_o->event_geteventformats(true);
+$formats = $event_o->get_event_formats(true);
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","$loc/templates/utils/layouts_tm.php",
-    "$loc/templates/utils/check_fleet_allocation_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","./templates/layouts_tm.php", "./templates/check_fleet_allocation_tm.php"));
 
 $pagefields = array(
     "loc" => $loc,
-    "theme" => "flatly_",
-    "stylesheet" => "$loc/style/rm_utils.css",
+    "theme" => $styletheme,
+    "stylesheet" => $stylesheet,
     "title" => "fleet allocation",
     "date"  => date("Y-m-d"),
     "header-left" => "raceManager",

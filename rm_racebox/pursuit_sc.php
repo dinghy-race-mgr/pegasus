@@ -36,7 +36,7 @@ if ($eventid AND $pagestate) {
     $db_o = new DB;
     $event_o = new EVENT($db_o);
 
-    $event = $event_o->event_getevent($eventid);
+    $event = $event_o->get_event_byid($eventid);
 
 // ---- handle specific controls -------------------------------------------------------------
 // ---- xxx ---------------------------------

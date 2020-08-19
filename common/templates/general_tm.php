@@ -1,10 +1,6 @@
 <?php
 /*
  *  under_construction
- *
- *
- *
- *
  */
 function under_construction($params=array())
     /*
@@ -32,9 +28,10 @@ EOT;
     return $html;
 }
 
+
+
 function error_msg($params = array())
 {
-    // TBD - see pick boat
     $bufr = <<<EOT
         <div class="row margin-top-10">
            <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
@@ -483,22 +480,29 @@ EOT;
  * @param array $data     options in link
  * @return string
  */
-function btn_multilink($params = array(), $data=array())
+function btn_multilink($params = array())
     /*
- PARAMS
+ Fields
     id        : id for button
     style     : bootstrap style for button
     size      : bootstrap size for button
     label     : text label
     glyph     : glyph label
-    g-pos     :  glyph position (left|right)
+    g-pos     : glyph position (left|right)
     popover   : popover text
     pop-pos   : popover position
     disabled  : 'disabled' if button is to be disabled otherwise leave blank
     block     : 'btn-block' if a block button otherwise leave blank
     top-margin: top margin style (e.g margin-top-20)
 
-  DATA  - list of links for the button with the link label as the key
+
+   Params:
+    label     : label required (true|false),
+    glyph     : glyph required (true|false),
+    g-pos     : glyph position  (left|right),
+    popover   : popover requested ("true"|"false"),
+    data      : array(with key as label and value as link)
+
  */
 {
     if (!$_SESSION['button_help']) { $params['popover'] = false; }  // turn off tooltip if help is off
@@ -511,7 +515,7 @@ EOT;
     }
 
     $options_bufr = "";
-    foreach ($data as $label => $link)
+    foreach ($params['data'] as $label => $link)
     {
         $options_bufr.= "<li><a href=\"{$link}\" target=\"{target}\">{$label}</a></li> ";
     }
@@ -590,4 +594,3 @@ EOT;
     return $html;
 }
 
-?>

@@ -24,7 +24,7 @@ require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/comp_class.php");
 require_once ("{$loc}/common/classes/cruise_class.php");
 
-$tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php"));
+$tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php"));
 
 // test argument is
 $sailorid = check_argument("sailor", "checkint", "");

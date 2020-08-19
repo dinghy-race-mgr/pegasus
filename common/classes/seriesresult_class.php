@@ -143,7 +143,7 @@ class SERIES
                 foreach ($event_list as $event)
                 {
                     $i++;
-                    $event_o->event_getevent($event['id']);     // get event
+                    $event_o->get_event_byid($event['id']);     // get event
                     if ($i == 1)
                     {
                         $race_cfg = $event['event_format'];     // set standard configuration for this series

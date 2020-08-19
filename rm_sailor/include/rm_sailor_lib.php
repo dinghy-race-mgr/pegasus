@@ -187,7 +187,7 @@ function get_fixed_event($event_list)
     if (!empty($eventid_list)) {                         // if event list has values - get details for those events
 
         foreach ($eventid_list as $k => $id) {
-            $rs = $event_o->event_getevent($id, true);   // get event if it is a racing event
+            $rs = $event_o->get_event_byid($id, "racing");   // get event if it is a racing event
             if ($rs) {
                 $data['details'][$rs['id']] = $rs;
                 $cfg = map_fleet_cfg($rs['event_format']);   // get fleet configurations for this event
@@ -206,7 +206,7 @@ function get_fixed_event($event_list)
         $data['numevents'] = count($data['details']);
     }
 
-    $rs = $event_o->event_getnextevent(date("Y-m-d"), true);
+    $rs = $event_o->get_nextevent(date("Y-m-d"), "racing");
     if ($rs) {
         $data['nextevent'] = $rs;
     }
@@ -222,10 +222,11 @@ function get_dated_event($future_window)
     $data = array("mode" => "dated", "numevents" => 0, "event_day"=> "", "nextevent" => array(), "details" => array());
 
     // check if any race events today and the next event
-    !empty($_SESSION['demo']) and $_SESSION['demo']=="demo" ? $status = "demo" : $status = "active";
+    $_SESSION['demo']=="demo" ? $status = "demo" : $status = "active";
     $rs = $event_o->get_events("racing", $status, array("start"=>$today, "end"=>$today));
     //echo "<pre> RS: ".print_r($rs,true)."</pre>";
-    $nrs = $event_o->event_getnextevent(date("Y-m-d"), true);
+
+    $nrs = $event_o->get_nextevent(date("Y-m-d"), "racing");
     //echo "<pre> NRS: ".print_r($rs,true)."</pre>";
     if ($nrs) { $data['nextevent'] = $nrs; }
 
@@ -246,7 +247,7 @@ function get_dated_event($future_window)
             //echo "<pre>|$diffdays|</pre>";
             if ($diffdays <= $future_window) {
                 $data['event_day'] = $next_event_day;
-                $rs = $event_o->event_getevents(array("event_date" => $data['event_day']), $_SESSION['demo'], true);
+                $rs = $event_o->get_events_bydate($data['event_day'], $_SESSION['demo'], "racing");
             }
         }
     }
@@ -614,28 +615,28 @@ function get_cruise_details($eventtypes, $addevent = true)
     }
 
     // add any cruising events for today in the programme
-    $rs = $event_o->event_getevents(array("event_date"=>date("Y-m-d")),$_SESSION['demo'], false);
+    $rs = $event_o->get_events_bydate(date("Y-m-d"),$_SESSION['demo'], $eventtypes);
 
     if ($rs) {
         $i = 0;
         foreach ($rs as $k => $detail) {
             $i++;
             // check if this event type is configured for the cruising mode
-            if (strpos($eventtypes, $detail['event_type']) !== false) {
-                $data['details'][$i] = array(
-                    "event_date" => $detail['event_date'],
-                    "event_start" => $detail['event_start'],
-                    "event_name" => $detail['event_name'],
-                    "event_type" => $detail['event_type'],
-                    "event_format" => $detail['event_type'],
-                    "event_status" => $detail['event_status'],
-                    "event_entry" => $detail['event_entry'],
-                    "event_open" => $detail['event_open'],
-                    "tide_time" => $detail['tide_time'],
-                    "tide_height" => $detail['tide_height'],
-                    "event_notes" => $detail['event_notes'],
-                );
-            }
+            //if (strpos($eventtypes, $detail['event_type']) !== false) {
+            $data['details'][$i] = array(
+                "event_date" => $detail['event_date'],
+                "event_start" => $detail['event_start'],
+                "event_name" => $detail['event_name'],
+                "event_type" => $detail['event_type'],
+                "event_format" => $detail['event_type'],
+                "event_status" => $detail['event_status'],
+                "event_entry" => $detail['event_entry'],
+                "event_open" => $detail['event_open'],
+                "tide_time" => $detail['tide_time'],
+                "tide_height" => $detail['tide_height'],
+                "event_notes" => $detail['event_notes'],
+            );
+            //}
         }
     }
 

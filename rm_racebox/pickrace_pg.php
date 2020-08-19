@@ -21,35 +21,37 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/rota_class.php");
-session_start();
 
-u_initpagestart("", $page, false);                                    // starts session and sets error reporting
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");       // language file
+// starts session and sets error reporting
+u_initpagestart("", $page, false);
 if ($_SESSION['debug']==2) { u_sessionstate($scriptname, $page, 0); } // if debug send session to file
 
-$db_o = new DB;
-$tmpl_o  = new TEMPLATE(array("../templates/general_tm.php",          // required templates
-                             "../templates/racebox/layouts_tm.php",
-                             "../templates/racebox/pickrace_tm.php"));
+// required templates
+$tmpl_o  = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/pickrace_tm.php"));
 
-include ("./include/pickrace_ctl.inc");                                //  control definitions
+//  control definitions
+include ("./include/pickrace_ctl.inc");
 
 $today = date("Y-m-d");
 $today_display = date("jS F");
 
 // get racing event information for today
+$db_o = new DB;
 $event_o  = new EVENT($db_o);
 $rota_o = new ROTA($db_o);
 $_SESSION['mode'] == "demo"? $status = "demo" : $status = "active";
 $events = $event_o->get_events("racing", $status, array("start" => $today, "end" => $today), array() );
 
+
 // ----- navbar -----------------------------------------------------------------------------
-$nav_fields = array("page" => $page, "eventid" => 0, "brand" => "raceBox PICK RACE");
-$nbufr = $tmpl_o->get_template("pickrace_navbar", $nav_fields);
+$nav_fields = array("page" => $page, "eventid" => 0, "brand" => "raceBox PICK RACE", "rm-website" => $_SESSION['sys_website']);
+$nbufr = $tmpl_o->get_template("pickrace_navbar", $nav_fields, array("links"=>$_SESSION['clublink']));
+
 
 // ----- left hand panel --------------------------------------------------------------------
 $lbufr = u_growlProcess(0, $page);
 $lbufr.= u_growlProcess(0, "race");    // returning from closing race
+
 
 // list events
 if ($events)
@@ -59,34 +61,18 @@ if ($events)
     {
         $eventid   = $event['id'];
         $racecfg   = $event_o->event_getracecfg($eventid, $event['event_format']);       // get race format
-        $rs        = configurestate($eventid, $event['event_status'] );                  //configure race based on status
-            
-//        $vbufr = "";
-//        if ($rs['link'])
-//        {
-//            if (empty($racecfg['race_name'])) { $racecfg['race_name'] = "unknown race format!"; }
-//            $fields = array(
-//                "popover"    => "click to get race format details: start times, signals, tide etc.",
-//                "eventid"    => $eventid,
-//                "raceformat" => $racecfg['race_name'],
-//                "style"      => $rs['text'],
-//            );
-//            $vbufr.= $tmpl_o->get_template("race_format", $fields);
-//        }
+        $fields    = configurestate($eventid, $event['event_status'] );                  //configure race based on status
 
-        $fields = $rs;
         $fields['eventid']   = $eventid;
         $fields['eventname'] = $event['event_name'];
-        if (empty($racecfg['race_name'])) { $racecfg['race_name'] = "unknown race format!"; }
-        $fields['raceformat'] = $racecfg['race_name'];
+        empty($racecfg['race_name']) ? $fields['raceformat'] = "unknown race format!" : $fields['raceformat'] = $racecfg['race_name'];
         $fields['oodname']   = $rota_o->get_duty_person($eventid, "ood_p");
         $fields['starttime'] = $event['event_start'];
-        empty($event['tide_time']) ? $fields['tidetime'] = "" : $fields['tidetime'] = "[HW {$event['tide_time']} {$event['tide_height']}m]";
+        empty($event['tide_time']) ? $fields['tidetime'] = "" : $fields['tidetime'] = " [ HW {$event['tide_time']} {$event['tide_height']}m ]";
 
-//        $fields['viewbufr']  = $vbufr;
         $lbufr.= $tmpl_o->get_template("race_panel", $fields);
 
-        // view format modal
+        // add view format modal
         $viewbufr = createdutypanel($rota_o->get_event_duties($eventid, ""), $eventid, "");
         $viewbufr.= createfleetpanel ($event_o->event_getfleetcfg($event['event_format']), $eventid, "");
         $viewbufr.= createsignalpanel(getsignaldetail($event_o, $event), $eventid, "");
@@ -104,11 +90,9 @@ else     // no events today
     if(!empty($_SESSION['support_url'])) {
         $fields['support_team'] = $tmpl_o->get_template("support_team", array("link" => $_SESSION['support_url']));
     }
-//        "msg1"  => $lang['msg']['race_none'],
-//        "msg2"  => $lang['msg']['race_create']
-//    );
     $lbufr.= $tmpl_o->get_template("no_races", $fields);
 }
+
 
 // ----- right hand panel --------------------------------------------------------------------
 $rbufr = $tmpl_o->get_template("btn_modal", $btn_addrace['fields'], $btn_addrace);
@@ -128,23 +112,19 @@ $fbufr = $tmpl_o->get_template("footer", $fields, array("fixed"=>true));
 
 // ----- render page -------------------------------------------------------------------------                                                                  // render
 $fields = array(
-    "page"       => $page,
-    "refresh"    => 0,
-    "l_width"    => 10,
-    "forms"      => true,
-    "tables"     => false,
-    "body_attr"  => "",
+    "theme"      => $_SESSION['racebox_theme'],
     "title"      => "racebox",
     "loc"        => $loc,
-    "stylesheet" => "$loc/style/rm_racebox.css",
+    "stylesheet" => "./style/rm_racebox.css",
     "navbar"     => $nbufr,
-    "l_top"      => "<br><h2>$today_display - ".strtolower(htmlentities($lang['msg']['race_today']))."</h2><br>",
+    "l_top"      => "<br><h2>$today_display - races today</h2><br>",
     "l_mid"      => $lbufr,
     "l_bot"      => "",
     "r_top"      => $rbufr,
     "r_mid"      => "",
     "r_bot"      => "",
-    "footer"     => $fbufr
+    "footer"     => $fbufr,
+    "body_attr" => ""
 );
 
 $params = array(
@@ -153,7 +133,6 @@ $params = array(
     "l_width"   => 10,
     "forms"     => true,
     "tables"    => false,
-    "body_attr" => "",
 );
 
 echo $tmpl_o->get_template("two_col_page", $fields, $params);
@@ -177,8 +156,8 @@ function configurestate($eventid, $status )
                 $rs['style']  = "panel-info";
                 $rs['text']   = "text-primary";
                 $rs['link']   = true;
-                $rs['blabel'] = $lang['btn']['race_run']." &nbsp;<span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span>";
-                $rs['bstyle'] = "btn-primary";
+                $rs['blabel'] = "Run Race &nbsp;<span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span>";
+                $rs['bstyle'] = "btn-success";
                 $rs['blink']  = "raceinit_sc.php?eventid=$eventid&mode=init";
                 $rs['bpopup'] = "data-toggle=\"popover\" data-content=\"{$lang['msg']['goto_race']}\" data-placement=\"bottom\"";
             }
@@ -191,7 +170,7 @@ function configurestate($eventid, $status )
                 $rs['style']  = "panel-warning";
                 $rs['text']   = "text-warning";
                 $rs['link']   = true;
-                $rs['blabel'] = $lang['btn']['race_back']." &nbsp;<span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span>";
+                $rs['blabel'] = "Back to Race &nbsp;<span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span>";
                 $rs['bstyle'] = "btn-warning";
                 $rs['blink']  = "raceinit_sc.php?eventid=$eventid&mode=rejoin";
                 $rs['bpopup'] = "data-toggle=\"popover\" data-content=\"Click to return to this race\" data-placement=\"bottom\"";
@@ -205,7 +184,7 @@ function configurestate($eventid, $status )
                 $rs['style']  = "panel-danger";
                 $rs['text']   = "text-danger";
                 $rs['link']   = true;
-                $rs['blabel'] = $lang['btn']['race_back']." &nbsp;<span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span>";
+                $rs['blabel'] = "Back to Race &nbsp;<span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span>";
                 $rs['bstyle'] = "btn-danger";
                 $rs['blink']  = "raceinit_sc.php?eventid=$eventid&mode=rejoin";
                 $rs['bpopup'] = "data-toggle=\"popover\" data-content=\"Click to return to this race\" data-placement=\"bottom\"";

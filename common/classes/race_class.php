@@ -58,7 +58,7 @@ class RACE
 	    $this->db = $db;
 	    $this->eventid = $eventid;
         $this->scoring = array();
-        //u_writedbg("<pre>session".print_r($_SESSION["e_{$eventid}"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
+        u_writedbg("<pre>session".print_r($_SESSION["e_{$eventid}"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
 
         for ( $i = 1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++ )
         {
@@ -68,7 +68,7 @@ class RACE
         {
            $this->pursuit = $_SESSION["e_$eventid"]['pursuit'];
         }
-        //u_writedbg("<pre>eventid:{$this->eventid}|pursuit:{$this->pursuit}<br>scoring".print_r($this->scoring,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
+        u_writedbg("<pre>eventid:{$this->eventid}|pursuit:{$this->pursuit}<br>scoring".print_r($this->scoring,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
     }
 
 

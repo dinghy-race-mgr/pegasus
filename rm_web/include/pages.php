@@ -4,7 +4,7 @@ class PAGES
    
    public function __construct($cfg)
    {
-       include ("./include/templates.php");
+       include ("./templates/web_tm.php");
        include ("./include/util.php");
        $this->tmpl_o = new WEB_TEMPLATE();
        $this->cfg = $cfg;

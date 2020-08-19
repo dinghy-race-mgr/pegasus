@@ -3,6 +3,8 @@ $loc  = "..";
 $page = "eventcard";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
+$styletheme = "flatly_";
+$stylesheet = "./style/rm_utils.css";
 
 require_once ("{$loc}/common/lib/util_lib.php");
 
@@ -38,8 +40,7 @@ require_once ("{$loc}/common/classes/template_class.php");
 $db_o = new DB();
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","$loc/templates/utils/layouts_tm.php",
-                             "$loc/templates/utils/eventcard_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/eventcard_tm.php"));
 
 
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
@@ -62,8 +63,8 @@ if ($_REQUEST['pagestate'] == "init")
     // present form to select json file for processing (general template)
     $pagefields = array(
         "loc" => $loc,
-        "theme" => "flatly_",
-        "stylesheet" => "$loc/style/rm_utils.css",
+        "theme" => $styletheme,
+        "stylesheet" => $stylesheet,
         "title" => "eventcard",
         "header-left" => "raceManager",
         "header-right" => "Event Card",
@@ -102,9 +103,16 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
             "club_duty"   => process_bool_parameter("club_duty", $duty_inc['house']),
         );
 
-        $_REQUEST['scope'] == "1" ? $scope = array("active" => "1") : $scope = array() ;
+        if ($_REQUEST['scope'] == "1")
+        {
+            $scope = "live";
+        }
+        else
+        {
+            $scope = "all";
+        }
 
-        $events = $event_o->get_events_inperiod($scope, $_REQUEST['date-start'], $_REQUEST['date-end'], "live", false);
+        $events = $event_o->get_events_inperiod(array(), $_REQUEST['date-start'], $_REQUEST['date-end'], $scope, false);
 
         if ($events !== false) {
             $i = 0;

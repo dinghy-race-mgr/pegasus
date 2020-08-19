@@ -18,13 +18,12 @@ function createmodaltitle($event, $close_icon)
     global $lang; 
     
     // basic race information - start, tides, duties
-    $start_txt = ucwords($lang['app']['start']);
+    $start_txt = "Start";
     $tide_txt = "";
     if (!empty($event['tide_time']))
     {
-        $tide_title = ucwords($lang['app']['tides']);
         $tide_txt = <<<EOT
-            <span class="text-primary" >$tide_title :</span> <b>{$event['tide_time']} - {$event['tide_height']}m</b>
+            <span class="text-primary" >Tides :</span> <b>{$event['tide_time']} - {$event['tide_height']}m</b>
 EOT;
     }
 
@@ -66,7 +65,6 @@ EOT;
  */
 function createdutypanel($duties, $eventid, $panel_state )
 {
-    global $lang;
     global $db_o;
     
     if (!empty($duties))
@@ -81,17 +79,16 @@ function createdutypanel($duties, $eventid, $panel_state )
     }
     else
     {
-        $content = $lang['msg']['duties_none'];
+        $content = "No duties defined";
     }
 
-    $title = ucwords($lang['app']['duties']);
     $html = <<<EOT
         <div class="panel-group" style="padding-top: 0px" id="accordion{$eventid}0">
             <div class="panel panel-default">
                 <div class="panel-heading">
                    <h4 class="text-primary">
                       <a data-toggle="collapse" data-parent="#{$eventid}0" href="#collapse{$eventid}0">
-                      <span class="glyphicon glyphicon-chevron-down" ></span>&nbsp;&nbsp;&nbsp;$title 
+                      <span class="glyphicon glyphicon-chevron-down" ></span>&nbsp;&nbsp;&nbsp;Duties 
                       </a>
                    </h4>
                 </div>
@@ -116,11 +113,10 @@ EOT;
 function createfleetpanel($fleetcfg, $eventid, $panel_state)
 
 {
-    global $lang;
     global $loc;
     global $db_o;
     
-    $title = ucwords($lang['app']['fleet']." ".$lang['sys']['details']);
+    $title = "Fleet Details";
 
     // get details for each fleet
     $content = "";
@@ -159,14 +155,14 @@ EOT;
                     <table class="table" style="margin-bottom: 0px; font-size:1.0em">
                         <thead>
                             <tr>
-                                <th width="5%" >{$lang['app']['start']}</th>
-                                <th width="15%">{$lang['app']['fleet']}</th>
-                                <th width="10%">{$lang['app']['scoring']}</th>
-                                <th width="5%" >{$lang['app']['rating']}</th>
-                                <th width="5%" >{$lang['app']['signal']}</th>
-                                <th width="10%">{$lang['app']['time_limit']}</th>
-                                <th width="20%">{$lang['app']['classes']}</th>
-                                <th width="15%">{$lang['app']['competitors']}</th>
+                                <th width="5%" >start</th>
+                                <th width="15%">fleet</th>
+                                <th width="10%">scoring</th>
+                                <th width="5%" >rating</th>
+                                <th width="5%" >signal</th>
+                                <th width="10%">time limit</th>
+                                <th width="20%">classes</th>
+                                <th width="15%">competitors</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -300,10 +296,9 @@ function getsignaldetail($event_o, $event)
  */
 function createsignalpanel($sequence, $eventid, $panel_state)
 {
-    global $lang;
     global $loc;
 
-    $title = ucwords($lang['app']['start_sequence']);
+    $title = "Start Sequence";
 
     $thistime = 0;
     $content = "";
@@ -319,9 +314,9 @@ function createsignalpanel($sequence, $eventid, $panel_state)
             $ctime = $signal['clocktime'];           // clock time
         }
 
-        $start = strtoupper($lang['app']['start']);
-        $prep  = strtoupper($lang['app']['preparatory']);
-        $warn  = strtoupper($lang['app']['warning']);
+        $start = strtoupper("start");
+        $prep  = strtoupper("preparatory");
+        $warn  = strtoupper("warning");
         $text = "";
         if ($signal['type']=="prep")
         {
@@ -386,8 +381,6 @@ EOT;
  */
 function createprintbutton($eventid, $print)
 {
-    global $lang;
-
     $html = "";
     if ($print)
     {
@@ -412,20 +405,18 @@ EOT;
  */
 function createerrorpanel($eventid, $error)
 {
-    global $lang;
-
     $content = "";
     if ($error == -1)                              // no event
     {
-        $content = $lang['msg']['race_not_exists'];
+        $content = "Race does not exist";
     }
     elseif ($error == -2)                          // no race config
     {
-        $content = $lang['msg']['race_format_not_found'];
+        $content = "Race configuration not defined";
     }
     elseif ($error == -3)                          // no fleet config fleet_detail_not_found
     {
-        $content = $lang['msg']['fleet_detail_not_found'];
+        $content = "Fleet configuration not defined";
     }
 
     $html = <<<EOT
@@ -433,7 +424,7 @@ function createerrorpanel($eventid, $error)
         <div class="col-md-6">
             <div class="alert alert-danger margin-top-10" role="alert">
                 <h3 style="margin: 10px 10px 10px 10px;">$content</h3>
-                <p>{$lang['sys']['supportteamhelp']}</p>
+                <p>if you need help contact a member of the support team</p>
             </div>
        </div>
     </div>
@@ -442,4 +433,3 @@ EOT;
     return $html;
 }
 
-?>

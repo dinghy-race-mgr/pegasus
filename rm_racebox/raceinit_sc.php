@@ -15,28 +15,23 @@
  *     
  */
 
-$loc        = "..";    //<-- path to root directory
+$loc        = "..";
 $scriptname = basename(__FILE__);
 $page = "raceinit";
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
-
-u_initpagestart($_REQUEST['eventid'], $page, false);
-
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
+require_once ("{$loc}/common/classes/rota_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");  // load language file
+// starts session and sets error reporting
+u_initpagestart($_REQUEST['eventid'], $page, false);
 
-// check I have a valid eventid - else exit
-$eventid = 0;
-if (!empty($_REQUEST['eventid']))
-{    
-    if (is_numeric($_REQUEST['eventid'])) { $eventid = $_REQUEST['eventid']; }     // check it is a number
-}
+// check we have a valid numeric eventid - else exit
+$eventid = u_checkarg("eventid", "checkintnotzero","");
 
-if ($eventid!=0)
+if ($eventid)
 {
     // clear event session
     unset($_SESSION["e_$eventid"]);
@@ -45,33 +40,32 @@ if ($eventid!=0)
     u_starteventlogs($scriptname, $eventid);
     
     // initialise event from database
+    //u_writedbg("<pre>session".print_r($_SESSION,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
     $status = r_initialiseevent($_REQUEST['mode'], $eventid);
 
     if ($status == "event_error")
     {
-        u_exitnicely($scriptname, $eventid, $lang['err']['sys002'],
-            "requested event [$eventid] is not in the database");
+        u_exitnicely($scriptname, $eventid, "the requested event details can not be found in the raceManager database",
+            "please contact your raceManager administrator");
     }
     elseif ($status == "fleet_error")
     {
-        u_exitnicely($scriptname, $eventid, $lang['err']['sys004'],
-            "fleet format for {$_SESSION["e_$eventid"]['ev_name']} {$_SESSION["e_$eventid"]['ev_seriesnum']} is not in the database.");
+        u_exitnicely($scriptname, $eventid, "the fleet format details for the selected event can not be found in the raceManager database.",
+            "please contact your raceManager administrator");
     }
     elseif ($status == "race_error")
     {
-        u_exitnicely($scriptname, $eventid, $lang['err']['sys004'],
-            "race format requested for {$_SESSION["e_$eventid"]['ev_name']} {$_SESSION["e_$eventid"]['ev_seriesnum']} is not the database or is not currently used.");
+        u_exitnicely($scriptname, $eventid, "the race format requested for the selected event can not be found in the raceManager database, or is not currently used.",
+            "please contact your raceManager administrator");
     }   
 }
 else
 {
-    u_exitnicely($scriptname, $eventid, $lang['err']['sys002'], "Cannot initialise the event as the event id is not defined.");
+    u_exitnicely($scriptname, $eventid, "the requested event has an invalid record identifier [{$_REQUEST['arg']}]",
+        "please contact your raceManager administrator");
 }
 
-//echo "<pre>";print_r($_SESSION); echo "</pre>";
+
 header("Location: race_pg.php?eventid=$eventid");
 exit();
 
-
-
-?>

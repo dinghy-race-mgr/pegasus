@@ -13,7 +13,7 @@ require_once ("./include/rm_sailor_lib.php");
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 
-$tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php"));
+$tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php"));
 
 // check arguments
 $demo = check_argument("demo", "checkset", "demo", "live");

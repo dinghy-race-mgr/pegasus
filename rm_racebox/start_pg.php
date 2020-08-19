@@ -1,6 +1,6 @@
 <?php
 /**
- * rbx_pg_race.php - race administration page
+ * race_pg.php - race administration page
  * 
  * This page allows the user to change some details of the race they are running and run
  * some administration functions (e.g. cancel, reset, close, etc.).  It is the racebox
@@ -22,32 +22,22 @@ define('START_WARN_SECS', 30);                           // <-- number of second
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 
-$eventid = $_REQUEST['eventid'];
+$eventid = u_checkarg("eventid", "checkintnotzero","");
 
-u_initpagestart($eventid, $page, $_REQUEST['menu']);   // starts session and sets error reporting
-if ($_SESSION['debug']!=0) { u_sessionstate($scriptname, $page, $eventid); }
+u_initpagestart($_REQUEST['eventid'], $page, true);  // starts session and sets error reporting
+include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");   // language file
 
-// initialising language   
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");
+if (!$eventid) { u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
+    "please contact your raceManager administrator");  }
 
-// check we have request id - if not stop with system error
-if (empty($eventid) or !is_numeric($eventid)) 
-{
-    $passed_event = "not defined";
-    u_exitnicely($scriptname, $passed_event, $lang['err']['sys002'], "event id is not defined");  
-    exit();
-}
-
+// classes
 include ("{$loc}/common/classes/db_class.php");
 include ("{$loc}/common/classes/template_class.php");
 include ("{$loc}/common/classes/event_class.php");
 include ("{$loc}/common/classes/race_class.php");
 
 // templates
-$tmpl_o = new TEMPLATE(array("../templates/general_tm.php",
-    "../templates/racebox/layouts_tm.php",
-    "../templates/racebox/navbar_tm.php",
-    "../templates/racebox/start_tm.php"));
+$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/start_tm.php"));
 
 // database connection
 $db_o   = new DB;
@@ -55,15 +45,15 @@ $race_o = new RACE($db_o, $eventid);
 
 // page controls
 include ("./include/start_ctl.inc");
+include("./templates/growls.php");
 
 // get current event status
 $event_state   = r_decoderacestatus($_SESSION["e_$eventid"]['ev_status']);
 
 // get fleet data
-$fleet_data = array();
-for ($fleetnum=1; $fleetnum<=$_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum++)
-{
-        $fleet_data["$fleetnum"] = $_SESSION["e_$eventid"]["fl_$fleetnum"];
+$fleet_data = array();   // FIXME we shouldn't be using text integers as keys
+for ($fleetnum = 1; $fleetnum <= $_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum++) {
+    $fleet_data["$fleetnum"] = $_SESSION["e_$eventid"]["fl_$fleetnum"];
 }
 
 // set master timer
@@ -84,13 +74,9 @@ for ($j=1; $j<=$_SESSION["e_$eventid"]['rc_numstarts']; $j++)
 //debugTimer($eventid, $start_master, $start, $_SESSION["e_$eventid"]['ev_timerstart']);
 
 // ----- navbar -----------------------------------------------------------------------------
-$fields = array(
-    "eventid"  => $eventid,
-    "brand"    => "raceBox: {$_SESSION["e_$eventid"]['ev_sname']}",
-    "page"     => $page,
-    "pursuit"  => $_SESSION["e_$eventid"]['pursuit'],
-);
-$nbufr = $tmpl_o->get_template("racebox_navbar", $fields);
+$fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
+$params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
+$nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
 
 
 // ----- left hand panel -----------------------------------------------------------------------------
@@ -113,19 +99,18 @@ for ($startnum=1; $startnum<=$_SESSION["e_$eventid"]['rc_numstarts']; $startnum+
     $fleetlist = rtrim($fleetlist, ", ");
 
     // infringe start button
-    $btn_infringestart['id']   = "infringestart$startnum";
-    $btn_infringestart['data'] = "data-start=\"$startnum\"";
-    $start[$startnum] > constant('START_WARN_SECS') ? $btn_infringestart["style"] = "default": $btn_infringestart["style"] = "warning";
-    $infringebufr = $tmpl_o->get_template("btn_modal", $btn_infringestart);
+    $btn_infringestart['fields']['id']   = "infringestart$startnum";
+    $btn_infringestart['fields']['data'] = "data-start=\"$startnum\"";
+    $start[$startnum] > constant('START_WARN_SECS') ? $btn_infringestart['fields']["style"] = "default": $btn_infringestart['fields']["style"] = "warning";
+    $infringebufr = $tmpl_o->get_template("btn_modal", $btn_infringestart['fields'], $btn_infringestart);
 
     $mdl_infringestart['id'] = "infringestart$startnum";
     $mdl_infringestart['body'] = <<<EOT
-    <iframe src="start_infringements_pg.php?eventid=$eventid&startnum=$startnum&pagestate=init" frameborder="0"
-            style="width: 100%; height: 400px;" id="entryframe">
+    <iframe src="start_infringements_pg.php?eventid=$eventid&startnum=$startnum&pagestate=init" frameborder="0" style="width: 100%; height: 400px;" id="entryframe">
     </iframe>
 EOT;
-    $mdl_infringestart['script'] = "$( '#infringestart{$startnum}ModalLabel' ).text( 'Infringements - Start ' + button.data('start') + '  [$fleetlist]')";
-    $infringebufr.= $tmpl_o->get_template("modal", $mdl_infringestart);
+    $mdl_infringestart['fields']['script'] = "$( '#infringestart{$startnum}ModalLabel' ).text( 'Infringements - Start ' + button.data('start') + '  [$fleetlist]')";
+    $infringebufr.= $tmpl_o->get_template("modal", $mdl_infringestart['fields'], $mdl_infringestart);
 
     // general recall button
     $recallbufr = "";
@@ -141,14 +126,13 @@ EOT;
                 + $_SESSION["e_$eventid"]["st_$startnum"]['startdelay']);
         }
 
-        $start[$startnum] > constant('START_WARN_SECS') ? $btn_generalrecall["style"] = "default" : $btn_generalrecall["style"] = "warning";
-
-        $btn_generalrecall['data'] = "data-start=\"$startnum\"  data-starttime=\"$startdisplay\" ";
-        $recallbufr.= $tmpl_o->get_template("btn_modal", $btn_generalrecall);
+        $start[$startnum] > constant('START_WARN_SECS') ? $btn_generalrecall['fields']["style"] = "default" : $btn_generalrecall['fields']["style"] = "warning";
+        $btn_generalrecall['fields']['data'] = "data-start=\"$startnum\"  data-starttime=\"$startdisplay\" ";
+        $recallbufr.= $tmpl_o->get_template("btn_modal", $btn_generalrecall['fields'], $btn_generalrecall);
 
         // FIXME - do the fields need setting
-        $mdl_generalrecall['body'] = $tmpl_o->get_template("fm_start_genrecall", $fields);
-        $recallbufr.= $tmpl_o->get_template("modal", $mdl_generalrecall);
+        $mdl_generalrecall['fields']['body'] = $tmpl_o->get_template("fm_start_genrecall", $fields);
+        $recallbufr.= $tmpl_o->get_template("modal", $mdl_generalrecall['fields'], $mdl_generalrecall);
     }
 
     $params = array(
@@ -206,9 +190,10 @@ $db_o->db_disconnect();
 
 // ----- render page -----------------------------------------------------------------------------
 $fields = array(
-    "title"      => "racebox",
+    "title"      => $_SESSION["e_$eventid"]['ev_label'],
+    "theme"      => $_SESSION['racebox_theme'],
     "loc"        => $loc,
-    "stylesheet" => "$loc/style/rm_racebox.css",
+    "stylesheet" => "./style/rm_racebox.css",
     "navbar"     => $nbufr,
     "l_top"      =>"<div class='margin-top-20' style='margin-left:10%; margin-right:10%;'>",
     "l_mid"      => $lbufr,
@@ -217,14 +202,18 @@ $fields = array(
     "r_mid"      => $rbufr,
     "r_bot"      => "</div>".$timer_script,
     "footer"     => "",
-    "page"       => $page,
-    "refresh"    => 0,
-    "l_width"    => 9,
-    "forms"      => true,
-    "tables"     => false,
     "body_attr"  => "onload=\"startTime()\""
 );
-echo $tmpl_o->get_template("two_col_page", $fields);
+
+$params = array(
+    "page"      => $page,
+    "refresh"   => 0,
+    "l_width"   => 9,
+    "forms"     => true,
+    "tables"    => false,
+);
+
+echo $tmpl_o->get_template("two_col_page", $fields, $params);
 
 // ----- functions -----------------------------------------------------------------------------
 

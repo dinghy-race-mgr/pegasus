@@ -93,7 +93,7 @@ class EVENT
            on all events in the programme, and an EVENT class which acts on a specific event */
 	}
 
-    public function event_count($constraint)
+    public function count_events($constraint)
     {
         $where = " 1=1 ";
         if ($constraint)
@@ -110,9 +110,10 @@ class EVENT
         return count($detail);
     }
     
-    public function event_geteventformats($active, $code=false)
+    public function get_event_formats($active, $code=false)
     {
         $formats = array();
+
         $where = "WHERE 1=1 ";
         if ($active) { $where.= " AND active = '1' "; } 
         
@@ -134,121 +135,85 @@ class EVENT
     }
     
 
-    public function event_getevent($eventid, $race = false)
+    public function get_event_byid($eventid, $type = false)
     {
-        // FIXME - this needs to use an underlying common function like event_getevents
+        $constraints = array("id"=>$eventid);
+        if ($type) { $constraints['event_type'] = $type; }
 
+        $events = $this->get_events("not_noevent", "all", array(), $constraints);
+        u_writedbg("<pre>event".print_r($events,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
+        if (empty($events)) {          // return false
+            $detail = false;
+        } else {                       // return 1D array
+            $detail = $events[0];
+        }
 
-        $formats = $this->event_geteventformats(true);    // get names for race formats
+        return $detail;       
+    }
+    
+    public function get_nextevent($date, $requiredtype = "")
+    /*
+        Finds the next event from today in next 2 months
+    */
+    {
+        empty($requiredtype) ? $type = "not_noevent" : $type = $requiredtype;
+        $period = array("start" => $date, "end" => date('Y-m-d', strtotime('+60 days', strtotime($date))));
 
-        $query  = "SELECT * FROM t_event WHERE id = $eventid AND event_type != 'noevent' AND active = 1";
-        if ($race) { $query.= " AND event_format > 0 AND event_type ='racing' "; }
+        $events = $this->get_events($type, "active", $period, array());
 
-        $detail = $this->db->db_get_row( $query );
-
-        // set false if nothing found
-        if (empty($detail))
+        if (empty($events))       // nothing found
         {
             $detail = false;
-        }
-        else
-        {
-                if (array_key_exists($detail['event_format'], $formats))
-                {
-                    $detail['race_name'] = $formats[$detail['event_format']];
-                }
-                else
-                {
-                    $detail['race_name'] = "";
-                }
+        } else {                  // return first event
+
+            $detail = $events[0];
         }
 
         return $detail;       
     }
-    
-    public function event_getnextevent($date, $race = false)
-    /*
-    Finds the next event from today - ignores demo events
-    */
-    {
-        // FIXME - this doesn't work if the system is run in a different time zone to the database - need to use convert_tz to got from UTC to local timezone - but how do I know they are working in UTC
-        // FIXME - should this have active = 1 by default
-        // FIXME - doesn't handle demo
 
-        $formats = $this->event_geteventformats(true);    // get names for race formats
-
-        $where  = " WHERE event_name NOT LIKE '%DEMO%' and event_status='scheduled' 
-                    and event_date>='$date' and event_type != 'noevent' and active = 1 ";
-        if ($race)
-        {
-            $where.= "and event_type = 'racing' ";
-        }
-
-        $query = "SELECT * FROM t_event $where ORDER BY event_date ASC LIMIT 1";
-        //echo "<pre>$query</pre>";
-        $detail = $this->db->db_get_row( $query );
-        if (empty($detail))       // nothing found
-        { 
-            $detail = false; 
-        }
-        else
-        {
-            if (array_key_exists($detail['event_format'], $formats))
-            {
-                $detail['race_name'] = $formats[$detail['event_format']];
-            }
-            else
-            {
-                $detail['race_name'] = "";
-            }
-        }
-
-        return $detail;       
-    }
-    
-    public function geteventsfromdate($date)
-    /*
-    Returns all events from specified event - ignores demo events
-    */
-        // FIXME - should this have active = 1 by default
-    {
-        $formats = $this->event_geteventformats(true);    // get names for race formats
-
-        $where  = " WHERE event_name NOT LIKE '%DEMO%' AND event_date>='$date' 
-                    AND event_type != 'noevent' AND active = 1";
-        $query = "SELECT * FROM t_event $where ORDER BY event_date ASC LIMIT 1";
-        //echo "<pre>$query</pre>";
-        $detail = $this->db->db_get_rows( $query );
-        if (empty($detail))       // nothing found
-        { 
-            $detail = false; 
-        }
-        else
-        {
-            foreach($detail as $k=>$row)
-            {
-                if (array_key_exists($row['event_format'], $formats))
-                {
-                    $detail[$k]['race_name'] = $formats[$row['event_format']];
-                }
-                else
-                {
-                    $detail[$k]['race_name'] = "";
-                }
-            }
-        }
-
-        return $detail;      
-    }
+// ONLY USED IN RESULT CLASS - not sure what the purpose is
+//    public function geteventsfromdate($date)
+//    /*
+//    Returns all events from specified event - ignores demo events
+//    */
+//    {
+//        $formats = $this->event_geteventformats(true);    // get names for race formats
+//
+//        $where  = " WHERE event_name NOT LIKE '%DEMO%' AND event_date>='$date'
+//                    AND event_type != 'noevent' AND active = 1";
+//        $query = "SELECT * FROM t_event $where ORDER BY event_date ASC LIMIT 1";
+//        //echo "<pre>$query</pre>";
+//        $detail = $this->db->db_get_rows( $query );
+//        if (empty($detail))       // nothing found
+//        {
+//            $detail = false;
+//        }
+//        else
+//        {
+//            foreach($detail as $k=>$row)
+//            {
+//                if (array_key_exists($row['event_format'], $formats))
+//                {
+//                    $detail[$k]['race_name'] = $formats[$row['event_format']];
+//                }
+//                else
+//                {
+//                    $detail[$k]['race_name'] = "";
+//                }
+//            }
+//        }
+//
+//        return $detail;
+//    }
 
 
-    // FIXME - get events functions needs tidying up - this is an attempt at a more generic core function
     public function get_events($type, $status, $period = array(), $constraints = array())
         /*
          * returns an array of event records
          *    type - 'all' or 'not_noevent' or specified 'event_type'
          *    status - 'active', 'not_active', 'demo', 'all'
-         *    period - array with start and end keys for inclusive date period - if empty not applied
+         *    period - array with start and end keys for inclusive date period - if empty not applied - if end not specified with do events from
          *    constraints - array with field specific constraints
          *
          */
@@ -264,6 +229,7 @@ class EVENT
         $where_status = "";
         $where_constraints = "";
 
+        //echo "<pre".print_r($period, true)."| status: $status</pre>";
         if (!empty($period) and $status != "demo")
         {
             $where_period = " AND `event_date`>='".date("Y-m-d", strtotime($period['start'])).
@@ -295,7 +261,7 @@ class EVENT
             foreach ($constraints as $field => $value) {
                 $clause[] = "`$field` = '$value'";
             }
-            $where_constraints .= implode(' AND ', $clause);
+            $where_constraints .= " AND ".implode(' AND ', $clause);
         }
 
         $query = $select." WHERE $where $where_period $where_type $where_status $where_constraints ".$order;
@@ -307,7 +273,7 @@ class EVENT
         {
             $detail = false;
         } else {
-            $formats = $this->event_geteventformats(true);    // get names for race formats
+            $formats = $this->get_event_formats(true);    // get names for race formats
             foreach ($detail as $k => $row) {
                 if (array_key_exists($row['event_format'], $formats)) {
                     $detail[$k]['race_name'] = $formats[$row['event_format']];
@@ -323,171 +289,212 @@ class EVENT
 
     public function get_events_inperiod($fields, $start, $end, $mode, $race = false)
     {
-        // FIXME - this doesn't work if the system is run in a different time zone to the database - need to use convert_tz to got from UTC to local timezone - but how do I know they are working in UTC
-        // TODO - change this to re-use the core of get_events
-        // To get just published events - the $fields array should include ("active"=>"1")
-
-        $formats = $this->event_geteventformats(true);    // get names for race formats
-
-        if ($mode=="demo")
+        $race ? $type = "racing" : $type = "not_noevent";
+        if ($mode == "demo")
         {
-            $race ? $where= " WHERE event_name LIKE '%DEMO%' AND event_format > 0 AND event_type ='racing' "
-                : $where= " WHERE event_name LIKE '%DEMO%' ";
+            $status = "demo";
+        }
+        elseif ($mode == "all")
+        {
+            $status = "all";
         }
         else
         {
-            $race ? $where = " WHERE event_name NOT LIKE '%DEMO%' AND event_format > 0 AND event_type ='racing' "
-                : $where = " WHERE event_name NOT LIKE '%DEMO%' " ;
-
-            // deal with dates
-            $start_date = date("Y-m-d", strtotime($start));
-            $end_date = date("Y-m-d", strtotime($end));
-            $where.= "AND `event_date`>='$start_date' AND `event_date`<='$end_date' 
-                      AND event_type != 'noevent' AND active = 1";
-
-            // deal with other constraints
-            if ($fields)
-            {
-                $where.= " AND ";
-                foreach( $fields as $field => $value )
-                {
-                    $clause[] = "`$field` = '$value'";
-                }
-                $where.= implode(' AND ', $clause);
-            }
+            $status = "active";
         }
+        $period = array("start"=>$start, "end"=>$end);
+        $events = $this->get_events($type, $status, $period, $fields);
 
-        $query = "SELECT id, event_date, event_start, event_order, event_name, series_code, event_type,
-                         event_format, event_entry, event_status, event_open, tide_time, tide_height, start_scheme,
-                         start_interval, ws_start, wd_start, ws_end, wd_end, event_notes, result_notes, weblink, 
-                         webname, display_code, active, upddate, updby FROM t_event 
-                  $where ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
+        empty($events) ? $detail = false : $detail = $events;
 
-        $detail = $this->db->db_get_rows( $query );
-        if (empty($detail))       // nothing found
-        {
-            $detail = false;
-        }
-        else
-        {
-            foreach($detail as $k=>$row)
-            {
-                if (array_key_exists($row['event_format'], $formats))
-                {
-                    $detail[$k]['race_name'] = $formats[$row['event_format']];
-                }
-                else
-                {
-                    $detail[$k]['race_name'] = "";
-                }
-            }
-        }
-
+//        // To get just published events - the $fields array should include ("active"=>"1")
+//
+//        $formats = $this->get_eventformats(true);    // get names for race formats
+//
+//        if ($mode=="demo")
+//        {
+//            $race ? $where= " WHERE event_name LIKE '%DEMO%' AND event_format > 0 AND event_type ='racing' "
+//                : $where= " WHERE event_name LIKE '%DEMO%' ";
+//        }
+//        else
+//        {
+//            $race ? $where = " WHERE event_name NOT LIKE '%DEMO%' AND event_format > 0 AND event_type ='racing' "
+//                : $where = " WHERE event_name NOT LIKE '%DEMO%' " ;
+//
+//            // deal with dates
+//            $start_date = date("Y-m-d", strtotime($start));
+//            $end_date = date("Y-m-d", strtotime($end));
+//            $where.= "AND `event_date`>='$start_date' AND `event_date`<='$end_date'
+//                      AND event_type != 'noevent' AND active = 1";
+//
+//            // deal with other constraints
+//            if ($fields)
+//            {
+//                $where.= " AND ";
+//                foreach( $fields as $field => $value )
+//                {
+//                    $clause[] = "`$field` = '$value'";
+//                }
+//                $where.= implode(' AND ', $clause);
+//            }
+//        }
+//
+//        $query = "SELECT id, event_date, event_start, event_order, event_name, series_code, event_type,
+//                         event_format, event_entry, event_status, event_open, tide_time, tide_height, start_scheme,
+//                         start_interval, ws_start, wd_start, ws_end, wd_end, event_notes, result_notes, weblink,
+//                         webname, display_code, active, upddate, updby FROM t_event
+//                  $where ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
+//
+//        $detail = $this->db->db_get_rows( $query );
+//        if (empty($detail))       // nothing found
+//        {
+//            $detail = false;
+//        }
+//        else
+//        {
+//            foreach($detail as $k=>$row)
+//            {
+//                if (array_key_exists($row['event_format'], $formats))
+//                {
+//                    $detail[$k]['race_name'] = $formats[$row['event_format']];
+//                }
+//                else
+//                {
+//                    $detail[$k]['race_name'] = "";
+//                }
+//            }
+//        }
+//
         return $detail;
     }
 
 
     //Method: get events 
-    public function event_getevents($fields, $mode, $race = false)
-    {    
-        // FIXME - this doesn't work if the system is run in a different time zone to the database - need to use convert_tz to got from UTC to local timezone - but how do I know they are working in UTC
-        // TODO - change this to re-use the core of get_events
-        $formats = $this->event_geteventformats(true);    // get names for race formats
-
-        if ($mode=="demo")
-        {
-            $race ? $where = " WHERE event_name LIKE '%DEMO%' AND event_format > 0 AND event_type ='racing' "
-                  : $where = " WHERE event_name LIKE '%DEMO%' ";
-        }
-        else
-        {
-            $race ? $where = " WHERE event_name NOT LIKE '%DEMO%' AND event_format > 0 AND event_type ='racing' "
-                  : $where = " WHERE event_name NOT LIKE '%DEMO%' " ;
-
-            if ($fields)
-            {
-                $where.= " AND ";
-                foreach( $fields as $field => $value )
-                {
-                    $clause[] = "`$field` = '$value'";
-                }
-                $where.= implode(' AND ', $clause);
-            } 
-        }
-
-        $query = "SELECT * FROM t_event $where AND event_type != 'noevent' AND active = 1 ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
-        //echo "<pre>$query</pre>";
-        //u_writedbg($query, "addrace", "getevents", 123);
-
-        $detail = $this->db->db_get_rows($query);
-        if (empty($detail))    {   // nothing found
-            $detail = false;
-        } else {
-            foreach ($detail as $k => $row) {
-                if (array_key_exists($row['event_format'], $formats)) {
-                    $detail[$k]['race_name'] = $formats[$row['event_format']];
-                } else {
-                    $detail[$k]['race_name'] = "";
-                }
-            }
-        }
-
-
-        return $detail;       
-    }
-    
-    public function event_getopenevents($fields, $mode)
-    /*
-        as for event_getevents - but only returns events that are not complete, cancelled or abandoned
-    
-    */
+    public function get_events_bydate($date, $mode, $requiredtype = "")
+        /*
+         * gets events on specified day.
+         * If mode set to demo - only looks for demo events and ignores date
+         * required types can define which type of events are include - specified as delimited string (e.g. "dcruise|freesail"
+         */
     {
-        $formats = $this->event_geteventformats(true);    // get names for race formats
+        $mode == "demo" ? $status = "demo" : $status = "active";
+        $events = $this->get_events("not_noevent", $status, array(), array("event_date" => $date));
 
-        if ($mode=="demo")
+        if (!empty($requiredtype) and !empty($events))
         {
-            $where = " WHERE event_name LIKE '%DEMO%' AND event_status NOT IN ('completed', 'cancelled', 'abandoned') ";
-        }
-        else
-        {
-            $where = " WHERE event_name NOT LIKE '%DEMO%' AND event_status NOT IN ('completed', 'cancelled', 'abandoned') ";
-            if ($fields)   
+            foreach ($events as $k=>$row)
             {
-                $where.= " AND ";
-                foreach( $fields as $field => $value )
+                if (strpos($requiredtype, $row['event_type']) !== false)
                 {
-                    if ($field == "event_date")
-                        { $clause[] = "`$field` = '$value'"; }
-                    else
-                        { $clause[] = "`$field` = '$value'"; }
-                }
-                $where.= implode(' AND ', $clause);
-            } 
-        }
-        $query = "SELECT * FROM t_event $where AND event_type != 'noevent' AND active = 1 ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
-
-        $detail = $this->db->db_get_rows( $query );
-        if (empty($detail))       // nothing found
-        { 
-            $detail = false; 
-        }
-        else
-        {
-            foreach($detail as $k=>$row)
-            {
-                if (array_key_exists($row['event_format'], $formats))
-                {
-                    $detail[$k]['race_name'] = $formats[$row['event_format']];
-                }
-                else
-                {
-                    $detail[$k]['race_name'] = "";
+                    unset($events[$k]);
                 }
             }
         }
 
+        empty($events) ? $detail = false : $detail = $events;
+
+//        // FIXME - this doesn't work if the system is run in a different time zone to the database - need to use convert_tz to got from UTC to local timezone - but how do I know they are working in UTC
+//        // TODO - change this to re-use the core of get_events
+//        $formats = $this->get_eventformats(true);    // get names for race formats
+//
+//        if ($mode=="demo")
+//        {
+//            $race ? $where = " WHERE event_name LIKE '%DEMO%' AND event_format > 0 AND event_type ='racing' "
+//                  : $where = " WHERE event_name LIKE '%DEMO%' ";
+//        }
+//        else
+//        {
+//            $race ? $where = " WHERE event_name NOT LIKE '%DEMO%' AND event_format > 0 AND event_type ='racing' "
+//                  : $where = " WHERE event_name NOT LIKE '%DEMO%' " ;
+//
+//            if ($fields)
+//            {
+//                $where.= " AND ";
+//                foreach( $fields as $field => $value )
+//                {
+//                    $clause[] = "`$field` = '$value'";
+//                }
+//                $where.= implode(' AND ', $clause);
+//            }
+//        }
+//
+//        $query = "SELECT * FROM t_event $where AND event_type != 'noevent' AND active = 1 ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
+//        //echo "<pre>$query</pre>";
+//        //u_writedbg($query, "addrace", "getevents", 123);
+//
+//        $detail = $this->db->db_get_rows($query);
+//        if (empty($detail))    {   // nothing found
+//            $detail = false;
+//        } else {
+//            foreach ($detail as $k => $row) {
+//                if (array_key_exists($row['event_format'], $formats)) {
+//                    $detail[$k]['race_name'] = $formats[$row['event_format']];
+//                } else {
+//                    $detail[$k]['race_name'] = "";
+//                }
+//            }
+//        }
+//
+
         return $detail;       
     }
+    
+//    public function get_events_inprogress($fields, $mode)
+//    /*
+//        only returns events that are not complete, cancelled or abandoned
+//    */
+//    {
+//
+//
+//
+//
+//
+//        $formats = $this->get_eventformats(true);    // get names for race formats
+//
+//        if ($mode=="demo")
+//        {
+//            $where = " WHERE event_name LIKE '%DEMO%' AND event_status NOT IN ('completed', 'cancelled', 'abandoned') ";
+//        }
+//        else
+//        {
+//            $where = " WHERE event_name NOT LIKE '%DEMO%' AND event_status NOT IN ('completed', 'cancelled', 'abandoned') ";
+//            if ($fields)
+//            {
+//                $where.= " AND ";
+//                foreach( $fields as $field => $value )
+//                {
+//                    if ($field == "event_date")
+//                        { $clause[] = "`$field` = '$value'"; }
+//                    else
+//                        { $clause[] = "`$field` = '$value'"; }
+//                }
+//                $where.= implode(' AND ', $clause);
+//            }
+//        }
+//        $query = "SELECT * FROM t_event $where AND event_type != 'noevent' AND active = 1 ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
+//
+//        $detail = $this->db->db_get_rows( $query );
+//        if (empty($detail))       // nothing found
+//        {
+//            $detail = false;
+//        }
+//        else
+//        {
+//            foreach($detail as $k=>$row)
+//            {
+//                if (array_key_exists($row['event_format'], $formats))
+//                {
+//                    $detail[$k]['race_name'] = $formats[$row['event_format']];
+//                }
+//                else
+//                {
+//                    $detail[$k]['race_name'] = "";
+//                }
+//            }
+//        }
+//
+//        return $detail;
+//    }
 
 //// FIXME - moved to rota class (currently only used #418 on result_class.php
 //    public function event_geteventduties($eventid, $dutycode = "")
@@ -567,7 +574,7 @@ class EVENT
         // get event order if not provided (find events on same day)
         if (empty($fields['event_order']))
         {
-            $eventstoday = $this->event_getevents(array("event_date"=>$fields['event_date']), $_SESSION['mode']);
+            $eventstoday = $this->get_events_bydate($fields['event_date'], $_SESSION['mode'], "racing");
             $maxeventnum = 0;
             foreach($eventstoday as $key=>$event)
             {
@@ -737,6 +744,7 @@ class EVENT
 //    }
     
     // Method: update event status
+
     public function event_updatestatus($eventid, $status)
     {
        // debug: u_writedbg("status:s_status:s_p_status - $status|{$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}", __FILE__, __FUNCTION__,__LINE__); // debug:
@@ -909,7 +917,7 @@ class EVENT
 
     public function event_in_series($eventid)
     {
-        $detail = $this->event_getevent($eventid);
+        $detail = $this->get_event_byid($eventid);
         if ($detail)
         {
             if ($detail['series_code'])

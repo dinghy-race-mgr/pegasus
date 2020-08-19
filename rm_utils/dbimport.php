@@ -11,6 +11,8 @@ $loc  = "..";
 $page = "import";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
+$styletheme = "flatly_";
+$stylesheet = "./style/rm_utils.css";
 $validtypes = array("class", "programme", "rota", "competitor", "tide");
 
 require_once ("{$loc}/common/lib/util_lib.php");
@@ -48,12 +50,12 @@ require_once ("{$loc}/common/classes/import_class.php");
 $db_o = new DB();
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","$loc/templates/utils/layouts_tm.php", "$loc/templates/utils/import_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","./templates/layouts_tm.php", "./templates/import_tm.php"));
 
 $_SESSION['pagefields'] = array(
     "loc" => $loc,
-    "theme" => "flatly_",
-    "stylesheet" => "$loc/style/rm_utils.css",
+    "theme" => $styletheme,
+    "stylesheet" => $stylesheet,
     "title" => "Import",
     "header-left" => "raceManager Import",
     "header-right" => "EVENTS",
@@ -343,7 +345,7 @@ function del_records($opts, $key)
     if ($opts['type'] == "event")
     {
         $event_o = new EVENT($db_o);
-        $events = $event_o->event_getevents(array("event_date"=>$key), "live", false);
+        $events = $event_o->get_events_bydate($key, "live", "");
         foreach ($events as $event)
         {
             $del = $event_o->event_delete($event['id']);
@@ -352,7 +354,6 @@ function del_records($opts, $key)
     }
     return $num_deleted;
 }
-
 
 function custom_validation($opts)
 {
@@ -485,7 +486,7 @@ function val_event($i, $key, $row, $table, $fields)
     }
     elseif (!empty($row['id']) AND is_numeric($row['id']) AND $row['id'] > 0)     // can only check if id is given
     {
-        $detail = $event_o->event_getevent($row['id']);
+        $detail = $event_o->get_event_byid($row['id']);
         if ($detail)
         {
             $import_ref[$i]['exists'] = true;
@@ -876,7 +877,7 @@ function count_records($importtype, $db_o)
     elseif ($importtype == "event")
     {
         $rs_o = new EVENT($db_o);
-        return $rs_o->event_count(array());
+        return $rs_o->count_events(array());
     }
     elseif ($importtype == "rota")
     {

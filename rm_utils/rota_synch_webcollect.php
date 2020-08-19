@@ -11,6 +11,8 @@ $loc  = "..";
 $page = "Rota Synch";
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
+$styletheme = "flatly_";
+$stylesheet = "./style/rm_utils.css";
 
 session_start();
 
@@ -22,7 +24,7 @@ require_once("$loc/common/classes/db_class.php");
 require_once("{$loc}/common/classes/template_class.php");
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","$loc/templates/utils/layouts_tm.php", "$loc/templates/utils/webcollect_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php",".c/templateslayouts_tm.php", "./templates/webcollect_tm.php"));
 
 // initialise session if this is first call
 if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
@@ -55,8 +57,8 @@ if (empty($_REQUEST['dryrun']))    { $_REQUEST['dryrun'] = "false"; }
 
 $pagefields = array(
     "loc"           => $loc,
-    "theme"         => "flatly_",
-    "stylesheet"    => "$loc/style/rm_utils.css",
+    "theme"         => $styletheme,
+    "stylesheet"    => $stylesheet,
     "title"         => "Rota Synchronisation",
     "header-left"   => "raceManager",
     "header-right"  => "synchronise rota info from webcollect ...",

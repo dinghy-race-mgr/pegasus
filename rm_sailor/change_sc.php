@@ -17,7 +17,7 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/comp_class.php");
 
-$tmpl_o = new TEMPLATE(array("../templates/sailor/layouts_tm.php"));
+$tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php"));
 
 // process each field
 foreach ($_SESSION['change_fm'] as $field => $fieldspec) {

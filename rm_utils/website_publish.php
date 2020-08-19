@@ -6,6 +6,8 @@ $loc  = "..";
 $page = "website_publish";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
+$styletheme = "flatly_";
+$stylesheet = "./style/rm_utils.css";
 
 require_once ("{$loc}/common/lib/util_lib.php");
 
@@ -45,15 +47,14 @@ foreach ($db_o->db_getinivalues(false) as $data)
 }
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","$loc/templates/utils/layouts_tm.php",
-                             "$loc/templates/utils/publish_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php",",/templates/layouts_tm.php","./templates/publish_tm.php"));
 
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
 
 $pagefields = array(
     "loc" => $loc,
-    "theme" => "flatly_",
-    "stylesheet" => "$loc/style/rm_utils.css",
+    "theme" => $styletheme,
+    "stylesheet" => $stylesheet,
     "title" => "Programme Transfer",
     "header-left" => $_SESSION['sys_name'],
     "header-right" => "Website Publish",
