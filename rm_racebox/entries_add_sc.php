@@ -1,66 +1,71 @@
 <?php
 /**
- *
+ *  entries_add_sc.php
  * 
  */
 $debug      = false;
-$loc        = "..";                                                // <--- relative path from script to top level folder
+$loc        = "..";
 $page       = "addentry";     // 
 $scriptname = basename(__FILE__);
-require_once ("{$loc}/common/lib/util_lib.php"); 
-// require_once ("{$loc}/common/lib/rm_lib.php");
+require_once ("{$loc}/common/lib/util_lib.php");
+
+$eventid = u_checkarg("eventid", "checkintnotzero","");
+$page_state = u_checkarg("pagestate", "set","");
+
+u_initpagestart($_REQUEST['eventid'], $page, "");
+include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
+
+if (!$eventid) {
+    u_exitnicely($scriptname, $eventid, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
+        "please contact your raceManager administrator");
+}
+
+if (empty($page_state)) {
+    u_exitnicely($scriptname, $eventid, "the page state has not been set",
+        "please contact your raceManager administrator");
+}
+
+// classes
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/comp_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 
-u_initpagestart($_REQUEST['eventid'], $page, $_REQUEST['menu']);   // starts session and sets error reporting
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");    // language file
+$db_o = new DB;
+$comp_o = new COMPETITOR($db_o);
 
-// process parameters  (eventid, pagestate, entryid)
-empty($_REQUEST['eventid']) ? $eventid = "" : $eventid = $_REQUEST['eventid'];
-empty($_REQUEST['pagestate']) ?  $page_state = "" : $page_state = $_REQUEST['pagestate'];
-
-if ($eventid AND $page_state)
+if($page_state == "search")                                          // do search and return results
 {
-    $db_o = new DB;
-    $comp_o = new COMPETITOR($db_o);
+    unset($_SESSION["e_$eventid"]['enter_opt']);                     // initialise session variables
+    $_SESSION["e_$eventid"]['enter_opt'] = $comp_o->comp_searchcompetitor($_REQUEST['searchstr']);
+}
 
-    if($page_state == "search")                                          // do search and return results
+elseif ($page_state == "enterone")       // add competitor to current event
+{
+    $entry_o = new ENTRY($db_o, $eventid, $_SESSION["e_$eventid"]);
+    // debug:u_writedbg("competitor {$_REQUEST['competitorid']}",__FILE__,__FUNCTION__,__LINE__);  // debug:
+    $entry = $entry_o->get_competitor($_REQUEST['competitorid']);
+    //echo "<pre>".print_r($entry,true)."</pre>";
+    // debug:u_writedbg(u_check($entry, "ENTRY"),__FILE__,__FUNCTION__,__LINE__);  // debug:
+
+    if ($entry)
     {
-        unset($_SESSION["e_$eventid"]['enter_opt']);                     // initialise session variables
-        $_SESSION["e_$eventid"]['enter_opt'] = $comp_o->comp_searchcompetitor($_REQUEST['searchstr']);
+        enter_boat($entry, $eventid);
     }
-
-    elseif ($page_state == "enterone")       // add competitor to current event
-    {
-        $entry_o = new ENTRY($db_o, $eventid);
-        // debug:u_writedbg("competitor {$_REQUEST['competitorid']}",__FILE__,__FUNCTION__,__LINE__);  // debug:
-        $entry = $entry_o->get_competitor($_REQUEST['competitorid']);
-        // debug:u_writedbg(u_check($entry, "ENTRY"),__FILE__,__FUNCTION__,__LINE__);  // debug:
-
-        if ($entry)
-        {
-            enter_boat($entry, $eventid);
-        }
-        else
-        {
-            $_SESSION["e_$eventid"]['enter_err']= "Failed - competitor record not found";
-        }
-    }
-
     else
     {
-        u_exitnicely($scriptname, $eventid,"event001","pagestate not recognised ".$lang['err']['exit-action']);
+        $_SESSION["e_$eventid"]['enter_err']= "Failed - competitor record not found";
     }
-
-    header("Location: entries_add_pg.php?eventid=$eventid&pagestate=pick");
-    exit();
 }
+
 else
 {
-    u_exitnicely($scriptname, $eventid,"sys005", "eventid and/or pagestate not defined ($eventid|$page_state)");
+    u_exitnicely($scriptname, $eventid,"ENTER failed - the value of page state not recognised [$pagestate]","please contact your raceManager administrator");
 }
+
+header("Location: entries_add_pg.php?eventid=$eventid&pagestate=pick");
+exit();
+
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------
 function enter_boat($entry, $eventid, $race = "")
@@ -81,8 +86,7 @@ function enter_boat($entry, $eventid, $race = "")
         if ($result['status'])
         {
             $upd = $entry_o->upd_lastrace( $entry['id'], $eventid);         // update competitor record
-            $fleet_name = $_SESSION["e_$eventid"]["fl_$i"]['code'];
-            $_SESSION["e_$eventid"]['enter_rst'][] = "$entry_tag [$fleet_name]";
+            $_SESSION["e_$eventid"]['enter_rst'][] = $entry_tag;
 
             $_SESSION["e_$eventid"]["fl_$i"]['entries']++;                  // increment no. of entries
             $_SESSION["e_$eventid"]['result_status'] = "invalid";           // set results update flag
@@ -91,8 +95,8 @@ function enter_boat($entry, $eventid, $race = "")
         }
         else
         {
-            $_SESSION["e_$eventid"]['enter_err']= "$entry_tag $entry_alloc - race $race - failed ({$result["problem"]})";
-            u_writelog("ENTRY FAILED: $entry_tag [{$result["problem"]}]", $eventid);
+            $_SESSION["e_$eventid"]['enter_err']= "$entry_tag entry failed ({$result["problem"]})";
+            u_writelog("ENTRY FAILED: $entry_tag - failed [{$result["problem"]}]", $eventid);
         }
     }
     else
@@ -101,4 +105,3 @@ function enter_boat($entry, $eventid, $race = "")
         u_writelog("ENTRY FAILED: $entry_tag [no fleet allocation - {$alloc['alloc_code']}]", $eventid);
     }
 }
-?>

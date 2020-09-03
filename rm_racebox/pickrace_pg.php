@@ -101,9 +101,21 @@ $rbufr.= $tmpl_o->get_template("modal", $mdl_addrace['fields'], $mdl_addrace);
 
 
 // ----- page footer -------------------------------------------------------------------------
+$toggle_fields = array(
+    "on"          => "left",
+    "size"        => "md",
+    "off-style"   => "default",
+    "on-style"    => "warning",
+    "left-label"  => "Live",
+    "left-link"   => "rm_racebox.php?mode=live",
+    "right-label" => "Demo",
+    "right-link"  => "rm_racebox.php?mode=demo"
+);
+$_SESSION['mode'] == "live" ? $toggle_fields['on'] = "left" : $toggle_fields['on'] = "right";
 $fields = array(
     "l_foot" => "<span class='glyphicon glyphicon-copyright-mark' aria-hidden='true'></span> ".$_SESSION['sys_copyright'],
-    "m_foot" => $tmpl_o->get_template("demo_button", array(), array("mode"=>$_SESSION['mode'])),
+//    "m_foot" => $tmpl_o->get_template("demo_button", array(), array("mode"=>$_SESSION['mode'])),
+      "m_foot" => $tmpl_o->get_template("toggle_button", array(), $toggle_fields),
     "r_foot" => "{$_SESSION['sys_release']}  {$_SESSION['sys_version']}",
     "style"  => ""
 );

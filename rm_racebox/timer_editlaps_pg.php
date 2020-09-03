@@ -1,9 +1,9 @@
 <?php
 /* ------------------------------------------------------------
-   rbx_timer_pg_editlaps
-   
-   Allows OOD to pick competiors from database for adding to 
-   either just the current race or all races today.
+   timer_editlaps_pg
+
+NOT SURE THIS IS USED ANYMORE
+
    
    arguments:
        eventid     id of event

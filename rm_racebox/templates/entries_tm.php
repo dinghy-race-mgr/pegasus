@@ -197,7 +197,7 @@ EOT;
 
     $html = <<<EOT
         <h4><span class="dynmsg"></span></h4>
-        <p class="text-danger">Only enter information you want to change </p>
+        <p class="text-info lead">Only enter information you want to change </p>
         <div class="change"><input name="entryid" type="hidden" id="identryid"></div>
 
         $helm
@@ -310,7 +310,7 @@ function addentry_boats_entered($params)
         </div>
 EOT;
     } else {
-        if (isset($data['entries'])) {
+        if (isset($params['entries'])) {
             $num_entries = count($params['entries']);
             $html .= <<<EOT
             <div class="well">
@@ -320,12 +320,12 @@ EOT;
                 if (substr_count($entry, "fail") > 0 or substr_count($entry, "error") > 0)     // error or not found
                 {
                     $html .= <<<EOT
-                    <p class="bg-danger">&nbsp;$entry</p>
+                    <p class="text-danger lead">&nbsp;$entry <span class="glyphicon glyphicon-remove"></span></p>
 EOT;
                 } else                                                                        // entry found
                 {
                     $html .= <<<EOT
-                    <p class="bg-success">&nbsp;$entry</p>
+                    <p class="lead">&nbsp;$entry <span class="glyphicon glyphicon-ok"></span></p>
 EOT;
                 }
             }
@@ -338,11 +338,11 @@ EOT;
 EOT;
         }
 
-        if (isset($data['error']))  // display error
+        if (isset($params['error']))  // display error
         {
             $html .= <<<EOT
             <div class="well">
-                <p class="bg-danger text-danger">&nbsp;{$params['error']}</p>
+                <p class="text-danger">&nbsp;{$params['error']}</p>
             </div>
 EOT;
         }
@@ -376,7 +376,7 @@ EOT;
         {
             $panels .= <<<EOT
             <div role="tabpanel" class="tab-pane" id="fleet$i">
-                <div class="well well-sm lead"><span>no entries in the {$fleet['name']} fleet yet</span></div>
+                <div class="well well-sm text-warning lead"><span>no entries in the {$fleet['name']} fleet yet</span></div>
             </div>
 EOT;
         }
@@ -388,13 +388,13 @@ EOT;
             {
                 $entryname = "{$entry['class']}  -  {$entry['sailnum']}";
                 $rows.= <<<EOT
-                <tr class="">
-                    <td style="" >{$entry['class']}</td>
-                    <td style="" >{$entry['sailnum']}</td>
+                <tr class="lead">
+                    <td class="truncate" style="" >{$entry['class']}</td>
+                    <td class="truncate" style="" >{$entry['sailnum']}</td>                   
+                    <td class="truncate" style="" >{$entry['helm']}</td>
+                    <td class="truncate" style="" >{$entry['crew']}</td>
+                    <td class="truncate" style="" >{$entry['club']}</td>
                     <td style="" >{$entry['pn']}</td>
-                    <td style="" >{$entry['helm']}</td>
-                    <td style="" >{$entry['crew']}</td>
-                    <td style="" >{$entry['club']}</td>
                     <td style="" >
                        <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true"
                              data-title="edit boat details" data-placement="top">
@@ -406,9 +406,8 @@ EOT;
                                data-crew="{$entry['crew']}"
                                data-sailnum="{$entry['sailnum']}"
                                data-pn="{$entry['pn']}">
-                           <span class="badge progress-bar-default" style="font-size: 100%">
-                              <span class="glyphicon glyphicon-pencil"></span>
-                               edit
+                           <span class="label label-default" style="font-size: 100%">
+                              &nbsp;&nbsp;<span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;
                            </span>
                        </button>
                        </span>
@@ -418,9 +417,8 @@ EOT;
                                rel="tooltip" data-original-title="give duty points" data-placement="bottom" data-target="#dutyModal"
                                data-entryid="{$entry['id']}"
                                data-entryname="$entryname" >
-                            <span class="badge progress-bar-default" style="font-size: 100%">
-                                <span class="glyphicon glyphicon-flag"></span>
-                                &nbsp;duty&nbsp;
+                            <span class="label label-default" style="font-size: 100%">
+                                &nbsp;&nbsp;<span class="glyphicon glyphicon-flag"></span>&nbsp;&nbsp;
                             </span>
                        </button>
                        </span>
@@ -430,9 +428,8 @@ EOT;
                                rel="tooltip" data-original-title="remove boat from race" data-placement="bottom" data-target="#removeModal"
                                data-entryid="{$entry['id']}"
                                data-entryname="$entryname" >
-                            <span class="badge progress-bar-danger" style="font-size: 100%">
-                                <span class="glyphicon glyphicon-remove"></span>
-                                &nbsp;remove&nbsp;
+                            <span class="label label-danger" style="font-size: 100%">
+                                &nbsp;&nbsp;<span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;
                             </span>
                        </button>
                        </span>
@@ -444,25 +441,21 @@ EOT;
 
             // create table
             $panels.= <<<EOT
-            <div role="tabpanel" class="tab-pane" id="fleet$i">
+            <div role="tabpanel" class="tab-pane" id="fleet$i" style="overflow-y: auto; height:75vh;">
                 <table class="table table-striped table-condensed table-hover" style="1em">
-                    <thead>
+                    <thead class="text-info">
                         <tr>
                             <th style="" width="11%">class</th>
-                            <th style="" width="7%">sail no.</th>
-                            <th style="" width="7%">pn</th>
+                            <th style="" width="7%">sail no.</th>                            
                             <th style="" width="15%">helm</th>
                             <th style="" width="15%">crew</th>
                             <th style="" width="15%">club</th>
+                            <th style="" width="7%">pn</th>
                             <th style="" width="30%"></th>
                         </tr>
                     </thead>
                     <tbody>
                         $rows
-                        <tr class="" >
-                            <th colspan="4"  style="text-align: left"></th>
-                            <th colspan="3"  style="text-align: right">fleet entries: $fleet_count</th>
-                        </tr>
                     </tbody>
                 </table>
             </div>

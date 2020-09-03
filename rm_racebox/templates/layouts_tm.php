@@ -190,8 +190,8 @@ EOT;
 
             $formval_hdr
 
-            <!-- Custom styles for this template 
-            <link href="{stylesheet}" rel="stylesheet">-->
+            <!-- Custom styles for this template -->
+            <link href="{stylesheet}" rel="stylesheet">
 
     </head>
     <body class="{body_attr}">

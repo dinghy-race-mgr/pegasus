@@ -24,24 +24,23 @@ require_once ("{$loc}/common/classes/comp_class.php");
 require_once ("{$loc}/common/classes/racestate_class.php");
 
 u_initpagestart($eventid, $page, "");                                // gets session and sets error reporting
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");      // language file
+include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");      // language file
 
 // process parameters  (eventid, pagestate, entryid)
 empty($_REQUEST['eventid'])?   $eventid   = "" : $eventid   = $_REQUEST['eventid'];
 empty($_REQUEST['pagestate'])? $pagestate = "" : $pagestate = $_REQUEST['pagestate'];
 empty($_REQUEST['entryid'])?   $entryid   = "" : $entryid   = $_REQUEST['entryid'];
 
-include ("$loc/templates/racebox/growls.php");
+include ("./templates/growls.php");
 
 if ($eventid)
 {
     $db_o = new DB;
+    $entry_o = new ENTRY($db_o, $eventid, $_SESSION["e_$eventid"]);
 
     // ------- per entry functions --------------------------------------------------------------------------
     if (!empty($entryid))   // deal with in table button functions
     {
-        $entry_o = new ENTRY($db_o, $eventid);
-
         $entry = $entry_o->get_by_raceid($entryid);
         $entryname = $entry['class']." ".$entry['sailnum'];
 
@@ -112,7 +111,6 @@ if ($eventid)
 
     elseif ($pagestate == "loadentries")
     {
-        $entry_o = new ENTRY($db_o, $eventid);
         $signons = $entry_o->get_signons("entries");
         $entries_found = count($signons);
         u_writedbg(u_check($signons, "signon candidates"),__FILE__,__FUNCTION__,__LINE__);
@@ -164,13 +162,13 @@ if ($eventid)
     // loads competitors marked as regular
     elseif ($pagestate == "loadregular")
     {
-        $entry_o = new ENTRY($db_o, $eventid);
         $entries = $entry_o->get_regulars();
 
         if ($entries)
         {
             $entries_found = count($entries);
             $entries_replaced = 0;
+            $entries_deleted = 0;
             $entered = 0;
             foreach ($entries as $entry)
             {
@@ -185,9 +183,9 @@ if ($eventid)
                 }
             }
             if ($entered != $entries_found) {
-                u_growlSet($eventid, $page, $g_entries_failed, array($entries_found, $entered, $entries_replaced));
+                u_growlSet($eventid, $page, $g_entries_failed, array($entries_found - $entered));
             } else {
-                u_growlSet($eventid, $page, $g_entries_loaded, array($entered));
+                u_growlSet($eventid, $page, $g_entries_report, array($entries_found, $entered, $entries_replaced, $entries_deleted));
             }
         }
         else
@@ -200,13 +198,13 @@ if ($eventid)
     // loads competitors who have raced earlier today
     elseif ($pagestate == "loadprevious")
     {
-        $entry_o = new ENTRY($db_o, $eventid);
         $entries = $entry_o->get_previous(date("Y-m-d"));
         //u_writedbg(u_check($entries, "previous competitor"),__FILE__,__FUNCTION__,__LINE__);
         if ($entries)
         {
             $entries_found = count($entries);
             $entries_replaced = 0;
+            $entries_deleted = 0;
             $entered = 0;
             foreach ($entries as $entry)
             {
@@ -219,9 +217,9 @@ if ($eventid)
             }
 
             if ($entered != $entries_found) {
-                u_growlSet($eventid, $page, $g_entries_failed, array($entries_found, $entered, $entries_replaced));
+                u_growlSet($eventid, $page, $g_entries_failed, array($entries_found - $entered));
             } else {
-                u_growlSet($eventid, $page, $g_entries_loaded, array($entered));
+                u_growlSet($eventid, $page, $g_entries_report, array($entries_found, $entered, $entries_replaced, $entries_deleted));
             }
         }
         else{
@@ -253,7 +251,7 @@ if ($eventid)
             u_writelog("ADD COMPETITOR: $comp_tag", $eventid);
             u_growlSet($eventid, $page, $g_entry_add_comp_success, array($comp_tag));
             // send message
-            include("$loc/templates/racebox/messages.php");
+            include("./templates/messages.php");
             $message = array(
                 "name"    => $_SESSION["e_$eventid"]['ev_ood'],
                 "subject" => "NEW COMPETITOR - new competitor has been added",
@@ -294,7 +292,7 @@ if ($eventid)
             u_writelog("ADD CLASS: {$newclass['classname']}", $eventid);
             u_growlSet($eventid, $page, $g_entry_add_class_success, array($newclass['classname']));
             // send message
-            include("$loc/templates/racebox/messages.php");
+            include("./templates/messages.php");
             $message = array(
                 "name"    => $_SESSION["e_$eventid"]['ev_ood'],
                 "subject" => "NEW CLASS - new class has been added",
@@ -371,5 +369,4 @@ function enter_boat($entry, $eventid, $type)
     return $success;
 }
 
-?>
 

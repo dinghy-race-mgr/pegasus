@@ -18,7 +18,7 @@ require_once ("{$loc}/common/lib/util_lib.php");
 u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
 
 // initialising language   
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");
+include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
@@ -35,15 +35,14 @@ else
     $entryid   = $_REQUEST['entryid'];
 }
 
-$tmpl_o = new TEMPLATE(array("../templates/general_tm.php",
-                             "../templates/racebox/layouts_tm.php",
-                             "../templates/racebox/timer_tm.php"));
+$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/timer_tm.php"));
 
 $db_o   = new DB;                       // create database object
 $race_o = new RACE($db_o, $eventid);    // create race object
 
 // get entry details - including existing lap times
 $laps_rs = $race_o->entry_get_timings($entryid);
+
 // convert lap times string to an array with an index starting at 1
 empty($laps_rs) ? $laptimes = array() : $laptimes = explode(",", $laps_rs['laptimes']);
 array_unshift($laptimes, null);
@@ -161,4 +160,3 @@ checks for problems with the lap time sequence presented
 }
 
 
-?>

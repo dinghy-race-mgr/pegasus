@@ -17,6 +17,7 @@ $btn_timerstart = array(
         "popover"    => "Click at the same time as the FIRST signal in your start sequence",
         "pop-pos"    => "bottom",
         "block"      => "btn-block",
+
         "disabled"   => "",
         "link"       => "start_sc.php?eventid=$eventid&pagestate=starttimer",
         "top-margin" => "margin-top-0"
@@ -46,11 +47,11 @@ $btn_timerstop = array(
 );
 
 $mdl_timerstop = array(
-    "form"    => false,
+    "form"    => true,
     "footer"  => true,
     "reload"  => true,
     "close"   => true,
-    "reset"   => true,
+    "reset"   => false,
     "submit"  => true,
     "fields"  => array(
         "id"          => "timerstop",
@@ -75,40 +76,6 @@ $mdl_timerstop = array(
         "footer"      => ""
     ),
 );
-
-//// ---- set laps button ----------------------------------------------------------------
-//
-//$btn_setlaps = array(
-//    "id"         => "setlaps",
-//    "size"       => "md",
-//    "style"      => "danger",
-//    "label"      => "Set Laps",
-//    "glyph"      => "glyphicon-list",
-//    "g-pos"      => "left",
-//    "popover"    => "click here to set or change the laps for each fleet",
-//    "pop-pos"    => "bottom",
-//    "block"      => "btn-block",
-//    "disabled"   => "",
-//    "top-margin" => "margin-top-0",
-//);
-//
-//$mdl_setlaps = array(
-//    "id"          => "setlaps",
-//    "size"        => "md",
-//    "style"       => "primary",
-//    "title"       => "Set Laps",
-//    "body"        => "",
-//    "form"        => true,
-//    "script"      => "",
-//    "action"      => "start_sc.php?eventid=$eventid&pagestate=setalllaps",
-//    "target"      => "",
-//    "onsubmit"    => "",
-//    "close-lbl"   => "nope",
-//    "reset-lbl"   => "",
-//    "submit-lbl"  => "set laps",
-//    "reload"      => true,
-//    "footer"      => "",
-//);
 
 // ---- start infringement button ----------------------------------------------------------------
 $btn_infringestart = array(
@@ -185,7 +152,7 @@ $mdl_generalrecall = array(
     "footer"  => true,
     "reload"  => true,
     "close"   => true,
-    "reset"   => true,
+    "reset"   => false,
     "submit"  => true,
     "fields"  => array(
         "id"          => "generalrecall",
@@ -211,21 +178,29 @@ $mdl_generalrecall = array(
 );
 
 $mdl_latetimer = array(
-    "id"          => "latetimer",
-    "size"        => "md",
-    "style"       => "warning",
-    "title"       => "Adjust Timer",
-    "body"        => "",
-    "form"        => true,
-    "script"      => "",
-    "action"      => "start_sc.php?eventid=$eventid&pagestate=adjusttimer",
-    "target"      => "",
-    "onsubmit"    => "",
-    "close-lbl"   => "nope",
-    "reset-lbl"   => "",
-    "submit-lbl"  => "Set Time",
-    "reload"      => true,
-    "footer"      => "",
+    "form"    => true,
+    "footer"  => true,
+    "reload"  => true,
+    "close"   => true,
+    "reset"   => false,
+    "submit"  => true,
+    "fields"  => array(
+        "id"          => "latetimer",
+        "size"        => "md",
+        "style"       => "warning",
+        "title"       => "Adjust Timer",
+        "body"        => "",
+        "form"        => true,
+        "script"      => "",
+        "action"      => "start_sc.php?eventid=$eventid&pagestate=adjusttimer",
+        "target"      => "",
+        "onsubmit"    => "",
+        "close-lbl"   => "nope",
+        "reset-lbl"   => "",
+        "submit-lbl"  => "Set Time",
+        "reload"      => true,
+        "footer"      => ""
+    )
 );
 
 

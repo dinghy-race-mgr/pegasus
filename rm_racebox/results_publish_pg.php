@@ -21,7 +21,7 @@ require_once ("{$loc}/common/lib/util_lib.php");
 u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and sets error reporting
 
 // initialising language   
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");
+include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
@@ -31,10 +31,8 @@ require_once ("{$loc}/common/classes/result_class.php");
 require_once ("{$loc}/common/classes/seriesresult_class.php");
 
 // templates
-$tmpl_o = new TEMPLATE(array("../templates/general_tm.php",
-    "../templates/racebox/layouts_tm.php",
-    "../templates/racebox/results_tm.php",
-    "../templates/results/race_results_tm.php"));
+$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php",
+    "./templates/results_tm.php", "../common/templates/race_results_tm.php"));
 
 $pagestate = $_REQUEST['pagestate'];
 $eventid   = $_REQUEST['eventid'];
@@ -47,7 +45,6 @@ if (empty($pagestate) OR empty($eventid))
 $db_o    = new DB;                      // database object
 $event_o = new EVENT($db_o);            // event object
 $race_o  = new RACE($db_o, $eventid);   // race object
-
 
 $event = $event_o->get_event_byid($eventid);
 
@@ -524,4 +521,3 @@ function process_transfer($files, $protocol)
     return $status;
 }
 
-?>

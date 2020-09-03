@@ -19,30 +19,24 @@ $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 
-u_initpagestart($_REQUEST['eventid'], $page, $_REQUEST['menu']);   // starts session and sets error reporting
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");
+u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
+include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
-// check we have request id - if not stop with system error
-if (empty($_REQUEST['eventid']) or !is_numeric($_REQUEST['eventid'])) 
-{
-    u_exitnicely($scriptname, "not defined", $lang['err']['sys002'], "event id is not defined");  
-    exit();
-}
-
-$eventid = $_REQUEST['eventid'];
+$eventid = u_checkarg("eventid", "checkintnotzero","");
 if (!empty($_REQUEST['mode'])) {$_SESSION['timer_options']['mode'] = $_REQUEST['mode']; }
 if (empty($_SESSION['timer_options']['mode'])) { $_SESSION['timer_options']['mode'] = "tabbed"; }
 
+if (!$eventid) { u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
+    "please contact your raceManager administrator");  }
+
+// classes
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 //require_once ("{$loc}/common/classes/event_class.php");      // <-- remove if not required
 require_once ("{$loc}/common/classes/race_class.php");
 
 // templates
-$tmpl_o = new TEMPLATE(array("../templates/general_tm.php",
-    "../templates/racebox/layouts_tm.php",
-    "../templates/racebox/navbar_tm.php",
-    "../templates/racebox/timer_tm.php"));
+$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/timer_tm.php"));
 
 // database connection
 $db_o   = new DB;
@@ -50,6 +44,7 @@ $race_o = new RACE($db_o, $eventid);
 
 // page controls
 include ("./include/timer_ctl.inc");
+include ("./templates/growls.php");
 
 // FIXME - review if these options are used and where they should be set
 $_SESSION['timer_options']['listorder']     = "class";     // options "class|pn|position|ptime""
@@ -65,14 +60,9 @@ for ($fleetnum=1; $fleetnum<=$_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum+
 }
 
 // ----- navbar -----------------------------------------------------------------------------
-$fields = array(
-    "eventid"  => $eventid,
-    "brand"    => "raceBox: {$_SESSION["e_$eventid"]['ev_sname']}",
-    "page"     => $page,
-    "pursuit"  => $_SESSION["e_$eventid"]['pursuit'],
-);
-$nbufr = $tmpl_o->get_template("racebox_navbar", $fields);
-
+$fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
+$params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
+$nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
 
 // ----- left hand panel --------------------------------------------------------------------
 $lbufr = u_growlProcess($eventid, $page);
@@ -88,10 +78,10 @@ else
     if ($_SESSION['timer_options']['mode'] == "tabbed" or empty($_SESSION['timer_options']['mode']))
     {
         $rs_race = $race_o->race_gettimings(true, 0, 0);
-        $lbufr.= $tmpl_o->get_template("timer_tabs",
-              array("eventid" => $eventid, "num-fleets" => $_SESSION["e_$eventid"]['rc_numfleets']), $rs_race);
+        $lbufr.= $tmpl_o->get_template("timer_tabs", array(),
+              array("eventid" => $eventid, "num-fleets" => $_SESSION["e_$eventid"]['rc_numfleets'], "timings" => $rs_race));
         // add modals
-        $lbufr.= $tmpl_o->get_template("modal", $mdl_editlap);
+        $lbufr.= $tmpl_o->get_template("modal", $mdl_editlap['fields'], $mdl_editlap);
     }
     elseif ($_SESSION['timer_options']['mode'] == "list")
     {
@@ -104,63 +94,74 @@ else
 
     if (!$_SESSION["e_$eventid"]['pursuit'])
     {
-        $data = array(
+        $params = array(
             "lapstatus" => check_lap_status($eventid),
             "fleet-data" => $fleet_data,
         );
-        $mdl_setlaps['body'] = $tmpl_o->get_template("fm_timer_setlaps", array(), $data);
-        $lbufr_bot = $tmpl_o->get_template("modal", $mdl_setlaps);
+        $mdl_setlaps['body'] = $tmpl_o->get_template("fm_timer_setlaps", array(), $params);
+        $lbufr_bot = $tmpl_o->get_template("modal", $mdl_setlaps['fields'], $mdl_setlaps);
     }
 }
-
 
 // ----- right hand panel --------------------------------------------------------------------
 $rbufr = "";
 
 // undo
-$rbufr.= "<div class=\"margin-top-40\">";
-$btn_undo['link'] = "timer_sc.php?eventid=$eventid&pagestate=undo";
-$rbufr.= $tmpl_o->get_template("btn_link", $btn_undo);
+$btn_undo['fields']['link'] = "timer_sc.php?eventid=$eventid&pagestate=undo";
+$rbufr.= $tmpl_o->get_template("btn_link", $btn_undo['fields'], $btn_undo);
 
 // shorten all fleets
-$btn_shorten['link'] = "timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=all";
-$rbufr.= $tmpl_o->get_template("btn_link", $btn_shorten);
+$btn_shorten['fields']['link'] = "timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=all";
+$rbufr.= $tmpl_o->get_template("btn_link", $btn_shorten['fields'], $btn_shorten);
 $rbufr.= "<hr>";
 
 //// quick timer option
-//$rbufr .= $tmpl_o->get_template("btn_modal", $btn_quicktime);
-//$rbufr .= $tmpl_o->get_template("modal", $mdl_quicktime);
+//$rbufr .= $tmpl_o->get_template("btn_modal", $btn_quicktime['fields], $btn_quicktime);
+//$rbufr .= $tmpl_o->get_template("modal", $mdl_quicktime['fields], $btn_quicktime);
 //
 //// bunch timer option
-//$rbufr .= $tmpl_o->get_template("btn_modal", $btn_bunch);
-//$rbufr .= $tmpl_o->get_template("modal", $mdl_bunch);
+//$rbufr .= $tmpl_o->get_template("btn_modal", $btn_bunch['fields], $btn_bunch);
+//$rbufr .= $tmpl_o->get_template("modal", $mdl_bunch['fields], $mdl_bunch);
 
-$rbufr.= "</div>";
+// mode button
+$toggle_fields = array(
+    "size"        => "lg",
+    "off-style"   => "default",
+    "on-style"    => "warning",
+    "left-label"  => "Tabbed",
+    "left-link"   => "timer_pg.php?eventid=$eventid&mode=tabbed",
+    "right-label" => "List",
+    "right-link"  => "timer_pg.php?eventid=$eventid&mode=list"
+);
+$_SESSION['timer_options']['mode'] == "tabbed" ? $toggle_fields['on'] = "left" : $toggle_fields['on'] = "right";
 
-$rbufr_bot = mode_button($eventid);
 // ----- render page -------------------------------------------------------------------------
 $db_o->db_disconnect();
 
 $fields = array(
     "title"      => "racebox",
+    "theme"      => $_SESSION['racebox_theme'],
     "loc"        => $loc,
-    "stylesheet" => "$loc/style/rm_racebox.css",
+    "stylesheet" => "./style/rm_racebox.css",
     "navbar"     => $nbufr,
     "l_top"      => $lbufr,
     "l_mid"      => "",
     "l_bot"      => $lbufr_bot,
-    "r_top"      => $rbufr,
+    "r_top"      => "<div class=\"margin-top-40\">".$rbufr."</div>",
     "r_mid"      => "",
-    "r_bot"      => $rbufr_bot,
+    "r_bot"      => $tmpl_o->get_template("toggle_button", array(), $toggle_fields),
     "footer"     => "",
-    "page"       => $page,
-    "refresh"    => 0,
-    "l_width"    => 10,
-    "forms"      => true,
-    "tables"     => true,
     "body_attr"  => "onload=\"startTime()\""
 );
-echo $tmpl_o->get_template("two_col_page", $fields);
+
+$params = array(
+    "page"      => $page,
+    "refresh"   => 0,
+    "l_width"   => 10,
+    "forms"     => true,
+    "tables"    => true,
+);
+echo $tmpl_o->get_template("two_col_page", $fields, $params);
 
 // ----- page specific functions ---------------------------------------------------------------
 function problem_check($eventid)
@@ -199,25 +200,4 @@ function check_lap_status ($eventid)
     return $laps_set;
 }
 
-function mode_button($eventid)
-{
-    $tabbed = "btn-danger";
-    $list = "btn-default";
-    if ($_SESSION['timer_options']['mode'] == "list")
-    {
-        $tabbed = "btn-default";
-        $list = "btn-danger";
-    }
 
-    $bufr = <<<EOT
-    <div class="btn-group btn-toggle btn-md pull-left">
-        <a class="btn btn-sm $tabbed" style="width: 100px; font-weight: bold" href="timer_pg.php?eventid=$eventid&mode=tabbed">
-            tabbed
-        </a>
-        <a class="btn btn-sm $list" style="width: 100px; font-weight: bold" href="timer_pg.php?eventid=$eventid&mode=list">
-            list
-        </a>
-    </div>
-EOT;
-    return $bufr;
-}

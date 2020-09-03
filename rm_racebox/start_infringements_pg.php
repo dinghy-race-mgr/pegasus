@@ -21,7 +21,7 @@ require_once ("{$loc}/common/lib/util_lib.php");
 u_initpagestart($_REQUEST['eventid'],$page,"");   // starts session and sets error reporting
 
 // initialising language   
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");
+include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
 require_once ("{$loc}/common/classes/db_class.php"); 
 require_once ("{$loc}/common/classes/template_class.php");
@@ -36,9 +36,7 @@ if (empty($pagestate) OR empty($eventid) OR empty($startnum))
     u_exitnicely("start_infringements_pg", $eventid, "errornum", "eventid ($eventid), startnum ($startnum), or pagestate ($pagestate) is missing");
 }
 
-$tmpl_o = new TEMPLATE(array("../templates/general_tm.php",
-    "../templates/racebox/layouts_tm.php",
-    "../templates/racebox/start_tm.php"));
+$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/start_tm.php"));
 
 $db_o    = new DB;              // create database object
 $race_o  = new RACE($db_o, $eventid);
@@ -53,19 +51,19 @@ if ($pagestate == "init")
     // table with entries
     $entries = $race_o->race_getstarters(array("start"=>$startnum));
 
-    $data = array(
+    $params = array(
         "entries" => count($entries),
         "code-bufr"  => $codebufr,
         "entry-data" => $entries,
     );
-    $page_bufr = $tmpl_o->get_template("infringe", array(), $data);
+    $body = $tmpl_o->get_template("infringe", array(), $params);
 
     $fields = array(
         "title"      => "start infringements",
         "loc"        => $loc,
-        "stylesheet" => "",
+        "stylesheet" => "./style/rm_racebox.css",
         "navbar"     => "",
-        "body"       => $page_bufr,
+        "body"       => $body,
         "footer"     => "",
     );
     echo $tmpl_o->get_template("basic_page", $fields);
@@ -75,7 +73,7 @@ if ($pagestate == "init")
 elseif ($pagestate == "submit") 
 {
     $entry  = $race_o->entry_get($_REQUEST['entryid'], "race");
-    u_writedbg ("<pre>".print_r($entry,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
+    //u_writedbg ("<pre>".print_r($entry,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
     $update = $race_o->entry_code_set($_REQUEST['entryid'], $_REQUEST['code']);
     if ($update)
     {
@@ -90,4 +88,3 @@ else
     u_exitnicely("start_infringements_pg", $eventid, "errornum", "pagestate ($pagestate) is not recognised");
 }
 
-?>

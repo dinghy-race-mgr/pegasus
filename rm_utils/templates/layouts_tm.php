@@ -22,11 +22,11 @@
 
             
             <link rel="shortcut icon" href="{loc}/common/images/favicon.ico">             
-            <link rel="stylesheet"    href="{loc}/common/oss/bootstrap/css/{theme}bootstrap.min.css" >      
-            <link rel="stylesheet"    href="{loc}/common/oss/bs-dialog/css/bootstrap-dialog.min.css">
+            <link rel="stylesheet"    href="{loc}/common/oss/bootstrap341/css/{theme}bootstrap.min.css" >      
+            <link rel="stylesheet"    href="{loc}/common/oss/bs-dialog341/css/bootstrap-dialog.min.css">
                     
             <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>
-            <script type="text/javascript" src="{loc}/common/oss/bootstrap/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="{loc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bs-dialog/js/bootstrap-dialog.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
             <script type="text/javascript" src="{loc}/common/scripts/clock.js"></script>

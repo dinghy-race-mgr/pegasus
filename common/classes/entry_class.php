@@ -54,8 +54,6 @@ class ENTRY
     //Method: construct class object
     public function __construct(DB $db, $eventid, $event_detail)
     {
-
-
         $this->db = $db;
         $this->eventid = $eventid;
 

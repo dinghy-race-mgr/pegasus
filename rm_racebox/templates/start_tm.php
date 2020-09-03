@@ -6,7 +6,7 @@ function fm_start_adjusttimer($params=array())
     $fieldwidth = "col-xs-6";
 
     $html = <<<EOT
-    <div class="alert alert-danger alert-dismissable" role="alert">
+    <div class="well" role="alert">
         <div>If you have forgotten to set the timer at the first signal,
         enter the (approx) clock time of the first signal e.g 10:30:00</div>
     </div>
@@ -122,8 +122,8 @@ function timer($params=array())
        <div style="margin-top: 120px; ">
            <div data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' style="cursor:pointer" data-html="true"
                 data-title="if you forgot to start the Timer at the first signal - click here" data-placement="left">
-               <a class="pull-right" id="latetimer" data-toggle="modal" data-target="#latetimerModal" style="text-decoration:none">
-                    <h3><span class="label label-default text-danger">Forgot to start Timer?</span></h3>
+               <a class="btn btn-warning pull-right lead" id="latetimer" data-toggle="modal" data-target="#latetimerModal">
+                    Forgot to start Timer?
                </a>
            </div>
        </div>
@@ -133,29 +133,19 @@ EOT;
 }
 
 
-function fleet_panel($params, $data)
+function fleet_panel($params)
 {
-    if ( $data['timer-start'] > 0 )
+    if ( $params['timer-start'] > 0 )
     {
-        $startdisplay = date("H:i:s",$data['timer-start'] + $data['start-delay']);
+        $startdisplay = date("H:i:s",$params['timer-start'] + $params['start-delay']);
     }
     else
     {
-        $startdisplay = gmdate("+ H:i:s", $data['start-delay']);
+        $startdisplay = gmdate("+ H:i:s", $params['start-delay']);
     }
 
-    if ($params['pursuit'])
-    {
-        $setlaps_bufr  = "&nbsp;";
-        $infringe_bufr = "{infringe}";
-        $recall_bufr   = "&nbsp;";
-    }
-    else
-    {
-        $setlaps_bufr = "";
-        $infringe_bufr = "{infringe}";
-        $recall_bufr   = "{recall}";
-    }
+    $infringe_bufr = "{infringe}";
+    $params['pursuit'] ? $recall_bufr = "&nbsp;" : $recall_bufr   = "{recall}";
 
     // put panel together
     $html = <<<EOT
@@ -164,13 +154,12 @@ function fleet_panel($params, $data)
             <div class="panel panel-default margin-top-10" style="border: 2px solid lightblue">
                 <div class="panel-heading" style="padding-top:2px; padding-bottom:2px">
                     <div class="panel-title">
-                        <span style="font-size: 1.2em">
+                        <span class="lead">
                          <div class="row">
-                            <div class="col-md-2">
-                                <span class="text-info"><b>Start {startnum}</b></span>
-                            </div>
+                            <div class="col-md-2">Start {startnum}</div>
                             <div class="col-md-7">
-                                 <span class="text-danger" style="font-weight: bold;">{fleet-list}</span>
+                                
+                                {fleet-list}
                             </div>
                             <div class="col-md-3">
                                 <span class="pull-right text-info">$startdisplay</span>
@@ -186,7 +175,7 @@ function fleet_panel($params, $data)
                                 {start-delta}
                             </div>
                         </div>
-                        <div class="col-md-4">$setlaps_bufr</div>
+                        <div class="col-md-4">&nbsp;<img src="../common/images/signal_flags/{flag}" alt="warning flag" width="15%" height="15%" style="border: 1px solid slategrey"></div>
                         <div class="col-md-3">$infringe_bufr</div>
                         <div class="col-md-3">$recall_bufr</div>
                     </div>
@@ -199,29 +188,32 @@ EOT;
 }
 
 
-function infringe($params, $data)
+function infringe($params)
 {
-    if ($data['entries'] > 0)
+    if ($params['entries'] > 0)
     {
         $entry_bufr = "";
         $drop_dirn = "";
         $i = 0;
-        foreach($data['entry-data']as $entry)
+        foreach($params['entry-data']as $entry)
         {
-
             $i++;
-            $drop_down = str_replace(array("ENTRY","BOAT"),
-                array("{$entry['id']}","{$entry['class']}-{$entry['sailnum']}"), $data['code-bufr']);
 
-            if (($drop_dirn == "") and ($i > $data['entries']/2) and ($i > 6) ) { $drop_dirn = "dropup"; }
+            $i == 1 ? $instr = "<span class=\"glyphicon glyphicon-triangle-left\" aria-hidden=\"true\"></span> Set Code" : $instr = "";
+
+
+            $drop_down = str_replace(array("ENTRY","BOAT"),
+                array("{$entry['id']}","{$entry['class']}-{$entry['sailnum']}"), $params['code-bufr']);
+
+            if (($drop_dirn == "") and ($i > $params['entries']/2) and ($i > 6) ) { $drop_dirn = "dropup"; }
 
             $entry_bufr.= <<<EOT
             <tr>
-                <td width="25%">{$entry['class']} - {$entry['sailnum']}</td>
+                <td width="15%">{$entry['class']}</td>
                 <td width="10%">{$entry['sailnum']}</td>
                 <td width="30%">{$entry['helm']}</td>
-                <td width="25%" style="padding-left:10px">
-                    <div class="btn-group $drop_dirn">
+                <td width="25%" >
+                    <div class="btn-group $drop_dirn pull-right">
                             <button type="button" class="btn btn-default btn-sm text-default" style="width: 4em; padding: 1px 1px;">
                         		<span class="default"><b>{$entry['code']}&nbsp;</b></span>
                         	</button>
@@ -231,18 +223,20 @@ function infringe($params, $data)
                                 <span class="caret"></span>
                             </button>
 
-                        	<ul class="dropdown-menu" style="font-size: 12px; background-color: lightyellow; left: 20px">
+                        	<ul class="dropdown-menu" >
                         		$drop_down
                         	</ul>
                     </div>
+                    
                 </td>
+                <td width="25%">&nbsp;&nbsp;&nbsp;<span class="text-info">$instr</span></td>
             </tr>
 EOT;
         }
 
         $html = <<<EOT
         <div class="container">
-            <table class="table table-striped table-hover table-condensed" style="font-size: 0.9em;">
+            <table class="table table-striped table-hover table-condensed">
                 $entry_bufr
             </table>
         </div>
@@ -262,4 +256,3 @@ EOT;
     return $html;
 }
 
-?>

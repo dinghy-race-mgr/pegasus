@@ -69,28 +69,6 @@ EOT;
     return $html;
 }
 
-
-function demo_button($params = array())
-{
-    $demo = "btn-default";
-    $live = "btn-warning";
-    if ($params['mode'] == "demo")
-    {
-        $demo = "btn-warning";
-        $live = "btn-default";
-    }
-
-    $bufr = <<<EOT
-        <form id="demoswitch" class="form-horizontal" action="#" method="post">
-            <div class="btn-group btn-toggle pull-left"> 
-                <a class="btn btn-sm $demo" style="width: 100px; font-weight: bold" href="rm_racebox.php?mode=demo">Demo</a>
-                <a class="btn btn-sm $live" style="width: 100px; font-weight: bold" href="rm_racebox.php?mode=live">Live </a>
-            </div>
-        </form>
-EOT;
-    return $bufr;
-}
-
 function race_panel($field=array())
 {
     empty($field['oodname']) ? "not listed" : $field['oodname'];

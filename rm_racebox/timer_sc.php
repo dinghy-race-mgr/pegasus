@@ -27,13 +27,13 @@ require_once ("{$loc}/common/lib/rm_lib.php");
 u_initpagestart($_REQUEST['eventid'], $page, "");   // starts session and sets error reporting
 
 // initialising language
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");
+include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
 require_once ("{$loc}/common/classes/db_class.php"); 
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 
-include("../templates/racebox/growls.php");
+include("./templates/growls.php");
 
 // process parameters  (eventid, pagestate, entryid)
 //u_writedbg(u_check($_REQUEST, "REQUEST"), __FILE__, __FUNCTION__, __LINE__);

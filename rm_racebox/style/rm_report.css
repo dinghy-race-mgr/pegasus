@@ -25,6 +25,7 @@ a:link  {color: rgb(44, 76, 124); text-decoration: none;}
 .table {display: table; width: 100%;}
 .table-row {display: table-row;}
 .table-cell {display: table-cell;}
+.truncate {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 
 .note    {font-weight: normal; color: rgb(0, 0, 0); line-height: 1.2em; margin: 0px; }
 

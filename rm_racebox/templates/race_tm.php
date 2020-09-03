@@ -553,7 +553,7 @@ EOT;
                             <h3 class="text-primary">Fleet Status</h3>
                         </div>
                         <div class="col-md-3">
-                            <a class="btn btn-sm btn-info pull-right" type="submit" onclick="location.reload();">
+                            <a class="btn btn-sm btn-primary pull-right" type="submit" onclick="location.reload();">
                                 <span class="glyphicon glyphicon-refresh"></span> Refresh</a>
                         </div>
                     </div> 

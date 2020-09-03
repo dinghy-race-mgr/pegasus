@@ -134,7 +134,7 @@ $btn_addentry = array(
         "id"          => "addentry",
         "style"       => "primary",
         "size"        => "lg",
-        "label"       => "Enter Boat",
+        "label"       => "Enter Boat(s)",
         "glyph"       => "glyphicon-plus",
         "g-pos"       => "left",
         "popover"     => "click here to add individual competitors to the race",
@@ -147,11 +147,11 @@ $btn_addentry = array(
 
 $mdl_addentry = array(
     "form"    => true,
-    "footer"  => true,
+    "footer"  => false,
     "reload"  => true,
-    "close"   => true,
-    "reset"   => true,
-    "submit"  => true,
+    "close"   => false,
+    "reset"   => false,
+    "submit"  => false,
     "fields"  => array(
         "id"          => "addentry",
         "size"        => "lg",
@@ -325,32 +325,13 @@ $btn_printentries = array(
 );
 
 // -------- change ----------------------------------------------------------------
-$btn_change = array(
-    "label"     => true,
-    "glyph"     => true,
-    "g-pos"     => "left",
-    "popover"   => "true",
-    "fields"    => array(
-        "id"          => "change",
-        "style"       => "progress-bar-default",
-        "size"        => "",
-        "label"       => "edit",
-        "glyph"       => "glyphicon-pencil",
-        "g-pos"       => "left",
-        "popover"     => "edit boat details",
-        "pop-pos"     => "top",
-        "block"       => "",
-        "disabled"    => "",
-        "top-margin"  => ""
-    ),
-);
 
 $mdl_change = array(
     "form"    => true,
     "footer"  => true,
     "reload"  => true,
     "close"   => true,
-    "reset"   => true,
+    "reset"   => false,
     "submit"  => true,
     "fields"  => array(
         "id"          => "change",
@@ -379,32 +360,13 @@ $mdl_change = array(
 );
 
 // -------- duty ----------------------------------------------------------------
-$btn_duty = array(
-    "label"     => true,
-    "glyph"     => true,
-    "g-pos"     => "left",
-    "popover"   => "true",
-    "fields"    => array(
-        "id"          => "duty",
-        "style"       => "progress-bar-default",
-        "size"        => "",
-        "label"       => "duty",
-        "glyph"       => "glyphicon-flag",
-        "g-pos"       => "left",
-        "popover"     => "give duty points",
-        "pop-pos"     => "top",
-        "block"       => "",
-        "disabled"    => "",
-        "top-margin"  => ""
-    ),
-);
 
 $mdl_duty = array(
     "form"    => true,
     "footer"  => true,
     "reload"  => true,
     "close"   => true,
-    "reset"   => true,
+    "reset"   => false,
     "submit"  => true,
     "fields"  => array(
         "id"          => "duty",
@@ -431,32 +393,13 @@ $mdl_duty = array(
 );
 
 // -------- unduty ----------------------------------------------------------------
-$btn_unduty = array(
-    "label"     => true,
-    "glyph"     => true,
-    "g-pos"     => "left",
-    "popover"   => "true",
-    "fields"    => array(
-        "id"          => "unduty",
-        "style"       => "progress-bar-warning",
-        "size"        => "",
-        "label"       => "duty",
-        "glyph"       => "glyphicon-flag",
-        "g-pos"       => "left",
-        "popover"     => "remove duty points",
-        "pop-pos"     => "top",
-        "block"       => "",
-        "disabled"    => "",
-        "top-margin"  => ""
-    ),
-);
 
 $mdl_unduty = array(
     "form"    => true,
     "footer"  => true,
     "reload"  => true,
     "close"   => true,
-    "reset"   => true,
+    "reset"   => false,
     "submit"  => true,
     "fields"  => array(
         "id"          => "unduty",
@@ -483,32 +426,13 @@ $mdl_unduty = array(
 );
 
 // -------- remove ----------------------------------------------------------------
-$btn_remove = array(
-    "label"     => true,
-    "glyph"     => true,
-    "g-pos"     => "left",
-    "popover"   => "true",
-    "fields"    => array(
-        "id"          => "remove",
-        "style"       => "progress-bar-danger",
-        "size"        => "",
-        "label"       => "remove",
-        "glyph"       => "glyphicon-remove",
-        "g-pos"       => "left",
-        "popover"     => "remove boat from race",
-        "pop-pos"     => "top",
-        "block"       => "",
-        "disabled"    => "",
-        "top-margin"  => ""
-    ),
-);
 
 $mdl_remove = array(
     "form"    => true,
     "footer"  => true,
     "reload"  => true,
     "close"   => true,
-    "reset"   => true,
+    "reset"   => false,
     "submit"  => true,
     "fields"  => array(
         "id"          => "remove",

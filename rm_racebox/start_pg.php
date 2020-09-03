@@ -89,24 +89,27 @@ for ($startnum=1; $startnum<=$_SESSION["e_$eventid"]['rc_numstarts']; $startnum+
     $start_fleet = array();
     for ($fleetnum=1; $fleetnum<=$_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum++)
     {
-        # get fleets in this start
+        // get fleets in this start
         if ($fleet_data["$fleetnum"]['startnum'] == $startnum)
         {
             $fleetlist.= "{$_SESSION["e_$eventid"]["fl_$fleetnum"]['name']}, ";
             $start_fleet["$fleetnum"] = $_SESSION["e_$eventid"]["fl_$fleetnum"];
+
+            $warning_flag = $_SESSION["e_$eventid"]["fl_$fleetnum"]['warnsignal'];
         }
     }
     $fleetlist = rtrim($fleetlist, ", ");
 
     // infringe start button
     $btn_infringestart['fields']['id']   = "infringestart$startnum";
-    $btn_infringestart['fields']['data'] = "data-start=\"$startnum\"";
+    $btn_infringestart['data'] = "data-start=\"$startnum\"";
     $start[$startnum] > constant('START_WARN_SECS') ? $btn_infringestart['fields']["style"] = "default": $btn_infringestart['fields']["style"] = "warning";
     $infringebufr = $tmpl_o->get_template("btn_modal", $btn_infringestart['fields'], $btn_infringestart);
 
-    $mdl_infringestart['id'] = "infringestart$startnum";
-    $mdl_infringestart['body'] = <<<EOT
-    <iframe src="start_infringements_pg.php?eventid=$eventid&startnum=$startnum&pagestate=init" frameborder="0" style="width: 100%; height: 400px;" id="entryframe">
+    $mdl_infringestart['fields']['id'] = "infringestart$startnum";
+    $mdl_infringestart['fields']['body'] = <<<EOT
+    <iframe src="start_infringements_pg.php?eventid=$eventid&startnum=$startnum&pagestate=init" 
+            frameborder="0" style="width: 100%; height: 600px;" id="entryframe">
     </iframe>
 EOT;
     $mdl_infringestart['fields']['script'] = "$( '#infringestart{$startnum}ModalLabel' ).text( 'Infringements - Start ' + button.data('start') + '  [$fleetlist]')";
@@ -127,18 +130,16 @@ EOT;
         }
 
         $start[$startnum] > constant('START_WARN_SECS') ? $btn_generalrecall['fields']["style"] = "default" : $btn_generalrecall['fields']["style"] = "warning";
-        $btn_generalrecall['fields']['data'] = "data-start=\"$startnum\"  data-starttime=\"$startdisplay\" ";
+        $btn_generalrecall['data'] = "data-start=\"$startnum\"  data-starttime=\"$startdisplay\" ";
         $recallbufr.= $tmpl_o->get_template("btn_modal", $btn_generalrecall['fields'], $btn_generalrecall);
 
-        // FIXME - do the fields need setting
         $mdl_generalrecall['fields']['body'] = $tmpl_o->get_template("fm_start_genrecall", $fields);
         $recallbufr.= $tmpl_o->get_template("modal", $mdl_generalrecall['fields'], $mdl_generalrecall);
     }
 
-    $params = array(
-        "eventid"       => strval($eventid),
-        "pursuit"       => $_SESSION["e_$eventid"]['pursuit'],
+    $fields = array(
         "startnum"      => strval($startnum),
+        "flag"          => $warning_flag,
         "fleet-list"    => $fleetlist,
         "start-delta"   => gmdate("H:i:s", $start[$startnum]),
         "start-secs"    => strval($start[$startnum]),
@@ -146,15 +147,12 @@ EOT;
         "recall"        => $recallbufr,
     );
 
-    $data = array(
-        "start-fleet"   => $start_fleet,
+    $params = array(
         "pursuit"       => $_SESSION["e_$eventid"]['pursuit'],
-        "numfleets"     => $_SESSION["e_$eventid"]['rc_numfleets'],
-        "startnum"      => $startnum,
         "timer-start"   => $timer_start,
         "start-delay"   => $_SESSION["e_$eventid"]["st_$startnum"]['startdelay'],
     );
-    $lbufr.= $tmpl_o->get_template("fleet_panel", $params, $data);
+    $lbufr.= $tmpl_o->get_template("fleet_panel", $fields, $params);
 }
 
 // ----- right hand panel -----------------------------------------------------------------------------
@@ -162,28 +160,28 @@ $rbufr = "";
 
 if ( $event_state == "not started")
 {
-    $timer_btn_bufr = $tmpl_o->get_template("btn_link", $btn_timerstart);
+    $timer_btn_bufr = $tmpl_o->get_template("btn_link", $btn_timerstart['fields'], $btn_timerstart);
     $timer_script = "";
 }
 else
 {
-    $timer_btn_bufr = $tmpl_o->get_template("btn_modal", $btn_timerstop);
-    $timer_btn_bufr.= $tmpl_o->get_template("modal", $mdl_timerstop);
+    $timer_btn_bufr = $tmpl_o->get_template("btn_modal", $btn_timerstop['fields'], $btn_timerstop);
+    $timer_btn_bufr.= $tmpl_o->get_template("modal", $mdl_timerstop['fields'], $mdl_timerstop);
     $timer_script   = gettimerscript();
 }
 
 // Timer
 $fields = array(
-    "event-state"  => $event_state,
-    "timer-start"  => $timer_start,
+//    "event-state"  => $event_state,
+//    "timer-start"  => $timer_start,
     "start-master" => $start_master,
     "start-delta"  => gmdate("H:i:s", $start_master),
     "timer-btn"    => $timer_btn_bufr,
 );
-$rbufr.= $tmpl_o->get_template("timer", $fields);
+$rbufr.= $tmpl_o->get_template("timer", $fields, array("event-state" => $event_state, "timer-start"  => $timer_start));
 
-$mdl_latetimer['body'] = $tmpl_o->get_template("fm_start_adjusttimer", array());
-$rbufr.= $tmpl_o->get_template("modal", $mdl_latetimer);
+$mdl_latetimer['fields']['body'] = $tmpl_o->get_template("fm_start_adjusttimer", array());
+$rbufr.= $tmpl_o->get_template("modal", $mdl_latetimer['fields'], $mdl_latetimer);
 
 // disconnect database
 $db_o->db_disconnect();
@@ -246,6 +244,7 @@ function gettimerscript()
             .on ('update.countdown', function(event) {
                 var secstogo = (event.offset.minutes * 60) + event.offset.seconds;
                 var clock = $(this).data('clock');
+                var elapsed = event.elapsed;
                 if (event.elapsed) {
                     \$this.html(event.strftime('<span  style=\"color: lightblue\">%H:%M:%S</span>'));
                 } else {
@@ -255,7 +254,7 @@ function gettimerscript()
                         \$this.html(event.strftime('<span style=\"color: orange\"><b>%H:%M:%S</b></span>'));
                     }
                 }
-                if (secstogo == $warnsecs) {
+                if (secstogo == $warnsecs & clock!='c0' & !elapsed) {
                         window.location.reload(true);
                 }
             });

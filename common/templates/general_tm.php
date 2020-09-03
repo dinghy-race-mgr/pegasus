@@ -183,7 +183,6 @@ function modal($params=array())
      *
      */
 {
-
     $html = "";
     empty($params['footer']) ? $footer = "" : $footer = "<div class=\"modal-footer\">{footer}</div>";
 
@@ -560,6 +559,27 @@ EOT;
     }
 
     return $label;
+}
+
+
+
+function toggle_button($params = array())
+{
+    $left = "btn-".$params['off-style'];
+    $right = "btn-".$params['on-style'];
+    if ($params['on'] == "left")
+    {
+        $left = "btn-".$params['on-style'];
+        $right = "btn-".$params['off-style'];
+    }
+
+    $bufr = <<<EOT
+        <div class="btn-group btn-group-justified btn-toggle pull-left "> 
+            <a class="btn btn-{$params['size']} $left text-center lead" href="{$params['left-link']} ">{$params['left-label']}</a>
+            <a class="btn btn-{$params['size']} $right  text-center lead" href="{$params['right-link']}">{$params['right-label']}</a>
+        </div>
+EOT;
+    return $bufr;
 }
 
 

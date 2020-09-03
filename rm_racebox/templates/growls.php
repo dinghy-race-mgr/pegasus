@@ -160,6 +160,10 @@ $g_race_fleetset_fail = array(
 
 
 // ----- page: ENTRIES  ---------------------------------------------------------------------
+$g_invalid_pagestate = array(
+    "type" => "danger",
+    "msg"  => "system problem - entries not processed (pagestate error)",
+);
 // ----------- pagestate: CHANGE ------------------------------------------------------------
 $g_entries_change_none = array(
     "type" => "info",
@@ -184,7 +188,7 @@ $g_entries_delete_failed = array(
     "type" => "danger",
     "msg"  => "attempt to delete entry failed &hellip;<br><i>Please let your raceManager guru know.</i>",
 );
-// ----------- pagestate: LOAD ENTRIES, LOAD REGULAR, LOAD PREVIOUS -------------------------
+//----------- pagestate: LOAD ENTRIES, LOAD REGULAR, LOAD PREVIOUS -------------------------
 //$g_entries_loaded = array(
 //    "type" => "success",
 //    "msg"  => "%s entries added &hellip;<br>",
@@ -230,7 +234,7 @@ $g_entry_add_class_fail = array(
 // ----- page: START    ---------------------------------------------------------------------
 $g_start_timer_stop = array(
     "type" => "info",
-    "msg"  => "<b>Master Timer stopped &hellip;</b>",
+    "msg"  => "Master Timer stopped &hellip;",
 );
 
 $g_start_timer_adjusted = array(

@@ -365,7 +365,7 @@ function start_menu($params = array())
                     <div class="panel-heading">
                        <h2><span class="{$item['icon']}"></span> {$item['label']}</h2>
                     </div>
-                    <div class=panel-body>{$item['text']}</div>
+                    <div class="panel-body">{$item['text']}</div>
                  </div>
               </div>
             </a>
@@ -378,6 +378,38 @@ EOT;
             <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-2"> 
                 <div class="row">
                 $menu_bufr
+                </div>
+            </div>
+        </div>
+EOT;
+    return $bufr;
+}
+
+
+function closed($params = array())
+{
+    if ($params['opentime'])
+    {
+        $opentime = "The service is expected to be available at: <b>{$params['opentime']}</b>";
+    }
+    else
+    {
+        $opentime = "The service should be back shortly - please check with the club website for more details";
+    }
+
+    $bufr = <<<EOT
+        <div class="row" style="margin-top: 80px;">
+            <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2">
+            
+                <div class="panel panel-widgets" style="min-height: 300px; margin-top: 30px; margin-right:30px; 
+                        font-size: 1.2em; background-color: #00a2b4 !important; color: #ffffff !important; ">
+                        <div class="panel-heading">
+                           <h2><span class="glyphicon glyphicon-thumbs-down"></span> &nbsp;&nbsp; Apologies ...</h2>
+                        </div>
+                        <div class="panel-body lead">
+                            <p>The raceManager SAILOR service is currently not available</p>
+                            <p>$opentime</p>
+                        </div>
                 </div>
             </div>
         </div>

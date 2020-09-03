@@ -76,7 +76,7 @@ $lbufr.= $tmpl_o->get_template("entry_tabs", array(),
     array("eventid" => $eventid, "num-fleets" => $_SESSION["e_$eventid"]['rc_numfleets'], "entries" => $entries));
 
 // add modal forms for buttons
-$mdl_change["body"] = $tmpl_o->get_template("fm_editentry", array());
+$mdl_change['fields']["body"] = $tmpl_o->get_template("fm_editentry", array());
 $lbufr .= $tmpl_o->get_template("modal", $mdl_change['fields'], $mdl_change);
 $lbufr .= $tmpl_o->get_template("modal", $mdl_duty['fields'], $mdl_duty);
 $lbufr .= $tmpl_o->get_template("modal", $mdl_unduty['fields'], $mdl_unduty);
@@ -128,8 +128,9 @@ $rbufr_mid .= $tmpl_o->get_template("modal", $mdl_addclass['fields'], $mdl_addcl
 // print entries button - drop down options
 $btn_printentries['data'] = array(
     "entry list"        => "entries_print_pg.php?eventid=$eventid&format=entrylist",
+    "entry list (inc. club)" => "entries_print_pg.php?eventid=$eventid&format=entrylistclub",
     "declaration sheet" => "entries_print_pg.php?eventid=$eventid&format=declarationsheet",
-    "timing sheet"      => "entries_print_pg.php?eventid=$eventid&format=timingsheet",
+    "timing sheet"      => "entries_print_pg.php?eventid=$eventid&format=timingsheet"
     );
 $rbufr_bot = "<hr>";
 $rbufr_bot.= $tmpl_o->get_template("btn_multilink", $btn_printentries['fields'], $btn_printentries);

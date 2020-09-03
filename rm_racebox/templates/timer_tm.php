@@ -1,6 +1,6 @@
 <?php
 
-function timer_tabs($params = array(), $timings)
+function timer_tabs($params = array())
 {
     // debug: u_writedbg(u_check($timings, "TIMINGS:"),__FILE__,__FUNCTION__,__LINE__); // debug;
 
@@ -25,17 +25,14 @@ function timer_tabs($params = array(), $timings)
     {
         $fleet        = $_SESSION["e_$eventid"]["fl_$i"];
         $num_entries  = $_SESSION["e_$eventid"]["fl_$i"]['entries'];
-        $num_racing   = count($timings[$i]);
+        $num_racing   = count($params['timings'][$i]);
         $all_finished = "";
         $laps_btn     = "";
 
         // create TABS
         $tabs.= <<<EOT
         <li role="presentation" class="">
-              &nbsp;
-              <a href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">
-                {$fleet['name']}
-              </a>&nbsp;
+              &nbsp;<a href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">{$fleet['name']}</a>&nbsp;
         </li>
 EOT;
 
@@ -102,7 +99,7 @@ EOT;
             $rows = "";
             $finish_btn_tmpl = btn_finish_tmpl();   // create finish button template
 
-            foreach ($timings[$i] as $j=>$r)   // loop over each boat in this fleet
+            foreach ($params['timings'][$i] as $j=>$r)   // loop over each boat in this fleet
             {
                 $boat = "{$r['class']} - {$r['sailnum']}";
                 $finish_link = vsprintf($finish_link, array($r['fleet'], $r['start'], $r['id'], $boat, $r['lap'], $r['pn'], $r['etime'] ));
@@ -160,7 +157,7 @@ EOT;
                         <td style="width: 1%;"><a href="$row_link"></a></td>
                         <td class="$skip truncate" style="width: 10%;">{$r['class']}</td>
                         <td class="$skip truncate" style="width: 5%; ">{$r['sailnum']}</td>
-                        <td class="$skip" style="width: 10%;">{$r['helm']}</td>
+                        <td class="$skip truncate" style="width: 10%;">{$r['helm']}</td>
                         <td class="$skip" style="width: 40%; margin-left:15px;">$laptimes_bufr</td>
                         <td class="rowlink-skip" style="width: 10%">$code_link</td>
                         <td class="rowlink-skip" style="width: 10%;text-align: left">$finish_btn</td>
@@ -302,10 +299,10 @@ EOT;
     return $bufr;
 }
 
-function fm_timer_setlaps($params, $data)
+function fm_timer_setlaps($params)
 {
     $html = "";
-    if ($data['lapstatus']==0)
+    if ($params['lapstatus']==0)
     {
         $html.= <<<EOT
         <div class="alert alert-danger alert-dismissable" role="alert">
@@ -316,7 +313,7 @@ function fm_timer_setlaps($params, $data)
 EOT;
     }
 
-    foreach($data['fleet-data'] as $fleet)
+    foreach($params['fleet-data'] as $fleet)
     {
         ( isset($fleet['maxlap']) AND $fleet['maxlap']>0 ) ? $laps = "{$fleet['maxlap']}" : $laps = "";
 
@@ -339,7 +336,7 @@ EOT;
 }
 
 
-function problems($params=array(), $problems)
+function problems($params=array())
 {
     $html = "";
 
@@ -371,7 +368,7 @@ function problems($params=array(), $problems)
     );
 
     $pbufr = "";
-    foreach ($problems as $type => $problem)
+    foreach ($params as $type => $problem)
     {
         if (!empty($problem))
         {
@@ -408,7 +405,7 @@ EOT;
 }
 
 
-function fm_editlaptimes($params=array(), $laptimes)
+function fm_editlaptimes($params=array())
 {
     // form instructions
     $html = <<<EOT
@@ -431,7 +428,7 @@ EOT;
     >
 EOT;
 
-    if ($laptimes)
+    if ($params)
     {
         // hidden fields
         $html.= <<<EOT
@@ -444,7 +441,7 @@ EOT;
 
         // loop over lap times - field names are laptime[lap]
         $i = 1;
-        foreach ($laptimes as $laptime)
+        foreach ($params as $laptime)
         {
 //        echo "<pre>{$row['id']}".print_r($lap, true)."</pre>";
             $formatted_time = gmdate("H:i:s", $laptime);
@@ -522,4 +519,3 @@ function edit_laps_error($params=array())
 EOT;
     return $html;
 }
-?>

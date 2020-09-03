@@ -25,12 +25,12 @@ u_initpagestart($_REQUEST['eventid'], $page, "");
 include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
 if (!$eventid) {
-    u_exitnicely("entries_add_pg", $eventid, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
+    u_exitnicely($scriptname, $eventid, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
         "please contact your raceManager administrator");
 }
 
 if (empty($page_state)) {
-    u_exitnicely("entries_add_pg", $eventid, "the page state has not been set",
+    u_exitnicely($scriptname, $eventid, "the page state has not been set",
         "please contact your raceManager administrator");
 }
 
@@ -54,13 +54,6 @@ if ($page_state == "pick")    // display search results
 {
     $num_results = count($_SESSION["e_$eventid"]['enter_opt']);
     $params = $_SESSION["e_$eventid"]['enter_opt'];
-//    if ($num_results > 0)
-//    {
-//       $params = array(
-//           "found" => $num_results,
-//           "competitors" =>$_SESSION["e_$eventid"]['enter_opt'],
-//       );
-//    }
     $lbufr.= $tmpl_o->get_template("addentry_search_result", array("eventid" =>$eventid), $params);
 }
 

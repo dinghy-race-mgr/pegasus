@@ -21,12 +21,12 @@ $today = date("Y-m-d");
 include ("{$loc}/common/lib/util_lib.php");
 //include ("{$loc}/common/lib/html_lib.php");
 //include ("{$loc}/common/lib/rm_lib.php");
-include ("{$loc}/common/lib/results_lib.php");          // FIXME needs to use templates   reports_tm.php + reports.css
+//include ("{$loc}/common/lib/results_lib.php");          // FIXME needs to use templates   reports_tm.php + reports.css
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 $format = u_checkarg("format", "set","");
 
-u_initpagestart($_REQUEST['eventid'], $page, $_REQUEST['menu']);
+u_initpagestart($_REQUEST['eventid'], $page, false);
 
 if (!$eventid) { u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
     "please contact your raceManager administrator");  }
@@ -36,59 +36,118 @@ if (empty($format)) { u_exitnicely($scriptname, 0, "the output report format has
 
 // classes
 include ("{$loc}/common/classes/template_class.php");
-include ("{$loc}/common/classes/html_class.php");       // FIXME required for results_lib
 include ("{$loc}/common/classes/db_class.php");
 include ("{$loc}/common/classes/race_class.php");
 
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
+//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
-$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/entries_tm.php"));
+$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php"));
 
 $db_o = new DB;
 $race_o = new RACE($db_o, $eventid);
 
+$total = 0;
 for ($i = 1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
 {
    //$race_o = new RACE($db_o, $eventid);
    $entries[$i] = $race_o->race_getentries(array("fleet"=>$i));
    $count[$i]   = count($entries[$i]);
+   $total = $total + $count[$i];
+   $fleets[$i] = array("name" => $_SESSION["e_$eventid"]["fl_$i"]['name'], "desc" => $_SESSION["e_$eventid"]["fl_$i"]['name'], "count"=>$count[$i]);
 }
 
+//echo "<pre>".print_r($_SESSION["e_$eventid"],true)."</pre>";
+//exit();
+
+// set report data structure
+$rp_data = array(
+    "admin" => array(
+        "club"     => $_SESSION['clubname'],
+        "event"    => $_SESSION["e_$eventid"]['ev_fname'],
+        "sys-url"  => $_SESSION['sys_website'],
+        "sys-name" => $_SESSION['sys_name'],
+        "total"    => $total,
+        "print"    => false,
+        "paging"   => false,
+        "table-border" => false,
+        "table-style" => "width: 95%;"
+    ),
+    "attr" => array(
+        "date"       => $_SESSION["e_$eventid"]['ev_date'],
+        "time"       => $_SESSION["e_$eventid"]['ev_starttime'],
+        "format"     => $_SESSION["e_$eventid"]['rc_name'],
+        "starts" => $_SESSION["e_$eventid"]['rc_numstarts'],
+        "sequence"   => $_SESSION["e_$eventid"]['rc_startscheme'],
+    ),
+    "fleets" => $fleets,
+    "rows"   => $entries,
+);
+
 // select format
-if ($format == "entrylist")
+if ($format == "entrylist" or $format == "entrylistclub")
 {
-    $ignore = array("id", "code");
-    $html = s_createEntryList($eventid, "Entry List", $entries, $ignore);
-    $fields = array(
-        "title"      => "entry list",
-        "stylesheet" => "$loc/style/rm_report.css",
-        "body"       => $html,
+    $rp_data['cols'] = array(
+        "class"   => array("label"=>"Class",    "style"=>"width: 15%; text-align: left; height: 2em;"),
+        "sailnum" => array("label"=>"Sail No.", "style"=>"width: 10%; text-align: left;"),
+        "helm"    => array("label"=>"Helm",     "style"=>"width: 20%; text-align: left;"),
+        "crew"    => array("label"=>"Crew",     "style"=>"width: 20%; text-align: left;"),
+        "club"    => array("label"=>"Club",     "style"=>"width: 20%; text-align: left;"),
+        "pn"      => array("label"=>"PN",       "style"=>"width: 10%; text-align: left;")
     );
-    echo $tmpl_o->get_template("report_page", $fields);
+
+    $rp_data['admin']['report'] = "entry list";
+    $rp_data['admin']['title'] = "entries";
+    $rp_data['admin']['print'] = true;
+    if ($format =="entrylist") { unset($rp_data['cols']['club']); }
+
+    // pass data to report as a $_GET
+    header("Location:../rm_reports/entrylist.php?json=".urlencode(json_encode($rp_data)));
+    // FIXME - this should be a post as the report content will be limited to 2M and is visible in address bar
 }
 elseif($format == "declarationsheet")
 {
-    $ignore = array("id", "pn", "helm", "crew", "club");
-    $html = s_createDeclarationSheet($eventid, "Declaration Sheet", $entries, $ignore,
-                                     $_SESSION['declaration_pagination']);
-    $fields = array(
-        "title"      => "signoff sheet",
-        "stylesheet" => "$loc/style/rm_report.css",
-        "body"       => $html,
+    $rp_data['cols'] = array(
+        "class"   => array("label"=>"Class",    "style"=>"width: 15%; text-align: left; border: 1px solid black; height: 2.5em"),
+        "sailnum" => array("label"=>"Sail No.", "style"=>"width: 10%; text-align: left; border: 1px solid black; height: 2.5em"),
+        "helm"    => array("label"=>"Helm",     "style"=>"width: 20%; text-align: left; border: 1px solid black; height: 2.5em"),
+        "declare" => array("label"=>"Declaration", "style"=>"width: 55%; text-align: center; border: 1px solid black; height: 2.5em"),
     );
-    echo $tmpl_o->get_template("report_page", $fields);
+
+    $rp_data['admin']['report'] = "declaration sheet";
+    $rp_data['admin']['title'] = "signoff";
+    $rp_data['admin']['print'] = true;
+    $rp_data['admin']['paging'] = true;
+    $rp_data['admin']['table-border'] = true;
+    $rp_data['admin']['table-style'] = "width: 95%; border-collapse: collapse; border: 1px solid black";
+
+    // pass data to report as a $_GET
+    header("Location:../rm_reports/entrylist.php?json=".urlencode(json_encode($rp_data)));
 }
 elseif($format == "timingsheet")
 {
-    $ignore = array("id", "crew", "club");
-    $html = s_createTimingSheet($eventid, "Timing Sheet", $entries, $ignore,
-                                $_SESSION['timing_pagination']);
-    $fields = array(
-        "title"      => "timing sheet",
-        "stylesheet" => "$loc/style/rm_report.css",
-        "body"       => $html,
+    $rp_data['cols'] = array(
+        "class"   => array("label"=>"Class",    "style"=>"width: 10%; text-align: left; height: 2em;"),
+        "sailnum" => array("label"=>"Sail No.", "style"=>"width: 5%; text-align: left;"),
+        "lap1"    => array("label"=>"1",        "style"=>"width: 10%; text-align: center;"),
+        "lap2"    => array("label"=>"2",        "style"=>"width: 10%; text-align: center;"),
+        "lap3"    => array("label"=>"3",        "style"=>"width: 10%; text-align: center;"),
+        "lap4"    => array("label"=>"4",        "style"=>"width: 10%; text-align: center;"),
+        "lap5"    => array("label"=>"5",        "style"=>"width: 10%; text-align: center;"),
+        "lap6"    => array("label"=>"6",        "style"=>"width: 10%; text-align: center;"),
+        "position"=> array("label"=>"POS",      "style"=>"width: 10%; text-align: center;"),
+        "pn"      => array("label"=>"PN",       "style"=>"width: 5%; text-align: left;"),
     );
-    echo $tmpl_o->get_template("report_page", $fields);
+
+    $rp_data['admin']['report'] = "timing sheet";
+    $rp_data['admin']['title'] = "timing";
+    $rp_data['admin']['print'] = true;
+    $rp_data['admin']['paging'] = true;
+    $rp_data['admin']['table-border'] = true;
+    $rp_data['admin']['table-style'] = "width: 95%; border-collapse: collapse; border: 1px solid black";
+
+    // pass data to report as a $_GET
+    header("Location:../rm_reports/entrylist.php?json=".urlencode(json_encode($rp_data)));
+
 }
 else
 {

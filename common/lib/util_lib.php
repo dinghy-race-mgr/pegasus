@@ -631,11 +631,6 @@ function u_initpagestart($eventid, $page, $menu)
     
     // add line to indicate change of page
     if ($menu) { u_writelog("**** $page page ", $eventid); }
-//    if ($menu)
-//    {
-//        unset($_REQUEST['menu']);
-//        u_writelog("**** $page page ", $eventid);
-//    }
 }
 
 
@@ -703,7 +698,7 @@ EOT;
     foreach ($codes as $code)
     {       
         $bufr.= <<<EOT
-            <li><a href="$link&code={$code['code']}" >{$code['code']}: {$code["$detail"]}</a></li>
+            <li><a href="$link&code={$code['code']}" ><b>{$code['code']}</b>: {$code["$detail"]}</a></li>
 EOT;
     }
    
@@ -954,33 +949,30 @@ function u_growlProcess($eventid, $page)
     );
 
     $glyph = array(
-        "success" => "<span class='glyphicon glyphicon-ok big-text'></span>&nbsp;&nbsp;&nbsp;",
-        "warning" => "<span class='glyphicon glyphicon-exclamation-sign big-text'></span>&nbsp;&nbsp;&nbsp;",
-        "info"    => "<span class='glyphicon glyphicon-info-sign big-text'></span>&nbsp;&nbsp;&nbsp;",
-        "danger"  => "<span class='glyphicon glyphicon-remove big-text'></span>&nbsp;&nbsp;&nbsp;",
+        "success" => "<span class='glyphicon glyphicon-ok'></span>&nbsp;&nbsp;&nbsp;",
+        "warning" => "<span class='glyphicon glyphicon-exclamation-sign'></span>&nbsp;&nbsp;&nbsp;",
+        "info"    => "<span class='glyphicon glyphicon-info-sign'></span>&nbsp;&nbsp;&nbsp;",
+        "danger"  => "<span class='glyphicon glyphicon-remove'></span>&nbsp;&nbsp;&nbsp;",
         "primary" => "",
     );
 
     $html = "";
     // first check that we have a current growl  and that it is for this page
-
     if (!empty($_SESSION["e_$eventid"]['growl']["$page"]))
     {
-        // FIXME - this is ugly - get the internal bit first and then top and tail it
-        $html.= <<<EOT
-        <script>
-        $(function() {
-EOT;
+        $jscript = "";
         foreach ($_SESSION["e_$eventid"]['growl']["$page"] as $growl)
         {
-            if ($growl['type'] == "danger")
-            {
+            if ($growl['type'] == "danger") {
                 $att_default['delay'] = "30000";
             }
 
             $att = array_merge($att_default, $growl);
-            $att["glyph"] ? $msg = $glyph["{$att["type"]}"]." ".$att["msg"] : $msg = $att["msg"] ;   // add contextual glyph
-            $html.= <<<EOT
+            $att["glyph"] ? $glyph_htm = $glyph["{$att["type"]}"] : $glyph_htm = "" ;   // add contextual glyph
+
+            $msg = "<p class='lead'> $glyph_htm {$att["msg"]} </p>";
+
+            $jscript.= <<<EOT
                     $.bootstrapGrowl("{$msg}", {
                         ele:'{$att['ele']}',
                         type: '{$att['type']}',
@@ -994,9 +986,13 @@ EOT;
 EOT;
         }
         $html.= <<<EOT
+        <script>
+        $(function() {
+           $jscript             
         });
         </script>
 EOT;
+
         u_growlUnset($eventid, $page);   // now unset growls for this page
     }
     return $html;

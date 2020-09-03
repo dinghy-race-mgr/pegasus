@@ -30,7 +30,7 @@ require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/race_class.php"); 
 require_once ("{$loc}/common/classes/timer_class.php");
 
-include("../templates/racebox/growls.php");
+include("./templates/growls.php");
 
 // process parameters  (eventid, pagestate, entryid)
 $eventid   = (!empty($_REQUEST['eventid']))? $_REQUEST['eventid']: "";
@@ -146,4 +146,3 @@ else
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------
 
-?>

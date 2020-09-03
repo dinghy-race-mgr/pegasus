@@ -1,6 +1,6 @@
 <?php
 
-function result_tabs($params = array(), $results)
+function result_tabs($params = array())
 {
     $eventid = $params['eventid'];
 
@@ -9,7 +9,7 @@ function result_tabs($params = array(), $results)
     for ($i = 1; $i <= $params['num-fleets']; $i++)
     {
         $fleet_name = $_SESSION["e_$eventid"]["fl_$i"]['name'];
-        empty($results['data'][$i]) ? $count = 0 : $count = count($results['data'][$i]);
+        empty($params['data'][$i]) ? $count = 0 : $count = count($params['data'][$i]);
         $racetype = $_SESSION["e_$eventid"]["fl_$i"]['scoring'];
 
         $tabs.= <<<EOT
@@ -29,8 +29,8 @@ EOT;
         else
         {
             $columns  = format_columns($racetype);
-            $rows     = format_rows($racetype, $results['data'][$i]);
-            $warnings = format_warnings($results['warning'][$i]);
+            $rows     = format_rows($racetype, $params['data'][$i]);
+            $warnings = format_warnings($params['warning'][$i]);
             $panels .= <<<EOT
             <div role="tabpanel" class="tab-pane" id="fleet$i">
                 $warnings
@@ -247,14 +247,14 @@ EOT;
 }
 
 
-function fm_edit_result($params, $data)
+function fm_edit_result($params)
 
 {
     $labelwidth = "col-xs-3";
     $fieldwidth = "col-xs-7";
 
     $resultcodes = array();
-    foreach($data['resultcodes'] as $row)
+    foreach($params['resultcodes'] as $row)
     {
         $resultcodes["{$row['code']}"] = "{$row['code']} : {$row['short']}";
     }
@@ -364,7 +364,7 @@ EOT;
     return $html;
 }
 
-function fm_change_finish($params, $data)
+function fm_change_finish($params)
 {
     // instructions
     $html = <<<EOT
@@ -386,12 +386,12 @@ EOT;
     $rows = "";
     for ($i=1; $i<=$params['num-fleets']; $i++)
     {
-        $current = $data["fl_$i"]['maxlap'];
+        $current = $params["fl_$i"]['maxlap'];
         if ($current>0)
         {
             $html .= <<<EOT
             <div class="form-group">
-                <label class="col-xs-5 control-label">{$data["fl_$i"]['name']}</label>
+                <label class="col-xs-5 control-label">{$params["fl_$i"]['name']}</label>
                 <div class="col-xs-2 inputfieldgroup">
                 <input type="text" class="form-control" name="finishlap[$i]" min="1" max="$current" value="$current"
                     required data-fv-between-message="must be a value between 1 and $current"
@@ -406,19 +406,9 @@ EOT;
 }
 
 
-function fm_race_message($params, $data=array())
+function fm_race_message($params)
 {
-    /**
-     * This form allows the user to send a message to the support team.  The
-     * message will be stored in the t_message table, and optionally will be emailled
-     * to the local support team if the emailer function has been configured.
-     *
-     * @author Mark Elkington <mark.elkington@blueyonder.co.uk>
-     *
-     * %%copyright%%
-     * %%license%%
-     *
-     */
+    // FIXME - there should be a standard form in the general_tm file - used on all pages with a message option
     $labelwidth = "col-xs-3";
     $fieldwidth = "col-xs-7";
 
@@ -493,7 +483,7 @@ EOT;
     return $html;
 }
 
-function process_footer($params=array(), $data)
+function process_footer($params=array())
 {
     // setup language
     $lang = array(
@@ -524,7 +514,7 @@ function process_footer($params=array(), $data)
         ),
     );
 
-    $problem = array_search(false, $data['complete']);
+    $problem = array_search(false, $params['complete']);
 
     if ($problem)
     {
@@ -552,7 +542,7 @@ EOT;
 }
 
 
-function fm_publish($params, $data)
+function fm_publish($params)
 {
     /**
      * This form collects information from OOD prior to publishing results.
@@ -688,4 +678,3 @@ EOT;
 
 }
 
-?>
