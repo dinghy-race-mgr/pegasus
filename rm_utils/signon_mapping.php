@@ -37,6 +37,7 @@ echo "<pre>SIGNON MAPPING for event: $eventid (mapped to RM9 event $mapevent)</p
 
 $query = "SELECT action, eventid, competitorid, `chg-crew`, `chg-sailnum`, classid, classname, b.sailnum, helm, 
 b.crew from t_entry as a JOIN t_competitor as b ON a.competitorid=b.id JOIN t_class as c ON b.classid=c.id
+WHERE eventid = $eventid 
 ORDER BY competitorid ASC, FIELD(action, 'enter', 'update', 'retire')";
 $data = $db_o->db_get_rows($query);
 

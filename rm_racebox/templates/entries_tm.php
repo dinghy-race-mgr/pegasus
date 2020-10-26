@@ -9,10 +9,12 @@ function fm_addcompetitor($params = array())
 
     $class_list = u_selectlist($boat_o->boat_getclasslist());  // list of classes
 
-// form instructions
+// form  - instructions + fields
     $html = <<<EOT
-        <p>This form will add a new competitor to the raceManager database so you can then enter them into your race&hellip;</p>
-        <p class="text-danger">WARNING - This form does NOT enter the new competitor in the race</p>
+        <div class="alert well well-sm" role="alert">
+            <p class="text-info">This form will add a new competitor to the raceManager database so you can then enter them into your race &hellip;</p>
+            <p class="text-danger">WARNING - This form does NOT enter the new competitor in the race</p>
+        </div>
 
         <!-- field #1 - class -->
         <div class="form-group">
@@ -87,9 +89,8 @@ function fm_addclass($params = array())
 
 // form instructions
     $html = <<<EOT
-    <div class="alert alert-danger alert-dismissable" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <b>Care</b> - please provide accurate information so that the class will be allocated to the correct fleet.
+    <div class="alert well well-sm" role="alert">
+        <p class="text-info"><b>Care</b> - please provide accurate information so that the class will be allocated to the correct fleet.</p>
     </div>
 
     <!-- field #1 - class name -->
@@ -222,63 +223,86 @@ EOT;
     return $html;
 }
 
-
 function fm_addentry($params = array())
 {
-    $html = <<<EOT
-    <div style="margin-top: -40px">
-        <form class="form-horizontal" id="sailnumform" action="entries_add_sc.php?eventid={eventid}&pagestate=search"
-              method="post" role="search" autocomplete="off">
-            <div style="padding-left:80px; padding-right:80px;">
-                <div class="input-group">
-                    <input id="searchstr" autocomplete="off" class="form-control input-md" type="text"
-                           placeholder="sailnumber, class, or helm's name" name="searchstr" />
-                    <span class="input-group-btn">
-                           <button class="btn btn-warning btn-md" type="submit">
-                           &nbsp;&nbsp;
-                           <span class="glyphicon glyphicon-search" aria-hidden="true" style="vertical-align: middle"></span>
-                           &nbsp;&nbsp;
-                           </button>
-                    </span>
+    $search_bufr = fm_addentry_search($params['pagestate'], $params['search']);
+    $entry_bufr = fm_addentry_entries($params['pagestate'], $params['entries'], $params['error']);
+
+    $instructions = "";
+    if ($params['pagestate'] == "init")
+    {
+        $instructions = <<<EOT
+        <div class="row">
+            <div class="col-lg-12 col-lg-offset-1">
+                <div class="alert well well-sm" role="alert">
+                    <!-- button type="button" class="close" style="right: 1px !important" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button -->
+                    <p class="text-info">Search for boats by class, sail number, or helm name - then click enter to add them to the race.</p>
                 </div>
-           </div>
-        </form>
+                <hr>
+            </div>
+        </div>
+EOT;
+    }
+
+
+    $html = <<<EOT
+    $instructions
+    
+    <div class="row">
+        <div class="col-lg-8 col-md-8">
+            <form class="form-horizontal" id="sailnumform" action="entries_add_sc.php?eventid={eventid}&pagestate=search"
+                  method="post" role="search" autocomplete="off">
+                    <div class="input-group">
+                        <input id="searchstr" autocomplete="off" class="form-control input-md" type="text"
+                               placeholder="sailnumber, class, or helm's name" name="searchstr" />
+                        <span class="input-group-btn">
+                               <button class="btn btn-warning btn-md" type="submit">
+                               &nbsp;&nbsp;
+                               <span class="glyphicon glyphicon-search" aria-hidden="true" style="vertical-align: middle"></span>
+                               &nbsp;&nbsp;
+                               </button>
+                        </span>
+                    </div>
+            </form>
+            <div class="well margin-top-10">$search_bufr</div>
+        </div>
+        
+        <div class="col-lg-4 col-md-4">
+            <div class="well">$entry_bufr</div>
+        </div>
     </div>
+
 EOT;
     return $html;
 }
 
-function addentry_search_result($params)
+function fm_addentry_search($pagestate, $results)
 {
-    $html = "";
-    $num_results = count($params);
-    if ($num_results <= 0) // nothing found
+    $bufr = "";
+
+    $num_results = count($results);
+    if ($num_results <= 0 and $pagestate != "init")                                // nothing found
     {
-        $html.= <<<EOT
-        <div class="alert alert-info" role="alert">no boats found - try again</div>
-        <!--p class="text-danger bg-danger text-center" style="margin: 20px 20% 0px 20%; padding: 10px 0px 10px 0px ">
-            &nbsp;no boats found - try again&nbsp;
-        </p -->
+        $bufr.= <<<EOT
+        <div class="text-danger" role="alert">no boats found - try again &hellip;</div>
 EOT;
     }
-    else                      // results found
+    else                                                 // results found
     {
         $rows = "";
-        foreach ($params as $result)
+        foreach ($results as $result)
         {
             $team = u_truncatestring(rtrim($result['helm'] . "/" . $result['crew'], "/"), 32);
             $button = <<<EOT
             <span >
                 <a id="enterone" href="entries_add_sc.php?eventid={eventid}&pagestate=enterone&competitorid={$result['id']}"
-                   role="button" class="btn btn-link" style="padding:0px" target="_self">
-                    <span class="label label-default" style="font-size: 100%">
-                        enter&nbsp;<span class="glyphicon glyphicon-triangle-right">
-                     </span>&nbsp;</span>
+                   role="button" class="btn btn-link" style="padding-top: 0px !important" target="_self">
+                    <span class="label label-primary">enter&nbsp;<span class="glyphicon glyphicon-triangle-right"></span>&nbsp;
                 </a>
             </span>
 EOT;
             $rows.=<<<EOT
-            <tr>
+            <tr style="vertical-align:top">
                <td>{$result['classname']}</td>
                <td>{$result['sailnum']}</td>
                <td>$team</td>
@@ -287,67 +311,63 @@ EOT;
 EOT;
         }
 
-        $html.= <<<EOT
+        $bufr.= <<<EOT
         <p style="padding-top: 10px;">$num_results found:</p>
-        <table class="table table-hover" >
+        <table class="table table-hover table-condensed" >
             <tbody>
                 $rows
             </tbody>
         </table>
 EOT;
     }
-    return $html;
+
+    return $bufr;
 }
 
-function addentry_boats_entered($params)
+function fm_addentry_entries($pagestate, $entries, $error)
 {
-    $html = "";
+    $bufr = "";
 
-    if ($params['pagestate'] == "init") {
-        $html .= <<<EOT
-        <div class="well">
-            <p class="text-info lead">entered boats listed here &hellip;</p>
-        </div>
+    if ($pagestate == "init") {
+        $bufr.= <<<EOT
+            <p class="text-primary">entered boats listed here &hellip;</p>
 EOT;
-    } else {
-        if (isset($params['entries'])) {
-            $num_entries = count($params['entries']);
-            $html .= <<<EOT
-            <div class="well">
-            <p class="text-info lead"><i>$num_entries entered in this session &hellip;</i></p>
+    }
+    else
+    {
+        if (count($entries) > 0) {
+            $num_entries = count($entries);
+            $bufr.= <<<EOT
+            <p class="text-primary">$num_entries entered in this session &hellip;</p>
 EOT;
-            foreach ($params['entries'] as $entry) {
+            foreach ($entries as $entry) {
                 if (substr_count($entry, "fail") > 0 or substr_count($entry, "error") > 0)     // error or not found
                 {
-                    $html .= <<<EOT
-                    <p class="text-danger lead">&nbsp;$entry <span class="glyphicon glyphicon-remove"></span></p>
+                    $bufr.= <<<EOT
+                    <p class="text-danger">&nbsp;$entry <span class="glyphicon glyphicon-remove"></span></p>
 EOT;
                 } else                                                                        // entry found
                 {
-                    $html .= <<<EOT
-                    <p class="lead">&nbsp;$entry <span class="glyphicon glyphicon-ok"></span></p>
+                    $bufr.= <<<EOT
+                    <p class="">&nbsp;$entry <span class="glyphicon glyphicon-ok"></span></p>
 EOT;
                 }
             }
-            $html .= "</div>";
         } else {
-            $html .= <<<EOT
-            <div class="well">
-                <p class="text-info lead">none entered so far &hellip;</p>
-            </div>
+            $bufr.= <<<EOT
+                <p class="text-primary ">none entered so far &hellip;</p>
 EOT;
         }
 
-        if (isset($params['error']))  // display error
+        if (isset($error))  // display error
         {
-            $html .= <<<EOT
-            <div class="well">
-                <p class="text-danger">&nbsp;{$params['error']}</p>
-            </div>
+            $bufr.= <<<EOT
+                    <p class="text-danger">&nbsp;$error</p>
 EOT;
         }
     }
-    return $html;
+
+    return $bufr;
 }
 
 
@@ -364,12 +384,10 @@ function entry_tabs($params = array())
         $fleet_count = count($entries[$i]);
 
         $tabs.= <<<EOT
-        <li role="presentation" class="lead">
-              &nbsp;
-              <a href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">
-              {$fleet['name']} [{$fleet_count}]
+        <li role="presentation" class="lead text-center" >
+              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">
+              <b>{$fleet['name']}</b> <br><small>[{$fleet_count} boats]</small>
               </a>
-              &nbsp;
         </li>
 EOT;
         if ($fleet_count <= 0)
@@ -388,7 +406,7 @@ EOT;
             {
                 $entryname = "{$entry['class']}  -  {$entry['sailnum']}";
                 $rows.= <<<EOT
-                <tr class="lead">
+                <tr class="table-data">
                     <td class="truncate" style="" >{$entry['class']}</td>
                     <td class="truncate" style="" >{$entry['sailnum']}</td>                   
                     <td class="truncate" style="" >{$entry['helm']}</td>
@@ -411,7 +429,8 @@ EOT;
                            </span>
                        </button>
                        </span>
-
+                    </td>
+                    <td style="" >
                        <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="give duty points" data-placement="top">
                        <button type="button" class="btn btn-link inline-button" data-toggle="modal"
                                rel="tooltip" data-original-title="give duty points" data-placement="bottom" data-target="#dutyModal"
@@ -422,7 +441,8 @@ EOT;
                             </span>
                        </button>
                        </span>
-
+                    </td>
+                    <td style="" >
                        <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="remove boat from race" data-placement="top">
                        <button type="button" class="btn btn-link inline-button" data-toggle="modal"
                                rel="tooltip" data-original-title="remove boat from race" data-placement="bottom" data-target="#removeModal"
@@ -442,16 +462,18 @@ EOT;
             // create table
             $panels.= <<<EOT
             <div role="tabpanel" class="tab-pane" id="fleet$i" style="overflow-y: auto; height:75vh;">
-                <table class="table table-striped table-condensed table-hover" style="1em">
-                    <thead class="text-info">
-                        <tr>
-                            <th style="" width="11%">class</th>
-                            <th style="" width="7%">sail no.</th>                            
-                            <th style="" width="15%">helm</th>
-                            <th style="" width="15%">crew</th>
-                            <th style="" width="15%">club</th>
-                            <th style="" width="7%">pn</th>
-                            <th style="" width="30%"></th>
+                <table class="table table-striped table-condensed table-hover table-top-padding table-top-border" style="1em">
+                    <thead class="text-info" style="border-bottom: 1px solid black;">
+                        <tr >
+                            <th width="11%">class</th>
+                            <th width="7%">sail no.</th>                            
+                            <th width="15%">helm</th>
+                            <th width="15%">crew</th>
+                            <th width="15%">club</th>
+                            <th width="7%">pn</th>
+                            <th width="10%">edit</th>
+                            <th width="10%">duties</th>
+                            <th width="10%">delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -465,7 +487,7 @@ EOT;
 
     $html = <<<EOT
     <div class="margin-top-10" role="tabpanel">
-        <ul class="nav nav-pills entry" role="tablist">
+        <ul class="nav nav-pills pill-fleet" role="tablist">
            $tabs
         </ul>
         <div class="tab-content">

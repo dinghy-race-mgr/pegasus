@@ -10,6 +10,7 @@ $page       = "cruise";
 $scriptname = basename(__FILE__);
 $date       = date("Y-m-d");
 require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("./include/rm_sailor_lib.php");
 
 u_initpagestart(0,"cruise_pg",false);   // starts session and sets error reporting
@@ -36,6 +37,9 @@ $tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php", "./templates/cruise_t
 
 // update event details
 $_SESSION['events'] = get_cruise_details($_SESSION['sailor_cruiser_eventtypes'], true);
+//echo "<pre>".print_r($_SESSION['events'],true)."</pre>";
+//echo "<pre>".$_SESSION['sailor_cruiser_eventtypes']."</pre>";
+//exit();
 
 // update information on entries
 $_SESSION['entries'] = get_entry_information($_SESSION['sailor']['id'], $_SESSION['events']['details']);
@@ -43,7 +47,7 @@ $_SESSION['entries'] = get_entry_information($_SESSION['sailor']['id'], $_SESSIO
 // set up boat information
 $boat_fields = set_boat_details();
 $boat_fields["boat-label"] = $tmpl_o->get_template("boat_label", $boat_fields,
-             array("change"=>true, "change_set"=>$_SESSION['sailor']['change']));
+             array("change"=>true, "change_set"=>$_SESSION['sailor']['change'], "type" => "cruise"));
 
 // create content events list (or error message if no events)
 if ($_SESSION['events']['numevents'] > 0)

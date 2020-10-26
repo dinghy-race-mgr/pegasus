@@ -32,7 +32,6 @@ if (!$eventid) { u_exitnicely($scriptname, 0, "the requested event has an invali
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
-//require_once ("{$loc}/common/classes/event_class.php");      // <-- remove if not required
 require_once ("{$loc}/common/classes/race_class.php");
 
 // templates

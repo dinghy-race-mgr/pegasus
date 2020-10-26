@@ -195,17 +195,17 @@ $lang['err']   = array(             // error messages (case sensitive)
 
 ); 
 
-$lang['growl'] = array(
-    "race1"            => "race details have been changed",
-    "race2"            => "race details have not been changed",
-    "race3"            => "Success - message sent",
-    "race4"            => "Sorry - message failed",
-    
-    "entries1"         => "failed to produce requested output",
-    "entries2"         => "requested output in new tab",
-    "entries3_pass"    => "Success - new class created",
-    "entries3_fail"    => "Sorry - failed to create new class"
-);
+//$lang['growl'] = array(
+//    "race1"            => "race details have been changed",
+//    "race2"            => "race details have not been changed",
+//    "race3"            => "Success - message sent",
+//    "race4"            => "Sorry - message failed",
+//
+//    "entries1"         => "failed to produce requested output",
+//    "entries2"         => "requested output in new tab",
+//    "entries3_pass"    => "Success - new class created",
+//    "entries3_fail"    => "Sorry - failed to create new class"
+//);
 
 
 
@@ -359,4 +359,3 @@ $lang['navbar'] = array(
 
 
 
-?>

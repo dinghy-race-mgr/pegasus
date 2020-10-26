@@ -182,8 +182,7 @@ EOT;
             <meta name="author" content="">
 
             <link   rel="shortcut icon"    href="{loc}/common/images/favicon.ico">
-            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap341/css/bootstrap.min.css" >
-            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap341/css/bootstrap-theme.min.css">
+            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap341/css/{theme}bootstrap.min.css" >
             <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
@@ -275,7 +274,7 @@ EOT;
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand rm-brand-title" href="pickrace_pg.php?eventid={eventid}&page={page}&menu=true" target="_blank">
+      <a class="navbar-brand rm-brand-title" href="pickrace_pg.php?eventid={eventid}&page={page}&menu=true" target="_parent">
         <span class="text-success" style="padding-right: 40px">{brand}</span>
       </a>
     </div>
@@ -310,7 +309,6 @@ EOT;
 }
 
 
-
 function support_team($params = array())
 {
     $html = <<<EOT
@@ -326,3 +324,44 @@ EOT;
     return $html;
 }
 
+function fm_race_message($params=array())
+{
+    $labelwidth = "col-xs-3";
+    $fieldwidth = "col-xs-7";
+
+    $html = <<<EOT
+        <!-- instructions -->
+        <p class="well well-sm text-info lead">Use this form to let your support team know about any problems you had </p>
+
+        <!-- field #1 - name -->
+        <div class="form-group">
+            <label class="$labelwidth control-label">Your Name</label>
+            <div class="$fieldwidth inputfieldgroup">
+                <input type="text" class="form-control" id="msgname" name="msgname" value=""
+                    required data-fv-notempty-message="please add your name here" />
+            </div>
+        </div>
+
+        <!-- field #2 - email address -->
+        <div class="form-group">
+            <label class="$labelwidth control-label">Your Email</label>
+            <div class="$fieldwidth inputfieldgroup">
+                <input type="email" class="form-control" id="email" name="email" value=""
+                    placeholder="enter your email if you would like a reply"
+                    data-fv-emailaddress-message="This does not look like a valid email address" />
+            </div>
+        </div>
+
+        <!-- field #3 - message -->
+        <div class="form-group">
+            <label class="$labelwidth control-label">Message</label>
+            <div class="$fieldwidth inputfieldgroup">
+                <textarea rows=4 class="form-control" id="message" name="message"
+                    required data-fv-notempty-message="please describe your issue or problem here"
+                    >
+                </textarea>
+            </div>
+        </div>
+EOT;
+    return $html;
+}

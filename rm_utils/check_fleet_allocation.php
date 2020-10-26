@@ -20,6 +20,7 @@ $styletheme = "flatly_";
 $stylesheet = "./style/rm_utils.css";
 
 require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("{$loc}/common/lib/rm_lib.php");
 
 session_start();
 
@@ -63,7 +64,7 @@ $classes = $boat_o->boat_getclasslist();
 $formats = $event_o->get_event_formats(true);
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","./templates/layouts_tm.php", "./templates/check_fleet_allocation_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/check_fleet_allocation_tm.php"));
 
 $pagefields = array(
     "loc" => $loc,
@@ -177,14 +178,19 @@ if ($state > 0)  // deal with error conditions
 }
 
 
-function get_allocation($raceid, $classname)
+function get_allocation($raceformatid, $classname)
 {
-    global $db_o, $boat_o, $formats;
-    $alloc = $boat_o->boat_racealloc($db_o, $classname, $raceid);
-    $d = array(
-        "eligible" => $alloc['eligible'],
-        "start" => $alloc['start'],
-        "race" => $alloc['race'],
-    );
-    return $d;
+    global $boat_o, $event_o;
+
+    $classcfg = $boat_o->boat_getdetail($classname);
+    $fleets = $event_o->event_getfleetcfg($raceformatid);
+    $alloc = r_allocate_fleet($classcfg, $fleets);
+
+    //$alloc = $boat_o->boat_racealloc($db_o, $classname, $raceid);
+//    $d = array(
+//        "eligible" => $alloc['eligible'],
+//        "start"    => $alloc['start'],
+//        "race"     => $alloc['race'],
+//    );
+    return $alloc;
 }

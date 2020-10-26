@@ -2,22 +2,15 @@
 -------------------------------------------------- */
 
 
-html {
-  position: relative;
-  min-height: 100%;
-}
+html { position: relative; min-height: 100%; }
 
 /* style for body */
-body {  
-  margin-top: 40px;                           /* margin for navbar and footer */   
-  margin-bottom: 40px;   
-  font-family: Kalinga, Arial, sans-serif;    /* default font */
+body { margin-top: 40px; margin-bottom: 40px;      /* margin for navbar and footer */
+       font-family: Kalinga, Arial, sans-serif;    /* default font */
 }
 
 /* style for main page container after body */
-body > .container {
-  padding: 10px 0px 0px 0px; 
-}
+body > .container { padding: 10px 0px 0px 0px; }
 
 /* top margin styles */
 .margin-top-0  { margin-top: 0.0em; }
@@ -35,22 +28,17 @@ body > .container {
 
 /* text styles */
 /*.big-text { font-size: 1.2em; } */
+.lead { line-height: 1.1 ! important;}
 
 
 /* tables */
 .table-condensed > tbody > tr > td { padding: 2px; }
-
-.table-hover tbody tr:hover td {
-    background: yellow;
-}
-
-.table-hover tbody.rowlink tr:hover td {
-    background: yellow;
-}
-
-.table-borderless tbody tr td, .table-borderless tbody tr th, .table-borderless thead tr th {
-    border: none;
-}
+.table-hover tbody tr:hover td { background: lightblue; }
+.table-hover tbody.rowlink tr:hover td { background: lightblue;}
+.table-borderless tbody tr td, .table-borderless tbody tr th, .table-borderless thead tr th { border: none;}
+.table-top-padding tbody tr:first-of-type td {padding-top: 10px;}
+.table-top-border thead tr th {border-bottom: 4px solid #3498db;}
+.table-data { font-size: 1.25em; line-height: 1.8}
 
 /* forms */
 .help-block { font-size:  0.8em; color: blue; }
@@ -73,9 +61,9 @@ body > .container {
 .modal-sm {width: 600px !important}
 
 /* navpills */
-.entry li.active a, .entry li.active a:focus, .entry li.active a:hover {
-    background-color: darkred;
-}
+.pill-fleet li.active a, .pill-fleet li.active a:focus, .pill-fleet li.active a:hover { background-color: darkred; }
+.pill-fleet li {min-width:200px; }
+.pill-fleet li a {border: 3px solid lightgrey !important;}
 
 /* drop down menu */
 .dropdown-menu {background-color: beige; color: black; font-size: 1.2em;}
@@ -83,10 +71,15 @@ body > .container {
 
 /* modal close */
 
+/* race page classes*/
+#racetable td
+{
+    vertical-align: middle;
+}
 
 /* timer page row classes */
 .table > tbody > tr.finished {background-color: #e6e6e6; color: darkgrey;}
-.table > tbody > tr.lastlap {background-color: #f7bbbb; color: darkred;}
+.table > tbody > tr.lastlap {background-color: #EFBA65; color: darkred;}
 
 .label-finished { background-color: lightgrey;}
 
@@ -162,25 +155,11 @@ body > .container {
 }
 
 /* styles for navbar menu items */
-.rm-navmenu {
-    font-size: 160%; color: white;
-}
-
-.rm-navmenu:hover {
-    color: orange;
-}
-
-.rm-navmenu-active {
-    font-size: 160%; color:  red;
-}
-
-.rm-navmenu-active:hover {
-    color: orange;
-}
-
-.rm-navmenu-right {
-    font-size: 160%;;
-}
+.rm-navmenu { font-size: 160%; color: white; }
+.rm-navmenu:hover { color: orange; }
+.rm-navmenu-active { font-size: 160%; color:  red; }
+.rm-navmenu-active:hover { color: orange; }
+.rm-navmenu-right { font-size: 160%; }
 
 @media (min-width: 1600px){
     .navbar li {

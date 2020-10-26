@@ -21,22 +21,32 @@ $menu = u_checkarg("menu", "setbool", "true", "");
 $helppage = u_checkarg("page", "set", "", "help");
 
 u_initpagestart($_REQUEST['eventid'], $page, true);  // starts session and sets error reporting
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");   // language file
+//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");   // language file
 
 // classes
 require_once("{$loc}/common/classes/db_class.php");
 require_once("{$loc}/common/classes/template_class.php");
 
 //templates
-$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/help_tm.php"));
+$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php",
+                             "./templates/help_tm.php", "./templates/pickrace_tm.php"));
 
 // buttons/modals
 include("./include/help_ctl.inc");
 
 // ----- navbar -----------------------------------------------------------------------------
-$fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
-$params = array("page" => $helppage, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
-$nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
+
+if ($eventid != 0)   // request from pickrace page
+{
+    $fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
+    $params = array("page" => $helppage, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
+    $nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
+}
+else
+{
+    $nav_fields = array("page" => $page, "eventid" => 0, "brand" => "raceBox PICK RACE", "rm-website" => $_SESSION['sys_website']);
+    $nbufr = $tmpl_o->get_template("pickrace_navbar", $nav_fields, array("links"=>$_SESSION['clublink']));
+}
 
 // database connection
 $db_o = new DB;
@@ -48,8 +58,10 @@ $body = $tmpl_o->get_template("under_construction", array("title" => "raceManage
 $db_o->db_disconnect();
 
 // ----- render page -------------------------------------------------------------------------
+
+$eventid != 0 ? $title = $_SESSION["e_$eventid"]['ev_label'] : $title = "racebox" ;
 $fields = array(
-    "title"      => $_SESSION["e_$eventid"]['ev_label'],
+    "title"      => $eventid,
     "theme"      => $_SESSION['racebox_theme'],
     "loc"        => $loc,
     "stylesheet" => "./style/rm_racebox.css",

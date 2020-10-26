@@ -341,129 +341,137 @@ class BOAT
         return $status;
     }
 
-    public function boat_racealloc($db, $class, $eventtype)
-    {
-        // NOTE this is a rm9 conversion it does not have all the required functionality
-        $debug = false;
-        // initialise parameters
-        $allocation = array('eligible'=>false, 'start'=>0, 'race'=>0);
-        
-        // get class config details
-        $classcfg = $this->boat_getdetail($class);
-        if ($debug) { echo "Processing $class<br>"; }
-        //echo "<pre>".print_r($classcfg,true)."</pre>";
-
-	    // get fleet details for races in event from database
-        $query = "SELECT * FROM `t_cfgfleet` WHERE eventcfgid='$eventtype' ORDER BY defaultfleet ASC, fleet_num ASC";
-        //echo "<pre>".$query."</pre>";
-        $result = $db->db_get_rows( $query );
-    	$count = count($result);
-
-    	if ($count > 0)
-    	{					
-    	    // loop over each fleet
-    		foreach ($result as $racecfg)
-    		{
-                if ($debug) { echo "Checking fleet:  {$racecfg['fleet_name']}<br>"; }
-
-                $classexc = array_map("trim", explode(",", strtolower($racecfg['classexc'])));
-                $classinc = array_map("trim", explode(",", strtolower($racecfg['classinc'])));
-                if (in_array($classcfg['classname'], $classexc))  // check for exclusions
-    			{
-                    if ($debug) { echo "specifically excluded<br>"; }
-    			    continue; 	// specifically excluded from this race - continue to next race
-    			}
-    			else
-    			{    			
-    				if ($racecfg['onlyinc'])   // only include fleets in classinc
-    				{
-    					if (in_array($classcfg['classname'], $classinc))
-                        {
-                            if ($debug) { echo "specifically included opt 1<br>"; }
-                            $allocation['eligible'] = true;
-    						$allocation['start']    = $racecfg['start_num'];
-    						$allocation['race']     = $racecfg['fleet_num'];
-    						break;
-    					}
-    				}
-    				else
-    				{	
-    					if (in_array($classcfg['classname'], $classinc)) // check if class is in included list
-                        {
-                            if ($debug) { echo "specifically included opt 2<br>"; }
-                            $allocation['eligible'] = true;
-    						$allocation['start']    = $racecfg['start_num'];
-    						$allocation['race']     = $racecfg['fleet_num'];
-    						break;
-    					}				
-    				
-    					else  // if not allocated by class name then check other characteristics match
-    					{
-    						$pyok   = false;
-    						$crewok = false;
-    						$spinok = false;
-    						$hullok = false;
-                            if ($racecfg['py_type']=="local")
-                            {  $py = $classcfg['local_py']; }
-                            else 
-                            {  $py = $classcfg['nat_py']; }
-    						
-                            // PY check  (passes if lies within range)     
-    					    if($py>=$racecfg['min_py'] and $py<=$racecfg['max_py'])
-    						  {   if ($debug) { echo "matches PY<br>"; }
-    						      $pyok = true;   }
-    						
-                            // crew check (passes if 'any' or correct number)                   
-    						if(empty($racecfg['crew']) or strtolower($racecfg['crew'])=="any")
-    						  {   if ($debug) { echo "matches any crew<br>"; }
-    						      $crewok = true; }
-    						else
-    						  {
-    							if($classcfg['crew']==$racecfg['crew'])
-    						      {   if ($debug) { echo "matches specific crew<br>"; }
-    						          $crewok = true; }
-    						  }
-                            
-                            // spinnaker type check (passes if 'any' or specified spinnaker type)                      
-    						if(empty($racecfg['spintype']) or strtolower($racecfg['spintype'])=="any")
-    						  {   if ($debug) { echo "matches any spin<br>"; }
-    						      $spinok = true; }
-    						else
-    						  {
-    							if(strtolower($classcfg['spinnaker'])==strtolower($racecfg['spintype']))
-    		                      {   if ($debug) { echo "matches specific spin<br>"; }
-    		                          $spinok = true;     }
-    						  }
-          					
-                            // hull type check ()passes if 'any' or specified hull type)							
-    						if(empty($racecfg['hulltype']) or strtolower($racecfg['hulltype'])=="any")
-    						  {   if ($debug) { echo "matches any hull type<br>"; }
-    						      $hullok = true;     }
-    						else
-    						  {   
-    						      if(strtolower($classcfg['category'])==strtolower($racecfg['hulltype']))
-    							    {   if ($debug) { echo "matches specific hull type<br>"; }
-    							        $hullok = true;     }
-    						  }
-                            
-                            // if all checks pass then allocate to this race
-                            if ($debug) { echo "matching |$pyok|$crewok|$spinok|$hullok|<br>"; }
-    						if ($pyok AND $crewok AND $spinok AND $hullok)
-    						{
-                                if ($debug) { echo "ALL matches|<br>"; }
-    						    $allocation['eligible'] = true;
-    							$allocation['start']    = $racecfg['start_num'];
-    							$allocation['race']     = $racecfg['fleet_num'];
-    							break;
-    						}
-    					}			
-    				}			
-    			}
-    		}
-    	}
-        
-        return $allocation;
-    }
+//    public function boat_racealloc($db, $class, $eventtype)
+//    {
+//        // FIXME - this is a mess - same functionality in entry class
+//
+//
+//        // NOTE this is a rm9 conversion it does not have all the required functionality
+//        $debug = false;
+//        // initialise parameters
+//        $allocation = array('eligible'=>false, 'start'=>0, 'race'=>0);
+//
+//        // get class config details
+//        $classcfg = $this->boat_getdetail($class);
+//        if ($debug) { echo "Processing $class<br>"; }
+//        //echo "<pre>".print_r($classcfg,true)."</pre>";
+//
+//	    // get fleet details for races in event from database
+//        $query = "SELECT * FROM `t_cfgfleet` WHERE eventcfgid='$eventtype' ORDER BY defaultfleet ASC, fleet_num ASC";
+//        //echo "<pre>".$query."</pre>";
+//        $result = $db->db_get_rows( $query );
+//    	$count = count($result);
+//
+//    	if ($count > 0)
+//    	{
+//    	    // loop over each fleet
+//    		foreach ($result as $racecfg)
+//    		{
+//                if ($debug) { echo "Checking fleet:  {$racecfg['fleet_name']}<br>"; }
+//
+//                $classexc = array_map("trim", explode(",", strtolower($racecfg['classexc'])));
+//                $classinc = array_map("trim", explode(",", strtolower($racecfg['classinc'])));
+//
+////                echo "<pre>".print_r($racecfg,true)."</pre>";
+////                echo "<pre>".print_r($classinc,true)."</pre>";
+////                echo "<pre>".print_r($classcfg,true)."</pre>";
+//
+//                if (in_array(strtolower($classcfg['classname']), $classexc))  // check for exclusions
+//    			{
+//                    if ($debug) { echo "specifically excluded<br>"; }
+//    			    continue; 	// specifically excluded from this race - continue to next race
+//    			}
+//    			else
+//    			{
+//    				if ($racecfg['onlyinc'])   // only include fleets in classinc
+//    				{
+//    					if (in_array(strtolower($classcfg['classname']), $classinc))
+//                        {
+//                            if ($debug) { echo "specifically included opt 1<br>"; }
+//                            $allocation['eligible'] = true;
+//    						$allocation['start']    = $racecfg['start_num'];
+//    						$allocation['race']     = $racecfg['fleet_num'];
+//    						break;
+//    					}
+//    				}
+//    				else
+//    				{
+//    					if (in_array(strtolower($classcfg['classname']), $classinc)) // check if class is in included list
+//                        {
+//                            if ($debug) { echo "specifically included opt 2<br>"; }
+//                            $allocation['eligible'] = true;
+//    						$allocation['start']    = $racecfg['start_num'];
+//    						$allocation['race']     = $racecfg['fleet_num'];
+//    						break;
+//    					}
+//
+//    					else  // if not allocated by class name then check other characteristics match
+//    					{
+//    						$pyok   = false;
+//    						$crewok = false;
+//    						$spinok = false;
+//    						$hullok = false;
+//                            if ($racecfg['py_type']=="local")
+//                            {  $py = $classcfg['local_py']; }
+//                            else
+//                            {  $py = $classcfg['nat_py']; }
+//
+//                            // PY check  (passes if lies within range)
+//    					    if($py>=$racecfg['min_py'] and $py<=$racecfg['max_py'])
+//    						  {   if ($debug) { echo "matches PY<br>"; }
+//    						      $pyok = true;   }
+//
+//                            // crew check (passes if 'any' or correct number)
+//    						if(empty($racecfg['crew']) or strtolower($racecfg['crew'])=="any")
+//    						  {   if ($debug) { echo "matches any crew<br>"; }
+//    						      $crewok = true; }
+//    						else
+//    						  {
+//    							if($classcfg['crew']==$racecfg['crew'])
+//    						      {   if ($debug) { echo "matches specific crew<br>"; }
+//    						          $crewok = true; }
+//    						  }
+//
+//                            // spinnaker type check (passes if 'any' or specified spinnaker type)
+//    						if(empty($racecfg['spintype']) or strtolower($racecfg['spintype'])=="any")
+//    						  {   if ($debug) { echo "matches any spin<br>"; }
+//    						      $spinok = true; }
+//    						else
+//    						  {
+//    							if(strtolower($classcfg['spinnaker'])==strtolower($racecfg['spintype']))
+//    		                      {   if ($debug) { echo "matches specific spin<br>"; }
+//    		                          $spinok = true;     }
+//    						  }
+//
+//                            // hull type check ()passes if 'any' or specified hull type)
+//    						if(empty($racecfg['hulltype']) or strtolower($racecfg['hulltype'])=="any")
+//    						  {   if ($debug) { echo "matches any hull type<br>"; }
+//    						      $hullok = true;     }
+//    						else
+//    						  {
+//    						      if(strtolower($classcfg['category'])==strtolower($racecfg['hulltype']))
+//    							    {   if ($debug) { echo "matches specific hull type<br>"; }
+//    							        $hullok = true;     }
+//    						  }
+//
+//                            // if all checks pass then allocate to this race
+//                            if ($debug) { echo "matching |$pyok|$crewok|$spinok|$hullok|<br>"; }
+//    						if ($pyok AND $crewok AND $spinok AND $hullok)
+//    						{
+//                                if ($debug) { echo "ALL matches|<br>"; }
+//    						    $allocation['eligible'] = true;
+//    							$allocation['start']    = $racecfg['start_num'];
+//    							$allocation['race']     = $racecfg['fleet_num'];
+//    							break;
+//    						}
+//    					}
+//    				}
+//    			}
+//    		}
+//    	}
+//
+//        return $allocation;
+//    }
     
 }
 

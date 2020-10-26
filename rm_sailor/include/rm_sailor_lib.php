@@ -305,9 +305,11 @@ function get_race_entry_data($sailorid, $events)
 
     // loop over events
     foreach ($events as $eventid=>$event) {
-        $entry_o = new ENTRY($db_o, $eventid, $events[$eventid]);
+
+        $entry_o = new ENTRY($db_o, $eventid);
         // get fleet allocation for this sailor
-        $alloc = $entry_o->allocate($_SESSION['sailor']);
+        //$alloc = $entry_o->allocate($_SESSION['sailor']);
+        $alloc = r_allocate_fleet($_SESSION['sailor'], $events[$eventid]['fleetcfg']);
 
         $data[$eventid] = array(
             "sailorid" => $sailorid,
@@ -442,16 +444,17 @@ function set_result_data($sailorid, $events)
     $arr = array();
 
     foreach ($events as $eventid => $event) {
-        $entry_o = new ENTRY($db_o, $eventid, $events[$eventid]);
-        $alloc = $entry_o->allocate($_SESSION['sailor']);
+        $entry_o = new ENTRY($db_o, $eventid);
+        // $alloc = $entry_o->allocate($_SESSION['sailor']);
+        $alloc = r_allocate_fleet($_SESSION['sailor'], $events[$eventid]['fleetcfg']);
         $fleet = $alloc['fleet'];
 
         $arr['list'][$eventid] = array(
-            "event-name" => $event['event_name'],
-            "event-date" => $event['event_date'],
+            "event-name"  => $event['event_name'],
+            "event-date"  => $event['event_date'],
             "event-start" => $event['event_start'],
-            "fleet-name" => $event['fleetcfg'][$fleet]['name'],
-            "race-type" => $event['fleetcfg'][$fleet]['scoring']
+            "fleet-name"  => $event['fleetcfg'][$fleet]['name'],
+            "race-type"   => $event['fleetcfg'][$fleet]['scoring']
         );
 
         $arr['list'][$eventid]['racestate'] = "unknown";
@@ -511,7 +514,7 @@ function process_signon($eventid)
     $entry = $_SESSION["entries"][$eventid];
 
     // add to entry table
-    $entry_o = new ENTRY($db_o, $eventid, $_SESSION['events']['details'][$eventid]);
+    $entry_o = new ENTRY($db_o, $eventid);
     $status = $entry_o->add_signon($_SESSION['sailor']['id'], $entry['allocate']['status'],
         $_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['chg-sailnum'], "rm_sailor");
 
@@ -538,7 +541,7 @@ function process_declare($eventid)
     $_SESSION['entries'][$eventid]['declare'] =  "declare";
 
     // add record to entry table to record declaration
-    $entry_o = new ENTRY($db_o, $eventid, $_SESSION['events']['details'][$eventid]);
+    $entry_o = new ENTRY($db_o, $eventid);
     $status = $entry_o->add_declare($_SESSION['sailor']['id']);
 
     if ($status == "declare") {
@@ -563,7 +566,7 @@ function process_retire($eventid)
     $_SESSION['entries'][$eventid]['declare'] =  "retire";
 
     // add record to entry table to record declaration
-    $entry_o = new ENTRY($db_o, $eventid, $_SESSION['events']['details'][$eventid]);
+    $entry_o = new ENTRY($db_o, $eventid);
     $status = $entry_o->add_retire($_SESSION['sailor']['id']);
 
     if ($status == "retire") {

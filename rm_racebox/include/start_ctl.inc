@@ -1,23 +1,65 @@
 <?php
-/* button configuration for start page */
+/* button configuration for start page
+BUTTONS
+    Parameters
+        label     : label required  (true|false)
+        glyph     : glyph required  (true|false)
+        g-pos     : glyph position (left|right)
+        popover   : popover required (true|false)
+
+    Fields
+        id        : id for button
+        style     : bootstrap style for button
+        size      : bootstrap size for button
+        label     : label for button
+        link      : url link for button
+        glyph     : glyph name
+        popover   : popover text
+        pop-pos   : popover position
+        block     : 'btn-block' if a block button otherwise leave blank
+        disabled  : 'disabled' if button is to be disabled otherwise leave blank
+        top-margin: top margin style (e.g margin-top-20)
+
+  MODALS
+    Parameters
+        form       : form/validation required in modal (true|false)
+        footer     : form/validation required in modal (true|false)
+        reload     : reload of main page required after modal closed (true|false)
+        close      : cancel button required in modal (true|false)
+        reset      : reset button required in modal (true|false)
+        submit     : submit button required in modal (true|false)
+
+    Fields
+        id         : base id used for modal and form
+        size       : size of modal using bootstrap codes (sm|md|lg)
+        style      : bootstrap style for modal header
+        title      : title to appear in modal header
+        body       : html content for body of modal
+        script     : js script to be run when modal opens - blank if not required
+        action     : action to take on post form - link to script
+        target     : if set can be used to set window target
+        onsubmit   : js action to take on submit
+        close-lbl  : label on close/cancel/back button
+        reset-lbl  : label on reset button
+        submit-lbl : label on submit button
+        footer     : content of footer if requested in params (not used in forms)
+*/
 
 // ---- timer start button ----------------------------------------------------------------
 $btn_timerstart = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"         => "timerstart",
         "size"       => "lg",
         "style"      => "success",
         "label"      => "Start Timer <br><span style='text-align: center'></span><small>click on 1st signal</small></span>",
         "glyph"      => "glyphicon-time",
-        "g-pos"      => "left",
         "popover"    => "Click at the same time as the FIRST signal in your start sequence",
         "pop-pos"    => "bottom",
         "block"      => "btn-block",
-
         "disabled"   => "",
         "link"       => "start_sc.php?eventid=$eventid&pagestate=starttimer",
         "top-margin" => "margin-top-0"
@@ -30,14 +72,13 @@ $btn_timerstop = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"         => "timerstop",
         "size"       => "lg",
         "style"      => "danger",
         "label"      => "Stop Timer<br>&nbsp;",
         "glyph"      => "glyphicon-time",
-        "g-pos"      => "left",
         "popover"    => "Click here to stop the master timer and start again",
         "pop-pos"    => "left",
         "block"      => "btn-block",
@@ -58,21 +99,14 @@ $mdl_timerstop = array(
         "size"        => "md",
         "style"       => "danger",
         "title"       => "Reset Timer - are you sure?",
-        "body"        => "<b>CAREFUL</b> - If you reset the timer you will lose any lap timings you have made.<br><br>
-                          This should only be necessary if you have abandoned the start and are starting the entire sequence again
-                          - if you started the timer at the wrong time  - use the \"forgot to start timer\" to reset the correct start time,
-                          and if you have a general recall <i>(or just want to move the fleet start sequence)</i>, use the general recall
-                          button to adjust the start time for each fleet  <br><br>
-                          Please confirm that you really want to stop the Master Timer",
-        "form"        => true,
+        "body"        => "",
         "script"      => "",
         "action"      => "start_sc.php?eventid=$eventid&pagestate=stoptimer",
         "target"      => "",
-        "onsubmit"    => "return confirm('I am going to stop the Master Timer\\n are you really, REALLY SURE?');",
+        "onsubmit"    => "",
         "close-lbl"   => "nope",
         "reset-lbl"   => "",
         "submit-lbl"  => "STOP race timer",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -81,15 +115,14 @@ $mdl_timerstop = array(
 $btn_infringestart = array(
     "label"     => true,
     "glyph"     => true,
-    "g-pos"     => "left",
-    "popover"   => "true",
+    "g-pos"     => "right",
+    "popover"   => true,
     "fields"    => array(
         "id"         => "infringestart",
         "style"      => "default",
         "size"       => "md",
         "label"      => "Start Infringements",
         "glyph"      => "glyphicon-flag",
-        "g-pos"      => "right",
         "popover"    => "Click here to set OCS, BFD etc. for THIS fleet",
         "pop-pos"    => "bottom",
         "block"      => "btn-block",
@@ -107,11 +140,10 @@ $mdl_infringestart = array(
     "submit"  => true,
     "fields"  => array(
         "id"          => "infringestart",
-        "size"        => "lg",
+        "size"        => "md",
         "style"       => "primary",
         "title"       => "Start Infringements",
         "body"        => "",
-        "form"        => false,
         "script"      => "",
         "action"      => "",
         "target"      => "",
@@ -119,7 +151,6 @@ $mdl_infringestart = array(
         "close-lbl"   => "",
         "reset-lbl"   => "",
         "submit-lbl"  => "",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -130,16 +161,15 @@ $mdl_infringestart = array(
 $btn_generalrecall = array(
     "label"     => true,
     "glyph"     => true,
-    "g-pos"     => "left",
-    "popover"   => "true",
+    "g-pos"     => "right",
+    "popover"   => true,
     "fields"    => array(
         "id"         => "generalrecall",
         "size"       => "md",
         "style"      => "default",
         "label"      => "General Recall",
         "glyph"      => "glyphicon-time",
-        "g-pos"      => "right",
-        "popover"    => "click here to reset timer for a general recall of THIS fleet",
+        "popover"    => "click here to set timer for a general recall of THIS fleet",
         "pop-pos"    => "bottom",
         "block"      => "btn-block",
         "disabled"   => "",
@@ -160,19 +190,13 @@ $mdl_generalrecall = array(
         "style"       => "primary",
         "title"       => "General Recall",
         "body"        => "",
-        "form"        => true,
-        "script"      => "
-                         $( '#generalrecallModalLabel' ).text( 'General Recall - Start ' + button.data('start'))
-                         $( '#start' ).val(button.data('start'))
-                         $( '#origstart' ).text(button.data('starttime'))
-                         ",
+        "script"      => "",
         "action"      => "start_sc.php?eventid=$eventid&pagestate=generalrecall",
         "target"      => "",
         "onsubmit"    => "",
         "close-lbl"   => "nope",
         "reset-lbl"   => "",
         "submit-lbl"  => "Set Time",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -190,7 +214,6 @@ $mdl_latetimer = array(
         "style"       => "warning",
         "title"       => "Adjust Timer",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "start_sc.php?eventid=$eventid&pagestate=adjusttimer",
         "target"      => "",
@@ -198,7 +221,6 @@ $mdl_latetimer = array(
         "close-lbl"   => "nope",
         "reset-lbl"   => "",
         "submit-lbl"  => "Set Time",
-        "reload"      => true,
         "footer"      => ""
     )
 );

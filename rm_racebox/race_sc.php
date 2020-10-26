@@ -31,6 +31,7 @@ if ($eventid AND $pagestate)
     require_once ("{$loc}/common/classes/event_class.php");
     require_once ("{$loc}/common/classes/entry_class.php");
     require_once ("{$loc}/common/classes/race_class.php");
+    require_once ("{$loc}/common/classes/rota_class.php");
 
     include("./templates/growls.php");                           // confirmation message definitions
 
@@ -48,6 +49,9 @@ if ($eventid AND $pagestate)
         {
             // setup update fields - check fields are not null and have changed
             $fields = array();
+            if (!empty($_REQUEST['event_ood'])
+                and $_REQUEST['event_ood'] != $_SESSION["e_$eventid"]['ev_ood'])
+                { $fields['event_ood'] = $_REQUEST['event_ood']; }
             if (!empty($_REQUEST['event_start'])
                 and $_REQUEST['event_start'] != $_SESSION["e_$eventid"]['ev_starttime'])
                 { $fields['event_start'] = $_REQUEST['event_start']; }
@@ -216,7 +220,7 @@ if ($eventid AND $pagestate)
         {           
             if (strtolower($_REQUEST['confirm'] == "reset"))
             {
-                $result = $event_o->event_reset($eventid);
+                $result = $event_o->event_reset($eventid, "reset");
                 if ($result)
                 {
                     u_writelog("RESET - race reset by user", $eventid);

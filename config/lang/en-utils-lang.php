@@ -6,4 +6,3 @@
 // placeholder for util scripts language
 
 
-?>

@@ -34,13 +34,10 @@ function fm_start_genrecall($params=array())
     $fieldwidth = "col-xs-7";
 
     $html = <<<EOT
-    <div class="alert alert-danger alert-dismissable" role="alert">
-        <div id="instructions">
-                 Use this form to adjust the timer for a general recall of this fleet
-                 - enter the planned <b>START</b> time for the restart (not the preparatory or warning signals).
-                 <br><br>
-                 <i><b>Note:</b> This can also be used to delay this start for reasons other than a general recall</i>
-            </div>
+    <div class="alert well well-sm" role="alert">
+        <p class="text-info">Use this form to adjust the timer for a general recall of this fleet
+                 - enter the planned <b>START</b> time for the restart (not the preparatory or warning signals).</p>
+        <p class="text-danger"><b>Note:</b> This can also be used to delay this start for reasons other than a general recall</p>
     </div>
 
     <!-- field #1 - restart time -->
@@ -54,50 +51,37 @@ function fm_start_genrecall($params=array())
                 data-fv-regexp-regexp="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
                 data-fv-regexp-message="start time must be in HH:MM:SS format"
             />
-            <span class="pull-right text-primary"><i>[current start time <span id="origstart">00:00</span>]</i></span>
+            <span class="pull-right text-primary"><i>[current start time <span id="origstart{$params['startnum']}"></span>]</i></span>
         </div>
     </div>
-    <input name="startnum" type="hidden" id="start" value=0 />
+    <input name="startnum" type="hidden" id="start{$params['startnum']}" value={$params['startnum']} />
 EOT;
     return $html;
 }
 
-//function fm_start_setlaps($params, $data)
-//{
-//    $html = "";
-//    if ($data['lapstatus']==0)
-//    {
-//        $html.= <<<EOT
-//        <div class="alert alert-danger alert-dismissable" role="alert">
-//            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-//            <span aria-hidden="true">&times;</span></button>
-//            Please set the number of laps for ALL fleets.
-//        </div>
-//EOT;
-//    }
-//
-//    foreach($data['fleet-data'] as $fleet)
-//    {
-//        ( isset($fleet['maxlap']) AND $fleet['maxlap']>0 ) ? $laps = "{$fleet['maxlap']}" : $laps = "";
-//
-//        $html.= <<<EOT
-//        <div class="form-group" >
-//             <label class="col-xs-5 control-label">
-//                {$fleet['name']}
-//             </label>
-//             <div class="col-xs-3 inputfieldgroup">
-//                 <input type="number" class="form-control" style="padding-right:10px;" name="laps[{$fleet['fleetnum']}]"
-//                    value="$laps" placeholder="set laps" min="1"
-//                    data-fv-greaterthan-message="The no. of laps must be greater than 0"
-//                  />
-//             </div>
-//        </div>
-//EOT;
-//    }
-//
-//    return $html;
-//}
-
+function fm_stoptimer_ok($param=array())
+{
+    $html = <<<EOT
+        <!-- instructions -->
+        <h4 class="text-danger"><b>Are you REALLY REALLY sure?</b></h4>
+        <p><b>If you reset the timer you will lose any lap timings you have made.</b></p>
+        <p>This should only be necessary if you have abandoned the start and are starting the entire sequence again
+        - if you started the timer at the wrong time  - use the "forgot to start timer" to reset the correct start time,
+        and if you have a general recall <i>(or just want to move the fleet start sequence)</i>, use the general recall
+        button to adjust the start time for each fleet.</p>
+     
+        <!-- confirm field -->
+        <div class="well" style="margin-left: 20px; margin-right: 20px;">
+            <div class="form-group" style="margin-left: 10%; margin-right: 10%;">
+                <label class="control-label">type the word "stop" to confirm you want to reset the timer!</label>
+                <div class="inputfieldgroup">
+                    <input type="text" class="form-control" id="confirm" name="confirm" value="" />
+                </div>
+            </div>
+        </div>
+EOT;
+    return $html;
+}
 
 function timer($params=array())
 {
@@ -119,10 +103,10 @@ function timer($params=array())
        <div class="margin-top-10">
            {timer-btn}
        </div>
-       <div style="margin-top: 120px; ">
-           <div data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' style="cursor:pointer" data-html="true"
-                data-title="if you forgot to start the Timer at the first signal - click here" data-placement="left">
-               <a class="btn btn-warning pull-right lead" id="latetimer" data-toggle="modal" data-target="#latetimerModal">
+       <div style="margin-top: 20px; ">
+           <div class="pull-right" data-toggle="tooltip" style="cursor:pointer; width: 50%" data-html="true"
+                data-title="if you forgot to start the Timer at the first signal - click here" data-placement="bottom">
+               <a class="btn btn-primary lead" id="latetimer" data-toggle="modal" data-target="#latetimerModal">
                     Forgot to start Timer?
                </a>
            </div>
@@ -199,26 +183,23 @@ function infringe($params)
         {
             $i++;
 
-            $i == 1 ? $instr = "<span class=\"glyphicon glyphicon-triangle-left\" aria-hidden=\"true\"></span> Set Code" : $instr = "";
-
-
             $drop_down = str_replace(array("ENTRY","BOAT"),
                 array("{$entry['id']}","{$entry['class']}-{$entry['sailnum']}"), $params['code-bufr']);
 
             if (($drop_dirn == "") and ($i > $params['entries']/2) and ($i > 6) ) { $drop_dirn = "dropup"; }
 
             $entry_bufr.= <<<EOT
-            <tr>
+            <tr class = "table-data">
                 <td width="15%">{$entry['class']}</td>
                 <td width="10%">{$entry['sailnum']}</td>
                 <td width="30%">{$entry['helm']}</td>
                 <td width="25%" >
                     <div class="btn-group $drop_dirn pull-right">
-                            <button type="button" class="btn btn-default btn-sm text-default" style="width: 4em; padding: 1px 1px;">
+                            <button type="button" class="btn btn-primary btn-sm text-default" style="width: 4em; padding: 1px 1px;">
                         		<span class="default"><b>{$entry['code']}&nbsp;</b></span>
                         	</button>
 
-                        	<button type="button" class="btn btn-default btn-sm dropdown-toggle"
+                        	<button type="button" class="btn btn-primary btn-sm dropdown-toggle"
                         	        style="width: 2em; padding: 1px 1px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="caret"></span>
                             </button>
@@ -229,13 +210,15 @@ function infringe($params)
                     </div>
                     
                 </td>
-                <td width="25%">&nbsp;&nbsp;&nbsp;<span class="text-info">$instr</span></td>
             </tr>
 EOT;
         }
 
         $html = <<<EOT
         <div class="container">
+            <div class="alert well well-sm" role="alert">
+                <p class="text-info">Enter codes for start infringements using the drop down menu</p>
+            </div>
             <table class="table table-striped table-hover table-condensed">
                 $entry_bufr
             </table>

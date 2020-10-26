@@ -406,54 +406,6 @@ EOT;
 }
 
 
-function fm_race_message($params)
-{
-    // FIXME - there should be a standard form in the general_tm file - used on all pages with a message option
-    $labelwidth = "col-xs-3";
-    $fieldwidth = "col-xs-7";
-
-// form instructions
-    $html = <<<EOT
-    <div class="alert alert-warning alert-dismissable" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        Use this form to let your support team know about any problems you had with the race or compiling the results <br>
-    </div>
-
-    <div class="form-group">
-        <label class="$labelwidth control-label">Your Name</label>
-        <div class="$fieldwidth inputfieldgroup">
-            <input type="text" class="form-control" id="msgname" name="msgname" value=""
-                required data-fv-notempty-message="please add your name here"
-            />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="$labelwidth control-label">Your Email</label>
-        <div class="$fieldwidth inputfieldgroup">
-            <input type="email" class="form-control" id="email" name="email" value=""
-                placeholder="enter your email if you would like a reply"
-                data-fv-emailaddress-message="This does not look like a valid email address"
-            />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="$labelwidth control-label">Message</label>
-        <div class="$fieldwidth inputfieldgroup">
-            <textarea rows=4 class="form-control" id="message" name="message"
-                required data-fv-notempty-message="please describe your problem here"
-                >
-            </textarea>
-        </div>
-    </div>
-EOT;
-
-    return $html;
-}
-
 function process_header($params=array())
 {
     $html = <<<EOT

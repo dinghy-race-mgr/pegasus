@@ -6,6 +6,8 @@
  *
  * script to export duties from racemanager to the dutyman csv format
  *
+ * usage: dtm_duty_export.php?start=&end=
+ *
  * Arguments (* required)
  *    start    -   start date (yyyy-mm-dd) *
  *    end      -   end date (yyyy-mm-dd)

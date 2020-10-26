@@ -38,6 +38,7 @@ $_SESSION['webcollect']= array(
     "rota_ignore_values"      => array("resigning", "exempt"),
     "rota_code_map"           => array(
         "ood cruising"       => "ood_c",
+        "beachmaster"        => "ood_b",
         "safety boat driver" => "safety_d",
         "safety boat crew"   => "safety_c",
         "ood racing"         => "ood_p",
@@ -91,6 +92,6 @@ $_SESSION['dutyman'] = array(
 );
 
 $_SESSION['pmaker'] = array(
-    "loc" => "../data/programnme",
+    "loc" => "../data/programme",                     // needs to be
     "export_file" => "programme_import_date.csv"
 );

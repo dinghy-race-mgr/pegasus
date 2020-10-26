@@ -52,23 +52,10 @@ class ENTRY
     private $db;
 
     //Method: construct class object
-    public function __construct(DB $db, $eventid, $event_detail)
+    public function __construct(DB $db, $eventid)
     {
         $this->db = $db;
         $this->eventid = $eventid;
-
-        // FIXME - this is ugly needs to be a consistent structure across all apps
-        if (key_exists("fl_1", $event_detail))   // using racebox format
-        {
-            for ($i = 1; $i <= $event_detail['rc_numfleets']; $i++) {
-                $this->fleets[$i] = $event_detail["fl_$i"];
-            }
-        }
-        else                                     // using rm_sailor format
-        {
-            $this->fleets = $event_detail['fleetcfg'];
-        }
-        $this->numfleets = count($this->fleets);
     }
 
 
@@ -254,26 +241,33 @@ class ENTRY
         $query = "SELECT a.id as id, classid, boatnum, sailnum, classname, acronym, helm as helmname, helm_dob,
                          helm_email, a.crew as crewname, crew_dob, crew_email, club, nat_py, local_py, personal_py,
                          skill_level, flight, last_entry, last_event, a.active as active, grouplist, category,
-                         b.crew as crew, rig, spinnaker, keel, engine, change_crew, change_sailnum,
+                         b.crew as crew, rig, spinnaker, keel, engine, `chg-helm`, `chg-crew`, `chg-sailnum`,
                          x.id as t_entry_id, action
                   FROM t_entry as x
                   JOIN t_competitor as a ON x.competitorid = a.id
                   JOIN t_class as b ON a.classid=b.id
                   WHERE status IN ('N','F') AND eventid = {$this->eventid} $where ORDER BY x.id";
+
+        //echo "<pre>$query</pre>";
         $entries = $this->db->db_get_rows($query);
 
         // make requested changes
         foreach($entries as $k=>$entry)
         {
-            if ($entry['change_crew'] != "" )
+            if ($entry['chg-helm'] != "" )
             {
-                $entries[$k]['crewname'] = $entry['change_crew'];
-                unset($entries[$k]['change_crew']);
+                $entries[$k]['helmname'] = $entry['chg-helm'];
+                unset($entries[$k]['chg-helm']);
             }
-            if ($entry['change_sailnum'] != "" )
+            if ($entry['chg-crew'] != "" )
             {
-                $entries[$k]['sailnum'] = $entry['change_sailnum'];
-                unset($entries[$k]['change_sailnum']);
+                $entries[$k]['crewname'] = $entry['chg-crew'];
+                unset($entries[$k]['chg-crew']);
+            }
+            if ($entry['chg-sailnum'] != "" )
+            {
+                $entries[$k]['sailnum'] = $entry['chg-sailnum'];
+                unset($entries[$k]['chg-sailnum']);
             }
         }
         return $entries;
@@ -282,8 +276,11 @@ class ENTRY
 
     public function count_signons($type="entries")
     {
+        // note not counting deletes, updates and replaces although these will be processed
+
         $where_options  = array(
-            "entries"      => " AND action IN ('enter', 'delete', 'update', 'replace') ",
+            "entries"      => " AND action = 'enter' ",
+            //"entries"      => " AND action IN ('enter', 'delete', 'update', 'replace') ",
             "retirements"  => " AND action = 'retire' ",
             "declarations" => " AND action IN ('retire', 'declare') ",
         );
@@ -292,144 +289,6 @@ class ENTRY
         $num_signons = $this->db->db_num_rows($query);
         return $num_signons;
     }
-
-
-    public function allocate($entry)
-    {
-        /* FIXME:
-            Still doesn't handle:'
-                - check on personal_py if personal PY race
-                - skill level limits
-                - group restrictions      (constraints not in t_cfgrace)
-                - age restrictions        (limits not in t_cfgrace)
-                - flight restrictions     (limits not in t_cfgrace)
-        */
-
-        // get race configuration  - make sure default fleet is last in array
-        $fleets = array();
-        $default_fleet = 0;
-        for ($i=1; $i<=$this->numfleets; $i++)        // FIXME - could be a foreach
-        {
-            if ($this->fleets[$i]['defaultfleet'] != "1" )
-            {
-                $fleets[] = $this->fleets[$i];
-            }
-            else
-            {
-                $default_fleet = $i;
-            }
-        }
-        if ($default_fleet)
-        {
-            $fleets[] = $this->fleets[$default_fleet];
-        }
-        // debug:u_writedbg(u_check($fleets, "FLEETS"),__FILE__,__FUNCTION__,__LINE__);  // debug:
-
-        // check which fleet this competitor is allocated too
-        $alloc['status'] = false;
-        if ($fleets)
-        {
-            // try each fleet - default last
-            foreach ($fleets as $fleetcfg)
-            {
-                $classexc = array_map("trim", explode(",", strtolower($fleetcfg['classexc'])));
-                $classinc = array_map("trim", explode(",", strtolower($fleetcfg['classinc'])));
-
-                // debug:u_writedbg(u_check($fleetcfg, "FLEETCFG"),__FILE__,__FUNCTION__,__LINE__);
-                // debug:u_writedbg(u_check($classexc, "EXCLUDES"),__FILE__,__FUNCTION__,__LINE__);
-                // debug:u_writedbg(u_check($entry, "ENTRY"),__FILE__,__FUNCTION__,__LINE__);
-
-                if (in_array(strtolower($entry['classname']), $classexc, true))  // check for exclusions
-                {
-                    // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - excluded ",__FILE__,__FUNCTION__,__LINE__);  // debug:
-                    continue; 	// this class is specifically excluded from this race - continue to next fleet
-                }
-                else
-                {
-                    if ($fleetcfg['onlyinc'])   // only include fleets in classinc
-                    {
-                        if (in_array(strtolower($entry['classname']), $classinc))
-                        {
-                            // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - only included ",__FILE__,__FUNCTION__,__LINE__);  // debug:
-                            $alloc = array("status"=>true, "alloc_code"=>"", "start"=>$fleetcfg['startnum'], "fleet"=>$fleetcfg['fleetnum']);
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (in_array(strtolower($entry['classname']), $classinc)) // check if class is in included list
-                        {
-                            // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - included ",__FILE__,__FUNCTION__,__LINE__);  // debug:
-                            $alloc = array("status"=>true, "alloc_code"=>"", "start"=>$fleetcfg['startnum'], "fleet"=>$fleetcfg['fleetnum']);
-                            break;
-                        }
-                        else  // if not allocated by class name then check if other class based characteristics match
-                        {
-                            $py_ok   = false;
-                            $crew_ok = false;
-                            $spin_ok = false;
-                            $hull_ok = false;
-
-                            // PY check  (passes if lies within range)
-                            $fleetcfg['pytype']=="local" ? $py = $entry['local_py'] : $py = $entry['nat_py'];
-                            // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - PY comparison $py|{$fleetcfg['minpy']}|{$fleetcfg['maxpy']} ",__FILE__,__FUNCTION__,__LINE__);  // debug:
-                            if( (empty($fleetcfg['minpy']) AND empty($fleetcfg['maxpy']))
-                                OR ($py >= $fleetcfg['minpy'] AND $py <= $fleetcfg['maxpy']) )
-                            {
-                                $py_ok = true;
-                            }
-
-                            // crew check (passes if 'any' or correct number)
-                            // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - crew comparison {$entry['crew']}|{$fleetcfg['crew']} ",__FILE__,__FUNCTION__,__LINE__);  // debug:
-                            if( empty($fleetcfg['crew'])
-                                OR $entry['crew'] == $fleetcfg['crew'] )
-                            {
-                                $crew_ok = true;
-                            }
-
-                            // spinnaker type check (passes if 'any' or specified spinnaker type)
-                            // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - spin comparison {$entry['spinnaker']}|{$fleetcfg['spintype']} ",__FILE__,__FUNCTION__,__LINE__);  // debug:
-                            if( empty($fleetcfg['spintype'])
-                                OR strtolower($entry['spinnaker']) == strtolower($fleetcfg['spintype']) )
-                            {
-                                $spin_ok = true;
-                            }
-
-                            // hull type check ()passes if 'any' or specified hull type)
-                            // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - hull comparison {$entry['category']}|{$fleetcfg['hulltype']} ",__FILE__,__FUNCTION__,__LINE__);  // debug:
-                            if( empty($fleetcfg['hulltype'])
-                                OR strtolower($entry['category']) == strtolower($fleetcfg['hulltype']) )
-                            {
-                                $hull_ok = true;
-                            }
-
-                            // if all checks pass then allocate to this race
-                            // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - comparison summary $py_ok|$crew_ok|$spin_ok|$hull_ok ",__FILE__,__FUNCTION__,__LINE__); // debug:
-                            if ($py_ok AND $crew_ok AND $spin_ok AND $hull_ok)
-                            {
-                                // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - all match ",__FILE__,__FUNCTION__,__LINE__);
-                                $alloc = array( "status" => true, "alloc_code" => "", "start" => $fleetcfg['startnum'], "fleet" => $fleetcfg['fleetnum']);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (!$alloc['status'])   // did not find fleet to allocate it too
-            {
-                // debug:u_writedbg(" - not allocated to any fleet ",__FILE__,__FUNCTION__,__LINE__);  // debug:
-                $alloc = array("status" => false, "alloc_code" => "E", "start" => "", "fleet" => ""); // E - ineligible (not allocated)
-            }
-        }
-        else                         // did not find fleet configuration data to check
-        {
-            // debug:u_writedbg(" - no configuration found ",__FILE__,__FUNCTION__,__LINE__);  // debug:
-            $alloc = array("status" => false, "alloc_code" => "X", "start" => "", "fleet" => ""); //  X - no configuration
-        }
-
-        return $alloc;
-    }
-
 
     public function set_entry($entry)
         /*

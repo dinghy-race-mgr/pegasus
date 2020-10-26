@@ -52,7 +52,6 @@ $nbufr = $tmpl_o->get_template("pickrace_navbar", $nav_fields, array("links"=>$_
 $lbufr = u_growlProcess(0, $page);
 $lbufr.= u_growlProcess(0, "race");    // returning from closing race
 
-
 // list events
 if ($events)
 {
@@ -70,7 +69,7 @@ if ($events)
         $fields['starttime'] = $event['event_start'];
         empty($event['tide_time']) ? $fields['tidetime'] = "" : $fields['tidetime'] = " [ HW {$event['tide_time']} {$event['tide_height']}m ]";
 
-        $lbufr.= $tmpl_o->get_template("race_panel", $fields);
+        $lbufr.= $tmpl_o->get_template("race_panel", $fields, array("status" => $event['event_status']));
 
         // add view format modal
         $viewbufr = createdutypanel($rota_o->get_event_duties($eventid, ""), $eventid, "");

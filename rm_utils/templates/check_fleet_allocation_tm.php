@@ -101,8 +101,17 @@ function check_fleet_allocation_report($params = array())
         $cells = "";
         foreach ($class as $j=>$alloc)
         {
-            $alloc['eligible'] ? $cstyle = "" : $cstyle = "danger";
-            $cells.= "<td class='$cstyle'> {$alloc['start']} / {$alloc['start']}</td>";
+            if ($alloc['status'])
+            {
+                $cells.= "<td > {$alloc['start']} / {$alloc['fleet']}</td>";
+            }
+            else
+            {
+                $display_code = "?";
+                if($alloc['alloc_code'] == "E") { $display_code = "NE"; }
+                if($alloc['alloc_code'] == "X") { $display_code = "ND"; }
+                $cells.= "<td class='danger'> $display_code</td>";
+            }
         }
         $rows.=<<<EOT
         <tr class="">
@@ -118,6 +127,7 @@ EOT;
         <div class="col-xs-10 col-sm-8 col-md-8 col-lg-8">
             <h1>Fleet Allocation Report </h1>
             <p>Allocation is reported as 'start number' / 'fleet number' for each race format</p>
+            <p>'NE' means class is ineligible to race and 'ND' data was missing</p>
         </div>
             <div class="col-xs-2 col-sm-4 col-md-4 col-lg-4">
                 <a class="btn btn-md btn-warning pull-right" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">

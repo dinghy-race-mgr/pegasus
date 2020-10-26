@@ -29,7 +29,7 @@ require_once ("{$loc}/common/lib/util_lib.php");
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 
 u_initpagestart($_REQUEST['eventid'], $page, true);  // starts session and sets error reporting
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");   // language file
+//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");   // language file
 
 if (!$eventid) { u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['arg']}]",
     "please contact your raceManager administrator");  }
@@ -49,7 +49,7 @@ $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/
 // database connection
 $db_o = new DB;
 $boat_o = new BOAT($db_o);
-$entry_o = new ENTRY($db_o, $eventid, $_SESSION["e_$eventid"]);     // FIXME details are different from ailor
+$entry_o = new ENTRY($db_o, $eventid);
 
 // buttons/modals
 include("./include/entries_ctl.inc");

@@ -11,7 +11,7 @@ function timer_tabs($params = array())
 
     $state_cfg = array(
         "default"  => array("row_style" => "", "label_style" => "label-primary", "annotation" => ""),
-        "racing"   => array("row_style" => "", "label_style" => "label-primary", "annotation" => " click to time "),
+        "racing"   => array("row_style" => "", "label_style" => "label-default", "annotation" => " <span class='text-primary glyphicon glyphicon-time'></span> "),
         "finished" => array("row_style" => "finished", "label_style" => "label-finished", "annotation" => " FINISHED"),
         "lastlap"  => array("row_style" => "lastlap", "label_style" => "label-danger", "annotation" => " ON LAST LAP"),
     );
@@ -31,8 +31,10 @@ function timer_tabs($params = array())
 
         // create TABS
         $tabs.= <<<EOT
-        <li role="presentation" class="">
-              &nbsp;<a href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">{$fleet['name']}</a>&nbsp;
+        <li role="presentation" class="lead text-center">
+              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">
+              <b>{$fleet['name']}</b> <br><small>[{$fleet['maxlap']} laps]</small>
+              </a>
         </li>
 EOT;
 
@@ -67,7 +69,7 @@ EOT;
                     {
                         $laps_btn = <<<EOT
                         <div class="row margin-top-0">
-                            <div class="col-sm-12 text-center margin-top-0" >
+                            <div class="col-sm-12 text-left" >
                                 <a href="#setlapsModal" data-toggle="modal" class="btn btn-danger btn-lg margin-top-0" aria-expanded="false" role="button" >
                                     <span class="glyphicon glyphicon-exclamation-sign"></span>
                                     &nbsp;NO LAPS set for this fleet - click here to set laps&nbsp;
@@ -80,10 +82,10 @@ EOT;
                     {
                         $laps_btn = <<<EOT
                         <div class="row margin-top-0">
-                            <div class="col-sm-12 text-center margin-top-0" >
+                            <div class="col-sm-12 text-left" >
                                 <div data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true"
                                      data-title="click here to shorten this fleet at the end of the next lap" data-placement="top" class="btn-group ">
-                                    <a id="shorten$i" href="timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=$i" class="btn btn-info btn-lg margin-top-0" aria-expanded="false" role="button" >
+                                    <a id="shorten$i" href="timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=$i" class="btn btn-info btn-sm margin-top-0" aria-expanded="false" role="button" >
                                         <span class="glyphicon glyphicon-flag"></span>&nbsp;
                                         {$fleet['maxlap']} LAPS - click to shorten course&nbsp;
                                     </a>
@@ -152,16 +154,19 @@ EOT;
 
                 $edit_link = editlaps_html($eventid, $r['id'], $boat);
 
+                $undo_link = undoboat_html($eventid, $r['id'], $boat);
+
                 $rows.= <<<EOT
-                    <tr class="{$cfg['row_style']}">
+                    <tr class="table-data {$cfg['row_style']}">
                         <td style="width: 1%;"><a href="$row_link"></a></td>
-                        <td class="$skip truncate" style="width: 10%;">{$r['class']}</td>
-                        <td class="$skip truncate" style="width: 5%; ">{$r['sailnum']}</td>
-                        <td class="$skip truncate" style="width: 10%;">{$r['helm']}</td>
-                        <td class="$skip" style="width: 40%; margin-left:15px;">$laptimes_bufr</td>
-                        <td class="rowlink-skip" style="width: 10%">$code_link</td>
-                        <td class="rowlink-skip" style="width: 10%;text-align: left">$finish_btn</td>
-                        <td class="rowlink-skip" style="width: 5%; text-align: left">$edit_link</td>
+                        <td class="$skip truncate" >{$r['class']}</td>
+                        <td class="$skip truncate" style="padding-left:15px;" >{$r['sailnum']}</td>
+                        <!-- td class="$skip truncate" >{$r['helm']}</td -->
+                        <td class="$skip" style="padding-left:15px;">$laptimes_bufr</td>
+                        <td class="rowlink-skip" style="text-align: left">$code_link</td>
+                        <td class="rowlink-skip" style="text-align: center">$finish_btn</td>
+                        <td class="rowlink-skip" style="text-align: center">$edit_link</td>
+                        <td class="rowlink-skip" style="text-align: center">$undo_link</td>
                     </tr>
 EOT;
             }
@@ -171,7 +176,20 @@ EOT;
             <div role="tabpanel" class="tab-pane margin-top-0" id="fleet$i">
                 $all_finished
                 $laps_btn
-                <table class="table table-hover margin-top-05" style="width: 100%; table-layout: fixed;">
+                <table class="table table-striped table-condensed table-hover table-top-padding table-top-border" style="width: 100%; table-layout: fixed;">
+                    <thead class="text-info" style="border-bottom: 1px solid black;">
+                        <tr >
+                            <th width="1%"></th>
+                            <th width="10%">class</th>
+                            <th width="10%">sail no.</th>                            
+                            <!-- th >helm</th -->
+                            <th width="">lap times</th>
+                            <th width="5%" style="text-align: center">code</th>
+                            <th width="5%" style="text-align: center">finish</th>                           
+                            <th width="5%" style="text-align: center">edit</th>
+                            <th width="5%" style="text-align: center">undo</th>
+                        </tr>
+                    </thead>
                     <tbody data-link="row" class="rowlink">
                         $rows
                     </tbody>
@@ -184,7 +202,7 @@ EOT;
     // final page body layout
     $html = <<<EOT
     <div class="margin-top-10" role="tabpanel">
-        <ul class="nav nav-pills red" role="tablist">
+        <ul class="nav nav-pills pill-fleet" role="tablist">
            $tabs
         </ul>
         <div class="tab-content">
@@ -197,9 +215,14 @@ EOT;
 
 
 function laptimes_html($laptimes_str, $label_style, $annotation)
+    /*
+     * displays lap times on timer page
+     */
 {
     $lap_cnt = 0;
-    $style = "font-size:1.0em; margin-left: 5px";
+    $max_display = 4;
+    $label_style = "label-default";
+    $style = "margin-left: 5px";
 
     $bufr = "";
     if (!empty($laptimes_str))
@@ -211,7 +234,7 @@ function laptimes_html($laptimes_str, $label_style, $annotation)
         {
             $j++;
             $formattedtime = gmdate("H:i:s", $laptime);
-            if ($lap_cnt <=6)
+            if ($lap_cnt <=$max_display)
             {
                 $bufr.= "<span class='label $label_style' style='$style'>$formattedtime</span> ";
             }
@@ -232,45 +255,34 @@ function laptimes_html($laptimes_str, $label_style, $annotation)
             }
         }
     }
-    if ($lap_cnt < 6) { $bufr.= " &nbsp;&nbsp;$annotation"; };
-
-    return $bufr;
-}
-
-
-function btn_finish_tmpl()
-{
-    $bufr = <<<EOT
-        <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="%s" data-placement="top">
-        <a id="finish" href="%s" role="button" class="btn btn-link %s" style="padding:0px" target="">
-            <span class="badge progress-bar-%s" style="font-size: 1em">
-                <span class="glyphicon glyphicon-flag"></span>&nbsp;Finish&nbsp;
-            </span>
-        </a>
-        </span>
-EOT;
+    $bufr.= " &nbsp;&nbsp;$annotation";
 
     return $bufr;
 }
 
 function codes_html($code, $url)
+    /*
+     * displays codes dropdown on timer page
+     */
 {
     if (empty($code))
     {
-        $label = "<span style='color: red;'>set code &nbsp;</span>";
+        //$label = "<span>code &nbsp;</span>";
+        $label = "<span class='glyphicon glyphicon-cog'>&nbsp;</span>";
+        $style = "btn-success";
     }
     else
     {
-        $label = "<span style='color: black;font-weight: bold;'>$code &nbsp;</span>";
+        $label = "<span>$code&nbsp;</span>";
+        $style = "btn-default";
     }
 
     $codebufr = u_dropdown_resultcodes($_SESSION['timercodes'], "short", $url);
 
     $bufr = <<<EOT
     <div class="dropdown">
-        <button type="button" class="btn btn-default btn-md text-default dropdown-toggle"
-                data-toggle="dropdown" style="width: 7em; padding: 1px 2px;">
-            <span class="default"><b>$label&nbsp;</b></span><span class="caret" style="color:red;"></span>
+        <button type="button" class="btn $style btn-xs dropdown-toggle" data-toggle="dropdown" >
+            <span class="default"><b>$label&nbsp;</b></span><span class="caret" ></span>
         </button>
         <ul class="dropdown-menu">
             $codebufr
@@ -281,18 +293,42 @@ EOT;
     return $bufr;
 }
 
-function editlaps_html($eventid, $entryid, $boat)
+function btn_finish_tmpl()
 {
     $bufr = <<<EOT
+        <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="%s" data-placement="top">
+        <a id="finish" href="%s" role="button" class="btn btn btn-success btn-xs %s" target="">
+            <span class="glyphicon glyphicon-flag"></span>
+        </a>
+        </span>
+EOT;
+
+    return $bufr;
+}
+
+function editlaps_html($eventid, $entryid, $boat)
+{
+    //
+    $bufr = <<<EOT
     <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="edit lap times for this boat" data-placement="top">
-        <button type="button" class="btn btn-link btn-  " style="padding:0px 5px 0px 5px;" data-toggle="modal"
-                rel="tooltip" data-original-title="edit lap times for this boat" data-placement="bottom" data-target="#editlapModal"
-                data-boat="$boat"
-                data-iframe="timer_editlaptimes_pg.php?eventid=$eventid&pagestate=init&entryid=$entryid" >
-            <span class="badge progress-bar-default" style="font-size: 100%">
-                <span class="glyphicon glyphicon-pencil"></span>
-            </span>
-        </button>
+        <a type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#editlapModal" data-boat="$boat"
+                data-iframe="timer_editlaptimes_pg.php?eventid=$eventid&pagestate=init&entryid=$entryid" >           
+                <span class="glyphicon glyphicon-pencil"></span>            
+        </a>
+    </span>
+EOT;
+
+    return $bufr;
+}
+
+function undoboat_html($eventid, $entryid, $boat)
+{
+    $bufr = <<<EOT
+    <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="remove last time for this boat" data-placement="top">
+        <a type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#editlapModal" data-boat="$boat"
+                data-iframe="timer_undolaptimes_pg.php?eventid=$eventid&pagestate=init&entryid=$entryid" >
+                <span class="glyphicon glyphicon-step-backward"></span>
+        </a>
     </span>
 EOT;
 
@@ -375,12 +411,12 @@ function problems($params=array())
             $data = $msg["$type"];
             $pbufr.= <<<EOT
             <div class="col-md-8 col-md-offset-2 row margin-top-20">
-                <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                <div class="alert alert-info alert-dismissible fade in" role="alert">
                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                    <h4><b>{$data['title']}</b></h4>
                    <p>{$data['info']}</p>
-                   <p> <a class="btn btn-danger" href="{$data['link']}">
-                            <span class="glyphicon glyphicon-menu-right"><b> {$data['label']}</b><span>
+                   <p> <a class="btn btn-primary pull-right" href="{$data['link']}">
+                            <span class="glyphicon glyphicon-menu-right"></span><b> {$data['label']}</b>
                        </a>
                    </p>
                </div>

@@ -105,12 +105,12 @@ $g_race_unabandon_fail = array(
 
 // ----------- pagestate: CLOSE -------------------------------------------------------------
 $g_race_close_success = array(
-    "type" => "success",
+    "type" => "info",
     "msg"  => "<b>RACE CLOSED:</b><br> -- Thank you",
 );
 
 $g_race_close_fail = array(
-    "type" => "danger",
+    "type" => "warning",
     "msg"  => "<b>SORRY:</b> race<br>CLOSE failed<br><i>Please let your raceManager guru know.</i>",
 );
 
@@ -195,12 +195,12 @@ $g_entries_delete_failed = array(
 //);
 
 $g_entries_failed = array(
-    "type" => "danger",
+    "type" => "warning",
     "msg"  => "%s competitor signon on request not accounted for &hellip;<br>",
 );
 
 $g_entries_report = array(
-    "type" => "warning",
+    "type" => "info",
     "msg"  => "%s competitor sign on requests found: <br>- %s entries made, <br>- %s existing entries updated, <br>- %s existing entries deleted<br>",
 );
 
@@ -235,6 +235,11 @@ $g_entry_add_class_fail = array(
 $g_start_timer_stop = array(
     "type" => "info",
     "msg"  => "Master Timer stopped &hellip;",
+);
+
+$g_start_timer_continue = array(
+    "type" => "info",
+    "msg"  => "Master Timer stop request NOT confirmed correctly &hellip;",
 );
 
 $g_start_timer_adjusted = array(

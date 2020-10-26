@@ -75,7 +75,7 @@ $db_o = new DB();
 $tide_o = new TIDE($db_o);
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "$loc/templates/programmemaker_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/programmemaker_tm.php"));
 
 $_SESSION['pagefields'] = array(
     "loc" => $loc,
@@ -94,6 +94,8 @@ $_SESSION['pagefields'] = array(
     "footer-center" => "",
     "footer-right" => "",
 );
+
+$out_file = $_SESSION['pmaker']['loc']."/".str_replace("date", date("YmdHi"), $_SESSION['pmaker']['export_file']);
 
 
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
@@ -191,11 +193,11 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
 
         // create csv file
         if ($_SESSION['debug']) {echo "--- CREATING CSV FILE ------------------------------------------<br>";}
-        $csv_status = pg_create_csv();
+        $csv_status = pg_create_csv($out_file);
 
         // produce table of events for review
         if ($_SESSION['debug']) {echo "--- CREATING REPORT --------------------------------------------<br>";}
-        $bufr .= pg_display_events($_REQUEST['date-start'], $_REQUEST['date-end'], $json_file, $csv_status);
+        $bufr .= pg_display_events($_REQUEST['date-start'], $_REQUEST['date-end'], $json_file, $csv_status, $out_file);
 
         // finally check which events have been scheduled
         foreach ($pg as $k => $event)
@@ -955,16 +957,17 @@ function pg_allocate_multi_events ()
     return $new_races;
 }
 
-function pg_create_csv()
+function pg_create_csv($out_file)
 {
     global $pg;
     global $cfg;
 
     $status = 0;
-    $filename = "../tmp/{$cfg['file']}";
+    //$filename = "../tmp/{$cfg['file']}";
+    //$filename = $_SESSION['pmaker']['loc']."/".str_replace("date", date("YmdHi"), $_SESSION['pmaker']['export_file']);
 
     // open file - deleting old
-    $file = fopen($filename, 'w');
+    $file = fopen($out_file, 'w');
     if ( !$file ) { $status ="1"; }  // file not opened
 
     // write header
@@ -1004,41 +1007,51 @@ function pg_create_csv()
     }
     fclose($file);
 
+
+
     return $status;
 }
 
-function pg_display_events($start, $end, $file, $csv_status)
+function pg_display_events($start, $end, $file, $csv_status, $out_file)
 {
     global $pg;
     global $cfg;
 
     $today = date("jS M Y H:i");
     $bufr = "";
+    $csv_file = "";
+    $message = "";
 
-    if ($csv_status == 0)
-    {
-        $file = str_replace("date", date("YmdHi"), $_SESSION['pmaker']['export_file']);
-        $path = $_SESSION['pmaker']['loc'];
-        $csv_file = $path."/".$file;
-        $bufr.=<<<EOT
-        <div class="pull-right"><a class="btn btn-primary btn-lg" href="$csv_file" role="button" >Create Import File</a></div>
-EOT;
+//    if ($csv_status == 0)
+//    {
+//        $csv_file = $_SESSION['pmaker']['loc']."/".str_replace("date", date("YmdHi"), $_SESSION['pmaker']['export_file']);
+//
+//        // copy file to dated output file
+//        if (!copy("../tmp/{$cfg['file']}", $csv_file)) {
+//            $csv_status = 4;
+//        }
+//    }
 
-    }
-    else
+    if ($csv_status != 0)
     {
-        $csv_file = "";
-        $message = "";
-        if ($csv_status == 1) { $message = "ERROR: export file could not be created - please contact your system administrator"; }
-        elseif ($csv_status == 2) { $message = "ERROR: writing header to export file - please contact your system administrator"; }
-        elseif ($csv_status == 3) { $message = "ERROR: writing programme data to export file - please contact your system administrator";}
+        if ($csv_status == 1) { $message = "ERROR: import file could not be created - please contact your system administrator"; }
+        elseif ($csv_status == 2) { $message = "ERROR: writing header to import file - please contact your system administrator"; }
+        elseif ($csv_status == 3) { $message = "ERROR: writing programme data to import file - please contact your system administrator";}
+        elseif ($csv_status == 4) { $message = "ERROR: copying import file to dated file failed - please contact your system administrator";}
+//        else { $message = "UNKNOWN ERROR: creating import file - please contact your system administrator";}
 
         if (!empty($message))
         {
             $bufr.= <<<EOT
-            <div><p class="bg-danger">$message</p></div>
+            <div><p class="alert alert-warning">$message</p></div>
 EOT;
         }
+    }
+    else
+    {
+        $bufr.=<<<EOT
+        <div class="pull-right"><a class="btn btn-primary btn-lg" href="$out_file" role="button" >Create Import File</a></div>
+EOT;
     }
 
     // header

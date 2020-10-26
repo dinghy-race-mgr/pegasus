@@ -102,7 +102,7 @@ else
         "header-left" => "raceManager SAILOR",
         "header-center" => "",
         "header-right" => "",
-        "body" => $tmpl_o->get_template("closed", array(), array("opentime" => $opentime)),
+        "body" => $tmpl_o->get_template("closed", array(), array("mode" => $mode, "opentime" => $opentime)),
         "footer-left" => "",
         "footer-center" => "",
         "footer-right" => ""

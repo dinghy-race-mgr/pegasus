@@ -17,8 +17,8 @@ class WEB_TEMPLATE
         <meta name="author" content="">
 
         <link rel="shortcut icon" href="{ossloc}/common/images/favicon.ico">
-        <link rel="stylesheet" href="{ossloc}/common/oss/bootstrap/css/bootstrap.min.css" >
-        <link rel="stylesheet" href="{ossloc}/common/oss/bootstrap/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{ossloc}/common/oss/bootstrap341/css/bootstrap.min.css" >
+        <link rel="stylesheet" href="{ossloc}/common/oss/bootstrap341/css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="{ossloc}/common/oss/bs-validator/dist/css/formValidation.min.css">
 
         <script type="text/javascript" src="{ossloc}/common/oss/jquery/jquery.min.js"></script>
@@ -26,7 +26,7 @@ class WEB_TEMPLATE
         <script type="text/javascript" src="{ossloc}/common/oss/bs-validator/dist/js/framework/bootstrap.min.js"></script>
         <script type="text/javascript" src="{ossloc}/common/oss/bs-validator/dist/js/addons/mandatoryIcon.js"></script>
 
-        <script type="text/javascript" src="{ossloc}/common/oss/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="{ossloc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="{ossloc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
 
         <!-- Custom styles for this template -->

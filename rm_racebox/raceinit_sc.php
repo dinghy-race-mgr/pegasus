@@ -28,20 +28,24 @@ require_once ("{$loc}/common/classes/race_class.php");
 // starts session and sets error reporting
 u_initpagestart($_REQUEST['eventid'], $page, false);
 
-// check we have a valid numeric eventid - else exit
+// check we have a valid numeric eventid and mode
 $eventid = u_checkarg("eventid", "checkintnotzero","");
+$mode = u_checkarg("mode", "set", "", "init");
 
-if ($eventid)
+$db_o = new DB();
+$event_o = new EVENT($db_o);
+
+echo "<pre>event:$eventid mode:$mode</pre>";
+if ($eventid and ($mode == "init" or $mode == "reset" or $mode == "rejoin"))
 {
     // clear event session
     unset($_SESSION["e_$eventid"]);
-        
+
     // start event log
-    u_starteventlogs($scriptname, $eventid);
-    
-    // initialise event from database
-    //u_writedbg("<pre>session".print_r($_SESSION,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
-    $status = r_initialiseevent($_REQUEST['mode'], $eventid);
+    u_starteventlogs($scriptname, $eventid, $mode);
+
+    // reset event
+    $status = $event_o->event_reset($eventid, $mode);
 
     if ($status == "event_error")
     {
@@ -57,14 +61,13 @@ if ($eventid)
     {
         u_exitnicely($scriptname, $eventid, "the race format requested for the selected event can not be found in the raceManager database, or is not currently used.",
             "please contact your raceManager administrator");
-    }   
+    }
 }
 else
 {
     u_exitnicely($scriptname, $eventid, "the requested event has an invalid record identifier [{$_REQUEST['arg']}]",
         "please contact your raceManager administrator");
 }
-
 
 header("Location: race_pg.php?eventid=$eventid");
 exit();

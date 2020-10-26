@@ -8,6 +8,7 @@ $loc        = "..";
 $page       = "addentry";     // 
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("{$loc}/common/lib/rm_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 $page_state = u_checkarg("pagestate", "set","");
@@ -28,6 +29,7 @@ if (empty($page_state)) {
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
+require_once ("{$loc}/common/classes/boat_class.php");
 require_once ("{$loc}/common/classes/comp_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 
@@ -42,7 +44,7 @@ if($page_state == "search")                                          // do searc
 
 elseif ($page_state == "enterone")       // add competitor to current event
 {
-    $entry_o = new ENTRY($db_o, $eventid, $_SESSION["e_$eventid"]);
+    $entry_o = new ENTRY($db_o, $eventid);
     // debug:u_writedbg("competitor {$_REQUEST['competitorid']}",__FILE__,__FUNCTION__,__LINE__);  // debug:
     $entry = $entry_o->get_competitor($_REQUEST['competitorid']);
     //echo "<pre>".print_r($entry,true)."</pre>";
@@ -70,10 +72,16 @@ exit();
 // ------------- FUNCTIONS ---------------------------------------------------------------------------
 function enter_boat($entry, $eventid, $race = "")
 {
-    global $entry_o;
+    global $entry_o, $db_o;
 
     $entry_tag = "{$entry['classname']} - {$entry['sailnum']}";
-    $alloc = $entry_o->allocate($entry);
+
+    $event_o = new EVENT($db_o);
+    $boat_o = new BOAT($db_o);
+    $classcfg = $boat_o->boat_getdetail($entry['classname']);
+    $fleets = $event_o->event_getfleetcfg($_SESSION["e_$eventid"]['ev_format']);
+    $alloc = r_allocate_fleet($classcfg, $fleets);
+//    $alloc = $entry_o->allocate($entry);
     //u_writedbg(u_check($alloc, "ALLOCATE"),__FILE__,__FUNCTION__,__LINE__); //debug:
 
     if ($alloc['status'])           // ok to load entry

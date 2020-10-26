@@ -13,7 +13,7 @@ $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
 $styletheme = "flatly_";
 $stylesheet = "./style/rm_utils.css";
-$validtypes = array("class", "programme", "rota", "competitor", "tide");
+$validtypes = array("class", "event", "rota", "competitor", "tide");
 
 require_once ("{$loc}/common/lib/util_lib.php");
 
@@ -50,7 +50,7 @@ require_once ("{$loc}/common/classes/import_class.php");
 $db_o = new DB();
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","./templates/layouts_tm.php", "./templates/import_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/import_tm.php"));
 
 $_SESSION['pagefields'] = array(
     "loc" => $loc,
@@ -509,7 +509,11 @@ function val_event($i, $key, $row, $table, $fields)
     { $err .= "tide time is is not valid time and/or format hh:mm; "; }
 
     // do checks if event is not a "noevent"
-    if ($row['event_type'] != "noevent")
+    if ($row['event_type'] == "noevent")
+    {
+        $row['event_open'] = "club";
+    }
+    else
     {
         // event start time
         if (date("H:i", strtotime($row['event_start'])) !== $row['event_start']) {

@@ -57,6 +57,7 @@ for ($fleetnum = 1; $fleetnum <= $_SESSION["e_$eventid"]['rc_numfleets']; $fleet
 }
 
 // set master timer
+$now = time(); // debug
 $timer_start = $_SESSION["e_$eventid"]['timerstart'];
 $first_prep_delay = r_getstartdelay(1, $_SESSION["e_$eventid"]['rc_startscheme'], $_SESSION["e_$eventid"]['rc_startint']);
 $event_state == "in progress" ? $start_master = $timer_start + $first_prep_delay - time() : $start_master = $first_prep_delay;
@@ -130,10 +131,16 @@ EOT;
         }
 
         $start[$startnum] > constant('START_WARN_SECS') ? $btn_generalrecall['fields']["style"] = "default" : $btn_generalrecall['fields']["style"] = "warning";
+        $btn_generalrecall['fields']['id'] = "generalrecall$startnum";
         $btn_generalrecall['data'] = "data-start=\"$startnum\"  data-starttime=\"$startdisplay\" ";
         $recallbufr.= $tmpl_o->get_template("btn_modal", $btn_generalrecall['fields'], $btn_generalrecall);
 
-        $mdl_generalrecall['fields']['body'] = $tmpl_o->get_template("fm_start_genrecall", $fields);
+        $mdl_generalrecall['fields']['id'] = "generalrecall$startnum";
+        $mdl_generalrecall['fields']['body'] = $tmpl_o->get_template("fm_start_genrecall", array(), array("startnum"=>$startnum));
+        $mdl_generalrecall['fields']['script'] =
+            "$( '#generalrecall{$startnum}ModalLabel' ).text( 'General Recall - Start ' + button.data('start') + '  [$fleetlist]')
+            $( '#start{$startnum}' ).val(button.data('start'))
+            $( '#origstart{$startnum}' ).text(button.data('starttime'))";
         $recallbufr.= $tmpl_o->get_template("modal", $mdl_generalrecall['fields'], $mdl_generalrecall);
     }
 
@@ -165,6 +172,7 @@ if ( $event_state == "not started")
 }
 else
 {
+    $mdl_timerstop['fields']['body']= $tmpl_o->get_template("fm_stoptimer_ok", $mdl_timerstop['fields'], $mdl_timerstop);
     $timer_btn_bufr = $tmpl_o->get_template("btn_modal", $btn_timerstop['fields'], $btn_timerstop);
     $timer_btn_bufr.= $tmpl_o->get_template("modal", $mdl_timerstop['fields'], $mdl_timerstop);
     $timer_script   = gettimerscript();

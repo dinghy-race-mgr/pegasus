@@ -19,14 +19,58 @@
 
 */
 
-// -- RIGHT HAND PANEL ---------------------------------------------------------------
+/*
+ BUTTONS
+    Parameters
+        label     : label required  (true|false)
+        glyph     : glyph required  (true|false)
+        g-pos     : glyph position (left|right)
+        popover   : popover required (true|false)
+
+    Fields
+        id        : id for button
+        style     : bootstrap style for button
+        size      : bootstrap size for button
+        label     : label for button
+        link      : url link for button
+        glyph     : glyph name
+        popover   : popover text
+        pop-pos   : popover position
+        block     : 'btn-block' if a block button otherwise leave blank
+        disabled  : 'disabled' if button is to be disabled otherwise leave blank
+        top-margin: top margin style (e.g margin-top-20)
+
+  MODALS
+    Parameters
+        form       : form/validation required in modal (true|false)
+        footer     : form/validation required in modal (true|false)
+        reload     : reload of main page required after modal closed (true|false)
+        close      : cancel button required in modal (true|false)
+        reset      : reset button required in modal (true|false)
+        submit     : submit button required in modal (true|false)
+
+    Fields
+        id         : base id used for modal and form
+        size       : size of modal using bootstrap codes (sm|md|lg)
+        style      : bootstrap style for modal header
+        title      : title to appear in modal header
+        body       : html content for body of modal
+        script     : js script to be run when modal opens - blank if not required
+        action     : action to take on post form - link to script
+        target     : if set can be used to set window target
+        onsubmit   : js action to take on submit
+        close-lbl  : label on close/cancel/back button
+        reset-lbl  : label on reset button
+        submit-lbl : label on submit button
+        footer     : content of footer if requested in params (not used in forms)
+ */
 
 // ---- load retirements--------------------------------------------------------------
 $btn_loadret = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"         => "loadret",
         "size"       => "lg",
@@ -34,7 +78,6 @@ $btn_loadret = array(
         "label"      => "+ Retirements",
         "link"       => "results_sc.php?eventid=$eventid&pagestate=retirements",
         "glyph"      => "glyphicon-cloud-download",
-        "g-pos"      => "left",
         "popover"    => "click here to load retirements from the racemanager sign on facility ",
         "pop-pos"    => "left",
         "block"      => "btn-block",
@@ -49,7 +92,7 @@ $btn_loaddec = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"         => "loaddec",
         "size"       => "lg",
@@ -57,7 +100,6 @@ $btn_loaddec = array(
         "label"      => "+ Declarations",
         "link"       => "results_sc.php?eventid=$eventid&pagestate=declarations",
         "glyph"      => "glyphicon-cloud-download",   // FIXME - probably not best - need to update glyphicons
-        "g-pos"      => "left",
         "popover"    => "click here to load declarations/retirements from the racemanager sign on facility ",
         "pop-pos"    => "left",
         "block"      => "btn-block",
@@ -72,14 +114,13 @@ $btn_changefinish = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"         => "changefinish",
         "size"       => "lg",
         "style"      => "primary",
         "label"      => "Change Finish Lap",
         "glyph"      => "glyphicon-pencil",
-        "g-pos"      => "left",
         "popover"    => "change the lap used for calculating the finishing positions - very useful if you forgot to shorten course on the Timer page",
         "pop-pos"    => "left",
         "block"      => "btn-block",
@@ -101,7 +142,6 @@ $mdl_changefinish = array(
         "style"      => "primary",
         "title"      => "<b>Change Finish Lap</b>",
         "body"       => "",
-        "form"       => "true",
         "script"     => "",
         "onsubmit"   => "",
         "action"     => "results_sc.php?eventid=$eventid&pagestate=changefinish",
@@ -109,7 +149,6 @@ $mdl_changefinish = array(
         "close-lbl"  => "nope",
         "reset-lbl"  => "",
         "submit-lbl" => "change finish lap",
-        "reload"     => true,
         "footer"     => ""
     ),
 );
@@ -119,14 +158,13 @@ $btn_message = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"         => "sendmessage",
         "size"       => "lg",
         "style"      => "primary",
         "label"      => "Report Issue",
         "glyph"      => "glyphicon-send",
-        "g-pos"      => "left",
         "popover"    => "click to send message to the results manager",
         "pop-pos"    => "left",
         "block"      => "btn-block",
@@ -148,7 +186,6 @@ $mdl_message = array(
         "style"      => "primary",
         "title"      => "<b>Send Message</b>",
         "body"       => "",
-        "form"       => "true",
         "script"     => "",
         "onsubmit"   => "",
         "action"     => "results_sc.php?eventid=$eventid&pagestate=message",
@@ -156,7 +193,6 @@ $mdl_message = array(
         "close-lbl"  => "nope",
         "reset-lbl"  => "",
         "submit-lbl" => "send message",
-        "reload"     => false,
         "footer"     => ""
     ),
 );
@@ -167,14 +203,13 @@ $btn_publish = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"         => "publish",
         "size"       => "lg",
         "style"      => "primary",
         "label"      => "Publish",
         "glyph"      => "glyphicon-list-alt",
-        "g-pos"      => "left",
         "popover"    => "click here to publish the final results - you can correct errors and republish them again if necessary",
         "pop-pos"    => "left",
         "block"      => "btn-block",
@@ -184,7 +219,7 @@ $btn_publish = array(
 );
 
 $mdl_publish = array(
-    "form"    => true,
+    "form"    => false,
     "footer"  => false,
     "reload"  => true,
     "close"   => false,
@@ -196,7 +231,6 @@ $mdl_publish = array(
         "style"      => "primary",
         "title"      => "<b>Publish Race Results</b>",
         "body"       => "<iframe src=\"results_publish_pg.php?eventid=$eventid&pagestate=init\" style=\"width: 100%; height: 550px; border:0px\" id=\"entryframe\"></iframe>",
-        "form"       => false,
         "script"     => "",
         "onsubmit"   => "",
         "action"     => "results_sc.php?eventid=$eventid&pagestate=message",
@@ -204,7 +238,6 @@ $mdl_publish = array(
         "close-lbl"  => "",
         "reset-lbl"  => "",
         "submit-lbl" => "",
-        "reload"     => true,
         "footer"     => ""
     ),
 );
@@ -217,14 +250,13 @@ $btn_edit = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"         => "edit",
         "size"       => "",
         "style"      => "progress-bar-default",
         "label"      => "",
         "glyph"      => "glyphicon-pencil",
-        "g-pos"      => "left",
         "popover"    => "edit this result",
         "pop-pos"    => "top",
         "block"      => "",
@@ -246,7 +278,6 @@ $mdl_edit = array(
         "style"      => "primary",
         "title"      => "Edit Result",
         "body"       => "",
-        "form"       => true,
         "script"     => "
                         $( '#editModalLabel' ).text( 'Edit result for ' + button.data('boat'))
                         $( '#identryid' ).val(button.data('entryid'))
@@ -266,12 +297,9 @@ $mdl_edit = array(
         "close-lbl"  => "nope",
         "reset-lbl"  => "",
         "submit-lbl" => "update result",
-        "reload"     => true,
         "footer"     => ""
     ),
 );
-
-
 
 
 // -------- show detail ----------------------------------------------------------------
@@ -279,14 +307,13 @@ $btn_detail = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"         => "detail",
         "size"       => "",
         "style"      => "progress-bar-default",
         "label"      => "",
         "glyph"      => "glyphicon-list-alt",
-        "g-pos"      => "left",
         "popover"    => "view lap times",
         "pop-pos"    => "top",
         "block"      => "",
@@ -308,7 +335,6 @@ $mdl_detail = array(
         "style"       => "primary",
         "title"       => "Lap Detail",
         "body"        => "<span id=\"detailtxt\"></span>",
-        "form"        => false,
         "script"      => "var table = button.data('table')
                           document.getElementById(\"detailtxt\").innerHTML = table
                          ",
@@ -317,7 +343,6 @@ $mdl_detail = array(
         "close-lbl"  => "",
         "reset-lbl"  => "",
         "submit-lbl" => "",
-        "reload"     => true,
         "footer"     => "<button type=\"button\" class=\"btn btn-default pull-left\" data-dismiss=\"modal\">Close</button>"
     ),
 );
@@ -329,14 +354,13 @@ $btn_remove = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"         => "remove",
         "size"       => "",
         "style"      => "progress-bar-danger",
         "label"      => "",
         "glyph"      => "glyphicon-remove",
-        "g-pos"      => "left",
         "popover"    => "remove boat from results",
         "pop-pos"    => "top",
         "block"      => "",
@@ -360,7 +384,6 @@ $mdl_remove = array(
         "body"       => "<h4><span id=\"removetxt\"></span></h4>
                          <input name=\"entryid\" type=\"hidden\" class=\"form-control\" id=\"entryid\">
                         ",
-        "form"       => true,
         "script"     => "var entryname = button.data('entryname')
                          document.getElementById(\"removetxt\").innerHTML = entryname
                          var entryid = button.data('entryid')
@@ -372,7 +395,6 @@ $mdl_remove = array(
         "close-lbl"  => "nope",
         "reset-lbl"  => "",
         "submit-lbl" => "remove boat",
-        "reload"     => true,
         "footer"     => ""
     ),
 );

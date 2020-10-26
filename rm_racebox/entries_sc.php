@@ -23,23 +23,28 @@ require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/comp_class.php");
 require_once ("{$loc}/common/classes/racestate_class.php");
 
-u_initpagestart($eventid, $page, "");                                // gets session and sets error reporting
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");      // language file
+
+//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");      // language file
 
 // process parameters  (eventid, pagestate, entryid)
-empty($_REQUEST['eventid'])?   $eventid   = "" : $eventid   = $_REQUEST['eventid'];
-empty($_REQUEST['pagestate'])? $pagestate = "" : $pagestate = $_REQUEST['pagestate'];
-empty($_REQUEST['entryid'])?   $entryid   = "" : $entryid   = $_REQUEST['entryid'];
+$eventid = u_checkarg("eventid", "checkintnotzero","");
+$pagestate = u_checkarg("pagestate", "set", "", "");
+$entryid = u_checkarg("entryid", "checkint", "", "");
+//empty($_REQUEST['eventid'])?   $eventid   = "" : $eventid   = $_REQUEST['eventid'];
+//empty($_REQUEST['pagestate'])? $pagestate = "" : $pagestate = $_REQUEST['pagestate'];
+//empty($_REQUEST['entryid'])?   $entryid   = "" : $entryid   = $_REQUEST['entryid'];
+
+u_initpagestart($eventid, $page, "");                                // gets session and sets error reporting
 
 include ("./templates/growls.php");
 
 if ($eventid)
 {
     $db_o = new DB;
-    $entry_o = new ENTRY($db_o, $eventid, $_SESSION["e_$eventid"]);
+    $entry_o = new ENTRY($db_o, $eventid);
 
     // ------- per entry functions --------------------------------------------------------------------------
-    if (!empty($entryid))   // deal with in table button functions
+    if ($entryid)   // deal with in table button functions
     {
         $entry = $entry_o->get_by_raceid($entryid);
         $entryname = $entry['class']." ".$entry['sailnum'];
@@ -113,6 +118,7 @@ if ($eventid)
     {
         $signons = $entry_o->get_signons("entries");
         $entries_found = count($signons);
+//echo "<pre>".print_r($signons,true)."</pre>";
         u_writedbg(u_check($signons, "signon candidates"),__FILE__,__FUNCTION__,__LINE__);
 
 
@@ -315,18 +321,24 @@ if ($eventid)
 }
 else
 {
-    u_exitnicely($scriptname, $eventid,"sys005",$lang['help']['restart']);
+    u_exitnicely($scriptname, $eventid,"event id not specified","try closing the browser and restarting racemanager");
 }
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------
 function enter_boat($entry, $eventid, $type)
 {
-    global $entry_o;
+    global $entry_o, $db_o;
+
+    $event_o = new EVENT($db_o);
+    $boat_o = new BOAT($db_o);
+    $classcfg = $boat_o->boat_getdetail($entry['classname']);
+    $fleets = $event_o->event_getfleetcfg($_SESSION["e_$eventid"]['ev_format']);
+    $alloc = r_allocate_fleet($classcfg, $fleets);
 
     $success = "failed";
     $entry_tag = "{$entry['classname']} - {$entry['sailnum']}";
     $i = $entry['fleet'];
-    $alloc = $entry_o->allocate($entry);
+//    $alloc = $entry_o->allocate($entry);
     // debug:u_writedbg(u_check($alloc, "ALLOCATE"),__FILE__,__FUNCTION__,__LINE__);  // debug:
 
     if ($alloc['status'])

@@ -3,7 +3,7 @@
 /* ------------------------------------------------------------
    entries_add_pg.php
    
-   Allows OOD to pick competiors from database for adding to 
+   Allows OOD to pick competitors from database for adding to
    either just the current race or all races today.
    
    arguments:
@@ -45,27 +45,18 @@ include("./include/entries_ctl.inc");
 // create database object
 $db_o    = new DB;
 
-/* --------------  LEFT HAND COLUMN -------------------------------------------------------------- */
-// search box
-$lbufr = $tmpl_o->get_template("fm_addentry", array("eventid" => $eventid));
-
-// search results
-if ($page_state == "pick")    // display search results
-{
-    $num_results = count($_SESSION["e_$eventid"]['enter_opt']);
-    $params = $_SESSION["e_$eventid"]['enter_opt'];
-    $lbufr.= $tmpl_o->get_template("addentry_search_result", array("eventid" =>$eventid), $params);
-}
-
-/* --------------  RIGHT HAND COLUMN -------------------------------------------------------------- */
+$page_state == "pick" ? $search = $_SESSION["e_$eventid"]['enter_opt'] : $search = array();
 
 $params = array(
     "pagestate" => $page_state,
-    "entries"   => isset($_SESSION["e_$eventid"]['enter_rst']) ? $_SESSION["e_$eventid"]['enter_rst'] : array(),
     "error"     => isset($_SESSION["e_$eventid"]['enter_err']) ? $_SESSION["e_$eventid"]['enter_err'] : null,
+    "search"    => $search,
+    "entries"   => isset($_SESSION["e_$eventid"]['enter_rst']) ? $_SESSION["e_$eventid"]['enter_rst'] : array(),
 );
+
 if (isset($_SESSION["e_$eventid"]['enter_err'])) { unset($_SESSION["e_$eventid"]['enter_err']); }
-$rbufr = $tmpl_o->get_template("addentry_boats_entered", array(), $params);
+
+$body = $tmpl_o->get_template("fm_addentry", array("eventid" =>$eventid), $params);
 
 $fields = array(
     "title"      => "racebox",
@@ -73,27 +64,10 @@ $fields = array(
     "loc"        => $loc,
     "stylesheet" => "./style/rm_racebox.css",
     "navbar"     => "",
-    "l_top"      => "",
-    "l_mid"      => $lbufr,
-    "l_bot"      => "",
-    "r_top"      => "",
-    "r_mid"      => "<div style='margin-top: -50px;'".$rbufr."</div>",
-    "r_bot"      => "",
+    "body"       => $body,
     "footer"     => "<script>window.location.reload(true);)</script>",
-    "page"      => $page,
-    "refresh"   => 0,
-    "l_width"   => 8,
-    "forms"     => true,
-    "tables"    => true,
     "body_attr" => ""
 );
 
-$params = array(
-    "page"      => $page,
-    "refresh"   => 0,
-    "l_width"   => 8,
-    "forms"     => true,
-    "tables"    => true,
-);
+echo $tmpl_o->get_template("basic_page", $fields, array());
 
-echo $tmpl_o->get_template("two_col_page", $fields, $params);

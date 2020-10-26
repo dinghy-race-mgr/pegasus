@@ -15,55 +15,64 @@
  *    printentries  -  multilink button to access various entries reports
  *
  *  INLINE buttons
- *    change        -  inlibe button to get modal form to change entry details
+ *    change        -  inline button to get modal form to change entry details
  *    duty          -  inline button to give an entry duty points
  *    unduty        -  inline button to remove entry points from a competitor
  *    remove        -  inline button to remove entries
  **/
 /*
 /*
-  FIXME - this description is not correct - check if all params and fielda are bering used
   BUTTONS
-  FIELDS
-     id        : id for button
-     style     : bootstrap style for button
-     size      : bootstrap size for button
-     label     : text label
-     glyph     : glyph label
-     g-pos     :  glyph position (left|right)
-     popover   : popover text
-     pop-pos   : popover position
-     disabled  : 'disabled' if button is to be disabled otherwise leave blank
-     block     : 'btn-block' if a block button otherwise leave blank
-     top-margin: top margin style (e.g margin-top-20)
+    Parameters
+        label     : label required  (true|false)
+        glyph     : glyph required  (true|false)
+        g-pos     : glyph position (left|right)
+        popover   : popover required (true|false)
+      
+    Fields
+        id        : id for button
+        style     : bootstrap style for button
+        size      : bootstrap size for button
+        label     : label for button
+        link      : url link for button
+        glyph     : glyph name
+        popover   : popover text
+        pop-pos   : popover position
+        block     : 'btn-block' if a block button otherwise leave blank
+        disabled  : 'disabled' if button is to be disabled otherwise leave blank       
+        top-margin: top margin style (e.g margin-top-20)
 
   MODALS
-  FIELDS
-    id         : base id used for modal and form
-    size       : size of modal using bootstrap codes
-    style      : bootstrap style for modal
-    title      : title to appear in modal header
-    body       : html content for body of modal (fields if form)
-    form       : true if modal contains a form
-    script     : js script to be run when modal opens
+    Parameters
+        form       : form/validation required in modal (true|false)
+        footer     : form/validation required in modal (true|false)
+        reload     : reload of main page required after modal closed (true|false)
+        close      : cancel button required in modal (true|false)
+        reset      : reset button required in modal (true|false)
+        submit     : submit button required in modal (true|false)
 
-  F action     : action to take on post form - link to script
-  F target     : if set can be used to set window target
-  F onsubmit   : js action to take on submit
-  F close-lbl  :  label on close/back button
-  F reset-lbl  :  label on reset button
-  F submit-lbl :  label on submit button
-    reload     :  true if reloads parent page after modal is hidden
-    footer     : content of footer if requested in params (not used in forms)
+    Fields
+        id         : base id used for modal and form
+        size       : size of modal using bootstrap codes (sm|md|lg)
+        style      : bootstrap style for modal header
+        title      : title to appear in modal header
+        body       : html content for body of modal
+        script     : js script to be run when modal opens - blank if not required
+        action     : action to take on post form - link to script
+        target     : if set can be used to set window target
+        onsubmit   : js action to take on submit
+        close-lbl  : label on close/cancel/back button
+        reset-lbl  : label on reset button
+        submit-lbl : label on submit button
+        footer     : content of footer if requested in params (not used in forms)
 */
-
 
 // -------- loadentry ---------------------------------------------------------------- NOT DONE
 $btn_loadentry = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"          => "loadentry",
         "style"       => "primary",
@@ -71,7 +80,6 @@ $btn_loadentry = array(
         "label"       => "Load Entries ",
         "link"        => "entries_sc.php?eventid=$eventid&pagestate=loadentries",
         "glyph"       => "glyphicon-cloud-download",
-        "g-pos"       => "left",
         "popover"     => "click here to load entries from the raceManager sign on facility",
         "pop-pos"     => "left",
         "block"       => "btn-block",
@@ -85,7 +93,7 @@ $btn_loadregular = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"          => "loadregular",
         "style"       => "primary",
@@ -93,7 +101,6 @@ $btn_loadregular = array(
         "label"       => "Load Regulars",
         "link"        => "entries_sc.php?eventid=$eventid&pagestate=loadregular",
         "glyph"       => "glyphicon-cloud-download",
-        "g-pos"       => "left",
         "popover"     => "click here to load competitors marked as regular racers in the database",
         "pop-pos"     => "left",
         "block"       => "btn-block",
@@ -107,14 +114,13 @@ $btn_loadprevious = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"          => "loadprevious",
         "style"       => "primary",
         "size"        => "lg",
         "label"       => "Load Previous",
         "glyph"       => "glyphicon-cloud-download",
-        "g-pos"       => "left",
         "link"        => "entries_sc.php?eventid=$eventid&pagestate=loadprevious",
         "popover"     => "click here to load competitors who have entered other races today",
         "pop-pos"     => "left",
@@ -129,15 +135,14 @@ $btn_addentry = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"          => "addentry",
         "style"       => "primary",
         "size"        => "lg",
         "label"       => "Enter Boat(s)",
-        "glyph"       => "glyphicon-plus",
-        "g-pos"       => "left",
-        "popover"     => "click here to add individual competitors to the race",
+        "glyph"       => "glyphicon-list-alt",
+        "popover"     => "click here to add individual boats to the race",
         "pop-pos"     => "left",
         "block"       => "btn-block",
         "disabled"    => "",
@@ -146,7 +151,7 @@ $btn_addentry = array(
 );
 
 $mdl_addentry = array(
-    "form"    => true,
+    "form"    => false,
     "footer"  => false,
     "reload"  => true,
     "close"   => false,
@@ -159,7 +164,6 @@ $mdl_addentry = array(
         "title"       => "Add Race Entry",
         "body"        => "<iframe src='entries_add_pg.php?eventid=$eventid&pagestate=init'
                            frameborder='0' style='width: 100%; height: 600px;' id='entryframe'></iframe>",
-        "form"        => false,
         "script"      => "",
         "onsubmit"    => "",
         "action"      => "",
@@ -167,7 +171,6 @@ $mdl_addentry = array(
         "close-lbl"   => "",
         "reset-lbl"   => "",
         "submit-lbl"  => "",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -175,15 +178,14 @@ $mdl_addentry = array(
 $btn_enterone = array(
     "label"     => true,
     "glyph"     => true,
-    "g-pos"     => "left",
-    "popover"   => "true",
+    "g-pos"     => "right",
+    "popover"   => true,
     "fields"    => array(
         "id"             => "enterone",
         "style"          => "progress-bar-info",
         "size"           => "lg",
         "label"          => "enter",
         "glyph"          => "glyphicon-triangle-right",
-        "g-pos"          => "right",
         "popover"        => "",
         "pop-pos"        => "",
         "block"          => "",
@@ -199,7 +201,6 @@ $btn_enterone = array(
 //    "size"           => "lg",
 //    "label"          => "all today",
 //    "glyph"          => "glyphicon-plus",
-//    "g-pos"          => "left",
 //    "popover"        => "",
 //    "pop-pos"        => "",
 //    "block"          => "",
@@ -213,14 +214,13 @@ $btn_addcompetitor = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"          => "addcompetitor",
         "style"       => "warning",
         "size"        => "lg",
         "label"       => "Register New Boat",
         "glyph"       => "glyphicon-plus",
-        "g-pos"       => "left",
         "popover"     => "click here to add a new competitor to racemanager database",
         "pop-pos"     => "left",
         "block"       => "btn-block",
@@ -242,7 +242,6 @@ $mdl_addcompetitor = array(
         "style"       => "warning",
         "title"       => "Register New Boat",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "entries_sc.php?eventid=$eventid&pagestate=addcompetitor",
         "target"      => "",
@@ -250,7 +249,6 @@ $mdl_addcompetitor = array(
         "close-lbl"   => "nope",
         "reset-lbl"   => "",
         "submit-lbl"  => "add boat",
-        "reload"      => false,
         "footer"      => ""
     ),
 );
@@ -260,14 +258,13 @@ $btn_addclass = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"          => "addclass",
         "style"       => "warning",
         "size"        => "lg",
         "label"       => "Register New Class",
         "glyph"       => "glyphicon-plus",
-        "g-pos"       => "left",
         "popover"     => "click here to add a new type of boat to the system",
         "pop-pos"     => "left",
         "block"       => "btn-block",
@@ -289,7 +286,6 @@ $mdl_addclass = array(
         "style"       => "warning",
         "title"       => "Register New Class",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "entries_sc.php?eventid=$eventid&pagestate=addclass",
         "target"      => "",
@@ -297,7 +293,6 @@ $mdl_addclass = array(
         "close-lbl"   => "nope",
         "reset-lbl"   => "",
         "submit-lbl"  => "add class",
-        "reload"      => false,
         "footer"      => ""
     ),
 );
@@ -307,14 +302,13 @@ $btn_printentries = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"          => "printentriesbtn",
         "style"       => "info",
         "size"        => "lg",
         "label"       => "Print Entries",
         "glyph"       => "glyphicon-print",
-        "g-pos"       => "left",
         "popover"     => "pick the type of output you want",
         "pop-pos"     => "left",
         "block"       => "btn-block",
@@ -339,7 +333,6 @@ $mdl_change = array(
         "style"       => "primary",
         "title"       => "Change Entry Details",
         "body"        => "",
-        "form"        => true,
         "script"      => "
                          $( '#changeModalLabel' ).text( 'Change entry for ' + button.data('entryname'))
                          $( '#identryid' ).val(button.data('entryid'))
@@ -354,7 +347,6 @@ $mdl_change = array(
         "close-lbl"   => "nope",
         "reset-lbl"   => "reset",
         "submit-lbl"  => "update entry",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -375,7 +367,6 @@ $mdl_duty = array(
         "title"       => "Give Duty Points",
         "body"        => "<h4><span class=\"dynmsg\"></span></h4>
                          <input name=\"entryid\" type=\"hidden\" class=\"form-control\" id=\"entryid\">",
-        "form"        => true,
         "script"      => "var entryid = button.data('entryid')     // extract info from data-* attributes
                          var entryname = button.data('entryname')
                          var modal = $(this)
@@ -387,7 +378,6 @@ $mdl_duty = array(
         "close-lbl"   => "nope",
         "reset-lbl"   => "reset",
         "submit-lbl"  => "dutypoints",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -408,7 +398,6 @@ $mdl_unduty = array(
         "title"       => "Remove Duty Points",
         "body"        => "<h4><span class=\"dynmsg\"></span></h4>
                          <input name=\"entryid\" type=\"hidden\" class=\"form-control\" id=\"entryid\">",
-        "form"        => true,
         "script"      => "var entryid = button.data('entryid')     // extract info from data-* attributes
                          var entryname = button.data('entryname')
                          var modal = $(this)
@@ -420,7 +409,6 @@ $mdl_unduty = array(
         "close-lbl"   => "nope",
         "reset-lbl"   => "reset",
         "submit-lbl"  => "remove duty points",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -441,7 +429,6 @@ $mdl_remove = array(
         "title"       => "Remove Entry",
         "body"        => "<h4><span class=\"dynmsg\"></span></h4>
                          <input name=\"entryid\" type=\"hidden\" class=\"form-control\" id=\"entryid\">",
-        "form"        => true,
         "script"      => "var entryid = button.data('entryid')     // extract info from data-* attributes
                          var entryname = button.data('entryname')
                          var modal = $(this)
@@ -453,7 +440,6 @@ $mdl_remove = array(
         "close-lbl"   => "nope",
         "reset-lbl"   => "reset",
         "submit-lbl"  => "remove entry",
-        "reload"      => true,
         "footer"      => ""
     ),
 );

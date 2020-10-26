@@ -153,9 +153,9 @@ EOT;
             
             <hr>
             <div class="margin-top-40">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
                     <a href="search_pg.php" class="btn btn-info btn-sm rm-text-sm" role="button" >
-                        <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Done ...
+                        <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Back to Start ...
                     </a>
                 </div>
             </div>

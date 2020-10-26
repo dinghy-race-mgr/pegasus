@@ -69,9 +69,27 @@ EOT;
     return $html;
 }
 
-function race_panel($field=array())
+function race_panel($params=array())
 {
     empty($field['oodname']) ? "not listed" : $field['oodname'];
+
+    if ($params['status'] == "completed")
+    {
+        $btn_bufr = <<<EOT
+        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+            &nbsp;
+        </div>
+EOT;
+    }
+    else
+    {
+        $btn_bufr = <<<EOT
+        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" {bpopup}>
+            <a href="{blink}" class="btn btn-block {bstyle}" style="font-size: larger" target="_SELF">{blabel}</a>
+        </div>
+EOT;
+
+    }
     $html = <<<EOT
     <div class="row">
         <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1">
@@ -101,10 +119,8 @@ function race_panel($field=array())
                                 </a>
                             </div>
                         </div>
-                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" {bpopup}>
-                            <a href="{blink}" class="btn btn-block {bstyle}" style="font-size: larger" target="_SELF">{blabel}</a>
-                        </div>
-                        
+                        $btn_bufr
+                                                
                     </div> <!-- row -->
                 </div> <!-- panel body -->
             </div> <!-- panel -->

@@ -18,7 +18,7 @@ require_once ("{$loc}/common/lib/util_lib.php");
 u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
 
 // initialising language   
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
+//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");

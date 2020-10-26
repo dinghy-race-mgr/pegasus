@@ -96,14 +96,9 @@ function change_fm($params = array())
 
     $formbufr = "";
     foreach ($params['change'] as $field => $fieldspec) {
+
         if (!$fieldspec['status']) { // this field is not configured
             continue;
-        }
-
-        if (key_exists("evtype", $fieldspec)) { // field is configured but is not relevant to events today
-            if (strpos($fieldspec['evtype'], $params['evtypes']) === false) {
-                continue;
-            }
         }
 
         $placeholder = "";
@@ -127,7 +122,7 @@ EOT;
     <div class="rm-form-style">
     
         <div class="row">     
-            <div class="col-xs-10 col-sm-10 col-md-8 col-lg-8 alert alert-info"  role="alert">Change details TEMPORARILY (just for these events) ...</div>
+            <div class="col-xs-10 col-sm-10 col-md-8 col-lg-8 alert alert-info"  role="alert">Change details TEMPORARILY (for an event) ...</div>
         </div>
     
         <form id="changeboatForm" class="form-horizontal" action="change_sc.php" method="post">
@@ -265,6 +260,11 @@ function boat_label($params = array())
     if ($params['change']) {
         empty($params['change_set']) ? $change_style = "badge-info" : $change_style = "badge-warning";
 
+        if (!empty($params['type']))
+        {
+            $params['type'] == "race" ? $label = "Change Details" : $label = "Add Details";
+        }
+
         $bufr .= <<<EOT
         <a href="change_pg.php?sailnum={sailnum}&crew={crew}&helm={helm}" class="btn btn-default btn-block btn-md" role="button">
             <p class="rm-text-trunc">
@@ -272,7 +272,7 @@ function boat_label($params = array())
                 <span class="rm-text-md">{team}</span>
             </p>
             <span class="badge pull-right $change_style rm-text-sm" >
-                <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Change Details&nbsp;&nbsp;
+                <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;$label&nbsp;&nbsp;
             </span>
         </a>
 EOT;
@@ -397,6 +397,16 @@ function closed($params = array())
         $opentime = "The service should be back shortly - please check with the club website for more details";
     }
 
+    $type_text = "service";
+    if ($params['mode'] == "race")
+    {
+        $type_text = "[Racing] service";
+    }
+    elseif ($params['mode'] == "cruise")
+    {
+        $type_text = "[Leisure Sailing] service";
+    }
+
     $bufr = <<<EOT
         <div class="row" style="margin-top: 80px;">
             <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2">
@@ -407,7 +417,7 @@ function closed($params = array())
                            <h2><span class="glyphicon glyphicon-thumbs-down"></span> &nbsp;&nbsp; Apologies ...</h2>
                         </div>
                         <div class="panel-body lead">
-                            <p>The raceManager SAILOR service is currently not available</p>
+                            <p>The SAILOR $type_text is currently not available</p>
                             <p>$opentime</p>
                         </div>
                 </div>

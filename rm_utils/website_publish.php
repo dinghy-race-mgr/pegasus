@@ -47,7 +47,7 @@ foreach ($db_o->db_getinivalues(false) as $data)
 }
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php",",/templates/layouts_tm.php","./templates/publish_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php","./templates/publish_tm.php"));
 
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
 
@@ -261,6 +261,8 @@ function create_programme_file($start_date, $end_date)
 
 function transfer_programme()
 {
+    // FIXME add transfer function
+
     return false;
 }
 

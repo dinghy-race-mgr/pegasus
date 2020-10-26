@@ -36,8 +36,13 @@ class TIMER
         $event = "e_$this->eventid";
         $_SESSION["$event"]['timerstart'] = $starttime;
 
+        // set timerstart in event
+        $this->db->db_update( 't_event', array("timerstart"=>$starttime), array("id"=>$this->eventid) );
+
+        // set start times in session
         $this->set_start_times($_SESSION["e_{$this->eventid}"]['rc_startscheme'], $_SESSION["e_{$this->eventid}"]['rc_startint']);
 
+        // set start times in t_racestate
         $this->set_fleet_times("inprogress", $starttime);
 
         // debug: u_writedbg($logmsg, __FILE__, __FUNCTION__, __LINE__); // debug:
@@ -50,8 +55,13 @@ class TIMER
         $event = "e_$this->eventid";
         $_SESSION["$event"]['timerstart'] = 0;
 
+        // initialise timerstart in t_event
+        $this->db->db_update( 't_event', array("timerstart"=>0), array("id"=>$this->eventid) );
+
+        // initialise start times in session
         $this->set_start_times($_SESSION["e_{$this->eventid}"]['rc_startscheme'], $_SESSION["e_{$this->eventid}"]['rc_startint']);
-        
+
+        // initialise start times in t_racestate
         $this->set_fleet_times("notstarted", $stoptime);
 
         // debug: u_writedbg($logmsg, __FILE__, __FUNCTION__, __LINE__); // debug:

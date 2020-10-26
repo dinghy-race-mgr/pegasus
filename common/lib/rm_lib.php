@@ -27,6 +27,9 @@ function r_initialiseevent($mode, $eventid)
     /*
      *    mode        reset mode [init|reset|rejoin]
      *    eventid     id for event being initialised
+     *
+     *    assumes t_race, t_lap, t_finish, t_racestate have had all event related records
+     *    deleted if the mode is 'init' or 'reset'
      */
 {
     $status = "ok";
@@ -35,31 +38,10 @@ function r_initialiseevent($mode, $eventid)
     $db_o = new DB();
     $event_o = new EVENT($db_o);
     $rota_o = new ROTA($db_o);
-    //$race_o   = new RACE($db_o, $eventid);
-
-    // empty dynamic database tables if a reset
-//    if ($mode == "init" or $mode == "reset")
-//    {
-//        // clear t_race
-//        //$race_o->race_clearrace($eventid);  FIXME
-//
-//        // clear t_racestate
-//        $race_o->racestate_delete();
-//
-//        // clear lap times (t_lap)
-//        //$race_o->race_clearracetimes($eventid); FIXME
-//
-//        if ($mode == "reset")
-//        {
-//            // reset t_entry
-//            //$event_o->comp_resetentries($eventid); FIXME
-//            $set  =  0;
-//        }
-//    }
 
     // set up codes from drop downs     // FIXME is there a more efficient way to do this
-    $_SESSION['startcodes'] = $db_o->db_getresultcodes("start");
-    $_SESSION['timercodes'] = $db_o->db_getresultcodes("timer");
+    $_SESSION['startcodes']  = $db_o->db_getresultcodes("start");
+    $_SESSION['timercodes']  = $db_o->db_getresultcodes("timer");
     $_SESSION['resultcodes'] = $db_o->db_getresultcodes("result");
 
     // setup where list of codes to continue timing
@@ -75,50 +57,62 @@ function r_initialiseevent($mode, $eventid)
     if ($status == "ok") {
         if ($event_rs AND $event_rs['event_type'] == "racing")  // we have information on the specified event and it is a race
         {
-            // FIXME - deal with event not being part of series OR series not being valid
-            $series_rs = $event_o->event_getseries($event_rs['series_code']);   // get series information
-            $ood_rs = $rota_o->get_event_duties($eventid, "ood_p");             // get OOD information
-            r_seteventinsession($eventid, $event_rs, $series_rs, $ood_rs);      // add event and ood information to session
-
-            // deal with status
-            if ($_SESSION["e_$eventid"]['ev_status'] == "scheduled" or $mode == "reset") {
-                $result = $event_o->event_updatestatus($eventid, "selected");
+            // get series information   FIXME - deal with series_code not being valid
+            if (empty($event_rs['series_code']))
+            {
+                $series_rs = array();
             }
-        } else {
+            else
+            {
+                $series_rs = $event_o->event_getseries($event_rs['series_code']);
+            }
+
+            // get OOD information
+            $ood_rs = $rota_o->get_event_duties($eventid, "ood_p");
+
+            r_seteventinsession($mode, $eventid, $event_rs, $series_rs, $ood_rs);      // add event and ood information to session
+        }
+        else
+        {
             $status = "event_error";
         }
     }
 
 
-    // if we have the event - get the race configuration details
-    if ($status == "ok") {
+    // if we have the event - get the individual race configuration details
+
+    if ($status == "ok")
+    {
         $racecfg_rs = $event_o->event_getracecfg($eventid, $_SESSION["e_$eventid"]['ev_format']);
-        if ($racecfg_rs AND $racecfg_rs['active'] == 1) {
+        if ($racecfg_rs AND $racecfg_rs['active'] == 1)
+        {
             //get fleet configuration for this race format and add to session
             $fleetcfg_rs = $event_o->event_getfleetcfg($_SESSION["e_$eventid"]['ev_format']);
             $fleetnum = count($fleetcfg_rs);
+
+            // set race format info into event session
             r_setraceinsession($eventid, $racecfg_rs, $fleetnum);
 
-            // clear any database fleet status records relating to the fleets if this is first initialisation
-            if ($_SESSION["e_$eventid"]['ev_status'] == "scheduled")  // FIXME won't work on reset
+            // add fleet format info into event session
+            if ($fleetcfg_rs)
             {
-                r_clearfleetdb($db_o, $eventid);
-            }
-
-            if ($fleetcfg_rs) {
-                // loop over each fleet
                 foreach ($fleetcfg_rs as $fleet) {
                     $i = $fleet['fleet_num'];
+
+                    // create racestate information for each fleet in init or reset
+                    if ($mode == "init" or $mode == "reset")
+                    {
+                        r_initfleetdb($db_o, $eventid, $i, $fleet, $racecfg_rs['start_scheme'], $racecfg_rs['start_interval']);
+                    }
+
                     // add fleet information to session
-                    r_initfleetsession($eventid, $i, $fleet);
-
-                    // add information to t_racestate if this is first initialisation or a reset
-                    r_initfleetdb($db_o, $eventid, $i, $fleet, $racecfg_rs['start_scheme'], $racecfg_rs['start_interval'], $mode);
-
+                    r_initfleetsession($db_o, $eventid, $i, $fleet);
                 }
-                // now determine if timer has been started.   FIXME = this won't work if you close the browser - need to get this from racestate'
-                if ($_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime'] != "00:00:00") {$_SESSION["e_$eventid"]['timerstart'] =
-                    strtotime($_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']) - r_getstartdelay(1, $_SESSION["e_$eventid"]['ev_startscheme'], $_SESSION["e_$eventid"]['ev_startint']);
+                // now determine if timer has been started.
+                $_SESSION["e_$eventid"]['timerstart'] = 0;
+                if (!empty($event_rs['timerstart']))  // race has already started
+                {
+                    $_SESSION["e_$eventid"]['timerstart'] = $event_rs['timerstart'];
                 }
             } else {
                 $status = "fleet_error";
@@ -130,7 +124,8 @@ function r_initialiseevent($mode, $eventid)
 
     if ($status == "ok") {
         // check event status - if scheduled, update status to selected in database and session
-        if ($_SESSION["e_$eventid"]['ev_status'] == "scheduled") {
+        if ($_SESSION["e_$eventid"]['ev_status'] == "scheduled")
+        {
             $eventchange = $event_o->event_updatestatus($eventid, "selected");
             $_SESSION["e_$eventid"]['ev_status'] = "selected";
         }
@@ -143,12 +138,11 @@ function r_initialiseevent($mode, $eventid)
 }
 
 
-function r_seteventinsession($eventid, $event, $series_rs, $ood_rs = array())
+function r_seteventinsession($mode, $eventid, $event, $series_rs, $ood_rs = array())
 {    
     // set database record  into session
     $_SESSION["e_$eventid"]['ev_date']        = $event['event_date'];   
-    $_SESSION["e_$eventid"]['ev_starttime']   = $event['event_start'];    // scheduled start time
-    
+    $_SESSION["e_$eventid"]['ev_starttime']   = $event['event_start'];    // scheduled start time e.g 12:30
     $_SESSION["e_$eventid"]['ev_order']       = $event['event_order'];
     $_SESSION["e_$eventid"]['ev_name']        = $event['event_name'];
     $_SESSION["e_$eventid"]['ev_seriescode']  = strtolower($event['series_code']);
@@ -157,56 +151,57 @@ function r_seteventinsession($eventid, $event, $series_rs, $ood_rs = array())
     $_SESSION["e_$eventid"]['ev_entry']       = strtolower($event['event_entry']);
     $_SESSION["e_$eventid"]['ev_status']      = strtolower($event['event_status']);
     $_SESSION["e_$eventid"]['ev_open']        = strtolower($event['event_open']);
-    $_SESSION["e_$eventid"]['ev_prevstatus']  = "";                       // FIXME - what should this be if I am returning
+    $_SESSION["e_$eventid"]['ev_ood']         = ucfirst($event['event_ood']);
     $_SESSION["e_$eventid"]['ev_tidetime']    = $event['tide_time'];
     $_SESSION["e_$eventid"]['ev_tideheight']  = $event['tide_height'];
-    $_SESSION["e_$eventid"]['ev_startscheme'] = $event['start_scheme'];       
-    $_SESSION["e_$eventid"]['ev_startint']    = $event['start_interval'];       
-    $_SESSION["e_$eventid"]['ev_wind']        = $event['wind'];
+    $_SESSION["e_$eventid"]['ev_startscheme'] = $event['start_scheme'];
+    $_SESSION["e_$eventid"]['timerstart']     = $event['timerstart'];
+    $_SESSION["e_$eventid"]['ev_startint']    = $event['start_interval'];
     $_SESSION["e_$eventid"]['ev_notes']       = $event['event_notes'];
     $_SESSION["e_$eventid"]['ev_resultnotes'] = $event['result_notes'];
-    
-    // initialised variables
+    $_SESSION["e_$eventid"]['result_valid']   = $event['result_valid'];
+    $_SESSION["e_$eventid"]['result_publish'] = $event['result_publish'];
 
-    $_SESSION["e_$eventid"]['timerstart']     = 0;                        // actual start time as timestamp
+    $wind = array("ws_start"=>$event['ws_start'], "ws_end"=>$event['ws_end'], "wd_start"=>$event['wd_start'], "wd_end"=>$event['wd_end'],);
+    $_SESSION["e_$eventid"]['ev_wind'] = u_getwind_str($wind);
+
+    // initialised variables
+    if ($mode == "init" or $mode == "reset")
+    {
+        $_SESSION["e_$eventid"]['timerstart']     = 0;                        // actual start time as timestamp (not reset if rejoin)
+    }
+
     $_SESSION["e_$eventid"]['ev_prevstatus']  = "";                       // status before current status for this event
-//    $_SESSION["e_$eventid"]['result_status']  = false;                    // results publication status
-    $_SESSION["e_$eventid"]['exit']           = false;
+    $_SESSION["e_$eventid"]['exit']           = false;                    // flag set if race is closed
     
     // derived variables
     empty($event['event_order']) ? $label = $event['event_start'] : $label = $event['event_order'];
     $_SESSION["e_$eventid"]['ev_label'] = "Race $label";
+
     empty($event['series_code']) ?  $_SESSION["e_$eventid"]['ev_seriesname'] = "" :
                                     $_SESSION["e_$eventid"]['ev_seriesname'] = $series_rs['seriesname'];
     
-    // get OOD name
-    $oodname = "";
-    if (!empty($ood_rs))
+    // get OOD name(s) - if not already in event record
+    if (!empty($ood_rs) and empty($_SESSION["e_$eventid"]['ev_ood']))
     {
         foreach ($ood_rs as $key=>$data)
         {
-            $oodname.= $data['person'].", ";
+            $_SESSION["e_$eventid"]['ev_ood'].= $data['person'].", ";
         }
-        $oodname = trim($oodname,", ");
+        $_SESSION["e_$eventid"]['ev_ood'] = trim($_SESSION["e_$eventid"]['ev_ood'],", ");
     }
-    $_SESSION["e_$eventid"]['ev_ood'] = $oodname;  
     
     // names  (short and full)
     $_SESSION["e_$eventid"]['ev_sname'] = strtok($event['event_name'], " /-");
     $_SESSION["e_$eventid"]['ev_fname'] = $event['event_name'];                // FIXME - shouldn't really need this anymore'
- 
-    // results valid/published
-    $_SESSION["e_$eventid"]['result_valid']   = false;
-    $_SESSION["e_$eventid"]['result_publish'] = false;
     
     // last click time
     $_SESSION["e_$eventid"]['lastclick']['entryid'] = 0;
     $_SESSION["e_$eventid"]['lastclick']['clicktime'] = 0;
-    
 }
 
 
-/* ----------------------- RACE CONFIGURATION fucntions -----------------------------------------------*/
+/* ----------------------- RACE CONFIGURATION functions -----------------------------------------------*/
 
 function r_setraceinsession($eventid, $racecfg, $fleetnum)
 
@@ -221,9 +216,11 @@ function r_setraceinsession($eventid, $racecfg, $fleetnum)
     $_SESSION["e_$eventid"]['rc_startint']    = $racecfg['start_interval'];
     $_SESSION["e_$eventid"]['rc_comppick']    = $racecfg['comp_pick'];
 
+    return;
+
 }
 
-function r_initfleetsession($eventid, $fleetnum, $fleet)
+function r_initfleetsession($db_o, $eventid, $fleetnum, $fleet)
 {
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['fleetnum']     = $fleetnum;
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['startnum']     = $fleet['start_num'];
@@ -250,15 +247,30 @@ function r_initfleetsession($eventid, $fleetnum, $fleet)
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['minhelmage']   = $fleet['min_helmage'];
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxhelmage']   = $fleet['max_helmage'];
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['minskill']     = $fleet['min_skill'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxskill']     = $fleet['max_skill']; 
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxskill']     = $fleet['max_skill'];
 
+    // extend fleet session data with current t_racestate data
+    $fleetdata = $db_o->db_get_row("SELECT * FROM t_racestate WHERE eventid=$eventid AND race=$fleetnum");
+
+    // set fleet details
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['startdelay'] = $fleetdata['startdelay'];
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']  = $fleetdata['starttime'];
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxlap']     = $fleetdata['maxlap'];
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] = $fleetdata['currentlap'];
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['entries']    = $fleetdata['entries'];
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['status']     = $fleetdata['status'];
+
+    // set start details
+    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['startdelay'] = $fleetdata['startdelay'];
+    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['starttime']  = $fleetdata['starttime'];
+
+    return;
 }
 
-function r_initfleetdb($db_o, $eventid, $fleetnum, $fleet, $start_scheme, $start_interval, $mode)
+function r_initfleetdb($db_o, $eventid, $fleetnum, $fleet, $start_scheme, $start_interval)
 {
     // if new or reset - set values into t_racestate  (doesn't update database if we are rejoining)
-    if ($mode == "init" OR $mode == "reset")
-    {
+
         $data = array(
             "race"       => $fleetnum,
             "racename"   => $fleet['fleet_name'],
@@ -275,7 +287,6 @@ function r_initfleetdb($db_o, $eventid, $fleetnum, $fleet, $start_scheme, $start
         $_SESSION["e_$eventid"]['pursuit'] ? $data['maxlap'] = 1000 : $data['maxlap'] = $fleet['defaultlaps'];
 
         $insert_rs = $db_o->db_insert("t_racestate", $data);
-    }
     
     // extend fleet session data with current t_racestate data
     $fleetdata = $db_o->db_get_row("SELECT * FROM t_racestate WHERE eventid=$eventid AND race=$fleetnum");
@@ -296,12 +307,14 @@ function r_initfleetdb($db_o, $eventid, $fleetnum, $fleet, $start_scheme, $start
     return $insert_rs;
 }
 
-function r_clearfleetdb($db, $eventid)
-{
-    $constraint = array("eventid"=>"$eventid");
-    $delete_rs = $db->db_delete("t_racestate", $constraint);
-    return $delete_rs;
-}
+
+
+//function r_clearfleetdb($db, $eventid)
+//{
+//    $constraint = array("eventid"=>"$eventid");
+//    $delete_rs = $db->db_delete("t_racestate", $constraint);
+//    return $delete_rs;
+//}
 
 function r_getstartdelay($startnum, $start_scheme, $start_interval )
 {    
@@ -860,3 +873,207 @@ function r_evaluate_code_race($code, $race_entries)
     return $value;
 }
 
+
+function r_allocate_fleet($class, $fleets, $competitor = array())
+{
+    /*
+     * Allocates a class to a fleet in the race based on class characteristics and race format specification
+     *
+     * Args:
+     *  $class - array containing record for a single class from t_class
+     *  $fleets - 2D array with all records from t_cfgrace for this event
+     *  $competitor - array with record for a single competitor - only if competitor specific characteristics
+     *                are being used for allocation (e.g personal PY, skill level)
+     */
+
+    // FIXME: Still doesn't handle: - flight restrictions     (limits not in t_cfgrace)
+
+    $alloc = array("status" => false, "alloc_code" => "", "start" => "", "fleet" => ""); //  aray to return allocation
+
+    if ($fleets)
+    {
+        u_array_sort_by_column($fleets, "defaultfleet"); // reset event array to put default fleet last in array
+        // debug:u_writedbg(u_check($fleets, "FLEETS"),__FILE__,__FUNCTION__,__LINE__);  // debug:
+
+        // check which fleet this competitor is allocated too
+        // try each fleet - default last
+        foreach ($fleets as $fleetcfg)
+        {
+            // decide whether to map array from session array names to db names - FIXME UGLY work around
+            // rm_sailor and rm_racebox pass session array, rm_util use db names
+            // easiest fix for future tidyup
+            key_exists("fleetnum", $fleetcfg) ? $arr_conv = true : $arr_conv = false;
+
+            if ($arr_conv)
+            {
+                $fleetcfg['fleet_num']   = $fleetcfg['fleetnum'];
+                $fleetcfg['start_num']   = $fleetcfg['startnum'];
+                $fleetcfg['py_type']     = $fleetcfg['pytype'];
+                $fleetcfg['min_py']      = $fleetcfg['minpy'];
+                $fleetcfg['max_py']      = $fleetcfg['maxpy'];
+                $fleetcfg['min_helmage'] = $fleetcfg['minhelmage'];
+                $fleetcfg['max_helmage'] = $fleetcfg['maxhelmage'];
+                $fleetcfg['min_skill']   = $fleetcfg['minskill'];
+                $fleetcfg['max_skill']   = $fleetcfg['maxskill'];
+            }
+
+            $classexc = array_map("trim", explode(",", strtolower($fleetcfg['classexc'])));
+            $classinc = array_map("trim", explode(",", strtolower($fleetcfg['classinc'])));
+            // debug:u_writedbg(u_check($fleetcfg, "FLEETCFG"),__FILE__,__FUNCTION__,__LINE__);
+            // debug:u_writedbg(u_check($classexc, "EXCLUDES"),__FILE__,__FUNCTION__,__LINE__);
+            // debug:u_writedbg(u_check($entry, "ENTRY"),__FILE__,__FUNCTION__,__LINE__);
+
+            if (in_array(strtolower($class['classname']), $classexc, true))  // check for exclusions
+            {
+                // debug:u_writedbg("fleet: {$fleetcfg['fleet_num']} - excluded ",__FILE__,__FUNCTION__,__LINE__);  // debug:
+                continue; 	// this class is specifically excluded from this race - continue to next fleet
+            }
+            else
+            {
+                if ($fleetcfg['onlyinc'])   // only include fleets in classinc
+                {
+                    if (in_array(strtolower($class['classname']), $classinc))
+                    {
+                        // debug:u_writedbg("fleet: {$fleetcfg['fleet_num']} - only included ",__FILE__,__FUNCTION__,__LINE__);  // debug:
+                        $alloc = array("status"=>true, "alloc_code"=>"", "start"=>$fleetcfg['start_num'], "fleet"=>$fleetcfg['fleet_num']);
+                        break;
+                    }
+                }
+                else
+                {
+                    if (in_array(strtolower($class['classname']), $classinc)) // check if class is in included list
+                    {
+                        // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - included ",__FILE__,__FUNCTION__,__LINE__);  // debug:
+                        $alloc = array("status"=>true, "alloc_code"=>"", "start"=>$fleetcfg['start_num'], "fleet"=>$fleetcfg['fleet_num']);
+                        break;
+                    }
+                    else  // if not allocated by class name then check if other class based characteristics match
+                    {
+                        $py_ok    = false;
+                        $crew_ok  = false;
+                        $spin_ok  = false;
+                        $hull_ok  = false;
+                        $age_ok   = false;
+                        $group_ok = false;
+                        $skill_ok = false;
+
+                        // PY check  (passes if lies within range)
+                        if ($fleetcfg['py_type']=="local" and isset($class['local_py']))
+                        {
+                            $py = $class['local_py'];
+                        }
+                        elseif ($fleetcfg['py_type']=="personal" and isset($competitor['personal_py']))
+                        {
+                            $py = $competitor['personal_py'];
+                        }
+                        else
+                        {
+                            $py = $class['nat_py'];
+                        }
+                        // debug:u_writedbg("fleet: {$fleetcfg['fleet_num']} - PY comparison $py|{$fleetcfg['min_py']}|{$fleetcfg['max_py']} ",__FILE__,__FUNCTION__,__LINE__);  // debug:
+                        empty($fleetcfg['min_py']) ? $min_py = 1 : $min_py = $fleetcfg['min_py'];
+                        empty($fleetcfg['max_py']) ? $max_py = 2000 : $max_py = $fleetcfg['max_py'];
+                        if( $py >= $min_py AND $py <= $max_py )
+                        {
+                            $py_ok = true;
+                        }
+
+                        // crew check (passes if 'any' or correct number)
+                        // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - crew comparison {$entry['crew']}|{$fleetcfg['crew']} ",__FILE__,__FUNCTION__,__LINE__);  // debug:
+                        if( empty($fleetcfg['crew'])
+                            OR $class['crew'] == $fleetcfg['crew'] )
+                        {
+                            $crew_ok = true;
+                        }
+
+                        // spinnaker type check (passes if 'any' or specified spinnaker type)
+                        // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - spin comparison {$entry['spinnaker']}|{$fleetcfg['spintype']} ",__FILE__,__FUNCTION__,__LINE__);  // debug:
+                        if( empty($fleetcfg['spintype'])
+                            OR strtolower($class['spinnaker']) == strtolower($fleetcfg['spintype']) )
+                        {
+                            $spin_ok = true;
+                        }
+
+                        // hull type check (passes if 'any' or specified hull type)
+                        // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - hull comparison {$entry['category']}|{$fleetcfg['hulltype']} ",__FILE__,__FUNCTION__,__LINE__);  // debug:
+                        if( empty($fleetcfg['hulltype'])
+                            OR strtolower($class['category']) == strtolower($fleetcfg['hulltype']) )
+                        {
+                            $hull_ok = true;
+                        }
+
+                        if (!empty($competitor))    // don't do competitor checks if not supplied
+                        {
+                            // age check (passes if no age limits set
+                            if (empty($competitor['helm_dob']) OR (empty($fleetcfg['min_helmage']) and empty($fleetcfg['max_helmage'])))
+                            {
+                                $age_ok = true;
+                            }
+                            else
+                            {
+                                $age = date_diff(date_create($competitor['helm_dob']), date_create('now'))->y;
+                                empty($fleetcfg['min_helmage']) ? $min_age = 1 : $min_age = $fleetcfg['min_helmage'];
+                                empty($fleetcfg['max_helmage']) ? $max_age = 100 : $max_age = $fleetcfg['max_helmage'];
+                                if ($age >= $min_age AND $age <= $max_age)
+                                {
+                                    $age_ok = true;
+                                }
+                            }
+
+                            // group check
+                            $groupinc = array_map("trim", explode(",", strtolower($fleetcfg['groupinc'])));
+                            $grouplist = array_map("trim", explode(",", strtolower($competitor['grouplist'])));
+                            if (empty($groupinc) OR array_intersect($groupinc, $grouplist))
+                            {
+                                $group_ok = true;
+                            }
+
+                            // skill check
+                            if (empty($competitor['skill_level']) OR (empty($fleetcfg['min_skill']) and empty($fleetcfg['max_skill'])))
+                            {
+                                $skill_ok = true;
+                            }
+                            else
+                            {
+                                empty($fleetcfg['min_skill']) ? $min_skill = 0 : $min_skill = $fleetcfg['min_skill'];
+                                empty($fleetcfg['max_skill']) ? $max_skill = 100 : $max_skill = $fleetcfg['max_skill'];
+                                if ($competitor['skill_level'] >= $min_skill AND $competitor['skill_level'] <= $max_skill)
+                                {
+                                    $skill_ok = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            $age_ok = true;
+                            $group_ok = true;
+                            $skill_ok = true;
+                        }
+
+                        // if all checks pass then allocate to this race
+                        // debug:u_writedbg("fleet: {$fleetcfg['fleetnum']} - comparison summary $py_ok|$crew_ok|$spin_ok|$hull_ok ",__FILE__,__FUNCTION__,__LINE__); // debug:
+                        if ($py_ok AND $crew_ok AND $spin_ok AND $hull_ok AND $age_ok AND $group_ok AND $skill_ok)
+                        {
+                            // debug:u_writedbg("fleet: {$fleetcfg['fleet_num']} - all match ",__FILE__,__FUNCTION__,__LINE__);
+                            $alloc = array( "status" => true, "alloc_code" => "", "start" => $fleetcfg['start_num'], "fleet" => $fleetcfg['fleet_num']);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (!$alloc['status'])   // did not find fleet to allocate it too
+        {
+            // debug:u_writedbg(" - not allocated to any fleet ",__FILE__,__FUNCTION__,__LINE__);  // debug:
+            $alloc = array("status" => false, "alloc_code" => "E", "start" => "", "fleet" => ""); // E - ineligible (not allocated)
+        }
+    }
+    else                         // did not find fleet configuration data to check
+    {
+        // debug:u_writedbg(" - no configuration found ",__FILE__,__FUNCTION__,__LINE__);  // debug:
+        $alloc = array("status" => false, "alloc_code" => "X", "start" => "", "fleet" => ""); //  X - no configuration
+    }
+
+    return $alloc;
+
+}

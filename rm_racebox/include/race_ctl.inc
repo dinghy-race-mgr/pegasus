@@ -1,6 +1,49 @@
 <?php
-/* button configuration for race page */
+/* button configuration for race page
+BUTTONS
+    Parameters
+        label     : label required  (true|false)
+        glyph     : glyph required  (true|false)
+        g-pos     : glyph position (left|right)
+        popover   : popover required (true|false)
 
+    Fields
+        id        : id for button
+        style     : bootstrap style for button
+        size      : bootstrap size for button
+        label     : label for button
+        link      : url link for button
+        glyph     : glyph name
+        popover   : popover text
+        pop-pos   : popover position
+        block     : 'btn-block' if a block button otherwise leave blank
+        disabled  : 'disabled' if button is to be disabled otherwise leave blank
+        top-margin: top margin style (e.g margin-top-20)
+
+  MODALS
+    Parameters
+        form       : form/validation required in modal (true|false)
+        footer     : form/validation required in modal (true|false)
+        reload     : reload of main page required after modal closed (true|false)
+        close      : cancel button required in modal (true|false)
+        reset      : reset button required in modal (true|false)
+        submit     : submit button required in modal (true|false)
+
+    Fields
+        id         : base id used for modal and form
+        size       : size of modal using bootstrap codes (sm|md|lg)
+        style      : bootstrap style for modal header
+        title      : title to appear in modal header
+        body       : html content for body of modal
+        script     : js script to be run when modal opens - blank if not required
+        action     : action to take on post form - link to script
+        target     : if set can be used to set window target
+        onsubmit   : js action to take on submit
+        close-lbl  : label on close/cancel/back button
+        reset-lbl  : label on reset button
+        submit-lbl : label on submit button
+        footer     : content of footer if requested in params (not used in forms)
+*/
 
 // ---- edit race button ----------------------------------------------------------------
 
@@ -8,14 +51,13 @@ $btn_change = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"        => "change",
         "style"     => "primary",
         "size"      => "lg",
         "label"     => "Change Details",
         "glyph"     => "glyphicon-pencil",
-        "g-pos"     => "left",
         "popover"   => "click to change race details or add notes to race/results",
         "pop-pos"   => "left",
         "disabled"  => "",
@@ -37,7 +79,6 @@ $mdl_change = array(
         "style"       => "primary",
         "title"       => "<b>Change Race Details - $eventname</b>",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "race_sc.php?eventid=$eventid&pagestate=change",
         "target"      => "",
@@ -45,7 +86,6 @@ $mdl_change = array(
         "close-lbl"   => "nope",
         "reset-lbl"   => "",
         "submit-lbl"  => "change details",
-        "reload"      => true,
         "footer"      => "",
     ),
 );
@@ -57,14 +97,13 @@ $btn_format = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"        => "raceformat",
         "size"      => "lg",
         "style"     => "info",
         "label"     => "Race Format",
         "glyph"     => "glyphicon-th-list",
-        "g-pos"     => "left",
         "popover"   => "click to get race format details: start times, signals, tide etc.",
         "pop-pos"   => "left",
         "block"     => "btn-block",
@@ -86,7 +125,6 @@ $mdl_format = array(
         "size"        => "lg",
         "title"       => "<b>Race Format Details</b>",
         "body"        => "",
-        "form"        => false,
         "script"      => "",
         "action"      => "",
         "target"      => "",
@@ -94,7 +132,6 @@ $mdl_format = array(
         "close-lbl"   => "",
         "reset-lbl"   => "",
         "submit-lbl"  => "",
-        "reload"      => false,
         "footer"      => "",
     ),
 );
@@ -105,14 +142,13 @@ $btn_message = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"        => "sendmessage",
         "size"      => "lg",
-        "style"     => "primary",
+        "style"     => "info",
         "label"     => "Report Issue",
         "glyph"     => "glyphicon-send",
-        "g-pos"     => "left",
         "popover"   => "click to send email message to support team",
         "pop-pos"   => "left",
         "block"     => "btn-block",
@@ -134,7 +170,6 @@ $mdl_message = array(
         "size"        => "lg",
         "title"       => "<b>Send Message</b>",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "race_sc.php?eventid=$eventid&pagestate=message",
         "target"      => "",
@@ -142,7 +177,6 @@ $mdl_message = array(
         "close-lbl"   => "nope",
         "reset-lbl"   => "",
         "submit-lbl"  => "send message",
-        "reload"      => false,
         "footer"      => ""
     ),
 );
@@ -153,14 +187,13 @@ $btn_pursuit = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"        => "pursuitstart",
         "size"      => "lg",
-        "style"     => "primary",
+        "style"     => "info",
         "label"     => "Get Start Times",
         "glyph"     => "glyphicon-time",
-        "g-pos"     => "left",
         "popover"   => "click to get list of start times for this pursuit race",
         "pop-pos"   => "left",
         "block"     => "btn-block",
@@ -178,11 +211,10 @@ $mdl_pursuit = array(
     "submit"  => true,
     "fields"  => array(
         "id"          => "pursuitstart",
-        "style"       => "primary",
+        "style"       => "info",
         "size"        => "lg",
         "title"       => "<b>Pursuit Start Times</b>",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "rbx_ex_pursuitstart.php?eventid=$eventid&print=false",
         "target"      => "_BLANK",
@@ -190,7 +222,6 @@ $mdl_pursuit = array(
         "close-lbl"   => "nope",
         "reset-lbl"   => "",
         "submit-lbl"  => "get start times",
-        "reload"      => false,
         "footer"      => ""
     ),
 );
@@ -201,14 +232,13 @@ $btn_cancel = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"        => "cancel",
-        "style"     => "warning",
+        "style"     => "primary",
         "size"      => "lg",
         "label"     => "Cancel Race",
         "glyph"     => "glyphicon-flag",
-        "g-pos"     => "left",
         "popover"   => "marks the race as cancelled - only use if the race has NOT started",
         "pop-pos"   => "left",
         "block"     => "btn-block",
@@ -230,7 +260,6 @@ $mdl_cancel = array(
         "size"        => "md",
         "title"       => "<b>CANCEL - $eventname</b>",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "race_sc.php?eventid=$eventid&eventname=$eventname&pagestate=cancel",
         "target"      => "",
@@ -238,7 +267,6 @@ $mdl_cancel = array(
         "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "cancel race",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -246,16 +274,15 @@ $mdl_cancel = array(
 // ---- un-cancel race button ----------------------------------------------------------------
 $btn_uncancel = array(
     "label"     => true,
-    "glyph"     => true,
-    "g-pos"     => "left",
-    "popover"   => "true",
+    "glyph"     => false,
+    "g-pos"     => "",
+    "popover"   => true,
     "fields"    => array(
         "id"        => "uncancel",
         "style"     => "warning",
         "size"      => "lg",
         "label"     => "Undo Cancel",
         "glyph"     => "",
-        "g-pos"     => "left",
         "popover"   => "reset the cancelled race",
         "pop-pos"   => "left",
         "block"     => "btn-block",
@@ -277,7 +304,6 @@ $mdl_uncancel = array(
         "size"        => "md",
         "title"       => "<b>CANCEL reset  - $eventname</b>",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "race_sc.php?eventid=$eventid&eventname=$eventname&pagestate=uncancel&prevstatus={$_SESSION["e_$eventid"]['ev_prevstatus']}",
         "target"      => "",
@@ -285,7 +311,6 @@ $mdl_uncancel = array(
         "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "reset cancelled race",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -296,14 +321,13 @@ $btn_abandon = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"        => "abandon",
-        "style"     => "warning",
+        "style"     => "primary",
         "size"      => "lg",
         "label"     => "Abandon Race",
         "glyph"     => "glyphicon-flag",
-        "g-pos"     => "left",
         "popover"   => "marks the race as abandoned with no results recorded",
         "pop-pos"   => "left",
         "block"     => "btn-block",
@@ -325,7 +349,6 @@ $mdl_abandon = array(
         "size"        => "md",
         "title"       => "<b>ABANDON  - $eventname</b>",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "race_sc.php?eventid=$eventid&eventname=$eventname&pagestate=abandon",
         "target"      => "",
@@ -333,7 +356,6 @@ $mdl_abandon = array(
         "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "abandon race",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -342,8 +364,8 @@ $mdl_abandon = array(
 // ---- un-abandon race button ----------------------------------------------------------------
 $btn_unabandon = array(
     "label"     => true,
-    "glyph"     => true,
-    "g-pos"     => "left",
+    "glyph"     => false,
+    "g-pos"     => "",
     "popover"   => "true",
     "fields"    => array(
         "id"        => "unabandon",
@@ -351,7 +373,6 @@ $btn_unabandon = array(
         "size"      => "lg",
         "label"     => "Undo Abandon",
         "glyph"     => "",
-        "g-pos"     => "left",
         "popover"   => "undo the race abandonment",
         "pop-pos"   => "left",
         "block"     => "btn-block",
@@ -373,7 +394,6 @@ $mdl_unabandon = array(
         "size"        => "md",
         "title"       => "<b>ABANDON reset  - $eventname</b>",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "race_sc.php?eventid=$eventid&eventname=$eventname&pagestate=unabandon&prevstatus={$_SESSION["e_$eventid"]['ev_prevstatus']}",
         "target"      => "",
@@ -381,7 +401,6 @@ $mdl_unabandon = array(
         "close-lbl"   => "no thanks",
         "reset-lbl"   => "",
         "submit-lbl"  => "reset abandoned race",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -391,14 +410,13 @@ $btn_close = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"       => "close",
         "style"     => "primary",
         "size"      => "lg",
         "label"     => "Close Race",
         "glyph"     => "glyphicon-log-out",
-        "g-pos"    => "left",
         "popover"   => "click here to close the race and tidy up the system",
         "pop-pos"   => "left",
         "block"     => "btn-block",
@@ -420,7 +438,6 @@ $mdl_close = array(
         "size"        => "md",
         "title"       => "<b>CLOSE - $eventname</b>",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "race_sc.php?eventid=$eventid&pagestate=close",
         "target"      => "",
@@ -428,7 +445,6 @@ $mdl_close = array(
         "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "CLOSE race",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -439,14 +455,13 @@ $btn_reset = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => true,
     "fields"    => array(
         "id"        => "reset",
         "style"     => "danger",
         "size"      => "lg",
         "label"     => "Reset Race",
         "glyph"     => "glyphicon-refresh",
-        "g-pos"     => "left",
         "popover"   => "click here to reset the race - start again",
         "pop-pos"   => "left",
         "block"     => "btn-block",
@@ -468,7 +483,6 @@ $mdl_reset = array(
         "size"        => "md",
         "title"       => "<b>RESET - $eventname</b>",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "race_sc.php?eventid=$eventid&pagestate=reset",
         "target"      => "",
@@ -476,7 +490,6 @@ $mdl_reset = array(
         "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "RESET race",
-        "reload"      => true,
         "footer"      => ""
     ),
 );
@@ -488,14 +501,13 @@ $btn_setlaps = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
-    "popover"   => "true",
+    "popover"   => false,
     "fields"    => array(
         "id"         => "setlaps",
         "size"       => "md",
         "style"      => "danger",
         "label"      => "Set Laps",
         "glyph"      => "glyphicon-list",
-        "g-pos"      => "left",
         "popover"    => "click here to set or change the laps for each fleet",
         "pop-pos"    => "bottom",
         "block"      => "btn-block",
@@ -517,7 +529,6 @@ $mdl_setlaps = array(
         "style"       => "primary",
         "title"       => "Set Laps",
         "body"        => "",
-        "form"        => true,
         "script"      => "",
         "action"      => "race_sc.php?eventid=$eventid&pagestate=setalllaps",
         "target"      => "",
@@ -525,7 +536,6 @@ $mdl_setlaps = array(
         "close-lbl"   => "nope",
         "reset-lbl"   => "",
         "submit-lbl"  => "set laps",
-        "reload"      => true,
         "footer"      => ""
     ),
 );

@@ -149,8 +149,8 @@
       "name": "Exe Sails Starcross Steamer",
       "status": "schedule",
       "type": { "category": "racing", "format": "pursuit", "access": "open" },
-      "date": { "type":"fixed", "value": "19-jan", "earliest": "", "latest": "", "day": "sunday" },
-      "time": { "type": "fixed", "start": "12:00" , "earliest": "", "latest": ""},
+      "date": { "type":"fixed", "value": "21-feb", "earliest": "", "latest": "", "day": "sunday" },
+      "time": { "type": "fixed", "start": "11:30" , "earliest": "", "latest": ""},
       "duties": "ood"
     },
     "nct": {
@@ -193,7 +193,7 @@
       "time": { "type": "tidal", "start": "" , "earliest": "10:00", "latest": "17:00"},
       "duties": "safety-driver"
     },
-    "cmc": {
+    "rdj": {
       "name": "Roadford Weekend (Fri-Sun)",
       "status": "schedule",
       "type": { "category": "training", "format": "", "access": "club" },
@@ -291,7 +291,7 @@
       "name": "Easter Series",
       "status": "schedule",
       "type": { "category":"racing", "format": "trophy", "code": "EASTER", "num_events": "2", "access": "club" },
-      "date": { "value": "12-apr", "earliest": "", "latest": "", "day": "sunday", "num_days": "2"},
+      "date": { "value": "4-apr", "earliest": "", "latest": "", "day": "sunday", "num_days": "2"},
       "time": { "type": "tidal", "start": "" , "earliest": "09:30", "latest": "16:00", "max_starts": "4",
                 "start_delta": "-01:00"},
       "duties": "ood|aood|safety-driver|safety-driver|galley|bar"

@@ -218,10 +218,11 @@ class EVENT
          *
          */
     {
-        $select = "SELECT id, event_date, event_start, event_order, event_name, series_code, event_type,
-                         event_format, event_entry, event_status, event_open, tide_time, tide_height, start_scheme,
-                         start_interval, ws_start, wd_start, ws_end, wd_end, event_notes, result_notes, weblink, 
-                         webname, display_code, active, upddate, updby FROM t_event";
+        $select = "SELECT id, event_date, event_start, event_order, event_name, series_code, event_type, event_format, 
+                          event_entry, event_status, event_open, event_ood, tide_time, tide_height, start_scheme,
+                          start_interval, timerstart, ws_start, wd_start, ws_end, wd_end, event_notes, 
+                          result_notes, result_valid, result_publish, weblink, 
+                          webname, display_code, active, upddate, updby FROM t_event";
         $order =  " ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
         $where = "1=1";
         $where_period = "";
@@ -553,6 +554,10 @@ class EVENT
         if ($success>=0)
         {
             // update session
+            if (!empty($fields['event_ood']))
+            {
+                $_SESSION["e_$eventid"]['ev_ood'] = $fields['event_ood'];
+            }
             if (!empty($fields['event_start']))
             {
                 $_SESSION["e_$eventid"]['ev_starttime'] = $fields['event_start'];
@@ -638,7 +643,6 @@ class EVENT
 //    }
     
     // Method: update event status
-
     public function event_updatestatus($eventid, $status)
     {
        // debug: u_writedbg("status:s_status:s_p_status - $status|{$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}", __FILE__, __FUNCTION__,__LINE__); // debug:
@@ -736,7 +740,7 @@ class EVENT
         return $detail;
     }
     
-    public function event_getfleetstatus($eventid)
+    public function get_fleetstatus($eventid)
     {
         // return fleet cfg details as array
         $query = "SELECT a.id, a.eventid, a.racename, a.race, a.start, a.racetype, a.startdelay, a.starttime, a.maxlap,
@@ -943,41 +947,50 @@ class EVENT
     }
     
    
-    public function event_reset($eventid)
+    public function event_reset($eventid, $mode)
     {
-        // check this is still an active event
-        if (empty($_SESSION["e_$eventid"]['ev_name']))
+        // method used to either initialise a new event, reset a running or rejoin a running event
+
+        // reset entries in entry table if a race 'reset' - enables them to be reloaded
+        if ($mode == "reset")
         {
-            return "false";   
+            $entry_o = NEW ENTRY ($this->db, $eventid);
+            $entryrows = $entry_o->reset_signons($eventid);
         }
 
-        // reset entries in entry table
-        $entry_o = NEW ENTRY ($this->db, $eventid);
-        $entryrows = $entry_o->reset_signons($eventid);
+        // clear database tables if an 'init' or 'reset'
+        if ($mode == "init" or $mode == "reset")
+        {
+            // clear race table
+            $del = $this->db->db_delete("t_race", array("eventid"=>$eventid));
 
-        // clear race table
-        $del = $this->db->db_delete("t_race", array("eventid"=>$eventid));
-        
-        // clear laps table
-        $del = $this->db->db_delete("t_lap", array("eventid"=>$eventid));
-        
-        // clear finish table
-        $del = $this->db->db_delete("t_finish", array("eventid"=>$eventid));
-        
-        // clear racestate table
-        $del = $this->db->db_delete("t_racestate", array("eventid"=>$eventid));
-        
+            // clear laps table
+            $del = $this->db->db_delete("t_lap", array("eventid"=>$eventid));
+
+            // clear finish table
+            $del = $this->db->db_delete("t_finish", array("eventid"=>$eventid));
+
+            // clear racestate table
+            $del = $this->db->db_delete("t_racestate", array("eventid"=>$eventid));
+        }
+
         // set event status to selected
-        $setstate = $this->event_updatestatus($eventid, "selected");
-        
-        // clear session for this event
-        unset($_SESSION["e_$eventid"]);
+        if ($mode == "init" or $mode == "reset")
+        {
+            $setstate = $this->event_updatestatus($eventid, "selected");
+        }
 
-        // reset event log
-        u_starteventlogs("EVENT::event_reset", $eventid);
-        
+//        // clear session variables for this event
+//        unset($_SESSION["e_$eventid"]);
+//
+//        // reset event log
+//        if ($mode == "init" or $mode == "reset")
+//        {
+//            u_starteventlogs("EVENT::event_reset[$mode]", $eventid);
+//        }
+
         // now reinitialise event
-        $status = r_initialiseevent("reset", $eventid);
+        $status = r_initialiseevent($mode, $eventid);
         
         return  $status;
     }

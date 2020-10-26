@@ -29,7 +29,7 @@ $eventid = u_checkarg("eventid", "checkintnotzero","");
 u_initpagestart($_REQUEST['eventid'], $page, true);
 include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php"); // language file
 //u_writedbg("<pre>session".print_r($_SESSION,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
-//echo "<pre>".print_r($_SESSION["e_$eventid"],true)."</pre>";
+//echo "<pre>".print_r($_SESSION,true)."</pre>";
 
 if (!$eventid) { u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
                               "please contact your raceManager administrator");  }
@@ -53,11 +53,16 @@ $event = $event_o->get_event_byid($eventid);
 include ("./include/race_ctl.inc");
 include("./templates/growls.php");                      // FIXME why is this here - this is not a template as such
 
+//echo "<pre>".print_r($_SESSION,true)."</pre>";
+
 $fleet_data = array();
+$flag_data = array();
 for ($fleetnum=1; $fleetnum<=$_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum++)
 {
     $fleet_data["$fleetnum"] = $_SESSION["e_$eventid"]["fl_$fleetnum"];
+    $flag_data["$fleetnum"] = $_SESSION["e_$eventid"]["fl_$fleetnum"]['warnsignal'];
 }
+//echo "<pre>".print_r($flag_data,true)."</pre>";
 
 //  check laps status
 $laps_set = checklapstatus($eventid);
@@ -101,7 +106,8 @@ else
     $params = array(
         "eventid"        => $eventid,
         "timer-start"    => $_SESSION["e_$eventid"]['timerstart'],       // time watch started
-        "fleet-data"     => $event_o->event_getfleetstatus($eventid),    // current fleet status
+        "fleet-data"     => $event_o->get_fleetstatus($eventid),    // current fleet status
+        "flag-data"      => $flag_data,
         "pursuit"        => $_SESSION["e_$eventid"]['pursuit'],
         "start-scheme"   => $_SESSION["e_$eventid"]['rc_startscheme'],
         "start-interval" => $_SESSION["e_$eventid"]['rc_startint']
@@ -125,6 +131,7 @@ $rbufr_top = "";
 // change race details - modal
 $rbufr_top.= $tmpl_o->get_template("btn_modal", $btn_change['fields'], $btn_change);
 $fields = array(
+    "event-ood"      => $_SESSION["e_$eventid"]['ev_ood'],
     "start-time"     => $_SESSION["e_$eventid"]['ev_starttime'],
     "entry-option"   => $_SESSION["e_$eventid"]['ev_entry'],
     "start-option"   => $_SESSION["e_$eventid"]['rc_startscheme'],

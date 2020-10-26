@@ -47,14 +47,21 @@ if ($eventid AND $pagestate)
     {        
         $status = $event_o->event_updatestatus($eventid, "running");       // update event status
         $race_o->race_times_init();                                        // reset timings in t_race, t_lap and t_finish
-        $timer_o->start($_SERVER['REQUEST_TIME']);                         // start timer 
+        $timer_o->start($_SERVER['REQUEST_TIME']);                         // start timer
     }
     
     elseif ($pagestate == "stoptimer")
     {
-        $status = $event_o->event_updatestatus($eventid, "selected");       // update event status
-        $timer_o->stop($_SERVER['REQUEST_TIME']);                           // stop timer
-        u_growlSet($eventid, $page, $g_start_timer_stop);
+        if (strtolower(trim($_REQUEST['confirm'])) == "stop")
+        {
+            $status = $event_o->event_updatestatus($eventid, "selected");       // update event status
+            $timer_o->stop($_SERVER['REQUEST_TIME']);                           // stop timer
+            u_growlSet($eventid, $page, $g_start_timer_stop);
+        }
+        else
+        {
+            u_growlSet($eventid, $page, $g_start_timer_continue);
+        }
     }
     
     elseif ($pagestate == "adjusttimer")

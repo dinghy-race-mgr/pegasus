@@ -69,6 +69,18 @@ function u_2darray_search($array, $field, $match)
 }
 
 function u_array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
+    /*
+     * usage:
+     *
+$data[] = array('volume' => 67, 'edition' => 2);
+$data[] = array('volume' => 86, 'edition' => 1);
+$data[] = array('volume' => 85, 'edition' => 6);
+$data[] = array('volume' => 98, 'edition' => 2);
+$data[] = array('volume' => 86, 'edition' => 6);
+$data[] = array('volume' => 67, 'edition' => 7);
+
+u_array_sort_by_column($data, "edition", SORT_DESC);
+     */
     $sort_col = array();
     foreach ($arr as $key=> $row) {
         $sort_col[$key] = $row[$col];
@@ -455,13 +467,13 @@ function u_startsyslog($scriptname, $app)
 }
 
 
-function u_starteventlogs($scriptname, $eventid)
+function u_starteventlogs($scriptname, $eventid, $mode)
 {
     global $loc;
     
-    $_SESSION["e_$eventid"]['eventlog'] = "{$loc}/logs/eventlogs/event_$eventid.log";     // setup event log e.g  event_907.log
+    $_SESSION["e_$eventid"]['eventlog'] = "./logs/eventlogs/event_$eventid.log";     // setup event log e.g  event_907.log
     u_writelog("initialising event: $scriptname --- [eventid: $eventid] ", 0);              // add system log entry
-    u_writelog(date("Y-m-d")." EVENT START: $scriptname --- [eventid: $eventid] ", $eventid); 
+    u_writelog(date("Y-m-d")." EVENT START: $scriptname --- [eventid: $eventid mode: $mode] ", $eventid);
 }
 
 
@@ -941,7 +953,7 @@ function u_growlProcess($eventid, $page)
        "type"            => "info",
        "offset_from"     => "bottom",
        "offset_amount"   => "50",
-       "align"           => "right",
+       "align"           => "center",
        "width"           => "600",
        "delay"           => "4000",
        "allow_dismiss"   => "true",

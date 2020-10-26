@@ -89,9 +89,9 @@ EOT;
     </div>
     
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
             <a href="search_pg.php" class="btn btn-info btn-sm rm-text-sm" role="button" >
-                <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Done ...
+                <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span>&nbsp;Back to Start ...
             </a>
         </div>
     </div>
@@ -214,88 +214,4 @@ EOT;
     return $bufr;
 }
 
-//function change_fm($params = array())          FIXME - can this be removed
-//{
-//    $lbl_width  = "col-xs-3";
-//    $fld_width  = "col-xs-7";
-//    $fld_narrow = "col-xs-3";
-//
-//    // deal with helm if points accumulated by boat
-//    $helm_bufr = "";
-//    if ($params['points_allocation'] == "boat")
-//    {
-//        $helm_bufr.= <<<EOT
-//    <div class="form-group form-condensed">
-//        <label for="helm" class="rm-form-label control-label $lbl_width">Helm</label>
-//        <div class="$fld_width">
-//            <input name="helm" autocomplete="off" type="text" class="form-control input-lg rm-form-field" id="idhelm" value="{helm}">
-//        </div>
-//    </div>
-//EOT;
-//    }
-//
-//    // deal with singlehanders
-//    $crew_bufr = "";
-//    if (!$params['singlehander'])
-//    {
-//        $crew_bufr.= <<<EOT
-//    <div class="form-group form-condensed">
-//        <label for="crew" class="rm-form-label control-label $lbl_width">Crew</label>
-//        <div class="$fld_width">
-//            <input name="crew" autocomplete="off" type="text" class="form-control input-lg rm-form-field" id="idcrew" value="{crew}" >
-//        </div>
-//    </div>
-//EOT;
-//    }
-//
-//    $bufr = <<<EOT
-//    <div class="rm-form-style">
-//
-//        <div class="row">
-//            <div class="col-xs-10 col-sm-10 col-md-8 col-lg-8 alert alert-info"  role="alert">Change details as necessary...</div>
-//        </div>
-//
-//        <form id="editboatForm" class="form-horizontal" action="change_sc.php" method="post">
-//            <div class=""><input name="compid" type="hidden" id="idcomp" value="{compid}"></div>
-//
-//            $helm_bufr
-//
-//            $crew_bufr
-//
-//            <div class="form-group form-condensed">
-//                <label for="sailnum" class="rm-form-label control-label $lbl_width">Sail No.</label>
-//                <div class="$fld_narrow">
-//                    <input name="sailnum" autocomplete="off" type="text" class="form-control input-lg rm-form-field" id="idsailnum" value="{sailnum}" >
-//                </div>
-//            </div>
-//
-//
-//            <div class="row margin-top-20">
-//                <div class = "col-xs-10 col-xs-offset-3 col-sm-10  col-sm-offset-3 col-md-8  col-md-offset-2 col-lg-8 col-lg-offset-3">
-//                    <label class="radio-inline">
-//                        <input type="radio" name="scope" class="rm-form-label" value="temp" checked>
-//                        &nbsp;Just for today &nbsp;&nbsp;&nbsp;
-//                    </label>
-//                    <label class="radio-inline">
-//                        <input type="radio" name="scope" class="rm-form-label" value="perm">
-//                        &nbsp;Today and all future races
-//                    </label>
-//                </div>
-//            </div>
-//
-//            <div class="pull-right margin-top-20">
-//                <button type="button" class="btn btn-default btn-lg" onclick="history.go(-1);">
-//                    <span class="glyphicon glyphicon-remove"></span>&nbsp;Cancel
-//                </button>
-//                &nbsp;&nbsp;&nbsp;&nbsp;
-//                <button type="submit" class="btn btn-warning btn-lg" >
-//                    <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;<b>Change Details</b>
-//                </button>
-//            </div>
-//
-//        </form>
-//    </div>
-//EOT;
-//    return $bufr;
-//}
 

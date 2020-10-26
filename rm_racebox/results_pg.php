@@ -107,7 +107,7 @@ $rbufr = "";
 // retirements button
 if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
 {
-    $entry_o = new ENTRY($db_o, $eventid, $_SESSION["e_$eventid"]);
+    $entry_o = new ENTRY($db_o, $eventid);
 
     if ($_SESSION["e_$eventid"]['ev_entry'] == "signon-retire")
     {

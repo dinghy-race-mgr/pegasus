@@ -60,6 +60,7 @@ if ($pagestate == "init")
 
     $fields = array(
         "title"      => "start infringements",
+        "theme"      => $_SESSION['racebox_theme'],
         "loc"        => $loc,
         "stylesheet" => "./style/rm_racebox.css",
         "navbar"     => "",

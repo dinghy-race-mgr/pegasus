@@ -33,10 +33,21 @@ function fm_changerace($params=array())
 
     $html = <<<EOT
         <!-- instructions -->
-        <div class="alert alert-warning alert-dismissable" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            Just add the details you want to change. <br>
-            [<b>Want a New Race?</b> - restart the raceManager racebox application and select the add race option]
+        <div class="alert alert-dismissable well well-sm" role="alert">
+            <button type="button" class="close" style="right: 1px !important" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <p class="text-info lead">Just edit the details you want to change.
+            <p class="text-info"><b>Want a New Race?</b> - restart raceManager: RACEBOX and select the <span class="label label-info">Add Race</span> option</p>
+        </div>
+        
+        <!-- field #0 - ood name -->
+        <div class="form-group">
+            <label class="$labelwidth control-label">OOD Name</label>
+            <div class="$fieldwidth inputfieldgroup">
+                <input type="text" class="form-control" id="start" name="event_ood" value="{event-ood}"
+                    placeholder="enter new OOD name"
+                    required data-fv-notempty-message="this information is required"
+                />
+            </div>
         </div>
 
         <!-- field #1 - start time -->
@@ -102,48 +113,6 @@ EOT;
 }
 
 
-function fm_race_message($params=array())
-{
-    $labelwidth = "col-xs-3";
-    $fieldwidth = "col-xs-7";
-
-    $html = <<<EOT
-        <!-- instructions -->
-        <p>Use this form to let your support team know about any problems you had </p>
-
-        <!-- field #1 - name -->
-        <div class="form-group">
-            <label class="$labelwidth control-label">Your Name</label>
-            <div class="$fieldwidth inputfieldgroup">
-                <input type="text" class="form-control" id="msgname" name="msgname" value=""
-                    required data-fv-notempty-message="please add your name here" />
-            </div>
-        </div>
-
-        <!-- field #2 - email address -->
-        <div class="form-group">
-            <label class="$labelwidth control-label">Your Email</label>
-            <div class="$fieldwidth inputfieldgroup">
-                <input type="email" class="form-control" id="email" name="email" value=""
-                    placeholder="enter your email if you would like a reply"
-                    data-fv-emailaddress-message="This does not look like a valid email address" />
-            </div>
-        </div>
-
-        <!-- field #3 - message -->
-        <div class="form-group">
-            <label class="$labelwidth control-label">Message</label>
-            <div class="$fieldwidth inputfieldgroup">
-                <textarea rows=4 class="form-control" id="message" name="message"
-                    required data-fv-notempty-message="please describe your issue or problem here"
-                    >
-                </textarea>
-            </div>
-        </div>
-EOT;
-    return $html;
-}
-
 function fm_cancel_ok($param=array())
 {
     $html = <<<EOT
@@ -207,7 +176,7 @@ function fm_abandon_ok($param=array())
             <p>If the boats have completed at least one lap and your sailing
             instructions allow finishing at an earlier lap - use the <b>"reset finish lap"</b> option on the
             Results Page instead of abandoning the race.</p>
-            <p><a class="btn btn-info" href="results_pg.php?eventid={eventid}" role="button">
+            <p><a class="btn btn-primary" href="results_pg.php?eventid={eventid}" role="button">
                 Result Page <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
             </a></p>
         </div>
@@ -297,8 +266,8 @@ function fm_reset_ok($param=array())
         <!-- instructions -->
         <h4 class="text-danger"><b>Are you REALLY REALLY sure?</b></h4>
         <p><b>This will <u>delete</u> all entries* and lap timings you have recorded.</b></p>
-        <p>If you are part way through a race and have a problem it will usually best to record
-        finish times on paper and try to resolve the problem after the race <u>without a reset</u></p>
+        <p>If you are part way through a race and have a problem it is usually best to record
+        finishing times on paper and try to resolve the problem after the race <span class="text-danger"><b>without a reset</b></span></p>
         <p class="text-primary"><small>* If entries are made through the sign on system - these can be reloaded after the reset</small></p>
 
         <!-- confirm field -->
@@ -450,7 +419,7 @@ function race_detail_display($params=array())
                     <span class="text-$event_style"> - $event_status</span></h3>
             </div>
 
-            <div class="col-md-6 margin-top-10">
+            <div class="col-md-5 margin-top-10 well well-sm">
                 <dl class="dl-horizontal text-primary">
                   <dt>start time</dt><dd>{start-time}&nbsp;&nbsp;&nbsp;$tide_str</dd>
                   <dt>race officer</dt><dd>{ood-name}</dd>
@@ -473,8 +442,9 @@ function race_status_display($params)
     {
         foreach ($params['fleet-data'] as $fleet)
         {
-            // fleet
+            // fleet/flag
             $fleetname = ucwords($fleet['racename']);
+            $warning_flag = $params['flag-data'][$fleet['race']];
 
             // number racing
             empty($fleet['num_racing']) ? $num_racing = 0 : $num_racing = $fleet['num_racing'];
@@ -523,12 +493,15 @@ function race_status_display($params)
 
             $table.= <<<EOT
             <tr class="lead">
-                <td >$fleetname</td>
-                <td style="text-align: center"> {$fleet['start']}</td>
+                <td class="truncate" >$fleetname</td>
+                <td style="text-align: left"> 
+                    {$fleet['start']} &nbsp;                   
+                </td>
+                <td ><img class="img-responsive" src="../common/images/signal_flags/$warning_flag" alt="warning flag"></td>
                 <td style="text-align: center">{$fleet['racetype']}</td>
                 <td style="text-align: center">{$fleet['entries']}</td>
                 <td style="text-align: center">$num_racing</td>
-                <td style="align: center">$setlaps_bufr</td>
+                <td align="center">$setlaps_bufr</td>
                 <td style="text-align: center">$laps</td>
                 <td style="text-align: center">{$fleet['elapsed']}</td>
                 <td style="text-align: center">{$fleet['status']}</td>
@@ -545,7 +518,7 @@ EOT;
 
     $html =<<<EOT
     <div class="row">
-        <div class="col-md-10" col-md-offset-1>
+        <div class="col-md-11">
             <div class="panel panel-default">
                 <div class="panel-heading clearfix" >
                      <div class="row">
@@ -559,10 +532,11 @@ EOT;
                     </div> 
                 </div>
                 <div class="panel-body bg-default">
-                    <table class="table">
+                    <table id="racetable" class="table" style="position: relative; display: inline-block;">
                         <thead class="text-info" >
                             <th>fleet</th>
                             <th>start</th>
+                            <th width="5%">&nbsp;</th>
                             <th>scoring type</th>
                             <th>entries</th>
                             <th>no. racing</th>
@@ -587,7 +561,8 @@ EOT;
 function set_laps_control($eventid, $race, $maxlap, $style, $label)
 {
     $html = <<<EOT
-    <div class="btn-group pull-left" style="margin-bottom: 5px; display:inline-block">
+    <div style="display:inline-block">
+    <div class="btn-group" >
       <button type="button" class="btn btn-primary disabled btn-md " style="width: 5em; font-size: 0.8em">
          <span >$maxlap laps</span>
       </button>
@@ -608,6 +583,7 @@ function set_laps_control($eventid, $race, $maxlap, $style, $label)
         <li role="separator" class="divider"></li>
         <li><a href="#setlapsModal" data-toggle="modal">more ...</a></li>
       </ul>
+    </div>
     </div>
 EOT;
 

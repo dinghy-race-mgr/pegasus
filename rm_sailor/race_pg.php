@@ -11,6 +11,7 @@ $page       = "race";
 $scriptname = basename(__FILE__);
 $date       = date("Y-m-d");
 require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("./include/rm_sailor_lib.php");
 
 u_initpagestart(0,"race_pg",false);   // starts session and sets error reporting
@@ -43,7 +44,7 @@ $_SESSION['entries'] = get_entry_information($_SESSION['sailor']['id'], $_SESSIO
 // set up boat information
 $race_fields = set_boat_details();
 $race_fields["boat-label"] = $tmpl_o->get_template("boat_label", $race_fields,
-             array("change"=>true, "change_set"=>$_SESSION['sailor']['change']));
+             array("change"=>true, "change_set"=>$_SESSION['sailor']['change'], "type" => "race"));
 
 // display race page
 if ($_SESSION['events']['numevents'] > 0)
