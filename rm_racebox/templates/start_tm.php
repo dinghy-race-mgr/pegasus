@@ -132,6 +132,18 @@ function fleet_panel($params)
     $params['pursuit'] ? $recall_bufr = "&nbsp;" : $recall_bufr   = "{recall}";
 
     // put panel together
+
+
+
+
+
+
+
+
+
+
+
+
     $html = <<<EOT
     <div class="row">
         <div class="col-md-12">
@@ -159,7 +171,7 @@ function fleet_panel($params)
                                 {start-delta}
                             </div>
                         </div>
-                        <div class="col-md-4">&nbsp;<img src="../common/images/signal_flags/{flag}" alt="warning flag" width="15%" height="15%" style="border: 1px solid slategrey"></div>
+                        <div class="col-md-4">&nbsp;<img src="../common/images/signal_flags/{flag}" alt="warning flag" width="15%" height="15%"></div>
                         <div class="col-md-3">$infringe_bufr</div>
                         <div class="col-md-3">$recall_bufr</div>
                     </div>

@@ -141,7 +141,7 @@ class EVENT
         if ($type) { $constraints['event_type'] = $type; }
 
         $events = $this->get_events("not_noevent", "all", array(), $constraints);
-        u_writedbg("<pre>event".print_r($events,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
+        //u_writedbg("<pre>event".print_r($events,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
         if (empty($events)) {          // return false
             $detail = false;
         } else {                       // return 1D array
@@ -951,47 +951,46 @@ class EVENT
     {
         // method used to either initialise a new event, reset a running or rejoin a running event
 
+        $status = true;
+
         // reset entries in entry table if a race 'reset' - enables them to be reloaded
         if ($mode == "reset")
         {
             $entry_o = NEW ENTRY ($this->db, $eventid);
             $entryrows = $entry_o->reset_signons($eventid);
+            if ($entryrows < 0) { $status = false; }
         }
 
-        // clear database tables if an 'init' or 'reset'
-        if ($mode == "init" or $mode == "reset")
+        if ($status)
         {
-            // clear race table
-            $del = $this->db->db_delete("t_race", array("eventid"=>$eventid));
+            // clear database tables if an 'init' or 'reset'
+            if ($mode == "init" or $mode == "reset")
+            {
+                // clear race table
+                $del = $this->db->db_delete("t_race", array("eventid"=>$eventid));
 
-            // clear laps table
-            $del = $this->db->db_delete("t_lap", array("eventid"=>$eventid));
+                // clear laps table
+                $del = $this->db->db_delete("t_lap", array("eventid"=>$eventid));
 
-            // clear finish table
-            $del = $this->db->db_delete("t_finish", array("eventid"=>$eventid));
+                // clear finish table
+                $del = $this->db->db_delete("t_finish", array("eventid"=>$eventid));
 
-            // clear racestate table
-            $del = $this->db->db_delete("t_racestate", array("eventid"=>$eventid));
+                // clear racestate table
+                $del = $this->db->db_delete("t_racestate", array("eventid"=>$eventid));
+            }
+
+            // update event record
+            if ($mode == "init" or $mode == "reset")
+            {
+                $setstate = $this->event_updatestatus($eventid, "selected");                         // status
+
+                $upd = $this->db->db_query("UPDATE t_event SET timerstart = 0 WHERE id = $eventid"); // timer start
+            }
+
+            // now reinitialise event
+            $status = r_initialiseevent($mode, $eventid);
         }
 
-        // set event status to selected
-        if ($mode == "init" or $mode == "reset")
-        {
-            $setstate = $this->event_updatestatus($eventid, "selected");
-        }
-
-//        // clear session variables for this event
-//        unset($_SESSION["e_$eventid"]);
-//
-//        // reset event log
-//        if ($mode == "init" or $mode == "reset")
-//        {
-//            u_starteventlogs("EVENT::event_reset[$mode]", $eventid);
-//        }
-
-        // now reinitialise event
-        $status = r_initialiseevent($mode, $eventid);
-        
         return  $status;
     }
 

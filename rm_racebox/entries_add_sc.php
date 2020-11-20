@@ -86,13 +86,14 @@ function enter_boat($entry, $eventid, $race = "")
 
     if ($alloc['status'])           // ok to load entry
     {
-        $i = $entry['fleet'];
         $entry = array_merge($entry, $alloc);
+        $i = $entry['fleet'];
         $entry_alloc = "[S {$entry['start']} / F $i]";
-        $result = $entry_o->set_entry($entry);
+        $result = $entry_o->set_entry($entry, $_SESSION["e_$eventid"]["fl_$i"]['pytype']);
 
         if ($result['status'])
         {
+
             $upd = $entry_o->upd_lastrace( $entry['id'], $eventid);         // update competitor record
             $_SESSION["e_$eventid"]['enter_rst'][] = $entry_tag;
 

@@ -58,7 +58,7 @@ class RACE
 	    $this->db = $db;
 	    $this->eventid = $eventid;
         $this->scoring = array();
-        u_writedbg("<pre>session".print_r($_SESSION["e_{$eventid}"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
+        //u_writedbg("<pre>session".print_r($_SESSION["e_{$eventid}"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
 
         for ( $i = 1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++ )
         {
@@ -68,7 +68,7 @@ class RACE
         {
            $this->pursuit = $_SESSION["e_$eventid"]['pursuit'];
         }
-        u_writedbg("<pre>eventid:{$this->eventid}|pursuit:{$this->pursuit}<br>scoring".print_r($this->scoring,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
+        //u_writedbg("<pre>eventid:{$this->eventid}|pursuit:{$this->pursuit}<br>scoring".print_r($this->scoring,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
     }
 
 
@@ -439,6 +439,7 @@ class RACE
     public function race_entry_counts()
     {
         $sql = "SELECT fleet, count(*) as numentries FROM t_race WHERE eventid = '{$this->eventid}' GROUP BY fleet ORDER BY fleet";
+        //echo "<pre>$sql</pre>";
         $entrycount = $this->db->db_query($sql);
         
         $count[0] = 0;  // holds total entry count
@@ -447,6 +448,8 @@ class RACE
             $count[$row['fleet']] = $row['numentries'];
             $count[0] = $count[0] + $count[$row['fleet']];
         }
+        
+        //echo "<pre>".print_r($count,true)."</pre>";
         
         return $count;
     }
@@ -959,61 +962,64 @@ class RACE
     }
     
     
-    public function entry_time_undo()
+    public function entry_time_undo($entryid=0)
     {
         /*
         ?? does this work for a force finish ??
          - could be more efficient if I stored a stack with last N boats clicked - useful elsewhere
          - could I use lastclick session variables - but then I woul need to work out the new lastclick - still more efficient in most cases
         */
-        
 
-        $lap_rs = $this->entry_lap_last();                                    // find last boat timed
+        $lap_rs = $this->entry_lap_last($entryid);        // if boat not specified as argument - find last boat timed
+        if ($lap_rs) {
+            $entryid = $lap_rs['entryid'];
+            $lap = $lap_rs['lap'];
 
-        $entry_rs = $this->entry_get($lap_rs['entryid'], "all");              // get the entry details
+            $entry_rs = $this->entry_get($entryid, "all");    // get the entry details
 
-        $del = $this->entry_lap_delete($lap_rs['entryid'], $lap_rs['lap']);   // remove the t_lap record of that timing
-        
+            $del = $this->entry_lap_delete($entryid, $lap);   // remove the t_lap record of that timing
 
-        $lap_num = intval($lap_rs['lap']) - 1;                                // get the lap details from the new last timing for that entry
-        if ($lap_num==0)
-        {
-            $update = array( "lap" => 0, "etime" => 0, "ctime" => 0, "atime" => 0, "ptime" => 0 );  // reset entry timings - no laps recorded
-        }
-        else
-        {
-            $lap_new = $this->entry_lap_get($lap_rs['entryid'], "lap", $lap_num);  // get previous lap details and use them to update the entry record
-            $update = array(
-            "lap"       => $lap_new['lap'],
-            "etime"     => $lap_new['etime'],
-            "ctime"     => $lap_new['ctime'],
-            "atime"     => 0,
-            "ptime"     => $lap_new['etime'] + round($lap_new['etime']/$lap_new['lap']),        
-            );
-        }
-                
-        if ($entry_rs['status'] == "F")                  // reset status if boat has finished
-        {
-            $update['status'] = "R";
-            if ($_SESSION["e_{$this->eventid}"]["fl_{$entry_rs['fleet']}"]['status'] == "finishing") // if finishing - check if any boats finished and reset if not
+
+            $lap_num = intval($lap) - 1;                      // get the lap details from the new last timing for that entry
+            if ($lap_num == 0) {
+                $update = array("lap" => 0, "etime" => 0, "ctime" => 0, "atime" => 0, "ptime" => 0);  // reset entry timings - no laps recorded
+            } else {
+                $lap_new = $this->entry_lap_get($entryid, "lap", $lap_num);  // get previous lap details and use them to update the entry record
+                $update = array(
+                    "lap" => $lap_new['lap'],
+                    "etime" => $lap_new['etime'],
+                    "ctime" => $lap_new['ctime'],
+                    "atime" => 0,
+                    "ptime" => $lap_new['etime'] + round($lap_new['etime'] / $lap_new['lap']),
+                );
+            }
+
+            if ($entry_rs['status'] == "F")                  // reset status if boat has finished
             {
-                $rs = $this->race_getentries(array("status"=>"F"));
-                if ($rs) {$_SESSION["e_{$this->eventid}"]["fl_{$entry_rs['fleet']}"]['status'] = "inprogress";}
+                $update['status'] = "R";
+                if ($_SESSION["e_{$this->eventid}"]["fl_{$entry_rs['fleet']}"]['status'] == "finishing") // if finishing - check if any boats finished and reset if not
+                {
+                    $rs = $this->race_getentries(array("status" => "F"));
+                    if ($rs) {
+                        $_SESSION["e_{$this->eventid}"]["fl_{$entry_rs['fleet']}"]['status'] = "inprogress";
+                    }
+                }
+            }
+
+            $status = $this->entry_update($lap_rs['entryid'], $update);           // update the details in t_race
+
+            // check to see what lap the leader is on and update the session variable
+            $_SESSION["e_{$this->eventid}"]["fl_{$entry_rs['fleet']}"]['currentlap'] = $this->race_laps_current($entry_rs['fleet']);
+
+            if ($status) {
+                return $entry_rs;
+            } else {
+                return false;
             }
         }
-                
-        $status = $this->entry_update($lap_rs['entryid'], $update);           // update the details in t_race
-
-        // check to see what lap the leader is on and update the session variable
-        $_SESSION["e_{$this->eventid}"]["fl_{$entry_rs['fleet']}"]['currentlap'] = $this->race_laps_current($entry_rs['fleet']);
-        
-        if ($status)
-        {
-            return $entry_rs;
-        }
         else
         {
-            return false;
+            return 0;
         }
     }
     
@@ -1078,16 +1084,16 @@ class RACE
             }
         }
 
-        $update = $this->db->db_update("t_lap", $update, $where);
-        if ($update == 1)
+        $upd = $this->db->db_update("t_lap", $update, $where);
+        if ($upd == 1)
         {
             $rst['status'] = true;
-            $rst['msg'] = "updated lap $lap with elapsed time of ".gmdate("H:i:s", $update['etime']);
+            $rst['msg'] = "updated lap $lap with elapsed time of ".gmdate("H:i:s", $update['etime'])."<br>";
         }
         else
         {
             $rst['status'] = false;
-            $rst['msg'] = "failed to update lap record details for lap $lap";
+            $rst['msg'] = "failed to update lap record details for lap $lap <br>";
         }
 
         return $rst;
@@ -1127,9 +1133,11 @@ class RACE
     }
 
 
-    public function entry_lap_last()
+    public function entry_lap_last($entryid = 0)
     { 
-        $row = $this->db->db_query("SELECT * FROM t_lap WHERE eventid={$this->eventid} ORDER BY clicktime DESC LIMIT 1 ");
+        $entryid==0 ? $entry_clause = "" : $entry_clause = "and entryid = $entryid";
+
+        $row = $this->db->db_query("SELECT * FROM t_lap WHERE eventid={$this->eventid} $entry_clause ORDER BY clicktime DESC LIMIT 1 ");
         $lap_rs = $row->fetch_assoc();
         return $lap_rs;
     }

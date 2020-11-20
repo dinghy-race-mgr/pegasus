@@ -238,6 +238,7 @@ function racebox_navbar($params=array())
 
 
     $option_bufr = "";
+    $view_bufr = "";
     foreach ($options as $k=> $option)
     {
         if ($option['name'] == "pursuit" and !$params['pursuit']) {
@@ -245,11 +246,37 @@ function racebox_navbar($params=array())
         }
         $params['page'] == $option['name'] ? $state = "rm-navmenu-active" : $state = "rm-navmenu" ;
         $option_bufr.= <<<EOT
-        <li>
-            <a href="{$option['target']}?eventid={eventid}&menu=true" >
-              <span class="$state" >{$option['label']}</span>
-            </a>
-        </li>
+            <li>
+                <a href="{$option['target']}?eventid={eventid}&menu=true" >
+                  <span class="$state" >{$option['label']}</span>
+                </a>
+            </li>
+EOT;
+    }
+
+    if ($params['page'] == "timer") {
+        $view_bufr = <<<EOT
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="rm-navmenu-right text-success">view<span class="caret"></span></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="timer_pg.php?eventid=180&mode=tabbed">Tabbed</a></li>
+                <li><a href="timer_pg.php?eventid=180&mode=list">List</a></li>
+                <li><a href="timer_pg.php?eventid=180&mode=quick">Quick</a></li>
+              </ul>
+            </li>
+EOT;
+    }
+    else
+    {
+        $view_bufr = <<<EOT
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="rm-navmenu-right text-success">view<span class="caret"></span></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">no view options</a></li>
+              </ul>
+            </li>
 EOT;
     }
 
@@ -285,6 +312,7 @@ EOT;
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
+        $view_bufr
         <li>
           <a href="help_pg.php?eventid={eventid}&page={$params['page']}&menu=true" >
               <span class="rm-navmenu-right text-success">help</span>

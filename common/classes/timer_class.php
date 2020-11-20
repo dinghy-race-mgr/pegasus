@@ -107,6 +107,8 @@ class TIMER
             $_SESSION["$event"]["fl_$i"]['status']    = $status;
             $_SESSION["$event"]["fl_$i"]['starttime'] = $fleet_start; 
             $_SESSION["$event"]["fl_$i"]['startdelay'] = $start_delay;
+
+            $_SESSION["$event"]["st_{$_SESSION["$event"]["fl_$i"]['startnum']}"]['starttime'] = date("H:i:s", $fleet_start);
             //u_writedbg("<pre>".print_r($_SESSION["$event"]["fl_$i"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__); // debug:
         }      
     }

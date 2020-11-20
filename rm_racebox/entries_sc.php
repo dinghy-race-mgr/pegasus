@@ -119,7 +119,7 @@ if ($eventid)
         $signons = $entry_o->get_signons("entries");
         $entries_found = count($signons);
 //echo "<pre>".print_r($signons,true)."</pre>";
-        u_writedbg(u_check($signons, "signon candidates"),__FILE__,__FUNCTION__,__LINE__);
+//        u_writedbg(u_check($signons, "signon candidates"),__FILE__,__FUNCTION__,__LINE__);
 
 
         if ($entries_found > 0)                      // deal with entries
@@ -152,6 +152,7 @@ if ($eventid)
                         $entries_replaced++;
                     }
                 }
+
             }
             u_growlSet($eventid, $page, $g_entries_report, array($entries_found, $entered, $entries_replaced, $entries_deleted));
             $delta = $entries_found - ($entered + $entries_deleted + $entries_replaced);
@@ -316,6 +317,8 @@ if ($eventid)
     {
         u_growlSet($eventid, $page, $g_invalid_pagestate, array($pagestate, $page));
     }
+
+    //echo "<pre>END: ".print_r($_SESSION["e_$eventid"],true)."</pre>";
     header("Location: entries_pg.php?eventid=$eventid");    // back to entries page
     exit();
 }
@@ -337,17 +340,19 @@ function enter_boat($entry, $eventid, $type)
 
     $success = "failed";
     $entry_tag = "{$entry['classname']} - {$entry['sailnum']}";
-    $i = $entry['fleet'];
-//    $alloc = $entry_o->allocate($entry);
+
     // debug:u_writedbg(u_check($alloc, "ALLOCATE"),__FILE__,__FUNCTION__,__LINE__);  // debug:
 
     if ($alloc['status'])
     {                                              // ok to load entry
         $entry = array_merge($entry, $alloc);
-        $result = $entry_o->set_entry($entry);
+        $i = $entry['fleet'];
+        $result = $entry_o->set_entry($entry, $_SESSION["e_$eventid"]["fl_$i"]['pytype']);
         // debug:u_writedbg(u_check($result, "LOAD"),__FILE__,__FUNCTION__,__LINE__);  // debug:
         if ($result['status'])
         {
+            $i = $entry['fleet'];
+
             if ($result["exists"])
             {
                 u_writelog("ENTRY ($type) UPDATED: $entry_tag", $eventid);

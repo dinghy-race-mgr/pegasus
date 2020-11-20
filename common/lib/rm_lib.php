@@ -109,7 +109,7 @@ function r_initialiseevent($mode, $eventid)
                     r_initfleetsession($db_o, $eventid, $i, $fleet);
                 }
                 // now determine if timer has been started.
-                $_SESSION["e_$eventid"]['timerstart'] = 0;
+                //$_SESSION["e_$eventid"]['timerstart'] = 0;
                 if (!empty($event_rs['timerstart']))  // race has already started
                 {
                     $_SESSION["e_$eventid"]['timerstart'] = $event_rs['timerstart'];
@@ -254,7 +254,7 @@ function r_initfleetsession($db_o, $eventid, $fleetnum, $fleet)
 
     // set fleet details
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['startdelay'] = $fleetdata['startdelay'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']  = $fleetdata['starttime'];
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']  = strtotime($fleetdata['starttime']);
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxlap']     = $fleetdata['maxlap'];
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] = $fleetdata['currentlap'];
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['entries']    = $fleetdata['entries'];

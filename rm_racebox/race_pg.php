@@ -242,8 +242,8 @@ else
 
 }
 
-$rbufr_bot ="<hr>";
 
+$rbufr_bot ="";
 // close  - modal
 $close_ok = r_oktoclose($eventid);
 if ($close_ok['result'])
@@ -260,6 +260,7 @@ $rbufr_bot.= $tmpl_o->get_template("btn_modal", $btn_close['fields'], $btn_close
 $rbufr_bot.= $tmpl_o->get_template("modal", $mdl_close['fields'], $mdl_close);
 
 
+$rbufr_bot.="<hr style='border-top: solid 1px steelblue !important'>";
 // reset  - modal
 $reset_ok = r_oktoreset($eventid);
 if ($reset_ok['result'])

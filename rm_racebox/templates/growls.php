@@ -10,6 +10,7 @@
 // ----- GENERAL ----------------------------------------------------------------------------
 $g_sys_invalid_pagestate = array(
     "type" => "danger",
+    "delay"=> 0,
     "msg"  => "<b>That is WEIRD</b><br> - the command (%s) sent to the %s page is not recognised<br><i>Please let your raceManager guru know.</i>",
 );
 // ----- page: PICKRACE ---------------------------------------------------------------------
@@ -26,8 +27,9 @@ $g_add_event_warning = array(
 );
 
 $g_add_event_fail = array(
-   "type" => "danger",
-   "msg"  => "<b>SORRY</b><br>Event %s has not been added to the programme",
+    "type" => "danger",
+    "delay"=> 30000,
+    "msg"  => "<b>SORRY</b><br>Event %s has not been added to the programme",
 );
 
 // ----- page: RACE     ---------------------------------------------------------------------
@@ -40,6 +42,7 @@ $g_event_change_success = array(
 
 $g_event_change_fail = array(
     "type" => "danger",
+    "delay"=> 30000,
     "msg"  => "<b>SORRY:</b><br>Event details update failed",
 );
 
@@ -56,6 +59,7 @@ $g_race_msg_success = array(
 
 $g_race_msg_fail = array(
     "type" => "danger",
+    "delay"=> 30000,
     "msg"  => "<b>SORRY:</b><br>Sending message failed",
 );
 
@@ -67,6 +71,7 @@ $g_race_cancel_success = array(
 
 $g_race_cancel_fail = array(
     "type" => "danger",
+    "delay"=> 30000,
     "msg"  => "<b>SORRY:</b><br>Attempt to cancel race failed<br><i>Please let your raceManager guru know.</i>",
 );
 
@@ -78,6 +83,7 @@ $g_race_uncancel_success = array(
 
 $g_race_uncancel_fail = array(
     "type" => "danger",
+    "delay"=> 30000,
     "msg"  => "Attempt to reset cancelled race failed<br><i>Please let your raceManager guru know.</i>",
 );
 
@@ -89,6 +95,7 @@ $g_race_abandon_success = array(
 
 $g_race_abandon_fail = array(
     "type" => "danger",
+    "delay"=> 30000,
     "msg"  => "Attempt to abandon race failed<i>Please let your raceManager guru know.</i>",
 );
 
@@ -100,6 +107,7 @@ $g_race_unabandon_success = array(
 
 $g_race_unabandon_fail = array(
     "type" => "danger",
+    "delay"=> 30000,
     "msg"  => "Attempt to reset abandoned race failed<br><i>Please let your raceManager guru know.</i>",
 );
 
@@ -127,12 +135,13 @@ $g_race_reset_success = array(
 
 $g_race_reset_fail = array(
     "type" => "danger",
+    "delay"=> 0,
     "msg"  => "Race RESET failed<br>internal system problem<br><i>Please let your raceManager guru know.</i>",
 );
 
 $g_race_reset_noconfirm = array(
     "type" => "warning",
-    "msg"  => "Race NOT reset - reset confirmation not entered<br>",
+    "msg"  => "Race NOT reset<br>reset confirmation not entered<br>",
 );
 
 // ----------- pagestate: SETLAPS and SETALLLAPS -------------------------------------------------------------
@@ -140,7 +149,7 @@ $g_race_reset_noconfirm = array(
 $g_race_laps_not_set = array(
     "type" => "warning",
     "delay"=> "10000",
-    "msg"  => "<b>Laps not set </b><br>- at least one fleet has entries but the no. of laps is set to 0 ",
+    "msg"  => "Laps NOT set <br>The laps need to set for each fleet that has entries ",
 );
 
 $g_race_lapset_fail = array(
@@ -150,7 +159,7 @@ $g_race_lapset_fail = array(
 
 $g_race_fleetset_notok = array(
     "type" => "danger",
-    "msg"  => "laps not set for %s<br>- at least one boat is on this lap already",
+    "msg"  => "Laps NOT set for %s<br>at least one boat is on this lap already",
 );
 
 $g_race_fleetset_fail = array(
@@ -162,7 +171,8 @@ $g_race_fleetset_fail = array(
 // ----- page: ENTRIES  ---------------------------------------------------------------------
 $g_invalid_pagestate = array(
     "type" => "danger",
-    "msg"  => "system problem - entries not processed (pagestate error)",
+    "delay"=> "0",
+    "msg"  => "system problem<br>entries not processed (pagestate error)",
 );
 // ----------- pagestate: CHANGE ------------------------------------------------------------
 $g_entries_change_none = array(
@@ -171,28 +181,32 @@ $g_entries_change_none = array(
 );
 $g_entries_change_entry_failed = array(
     "type" => "danger",
-    "msg"  => "attempt to change entry detail failed &hellip;<br><i>Please let your raceManager guru know.</i>",
+    "delay"=> "0",
+    "msg"  => "change to entry detail failed &hellip;<br><i>Please let your raceManager guru know.</i>",
 );
 // ----------- pagestate: DUTYPOINTS --------------------------------------------------------
 $g_entries_add_duty_failed = array(
     "type" => "danger",
-    "msg"  => "attempt to set duty code failed &hellip;<br><i>Please let your raceManager guru know.</i>",
+    "delay"=> "0",
+    "msg"  => "setting duty code failed &hellip;<br><i>Please let your raceManager guru know.</i>",
 );
 // ----------- pagestate: UNDUTY ------------------------------------------------------------
 $g_entries_remove_duty_failed = array(
     "type" => "danger",
-    "msg"  => "attempt to remove duty code detail failed &hellip;<br><i>Please let your raceManager guru know.</i>",
+    "delay"=> "0",
+    "msg"  => "removing duty code detail failed &hellip;<br><i>Please let your raceManager guru know.</i>",
 );
 // ----------- pagestate: DELETE ------------------------------------------------------------
 $g_entries_delete_failed = array(
     "type" => "danger",
-    "msg"  => "attempt to delete entry failed &hellip;<br><i>Please let your raceManager guru know.</i>",
+    "delay"=> "0",
+    "msg"  => "deleting of entry failed &hellip;<br><i>Please let your raceManager guru know.</i>",
 );
 //----------- pagestate: LOAD ENTRIES, LOAD REGULAR, LOAD PREVIOUS -------------------------
-//$g_entries_loaded = array(
-//    "type" => "success",
-//    "msg"  => "%s entries added &hellip;<br>",
-//);
+$g_entries_loaded = array(
+    "type" => "info",
+    "msg"  => "%s entries added &hellip;<br>",
+);
 
 $g_entries_failed = array(
     "type" => "warning",
@@ -215,6 +229,7 @@ $g_entry_add_comp_success = array(
 );
 $g_entry_add_comp_fail = array(
     "type" => "danger",
+    "delay"=> "0",
     "msg"  => "<b>SORRY: Add Competitor FAILED</b><br>boat - %s <br>Please let your raceManager guru know.",
 );
 
@@ -229,6 +244,7 @@ $g_entry_add_class_success = array(
 );
 $g_entry_add_class_fail = array(
     "type" => "danger",
+    "delay"=> "0",
     "msg"  => "<b>SORRY: Add Class FAILED</b><br>%s <br>Please let your raceManager guru know.",
 );
 // ----- page: START    ---------------------------------------------------------------------
@@ -249,6 +265,7 @@ $g_start_timer_adjusted = array(
 
 $g_start_recall_fail = array(
     "type" => "danger",
+    "delay"=> "0",
     "msg"  => "<b>setting restart time - FAILED</b><br>New start time must be later than original start time",
 );
 
@@ -259,16 +276,15 @@ $g_start_recall_success = array(
 
 
 // ----- page: TIMER    ---------------------------------------------------------------------
-//<br>Not possible to time or finish a boat yet
 
 $g_timer_racenotstarted = array(
     "type" => "warning",
-    "msg"  => "<b>This fleet has not started yet</b>",
+    "msg"  => "Boat not timed</br>this fleet has not started yet",
 );
 
 $g_timer_doubleclick = array(
     "type" => "warning",
-    "msg"  => "<b>%s: double click detected</b></br>lap/finish time not recorded",
+    "msg"  => "%s: double click detected</br>lap/finish time not recorded",
 );
 
 $g_timer_finish = array(
@@ -283,57 +299,74 @@ $g_timer_firstfinish = array(
 
 $g_timer_timingfailed = array(
     "type" => "danger",
+    "delay"=> "0",
     "msg"  => "<b>Timing for %s failed</b><br>[%s]",
 );
 
 $g_timer_finishfailed = array(
     "type" => "danger",
-    "msg"  => "<b>Finish option for %s failed</b><br> [%s]",
+    "delay"=> "0",
+    "msg"  => "Finish option for %s failed<br> [%s]",
 );
 
 $g_timer_setcodefailed = array(
     "type" => "danger",
-    "msg"  => "<b>Set code option for %s failed</b><br>[%s]",
+    "delay"=> "0",
+    "msg"  => "Set code option for %s failed<br>[%s]",
 );
 
 $g_timer_editlaps_failed = array(
     "type" => "danger",
-    "msg"  => "<b>%s: edit lap times option FAILED</b><br>[%s]",
+    "delay"=> "0",
+    "msg"  => "%s: edit lap times option FAILED<br>[%s]",
 );
 
 $g_timer_editlaps_none = array(
     "type" => "info",
-    "msg"  => "<b>%s:  no laps times to change</b><br>",
+    "msg"  => "%s:  no laps times to change",
 );
 
 $g_timer_editlaps_success = array(
     "type" => "info",
-    "msg"  => "<b>%s : lap times changed for lap(s): %s</b>",
+    "msg"  => "%s : lap times changed for lap(s): %s<",
 );
 
 $g_timer_undo_success = array(
-    "type" => "success",
-    "msg"  => "%s: last timing removed via UNDO</b>",
+    "type" => "info",
+    "msg"  => "%s: last timing removed via UNDO",
+);
+
+$g_timer_undo_none = array(
+    "type" => "info",
+    "msg"  => "no more lap timings to UNDO",
 );
 
 $g_timer_undo_fail = array(
     "type" => "danger",
-    "msg"  => "<b>Unknown problem attempting to UNDO last timing</b>",
+    "delay"=> "0",
+    "msg"  => "Unknown problem attempting to UNDO last timing",
 );
 
-$g_timer_shortenone_report = array(
-    "type" => "info",
+$g_timer_shortenfleet_report = array(
+    "type" => "success",
     "msg"  => "%s",
 );
 
 $g_timer_shortenall_report = array(
     "type" => "info",
+    "delay"=> "0",
     "msg"  => "Shorten course applied to the following fleets:<br>%s",
 );
 
 $g_timer_shorten_fail = array(
     "type" => "danger",
-    "msg"  => "<b>Unknown problem attempting to shorten one or more fleets</b><br>[%s]",
+    "delay"=> "0",
+    "msg"  => "Unknown problem attempting to shorten one or more fleets<br>[%s]",
+);
+
+$g_timer_setlaps_report = array(
+    "type" => "success",
+    "msg"  => "%s",
 );
 
 

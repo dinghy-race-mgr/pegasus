@@ -952,9 +952,9 @@ function u_growlProcess($eventid, $page)
        "ele"             => "body",
        "type"            => "info",
        "offset_from"     => "bottom",
-       "offset_amount"   => "50",
-       "align"           => "center",
-       "width"           => "600",
+       "offset_amount"   => "10",
+       "align"           => "left",
+       "width"           => "800",
        "delay"           => "4000",
        "allow_dismiss"   => "true",
        "stackup_spacing" => "20",
@@ -964,8 +964,8 @@ function u_growlProcess($eventid, $page)
         "success" => "<span class='glyphicon glyphicon-ok'></span>&nbsp;&nbsp;&nbsp;",
         "warning" => "<span class='glyphicon glyphicon-exclamation-sign'></span>&nbsp;&nbsp;&nbsp;",
         "info"    => "<span class='glyphicon glyphicon-info-sign'></span>&nbsp;&nbsp;&nbsp;",
+        "primary" => "<span class='glyphicon glyphicon-info-sign'></span>&nbsp;&nbsp;&nbsp;",
         "danger"  => "<span class='glyphicon glyphicon-remove'></span>&nbsp;&nbsp;&nbsp;",
-        "primary" => "",
     );
 
     $html = "";
@@ -975,14 +975,20 @@ function u_growlProcess($eventid, $page)
         $jscript = "";
         foreach ($_SESSION["e_$eventid"]['growl']["$page"] as $growl)
         {
-            if ($growl['type'] == "danger") {
-                $att_default['delay'] = "30000";
+            if (key_exists("delay", $growl))
+            {
+                $att_default['delay'] = $growl['delay'];
             }
+
+//            if ($growl['type'] == "danger") {
+//                $att_default['delay'] = "30000";
+//            }
 
             $att = array_merge($att_default, $growl);
             $att["glyph"] ? $glyph_htm = $glyph["{$att["type"]}"] : $glyph_htm = "" ;   // add contextual glyph
 
-            $msg = "<p class='lead'> $glyph_htm {$att["msg"]} </p>";
+            //$msg = "<p class='text-growl'> $glyph_htm {$att["msg"]} </p>";
+            $msg = "<div class='growl-container'><div class='growl-left'>$glyph_htm</div><div class='growl-right'>{$att['msg']}</div></div>";
 
             $jscript.= <<<EOT
                     $.bootstrapGrowl("{$msg}", {

@@ -217,14 +217,14 @@ class ENTRY
 
     public function delete_signons($eventid)
     {
-        $rows = $this->db->db_delete("t_enter", array("eventid"=>$eventid));
+        $rows = $this->db->db_delete("t_entry", array("eventid"=>$eventid));
         return $rows;
     }
 
 
     public function reset_signons($eventid)
     {
-        $rows = $this->db->db_update("t_enter", array("status"=>"N", "entryid"=>""), array("eventid"=>$eventid));
+        $rows = $this->db->db_update("t_entry", array("status"=>"N", "entryid"=>0), array("eventid"=>$eventid));
         return $rows;
     }
 
@@ -290,13 +290,15 @@ class ENTRY
         return $num_signons;
     }
 
-    public function set_entry($entry)
+    public function set_entry($entry, $pytype)
         /*
          *
          * sets entry into t_race
          *
          */
     {
+        //echo "<pre>SET_ENTRY: ".print_r($entry,true)."</pre>";
+
         if (!empty($entry))
         {
             $result = array(
@@ -321,13 +323,9 @@ class ENTRY
 
                 // get PN for this race
                 $pn = $entry['local_py'];
-                $pytype = $this->fleets[$entry['fleet']]['pytype'];
-                if ($pytype == "personal")
-                {
+                if ($pytype == "personal") {
                     $pn = $entry['personal_py'];
-                }
-                elseif ($pytype == "national")
-                {
+                } elseif ($pytype == "national") {
                     $pn = $entry['nat_py'];
                 }
 

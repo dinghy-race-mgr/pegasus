@@ -138,9 +138,9 @@ EOT;
 
 // end of page
 echo <<<EOT
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="common/oss/bootstrap/js/bootstrap.min.js"></script>
+    <script src="common/oss/jquery/jquery.min.js"></script>
+    <script src="common/oss/bootstrap341/js/bootstrap.min.js"></script>
   </body>
 </html>
 EOT;
-?>
+

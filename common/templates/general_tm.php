@@ -204,12 +204,14 @@ EOT;
 
     if ($params['form'])
     {
+        key_exists("formtype", $params) ? $formtype = $params['formtype'] : $formtype = "form-horizontal";
+
         $form_hdr = <<<EOT
         <style type="text/css">
            #{id}Form  .inputfieldgroup .form-control-feedback,
            #{id}Form  .selectfieldgroup .form-control-feedback { top: 0; right: -15px; }
         </style>
-        <form id="{id}Form" class="form-horizontal" action="{action}" method="post" target="{target}"
+        <form id="{id}Form" class="$formtype" action="{action}" method="post" target="{target}"
             data-fv-addons="mandatoryIcon"
             data-fv-addons-mandatoryicon-icon="glyphicon glyphicon-asterisk"
             data-fv-framework="bootstrap"

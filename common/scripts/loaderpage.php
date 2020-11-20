@@ -20,7 +20,7 @@ echo <<<EOT
 		<meta charset="utf-8">
 		<title>loader</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="../oss/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../oss/bootstrap341/css/bootstrap.min.css" rel="stylesheet">
 	</head>
 
 	<body >
@@ -31,10 +31,10 @@ echo <<<EOT
 <div class="container" style="padding: 100px;">
    <div class="row">
       <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 alert alert-danger">
-         <strong class="alert-heading">{$_REQUEST['text']}</strong>
+         <strong class="alert-heading"><h2>{$_REQUEST['text']}</h2></strong>
          <br><br><br>
          <div style="text-align: center;">
-            <img class="img-responsive center-block"  src="../images/ajax-loader.gif">
+            <img class="img-responsive center-block"  src="../images/loading.gif">
          </div>
       </div>
    </div>
@@ -44,7 +44,7 @@ EOT;
 // flush buffer to present immediately
 echo str_repeat("\n",4096);
 flush();
-sleep(1);
+sleep(2);
 
 // now go to requested script while loading image is displayed
 $script = $_REQUEST['script'];
@@ -68,4 +68,3 @@ EOT;
 
 echo "</html>";
 
-?>

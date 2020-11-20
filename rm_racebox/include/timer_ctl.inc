@@ -66,10 +66,29 @@
 */
 
 // -----------------------------------------------------------------------------------
+$btn_setlaps = array(
+    "label"     => true,
+    "glyph"     => true,
+    "g-pos"     => "left",
+    "popover"   => true,
+    "fields"    => array(
+        "id"          => "setlaps",
+        "style"       => "primary",
+        "size"        => "lg",
+        "label"       => "Reset Laps",
+        "link"        => "",
+        "glyph"       => "glyphicon-flag",
+        "popover"     => "click here to change laps for each fleet",
+        "pop-pos"     => "left",
+        "block"       => "btn-block",
+        "disabled"    => "",
+        "top-margin"  => "margin-top-10"
+    ),
+);
 $mdl_setlaps = array(
     "form"    => true,
-    "footer"  => false,
-    "reload"  => true,
+    "footer"  => true,
+    "reload"  => false,
     "close"   => true,
     "reset"   => false,
     "submit"  => true,
@@ -80,10 +99,10 @@ $mdl_setlaps = array(
         "title"       => "Set Laps",
         "body"        => "",
         "script"      => "",
-        "action"      => "timer_sc.php?eventid=$eventid&pagestate=setalllaps",
+        "action"      => "timer_sc.php?eventid=$eventid&pagestate=setlaps",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "cancel",
         "reset-lbl"   => "",
         "submit-lbl"  => "set laps",
         "footer"      => ""
@@ -100,14 +119,38 @@ $btn_shorten = array(
         "id"          => "shorten",
         "style"       => "primary",
         "size"        => "lg",
-        "label"       => "Shorten All Fleets",
-        "link"        => "timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=all",
+        "label"       => "Shorten All",
+        "link"        => "",
         "glyph"       => "glyphicon-flag",
         "popover"     => "click here to shorten ALL fleets at the end of the next lap",
         "pop-pos"     => "left",
         "block"       => "btn-block",
         "disabled"    => "",
         "top-margin"  => "margin-top-10"
+    ),
+);
+
+$mdl_shorten = array(
+    "form"    => true,
+    "footer"  => true,
+    "reload"  => false,
+    "close"   => true,
+    "reset"   => false,
+    "submit"  => true,
+    "fields"  => array(
+        "id"          => "shorten",
+        "size"        => "md",
+        "style"       => "primary",
+        "title"       => "Shorten All Fleets",
+        "body"        => "",
+        "script"      => "",
+        "onsubmit"    => "",
+        "action"      => "timer_sc.php?eventid=$eventid&pagestate=shortenall",
+        "target"      => "",
+        "close-lbl"   => "cancel",
+        "reset-lbl"   => "",
+        "submit-lbl"  => "shorten all",
+        "footer"      => ""
     ),
 );
 
@@ -211,7 +254,7 @@ $btn_undo = array(
         "id"             => "undo",
         "style"          => "danger",
         "size"           => "lg",
-        "label"          => "Undo Last Timing",
+        "label"          => "Undo Timing",
         "link"           => "",
         "glyph"          => "glyphicon-step-backward",
         "popover"        => "click here to undo last lap/finish timing",
@@ -219,52 +262,6 @@ $btn_undo = array(
         "block"          => "btn-block",
         "disabled"       => "",
         "top-margin"     => "margin-top-10"
-    ),
-);
-
-
-// -------- timersettings ----------------------------------------------------------------
-$btn_timersettings = array(
-    "label"     => true,
-    "glyph"     => false,
-    "g-pos"     => "",
-    "popover"   => true,
-    "fields"    => array(
-        "id"          => "timersettings",
-        "style"       => "default",
-        "size"        => "lg",
-        "label"       => "Settings",
-        "link"        => "",
-        "glyph"       => "",
-        "popover"     => "change the display settings for this page",
-        "pop-pos"     => "left",
-        "block"       => "btn-block",
-        "disabled"    => "",
-        "top-margin"  => "margin-top-10"
-    ),
-);
-
-$mdl_timersettings = array(
-    "form"    => true,
-    "footer"  => false,
-    "reload"  => true,
-    "close"   => true,
-    "reset"   => false,
-    "submit"  => true,
-    "fields"  => array(
-        "id"          => "timersettings",
-        "size"        => "lg",
-        "style"       => "primary",
-        "title"       => "Change Timer Page Settings",
-        "body"        => "",
-        "script"      => "",
-        "onsubmit"    => "",
-        "action"      => "timer_sc.php?eventid=$eventid&pagestate=timersettings",
-        "target"      => "",
-        "close-lbl"   => "nope",
-        "reset-lbl"   => "",
-        "submit-lbl"  => "change settings",
-        "footer"      => ""
     ),
 );
 
@@ -415,7 +412,7 @@ $mdl_editlap = array(
     "form"    => true,
     "footer"  => false,
     "reload"  => true,
-    "close"   => true,
+    "close"   => false,
     "reset"   => false,
     "submit"  => false,
     "fields"  => array(
@@ -430,9 +427,9 @@ $mdl_editlap = array(
         "onsubmit"    => "",
         "action"      => "",
         "target"      => "",
-        "close-lbl"   => "Close",
+        "close-lbl"   => "Cancel",
         "reset-lbl"   => "",
-        "submit-lbl"  => "",
+        "submit-lbl"  => "Update Lap Times",
         "footer"      => ""
     ),
 );

@@ -416,7 +416,7 @@ EOT;
                     <td style="" >
                        <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true"
                              data-title="edit boat details" data-placement="top">
-                       <button type="button" class="btn btn-link inline-button" data-toggle="modal"
+                       <a type="button" class="btn btn-success btn-xs" data-toggle="modal"
                                rel="tooltip" data-original-title="edit boat details" data-placement="bottom" data-target="#changeModal"
                                data-entryid="{$entry['id']}"
                                data-entryname="$entryname"
@@ -424,34 +424,28 @@ EOT;
                                data-crew="{$entry['crew']}"
                                data-sailnum="{$entry['sailnum']}"
                                data-pn="{$entry['pn']}">
-                           <span class="label label-default" style="font-size: 100%">
-                              &nbsp;&nbsp;<span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;
-                           </span>
-                       </button>
+                              <span class="glyphicon glyphicon-pencil"></span>
+                       </a>
                        </span>
                     </td>
                     <td style="" >
                        <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="give duty points" data-placement="top">
-                       <button type="button" class="btn btn-link inline-button" data-toggle="modal"
+                       <a type="button" class="btn btn-success btn-xs" data-toggle="modal"
                                rel="tooltip" data-original-title="give duty points" data-placement="bottom" data-target="#dutyModal"
                                data-entryid="{$entry['id']}"
                                data-entryname="$entryname" >
-                            <span class="label label-default" style="font-size: 100%">
-                                &nbsp;&nbsp;<span class="glyphicon glyphicon-flag"></span>&nbsp;&nbsp;
-                            </span>
-                       </button>
+                               <span class="glyphicon glyphicon-flag"></span>
+                       </a>
                        </span>
                     </td>
                     <td style="" >
                        <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="remove boat from race" data-placement="top">
-                       <button type="button" class="btn btn-link inline-button" data-toggle="modal"
+                       <a type="button" class="btn btn-danger btn-xs" data-toggle="modal"
                                rel="tooltip" data-original-title="remove boat from race" data-placement="bottom" data-target="#removeModal"
                                data-entryid="{$entry['id']}"
                                data-entryname="$entryname" >
-                            <span class="label label-danger" style="font-size: 100%">
-                                &nbsp;&nbsp;<span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;
-                            </span>
-                       </button>
+                               <span class="glyphicon glyphicon-trash"></span>
+                       </a>
                        </span>
                     </td>
                 </tr>
@@ -471,9 +465,9 @@ EOT;
                             <th width="15%">crew</th>
                             <th width="15%">club</th>
                             <th width="7%">pn</th>
-                            <th width="10%">edit</th>
-                            <th width="10%">duties</th>
-                            <th width="10%">delete</th>
+                            <th width="5%">edit</th>
+                            <th width="5%">duties</th>
+                            <th width="5%">delete</th>
                         </tr>
                     </thead>
                     <tbody>

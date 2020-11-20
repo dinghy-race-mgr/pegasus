@@ -37,16 +37,40 @@ else
 
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/timer_tm.php"));
 
+$pagefields = array(
+    "id"         => "editlap",
+    "title"      => "edit lap times",
+    "theme"      => $_SESSION['racebox_theme'],
+    "loc"        => $loc,
+    "stylesheet" => "./style/rm_racebox.css",
+    "body_attr"  => "margin-top-0",
+    "navbar"     => "",
+    "footer"     => "",
+    "form_validation" => true,
+);
+
 $db_o   = new DB;                       // create database object
 $race_o = new RACE($db_o, $eventid);    // create race object
 
 // get entry details - including existing lap times
 $laps_rs = $race_o->entry_get_timings($entryid);
+//echo "<pre>".print_r($laps_rs,true)."</pre>";
 
 // convert lap times string to an array with an index starting at 1
-empty($laps_rs) ? $laptimes = array() : $laptimes = explode(",", $laps_rs['laptimes']);
-array_unshift($laptimes, null);
-unset($laptimes[0]);
+if (empty($laps_rs['laptimes']))
+{
+    $laptimes = false;
+}
+else
+{
+    $laptimes = explode(",", $laps_rs['laptimes']);
+    array_unshift($laptimes, null);
+    unset($laptimes[0]);
+}
+//echo "<pre>".print_r($laptimes,true)."</pre>";
+
+
+
 
 // set key parameters
 $boat_detail = array(
@@ -59,19 +83,8 @@ $boat_detail = array(
 
 if ($pagestate == "init")             // display form with lap times for each lap
 {
-    $form_bufr = $tmpl_o->get_template("fm_editlaptimes", $boat_detail, $laptimes);  // create edit form
-
-    $fields = array(
-        "id"         => "editlap",
-        "title"      => "edit lap times",
-        "loc"        => $loc,
-        "stylesheet" => "",
-        "navbar"     => "",
-        "body"       => $form_bufr,
-        "footer"     => "",
-        "form_validation" => true,
-    );
-    echo $tmpl_o->get_template("basic_page", $fields);                                // create page with form
+    $pagefields['body'] = $tmpl_o->get_template("fm_editlaptimes", $boat_detail, $laptimes);  // create edit form
+    echo $tmpl_o->get_template("basic_page", $pagefields, array("form_validation"=>true));                                   // create page with form
 
 }
 elseif ($pagestate == "submit")       // correct modified lap times and return to display lap times
@@ -89,38 +102,23 @@ elseif ($pagestate == "submit")       // correct modified lap times and return t
         $rs_msg = "";
         foreach($newlaptimes as $lap=>$etime)
         {
-            if ($etime!= $laptimes['lap'])
+            if ($etime!= $laptimes[$lap])
             {
-                $upd  = $race_o->entry_lap_update($entryid, $boat_detail['fleet'], $lap, $boat_detail['pn'], $etime);
+                $upd  = $race_o->entry_lap_update($entryid, $boat_detail['fleet'], $lap, $boat_detail['pn'],
+                    array("etime"=>$etime));
                 $rs_msg.= $upd['msg'];
             }
         }
 
-        echo $tmpl_o->get_template("basic_page", array(
-            "id"         => "editlap",
-            "title"      => "edit lap times",
-            "loc"        => $loc,
-            "stylesheet" => "",
-            "navbar"     => "",
-            "body"       => $tmpl_o->get_template("edit_laps_success",
-                array("boat"=>$boat_detail['boat'], "msg"=>$rs_msg, "eventid"=>$eventid, "entryid"=>$entryid)),
-            "footer"     => "",
-            "form_validation" => true,
-        ));
+        $pagefields['body'] = $tmpl_o->get_template("edit_laps_success",
+            array("boat"=>$boat_detail['boat'], "msg"=>$rs_msg, "eventid"=>$eventid, "entryid"=>$entryid));
+        echo $tmpl_o->get_template("basic_page", $pagefields);
     }
     else   // produce error page
     {
-        echo $tmpl_o->get_template("basic_page", array(
-            "id"         => "editlap",
-            "title"      => "edit lap times",
-            "loc"        => $loc,
-            "stylesheet" => "",
-            "navbar"     => "",
-            "body"       => $tmpl_o->get_template("edit_laps_error",
-                array("boat"=>$boat_detail['boat'], "msg"=>$rs['msg'], "eventid"=>$eventid, "entryid"=>$entryid)),
-            "footer"     => "",
-            "form_validation" => true,
-        ));
+        $pagefields['body'] = $tmpl_o->get_template("edit_laps_error",
+            array("boat"=>$boat_detail['boat'], "msg"=>$rs['msg'], "eventid"=>$eventid, "entryid"=>$entryid));
+        echo $tmpl_o->get_template("basic_page", $pagefields);
     }
 }
 else  // pagestate not recognised

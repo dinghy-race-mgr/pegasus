@@ -6,7 +6,10 @@ html { position: relative;  min-height: 100%;}
 body {       
   font-family: Kalinga, Arial, sans-serif;    /* default font */
 }
-
+.table>thead>tr>th {
+  vertical-align: bottom;
+  border-bottom: 3px solid darkgrey;
+}
 .rm-background {background-color: #2e6da4; }
 
 /* typographic styles */

@@ -20,7 +20,7 @@ $_SESSION['timer_options'] = array(
       "bunch"             => "class",                                     // other options "sailnum|ajax|tree" 
       "growl_racelength"  => "on",                                        // other option "off"   
       "growl_undo"        => "on",                                        // other option "off"
-      "growl_finish"      => "on",                                        // other option "off"
+      "growl_finish"      => "off",                                        // other option "off"
    );
 
 $_SESSION['sql_debug']    = false;                                        // set to true to turn on debugging of sql commands - otherwise false

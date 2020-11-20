@@ -91,15 +91,15 @@ else
         $lbufr.= $tmpl_o->get_template("under_construction", array("title" => "Timer: option", "info" => "Never heard of it"));
     }
 
-    if (!$_SESSION["e_$eventid"]['pursuit'])
-    {
-        $params = array(
-            "lapstatus" => check_lap_status($eventid),
-            "fleet-data" => $fleet_data,
-        );
-        $mdl_setlaps['body'] = $tmpl_o->get_template("fm_timer_setlaps", array(), $params);
-        $lbufr_bot = $tmpl_o->get_template("modal", $mdl_setlaps['fields'], $mdl_setlaps);
-    }
+//    if (!$_SESSION["e_$eventid"]['pursuit'])
+//    {
+//        $params = array(
+//            "lapstatus" => check_lap_status($eventid),
+//            "fleet-data" => $fleet_data,
+//        );
+//        $mdl_setlaps['body'] = $tmpl_o->get_template("fm_timer_setlaps", array(), $params);
+//        $lbufr_bot = $tmpl_o->get_template("modal", $mdl_setlaps['fields'], $mdl_setlaps);
+//    }
 }
 
 // ----- right hand panel --------------------------------------------------------------------
@@ -110,8 +110,24 @@ $btn_undo['fields']['link'] = "timer_sc.php?eventid=$eventid&pagestate=undo";
 $rbufr.= $tmpl_o->get_template("btn_link", $btn_undo['fields'], $btn_undo);
 
 // shorten all fleets
-$btn_shorten['fields']['link'] = "timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=all";
-$rbufr.= $tmpl_o->get_template("btn_link", $btn_shorten['fields'], $btn_shorten);
+$rbufr.= $tmpl_o->get_template("btn_modal", $btn_shorten['fields'], $btn_shorten);
+$fleet_laps = array();
+for ($i = 1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
+{
+    $fleet_laps[$i] = array(
+        "name"    => $_SESSION["e_$eventid"]["fl_$i"]["name"],
+        "shlaps"  => $_SESSION["e_$eventid"]["fl_$i"]['currentlap'] + 1,
+        "maxlaps" => $_SESSION["e_$eventid"]["fl_$i"]['maxlap']
+    );
+}
+$mdl_shorten['fields']['body'] = $tmpl_o->get_template("fm_timer_setlaps", array(), array("mode"=>"shorten", "fleets" => $fleet_laps));
+$rbufr.= $tmpl_o->get_template("modal", $mdl_shorten['fields'], $mdl_shorten);
+
+// set laps
+$rbufr.= $tmpl_o->get_template("btn_modal", $btn_setlaps['fields'], $btn_setlaps);
+$mdl_setlaps['fields']['body'] = $tmpl_o->get_template("fm_timer_setlaps", array(), array("mode"=>"set", "fleets" => $fleet_laps));
+$rbufr.= $tmpl_o->get_template("modal", $mdl_setlaps['fields'], $mdl_setlaps);
+
 $rbufr.= "<hr>";
 
 //// quick timer option
@@ -123,16 +139,16 @@ $rbufr.= "<hr>";
 //$rbufr .= $tmpl_o->get_template("modal", $mdl_bunch['fields], $mdl_bunch);
 
 // mode button
-$toggle_fields = array(
-    "size"        => "lg",
-    "off-style"   => "default",
-    "on-style"    => "warning",
-    "left-label"  => "Tabbed",
-    "left-link"   => "timer_pg.php?eventid=$eventid&mode=tabbed",
-    "right-label" => "List",
-    "right-link"  => "timer_pg.php?eventid=$eventid&mode=list"
-);
-$_SESSION['timer_options']['mode'] == "tabbed" ? $toggle_fields['on'] = "left" : $toggle_fields['on'] = "right";
+//$toggle_fields = array(
+//    "size"        => "lg",
+//    "off-style"   => "default",
+//    "on-style"    => "warning",
+//    "left-label"  => "Tabbed",
+//    "left-link"   => "timer_pg.php?eventid=$eventid&mode=tabbed",
+//    "right-label" => "List",
+//    "right-link"  => "timer_pg.php?eventid=$eventid&mode=list"
+//);
+//$_SESSION['timer_options']['mode'] == "tabbed" ? $toggle_fields['on'] = "left" : $toggle_fields['on'] = "right";
 
 // ----- render page -------------------------------------------------------------------------
 $db_o->db_disconnect();
@@ -148,7 +164,7 @@ $fields = array(
     "l_bot"      => $lbufr_bot,
     "r_top"      => "<div class=\"margin-top-40\">".$rbufr."</div>",
     "r_mid"      => "",
-    "r_bot"      => $tmpl_o->get_template("toggle_button", array(), $toggle_fields),
+    "r_bot"      => "", //$tmpl_o->get_template("toggle_button", array(), $toggle_fields),
     "footer"     => "",
     "body_attr"  => "onload=\"startTime()\""
 );

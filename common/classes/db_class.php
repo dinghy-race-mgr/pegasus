@@ -292,11 +292,13 @@ class DB
         $numrows = $this->link->affected_rows;         // might be zero if no records changed
         //echo "<pre>".$query."<br>".$numrows."</pre>";
 
+
         if( $this->link->error )
         {
             $this->db_log_errors( $this->link->error, $query );
             $numrows = -1;
         }
+        //u_writedbg("$query|$numrows", __FILE__, __FUNCTION__, __LINE__);
         return $numrows;
     }
     
