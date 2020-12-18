@@ -395,13 +395,12 @@ $g_result_del_fail = array(
 );
 
 $g_results_recalc_fail = array(
-    "type" => "danger",
-    "msg"  => "<b>results update not resolved</b>",
+    "type" => "warning",
+    "msg"  => "Recalculating Results:<br><p style='margin-left: 30px;'>- there are one or more outstanding issues with the results - please check</p>",
 );
 
 $g_results_recalc_success = array(
     "type" => "success",
-    "msg"  => "<b>results updated successfully</b>",
+    "msg"  => "Recalculating Results:<br><p style='margin-left: 30px;'>- no issues - ok to publish</p>",
 );
 
-?>

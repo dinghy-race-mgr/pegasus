@@ -19,15 +19,13 @@ $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 
-u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
-
 $eventid = u_checkarg("eventid", "checkintnotzero","");
-if (!empty($_REQUEST['mode'])) {$_SESSION['timer_options']['mode'] = $_REQUEST['mode']; }
-if (empty($_SESSION['timer_options']['mode'])) { $_SESSION['timer_options']['mode'] = "tabbed"; }
+if (!$eventid) {
+    u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
+        "please contact your raceManager administrator");  }
+$_SESSION['timer_options']['mode'] = u_checkarg("mode", "set","", "tabbed");
 
-if (!$eventid) { u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
-    "please contact your raceManager administrator");  }
+u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");

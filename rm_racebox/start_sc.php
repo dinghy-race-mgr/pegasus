@@ -23,7 +23,7 @@ $stop_here  = false;
 require_once ("{$loc}/common/lib/util_lib.php"); 
 require_once ("{$loc}/common/lib/rm_lib.php");
 
-u_initpagestart($eventid, $page, "");   // starts session and sets error reporting
+u_initpagestart($eventid, $page, false);   // starts session and sets error reporting
 
 require_once ("{$loc}/common/classes/db_class.php"); 
 require_once ("{$loc}/common/classes/event_class.php");
@@ -147,8 +147,8 @@ if ($eventid AND $pagestate)
 }
 else
 {
-    //FIXME
-    u_exitnicely($scriptname, $eventid,"sys005",$lang['err']['exit-action']);
+    u_exitnicely($scriptname, $eventid,"event id [$eventid] or pagestate [$pagestate] not recognised",
+        "Close this window and try to restart the application.  If the problems continue please report the error to your system administrator");
 }
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------

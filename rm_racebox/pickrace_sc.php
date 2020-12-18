@@ -18,7 +18,7 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 
 u_initpagestart("", $page, false);                               // starts session and sets error reporting
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");  // language file
+//include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");  // language file
 
 if (!empty($_REQUEST['pagestate']))
 {

@@ -1,0 +1,9 @@
+ProgrammeMaker
+
+Current issues:
+ - fixed start time ignores tides (would be nice to include HW must be within N hours of fixed time)
+ - not scheduling dinghy cruises - could use a recurrence model (e.g 1st and 3rd Saturday each month - and then look to use 2nd and 4th if already booked)
+ - not allowing trophy and series race on same day (is this a good thing)
+ - needs to be tested with a typical inland club events
+ - should check that the race format and series are defined (option)
+ - would be nice to support pairing (event X has to be scheduled on same day as event Y)

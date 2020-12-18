@@ -359,14 +359,15 @@ function fm_race_message($params=array())
 
     $html = <<<EOT
         <!-- instructions -->
-        <p class="well well-sm text-info lead">Use this form to let your support team know about any problems you had </p>
+        <p class="well well-sm text-info">Use this form to let the raceManager support team know about any problems you had </p>
 
         <!-- field #1 - name -->
         <div class="form-group">
             <label class="$labelwidth control-label">Your Name</label>
             <div class="$fieldwidth inputfieldgroup">
                 <input type="text" class="form-control" id="msgname" name="msgname" value=""
-                    required data-fv-notempty-message="please add your name here" />
+                placeholder="your name ..."
+                required data-fv-notempty-message="please add your name here" />
             </div>
         </div>
 
@@ -375,7 +376,7 @@ function fm_race_message($params=array())
             <label class="$labelwidth control-label">Your Email</label>
             <div class="$fieldwidth inputfieldgroup">
                 <input type="email" class="form-control" id="email" name="email" value=""
-                    placeholder="enter your email if you would like a reply"
+                    placeholder="your email if you would like a reply ..."
                     data-fv-emailaddress-message="This does not look like a valid email address" />
             </div>
         </div>
@@ -384,10 +385,9 @@ function fm_race_message($params=array())
         <div class="form-group">
             <label class="$labelwidth control-label">Message</label>
             <div class="$fieldwidth inputfieldgroup">
-                <textarea rows=4 class="form-control" id="message" name="message"
-                    required data-fv-notempty-message="please describe your issue or problem here"
-                    >
-                </textarea>
+                <textarea rows=4 class="form-control" id="message" name="message" value=""
+                    placeholder="description of issue ..."
+                    required data-fv-notempty-message="please describe your issue or problem here"></textarea>
             </div>
         </div>
 EOT;

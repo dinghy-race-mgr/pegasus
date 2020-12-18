@@ -350,7 +350,7 @@ class RACE
         return $numrows;
     }
     
-    public function race_laps_set($fleetnum, $laps)
+    public function race_laps_set($fleetnum, $laps, $mode="set")
     {
         $update = array("result" =>"", "finishlap" => 0 );
         $event = "e_".$this->eventid;
@@ -359,7 +359,7 @@ class RACE
         //u_writedbg("$laps|".$_SESSION["$event"]["fl_$fleetnum"]['currentlap']."|$current_lap", __FILE__, __FUNCTION__, __LINE__); //debug:
         //u_writedbg(u_check($_SESSION, "session"), __FILE__, __FUNCTION__, __LINE__); //debug:
 
-        if ($laps <= $current_lap OR $laps == $_SESSION["$event"]["fl_$fleetnum"]['maxlap'])   // captures case if no change and invalid change
+        if ($mode=="set" AND ( $laps <= $current_lap OR $laps == $_SESSION["$event"]["fl_$fleetnum"]['maxlap']))  // captures case if no change and invalid change
         {
             $update['result'] = "less_than_current";
             $update['finishlap'] = $current_lap;
@@ -384,7 +384,30 @@ class RACE
         //u_writedbg("update race: $update  -- session laps:{$_SESSION["$event"]["fl_$fleetnum"]['maxlap']} ",__FILE__,__FUNCTION__,__LINE__);  //debug:
         return $update;             
     }
-    
+
+    public function race_switch_lap($fleetnum, $switch_lap)
+    {
+        // get rows from t_race for this fleet
+        $data = $this->race_getresults($fleetnum);
+
+        // loop through boats making switch
+        $changed = 0;
+        foreach ($data as $k => $row)
+        {
+            if ($row['lap'] > $switch_lap) {
+                $changed++;
+                //get lap elapsed time for switch lap
+                $laptimes = explode(",", $row['laptimes']);
+                echo "<pre>" . print_r($laptimes, true) . "</pre>";
+                if (array_key_exists($switch_lap - 1, $laptimes)) {
+                    $etime = $laptimes[$switch_lap - 1];
+                    // update t_race record
+                    $result = $this->db->db_update("t_race", array("laps" => $switch_lap, "etime" => $etime), array("id" => $row['id']));
+                }
+            }
+        }
+        return $changed;
+    }
     
     public function race_laps_current($fleetnum)
     {
@@ -414,6 +437,7 @@ class RACE
         
         return $numrows;
     }
+
     
     
     public function race_codes_init($excludes, $fleetnum=0)
@@ -565,11 +589,33 @@ class RACE
                 $update_arr = array("ctime"=>$row['ctime'], "atime"=>$row['atime'], "penalty"=>$row['penalty'], "points"=>$rs_data[$k]['points']);
 
                 $update = $race_o->entry_update($row['id'], $update_arr);                // update record details
-                $rs_row[] = get_result_row($rs_data[$k]);                                // format row for display
+
+                $rs_row[] = array(
+                    "entryid"    => $rs_data[$k]['id'],
+                    "class"      => $rs_data[$k]['class'],
+                    "sailnum"    => $rs_data[$k]['sailnum'],
+                    "boat"       => $rs_data[$k]['class']." ".$rs_data[$k]['sailnum'],
+                    "helm"       => $rs_data[$k]['helm'],
+                    "crew"       => $rs_data[$k]['crew'],
+                    "competitor" => rtrim($rs_data[$k]['helm'] . "/" . $rs_data[$k]['crew'], "/ "),
+                    "club"       => $rs_data[$k]['club'],
+                    "pn"         => $rs_data[$k]['pn'],
+                    "lap"        => $rs_data[$k]['lap'],
+                    "et"         => $rs_data[$k]['etime'],
+                    "ct"         => $rs_data[$k]['atime'],
+                    "code"       => $rs_data[$k]['code'],
+                    "points"     => $rs_data[$k]['points'],
+                    "penalty"    => $rs_data[$k]['penalty'],
+                    "note"       => $rs_data[$k]['note'],
+                    "status"     => $race_o->entry_resultstatus($rs_data[$k]['status'], $rs_data[$k]['declaration'], $this->eventid)   // FIXME no sue this hould be done like this
+                );
+
+
+
             }
         }
         $fleet_rs['warning'] = $warnings;
-        $fleet_rs['data'] = $rs_row;
+        $fleet_rs['data']    = $rs_row;
         return $fleet_rs;
     }
 
@@ -776,16 +822,13 @@ class RACE
 
      public function entry_declare($competitorid, $declare_type, $protest)
      {
-        $update = false;
-        
-        $entry = $this->entry_get($competitorid, "competitor");               
+         $entry = $this->entry_get($competitorid, "competitor");
         $entry_ref = "{$entry['class']} {$entry['sailnum']} {$entry['helm']}";
         
         if ($declare_type == "declare")
         {
            $declare_code = "R";
            if ($protest) { $declare_code.="P"; }
-           
            $logmsg = "Declaration ";
         }
         elseif ($declare_type == "retire")
@@ -794,8 +837,7 @@ class RACE
            if ($protest) { $declare_code.="P"; }
            
            // update code and  status
-           $update = $this->entry_code_set($entry['id'], "RET");
-           
+           $upd = $this->entry_code_set($entry['id'], "RET");
            $logmsg = "Retirement ";
         }
         else
@@ -804,18 +846,13 @@ class RACE
         }
         
         // update declaration code
-        $update = $this->entry_declaration_set($entry['id'], $declare_code);
-        
-        if ($update)
-        {
-            u_writelog("$logmsg: $entry_ref", $this->eventid);
-            return true;
-        }
-        else
-        {
-            u_writelog("$logmsg FAILED - (competitor: $competitorid) $entry_ref ", $this->eventid);
-            return false;
-        }
+         if ($this->entry_declaration_set($entry['id'], $declare_code)) {
+             u_writelog("$logmsg: $entry_ref", $this->eventid);
+             return true;
+         } else {
+             u_writelog("$logmsg FAILED - (competitor: $competitorid) $entry_ref ", $this->eventid);
+             return false;
+         }
     }
 
     
@@ -826,67 +863,78 @@ class RACE
     }
     
     
-    public function entry_resultstatus($status, $declaration)
+    public function entry_resultstatus($status, $declaration, $eventid)
     {
         $decl    = "";
         $protest = "";
 
         if ($status == 'R')          // racing
         {
-            $status = array("msg"=>"still racing", "colour"=>"orange", "glyph"=>"glyphicon glyphicon-flag");
+            $status = array("msg"=>"still racing", "color"=>"orange", "glyph"=>"glyphicon glyphicon-flag");
         }
         elseif ($status == 'F')      // finished
         {
-            $status = array("msg"=>"finished", "colour"=>"green", "glyph"=>"glyphicon glyphicon-flag");
+            $status = array("msg"=>"finished", "color"=>"mediumseagreen", "glyph"=>"glyphicon glyphicon-flag");
         }
         elseif ($status == 'X')      // non-finisher
         {
-            $status = array("msg"=>"non-finisher", "colour"=>"black", "glyph"=>"glyphicon glyphicon-flag");
+            $status = array("msg"=>"non-finisher", "color"=>"black", "glyph"=>"glyphicon glyphicon-flag");
         }
         else
         {
-            $status = array("msg"=>"unknownr", "colour"=>"red", "glyph"=>"glyphicon glyphicon-flag");
+            $status = array("msg"=>"unknown", "color"=>"red", "glyph"=>"glyphicon glyphicon-flag");
         }
 
-// FIXME - need to skip this if no declarations
-        if (strpos($declaration,'R') !== false)     // retired
+        if ($_SESSION["e_$eventid"]['ev_entry'] == "signon-retire" OR $_SESSION["e_$eventid"]['ev_entry'] == "signon-declare")
         {
-            $decl = array("msg"=>"retired", "colour"=>"red", "glyph"=>"glyphicon glyphicon-thumbs-down");
-        }
-        elseif (strpos($declaration,'D') !== false)  // declared
-        {
-            $decl = array("msg"=>"signed off", "colour"=>"green", "glyph"=>"glyphicon glyphicon-thumbs-up");
+            if (strpos($declaration,'R') !== false)     // retired
+            {
+                $decl = array("msg"=>"retired", "color"=>"red", "glyph"=>"glyphicon glyphicon-registration-mark");
+            }
         }
 
-// FIXME - skip this if no protest reporting
-        if (strpos($declaration,'P') !== false)      // protest submitted
+        if ($_SESSION["e_$eventid"]['ev_entry'] == "signon-declare" )
         {
-            $protest = array("msg"=>"protesting", "colour"=>"red", "glyph"=>"glyphicon glyphicon-star");
+            if (strpos($declaration, 'D') !== false)
+            {
+                $decl = array("msg" => "signed off", "color" => "mediumseagreen", "glyph" => "glyphicon glyphicon-edit");
+            }
+        }
+
+        if ($_SESSION['sailor_protest'])
+        {
+            if (strpos($declaration,'P') !== false)      // protest submitted
+            {
+                $protest = array("msg"=>"protesting", "color"=>"red", "glyph"=>"glyphicon glyphicon-certificate");
+            }
         }
 
         // add tooltip if required
         if ($_SESSION["display_help"])
         {
-            $status_bufr = "<span class='{$status['glyph']}' style='color: {$status['colour']}; cursor: help' data-title='{$status['msg']}' data-toggle='tooltip' data-delay='500' data-placement='bottom'></span>";
-            if (!empty($decl_msg))
+            $status_bufr = "<span class='{$status['glyph']}' style='color: {$status['color']}; cursor: help' data-title='{$status['msg']}' 
+                            data-toggle='tooltip' data-delay='500' data-placement='bottom'></span>";
+            if (!empty($decl))
             {
-                $status_bufr.= "&nbsp;<span class='{$decl['glyph']}' style='color: {$decl['colour']}; cursor: help' data-title='{$decl['msg']}' data-toggle='tooltip' data-delay='500' data-placement='bottom'></span>";
+                $status_bufr.= "&nbsp;<span class='{$decl['glyph']}' style='color: {$decl['color']}; cursor: help' data-title='{$decl['msg']}' 
+                                            data-toggle='tooltip' data-delay='500' data-placement='bottom'></span>";
             }
-            if (!empty($protest_msg))
+            if (!empty($protest))
             {
-                $status_bufr.= "&nbsp;<span class='{$protest['glyph']}' style='color: {$protest['colour']}; cursor: help' data-title='{$protest['msg']}' data-toggle='tooltip' data-delay='500' data-placement='bottom'></span>";
+                $status_bufr.= "&nbsp;<span class='{$protest['glyph']}' style='color: {$protest['color']}; cursor: help' data-title='{$protest['msg']}' 
+                                      data-toggle='tooltip' data-delay='500' data-placement='bottom'></span>";
             }
         }
         else
         {
-            $status_bufr = "<span class='{$status['glyph']}' style='color: {$status['colour']}; cursor: help'></span>";
-            if (!empty($decl_msg))
+            $status_bufr = "<span class='{$status['glyph']}' style='color: {$status['color']}; cursor: help'></span>";
+            if (!empty($decl))
             {
-                $status_bufr.= "&nbsp;<span class='{$decl['glyph']}' style='color: {$decl['colour']}; cursor: help'></span>";
+                $status_bufr.= "&nbsp;<span class='{$decl['glyph']}' style='color: {$decl['color']}; cursor: help'></span>";
             }
-            if (!empty($protest_msg))
+            if (!empty($protest))
             {
-                $status_bufr.= "&nbsp;<span class='{$protest['glyph']}' style='color: {$protest['colour']}; cursor: help'></span>";
+                $status_bufr.= "&nbsp;<span class='{$protest['glyph']}' style='color: {$protest['color']}; cursor: help'></span>";
             }
         }
 
@@ -908,9 +956,9 @@ class RACE
 
         //u_writedbg("FLEET:<pre>".print_r( $_SESSION["$event"]["fl_$fleetnum"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__); // debug:)
 
-        $et = $this->entry_calc_et($clicktime, $_SESSION["$event"]["fl_$fleetnum"]['starttime']); // elapsed time
+        $et = $this->entry_calc_et($clicktime, $_SESSION["$event"]["fl_$fleetnum"]['starttime']);  // elapsed time
         $ct = $this->entry_calc_ct($et, $pn, $this->scoring["$fleetnum"]);                         // corrected time
-        $pt = $this->entry_calc_pt($et, $prev_et, $lap);                                          // predicted time for next lap
+        $pt = $this->entry_calc_pt($et, $prev_et, $lap);                                           // predicted time for next lap
         u_writedbg("<pre>fleetnum:$fleetnum|et:$et|ct:$ct|pt:$pt<br>scoring".print_r($this->scoring["$fleetnum"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
         
         if ($force_finish)                                            # force finish by OOD
@@ -947,7 +995,7 @@ class RACE
         }
         
         // update t_race record
-        $update_race = array( "lap" => $lap, "etime" => $et, "ctime" => $ct,
+        $update_race = array( "lap" => $lap, "clicktime" => $clicktime, "etime" => $et, "ctime" => $ct,
                               "atime" => "", "ptime" => $pt, "status" => $status );
         u_writedbg("<pre> update_race: ".print_r($update_race, true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
         $numrows = $this->entry_update($entryid, $update_race);

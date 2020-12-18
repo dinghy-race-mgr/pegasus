@@ -35,7 +35,7 @@ $mode = u_checkarg("mode", "set", "", "init");
 $db_o = new DB();
 $event_o = new EVENT($db_o);
 
-echo "<pre>event:$eventid mode:$mode</pre>";
+//echo "<pre>event:$eventid mode:$mode</pre>";
 if ($eventid and ($mode == "init" or $mode == "reset" or $mode == "rejoin"))
 {
     // clear event session

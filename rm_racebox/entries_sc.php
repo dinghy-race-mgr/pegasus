@@ -34,7 +34,7 @@ $entryid = u_checkarg("entryid", "checkint", "", "");
 //empty($_REQUEST['pagestate'])? $pagestate = "" : $pagestate = $_REQUEST['pagestate'];
 //empty($_REQUEST['entryid'])?   $entryid   = "" : $entryid   = $_REQUEST['entryid'];
 
-u_initpagestart($eventid, $page, "");                                // gets session and sets error reporting
+u_initpagestart($eventid, $page, false);                                // gets session and sets error reporting
 
 include ("./templates/growls.php");
 

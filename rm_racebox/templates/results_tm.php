@@ -2,26 +2,63 @@
 
 function result_tabs($params = array())
 {
+    //echo "<pre>".print_r($params,true)."</pre>";
+    
     $eventid = $params['eventid'];
 
     $tabs = "";
     $panels = "";
+
+    // state settings
+    $state_cfg = array(
+        "default"  => array("row_style" => "default", "label_style" => "label-primary", "annotation" => ""),
+        "racing"   => array("row_style" => "racing", "label_style" => "label-default", "annotation" => " <span class='text-primary glyphicon glyphicon-time'></span> "),
+        "finished" => array("row_style" => "finished", "label_style" => "label-finished", "annotation" => " FINISHED"),
+        "lastlap"  => array("row_style" => "lastlap", "label_style" => "label-danger", "annotation" => "<span class='text-danger'> LAST LAP</span>"),
+        "excluded" => array("row_style" => "excluded", "label_style" => "label-primary", "annotation" => " EXCLUDED"),
+    );
+
     for ($i = 1; $i <= $params['num-fleets']; $i++)
     {
-        $fleet_name = $_SESSION["e_$eventid"]["fl_$i"]['name'];
-        empty($params['data'][$i]) ? $count = 0 : $count = count($params['data'][$i]);
+        $fleet = $_SESSION["e_$eventid"]["fl_$i"];
+        $num_entries = $num_entries  = $_SESSION["e_$eventid"]["fl_$i"]['entries'];
+        //empty($params['data'][$i]) ? $count = 0 : $count = count($params['data'][$i]);
         $racetype = $_SESSION["e_$eventid"]["fl_$i"]['scoring'];
 
-        $tabs.= <<<EOT
-        <li role="presentation" class="">
-        &nbsp;<a href="#fleet$i" aria-controls="$fleet_name" role="tab" data-toggle="pill"> $fleet_name</a>&nbsp; </li>
+        // create TABS
+        if (count($params['warning'][$i]) > 0)
+        {
+            $tab_label = <<<EOT
+            <small><span class="label label-danger">
+                <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+            </span></small>
 EOT;
-        if ($count <= 0)
+        }
+        else
+        {
+            $tab_label = <<<EOT
+            <small><span class="label label-success">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            </span></small>
+EOT;
+        }
+
+        $tabs.= <<<EOT
+        <li role="presentation" class="lead text-center">
+              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">
+              <b>{$fleet['name']}</b> <br> $tab_label             
+              </a>
+        </li>
+EOT;
+
+
+        // create PANELS
+        if ($num_entries <= 0)
         {
             $panels .= <<<EOT
             <div role="tabpanel" class="tab-pane" id="fleet$i">
                 <div class="alert alert-warning" role="alert" style="margin-left: 0%; margin-right: 40%">
-                   <b>no entries in the $fleet_name fleet</b><br>
+                   <b>no entries in the {$fleet['name']} fleet</b><br>
                 </div>
             </div>
 EOT;
@@ -29,12 +66,12 @@ EOT;
         else
         {
             $columns  = format_columns($racetype);
-            $rows     = format_rows($racetype, $params['data'][$i]);
+            $rows     = format_rows($eventid, $racetype, $params['data'][$i]);
             $warnings = format_warnings($params['warning'][$i]);
             $panels .= <<<EOT
             <div role="tabpanel" class="tab-pane" id="fleet$i">
                 $warnings
-                <table class="table table-striped">
+                <table class="table table-striped table-condensed table-hover table-top-padding table-top-border">
                     $columns
                     <tbody>
                         $rows
@@ -47,7 +84,7 @@ EOT;
 
     $html = <<<EOT
     <div class="margin-top-10" role="tabpanel">
-        <ul class="nav nav-pills red" role="tablist">
+        <ul class="nav nav-pills pill-fleet" role="tablist">
            $tabs
         </ul>
         <div class="tab-content">
@@ -65,16 +102,18 @@ function format_columns($racetype)
     {
         $columns = <<<EOT
         <thead>
-            <tr>
-               <th width="3%"  > </th>
+            <tr class="text-info">
+               <th width="6%"  > </th>
                <th width="13%" >class</th>
                <th width="8%"  >no.</th>
                <th width="20%" >crew</th>
-               <th width="6%" style="text-align: center" >elapsed</th>
+               <th width="10%" style="text-align: center" >elapsed</th>
                <th width="6%" style="text-align: center" >laps</th>
                <th width="6%" style="text-align: center" >code</th>
                <th width="6%" style="text-align: center" >points</th>
-               <th width="20%" > </th>
+               <th width="2%" >&nbsp;</th>
+               <th width="5%" >edit</th>
+               <th width="5%" >delete</th>
             </tr>
         </thead>
 EOT;
@@ -83,16 +122,18 @@ EOT;
     {
         $columns = <<<EOT
         <thead>
-            <tr>
-               <th width="3%"  > </th>
+            <tr class="text-info">
+               <th width="6%"  > </th>
                <th width="13%" style="font-weight: bold" >class</th>
                <th width="8%"  style="font-weight: bold" >no.</th>
                <th width="20%" >crew</th>
-               <th width="6%" style="text-align: center" >elapsed</th>
+               <th width="10%" style="text-align: center" >elapsed</th>
                <th width="6%" style="text-align: center" >laps</th>
                <th width="6%" style="text-align: center" >code</th>
                <th width="6%" style="text-align: center" >points</th>
-               <th width="20%" > </th>
+               <th width="2%" >&nbsp;</th>
+               <th width="5%" >edit</th>
+               <th width="5%" >delete</th>
             </tr>
         </thead>
 EOT;
@@ -101,18 +142,20 @@ EOT;
     {
         $columns = <<<EOT
         <thead>
-            <tr>
-               <th width="3%"  > </th>
+            <tr class="text-info">
+               <th width="6%"  > </th>
                <th width="13%" >class</th>
                <th width="8%"  >no.</th>
                <th width="20%" >crew</th>
                <th width="6%" style="text-align: center" >PN</th>
-               <th width="6%" style="text-align: center" >elapsed</th>
-               <th width="6%" style="text-align: center" >corrected</th>
+               <th width="10%" style="text-align: center" >elapsed</th>
+               <th width="10%" style="text-align: center" >corrected</th>
                <th width="6%" style="text-align: center" >laps</th>
                <th width="6%" style="text-align: center" >code</th>
                <th width="6%" style="text-align: center" >points</th>
-               <th width="20%" > </th>
+               <th width="2%" >&nbsp;</th>
+               <th width="5%" >edit</th>
+               <th width="5%" >delete</th>
             </tr>
         </thead>
 EOT;
@@ -121,18 +164,20 @@ EOT;
     {
         $columns = <<<EOT
         <thead>
-            <tr>
-               <th width="3%"  > </th>
+            <tr class="text-info">
+               <th width="6%"  > </th>
                <th width="11%" >class</th>
                <th width="8%"  >no.</th>
                <th width="13%" >crew</th>
                <th width="6%" style="text-align: center" >PN</th>
-               <th width="6%" style="text-align: center" >elapsed</th>
-               <th width="6%" style="text-align: center" >corrected</th>
+               <th width="10%" style="text-align: center" >elapsed</th>
+               <th width="10%" style="text-align: center" >corrected</th>
                <th width="6%" style="text-align: center" >laps</th>
                <th width="6%" style="text-align: center" >code</th>
                <th width="6%" style="text-align: center" >points</th>
-               <th width="20%" > </th>
+               <th width="2%" >&nbsp;</th>
+               <th width="5%" >edit</th>
+               <th width="5%" >delete</th>
             </tr>
         </thead>
 EOT;
@@ -148,20 +193,30 @@ function format_warnings($warnings)
     foreach ($warnings as $warning)
     {
         $warn_bufr.= <<<EOT
-        <p class="text-{$warning['type']}">
-           <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
-           &nbsp;&nbsp;&nbsp;{$warning['msg']}
-        </p>
+        &nbsp;- {$warning['msg']}<br>
 EOT;
     }
+    $warn_bufr = rtrim($warn_bufr, "<br>");
     if (!empty($warn_bufr))
     {
+        $warn_bufr = rtrim($warn_bufr, "<br>");
         $bufr.= <<<EOT
-        <div class="alert alert-warning" style="width: 40%" role="alert">
-           <div class="row">
-              <div class="col-md-4"><b>Warning!</b></div>
-              <div class="col-md-8">$warn_bufr</div>
-           </div>
+        <div class="bg-warning" style="width: 50%; color: white; font-size: 20px">
+            <div class="row" style="padding:5px 5px 5px 5px!important">
+                <div class="col-md-3" ><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Warnings</div>
+                <div class="col-md-9" >$warn_bufr</div>
+            </div>
+        </div>
+EOT;
+    }
+    else  // placeholder
+    {
+        $bufr.= <<<EOT
+        <div class="" style="width: 50%; color: white; font-size: 20px">
+            <div class="row" style="padding:5px 5px 5px 5px!important">
+                <div class="col-md-3" >&nbsp;</div>
+                <div class="col-md-9" >&nbsp;</div>
+            </div>
         </div>
 EOT;
     }
@@ -169,76 +224,100 @@ EOT;
     return $bufr;
 }
 
-function format_rows($racetype, $race_results)
+function format_rows($racetype, $eventid, $race_results)
 {
     $rows = "";
     foreach($race_results as $result)
     {
+        $result['editbtn'] = editresult_html($eventid, $result['entryid'], $result['boat']);
+        $result['deletebtn'] = <<<EOT
+            <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="remove boat from race" data-placement="top">
+                <a type="button" class="btn btn-danger btn-xs" data-toggle="modal"
+                       rel="tooltip" data-original-title="remove boat from race" data-placement="bottom" data-target="#removeModal"
+                       data-entryid="{$result['entryid']}"
+                       data-entryname="{$result['boat']}" >
+                       <span class="glyphicon glyphicon-trash"></span>
+                </a>
+            </span>
+EOT;
+
+        // conversions
+        $result['et'] = u_conv_secstotime($result['et']);
+        $result['ct'] = u_conv_secstotime($result['ct']);
+
         if ($racetype == "level")  // pn and corrected time not required
         {
             $rows.= <<<EOT
-            <tr>
+            <tr class="table-data">
                <td >{$result['status']}</td>
-               <td style="font-weight: bold">{$result['class']}</td>
-               <td style="font-weight: bold">{$result['sailnum']}</td>
-               <td >{$result['competitor']}</td>
+               <td class="truncate">{$result['class']}</td>
+               <td class="truncate">{$result['sailnum']}</td>
+               <td class="truncate">{$result['competitor']}</td>
                <td style="text-align: center">{$result['et']}</td>
                <td style="text-align: center">{$result['lap']}</td>
                <td style="text-align: center">{$result['code']}</td>
                <td style="text-align: center">{$result['points']}</td>
-               <td style="text-align: center">{$result['button']}</td>
+               <td >&nbsp;</td>
+               <td >{$result['editbtn']}</td>
+               <td >{$result['deletebtn']}</td>
             </tr>
 EOT;
         }
         elseif ($racetype == "pursuit") // elapsed and corrected time not required
         {
             $rows.= <<<EOT
-            <tr>
+            <tr class="table-data">
                <td >{$result['status']}</td>
-               <td style="font-weight: bold">{$result['class']}</td>
-               <td style="font-weight: bold">{$result['sailnum']}</td>
-               <td >{$result['competitor']}</td>
+               <td class="truncate">{$result['class']}</td>
+               <td class="">{$result['sailnum']}</td>
+               <td class="truncate">{$result['competitor']}</td>
                <td style="text-align: center">{$result['et']}</td>
                <td style="text-align: center">{$result['lap']}</td>
                <td style="text-align: center">{$result['code']}</td>
                <td style="text-align: center">{$result['points']}</td>
-               <td style="text-align: center">{$result['button']}</td>
+               <td >&nbsp;</td>
+               <td >{$result['editbtn']}</td>
+               <td >{$result['deletebtn']}</td>
             </tr>
 EOT;
         }
         elseif ($racetype == "handicap")
         {
             $rows.= <<<EOT
-            <tr>
+            <tr class="table-data">
                <td >{$result['status']}</td>
-               <td style="font-weight: bold">{$result['class']}</td>
-               <td style="font-weight: bold">{$result['sailnum']}</td>
-               <td >{$result['competitor']}</td>
+               <td class="truncate">{$result['class']}</td>
+               <td class="">{$result['sailnum']}</td>
+               <td class="truncate">{$result['competitor']}</td>
                <td style="text-align: center">{$result['pn']}</td>
                <td style="text-align: center">{$result['et']}</td>
                <td style="text-align: center">{$result['ct']}</td>
                <td style="text-align: center">{$result['lap']}</td>
                <td style="text-align: center">{$result['code']}</td>
                <td style="text-align: center">{$result['points']}</td>
-               <td style="text-align: center">{$result['button']}</td>
+               <td >&nbsp;</td>
+               <td >{$result['editbtn']}</td>
+               <td >{$result['deletebtn']}</td>
             </tr>
 EOT;
         }
         else  // average lap
         {
             $rows.= <<<EOT
-            <tr>
+            <tr class="table-data">
                <td >{$result['status']}</td>
-               <td style="font-weight: bold">{$result['class']}</td>
-               <td style="font-weight: bold">{$result['sailnum']}</td>
-               <td >{$result['competitor']}</td>
+               <td class="truncate">{$result['class']}</td>
+               <td class="">{$result['sailnum']}</td>
+               <td class="truncate">{$result['competitor']}</td>
                <td style="text-align: center">{$result['pn']}</td>
                <td style="text-align: center">{$result['et']}</td>
                <td style="text-align: center">{$result['ct']}</td>
                <td style="text-align: center">{$result['lap']}</td>
                <td style="text-align: center">{$result['code']}</td>
                <td style="text-align: center">{$result['points']}</td>
-               <td style="text-align: center">{$result['button']}</td>
+               <td >&nbsp;</td>
+               <td >{$result['editbtn']}</td>
+               <td >{$result['deletebtn']}</td>
             </tr>
 EOT;
         }
@@ -246,6 +325,20 @@ EOT;
     return $rows;
 }
 
+function editresult_html($eventid, $entryid, $boat)
+{
+        $bufr = <<<EOT
+        <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true"
+              data-title="edit lap times for this boat" data-placement="top">
+            <a type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#editlapModal" data-boat="$boat"
+                    data-iframe="result_edit_pg.php?eventid=$eventid&pagestate=init&entryid=$entryid" >
+                    <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+        </span>
+EOT;
+
+    return $bufr;
+}
 
 function fm_edit_result($params)
 
@@ -285,7 +378,7 @@ EOT;
         If you want to edit the individual lap times use the lap times icon<br>
     </div>
 
-    <input name="entryid" type="hidden" id="identryid" value="">
+    <input name="entryid" type="hidden" id="identryid" value="{entryid}">
 
     $helm
 
@@ -366,25 +459,25 @@ EOT;
 
 function fm_change_finish($params)
 {
+    //echo "<pre>".print_r($params,true)."</pre>";
+
     // instructions
     $html = <<<EOT
-    <div class="alert alert-warning alert-dismissable" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        This can be useful if you have forgotten to shorten course -
-        but finished the boats and they are still showing on the Time Laps page.
-        Just set the finish lap for each fleet to the lap you actually finished the boats on.<br>
+    <div class="alert well well-sm text-info" role="alert">
+        <p>This can be useful if you...<br> - have forgotten to shorten course and boats are showing as 'still racing', OR<br>
+         - had to abandon the race and want to take the results from a previously completed lap</p>
+        <p>Set the finish lap for each fleet to the lap you want the boats to finish on.</p>
     </div>
-    <div>
-            <div class="col-xs-5" style="text-align:right; color: darkred"><b>FLEET</b></div>
-            <div class="col-xs-7" style="color: darkred"><b>LAPS</b></div>
+
+    <div class="row text-info">
+            <div class="col-xs-5" style="text-align:right;"><b>FLEET</b></div>
+            <div class="col-xs-7" ><b>FINISH LAP</b></div>
     </div>
 EOT;
 
     // create input fields - one per fleet
     $rows = "";
-    for ($i=1; $i<=$params['num-fleets']; $i++)
+    for ($i=1; $i<=$params['rc_numfleets']; $i++)
     {
         $current = $params["fl_$i"]['maxlap'];
         if ($current>0)

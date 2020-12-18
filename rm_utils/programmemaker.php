@@ -918,6 +918,7 @@ function pg_allocate_multi_events ()
                 if (tide_better_than($event['date'], $cfg['settings']['multiple_races']['tide'], $ev['tidal_status']))
                 {
                     // must not exceed max number of races per day and not be a fixed start time series
+                   
                     if ($num_events < $cfg['series_events']["{$event['code']}"]['time']['max_starts'] and
                         $cfg['series_events']["{$event['code']}"]['time']['type'] != "fixed")
                     {
@@ -951,7 +952,6 @@ function pg_allocate_multi_events ()
                 }
             }
         }
-//        }
     }
     sort_programme_by_date(false);    // don't remove duplicates
     return $new_races;

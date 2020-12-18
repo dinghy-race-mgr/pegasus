@@ -2,7 +2,6 @@
 
 function timer_tabs($params = array())
 {
-    // debug: u_writedbg(u_check($timings, "TIMINGS:"),__FILE__,__FUNCTION__,__LINE__); // debug;
 
     $eventid = $params['eventid'];
 
@@ -201,7 +200,7 @@ EOT;
                 $all_finished
                 $laps_btn
                 <table class="table table-striped table-condensed table-hover table-top-padding table-top-border" style="width: 100%; table-layout: fixed;">
-                    <thead class="text-info" style="border-bottom: 1px solid black;">
+                    <thead class="text-info" >
                         <tr >
                             <th width="1%"></th>
                             <th width="10%">class</th>

@@ -24,10 +24,10 @@ $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php"); 
 require_once ("{$loc}/common/lib/rm_lib.php");
 
-u_initpagestart($_REQUEST['eventid'], $page, "");   // starts session and sets error reporting
+u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and sets error reporting
 
 // initialising language
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
+//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
 require_once ("{$loc}/common/classes/db_class.php"); 
 require_once ("{$loc}/common/classes/event_class.php");

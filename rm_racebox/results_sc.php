@@ -18,23 +18,25 @@
 $loc        = "..";          // <--- relative path from script to top level folder
 $page       = "results";     
 $debug      = false;
-$stop_here  = false; 
+$stop_here  = false;
 $scriptname = basename(__FILE__);
-require_once ("{$loc}/common/lib/util_lib.php"); 
+require_once ("{$loc}/common/lib/util_lib.php");
 
-u_initpagestart($_REQUEST['eventid'], $page, $_REQUEST['menu']);   // starts session and sets error reporting
+// parameters  [eventid (required), pagestate(required), entryid)
+$eventid   = u_checkarg("eventid", "checkintnotzero","", false);
+$pagestate = u_checkarg("pagestate", "set", "", false);
+$entryid   = u_checkarg("entryid", "set", "", "");;
 
-// initialising language   
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");
+u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and sets error reporting
 
-require_once ("{$loc}/common/classes/db_class.php"); 
-require_once ("{$loc}/common/classes/event_class.php");
+// classes
+require_once ("{$loc}/common/classes/db_class.php");
+require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 
-// process parameters  (eventid, pagestate, entryid)
-$eventid   = (!empty($_REQUEST['eventid']))? $_REQUEST['eventid']: "";
-$pagestate = (!empty($_REQUEST['pagestate']))? $_REQUEST['pagestate']: "";
-$entryid   = (!empty($_REQUEST['entryid']))? $_REQUEST['entryid']: "";
+// growl responses
+include("./templates/growls.php");
+
 
 if ($eventid AND $pagestate)
 {
@@ -43,60 +45,58 @@ if ($eventid AND $pagestate)
     
     if ($pagestate == "retirements" OR $pagestate == "declarations")
     {
-        // FIXME needs to handle protests
-
         $entry_o = new ENTRY($db_o, $eventid);
         $entries = $entry_o->get_signons($pagestate);    // gets retirements or declarations/retirements
-        
+
         if ($entries)
         {
             // loop over entries 
-            $fbufr = ""; 
-            $retnum = 0;
-            $decnum = 0;
-            $failnum = 0;
+            $counts = array("protests" => 0, "retires" => 0, "declares" => 0);
+            $rpt_bufr = "";
+            $error = false;
+
             foreach ($entries as $entry)
             {
-                $protest = false;   // FIXME this needs to be handled at some point
-                if ($entry['protest']==1) 
+                $protest = false;
+                if ($entry['protest']==1 AND $_SESSION['sailor_protest'])
                 { 
-                    $protest = true; 
-                    $fbufr.= "<p>{$result['class']} {$result['sailnum']} : protesting</p>";
+                    $protest = true;
+                    $counts['protests']++;
+                    $rpt_bufr.= " - {$result['class']} {$result['sailnum']} : protesting</br>";
                 }
                 
                 if ($entry['action'] == "retire")
                 {                    
-                    $result = $race_o->entry_declare($entry['competitorid'], "retire", $protest);
-                    if ($result == "retired")
-                    {                                               
-                        $retnum++;
-                        $entryupdate = $entry_o->confirm($entry['id'], 0, "L");  // update entry record
+                    $result = $race_o->entry_declare($entry['id'], "retire", $protest);
+                    if ($result)
+                    {
+                        $counts['retires']++;
+                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], 0, "L");  // update entry record
                     }
                     else
-                    {                         
-                        $failnum++;
-                        $entryupdate = $entry_o->confirm($entry['id'], "", "F");                 // update entry record
-                        $fbufr.= "<p>{$result['class']} {$result['sailnum']} : {$result['status']}</p>";                        
+                    {
+                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], "", "F");                 // update entry record
+                        $rpt_bufr.= " - {$result['class']} {$result['sailnum']} : retirement failed</br>";
+                        $error = true;
                     }
                 }
                 elseif ($entry['action'] == "declare")
                 {
-                    $result = $race_o->entry_declare($entry['competitorid'], "declare", $protest);
-                    if ($result == "declared")
-                    {                                               
-                        $decnum++;
-                        $entryupdate = $entry_o->confirm($entry['id'], 0, "L");  // update entry record
+                    $result = $race_o->entry_declare($entry['id'], "declare", $protest);
+                    if ($result)
+                    {
+                        $counts['declares']++;
+                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], 0, "L");  // update entry record
                     }
                     else
-                    {                         
-                        $failnum++;
-                        $entryupdate = $entry_o->confirm($entry['id'], "", "F");                 // update entry record
-                        $fbufr.= "<p>{$result['class']} {$result['sailnum']} : {$result['status']}</p>";                        
+                    {
+                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], "", "F");                 // update entry record
+                        $rpt_bufr.= " - {$result['class']} {$result['sailnum']} : declaration failed</br>";
+                        $error = true;
                     }
                 }
-                
             }
-            combinegrowls($eventid, $page, $pagestate, $retnum, $decnum, $failnum, $fbufr);    // present summary as growl
+            combinegrowls($eventid, $page, $pagestate, $counts, rtrim($rpt_bufr, "</br>"), $error);    // present summary as growl
         }
         else
         {
@@ -161,6 +161,8 @@ if ($eventid AND $pagestate)
     
     elseif ($pagestate == "changefinish")
     {        
+        echo "<pre>entering changefinish</pre>";
+        echo "<pre>".print_r($_REQUEST,true)."</pre>";
         // get current racestate
         $racestate = $race_o->racestate_get();
         
@@ -168,14 +170,24 @@ if ($eventid AND $pagestate)
         foreach ($racestate as $key=>$fleet)
         {
             $fleetnum = $fleet['race'];
-            $finishlap[$fleetnum] = $_REQUEST['finishlap'][$fleetnum];
-            if ( $fleet['maxlap'] != $finishlap[$fleetnum] )     // laps have been changed for this fleet
+            $finishlap = $_REQUEST['finishlap'][$fleetnum];
+            echo "<pre>finish lap: $finishlap  [{$fleet['maxlap']}]</pre>";
+            if ( $fleet['maxlap'] != $finishlap )     // laps have been changed for this fleet
             {
-                // update racestate table
-                $update = $race_o->race_laps_set($fleet['race'], array("maxlap"=>$finishlap[$fleetnum]));
+                // update t_racestate, t_race tables and session maxlap for this fleet
+                $update = $race_o->race_laps_set($fleetnum, $finishlap, $mode="switch");
+
+                echo "<pre>UPDATE: ".print_r($update,true)."</pre>";
+
+                // in t_race if laps is > maxlap - reset and map correct etime from t_lap
+                $switch = $race_o->race_switch_lap($fleetnum, $finishlap);
+
+                echo "<pre>SWITCH: $switch</pre>";
             }
         }
-        // FIXME  - add growls confirmation
+
+        // reset rescore flag
+        $_SESSION["e_$eventid"]['result_valid'] = false;
     }
 
 
@@ -205,47 +217,57 @@ if ($eventid AND $pagestate)
             u_writelog("ERROR - attempt to send message failed", $eventid);
             u_growlSet($eventid, $page, $g_race_msg_fail);
         }
-        
     }
     else
     {
-        u_exitnicely($scriptname, $eventid,"sys005",$lang['err']['exit-action']);
+        // pagestate value ont recognised
+        u_exitnicely($scriptname, $eventid,"program control option not recognised [pagestate: $pagestate]",
+            "please contact your raceManager administrator");
     }
     
-    if (!$stop_here) { header("Location: rbx_pg_results.php?eventid=$eventid"); exit(); }  // back to results page
+    if (!$stop_here) { header("Location: results_pg.php?eventid=$eventid"); exit(); }  // back to results page
+    exit();
        
 }
 else
 {
-    //FIXME
-    u_exitnicely($scriptname, $eventid,"sys005",$lang['err']['exit-action']);
+    // input parameter missing
+    u_exitnicely($scriptname, $eventid,"program parameters eventid and/or pagestate not recognised [eventid: $eventid, pagestate: $pagestate]",
+        "please contact your raceManager administrator");
 }
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------
-/*function combinegrowls($eventid, $page, $pagestate, $retnum, $decnum, $failnum, $fbufr)
+function combinegrowls($eventid, $page, $pagestate, $counts, $rpt_bufr, $error)
 {    
-    $gclose = 4000;
-    $gstyle = "success";
+    if ($counts['protests'] > 0) { $protests = "&nbsp;[ {$counts['protests']} protest".u_plural($counts['protests'])." ]"; }
+
+
     if ($pagestate == "retirements")
     {
-        $gbufr = "<p> </p><p><b>RETIRED: $retnum</b></p><hr>";
-        if ($failnum>0)
-        {
-            $gclose = 50000;
-            $gstyle = "danger";
-            $gbufr.= "<p> </p><p><b>FAILED: $failnum</b></p>$fbufr";
-        }
+        $title = "<p>Processing: {$counts['retires']} retirements $protests</p>";
     }
     elseif ($pagestate == "declarations")
     {
-        $gbufr = "<p> </p><p><b>DECLARED: $decnum</b></p><p><b>RETIRED: $retnum</b></p><hr>";
-        if ($failnum>0)
-        {
-            $gclose = 50000;
-            $gstyle = "danger";
-            $gbufr.= "<p> </p><p><b>FAILED: $failnum</b></p>$fbufr ";
-        }
+        $title = "<p>Processing: {$counts['declares']} declarations, {$counts['retires']} retirements $protests</p>";
     }
-    u_setgrowls($eventid, $page, $gstyle, $gclose, $gbufr, array());
-}*/
-?>
+
+    if ($error)
+    {
+        $rpt_bufr = "<p>$rpt_bufr</p><p>Please use the edit function to manually apply failed declarations / retirements</p>";
+        $gclose = 50000;
+        $gstyle = "danger";
+    }
+    else
+    {
+        $gclose = 5000;
+        $gstyle = "success";
+    }
+
+    $g_content = array(
+        "type" => $gstyle,
+        "delay"=> $gclose,
+        "msg"  => "$title $rpt_bufr",
+    );
+    
+    u_growlSet($eventid, $page, $g_content, array());
+}

@@ -13,7 +13,7 @@ require_once ("{$loc}/common/lib/rm_lib.php");
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 $page_state = u_checkarg("pagestate", "set","");
 
-u_initpagestart($_REQUEST['eventid'], $page, "");
+u_initpagestart($_REQUEST['eventid'], $page, false);
 include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
 if (!$eventid) {

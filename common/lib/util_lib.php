@@ -38,6 +38,8 @@ function u_checkarg($arg, $mode, $check, $default = "")
     if (key_exists($arg, $_REQUEST)) {  // if key exists do checks according to mode
         if ($mode == "set") {
             empty($_REQUEST[$arg]) ? $val = $default : $val = $_REQUEST[$arg];
+        } elseif ($mode == "setnotnull") {
+            empty($_REQUEST[$arg]) ? $val = false : $val = $_REQUEST[$arg];
         } elseif ($mode == "checkset") {
             $_REQUEST[$arg] == $check ? $val = $_REQUEST[$arg] : $val = $default;
         } elseif ($mode == "setbool") {
@@ -220,6 +222,13 @@ function u_conv_result($code, $points)
     return $result;
 }
 
+function u_plural( $amount, $singular = '', $plural = 's' ) {
+    if ( $amount === 1 ) {
+        return $singular;
+    }
+    return $plural;
+}
+
 function u_numordinal ($number)
 {
      if (key_exists("lang", $_SESSION))
@@ -341,8 +350,7 @@ function u_timeresolution($resolution, $time)
  * @return void
  */
  function u_exitnicely($script, $eventid, $error, $msg)
-{    
-    global $lang;
+{
     global $loc;
     
     echo <<<EOT
@@ -379,7 +387,7 @@ function u_timeresolution($resolution, $time)
     </html>
 EOT;
     
-    $logmsg = "**** FATAL ERROR $error - {$lang['err']["$error"]}".PHP_EOL."script: $script, event: $eventid, message: $msg";
+    $logmsg = "**** FATAL ERROR - $error".PHP_EOL."script: $script, event: $eventid, message: $msg";
     
     u_writelog($logmsg, 0);                // write to system log
     if ($eventid!=0)

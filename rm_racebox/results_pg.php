@@ -19,17 +19,15 @@ $page       = "results";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-u_initpagestart($_REQUEST['eventid'], $page, $_REQUEST['menu']);   // starts session and sets error reporting
-
-// initialising language   
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
-
-// check we have request id - if not stop with system error
-if (empty($_REQUEST['eventid']) or !is_numeric($_REQUEST['eventid'])) 
+$eventid = u_checkarg("eventid", "checkintnotzero","");
+if (!$eventid)
 {
-    u_exitnicely($scriptname, "not defined", $lang['err']['sys002'], "event id is not defined");
+    u_exitnicely($scriptname, "not defined", "event id [{$_REQUEST['eventid']}] not recognised",
+        "Close this window and try to restart the application.  If the problems continue please report the error to your system administrator");
     exit();
 }
+
+u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
 
 // classes  (remove classes not required)
 require_once ("{$loc}/common/classes/db_class.php");
@@ -41,7 +39,6 @@ require_once ("{$loc}/common/classes/entry_class.php");
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/results_tm.php"));
 
 // ---- set script data
-$eventid   = $_REQUEST['eventid'];
 $numfleets = $_SESSION["e_$eventid"]['rc_numfleets'];
 
 include ("./include/results_ctl.inc");
@@ -59,9 +56,10 @@ foreach ($race_o->race_getresults() as $result)
 }
 
 // ---- Recalculate results if required ----------------------------------
-$results = array();
+$results = array("eventid" => $eventid, "num-fleets" => $numfleets);
 if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need recalculating
 {
+    $warning_count = 0;
     for ($i = 1; $i <= $numfleets; $i++)
     {
         $fleet_rs['warning'] = array();
@@ -70,12 +68,16 @@ if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need 
         {
             $fleet_rs = $race_o->race_score($_SESSION["e_$eventid"]["fl_$i"]['scoring'], $rs_data[$i] );
         }
+        if (!empty($fleet_rs['warning'])) { $warning_count++; }
         $results['warning'][$i] = $fleet_rs['warning'];
         $results['data'][$i]    = $fleet_rs['data'];
     }
-    count($results['warning'])>0 ? $growl = $g_results_recalc_fail : $growl = $g_results_recalc_success ;
-    u_growlset($eventid, $page, $growl);
+    //$warning_count>0 ? $growl = $g_results_recalc_fail : $growl = $g_results_recalc_success ;
+    //u_growlset($eventid, $page, $growl);
+
 }
+//echo "<pre>".print_r($results['warning'],true)."</pre>";
+//echo "<pre>".print_r($results['data'],true)."</pre>";
 
 // ----- navbar -----------------------------------------------------------------------------
 $fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
@@ -87,15 +89,11 @@ $lbufr = "";
 $lbufr = u_growlProcess($eventid, $page);       // check for confirmations to present
 
 // ---- create tabs/panels ------------------
-//echo <<<EOT
-//   <div style="min-height: 40px">&nbsp;</div>
-//EOT;
-//echo "<pre>".print_r($results,true)."</pre><br>";
-$lbufr.= $tmpl_o->get_template("result_tabs", array(), array("eventid" => $eventid, "num-fleets" => $numfleets, "xxx" => $results));
+$lbufr.= $tmpl_o->get_template("result_tabs", array(), $results);
 
 // add modals for inline buttons
-$fields = array( "entryid" => "", "allocation" => $_SESSION['points_allocation']);
-$data = array("resultcodes" => $_SESSION['resultcodes']);
+$fields = array( "entryid" => "" );
+$data = array("resultcodes" => $_SESSION['resultcodes'], "allocation" => $_SESSION['points_allocation']);
 $mdl_edit['fields']['body'] = $tmpl_o->get_template("fm_edit_result", $fields, $data);
 $lbufr.= $tmpl_o->get_template("modal", $mdl_edit['fields'], $mdl_edit);
 $lbufr.= $tmpl_o->get_template("modal", $mdl_detail['fields'], $mdl_detail);
@@ -103,6 +101,22 @@ $lbufr.= $tmpl_o->get_template("modal", $mdl_remove['fields'], $mdl_remove);
 
 // ----- right hand panel ------------------------------------------------------------
 $rbufr = "";
+
+// results status
+// FIXME temp solution - either fix it to be something useful or remove
+if ($_SESSION["e_$eventid"]['result_valid'])
+{
+    $rbufr.=<<<EOT
+    <h2><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: green"></span></h2>
+EOT;
+}
+else
+{
+    $rbufr.=<<<EOT
+    <h2><span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: red"></span></h2>
+EOT;
+}
+
 
 // retirements button
 if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
@@ -114,36 +128,52 @@ if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
         $num_retirements = $entry_o->count_signons("retirements");
         if ($num_retirements > 0)
         {
-            $btn_loadret['style'] = "warning";
-            $btn_loadret['label'] = "+ Retirements - ";
+            $btn_loadret['fields']['style'] = "warning";
+            $btn_loadret['fields']['label'] = "+ Retirements - $num_retirements";
+            $rbufr.= $tmpl_o->get_template("btn_link_blink", $btn_loadret['fields'], $btn_loadret);
+            $rbufr.= "<hr>";
         }
-        $rbufr.= $tmpl_o->get_template("btn_link", $btn_loadret['fields'], $btn_loadret);
-        $rbufr.= "<hr>";
+        else
+        {
+            $rbufr.= $tmpl_o->get_template("btn_link", $btn_loadret['fields'], $btn_loadret);
+            $rbufr.= "<hr>";
+        }
     }
     elseif ($_SESSION["e_$eventid"]['ev_entry'] == "signon-declare")
     {
         $num_declarations = $entry_o->count_signons("declarations");
         if ($num_declarations > 0)
         {
-            $btn_loaddec['style'] = "warning";
-            $btn_loaddec['label'] = "+ Declarations - ";
+            $btn_loaddec['fields']['style'] = "warning";
+            $btn_loaddec['fields']['label'] = "+ Declarations - ";
+            $rbufr.= $tmpl_o->get_template("btn_link_blink", $btn_loaddec['fields'], $btn_loaddec);
+            $rbufr.= "<hr>";
         }
-        $rbufr.= $tmpl_o->get_template("btn_link", $btn_loaddec['fields'], $btn_loaddec);
-        $rbufr.= "<hr>";
+        else
+        {
+            $rbufr.= $tmpl_o->get_template("btn_link", $btn_loaddec['fields'], $btn_loaddec);
+            $rbufr.= "<hr>";
+        }
+
     }
 }
 
 // function buttons
-$rbufr.= $tmpl_o->get_template("btn_modal", $btn_changefinish['fields'], $btn_changefinish);      // change finish lap button
-$rbufr.= $tmpl_o->get_template("btn_modal", $btn_message['fields'], $btn_message);           // send message button
-$rbufr.= $tmpl_o->get_template("btn_modal", $btn_publish['fields'], $btn_publish);           // publish results button
 
-// modal markup
-$mdl_changefinish['body'] = $tmpl_o->get_template("fm_change_finish", array("num-fleets" => $numfleets), $_SESSION["e_$eventid"]);
+$rbufr.= $tmpl_o->get_template("btn_modal", $btn_changefinish['fields'], $btn_changefinish);      // change finish lap button
+$rbufr.= $tmpl_o->get_template("btn_modal", $btn_message['fields'], $btn_message);                // send message button
+$rbufr.= $tmpl_o->get_template("btn_modal", $btn_publish['fields'], $btn_publish);                // publish results button
+
+// change finish modal
+$mdl_changefinish['fields']['body'] = $tmpl_o->get_template("fm_change_finish", $mdl_changefinish['fields'], $_SESSION["e_$eventid"]);
 $rbufr.= $tmpl_o->get_template("modal", $mdl_changefinish['fields'], $mdl_changefinish);          // finish lap modal
+
+// send message modal
 $mdl_message['fields']['body'] = $tmpl_o->get_template("fm_race_message", array());
-$rbufr.= $tmpl_o->get_template("modal", $mdl_message['fields'], $mdl_message);               // send message modal
-$rbufr.= $tmpl_o->get_template("modal", $mdl_publish['fields'], $mdl_publish);               // publish results modal
+$rbufr.= $tmpl_o->get_template("modal", $mdl_message['fields'], $mdl_message);                    // send message modal
+
+// results publish modal
+$rbufr.= $tmpl_o->get_template("modal", $mdl_publish['fields'], $mdl_publish);                    // publish results modal
 
 // disconnect database
 $db_o->db_disconnect();
@@ -176,7 +206,7 @@ echo $tmpl_o->get_template("two_col_page", $fields, $params);
 
 
 /* ---- functions ------- */
-function get_result_row($result)
+/*function get_result_row($result)
 {
     global $race_o, $tmpl_o;
     global $btn_edit, $btn_detail, $btn_remove;
@@ -212,20 +242,20 @@ function get_result_row($result)
     $button_bufr.= $tmpl_o->get_template("badge_modal", $btn_remove['fields'], $btn_edit);
 
     $fields = array(
-        "class" => $result['class'],
-        "sailnum" => $result['sailnum'],
+        "class"      => $result['class'],
+        "sailnum"    => $result['sailnum'],
         "competitor" => $competitor,
-        "pn" => $result['pn'],
-        "lap" => $result['lap'],
-        "et" => u_conv_secstotime($result['etime']),
-        "ct" => u_conv_secstotime($result['atime']),
-        "code" => $result['code'],
-        "points" => $result['points'],
-        "status" => $status_bufr,
-        "button" => $button_bufr,
+        "pn"         => $result['pn'],
+        "lap"        => $result['lap'],
+        "et"         => u_conv_secstotime($result['etime']),
+        "ct"         => u_conv_secstotime($result['atime']),
+        "code"       => $result['code'],
+        "points"     => $result['points'],
+        "status"     => $status_bufr
+//        "button" => $button_bufr,
     );
     return $fields;
-}
+}*/
 
 
 function get_lap_details($laptimes)

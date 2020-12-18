@@ -22,8 +22,8 @@ require_once ("{$loc}/common/lib/rm_lib.php");
 $eventid   = (!empty($_REQUEST['eventid']))? $_REQUEST['eventid']: "";
 $pagestate = (!empty($_REQUEST['pagestate']))? $_REQUEST['pagestate']: "";
 
-u_initpagestart($eventid, $page, "");                               // starts session and sets error reporting
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");     // language file
+u_initpagestart($eventid, $page, false);                               // starts session and sets error reporting
+//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");     // language file
 
 if ($eventid AND $pagestate)
 {

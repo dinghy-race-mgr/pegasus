@@ -71,12 +71,12 @@ echo <<<EOT
       <div class="container" >
         <div class="row">
            <div class="col-md-7">
-               <h1><img src="common/images/logos/rmlogo-md.jpg"> raceManager HELLO</h1>
-               <p>{$lang['msg']['maintitle']}</p>
+               <h1><img src="common/images/logos/rmlogo-md.jpg"> raceManager</h1>
+               <p>An integrated system for race timing and results management at sailing clubs</p>
            </div>
            <div class="col-md-5">
                <div style="height:100%; " >
-                   <img src="common/images/club.jpg" alt="dinghy racing image" class="img-responsive img-rounded"  style="max-height:200px !important;"></img>
+                   <img src="config/images/club_banner.jpg" alt="dinghy racing image" class="img-responsive img-rounded"  style="max-height:200px !important;"></img>
                </div>
            </div>
         </div>

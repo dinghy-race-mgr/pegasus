@@ -132,7 +132,7 @@ function createfleetpanel($fleetcfg, $eventid, $panel_state)
             <td><b>{$row['fleet_name']}</b></td>
             <td>$scoring</td>
             <td>{$row['py_type']}</td>
-            <td><img src="{$loc}/common/images/signal_flags/{$row['warn_signal']}" height="24" width="32" style="border:1px solid #021a40"></td>
+            <td><img src="{$loc}/common/images/signal_flags/{$row['warn_signal']}" height="24" width="32"></td>
             <td>$timelimit</td>                
             <td>$classes</td>
             <td>$competitors</td>            
@@ -340,7 +340,7 @@ EOT;
               <div class="col-md-2 col-md-offset-1"><b>$rtime</b> &nbsp;&nbsp;<small>$ctime</small></div>
               <div class="col-md-6">$text</div>
               <div class="col-md-2">
-                    <img src="{$loc}/common/images/signal_flags/{$signal['flag']}" height="30" width="40" style="border:1px solid #021a40;">&nbsp;
+                    <img src="{$loc}/common/images/signal_flags/{$signal['flag']}" height="30" width="40">&nbsp;
                     <span class="text-primary glyphicon glyphicon-arrow-{$signal['dir']}" style="font-size: 120%"></span>
               </div>
            </div>

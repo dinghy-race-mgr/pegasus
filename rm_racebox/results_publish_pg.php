@@ -15,13 +15,12 @@
 $loc        = "..";       // <--- relative path from script to top level folder
 $page       = "publish";     //
 $scriptname = basename(__FILE__);
-require_once ("{$loc}/common/lib/util_lib.php"); 
-//require_once ("{$loc}/common/lib/html_lib.php");
+require_once ("{$loc}/common/lib/util_lib.php");
 
 u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and sets error reporting
 
 // initialising language   
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
+//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
@@ -343,7 +342,8 @@ function display_options_form($loc, $eventid)
     $fields = array(
         "title"      => "publish results",
         "loc"        => $loc,
-        "stylesheet" => "$loc/style/rm_racebox.css",
+        "theme"      => $_SESSION['racebox_theme'],
+        "stylesheet" => "./style/rm_racebox.css",
         "navbar"     => "",
         "body"       => $tmpl_o->get_template("fm_publish", $form_params, $event),
         "footer"     => "",

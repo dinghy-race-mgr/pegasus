@@ -23,12 +23,13 @@ require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
-
-u_initpagestart($_REQUEST['eventid'], $page, true);  // starts session and sets error reporting
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");   // language file
-
-if (!$eventid) { u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
+if (!$eventid) {
+    u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
     "please contact your raceManager administrator");  }
+
+u_initpagestart($eventid, $page, true);  // starts session and sets error reporting
+
+
 
 // classes
 include ("{$loc}/common/classes/db_class.php");
