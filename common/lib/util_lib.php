@@ -70,6 +70,24 @@ function u_2darray_search($array, $field, $match)
     return $keys;
 }
 
+function u_array_orderby()
+    // sorts array by multiple columns
+{
+    $args = func_get_args();
+    $data = array_shift($args);
+    foreach ($args as $n => $field) {
+        if (is_string($field)) {
+            $tmp = array();
+            foreach ($data as $key => $row)
+                $tmp[$key] = $row[$field];
+            $args[$n] = $tmp;
+        }
+    }
+    $args[] = &$data;
+    call_user_func_array('array_multisort', $args);
+    return array_pop($args);
+}
+
 function u_array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
     /*
      * usage:
@@ -136,6 +154,11 @@ function u_conv_secstotime($secs)
     }
     
     return $time;
+}
+
+function u_conv_timetosecs($time)
+{
+    return strtotime("1970-01-01 $time UTC");
 }
 
 
@@ -713,7 +736,7 @@ function u_dropdown_resultcodes($codes, $detail, $link)
 {
     $bufr = <<<EOT
     <li><a href="$link&code=" > -- clear code --</a></li>
-    <!-- <li role="separator" class="divider" style="padding: 0px"></li> -->
+    <li role="separator" class="divider" style="padding: 0px"></li>
 EOT;
     foreach ($codes as $code)
     {       
@@ -914,6 +937,19 @@ function u_getteamname($helm, $crew, $chars = 0)
 }
 
 
+function u_getclubname($club_str)
+{
+    $club_str = ucwords(strtolower($club_str));
+    $club_str = str_replace(" Yacht Club", " YC", $club_str);
+    $club_str = str_replace(" Sailing Club", " SC", $club_str);
+    $club_str = str_replace(" Yc", " YC", $club_str);
+    $club_str = str_replace(" Sc", " SC", $club_str);
+
+    return $club_str;
+
+}
+
+
 function u_getwind_str($wind = array())
 {
     $wind_str = "";
@@ -954,6 +990,8 @@ function u_growlUnset($eventid, $page="")
 
 function u_growlProcess($eventid, $page)
 {
+    //echo "<pre>Current Growls: ".print_r($_SESSION["e_$eventid"]['growl'],true)."</pre>";
+
     $att_default = array(
        "msg"             => "oops no message!",
        "glyph"           => true,
@@ -1027,7 +1065,7 @@ EOT;
 
 function u_selectcodelist($codelist, $selected="")
 {
-    $bufr = "<option value=\"\">please select ...</option>";
+    $bufr = "<option value=\"\">-- no code --</option>";
     foreach ($codelist as $opt)
     {
         $selectstr = "";

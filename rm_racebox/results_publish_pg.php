@@ -25,6 +25,7 @@ u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and set
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
+require_once ("{$loc}/common/classes/rota_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/result_class.php");
 require_once ("{$loc}/common/classes/seriesresult_class.php");
@@ -62,7 +63,7 @@ elseif ($pagestate == "process")    // run through process workflow
     $success = array(1=>true, 2=>true, 3=>true, 4=>true );
     u_writelog("Results processing started: ", $eventid);
 
-    $row_start = array ("1" => 5, "2" => 20, "3" => 35, "4" => 50, "5" => 75 );  // % of page height for process display
+    $row_start = array ("1" => 5, "2" => 15, "3" => 30, "4" => 45, "5" => 65 );  // % of page height for process display
     $transfer_files = array(); // contains files to be transferred
 
     // deal with parameters from form
@@ -85,7 +86,7 @@ elseif ($pagestate == "process")    // run through process workflow
 
     // STEP 1 - archive data
     $step = 1;
-    startProcess($step, $row_start[$step], "Saving race results ...", "warning");
+    startProcess($step, $row_start[$step], "Archiving results data...", "warning");
     $result_o = new RESULT($db_o, $eventid);
 
     $status = process_archive();
@@ -94,41 +95,43 @@ elseif ($pagestate == "process")    // run through process workflow
     // step 1 results for next stage
     if ($status['copy'] and $status['archive'])
     {
-        endProcess($step, $row_start[$step], "success", "Results saved ");
+        endProcess($step, $row_start[$step], "success", "Results archived ");
         u_writelog("results archived", $eventid);
         $continue = true;
     }
     else
     {
-        endProcess($step, $row_start[$step], "fail", "Results saving FAILED ");
-        u_writelog("FAILED to archive results", $eventid);
+        $status['copy'] ?  $msg1 = "results copied " : $msg1 = "results copy failed ";
+        $status['archive'] ?  $msg2 = "results archived" : $msg2 = "results archiving failed";
+
+        endProcess($step, $row_start[$step], "fail", "Results archiving FAILED [$msg1 : $msg2]");
+        u_writelog("FAILED to archive results [$msg1 : $msg2]", $eventid);
         $continue = false;
         $success[1] = false;
     }
-
 
     // STEP 2 - create results file
     if ($continue)
     {
         $step = 2;
-        startProcess($step, $row_start[$step], "Creating race results ...", "warning");
+        startProcess($step, $row_start[$step], "Creating results sheet ...", "warning");
 
         // create race result
-        $fleet_msg = array(); // FIXME need to get fleet message from results page
+        $fleet_msg = array(); // TODO this is a future use feature - displays individual notes for each fleet - currently not collected anywhere
         $status = process_result_file($loc, $result_status, $include_club, $result_notes, $fleet_msg);
         sleep(2);
 
         if ($status['success'])
         {
-            endProcess($step, $row_start[$step], "success", "Race results created", $status['url'], "Click to view");
+            endProcess($step, $row_start[$step], "success", "Results sheet created", $status['url'], "Click to view");
             u_writelog("race results file created", $eventid);
             $transfer_file[] = array("path" => $status['path'], "url" => $status['url'], "file" => $status['file']);
             $continue = true;
         }
         else
         {
-            endProcess($step, $row_start[$step], "fail", "Race results processing FAILED ");
-            u_writelog("FAILED to create race results", $eventid);
+            endProcess($step, $row_start[$step], "fail", "Results sheet FAILED ");
+            u_writelog("FAILED to create results file", $eventid);
             $continue = false;
             $success[2] = false;
         }
@@ -151,14 +154,14 @@ elseif ($pagestate == "process")    // run through process workflow
 
             if ($status['success'])
             {
-                endProcess($step, $row_start[$step], "success", "Series results created", $status['url'], "Click to view");
+                endProcess($step, $row_start[$step], "success", "Series result sheet created", $status['url'], "Click to view");
                 u_writelog("series results file updated", $eventid);
                 $transfer_file[] = array("path" => $status['path'], "url" => $status['url'], "file" => $status['file']);
                 $continue = true;
             }
             else
             {
-                endProcess($step, $row_start[$step], "fail", "Series results FAILED ");
+                endProcess($step, $row_start[$step], "fail", "Series results update FAILED ");
                 u_writelog("FAILED to update series results file", $eventid);
                 $continue = true;  // should transfer what we can
                 $success[3] = false;
@@ -181,7 +184,7 @@ elseif ($pagestate == "process")    // run through process workflow
 
         if ($_SESSION['result_upload'])
         {
-            startProcess($step, $row_start[$step], "Posting files to website ", "warning");
+            startProcess($step, $row_start[$step], "Transferring results files to website ", "warning");
 
             // get inventory file name/path
             $inventory_file = $result_o->get_inventory_filename();
@@ -257,7 +260,7 @@ EOT;
     }
 
     echo <<<EOT
-        <div class="row" style='background-color: white; width: 100%; position: absolute; top: $pos%;'>
+        <div class="row" style='background-color= #ECF0F1; width: 90%; position: absolute; top: $pos%;'>
             <div class="col-sm-5 col-sm-offset-1">
                <h4 style="color: steelblue">$text</h4>
             </div> 
@@ -289,7 +292,7 @@ function endProcess($step, $pos, $status, $text, $link="", $link_text="")
     }
     else // warning
     {
-        $glyph   = "glyphicon glyphicon-warning";  // fixme is this a glyph
+        $glyph   = "glyphicon glyphicon-warning-sign";
         $g_style = "color: orange";
     }
 
@@ -305,14 +308,14 @@ EOT;
     }
 
     echo <<<EOT
-        <div class="row" style='background-color: white; width: 100%; position: absolute; top: $pos%;'>
+        <div class="row" style='background-color: white; width: 90%; position: absolute; top: $pos%; padding-bottom: 10px; border-bottom: solid 1pt slategrey;'>
             <div class="col-sm-5 col-sm-offset-1">
-               <h4 style="color: steelblue">$text</h4>
+               <h4 style="color: steelblue; vertical-align: top;">$text</h4>
             </div> 
             <div class="col-sm-2">
-               <h4><span class="$glyph" style="$g_style" aria-hidden="true"></span></h4>
+               <h4><span class="$glyph" style="$g_style; vertical-align: top;" aria-hidden="true"></span></h4>
             </div>
-            <div class="col-sm-4 pull-right">
+            <div class="col-sm-4 pull-right" style="vertical-align: top;">
                $link_bufr
             </div>
         </div>
@@ -360,7 +363,11 @@ function start_page($loc)
     $fields = array(
         "title"      => "publish results",
         "loc"        => $loc,
-        "stylesheet" => "rm_racebox.css",
+        "theme"      => $_SESSION['racebox_theme'],
+        "stylesheet" => "./style/rm_racebox.css",
+        "navbar"     => "",
+        "body"       => "",
+        "footer"     => "",
     );
 
     return $tmpl_o->get_template("process_header", $fields);

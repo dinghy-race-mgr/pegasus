@@ -412,7 +412,7 @@ $mdl_editlap = array(
     "form"    => true,
     "footer"  => false,
     "reload"  => true,
-    "close"   => false,
+    "close"   => true,
     "reset"   => false,
     "submit"  => false,
     "fields"  => array(
@@ -429,7 +429,7 @@ $mdl_editlap = array(
         "target"      => "",
         "close-lbl"   => "Cancel",
         "reset-lbl"   => "",
-        "submit-lbl"  => "Update Lap Times",
+        "submit-lbl"  => "",
         "footer"      => ""
     ),
 );

@@ -1,10 +1,11 @@
 <?php
 /**
- * race_pg.php - race administration page
+ * start_pg.php - race administration page
  * 
- * This page allows the user to change some details of the race they are running and run
- * some administration functions (e.g. cancel, reset, close, etc.).  It is the racebox
- * application landing page once the event has been chosen.
+ * This page is used to manage the start period.
+ *   - managing the start timer (which can be synchronised with a automated lights or flag system
+ *   - recording start line infringements
+ *   - managing general recall restarts
  * 
  * @author Mark Elkington <mark.elkington@blueyonder.co.uk>
  * 
@@ -28,8 +29,6 @@ if (!$eventid) {
     "please contact your raceManager administrator");  }
 
 u_initpagestart($eventid, $page, true);  // starts session and sets error reporting
-
-
 
 // classes
 include ("{$loc}/common/classes/db_class.php");

@@ -75,7 +75,7 @@ $btn_loadret = array(
         "id"         => "loadret",
         "size"       => "lg",
         "style"      => "primary",
-        "label"      => "+ Retirements",
+        "label"      => "Retirements",
         "link"       => "results_sc.php?eventid=$eventid&pagestate=retirements",
         "glyph"      => "glyphicon-cloud-download",
         "popover"    => "click here to load retirements from the racemanager sign on facility ",
@@ -228,7 +228,7 @@ $mdl_publish = array(
     "fields"  => array(
         "id"         => "publish",
         "size"       => "lg",
-        "style"      => "primary",
+        "style"      => "success",
         "title"      => "<b>Publish Race Results</b>",
         "body"       => "<iframe src=\"results_publish_pg.php?eventid=$eventid&pagestate=init\" style=\"width: 100%; height: 550px; border:0px\" id=\"entryframe\"></iframe>",
         "script"     => "",
@@ -252,7 +252,7 @@ $btn_edit = array(
     "g-pos"     => "left",
     "popover"   => true,
     "fields"    => array(
-        "id"         => "edit",
+        "id"         => "editresult",
         "size"       => "",
         "style"      => "progress-bar-default",
         "label"      => "",
@@ -269,17 +269,45 @@ $mdl_edit = array(
     "form"    => true,
     "footer"  => false,
     "reload"  => true,
+    "close"   => false,
+    "reset"   => false,
+    "submit"  => false,
+    "fields"  => array(
+        "id"         => "editresult",
+        "size"       => "lg",
+        "style"      => "success",
+        "title"      => "Edit Result",
+        "body"       => "<iframe id=\"editresultFrame\" src=\"\" frameborder=\"0\" style=\"width: 100%; height: 700px;\"></iframe>",
+        "script"     => "
+                        $( '#editresultModalLabel' ).text( 'Edit result for ' + button.data('boat'))
+                        $( '#editresultFrame' ).attr('src', button.data('iframe'))
+                        ",
+        "onsubmit"   => "",
+        "action"     => "",
+        "target"     => "",
+        "close-lbl"  => "cancel",
+        "reset-lbl"  => "",
+        "submit-lbl" => "",
+        "footer"     => ""
+    ),
+);
+
+/*
+$mdl_edit = array(
+    "form"    => true,
+    "footer"  => false,
+    "reload"  => true,
     "close"   => true,
     "reset"   => false,
     "submit"  => true,
     "fields"  => array(
-        "id"         => "edit",
+        "id"         => "editresult",
         "size"       => "lg",
         "style"      => "primary",
         "title"      => "Edit Result",
         "body"       => "",
         "script"     => "
-                        $( '#editModalLabel' ).text( 'Edit result for ' + button.data('boat'))
+                        $( '#editresultModalLabel' ).text( 'Edit result for ' + button.data('boat'))
                         $( '#identryid' ).val(button.data('entryid'))
                         $( '#idhelm' ).val(button.data('helm'))
                         $( '#idcrew' ).val(button.data('crew'))
@@ -300,10 +328,10 @@ $mdl_edit = array(
         "footer"     => ""
     ),
 );
-
+*/
 
 // -------- show detail ----------------------------------------------------------------
-$btn_detail = array(
+/*$btn_detail = array(
     "label"     => true,
     "glyph"     => true,
     "g-pos"     => "left",
@@ -346,7 +374,7 @@ $mdl_detail = array(
         "footer"     => "<button type=\"button\" class=\"btn btn-default pull-left\" data-dismiss=\"modal\">Close</button>"
     ),
 );
-
+*/
 
 
 // -------- remove result ----------------------------------------------------------------
@@ -385,7 +413,7 @@ $mdl_remove = array(
                          <input name=\"entryid\" type=\"hidden\" class=\"form-control\" id=\"entryid\">
                         ",
         "script"     => "var entryname = button.data('entryname')
-                         document.getElementById(\"removetxt\").innerHTML = entryname
+                         document.getElementById(\"removetxt\").innerHTML = 'Are you sure you want to permanently delete <b>' + entryname + '</b>' + '</br></br><span style=\'color: red\';>This cannot be undone</span'
                          var entryid = button.data('entryid')
                          var modal = $(this)
                          modal.find('.modal-body input').val(entryid)

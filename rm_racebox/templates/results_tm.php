@@ -96,6 +96,39 @@ EOT;
 }
 
 
+//function codes_html($code, $url)    // FIXME same code in both timer_tm and results_tm
+//    /*
+//     * displays codes dropdown on timer page
+//     */
+//{
+//    if (empty($code))
+//    {
+//        //$label = "<span>code &nbsp;</span>";
+//        $label = "<span class='glyphicon glyphicon-cog'>&nbsp;</span>";
+//        $style = "btn-info";
+//    }
+//    else
+//    {
+//        $label = "<span>$code&nbsp;</span>";
+//        $style = "btn-danger";
+//    }
+//
+//    $codebufr = u_dropdown_resultcodes($_SESSION['timercodes'], "short", $url);
+//
+//    $bufr = <<<EOT
+//    <div class="dropdown">
+//        <button type="button" class="btn $style btn-xs dropdown-toggle" data-toggle="dropdown" >
+//            <span class="default"><b>$label&nbsp;</b></span><span class="caret" ></span>
+//        </button>
+//        <ul class="dropdown-menu">
+//            $codebufr
+//        </ul>
+//    </div>
+//EOT;
+//
+//    return $bufr;
+//}
+
 function format_columns($racetype)
 {
     if ($racetype == "level")  // pn and corrected time not required
@@ -224,7 +257,7 @@ EOT;
     return $bufr;
 }
 
-function format_rows($racetype, $eventid, $race_results)
+function format_rows($eventid, $racetype, $race_results)
 {
     $rows = "";
     foreach($race_results as $result)
@@ -244,18 +277,23 @@ EOT;
         // conversions
         $result['et'] = u_conv_secstotime($result['et']);
         $result['ct'] = u_conv_secstotime($result['ct']);
+        $boat = $boat = "{$result['class']} - {$result['sailnum']}";
+
+        // code
+        $link = "results_sc.php?eventid=$eventid&pagestate=setcode&fleet={$result['fleet']}&entryid={$result['entryid']}&boat={$result['boat']}&racestatus={$result['status']}";
+        $code_link = get_code($result['code'], $link, "resultcodes");
 
         if ($racetype == "level")  // pn and corrected time not required
         {
             $rows.= <<<EOT
             <tr class="table-data">
-               <td >{$result['status']}</td>
+               <td >{$result['status_flag']}</td>
                <td class="truncate">{$result['class']}</td>
                <td class="truncate">{$result['sailnum']}</td>
                <td class="truncate">{$result['competitor']}</td>
                <td style="text-align: center">{$result['et']}</td>
                <td style="text-align: center">{$result['lap']}</td>
-               <td style="text-align: center">{$result['code']}</td>
+               <td style="text-align: center">$code_link</td>
                <td style="text-align: center">{$result['points']}</td>
                <td >&nbsp;</td>
                <td >{$result['editbtn']}</td>
@@ -267,13 +305,13 @@ EOT;
         {
             $rows.= <<<EOT
             <tr class="table-data">
-               <td >{$result['status']}</td>
+               <td >{$result['status_flag']}</td>
                <td class="truncate">{$result['class']}</td>
                <td class="">{$result['sailnum']}</td>
                <td class="truncate">{$result['competitor']}</td>
                <td style="text-align: center">{$result['et']}</td>
                <td style="text-align: center">{$result['lap']}</td>
-               <td style="text-align: center">{$result['code']}</td>
+               <td style="text-align: center">$code_link</td>
                <td style="text-align: center">{$result['points']}</td>
                <td >&nbsp;</td>
                <td >{$result['editbtn']}</td>
@@ -285,7 +323,7 @@ EOT;
         {
             $rows.= <<<EOT
             <tr class="table-data">
-               <td >{$result['status']}</td>
+               <td >{$result['status_flag']}</td>
                <td class="truncate">{$result['class']}</td>
                <td class="">{$result['sailnum']}</td>
                <td class="truncate">{$result['competitor']}</td>
@@ -293,7 +331,7 @@ EOT;
                <td style="text-align: center">{$result['et']}</td>
                <td style="text-align: center">{$result['ct']}</td>
                <td style="text-align: center">{$result['lap']}</td>
-               <td style="text-align: center">{$result['code']}</td>
+               <td style="text-align: center">$code_link</td>
                <td style="text-align: center">{$result['points']}</td>
                <td >&nbsp;</td>
                <td >{$result['editbtn']}</td>
@@ -305,7 +343,7 @@ EOT;
         {
             $rows.= <<<EOT
             <tr class="table-data">
-               <td >{$result['status']}</td>
+               <td >{$result['status_flag']}</td>
                <td class="truncate">{$result['class']}</td>
                <td class="">{$result['sailnum']}</td>
                <td class="truncate">{$result['competitor']}</td>
@@ -313,7 +351,7 @@ EOT;
                <td style="text-align: center">{$result['et']}</td>
                <td style="text-align: center">{$result['ct']}</td>
                <td style="text-align: center">{$result['lap']}</td>
-               <td style="text-align: center">{$result['code']}</td>
+               <td style="text-align: center">$code_link</td>
                <td style="text-align: center">{$result['points']}</td>
                <td >&nbsp;</td>
                <td >{$result['editbtn']}</td>
@@ -329,9 +367,9 @@ function editresult_html($eventid, $entryid, $boat)
 {
         $bufr = <<<EOT
         <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true"
-              data-title="edit lap times for this boat" data-placement="top">
-            <a type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#editlapModal" data-boat="$boat"
-                    data-iframe="result_edit_pg.php?eventid=$eventid&pagestate=init&entryid=$entryid" >
+              data-title="edit result details for this boat" data-placement="top">
+            <a type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#editresultModal" data-boat="$boat"
+                    data-iframe="results_edit_pg.php?eventid=$eventid&pagestate=init&entryid=$entryid" >
                     <span class="glyphicon glyphicon-pencil"></span>
             </a>
         </span>
@@ -340,120 +378,296 @@ EOT;
     return $bufr;
 }
 
-function fm_edit_result($params)
 
+function result_edit_warnings($params)
 {
-    $labelwidth = "col-xs-3";
-    $fieldwidth = "col-xs-7";
+    //echo "<pre>".print_r($params,true)."</pre>";
+    $eventid = $params['eventid'];
+    $entryid = $params['entryid'];
+
+    $bufr = "";
+
+    // create list
+    $abufr = "";
+    foreach ($params['warnings'] as $warning)
+    {
+        if ($warning['type'] == "error")
+        {
+            $style = "alert-danger";
+            $label = "Error!";
+        }
+        else
+        {
+            $style = "alert-warning";
+            $label = "Warning!";
+        }
+
+        $abufr.= <<<EOT
+        <div class="alert $style">
+            <h4>$label {$warning['title']}</h4>
+            <p>{$warning['msg']}</p>
+        </div>
+EOT;
+    }
+
+    // page with buttons
+    $bufr.= <<<EOT
+    <div>
+    <h2>Possible Issues</h2>
+    $abufr    
+    </div>
+    <div class="pull-right">
+        <button onclick='window.top.location.href = "results_pg.php?eventid=$eventid";' type="button" class="btn btn-default" data-dismiss="modal">
+            <span class="glyphicon glyphicon-remove"></span>&nbsp;ignore
+        </button>
+        <button onclick='location.href = "results_edit_pg.php?eventid=$eventid&pagestate=init&entryid=$entryid";' type="submit" class="btn btn-warning">
+            <span class="glyphicon glyphicon-pencil"></span>&nbsp;back to edit
+        </button>
+    </div>
+EOT;
+
+    return $bufr;
+}
+
+
+function fm_result_edit($params)
+{
+    $lbl_width = "col-xs-2";
+    $fld_width = "col-xs-5";
+    $hlp_width = "col-xs-4";
+
+    //echo "<pre>".print_r($params,true)."</pre>";
 
     $resultcodes = array();
-    foreach($params['resultcodes'] as $row)
-    {
-        $resultcodes["{$row['code']}"] = "{$row['code']} : {$row['short']}";
+    foreach ($params['resultcodes'] as $row) {
+        $resultcodes[] = array ("code" => $row['code'], "label" => "{$row['code']} : {$row['short']}");
     }
-    $code_options = u_selectlist($resultcodes, "");
+    $scoring_code_bufr = u_selectcodelist($resultcodes, $params['code']);
 
-
-    $helm = "";
-    if ($params['allocation'] == "boat")  // if series point to boats - then allow helm name to be edited
-    {
-        $helm = <<<EOT
+    $helm_bufr = "";
+    if ($params['points_allocation'] == "boat") {
+        $helm_bufr = <<<EOT
         <div class="form-group">
-            <label class="$labelwidth control-label">Helm</label>
-            <div class="$fieldwidth inputfieldgroup">
-                <input type="text" class="form-control" id="idhelm" name="helm" value=""
-                    required data-fv-notempty-message="helm must be entered"
+            <label class="$lbl_width control-label">helm</label>
+            <div class="$fld_width inputfieldgroup">
+                <input type="text" class="form-control" style="text-transform: capitalize;" id="helm" name="helm" value="{helm}"
+                    required data-fv-notempty-message="this information is required"
                 />
+                <div class="$hlp_width help-block">e.g. Fred Flintstone</div>
             </div>
         </div>
 EOT;
     }
 
-    $html = <<<EOT
-    <div class="alert alert-warning alert-dismissable" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        This form can be used to edit information about the competitor or their result.
-        If you want to edit the individual lap times use the lap times icon<br>
-    </div>
-
-    <input name="entryid" type="hidden" id="identryid" value="{entryid}">
-
-    $helm
-
-    <div class="form-group">
-        <label class="$labelwidth control-label">Crew</label>
-        <div class="$fieldwidth inputfieldgroup">
-            <input type="text" class="form-control" id="idcrew" name="crew" value=""
-            placeholder="only necessary for double hander"
-            />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="$labelwidth control-label">Sail No.</label>
-        <div class="$fieldwidth inputfieldgroup">
-            <input type="text" class="form-control" id="idsailnum" name="sailnum" value=""
-            />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="$labelwidth control-label">PN</label>
-        <div class="$fieldwidth inputfieldgroup">
-            <input type="text" class="form-control" id="idpn" name="pn" value=""
-            />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="$labelwidth control-label">laps</label>
-        <div class="$fieldwidth inputfieldgroup">
-            <input type="text" class="form-control" id="idlap" name="lap" value=""
-            />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="$labelwidth control-label">elapsed time</label>
-        <div class="$fieldwidth inputfieldgroup">
-            <input type="text" class="form-control" id="idetime" name="etime" value=""
-                   required data-fv-notempty-message="a time [hh:mm:ss] must be entered"
-                   data-fv-regexp="true"
-                   data-fv-regexp-regexp="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
-                   data-fv-regexp-message="lap time must be in HH:MM:SS format"
-            />
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label $labelwidth">result code (e.g. DNF)></label>
-        <div class="$fieldwidth inputfieldgroup">
-            <select class="form-control" name="code" id="idcode" value="" >
-                <option value="">&nbsp;</option>";
-                $code_options
-            </select>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label $labelwidth">penalty</label>
-        <div class="$fieldwidth">
-            <input name="penalty" type="text" class="form-control" id="idpenalty" value=""
-            placeholder="additional penalty points to be applied to position">
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label $labelwidth">notes</label>
-        <div class="$fieldwidth">
-            <input name="note" type="text" class="form-control" id="idnote" value="X"
-            placeholder="any notes you want to add for this result">
-        </div>
-    </div>
-
+/*
+    // loop over lap times - field names are laptime[lap]
+    $i = 1;
+    $bufr = "";
+    if (!empty($laptimes))
+    {
+        $laptimes = explode(",", $params['laptimes']);
+        foreach ($laptimes as $laptime) {
+            $formatted_time = gmdate("H:i:s", $laptime);
+            $bufr .= <<<EOT
+            <div class="form-group margin-top-10" style="min-width: 30%">
+                <label for="lap$i">lap $i &nbsp;</label>
+                <input type="text" class="form-control" id="lap$i" name="etime[$i]" value="$formatted_time"
+                    required data-fv-notempty-message="a time [hh:mm:ss] must be entered"
+                    data-fv-regexp="true"
+                    data-fv-regexp-regexp="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
+                    data-fv-regexp-message="lap time must be in HH:MM:SS format" />
+            </div>
 EOT;
+            $i++;
+        }
+    }
+*/
+//    $etime = "";
+//    if (!empty($params['etime']))
+//    {
+        $etime = gmdate("H:i:s", $params['etime']);
+/*    }*/
+
+    $html = <<<EOT
+
+    <div class="alert well well-sm" role="alert">
+        <p class="text-info"><b>Change boat / race /lap details as required for this competitor and then click the update button to submit the changes </p>
+    </div>
+    
+    <form id="resulteditForm" class="form-horizontal" action="results_edit_pg.php?pagestate=submit" method="post"
+        data-fv-framework="bootstrap"
+        data-fv-icon-valid="glyphicon glyphicon-ok"
+        data-fv-icon-invalid="glyphicon glyphicon-remove"
+        data-fv-icon-validating="glyphicon glyphicon-refresh"
+    >
+    <input name="entryid" type="hidden" id="identryid" value="{$params['entryid']}">
+    <input name="eventid" type="hidden" id="ideventid" value="{$params['eventid']}">
+    
+  <div class="panel panel-default">
+    <div class="panel-heading panel-heading-nav">
+    
+      <ul class="nav nav-pills">
+      
+        <li role="presentation" >
+          <a href="#boatpanel" aria-controls="boatpanel" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-list-alt"> </span> Boat Details</a>
+        </li>
+        
+        <li role="presentation" class="active">
+          <a href="#resultpanel" aria-controls="resultpanel" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-flag"> </span> Race Details</a>
+        </li>
+        
+        <!-- li role="presentation" >
+          <a href="#lapspanel" aria-controls="lapspanel" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-time"> </span> Lap Times</a>
+        </li -->
+        
+        <div class="pull-right">
+        <button onclick='window.top.location.href = "results_pg.php?eventid={$params['eventid']}";' type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>&nbsp;cancel</button>
+        <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span>&nbsp;Update Result</button>
+        </div>
+      </ul>
+      
+    </div>
+    
+    
+    <div class="panel-body">
+    
+      <div class="tab-content">
+      
+        <!-- boat panel -->
+        <div role="tabpanel" class="tab-pane fade in" id="boatpanel">
+        
+            <!-- sailnumber -->  
+            <div class="form-group">
+                <label class="$lbl_width control-label text-success" >sail no.</label>
+                <div class="$fld_width inputfieldgroup">
+                    <input type="text" class="form-control" id="idsailnum" name="sailnum" value="{sailnum}"
+                        required data-fv-notempty-message="this information is required"
+                    />
+                </div>
+                <div class="$hlp_width help-block">sail number used for this race</div>
+            </div>
+                
+            <!-- helm -->  
+            $helm_bufr
+            
+            <!-- crew -->          
+            <div class="form-group">
+                <label class="$lbl_width control-label text-success">crew</label>
+                <div class="$fld_width inputfieldgroup">
+                    <input type="text" class="form-control" style="text-transform: capitalize;" id="idcrew" name="crew" value="{crew}"
+                    placeholder="for double handers only"
+                    />
+                </div>
+                <div class="$hlp_width help-block">e.g. Barney Rubble</div>
+            </div>
+                
+            <!-- Club -->
+            <div class="form-group">
+                <label class="$lbl_width control-label text-success">club</label>
+                <div class="$fld_width inputfieldgroup">
+                    <input type="text" class="form-control" style="text-transform: capitalize;" id="club" name="club" value="{club}"
+                    />
+                </div>
+                <div class="$hlp_width help-block">generally only required for open events</div>
+            </div>
+               
+            <!-- PN -->  
+            <div class="form-group">
+                <label class="$lbl_width control-label text-success">yardstick</label>
+                <div class="$fld_width inputfieldgroup">
+                    <input type="text" class="form-control" id="idpn" name="pn" value="{pn}"
+                        required data-fv-notempty-message="this information is required"
+                        min="{$_SESSION['min_py']}" max="{$_SESSION['max_py']}"
+                        data-fv-between-message="The PY must be between {$_SESSION['min_py']} and {$_SESSION['max_py']}"
+                    />
+                </div>
+                <div class="$hlp_width help-block">handicap number for this race - if unsure use number for a similar class</div>
+            </div>
+                   
+        </div>
+        
+        <!-- result panel --> 
+        <div role="tabpanel" class="tab-pane fade in active" id="resultpanel">
+        
+            <!-- Laps -->  
+            <div class="form-group">
+                <label class="$lbl_width control-label text-success">laps completed</label>
+                <div class="$fld_width inputfieldgroup">
+                    <input type="number" class="form-control" id="idlap" name="lap" value="{lap}"
+                    required data-fv-notempty-message="the number of laps completed is required"
+                    placeholder=""
+                    min="0" 
+                    />
+                </div>
+            </div>       
+            
+            <!-- elapsed time -->
+            <div class="form-group">
+                <label class="$lbl_width control-label text-success">elapsed time</label>
+                <div class="$fld_width inputfieldgroup">
+                    <input type="text" class="form-control" id="idetime" name="etime" value="$etime"
+                           placeholder="hh:mm:ss"
+                           required data-fv-notempty-message="a time [hh:mm:ss] must be entered"
+                           data-fv-regexp="true"
+                           data-fv-regexp-regexp="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
+                           data-fv-regexp-message="lap time must be in HH:MM:SS format"
+                    />
+                </div>
+                <div class="$hlp_width help-block">elapsed time at the finish (hh:mm:ss)</div>
+            </div>        
+            
+            <!-- code -->
+            <div class="form-group">
+                <label class="control-label $lbl_width text-success">result code</label>
+                <div class = "$fld_width">
+                    <select class="form-control $fld_width" name="code" id="idcode" >        
+                        $scoring_code_bufr
+                    </select>
+                </div>
+                <div class="$hlp_width help-block">e.g. OCS, NCS, DNF - otherwise leave blank</div>
+            </div>
+            
+            <!-- penalty score -->        
+            <div class="form-group">
+                <label class="control-label $lbl_width text-success">penalty score</label>
+                <div class="$fld_width">
+                    <input name="penalty" type="number" class="form-control" id="idpenalty" value="{penalty}"
+                    placeholder="penalty points to be applied to score">
+                </div>
+                <div class="$hlp_width help-block">CARE - only use when using DPI scoring code. </div>
+            </div>
+            
+            <!-- notes -->
+            <div class="form-group">
+                <label class="control-label $lbl_width text-success">notes</label>
+                <div class="$fld_width">
+                    <input name="note" type="text" class="form-control" id="idnote" value="{note}"
+                    >
+                </div>
+                <div class="$hlp_width help-block">useful to record why result was edited</div>
+            </div>
+          
+        </div>
+        
+        <!-- lap times panel 
+        <div role="tabpanel" class="tab-pane fade in" id="lapspanel">
+            Lap time fields here
+        </div> -->
+      
+      </div> <!-- end tab-content -->
+      
+    </div>  <!-- end panel-body -->
+    
+  </div> <!-- end panel -->
+
+  
+
+  </form>
+EOT;
+
     return $html;
 }
 
@@ -512,10 +726,9 @@ function process_header($params=array())
             <meta name="author" content="">
 
             <link   rel="shortcut icon"    href="{loc}/common/images/favicon.ico">
-            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap/css/bootstrap.min.css" >
-            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap/css/bootstrap-theme.min.css">
+            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap341/css/{theme}bootstrap.min.css" >
             <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>
-            <script type="text/javascript" src="{loc}/common/oss/bootstrap/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="{loc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
 
             <!-- Custom styles for this template -->
@@ -523,7 +736,7 @@ function process_header($params=array())
 
     </head>
     <body>
-    <h4 style="color: darkorange; margin-top: 5px !important; margin-bottom: 5px !important;">Results publishing ...</h4>
+    <!-- h4 style="color: darkorange; margin-top: 5px !important; margin-bottom: 5px !important;">Results publishing ...</h4-->
 EOT;
     return $html;
 }
@@ -601,9 +814,9 @@ function fm_publish($params)
 
     $html = <<<EOT
     <div class="container" style="margin-top: -40px;">
-        <div class="alert alert-warning alert-dismissable" role="alert">
-           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-           <b>Add details on the WIND during the race and any NOTES to be included in the published results</b>
+              
+        <div class="alert well well-sm" role="alert">
+            <p class="text-info"><b>Add details on the WIND during the race and any NOTES to be included in the published results</p>
         </div>
 
         <div class="margin-top-05">
@@ -625,8 +838,8 @@ function fm_publish($params)
             >
 
                 <div class="row">
-                    <label class="col-xs-3 col-xs-offset-3 control-label text-danger">Race Start</label>
-                    <label class="col-xs-3 control-label text-danger">Race End</label>
+                    <label class="col-xs-3 col-xs-offset-3 control-label text-success" style="text-align: center !important;">Race Start</label>
+                    <label class="col-xs-3 control-label text-success" style="text-align: center !important;">Race End</label>
                     <hr class="col-xs-9 col-xs-offset-1" style="margin-top: 0px;">
                 </div>
                 <div class="row">
@@ -676,10 +889,10 @@ function fm_publish($params)
                     </div>
                 </div>
                  <div class="row">
-                    <label class="col-xs-3 col-xs-offset-1 control-label">&nbsp;</label>
+                    <label class="col-xs-3 col-xs-offset-1 control-label">Club Names?</label>
                     <div class="col-xs-7 checkbox">
                         <label>
-                          <input type="checkbox" id="include_club" name="include_club"> Include competitor club names in results
+                          <input type="checkbox" id="include_club" name="include_club"> tick to include club names in results
                         </label>
                     </div>
                 </div>

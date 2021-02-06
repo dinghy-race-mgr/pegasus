@@ -509,7 +509,7 @@ function get_race_entries($sailorid, $today)
 function process_signon($eventid)
     // processes action of sign on for an event on the race control page
 {
-    global $db_o;
+    global $db_o, $loc;
 
     $entry = $_SESSION["entries"][$eventid];
 
@@ -527,6 +527,14 @@ function process_signon($eventid)
     } else {
         u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} | entry failed [reason: $status]", "");
         $success = false;
+    }
+
+    // update competitor record
+    if ($success)
+    {
+        require_once ("{$loc}/common/classes/comp_class.php");
+        $comp_o = new COMPETITOR($db_o);
+        $upd = $comp_o->comp_updatecompetitor($_SESSION['sailor']['id'], array("last_entry"=> date("Y-m-d")), "rm_sailor" );
     }
 
     return $success;

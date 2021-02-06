@@ -54,19 +54,20 @@ $race_o = new RACE($db_o, $eventid);    // create race object
 
 // get entry details - including existing lap times
 $laps_rs = $race_o->entry_get_timings($entryid);
-//echo "<pre>".print_r($laps_rs,true)."</pre>";
+$laptimes = $race_o->entry_laptimes_get($entryid);
+//$laptimes = $race_o->lapstr_toarray($laps_rs['laptimes']);  // convert laps list to array
 
 // convert lap times string to an array with an index starting at 1
-if (empty($laps_rs['laptimes']))
-{
-    $laptimes = false;
-}
-else
-{
-    $laptimes = explode(",", $laps_rs['laptimes']);
-    array_unshift($laptimes, null);
-    unset($laptimes[0]);
-}
+//if (empty($laps_rs['laptimes']))
+//{
+//    $laptimes = false;
+//}
+//else
+//{
+//    $laptimes = explode(",", $laps_rs['laptimes']);
+//    array_unshift($laptimes, null);
+//    unset($laptimes[0]);
+//}
 //echo "<pre>".print_r($laptimes,true)."</pre>";
 
 
@@ -93,7 +94,7 @@ elseif ($pagestate == "submit")       // correct modified lap times and return t
     $newlaptimes = array();
     foreach($_REQUEST['etime'] as $lap=>$etime)
     {
-        $newlaptimes[$lap] = strtotime("1970-01-01 $etime UTC");
+        $newlaptimes[$lap] = u_conv_timetosecs($etime);
     }
     $rs = $race_o->entry_laptime_check($newlaptimes);               // checks if modified laptimes are OK
 

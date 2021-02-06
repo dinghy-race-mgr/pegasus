@@ -27,12 +27,9 @@ require_once ("{$loc}/common/classes/racestate_class.php");
 //include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");      // language file
 
 // process parameters  (eventid, pagestate, entryid)
-$eventid = u_checkarg("eventid", "checkintnotzero","");
+$eventid   = u_checkarg("eventid", "checkintnotzero","");
 $pagestate = u_checkarg("pagestate", "set", "", "");
-$entryid = u_checkarg("entryid", "checkint", "", "");
-//empty($_REQUEST['eventid'])?   $eventid   = "" : $eventid   = $_REQUEST['eventid'];
-//empty($_REQUEST['pagestate'])? $pagestate = "" : $pagestate = $_REQUEST['pagestate'];
-//empty($_REQUEST['entryid'])?   $entryid   = "" : $entryid   = $_REQUEST['entryid'];
+$entryid   = u_checkarg("entryid", "checkint", "", "");
 
 u_initpagestart($eventid, $page, false);                                // gets session and sets error reporting
 

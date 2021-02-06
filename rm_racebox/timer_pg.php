@@ -19,18 +19,26 @@ $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 
+// set event id
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 if (!$eventid) {
     u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
         "please contact your raceManager administrator");  }
-$_SESSION['timer_options']['mode'] = u_checkarg("mode", "set","", "tabbed");
+else {
+    u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
+}
 
-u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
+// check if display mode has changed - reset session variable if necessary
+$display_mode = u_checkarg("mode", "setnotnull", "");
+if ($display_mode) { $_SESSION['timer_options']['mode'] = $display_mode; }
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
+
+// app includes
+require_once ("./include/rm_racebox_lib.php");
 
 // templates
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/timer_tm.php"));
@@ -72,11 +80,16 @@ if (in_array(true, $problems, true))
 }
 else
 {
-    if ($_SESSION['timer_options']['mode'] == "tabbed" or empty($_SESSION['timer_options']['mode']))
+    // default to tabbed display mode if not set
+    if (empty($_SESSION['timer_options']['mode'])) { $_SESSION['timer_options']['mode'] = "tabbed"; }
+
+    // display boats as defined by display mode
+    if ($_SESSION['timer_options']['mode'] == "tabbed")
     {
         $rs_race = $race_o->race_gettimings(true, 0, 0);
         $lbufr.= $tmpl_o->get_template("timer_tabs", array(),
               array("eventid" => $eventid, "num-fleets" => $_SESSION["e_$eventid"]['rc_numfleets'], "timings" => $rs_race));
+
         // add modals
         $lbufr.= $tmpl_o->get_template("modal", $mdl_editlap['fields'], $mdl_editlap);
     }

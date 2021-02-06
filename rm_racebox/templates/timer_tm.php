@@ -20,7 +20,7 @@ function timer_tabs($params = array())
     $timelap_link  = $url_base."&pagestate=timelap&fleet=%s&start=%s&entryid=%s&boat=%s&lap=%s&pn=%s&etime=%s";
     $finish_link_tmpl   = $url_base."&pagestate=finish&fleet=%s&start=%s&entryid=%s&boat=%s&lap=%s&pn=%s&etime=%s";
     $undoboat_link = $url_base."&pagestate=undoboat&entryid=%s";
-    $setcode_link  = $url_base."&pagestate=setcode&fleet=%s&entryid=%s&boat=%s&racestatus=%s";
+//    $setcode_link  = $url_base."&pagestate=setcode&fleet=%s&entryid=%s&boat=%s&racestatus=%s";
 
 
     //echo "<pre>".print_r($_SESSION["e_$eventid"],true)."</pre>";
@@ -173,8 +173,8 @@ EOT;
                 $row_link = vsprintf($timelap_link,
                     array($r['fleet'], $r['start'], $r['id'], $boat, $r['lap'], $r['pn'], $r['etime'] ));
 
-                $code_link = codes_html($r['code'], vsprintf($setcode_link,
-                    array($r['fleet'], $r['id'], $boat, $r['status'])));
+                $link = "timer_sc.php?eventid=$eventid&pagestate=setcode&fleet={$r['fleet']}&entryid={$r['id']}&boat=$boat&racestatus={$r['status']}";
+                $code_link = get_code($r['code'], $link, "timercodes");
 
                 $edit_link = editlaps_html($eventid, $r['id'], $boat, $r['laptimes']);
 
@@ -184,7 +184,8 @@ EOT;
                     <tr class="table-data {$cfg['row_style']}">
                         <td style="width: 1%;"><a href="$row_link"></a></td>
                         <td class="$skip truncate" >{$r['class']}</td>
-                        <td class="$skip truncate" style="padding-left:15px;" >{$r['sailnum']}</td>
+                        <td class="$skip truncate" style="padding-left:0px;" >{$r['sailnum']}</td>
+                        <td class="$skip truncate" >{$r['helm']}</td>
                         <td class="$skip" style="padding-left:15px;">$laptimes_bufr</td>
                         <td class="rowlink-skip" style="text-align: left">$code_link</td>
                         <td class="rowlink-skip" style="text-align: center">$finish_btn</td>
@@ -204,7 +205,8 @@ EOT;
                         <tr >
                             <th width="1%"></th>
                             <th width="10%">class</th>
-                            <th width="10%">sail no.</th>                            
+                            <th width="5%">sail no.</th> 
+                            <th width="10%">helm</th>                           
                             <th width="">lap times</th>
                             <th width="5%" style="text-align: center">code</th>
                             <th width="5%" style="text-align: center">finish</th>                           
@@ -282,38 +284,38 @@ function laptimes_html($laptimes_str, $label_style, $annotation)
     return $bufr;
 }
 
-function codes_html($code, $url)
-    /*
-     * displays codes dropdown on timer page
-     */
-{
-    if (empty($code))
-    {
-        //$label = "<span>code &nbsp;</span>";
-        $label = "<span class='glyphicon glyphicon-cog'>&nbsp;</span>";
-        $style = "btn-info";
-    }
-    else
-    {
-        $label = "<span>$code&nbsp;</span>";
-        $style = "btn-danger";
-    }
-
-    $codebufr = u_dropdown_resultcodes($_SESSION['timercodes'], "short", $url);
-
-    $bufr = <<<EOT
-    <div class="dropdown">
-        <button type="button" class="btn $style btn-xs dropdown-toggle" data-toggle="dropdown" >
-            <span class="default"><b>$label&nbsp;</b></span><span class="caret" ></span>
-        </button>
-        <ul class="dropdown-menu">
-            $codebufr
-        </ul>
-    </div>
-EOT;
-
-    return $bufr;
-}
+//function codes_html($code, $url)    // FIXME same code in both timer_tm and results_tm
+//    /*
+//     * displays codes dropdown on timer page
+//     */
+//{
+//    if (empty($code))
+//    {
+//        //$label = "<span>code &nbsp;</span>";
+//        $label = "<span class='glyphicon glyphicon-cog'>&nbsp;</span>";
+//        $style = "btn-info";
+//    }
+//    else
+//    {
+//        $label = "<span>$code&nbsp;</span>";
+//        $style = "btn-danger";
+//    }
+//
+//    $codebufr = u_dropdown_resultcodes($_SESSION['timercodes'], "short", $url);
+//
+//    $bufr = <<<EOT
+//    <div class="dropdown">
+//        <button type="button" class="btn $style btn-xs dropdown-toggle" data-toggle="dropdown" >
+//            <span class="default"><b>$label&nbsp;</b></span><span class="caret" ></span>
+//        </button>
+//        <ul class="dropdown-menu">
+//            $codebufr
+//        </ul>
+//    </div>
+//EOT;
+//
+//    return $bufr;
+//}
 
 function editlaps_html($eventid, $entryid, $boat, $laptimes_str)
 {

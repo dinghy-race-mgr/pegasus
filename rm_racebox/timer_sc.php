@@ -33,6 +33,9 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 
+// app includes
+require_once ("./include/rm_racebox_lib.php");
+
 include("./templates/growls.php");
 
 // process standard parameters  (eventid, pagestate, fleet)
@@ -157,12 +160,13 @@ if ($eventid AND $pagestate)
     
     elseif  ($pagestate == "setcode")
     {
-        $if_err = false;
-        empty($_REQUEST['entryid'])    ? $if_err = true : $entryid = $_REQUEST['entryid'];
-        empty($_REQUEST['boat'])       ? $if_err = true : $boat = $_REQUEST['boat'];
-        empty($_REQUEST['racestatus']) ? $if_err = true : $racestatus = $_REQUEST['racestatus'];
+        $err = false;
+        empty($_REQUEST['entryid'])    ? $err = true : $entryid = $_REQUEST['entryid'];
+        empty($_REQUEST['boat'])       ? $err = true : $boat = $_REQUEST['boat'];
+        empty($_REQUEST['racestatus']) ? $err = true : $racestatus = $_REQUEST['racestatus'];
+        empty($_REQUEST['code'])       ? $code = ""  : $code = $_REQUEST['code'];
 
-        if ($if_err)
+        if ($err)
         {
             $reason = "required parameters were invalid
                        (id: {$_REQUEST['entryid']}; boat: {$_REQUEST['boat']}; status: {$_REQUEST['racestatus']};)";
@@ -171,17 +175,8 @@ if ($eventid AND $pagestate)
         }
         else
         {
-            empty($_REQUEST['code']) ? $code = "" : $code = $_REQUEST['code'];
-            if ($code)
-            {
-                $update = $race_o->entry_code_set($entryid, $code);
-                if ($update) { u_writelog("$boat - code set to $code", $eventid); }
-            }
-            else
-            {
-                $update = $race_o->entry_code_unset($entryid, $racestatus);
-                if ($update) { u_writelog("$boat - code unset", $eventid); }
-            }
+            $update = set_code($eventid, $entryid, $code, $racestatus, $boat);
+
             if (!$update)
             {
                 $reason = "database update failed";
@@ -332,6 +327,7 @@ if ($eventid AND $pagestate)
         u_growlSet($eventid, $page, $g_sys_invalid_pagestate, array($pagestate, $page)); //
     }
 
+    // return to timer page
     if (!$stop_here) { header("Location: timer_pg.php?eventid=$eventid"); exit(); }
 }
 else

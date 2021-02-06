@@ -35,6 +35,9 @@ require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 
+// app includes
+require_once ("./include/rm_racebox_lib.php");
+
 // templates
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/results_tm.php"));
 
@@ -92,11 +95,10 @@ $lbufr = u_growlProcess($eventid, $page);       // check for confirmations to pr
 $lbufr.= $tmpl_o->get_template("result_tabs", array(), $results);
 
 // add modals for inline buttons
-$fields = array( "entryid" => "" );
-$data = array("resultcodes" => $_SESSION['resultcodes'], "allocation" => $_SESSION['points_allocation']);
-$mdl_edit['fields']['body'] = $tmpl_o->get_template("fm_edit_result", $fields, $data);
+//$fields = array( "entryid" => "" );
+//$data = array("resultcodes" => $_SESSION['resultcodes'], "allocation" => $_SESSION['points_allocation']);
+
 $lbufr.= $tmpl_o->get_template("modal", $mdl_edit['fields'], $mdl_edit);
-$lbufr.= $tmpl_o->get_template("modal", $mdl_detail['fields'], $mdl_detail);
 $lbufr.= $tmpl_o->get_template("modal", $mdl_remove['fields'], $mdl_remove);
 
 // ----- right hand panel ------------------------------------------------------------
@@ -129,23 +131,28 @@ if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
         if ($num_retirements > 0)
         {
             $btn_loadret['fields']['style'] = "warning";
-            $btn_loadret['fields']['label'] = "+ Retirements - $num_retirements";
+            $btn_loadret['fields']['label'] =
+                "Load Retirements<br><small></small><span class='text-info' style='padding-left: 30px'>$num_retirements waiting</span></small>";
             $rbufr.= $tmpl_o->get_template("btn_link_blink", $btn_loadret['fields'], $btn_loadret);
             $rbufr.= "<hr>";
         }
         else
         {
+            $btn_loadret['fields']['label'] =
+                "Load Retirements<br><small></small><span class='text-warning' style='padding-left: 30px'>$num_retirements waiting</span></small>";
             $rbufr.= $tmpl_o->get_template("btn_link", $btn_loadret['fields'], $btn_loadret);
             $rbufr.= "<hr>";
         }
     }
+
+    /*  FIXME - I don't think I need declarations (not in RRS) - has impact on rm_sailor
     elseif ($_SESSION["e_$eventid"]['ev_entry'] == "signon-declare")
     {
         $num_declarations = $entry_o->count_signons("declarations");
         if ($num_declarations > 0)
         {
             $btn_loaddec['fields']['style'] = "warning";
-            $btn_loaddec['fields']['label'] = "+ Declarations - ";
+            $btn_loaddec['fields']['label'] = "Declarations - ";
             $rbufr.= $tmpl_o->get_template("btn_link_blink", $btn_loaddec['fields'], $btn_loaddec);
             $rbufr.= "<hr>";
         }
@@ -156,6 +163,7 @@ if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
         }
 
     }
+    */
 }
 
 // function buttons

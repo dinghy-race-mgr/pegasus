@@ -108,7 +108,6 @@ class RESULT
         return $filename;
     }
 
-
     public function add_result_file($filespec)
     {
         $status = false;
@@ -257,42 +256,22 @@ EOT;
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// --------NOT FIXED YET -------------------------------------------------------------------------------------------------------
-// ---------------------------------------------------------------------------------------------------------------
-// ---------------------------------------------------------------------------------------------------------------
-// ---------------------------------------------------------------------------------------------------------------
-// ---------------------------------------------------------------------------------------------------------------
-// ---------------------------------------------------------------------------------------------------------------
     public function render_race_result($loc, $result_status, $include_club, $result_notes, $fleet_msg = array())
     {
         global $tmpl_o;
 
-        // get system info
+        // get system info in case not read from racemanager
         if (is_readable("$loc/config/racemanager_cfg.php"))   // set racemanager config file content into SESSION
         {
-            include("$loc/config/racemanager_cfg.php");
+            include("$loc/config/racemanager_cfg.php");  // this info is all in the ini file
         }
         else
         {
             $_SESSION['sys_name'] = "raceManager";                                   // name of system
-            $_SESSION['sys_release'] = "";                                              // release name
-            $_SESSION['sys_version'] = "";                                              // code version
-            $_SESSION['sys_copyright'] = "Elmswood Software " . date("Y");                  // copyright
-            $_SESSION['sys_website'] = "http://dinghyracemanager.wordpress.com/";       // website
+            $_SESSION['sys_release'] = "";                                           // release name
+            $_SESSION['sys_version'] = "";                                           // code version
+            $_SESSION['sys_copyright'] = "Elmswood Software " . date("Y");           // copyright
+            $_SESSION['sys_website'] = "";                                           // website
         }
 
         // get club info
@@ -301,10 +280,12 @@ EOT;
         // get event info
         $event = $this->db->db_get_row("SELECT * FROM t_event WHERE id = $this->eventid");
         //u_writedbg("<pre>".print_r($event,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
+        //echo "<pre>".print_r($event,true)."</pre>";
 
         // get OOD information
         $ood = $this->db->db_get_row("SELECT * FROM t_eventduty WHERE eventid = $this->eventid and dutycode = 'ood_p' ");
         //u_writedbg("<pre>".print_r($ood,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
+        //echo "<pre>".print_r($ood,true)."</pre>";
 
         // get fleet information and reindex
         $fleet = $this->db->db_get_rows(
@@ -313,6 +294,7 @@ EOT;
         unset($fleet[0]);
         $num_fleets = count($fleet);
         //u_writedbg("<pre>".print_r($fleet,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
+        //echo "<pre>".print_r($fleet,true)."</pre>";
 
         // get result information
         $codes_used = array();
@@ -335,8 +317,9 @@ EOT;
         // get code information for codes used
         $codes_info = $this->get_result_codes_used(array_unique($codes_used));
         //u_writedbg("<pre>".print_r($codes_info,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
+        //echo "<pre>".print_r($codes_info,true)."</pre>";
 
-        $params = array(
+        $fields = array(
             "club_name"     => $club['clubname'],
             "event_name"    => $event['event_name'],
             "event_date"    => $event['event_date'],
@@ -349,11 +332,12 @@ EOT;
             "sys_website"   => $_SESSION['sys_website'],
             "sys_name"      => $_SESSION['sys_name'],
             "sys_version"   => $_SESSION['sys_version'],
-            "page_title"    => "raceManager race result"
+            "pagetitle"     => $event['event_name']." ".$event['event_start'],
+            "styles"        => file_get_contents("./style/rm_report.css")
         );
 
-        $data = array(
-            "style"         => "$loc/style/rm_export_classic.htm",
+        $params = array(
+            "style"         => "$loc/style/rm_report.css",   //"$loc/style/rm_export_classic.htm",
             "pagination"    => $club['result_pagination'],
             "add_codes"     => $club['result_addcodes'],
             "inc_club"      => $include_club,
@@ -362,10 +346,10 @@ EOT;
             "result"        => $result,
         );
 
-//        u_writedbg("<pre>" . print_r($params, true) . "</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
-//        u_writedbg("<pre>" . print_r($data, true) . "</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
+        //u_writedbg("<pre>" . print_r($params, true) . "</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
+        //echo "<pre>".print_r($params,true)."</pre>";
 
-        $htm = $tmpl_o->get_template("race_sheet", $params, $data);
+        $htm = $tmpl_o->get_template("race_sheet", $fields, $params);
 
         return $htm;
     }
@@ -375,7 +359,7 @@ EOT;
     {
         // get duty codes
         $codes = array();
-        $dutycodes = $this->db->db_getsystemcodes("duty_type");
+        $dutycodes = $this->db->db_getsystemcodes("rota_type");
         foreach ($dutycodes as $dutycode)
         {
             $codes["{$dutycode['code']}"] = $dutycode['label'];
@@ -384,19 +368,19 @@ EOT;
         $inventory = array();
 
         $inventory["admin"] = array(
-            "type" => "event_inventory",
+            "type"       => "event_inventory",
             "createdate" => date("Y-m-d H:i"),
-            "source" => $_SESSION['sys_name'] . "-" . $_SESSION['sys_version'],
-            "club" => $_SESSION['clubname'],
-            "resultpath" => $_SESSION['resultpath'],
-            "resulturl" => $_SESSION['resulturl'],
+            "source"     => $_SESSION['sys_name'] . "-" . $_SESSION['sys_version'],
+            "club"       => $_SESSION['clubname'],
+            "resultpath" => $_SESSION['result_path'],
+            "resulturl"  => $_SESSION['result_url'],
         );
 
         $event_o = new EVENT($this->db);
         $rota_o = new ROTA($this->db);
 
         // get all events from startdate
-        $events = $event_o->geteventsfromdate($startdate);  // what if start date is empty
+        $events = $event_o->get_events("racing", "active", array("start"=>$startdate)); // FIXME what if start date is empty
 
         $inventory["events"] = array();
         foreach ($events as $event) {
@@ -416,15 +400,19 @@ EOT;
             );
 
             // get duties
-            $duties = $rota_o->get_event_duties($event['id']);
+            $duties = $rota_o->get_event_duties($event['id']);  // FIXME - if no duties allocated then can't do foreach loop
             $dutyarray = array();
-            foreach ($duties as $duty) {
-                $dutyarray[] = array(
-                    "dutytype" => $codes["{$duty['dutycode']}"],
-                    "dutyname" => $duty['person'],
-                    "dutynote" => $duty['notes'],
-                );
+            if ($duties)
+            {
+                foreach ($duties as $duty) {
+                    $dutyarray[] = array(
+                        "dutytype" => $codes["{$duty['dutycode']}"],
+                        "dutyname" => $duty['person'],
+                        "dutynote" => $duty['notes'],
+                    );
+                }
             }
+
             $inventory["events"][$event['id']]['duties'] = $dutyarray;
 
             // get results files for this event
@@ -473,8 +461,9 @@ EOT;
             if (!empty($result['code']))
             {
                 $code_info = $this->db->db_getresultcode($result['code']);
-                if ($code_info['scoringtype'] != "manual" OR $code_info['scoring'] != "AVG" OR
-                    strpos($code_info['scoring'], "P") != FALSE)
+//                if ($code_info['scoringtype'] != "manual" OR $code_info['scoring'] != "AVG" OR
+//                    strpos($code_info['scoring'], "P") != FALSE)
+                if ($code_info['scoringtype'] == "race")
                 {
                     $no_times = true;
                 }
@@ -522,4 +511,4 @@ EOT;
 }
 
 
-?>
+

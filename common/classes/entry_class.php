@@ -242,13 +242,12 @@ class ENTRY
                          helm_email, a.crew as crewname, crew_dob, crew_email, club, nat_py, local_py, personal_py,
                          skill_level, flight, last_entry, last_event, a.active as active, grouplist, category,
                          b.crew as crew, rig, spinnaker, keel, engine, `chg-helm`, `chg-crew`, `chg-sailnum`,
-                         x.id as t_entry_id, `action`, protest
+                         x.id as t_entry_id, `action`, protest, x.createdate
                   FROM t_entry as x
                   JOIN t_competitor as a ON x.competitorid = a.id
                   JOIN t_class as b ON a.classid=b.id
-                  WHERE status IN ('N','F') AND eventid = {$this->eventid} $where ORDER BY x.id";
+                  WHERE status IN ('N','F') AND eventid = {$this->eventid} $where ORDER BY x.id, x.createdate ASC";
 
-        //echo "<pre>$query</pre>";
         $entries = $this->db->db_get_rows($query);
 
         // make requested changes

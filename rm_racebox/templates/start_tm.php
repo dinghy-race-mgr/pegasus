@@ -133,17 +133,6 @@ function fleet_panel($params)
 
     // put panel together
 
-
-
-
-
-
-
-
-
-
-
-
     $html = <<<EOT
     <div class="row">
         <div class="col-md-12">
@@ -186,6 +175,10 @@ EOT;
 
 function infringe($params)
 {
+
+    $eventid = $params['eventid'];
+    $startnum= $params['startnum'];
+
     if ($params['entries'] > 0)
     {
         $entry_bufr = "";
@@ -195,33 +188,20 @@ function infringe($params)
         {
             $i++;
 
-            $drop_down = str_replace(array("ENTRY","BOAT"),
-                array("{$entry['id']}","{$entry['class']}-{$entry['sailnum']}"), $params['code-bufr']);
-
             if (($drop_dirn == "") and ($i > $params['entries']/2) and ($i > 6) ) { $drop_dirn = "dropup"; }
+
+            $boat = "{$entry['class']}-{$entry['sailnum']}";
+            $link = "start_infringements_pg.php?eventid=$eventid&pagestate=setcode&startnum=$startnum&entryid={$entry['id']}&boat=$boat&racestatus={$entry['status']}";
+            $code_link = get_code($entry['code'], $link, "startcodes", $drop_dirn);
+
+
 
             $entry_bufr.= <<<EOT
             <tr class = "table-data">
                 <td width="15%">{$entry['class']}</td>
                 <td width="10%">{$entry['sailnum']}</td>
                 <td width="30%">{$entry['helm']}</td>
-                <td width="25%" >
-                    <div class="btn-group $drop_dirn pull-right">
-                            <button type="button" class="btn btn-primary btn-sm text-default" style="width: 4em; padding: 1px 1px;">
-                        		<span class="default"><b>{$entry['code']}&nbsp;</b></span>
-                        	</button>
-
-                        	<button type="button" class="btn btn-primary btn-sm dropdown-toggle"
-                        	        style="width: 2em; padding: 1px 1px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="caret"></span>
-                            </button>
-
-                        	<ul class="dropdown-menu" >
-                        		$drop_down
-                        	</ul>
-                    </div>
-                    
-                </td>
+                <td width="25%"> $code_link</td>
             </tr>
 EOT;
         }

@@ -34,8 +34,14 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 
+// app includes
+require_once ("./include/rm_racebox_lib.php");
+
 // growl responses
 include("./templates/growls.php");
+
+//echo "<pre>input arguments: ".print_r($_REQUEST,true)."</pre>";
+//exit();
 
 
 if ($eventid AND $pagestate)
@@ -71,30 +77,32 @@ if ($eventid AND $pagestate)
                     if ($result)
                     {
                         $counts['retires']++;
-                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], 0, "L");  // update entry record
+                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], "L");  // update entry record
                     }
                     else
                     {
-                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], "", "F");                 // update entry record
+                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], "F");                 // update entry record
                         $rpt_bufr.= " - {$result['class']} {$result['sailnum']} : retirement failed</br>";
                         $error = true;
                     }
                 }
+                /*
                 elseif ($entry['action'] == "declare")
                 {
                     $result = $race_o->entry_declare($entry['id'], "declare", $protest);
                     if ($result)
                     {
                         $counts['declares']++;
-                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], 0, "L");  // update entry record
+                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], "L");  // update entry record
                     }
                     else
                     {
-                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], "", "F");                 // update entry record
+                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], "F");                 // update entry record
                         $rpt_bufr.= " - {$result['class']} {$result['sailnum']} : declaration failed</br>";
                         $error = true;
                     }
                 }
+                */
             }
             combinegrowls($eventid, $page, $pagestate, $counts, rtrim($rpt_bufr, "</br>"), $error);    // present summary as growl
         }
@@ -106,58 +114,105 @@ if ($eventid AND $pagestate)
         
     }
 
-    
-    elseif ($pagestate == "editresult")                // change results
+    elseif ($pagestate == "setcode")
     {
-        $constraint = array();
-        if (!empty($_REQUEST['helm']))    { $constraint['helm']    = $_REQUEST['helm']; }
-        if (!empty($_REQUEST['crew']))    { $constraint['crew']    = $_REQUEST['crew']; }
-        if (!empty($_REQUEST['sailnum'])) { $constraint['sailnum'] = $_REQUEST['sailnum']; }
-        if (!empty($_REQUEST['pn']))      { $constraint['pn']      = $_REQUEST['pn']; }
-        if (!empty($_REQUEST['lap']))     { $constraint['lap']     = $_REQUEST['lap']; }
-        if (!empty($_REQUEST['etime']))   { $constraint['etime']   = strtotime($_REQUEST['etime']); }
-        if (!empty($_REQUEST['code']))    { $constraint['code']    = $_REQUEST['code']; }
-        if (!empty($_REQUEST['penalty'])) { $constraint['penalty'] = $_REQUEST['penalty']; }
-        if (!empty($_REQUEST['note']))    { $constraint['note']    = $_REQUEST['note']; }
-        
-        // update race results
-        $update = $race_o->entry_update($entryid, $constraint);
-        
-        // retrieve updated result record
-        $result = $race_o->entry_get($entryid, "race");
-        $boat = "{$result['class']} {$result['sailnum']}";
-        
-        // update last lap time
-        // FIXME - this is not correct if the elapsed time has changed (need to recalc clicktime, etime, ctime)
-        // FIXME - needs to be same as submit section of timer_editlaptimes_pg
-        $updatelap = $race_o->entry_lap_update($entryid, $result['fleet'], $result['lap'], $result['pn'],
-            array("clicktime"=>$result['clicktime'], "etime"=>$result['etime'], "ctime"=>$result['ctime'], "status"=>1));
+        $err = false;
+        empty($_REQUEST['entryid'])    ? $err = true : $entryid = $_REQUEST['entryid'];
+        empty($_REQUEST['boat'])       ? $err = true : $boat = $_REQUEST['boat'];
+        empty($_REQUEST['racestatus']) ? $err = true : $racestatus = $_REQUEST['racestatus'];
+        empty($_REQUEST['code'])       ? $code = ""  : $code = $_REQUEST['code'];
+
+        if ($err)
+        {
+            $reason = "required parameters were invalid
+                       (id: {$_REQUEST['entryid']}; boat: {$_REQUEST['boat']}; status: {$_REQUEST['racestatus']};)";
+            u_writelog("$boat - set code failed - $reason", $eventid);
+            u_growlSet($eventid, $page, $g_timer_setcodefailed, array($boat, $reason));
+        }
+        else
+        {
+            $update = set_code($eventid, $entryid, $code, $racestatus, $boat);
+
+            if (!$update)
+            {
+                $reason = "database update failed";
+                u_writelog("$boat - attempt to set code to $code] FAILED" - $reason, $eventid);
+                u_growlSet($eventid, $page, $g_timer_setcodefailed, array($boat, $reason));
+            }
+        }
+    }
+/*
+    elseif ($pagestate == "editresult")                // change result (handled through iframe
+    {
+        // get existing record and change lap times to array
+        $old = $race_o->entry_get_timings($entryid);
+        $laptimes = $race_o->lapstr_toarray($old['laptimes']);
+
+        // convert returned field values
+        $edit_str = "";
+        $edit = array();
+        if (!empty($_REQUEST['helm']))    { $edit['helm'] = $_REQUEST['helm']; }
+        $edit['crew']    = $_REQUEST['crew'];
+        $edit['club']    = u_getclubname($_REQUEST['club']);
+        $edit['sailnum'] = $_REQUEST['sailnum'];
+        if (ctype_digit($_REQUEST['pn']) ) { $edit['pn'] = (int)$_REQUEST['pn']; }
+        if (ctype_digit($_REQUEST['lap']) ) { $edit['lap'] = (int)$_REQUEST['lap']; }
+        $edit['etime']   = u_conv_timetosecs($_REQUEST['etime']);
+        $edit['code']    = $_REQUEST['code'];
+        if (ctype_digit($_REQUEST['penalty']) ) { $edit['penalty'] = (int)$_REQUEST['penalty']; }
+        $edit['note']    = $_REQUEST['note'];
+
+        // check which fields have changed - remove unchanged fields and create audit string for log
+        foreach ($edit as $k => $v)
+        {
+            if ($old[$k] === $edit[$k]) {
+                unset($edit[$k]);
+            } else {
+                $edit_str .= "$k:$v ";
+            }
+        }
+
+        // update race result in t_race
+        $update = $race_o->entry_update($entryid, $edit);
+
+        // delete and add finish lap time to t_lap
+        $del = $race_o->entry_lap_delete($entryid, $edit['lap']);
+        $ctime = $race_o->entry_calc_ct($edit['etime'], $edit['pn'], $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['scoring']);
+        $clicktime = strtotime("{$edit['etime']} seconds");
+        $add_lap = $race_o->entry_lap_add($old['fleet'], $entryid, array("lap" => $edit['lap'], "clicktime" => $clicktime,
+            "etime" => $edit['etime'], "ctime" => $ctime));
+
+        // check for missing laps in t_lap - and add placeholders if necessary
+
+        // update t_race with time info to match last lap (use $lap-1 as arg + assumes no force finish and calcs ptime as average)
+        $add_time = $race_o->entry_time($entryid, $old['fleet'], $edit['lap']-1, $edit['pn'], $clicktime );
         
         // update results status
         $_SESSION["e_$eventid"]['result_valid'] = false;
 
-        u_writelog("$boat: updated result", $eventid);
-        u_growlSet($eventid, $page, $g_result_edit_success, array($boat));
+        // log change
+        u_writelog("Result Update - {$old['class']} {$old['sailnum']} : edit_str", $eventid);
     }
+*/
     
-    
-    elseif ($pagestate == "delete")                // remove boat from race
+    elseif ($pagestate == "delete")                // remove boat from race - mark status as 'D'
     {
         $result = $race_o->entry_get($entryid, "race");
         $boat = "{$result['class']} {$result['sailnum']}";
-        $delete = $race_o->entry_delete($entryid);
+        $delete = $race_o->entry_update($entryid, array("status" => "D"));
+
         if ($delete)
         {
-            u_writelog("$boat: deleted from race ", $eventid);
+            u_writelog("$boat: removed from race ", $eventid);
             u_growlSet($eventid, $page, $g_result_del_success, array($boat));
         }
         else         
         {
-            u_writelog("$boat: attempt to delete entry failed ", $eventid);
+            u_writelog("$boat: attempt to remove entry failed ", $eventid);
             u_growlSet($eventid, $page, $g_result_del_fail, array($boat));
         }
     }
-    
+
     
     elseif ($pagestate == "changefinish")
     {        

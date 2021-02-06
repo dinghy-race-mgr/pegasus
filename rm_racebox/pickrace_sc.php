@@ -81,4 +81,3 @@ else
     u_exitnicely($scriptname, $eventid, "sys005", $lang['err']['exit-action']);              // FIXME
 }
 
-?>

@@ -165,14 +165,13 @@ class EVENT
         {
             $detail = false;
         } else {                  // return first event
-
             $detail = $events[0];
         }
 
         return $detail;       
     }
 
-// ONLY USED IN RESULT CLASS - not sure what the purpose is
+// NOT USED ANYWHERE
 //    public function geteventsfromdate($date)
 //    /*
 //    Returns all events from specified event - ignores demo events
@@ -233,8 +232,14 @@ class EVENT
         //echo "<pre".print_r($period, true)."| status: $status</pre>";
         if (!empty($period) and $status != "demo")
         {
-            $where_period = " AND `event_date`>='".date("Y-m-d", strtotime($period['start'])).
-                "' AND `event_date`<='".date("Y-m-d", strtotime($period['end']))."'";
+            if (array_key_exists("start", $period))
+            {
+                $where_period.= " AND `event_date`>='".date("Y-m-d", strtotime($period['start']))."'";
+            }
+            if (array_key_exists("end", $period))
+            {
+                $where_period.= " AND `event_date`<='".date("Y-m-d", strtotime($period['end']))."'";
+            }
         }
 
         if ($type != "all") {

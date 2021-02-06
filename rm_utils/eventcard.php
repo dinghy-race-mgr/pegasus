@@ -120,7 +120,7 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
                 if (!empty($event['event_name'])) {
                     $i++;
                     $data[$i] = array(
-                        "date" => date("d-M", strtotime($event['event_date'])),
+                        "date" => date("D d-M", strtotime($event['event_date'])),
                         "time" => $event['event_start'],
                         "event" => $event['event_name'],
                         "tide" => "{$event['tide_time']} [{$event['tide_height']}m] ",

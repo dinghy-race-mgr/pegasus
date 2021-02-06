@@ -1,6 +1,15 @@
 /* custom styles for rm_racebox application
 -------------------------------------------------- */
 
+/* flatly colours
+ - primary     #2C3E50
+ - success     #18BC9C
+ - info        #3498DB
+ - warning     #F39C12
+ - danger      #E74C3C
+ - default     #95A5A6
+ - shade       #ECF0F1
+ */
 
 html { position: relative; min-height: 100%; }
 
@@ -47,18 +56,29 @@ body > .container { padding: 10px 0px 0px 0px; }
 .table-data { font-size: 1.25em; line-height: 1.8}
 
 /* forms */
-.help-block { font-size:  0.8em; color: blue; }
+.help-block { font-style: italic; color: grey; font-weight: normal}
 .form-control { border: 1px solid darkgrey !important}
 .form-condensed { margin-bottom: 7px; }
-.form-control-feedback { padding-left: 20px; font-size: 0.7em; color: #B92C28; }
+.form-control-feedback { padding-left: 20px; font-size: 0.7em; color: #E74C3C; }
+.form-help {color: darkgrey;}
+::-webkit-input-placeholder { text-transform: none;}
+:-moz-placeholder { text-transform: none; }
+::-moz-placeholder { text-transform: none;}
+:-ms-input-placeholder { text-transform: none; }
+::placeholder { text-transform: none; }
 
 /* right hand page buttons */
 #rhcol .btn {text-align: left !important;}
 
+
 /* modals */
-.bg-danger-modal  {background-color: #B92C28; color: white;}
-.bg-warning-modal  {background-color: #EB9316; color: white;}
-.bg-primary-modal {background-color: #2B669A; color: white;}
+.bg-danger-modal  {background-color: #E74C3C; color: white;}
+.bg-warning-modal  {background-color: #F39C12; color: white;}
+.bg-primary-modal {background-color: #2C3E50; color: white;}
+.bg-success-modal {background-color: #18BC9C; color: white;}
+.bg-info-modal {background-color: #3498DB; color: white;}
+.bg-default-modal {background-color: #95A5A6; color: black;}
+.bg-shade-modal {background-color: #ECF0F1; color: black;}
 .modal-footer {margin-top: 0px; padding: 5px 20px 10px; }
 .modal-close { font-size: 18px !important; color: white !important; text-shadow: none  !important;
     filter: none  !important; opacity: 1.0  !important; }
@@ -72,7 +92,7 @@ body > .container { padding: 10px 0px 0px 0px; }
 .pill-fleet li a {border: 3px solid lightgrey !important;}
 
 /* drop down menu */
-.dropdown-menu {background-color: beige; color: black; font-size: 1.2em;}
+.dropdown-menu {background-color: #ECF0F1; color: black; font-size: 1.2em;}
 .dropdown-menu > li > a { padding:1px 10px !important;}
 
 /* modal close */
@@ -163,9 +183,9 @@ body > .container { padding: 10px 0px 0px 0px; }
 
 /* styles for navbar menu items */
 .rm-navmenu { font-size: 160%; color: white; }
-.rm-navmenu:hover { color: orange; }
-.rm-navmenu-active { font-size: 160%; color:  red; }
-.rm-navmenu-active:hover { color: orange; }
+.rm-navmenu:hover { color: #F39C12; }
+.rm-navmenu-active { font-size: 160%; color:  #E74C3C; }
+.rm-navmenu-active:hover { color: #F39C12; }
 .rm-navmenu-right { font-size: 160%; }
 
 @media (min-width: 1600px){

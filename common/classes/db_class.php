@@ -197,7 +197,7 @@ class DB
         if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
         $insert  = $this->link->query( $query );
         $numrows = $this->link->affected_rows;
-        //echo "<pre>".$query."<br>".$numrows."</pre>";
+        //echo "<pre>INSERT QUERY: ".$query."<br>".$numrows."</pre>";
         
         if( $this->link->error )
         {
@@ -242,6 +242,7 @@ class DB
         if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
         $delete = $this->link->query( $query );
         $numrows = $this->link->affected_rows;
+        //echo "<pre>DELETE QUERY: ".$query."<br>".$numrows."</pre>";
 
         if( $this->link->error )
         {
@@ -290,7 +291,7 @@ class DB
 
         $update = $this->link->query( $query );
         $numrows = $this->link->affected_rows;         // might be zero if no records changed
-        //echo "<pre>".$query."<br>".$numrows."</pre>";
+        //echo "<pre> UPDATE QUERY: ".$query."<br>".$numrows."</pre>";
 
 
         if( $this->link->error )

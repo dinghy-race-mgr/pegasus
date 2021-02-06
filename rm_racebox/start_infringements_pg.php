@@ -2,13 +2,7 @@
 /* ------------------------------------------------------------
    start_infringements_pg
    Allows OOD to set codes for start line infringements.
-   
-   arguments:
-       eventid     id of event
-       startnum    start number
-       pagestate   control state for page
-       entryid     id for entry to be changed
-       code        code value to be set
+
    
    ------------------------------------------------------------
 */
@@ -20,20 +14,20 @@ require_once ("{$loc}/common/lib/util_lib.php");
 
 u_initpagestart($_REQUEST['eventid'],$page,"");   // starts session and sets error reporting
 
-// initialising language   
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
-
 require_once ("{$loc}/common/classes/db_class.php"); 
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
+
+// app includes
+require_once ("./include/rm_racebox_lib.php");
 
 $pagestate = $_REQUEST['pagestate'];
 $eventid   = $_REQUEST['eventid'];
 $startnum  = $_REQUEST['startnum'];
 
-if (empty($pagestate) OR empty($eventid) OR empty($startnum))
+if (empty($pagestate) OR empty($eventid))
 {
-    u_exitnicely("start_infringements_pg", $eventid, "errornum", "eventid ($eventid), startnum ($startnum), or pagestate ($pagestate) is missing");
+    u_exitnicely("start_infringements_pg", $eventid, "errornum", "eventid ($eventid), or pagestate ($pagestate) or startnum()$startnum is missing");
 }
 
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/start_tm.php"));
@@ -44,16 +38,13 @@ $race_o  = new RACE($db_o, $eventid);
 // display list of entries for this start
 if ($pagestate == "init")
 {
-    // create codes drop down
-    $codebufr = u_dropdown_resultcodes($_SESSION['startcodes'], "short",
-        "start_infringements_pg.php?eventid=$eventid&startnum=$startnum&pagestate=submit&entryid=ENTRY&boat=BOAT");
-    
-    // table with entries
+    // get entries for this start
     $entries = $race_o->race_getstarters(array("start"=>$startnum));
 
     $params = array(
-        "entries" => count($entries),
-        "code-bufr"  => $codebufr,
+        "eventid"    => $eventid,
+        "startnum"   => $startnum,
+        "entries"    => count($entries),
         "entry-data" => $entries,
     );
     $body = $tmpl_o->get_template("infringe", array(), $params);
@@ -71,15 +62,33 @@ if ($pagestate == "init")
 }
 
 // change code for specified entry
-elseif ($pagestate == "submit") 
+elseif ($pagestate == "setcode")
 {
-    $entry  = $race_o->entry_get($_REQUEST['entryid'], "race");
-    //u_writedbg ("<pre>".print_r($entry,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
-    $update = $race_o->entry_code_set($_REQUEST['entryid'], $_REQUEST['code']);
-    if ($update)
+    $err = false;
+    empty($_REQUEST['entryid'])    ? $err = true : $entryid = $_REQUEST['entryid'];
+    empty($_REQUEST['boat'])       ? $err = true : $boat = $_REQUEST['boat'];
+    empty($_REQUEST['racestatus']) ? $err = true : $racestatus = $_REQUEST['racestatus'];
+    empty($_REQUEST['code'])       ? $code = ""  : $code = $_REQUEST['code'];
+
+    if ($err)
     {
-        u_writelog("set code for {$_REQUEST['boat']} to [{$_REQUEST['code']}]", $eventid);
-    }   
+        $reason = "required parameters were invalid
+                       (id: {$_REQUEST['entryid']}; boat: {$_REQUEST['boat']}; status: {$_REQUEST['racestatus']};)";
+        u_writelog("$boat - set code failed - $reason", $eventid);
+        u_growlSet($eventid, $page, $g_timer_setcodefailed, array($boat, $reason));
+    }
+    else
+    {
+        $update = set_code($eventid, $entryid, $code, $racestatus, $boat);
+
+        if (!$update)
+        {
+            $reason = "database update failed";
+            u_writelog("$boat - attempt to set code to $code] FAILED" - $reason, $eventid);
+            u_growlSet($eventid, $page, $g_timer_setcodefailed, array($boat, $reason));
+        }
+    }
+
     header("Location: start_infringements_pg.php?eventid=$eventid&startnum=$startnum&pagestate=init");
 }
 
