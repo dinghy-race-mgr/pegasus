@@ -149,11 +149,16 @@ $g_race_reset_noconfirm = array(
 $g_race_laps_not_set = array(
     "type" => "warning",
     "delay"=> "10000",
-    "msg"  => "Laps NOT set <br>The laps need to set for each fleet that has entries ",
+    "msg"  => "Laps NOT set <br>The laps need to be set for each fleet that has entries ",
 );
 
 $g_race_lapset_fail = array(
     "type" => "danger",
+    "msg"  => "%s",
+);
+
+$g_race_lapset_success = array(
+    "type" => "info",
     "msg"  => "%s",
 );
 
@@ -355,7 +360,7 @@ $g_timer_shortenfleet_report = array(
 $g_timer_shortenall_report = array(
     "type" => "info",
     "delay"=> "0",
-    "msg"  => "Shorten course applied to the following fleets:<br>%s",
+    "msg"  => "Shorten course applied to :<br>%s",
 );
 
 $g_timer_shorten_fail = array(
@@ -402,5 +407,10 @@ $g_results_recalc_fail = array(
 $g_results_recalc_success = array(
     "type" => "success",
     "msg"  => "Recalculating Results:<br><p style='margin-left: 30px;'>- no issues - ok to publish</p>",
+);
+
+$g_results_changefinish = array(
+    "type" => "info",
+    "msg"  => "Change Finish:<br><p style='margin-left: 30px;'>%s</p>",
 );
 

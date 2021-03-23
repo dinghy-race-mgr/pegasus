@@ -141,10 +141,9 @@ class EVENT
         if ($type) { $constraints['event_type'] = $type; }
 
         $events = $this->get_events("not_noevent", "all", array(), $constraints);
-        //u_writedbg("<pre>event".print_r($events,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
-        if (empty($events)) {          // return false
+        if (empty($events)) {
             $detail = false;
-        } else {                       // return 1D array
+        } else {
             $detail = $events[0];
         }
 
@@ -551,10 +550,11 @@ class EVENT
         return $status;
     }
     
-    //Method: change detail 
+    //Method: change event detail
     public function event_changedetail($eventid, $fields)
     {
         $change = false;
+
         $success = $this->db->db_update( 't_event', $fields, array("id"=>$eventid) );
         if ($success>=0)
         {
@@ -747,14 +747,16 @@ class EVENT
     
     public function get_fleetstatus($eventid)
     {
+        // FIXME - how does this know if the race has started - there is no user event for that
+
         // return fleet cfg details as array
-        $query = "SELECT a.id, a.eventid, a.racename, a.race, a.start, a.racetype, a.startdelay, a.starttime, a.maxlap,
+        $query = "SELECT a.id, a.eventid, a.racename, a.fleet, a.start, a.racetype, a.startdelay, a.starttime, a.maxlap,
                          a.currentlap, a.entries, a.status, a.prevstatus, a.upddate,
-                         (SELECT count(*) FROM t_race as b WHERE b.eventid = $eventid and b.fleet = a.race and status = 'R'
+                         (SELECT count(*) FROM t_race as b WHERE b.eventid = $eventid and b.fleet = a.fleet and status = 'R'
                           GROUP BY b.fleet) as num_racing
                   FROM t_racestate as a
                   WHERE a.eventid = $eventid
-                  ORDER BY race";
+                  ORDER BY fleet";
 //        $query  = "SELECT * FROM t_racestate WHERE eventid = $eventid ORDER BY race";
         $detail = $this->db->db_get_rows( $query );
         if (empty($detail)) 

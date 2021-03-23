@@ -607,7 +607,7 @@ function report_page()
         <link href="{stylesheet}" rel="stylesheet">
 
     <head>
-    <body>
+    <body class="{background}" style="padding-top:5px; padding-bottom: 10px">
         {body}
     </body>
     </html>

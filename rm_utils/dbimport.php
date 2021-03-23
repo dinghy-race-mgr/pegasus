@@ -137,6 +137,7 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
                 // create recovery copy table and file
                 $bkup_file = $db_o->db_table_to_file("$loc/tmp/db_backup", $type_opts['table']);
                 $bkup_table = $db_o->db_table_to_temptable($type_opts['table']);
+                $_SESSION['pagefields']['recovery-file'] = $bkup_file;
 
                 // import (and delete any original records marked for deletion)
                 $params['delete'] = "";
@@ -161,6 +162,7 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
                 $params = array_merge($params, $changes);            // adds inserts and update details to params
 
                 $fail_line = $csv_o->get_fail_line();
+                //echo "<pre>fail line: $fail_line".print_r($params,true)."</pre>";
                 if ($fail_line == 0)    // no errors in import - log success
                 {
                     error_log(date('H:i:s') . " -- Data import: {$type_opts['title']} (table: {$type_opts['table']})
@@ -170,7 +172,7 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
                 }
                 else                     // errors - log fail
                 {
-                    $_SESSION['pagefields']['import-problems'] = "Backup file: $bkup_file";
+                    $_SESSION['pagefields']['import-problems'] = "Failed on line: $fail_line [table: {$type_opts['table']}] ";
 
                     error_log(date('H:i:s') . " -- Data import: {$type_opts['title']} (table: {$type_opts['table']})
                            -- FAILED\n Failed on line $fail_line\nINSERTS:\n{$params['insert']}\n
@@ -462,6 +464,9 @@ function val_class($i, $key, $row, $table, $fields)
     $import[$key]['popular']   = addslashes($row['popular']);
     $import[$key]['info']      = addslashes($row['info']);
 
+    $import[$key]['active']    = "1";
+    $import[$key]['updby']     = "RM_import";
+
     return $error;
 }
 
@@ -592,7 +597,7 @@ function val_event($i, $key, $row, $table, $fields)
     $import[$key]['event_status'] = "scheduled";
     $import[$key]['display_code'] = "W,R,S";
     $import[$key]['active']       = 1;
-    $import[$key]['updby']        = "import";
+    $import[$key]['updby']        = "RM_import";
 
     if (!empty($err)) { $error[$i] = $err;}
     return $error;
@@ -639,7 +644,7 @@ function val_rota($i, $key, $row, $table, $fields)
     $import[$key]['memberid']   = addslashes($row['memberid']);
 
     $import[$key]['active']     = 1;
-    $import[$key]['updby']      = "import";
+    $import[$key]['updby']      = "RM_import";
 
     if (!empty($err)) { $error[$i] = $err;}
     return $error;
@@ -703,6 +708,8 @@ function val_tide($i, $key, $row, $table, $fields)
     $import[$key]['hw2_height']     = addslashes($row['hw2_height']);
     $import[$key]['time_reference'] = addslashes(strtolower($row['time_reference']));
     $import[$key]['height_units']   = addslashes(strtolower($row['height_units']));
+
+    $import[$key]['updby']          = "RM_import";
 
     if (!empty($err)) { $error[$i] = $err;}
     return $error;
@@ -865,6 +872,8 @@ function val_competitor($i, $key, $row, $table, $fields)
 //    $import[$key]['prizelist']   = addslashes($row['prizelist']);
 //    $import[$key]['grouplist']   = addslashes($row['grouplist']);
 //    $import[$key]['memberid']    = addslashes($row['memberid']);
+//
+//    $import[$key]['updby']        = "RM_import";
 //
 //    return $error;
 }

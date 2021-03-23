@@ -195,7 +195,6 @@ EOT;
     return $bufr;
 }
 
-
 function format_result_columns($scoring, $layout, $include_club)
 {
     $cols = array(

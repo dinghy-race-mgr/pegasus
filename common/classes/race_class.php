@@ -87,11 +87,42 @@ class RACE
     public function racestate_delete($fleetnum=0)
     {
         $constraint = array("eventid"=>$this->eventid);
-        if ($fleetnum != 0) { $constraint[] = array("race"=>$fleetnum); }        
+        if ($fleetnum != 0)
+        {
+            //$constraint[] = array("race"=>$fleetnum);
+            $constraint[] = array("fleet"=>$fleetnum);
+        }
         
         $numrows = $this->db->db_delete("t_racestate", $constraint);
 
         return $numrows;
+    }
+
+    public function racestate_analyse($fleetnum, $starttime)
+    {
+        $status_counts = array("R" => 0, "F" => 0, "X" => 0);
+        $race = $this->race_getresults($fleetnum);  // get race data for this fleet
+
+        foreach ($race as $entry)
+        {
+            $status_counts["{$entry['status']}"]++;
+        }
+
+        $status = "unknown";
+        if ($race)
+        {
+            if ($starttime == "00:00:00") {
+                $status = "notstarted";
+            } elseif ($status_counts['R'] == 0) {
+                $status = "allfinished";
+            } elseif ($status_counts['R'] > 0 and $status_counts['F'] > 0) {
+                $status = "finishing";
+            } else {
+                $status = "inprogress";
+            }
+        }
+
+        return $status;
     }
     
     
@@ -100,16 +131,19 @@ class RACE
         $racestates = array();
 
         $where = "eventid = ".$this->eventid;
-        if ($fleetnum != 0) { $where.= " AND race = $fleetnum"; }
+        if ($fleetnum != 0) { $where.= " AND fleet = $fleetnum"; }
         
-        $query = "SELECT * FROM t_racestate WHERE $where order by race";
+        $query = "SELECT * FROM t_racestate WHERE $where order by fleet";
         $result = $this->db->db_get_rows($query);
         
         if ($result) 
         { 
-           foreach ($result as $row) { $racestates[$row['race']] = $row; } 
-        } 
-
+           foreach ($result as $row)
+           {
+               //$racestates[$row['race']] = $row;
+               $racestates[$row['fleet']] = $row;
+           }
+        }
         return $racestates;
     }
     
@@ -126,7 +160,10 @@ class RACE
     
     public function racestate_updateentries($fleetnum, $change)
     {        
-        $result = $this->db->db_query("UPDATE t_racestate SET entries = entries $change WHERE eventid = {$this->eventid} and race = $fleetnum");
+//        $result = $this->db->db_query("UPDATE t_racestate SET entries = entries $change
+//                                       WHERE eventid = {$this->eventid} and race = $fleetnum");
+        $result = $this->db->db_query("UPDATE t_racestate SET entries = entries $change 
+                                       WHERE eventid = {$this->eventid} and fleet = $fleetnum");
         $_SESSION["e_{$this->eventid}"]['result_status'] = "invalid";
         
         return $result;
@@ -183,7 +220,7 @@ class RACE
     
     public function race_getstarters($constraint)
     {
-        $fields  = "id, class, sailnum, helm, code, status";
+        $fields  = "id, class, sailnum, helm, code, status, declaration";
         
         if (empty($constraint)) 
         { 
@@ -208,7 +245,7 @@ class RACE
     
     public function race_getresults($fleetnum=0)
     {                
-        $fields = "id, fleet, class, sailnum, helm, crew, club, pn, lap, etime, ctime, atime, penalty, points, code, declaration, status, note";
+        $fields = "id, fleet, class, sailnum, helm, crew, club, pn, lap, etime, ctime, atime, penalty, points, code, declaration, protest, status, note";
         
         $where = " AND (code != 'DNC' OR code is null) ";
         if ($fleetnum > 0) { $where.= " AND fleet = $fleetnum "; }
@@ -240,23 +277,23 @@ class RACE
 //    }
     
     
-    public function race_gettimings($fleet_sort, $fleetnum, $entryid)
+    public function race_gettimings($fleetnum = 0, $entryid = 0)
     {
         $cfg = array(
             "class"    => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status",
+                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "fleet ASC, class, sailnum ASC",
             ),
             "position" => array(
-                "fields" => "class, sailnum, helm, lap, code, position, id, fleet",
+                "fields" => "class, sailnum, helm, lap, finishlap, etime, code, position, id, fleet, declaration",
                 "order"  => "fleet ASC, position ASC, pn DESC, class, sailnum ASC",
             ),
             "pn"       => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status",
+                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "fleet ASC, pn ASC, class, sailnum AS",
             ),
             "ptime"    => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status",
+                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "fleet ASC, ptime ASC, pn DESC, class, sailnum ASC",
             )
         );
@@ -279,7 +316,7 @@ class RACE
         if ($this->pursuit) { $order = "fleet ASC, lap DESC, etime DESC, pn DESC, class, sailnum ASC"; }
         
         $rs = $this->race_entry_get($fields, $where, $order, true);
-        if ($fleet_sort)
+        if (empty($fleetnum))
         {
             $timings = array();
             for ($i = 1; $i <= $_SESSION["e_{$this->eventid}"]['rc_numfleets']; $i++)
@@ -324,11 +361,21 @@ class RACE
     public function race_delete($fleetnum=0)
     {
         $constraint = array("eventid"=>$this->eventid);
-        if ($fleetnum != 0) { $constraint[] = array("race"=>$fleetnum); }
+        if ($fleetnum != 0) { $constraint[] = array("fleet"=>$fleetnum); }
         
         $numrows = $this->db->db_delete("t_race", $constraint);
         
         return $numrows;
+    }
+
+    public function race_update($update, $fleetnum=0)
+    {
+        $constraint = array("eventid"=>$this->eventid);
+        if ($fleetnum != 0) { $constraint['fleet'] = $fleetnum; }
+
+        $result = $this->db->db_update("t_race", $update, $constraint);
+
+        return $result;
     }
     
     
@@ -351,63 +398,119 @@ class RACE
         return $numrows;
     }
     
-    public function race_laps_set($fleetnum, $laps, $mode="set")
+    public function race_laps_set($fleetnum, $laps)
     {
-        $update = array("result" =>"", "finishlap" => 0 );
-        $event = "e_".$this->eventid;
+        // sets laps for fleet if a change is valid
 
+        // can't change laps if:
+        //   - a pursuit race
+        //   - race has started and leading boat has already finished
+        //   - race has started and requested lap is less than current leaders lap
+        //   - requested lap is already set
+
+        $dbg = true;
+        $change_lap = false;
+        $update = array("result" =>"", "finishlap" => 0, "currentlap" => 0 );
+        $fleet_data = $_SESSION["e_{$this->eventid}"]["fl_$fleetnum"];
         $current_lap = $this->race_laps_current($fleetnum);  // current leader lap for this fleet
-        //u_writedbg("$laps|".$_SESSION["$event"]["fl_$fleetnum"]['currentlap']."|$current_lap", __FILE__, __FUNCTION__, __LINE__); //debug:
-        //u_writedbg(u_check($_SESSION, "session"), __FILE__, __FUNCTION__, __LINE__); //debug:
 
-        if ($mode=="set" AND ( $laps <= $current_lap OR $laps == $_SESSION["$event"]["fl_$fleetnum"]['maxlap']))  // captures case if no change and invalid change
+        if ($dbg) { echo "<-- enter race_set_laps -->"; }
+        if ($fleet_data['scoring'] == "pursuit")
         {
-            $update['result'] = "less_than_current";
-            $update['finishlap'] = $current_lap;
+            $update = array("result" =>"pursuit_race", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap );
         }
         else
         {
-            $result = $this->racestate_update(array("maxlap"=>$laps), array("race"=>$fleetnum));    // FIXME (change race field to "fleet""")
-            //u_writedbg("update racestate: $update",__FILE__,__FUNCTION__,__LINE__); //debug:
-            
-            if (is_int($result))    // update t_race
-            { 
-                $_SESSION["$event"]["fl_$fleetnum"]['maxlap'] = $laps;                
-                $result = $this->db->db_update("t_race", array("finishlap"=>$laps), array("eventid"=>$event, "fleet"=>$fleetnum));
-                //u_writedbg("t_race result: $result   ",__FILE__,__FUNCTION__,__LINE__);  //debug:
-                if (is_int($result))
+            if ($fleet_data['status'] == "notstarted")
+            {
+                if ($dbg) { echo "<pre>notstarted</pre>"; }
+                // race not started - so laps can not be changed
+                $change_lap = true;
+            }
+            else  // race sequence started
+            {
+                if ($fleet_data['status'] == "finishing" or $fleet_data['status'] == "allfinished")
                 {
-                    $update['finishlap'] = $laps;
-                    $update['result'] = "ok";
+                    if ($dbg) { echo "<pre>finishing</pre>"; }
+                    // lap can't be changed - boats are already finishing in this fleet
+                    $update = array("result" =>"finishing", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap );
+                }
+                else
+                {
+
+                    if ($laps < $current_lap)
+                    {
+                        if ($dbg) { echo "<pre>less_than_current</pre>"; }
+                        // lap can't be changed - lap requested is more than current leaders lap
+                        $update = array("result" =>"less_than_current", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap );
+                    }
+                    elseif($laps == $fleet_data['maxlap'])
+                    {
+                        if ($dbg) { echo "<pre>already_set</pre>"; }
+                        // no change requested
+                        $update = array("result" =>"already_set", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap );
+                    }
+                    else
+                    {
+                        // lap change is permitted
+                        $change_lap = true;
+                    }
                 }
             }
         }
-        //u_writedbg("update race: $update  -- session laps:{$_SESSION["$event"]["fl_$fleetnum"]['maxlap']} ",__FILE__,__FUNCTION__,__LINE__);  //debug:
-        return $update;             
+
+        if ($dbg) { echo "<pre>change_lap = |$change_lap|</pre>"; }
+
+        if ($change_lap)
+        {
+            // update t_racestate
+            $upd_racestate = $this->racestate_update(array("maxlap"=>$laps), array("fleet"=>$fleetnum));
+            if ($dbg) { echo "<pre>update racestate: $upd_racestate</pre>"; }
+
+            // update t_race + session
+            if ($upd_racestate >= 0)
+            {
+                $upd_race = $this->race_update(array("finishlap"=>$laps), $fleetnum);
+                if ($dbg) { echo "<pre>update race: $upd_race</pre>"; }
+
+                // reset session
+                $_SESSION["e_{$this->eventid}"]["fl_$fleetnum"]['maxlap'] = $laps;
+
+                if ($upd_race >= 0)
+                {
+                    $update = array("result" => "ok", "finishlap" => $laps, "currentlap" => $current_lap);
+                }
+                else
+                {
+                    $update = array("result" => "failed", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap);
+                }
+            }
+        }
+        if ($dbg) { echo "<-- exit race_set_laps -->"; }
+        return $update;
     }
 
-    public function race_switch_lap($fleetnum, $switch_lap)
+    public function race_getlap_etime($data, $switch_lap)
     {
-        // get rows from t_race for this fleet
-        $data = $this->race_getresults($fleetnum);
 
-        // loop through boats making switch
-        $changed = 0;
-        foreach ($data as $k => $row)
+        $etime = 0;
+
+        if ($data['lap'] > $switch_lap)
         {
-            if ($row['lap'] > $switch_lap) {
-                $changed++;
-                //get lap elapsed time for switch lap
-                $laptimes = explode(",", $row['laptimes']);
-                echo "<pre>" . print_r($laptimes, true) . "</pre>";
-                if (array_key_exists($switch_lap - 1, $laptimes)) {
-                    $etime = $laptimes[$switch_lap - 1];
-                    // update t_race record
-                    $result = $this->db->db_update("t_race", array("laps" => $switch_lap, "etime" => $etime), array("id" => $row['id']));
-                }
+            $laptimes = explode(",", $data['laptimes']);          // get lap elapsed time for switch lap
+            //echo "<pre>" . print_r($laptimes, true) . "</pre>";
+
+            if (array_key_exists($switch_lap - 1, $laptimes))     // if we have the relevane lap time
+            {
+                $etime = $laptimes[$switch_lap - 1];
+
+//                // update t_race record
+//                $result = $this->db->db_update("t_race", array("lap" => $switch_lap, "etime" => $etime), array("id" => $data['id']));
+//                if ($result == 1) { $changed = true; }
             }
         }
-        return $changed;
+
+        return $etime;
     }
     
     public function race_laps_current($fleetnum)
@@ -479,7 +582,18 @@ class RACE
         return $count;
     }
 
-    public function race_score($racetype, $rs_data)
+    public function race_stillracing($fleetnum)
+    {
+        $sql = "SELECT id FROM t_race WHERE eventid = '{$this->eventid}' and fleet = '$fleetnum' and status = 'R'";
+        //echo "<pre>$sql</pre>";
+        $count = $this->db->db_num_rows($sql);
+
+        $count = 0 ? $stillracing = false : $stillracing = true;
+
+        return $stillracing;
+    }
+
+    public function race_score($eventid, $fleetnum, $racetype, $rs_data)
     {
         // FIXME issues:  this won't work for pursuit - that needs to be done by finish pursuit
         // FIXME issues: how do I handle declarations (not here - in display + button to mark all non-decl as rtd)
@@ -554,8 +668,8 @@ class RACE
                 $points_arr[] = $rs_data[$k]['points'];
             }
 
-            // set warnings for problems found
-            if ($still_racing > 0)
+
+            if ($still_racing > 0)  // set warning if boats still racing
             {
                 $warnings[] = array("type"=>"danger", "msg"=>"there are $still_racing boats still racing in this fleet");
             }
@@ -631,7 +745,9 @@ class RACE
                     "penalty"    => $rs_data[$k]['penalty'],
                     "note"       => $rs_data[$k]['note'],
                     "status"     => $rs_data[$k]['status'],
-                    "status_flag"=> $this->entry_resultstatus($rs_data[$k]['status'], $rs_data[$k]['declaration'], $this->eventid)   // FIXME no sue this hould be done like this
+                    "declaration"=> $rs_data[$k]['declaration'],
+                    "status_flag"=> $this->entry_resultstatus($rs_data[$k]['status'], $rs_data[$k]['declaration'],
+                                                              $rs_data[$k]['protest'], $this->eventid)
                 );
             }
         }
@@ -827,27 +943,55 @@ class RACE
      }
      
      
-     public function entry_code_set($entryid, $code)
+     public function entry_code_set($entryid, $code, $finish_check = false)
      {
-        // get timing flag for code
-        $code_arr = $this->db->db_getresultcode($code);
-        if ($code_arr['timing']==0 and $code!="")   // finish if code indicates stop timing or code is blank
+
+        if (empty($entryid))
         {
-            $numrows = $this->entry_update($entryid, array("code" => $code, "status" => "X"));
+            $status = "no_entry_id";
         }
         else
         {
-            $numrows = $this->entry_update($entryid, array("code" => $code, "status" => "R"));
+            $code_arr = $this->db->db_getresultcode($code); // get timing flag for code
+            if (!$code_arr)
+            {
+                $status = "code_not_found";
+            }
+            else
+            {
+                if (!$code_arr['timing'])   // finish if code indicates stop timing and set boat status
+                {
+                    // boat is 'excluded'
+                    $numrows = $this->entry_update($entryid, array("code" => $code, "status" => "X"));
+                }
+                else
+                {
+                    // boat is 'racing'
+                    $finish_check ? $status = "F" : $status = "R";
+                    $numrows = $this->entry_update($entryid, array("code" => $code, "status" => $status));
+                }
+
+                $numrows>0 ? $status = "code_set" : $status = "code_set_failed";
+            }
         }
-        return $numrows;        
+        return $status;
      }
 
      
-     public function entry_code_unset($entryid, $status)
+     public function entry_code_unset($entryid, $status, $declaration, $finish_check = false)
      {
-        if ($status == "X")  { $status = "R"; }  // change status back to racing if they were previously excluded
-        $numrows = $this->entry_update($entryid, array("code" => "", "status" => $status));
-        return $numrows;
+
+         // change status back to racing/finished if previously excluded
+         if ($status == "X")
+         {
+             $finish_check ? $status = "F" : $status = "R";
+         }
+
+         // change declaration back to none if previously retired
+         if ($declaration == "R") { $declaration = "X";}
+
+         $numrows = $this->entry_update($entryid, array("code" => "", "status" => $status, "declaration" => $declaration));
+         return $numrows;
      }
      
      
@@ -858,121 +1002,133 @@ class RACE
      }
 
 
-     public function entry_declare($competitorid, $declare_type, $protest)
-     {
-         $entry = $this->entry_get($competitorid, "competitor");
-        $entry_ref = "{$entry['class']} {$entry['sailnum']} {$entry['helm']}";
-        
-        if ($declare_type == "declare")
-        {
-           $declare_code = "R";
-           if ($protest) { $declare_code.="P"; }
-           $logmsg = "Declaration ";
-        }
-        elseif ($declare_type == "retire")
-        {
-           $declare_code = "R";
-           if ($protest) { $declare_code.="P"; }
-           
-           // update code and  status
-           $upd = $this->entry_code_set($entry['id'], "RET");
-           $logmsg = "Retirement ";
-        }
-        else
-        {
-           return false;
-        }
-        
-        // update declaration code
-         if ($this->entry_declaration_set($entry['id'], $declare_code)) {
-             u_writelog("$logmsg: $entry_ref", $this->eventid);
-             return true;
-         } else {
-             u_writelog("$logmsg FAILED - (competitor: $competitorid) $entry_ref ", $this->eventid);
-             return false;
-         }
-    }
+//    public function entry_declare($entryid, $declare_type)
+//    {
+//        $status = true;
+////        $entry = $this->entry_get($competitorid, "competitor");
+////        $entry_ref = "{$entry['class']} {$entry['sailnum']} {$entry['helm']}";
+//
+//        if ($declare_type == "declare")
+//        {
+//            $protest ? $declare_code = "DP" : $declare_code = "D";
+//            // Note: not processing declarations
+//        }
+//        elseif ($declare_type == "retire")
+//        {
+//            $protest ? $declare_code = "RP" : $declare_code = "R";
+//
+//            // update code and status
+//            $upd = $this->entry_code_set($entryid, "RET");
+//            //$logmsg = "Retirement ";
+//            echo "<pre>entry_code_set: $upd</pre>";
+//            if ($upd != "code_set")
+//            {
+//                $status = false;
+//            }
+//        }
+//        else
+//        {
+//            $status = false;
+//        }
+//
+//        if ($status)
+//        {
+//            echo "<pre>entry_declaration_set: $declare_code</pre>";
+//
+//            $declare = $this->entry_declaration_set($entry['id'], $declare_code);
+//            // update declaration code
+//            if ($this->entry_declaration_set($entry['id'], $declare_code))
+//            {
+//                u_writelog("$logmsg: $entry_ref", $this->eventid);
+//                $status = true;
+//            }
+//            else
+//            {
+//                u_writelog("$logmsg FAILED - (competitor: $competitorid) $entry_ref ", $this->eventid);
+//                $status = false;
+//            }
+//        }
+//
+//        return $status;
+//    }
+//
+//    public function entry_declaration_set($entryid, $declare_code)
+//    {
+//        $numrows = $this->entry_update($entryid, array("declaration" => $declare_code,));
+//        return $numrows;
+//    }
 
-    
-    public function entry_declaration_set($entryid, $declare_code)
-    {
-        $numrows = $this->entry_update($entryid, array("declaration" => $declare_code,));
-        return $numrows;
-    }
-    
-    
-    public function entry_resultstatus($status, $declaration, $eventid)
+    public function entry_resultstatus($status, $declaration, $protest, $eventid)
     {
         $decl    = "";
-        $protest = "";
 
         if ($status == 'R')          // racing
         {
-            $status = array("msg"=>"still racing", "color"=>"orange", "glyph"=>"glyphicon glyphicon-flag");
+            $status_arr = array("msg"=>"still racing", "color"=>"orange", "glyph"=>"glyphicon glyphicon-flag");
         }
         elseif ($status == 'F')      // finished
         {
-            $status = array("msg"=>"finished", "color"=>"mediumseagreen", "glyph"=>"glyphicon glyphicon-flag");
+            $status_arr = array("msg"=>"finished", "color"=>"mediumseagreen", "glyph"=>"glyphicon glyphicon-flag");
         }
         elseif ($status == 'X')      // non-finisher
         {
-            $status = array("msg"=>"non-finisher", "color"=>"black", "glyph"=>"glyphicon glyphicon-flag");
+            $status_arr = array("msg"=>"non-finisher", "color"=>"black", "glyph"=>"glyphicon glyphicon-flag");
         }
         else
         {
-            $status = array("msg"=>"unknown", "color"=>"red", "glyph"=>"glyphicon glyphicon-flag");
+            $status_arr = array("msg"=>"unknown", "color"=>"red", "glyph"=>"glyphicon glyphicon-flag");
         }
 
         if ($_SESSION["e_$eventid"]['ev_entry'] == "signon-retire" OR $_SESSION["e_$eventid"]['ev_entry'] == "signon-declare")
         {
             if (strpos($declaration,'R') !== false)     // retired
             {
-                $decl = array("msg"=>"retired", "color"=>"red", "glyph"=>"glyphicon glyphicon-share");
+                $decl_arr = array("msg"=>"retired", "color"=>"red", "glyph"=>"glyphicon glyphicon-pencil");
             }
         }
 
         if ($_SESSION["e_$eventid"]['ev_entry'] == "signon-declare" )
         {
-            if (strpos($declaration, 'D') !== false)
+            if (strpos($declaration, 'D') !== false)    // signed off
             {
-                $decl = array("msg" => "signed off", "color" => "mediumseagreen", "glyph" => "glyphicon glyphicon-edit");
+                $decl_arr = array("msg" => "signed off", "color" => "mediumseagreen", "glyph" => "glyphicon glyphicon-pencil");
             }
         }
 
         if ($_SESSION['sailor_protest'])
         {
-            if (strpos($declaration,'P') !== false)      // protest submitted
+            if ($protest)  // protest submitted
             {
-                $protest = array("msg"=>"protesting", "color"=>"red", "glyph"=>"glyphicon glyphicon-certificate");
+                $protest_arr = array("msg"=>"protesting", "color"=>"red", "glyph"=>"glyphicon glyphicon-certificate");
             }
         }
 
         // add tooltip if required
         if ($_SESSION["display_help"])
         {
-            $status_bufr = "<span class='{$status['glyph']}' style='color: {$status['color']}; cursor: help' data-title='{$status['msg']}' 
+            $status_bufr = "<span class='{$status_arr['glyph']}' style='color: {$status_arr['color']}; cursor: help' data-title='{$status_arr['msg']}' 
                             data-toggle='tooltip' data-delay='500' data-placement='bottom'></span>";
-            if (!empty($decl))
+            if (!empty($decl_arr))
             {
-                $status_bufr.= "&nbsp;<span class='{$decl['glyph']}' style='color: {$decl['color']}; cursor: help' data-title='{$decl['msg']}' 
+                $status_bufr.= "&nbsp;<span class='{$decl_arr['glyph']}' style='color: {$decl_arr['color']}; cursor: help' data-title='{$decl_arr['msg']}' 
                                             data-toggle='tooltip' data-delay='500' data-placement='bottom'></span>";
             }
-            if (!empty($protest))
+            if (!empty($protest_arr))
             {
-                $status_bufr.= "&nbsp;<span class='{$protest['glyph']}' style='color: {$protest['color']}; cursor: help' data-title='{$protest['msg']}' 
+                $status_bufr.= "&nbsp;<span class='{$protest_arr['glyph']}' style='color: {$protest_arr['color']}; cursor: help' data-title='{$protest_arr['msg']}' 
                                       data-toggle='tooltip' data-delay='500' data-placement='bottom'></span>";
             }
         }
         else
         {
-            $status_bufr = "<span class='{$status['glyph']}' style='color: {$status['color']}; cursor: help'></span>";
-            if (!empty($decl))
+            $status_bufr = "<span class='{$status_arr['glyph']}' style='color: {$status_arr['color']}; cursor: help'></span>";
+            if (!empty($decl_arr))
             {
-                $status_bufr.= "&nbsp;<span class='{$decl['glyph']}' style='color: {$decl['color']}; cursor: help'></span>";
+                $status_bufr.= "&nbsp;<span class='{$decl_arr['glyph']}' style='color: {$decl_arr['color']}; cursor: help'></span>";
             }
-            if (!empty($protest))
+            if (!empty($protest_arr))
             {
-                $status_bufr.= "&nbsp;<span class='{$protest['glyph']}' style='color: {$protest['color']}; cursor: help'></span>";
+                $status_bufr.= "&nbsp;<span class='{$protest_arr['glyph']}' style='color: {$protest_arr['color']}; cursor: help'></span>";
             }
         }
 

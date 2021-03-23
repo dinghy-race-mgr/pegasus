@@ -71,7 +71,8 @@ function u_2darray_search($array, $field, $match)
 }
 
 function u_array_orderby()
-    // sorts array by multiple columns
+// sorts array by multiple columns
+// $out_arr = array_orderby($in_arr, 'key1', SORT_DESC, 'key2', SORT_ASC);
 {
     $args = func_get_args();
     $data = array_shift($args);
@@ -115,7 +116,9 @@ function u_getitem(&$var, $default=null)
 }
 
 function u_format($msg, $vars)
-/* php function equivalent to the python format */
+/* php function equivalent to the python format
+     u_format("{} and {}", array("pinky", "perky")
+*/
 {
     $vars = (array)$vars;
 

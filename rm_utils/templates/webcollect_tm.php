@@ -38,7 +38,7 @@ EOT;
     $alert
     The table below provides a summary of the berth records in the output file<br><br>
     <table class="table table-condensed table-hover">
-    <thead><tr><th width="25%">member</th><th width="25%">berth</th><th width="25%">boat</th><th width="25%">sticker</th></tr></thead>
+    <thead><tr><th width="25%">member</th><th width="25%">berth</th><th width="25%">boat</th></tr></thead>
     <tbody>
     {berth_data}
     </tbody></table>

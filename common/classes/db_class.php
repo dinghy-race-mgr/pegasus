@@ -49,7 +49,12 @@
 class DB
 {
     private $link;
-    
+
+    // FIXME
+    // provide a method to get the last query used - write query to the object with an private put_last_query
+    // then a simple get_last_query which can be called from app to help with debugging
+    // could include an object to print it
+    // query would in array with fields of sql, type, rows affected, status
 
     public function __construct()
 	{
@@ -278,6 +283,7 @@ class DB
             foreach( $where as $field => $value )
             {
                 $clause[] = "`$field` = '$value'";
+                //echo "<pre>field = $field</pre>";
             }
             $query .= ' WHERE '. implode(' AND ', $clause);   
         }
@@ -288,7 +294,7 @@ class DB
         }
 
         if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
-
+        //echo "<pre>$query</pre>";
         $update = $this->link->query( $query );
         $numrows = $this->link->affected_rows;         // might be zero if no records changed
         //echo "<pre> UPDATE QUERY: ".$query."<br>".$numrows."</pre>";

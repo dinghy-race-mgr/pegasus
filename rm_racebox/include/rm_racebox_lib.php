@@ -39,21 +39,30 @@ EOT;
 }
 
 
-function set_code($eventid, $entryid, $code, $racestatus, $boat)
+function set_code($eventid, $entryid, $code, $racestatus, $declaration, $boat, $finish_lap = 0, $current_lap = 0)
     /*
      * sets or clears code in t_race
      */
 {
     global $race_o;
 
+    if ($finish_lap and $current_lap)
+    {
+        $finish_lap <= $current_lap ? $finish_check = true : $finish_check = false;
+    }
+    else
+    {
+        $finish_check = false;
+    }
+
     if ($code)
     {
-        $update = $race_o->entry_code_set($entryid, $code);
+        $update = $race_o->entry_code_set($entryid, $code, $finish_check);
         if ($update) { u_writelog("$boat - code set to $code", $eventid); }
     }
     else
     {
-        $update = $race_o->entry_code_unset($entryid, $racestatus);
+        $update = $race_o->entry_code_unset($entryid, $racestatus, $declaration, $finish_check);
         if ($update) { u_writelog("$boat - code unset", $eventid); }
     }
 

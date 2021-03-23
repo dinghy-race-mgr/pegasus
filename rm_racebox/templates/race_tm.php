@@ -444,23 +444,31 @@ function race_status_display($params)
         {
             // fleet/flag
             $fleetname = ucwords($fleet['racename']);
-            $warning_flag = $params['flag-data'][$fleet['race']];
+            $warning_flag = $params['flag-data'][$fleet['fleet']];
 
             // number racing
             empty($fleet['num_racing']) ? $num_racing = 0 : $num_racing = $fleet['num_racing'];
 
             // set laps
-            if ($fleet['maxlap'] == 0)
+            if ($fleet['maxlap'] == "pursuit")
             {
-                $style = "danger";
-                $label = "set";
+                $setlaps_bufr = "n/a";
             }
             else
             {
-                $style = "success";
-                $label = "change";
+                if ($fleet['maxlap'] == 0)
+                {
+                    $style = "danger";
+                    $label = "set";
+                }
+                else
+                {
+                    $style = "success";
+                    $label = "change";
+                }
+                $setlaps_bufr = set_laps_control($eventid, $fleet['fleet'], $fleet['maxlap'], $style, $label);
             }
-            $setlaps_bufr = set_laps_control($eventid, $fleet['race'], $fleet['maxlap'], $style, $label);
+
 
             // current lap
             $laps = $fleet['currentlap'];

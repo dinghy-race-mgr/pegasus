@@ -65,9 +65,13 @@ if ($pagestate == "init")
 elseif ($pagestate == "setcode")
 {
     $err = false;
+
     empty($_REQUEST['entryid'])    ? $err = true : $entryid = $_REQUEST['entryid'];
     empty($_REQUEST['boat'])       ? $err = true : $boat = $_REQUEST['boat'];
     empty($_REQUEST['racestatus']) ? $err = true : $racestatus = $_REQUEST['racestatus'];
+    empty($_REQUEST['declaration'])? $err = true : $declaration = $_REQUEST['declaration'];
+    empty($_REQUEST['lap'])        ? $err = true : $lap = $_REQUEST['lap'];
+    empty($_REQUEST['finishlap'])  ? $err = true : $finishlap = $_REQUEST['finishlap'];
     empty($_REQUEST['code'])       ? $code = ""  : $code = $_REQUEST['code'];
 
     if ($err)
@@ -79,7 +83,7 @@ elseif ($pagestate == "setcode")
     }
     else
     {
-        $update = set_code($eventid, $entryid, $code, $racestatus, $boat);
+        $update = set_code($eventid, $entryid, $code, $racestatus, $declaration, $boat, $finishlap, $lap);
 
         if (!$update)
         {

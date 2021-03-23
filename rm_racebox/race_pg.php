@@ -114,15 +114,13 @@ else
     );
     $lbufr_mid = $tmpl_o->get_template("race_status_display", array(), $params);
 
-    if (!$_SESSION["e_$eventid"]['pursuit'])
-    {
-        $params = array(
-            "lapstatus" => $laps_set[0],
-            "fleet-data" => $fleet_data,
-        );
-        $mdl_setlaps['fields']['body'] = $tmpl_o->get_template("fm_race_setlaps", array(), $params);
-        $lbufr_bot = $tmpl_o->get_template("modal", $mdl_setlaps['fields'], $mdl_setlaps);
-    }
+    // full laps control (will not be accessible if a pursuit race
+    $params = array(
+        "lapstatus" => $laps_set[0],
+        "fleet-data" => $fleet_data,
+    );
+    $mdl_setlaps['fields']['body'] = $tmpl_o->get_template("fm_race_setlaps", array(), $params);
+    $lbufr_bot = $tmpl_o->get_template("modal", $mdl_setlaps['fields'], $mdl_setlaps);
 }
 
 // ----- right hand panel --------------------------------------------------------------------
@@ -159,7 +157,7 @@ $mdl_message['fields']['body'] = $tmpl_o->get_template("fm_race_message", array(
 $rbufr_top.= $tmpl_o->get_template("modal", $mdl_message['fields'], $mdl_message);
 
 // pursuit start times - modal
-if ($_SESSION["e_$eventid"]['fl_1']['scoring']=="pursuit")
+if ($_SESSION["e_$eventid"]['pursuit'])
 {
     include ("{$loc}/common/classes/boat_class.php");
     $class_o = new BOAT($db_o);

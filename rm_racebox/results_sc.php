@@ -18,14 +18,16 @@
 $loc        = "..";          // <--- relative path from script to top level folder
 $page       = "results";     
 $debug      = false;
-$stop_here  = false;
+$stop_here  = true;
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
 // parameters  [eventid (required), pagestate(required), entryid)
 $eventid   = u_checkarg("eventid", "checkintnotzero","", false);
 $pagestate = u_checkarg("pagestate", "set", "", false);
-$entryid   = u_checkarg("entryid", "set", "", "");;
+$entryid   = u_checkarg("entryid", "set", "", "");
+
+echo "<pre>Entering results_sc: ".print_r($_REQUEST,true)."</pre>";
 
 u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and sets error reporting
 
@@ -49,68 +51,74 @@ if ($eventid AND $pagestate)
     $db_o    = new DB;
     $race_o  = new RACE($db_o, $eventid);
     
-    if ($pagestate == "retirements" OR $pagestate == "declarations")
+    if ($pagestate == "retirements" /*OR $pagestate == "declarations"*/)  // FIXME - currently not planning to use declarations
     {
         $entry_o = new ENTRY($db_o, $eventid);
-        $entries = $entry_o->get_signons($pagestate);    // gets retirements or declarations/retirements
+        $declares = $entry_o->get_signons($pagestate);    // gets declarations ( signoffs/retirements)
 
-        if ($entries)
+        if ($declares)
         {
             // loop over entries 
             $counts = array("protests" => 0, "retires" => 0, "declares" => 0);
             $rpt_bufr = "";
             $error = false;
 
-            foreach ($entries as $entry)
+            foreach ($declares as $declare)
             {
+                echo "<pre>".print_r($declare,true)."</pre>";
+                $error = false;
+                // need to get $entryid - as not provided by $_REQUEST for this function
+                $entry = $race_o->entry_get($declare['id'], "competitor");
+                $entryid = $entry['id'];
+                $entry_txt = "{$entry['class']} {$entry['sailnum']}";
+
+                $update = array();
+                // process protests
                 $protest = false;
-                if ($entry['protest']==1 AND $_SESSION['sailor_protest'])
-                { 
-                    $protest = true;
-                    $counts['protests']++;
-                    $rpt_bufr.= " - {$result['class']} {$result['sailnum']} : protesting</br>";
-                }
-                
-                if ($entry['action'] == "retire")
-                {                    
-                    $result = $race_o->entry_declare($entry['id'], "retire", $protest);
-                    if ($result)
-                    {
-                        $counts['retires']++;
-                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], "L");  // update entry record
-                    }
-                    else
-                    {
-                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], "F");                 // update entry record
-                        $rpt_bufr.= " - {$result['class']} {$result['sailnum']} : retirement failed</br>";
-                        $error = true;
-                    }
-                }
-                /*
-                elseif ($entry['action'] == "declare")
+                if ($declare['protest'] AND $_SESSION['sailor_protest'])
                 {
-                    $result = $race_o->entry_declare($entry['id'], "declare", $protest);
-                    if ($result)
-                    {
-                        $counts['declares']++;
-                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], "L");  // update entry record
-                    }
-                    else
-                    {
-                        $entryupdate = $entry_o->confirm_entry($entry['t_entry_id'], "F");                 // update entry record
-                        $rpt_bufr.= " - {$result['class']} {$result['sailnum']} : declaration failed</br>";
-                        $error = true;
-                    }
+                    $counts['protests']++;
+                    $update['protest'] = "1";
                 }
-                */
+
+                if ($declare['action'] == "retire")
+                {
+                    $action_txt = "retirement";
+                    $update["declaration"] = "R";
+                    $counts['retires']++;
+                    $code_upd = $race_o->entry_code_set($entryid, "RET");   // sets retirement code
+                    if ($code_upd != "code_set") { $error = true; }
+                }
+                elseif ($declare['action'] == "declare")
+                {
+                    $action_txt = "declaration";
+                    $update["declaration"] = "D";
+                    $counts['declares']++;
+                }
+
+                // updates declaration and protest fields
+                $entry_upd = $race_o->entry_update($entryid, $update);
+                if ($entry_upd == -1) { $error = true; }
+
+                // confirm entry record processed
+                if (!$error)
+                {
+                    $entryupdate = $entry_o->confirm_entry($declare['t_entry_id'], "L");
+                    echo "<pre>marking entry record as processed</pre>";
+                }
+                else
+                {
+                    $entryupdate = $entry_o->confirm_entry($declare['t_entry_id'], "F");
+                    $rpt_bufr.= " - $entry_txt : $action_txt failed</br>";
+                    echo "<pre>marking entry record as failed</pre>";
+                }
             }
-            combinegrowls($eventid, $page, $pagestate, $counts, rtrim($rpt_bufr, "</br>"), $error);    // present summary as growl
+            creategrowl($eventid, $page, $pagestate, $counts, rtrim($rpt_bufr, "</br>"));    // present summary as growl
         }
         else
         {
             u_growlSet($eventid, $page, $g_results_zero_declare);
         }
-        if ($stop_here) { header("Location: results_pg.php?eventid=$eventid");  exit(); }  // back to results page
         
     }
 
@@ -120,6 +128,9 @@ if ($eventid AND $pagestate)
         empty($_REQUEST['entryid'])    ? $err = true : $entryid = $_REQUEST['entryid'];
         empty($_REQUEST['boat'])       ? $err = true : $boat = $_REQUEST['boat'];
         empty($_REQUEST['racestatus']) ? $err = true : $racestatus = $_REQUEST['racestatus'];
+        empty($_REQUEST['declaration'])? $err = true : $declaration = $_REQUEST['declaration'];
+        empty($_REQUEST['lap'])        ? $err = true : $lap = $_REQUEST['lap'];
+        empty($_REQUEST['finishlap'])  ? $err = true : $finishlap = $_REQUEST['finishlap'];
         empty($_REQUEST['code'])       ? $code = ""  : $code = $_REQUEST['code'];
 
         if ($err)
@@ -131,7 +142,7 @@ if ($eventid AND $pagestate)
         }
         else
         {
-            $update = set_code($eventid, $entryid, $code, $racestatus, $boat);
+            $update = set_code($eventid, $entryid, $code, $racestatus, $declaration, $boat, $finishlap, $lap);
 
             if (!$update)
             {
@@ -141,6 +152,7 @@ if ($eventid AND $pagestate)
             }
         }
     }
+// code for ediing lap times below
 /*
     elseif ($pagestate == "editresult")                // change result (handled through iframe
     {
@@ -194,7 +206,8 @@ if ($eventid AND $pagestate)
         u_writelog("Result Update - {$old['class']} {$old['sailnum']} : edit_str", $eventid);
     }
 */
-    
+
+/* ------- DELETE ------------------------------------------------------------------------------- */
     elseif ($pagestate == "delete")                // remove boat from race - mark status as 'D'
     {
         $result = $race_o->entry_get($entryid, "race");
@@ -213,33 +226,96 @@ if ($eventid AND $pagestate)
         }
     }
 
-    
+
+/* ------- CHANGEFINISH ------------------------------------------------------------------------------- */
     elseif ($pagestate == "changefinish")
-    {        
-        echo "<pre>entering changefinish</pre>";
-        echo "<pre>".print_r($_REQUEST,true)."</pre>";
-        // get current racestate
-        $racestate = $race_o->racestate_get();
-        
-        // for each fleet that has changed
-        foreach ($racestate as $key=>$fleet)
-        {
-            $fleetnum = $fleet['race'];
-            $finishlap = $_REQUEST['finishlap'][$fleetnum];
-            echo "<pre>finish lap: $finishlap  [{$fleet['maxlap']}]</pre>";
-            if ( $fleet['maxlap'] != $finishlap )     // laps have been changed for this fleet
+    {
+        $growl_txt = "";
+        $racestate = $race_o->racestate_get();   // get racestate for all fleets
+
+        // loop over fleets
+        foreach ($racestate as $i=>$fleet) {
+            $log_text = "";
+            $new_maxlap = $_REQUEST["finlap$i"];
+
+            if ($fleet['maxlap'] != $new_maxlap)  // laps have been changed
             {
-                // update t_racestate, t_race tables and session maxlap for this fleet
-                $update = $race_o->race_laps_set($fleetnum, $finishlap, $mode="switch");
+                $log_txt = "{$_SESSION["e_$eventid"]["fl_$i"]['fleetname']} finish changed to lap $new_maxlap ";
 
-                echo "<pre>UPDATE: ".print_r($update,true)."</pre>";
+                $race = $race_o->race_getresults($i);  // get race data for this fleet
 
-                // in t_race if laps is > maxlap - reset and map correct etime from t_lap
-                $switch = $race_o->race_switch_lap($fleetnum, $finishlap);
+                // loop over boats in fleet
+                $leaderlap = 0;
+                foreach ($race as $j => $entry)
+                {
+                    if ($fleet['racetype'] == "average")     // will always finish if at least one lap is completed
+                    {
+                        if ($entry['lap'] >= 1)
+                        {
+                            // find last completed lap that is <= finishlap
+                            $entry['lap'] > $new_maxlap ? $new_lap = $new_maxlap : $new_lap = $entry['lap'];
 
-                echo "<pre>SWITCH: $switch</pre>";
+                            $etime = $race_o->race_getlap_etime($entry, $new_lap); // get etime for finish lap
+                            $entry['status'] == "X" ? $set_status = "X" : $set_status = "F" ;
+                            $update = array("status" => "F", "finishlap" => $new_maxlap, "lap" => $new_lap, "etime" => $etime);
+                        }
+                        else
+                        {
+                            $update = array("finishlap" => $new_maxlap);
+                        }
+                        $race_o->entry_update($entry['id'], $update);      // update t_race
+                    }
+                    else                                     // will only finish if new finish lap <= current lap
+                    {
+                        if ($entry['lap'] >= 1)
+                        {
+                            if ($new_maxlap <= $entry['lap'])    // finished
+                            {
+                                $etime = $race_o->race_getlap_etime($entry, $new_maxlap); // get etime for finish lap
+                                $entry['status'] == "X" ? $set_status = "X" : $set_status = "F" ;
+                                $update = array("status" => $set_status, "finishlap" => $new_maxlap, "lap" => $new_maxlap, "etime" => $etime);
+                            }
+                            else // still racing
+                            {
+                                $entry['status'] == "X" ? $set_status = "X" : $set_status = "R" ;
+                                $update = array("status" => $set_status, "finishlap" => $new_maxlap);
+                            }
+                        }
+                        else
+                        {
+                            $update = array("finishlap" => $new_maxlap);
+                        }
+                    }
+                    // update t_race
+                    $race_o->entry_update($entry['id'], $update);
+
+                    // find leader lap
+                    if ($entry['lap'] > $leaderlap) { $leaderlap = $entry['lap']; }
+                }
+
+                $status = $race_o->racestate_analyse($fleetnum, $racestate['starttime']);
+
+                // if status changed update
+                if ($status != $racestate['status']) {
+                    $update = array(
+                        "status" => $status,
+                        "prevstatus" => $racestate['status'],
+                        "maxlap" => $new_maxlap,
+                        "currentlap" => $leaderlap
+                    );
+                    $upd = $race_o->racestate_update($update, array("fleet" => $i));
+                    $_SESSION["e_$eventid"]["fl_$i"]['status'] = $status;
+                }
+
+                $status == "allfinished" ? $log_txt.= " - all finished": $log_txt.= " - not all finished";
+
+                u_writelog($log_txt, $eventid);  // log change
+                $growl_txt.= $log_txt."<br>";
             }
         }
+
+        // set growl
+        u_growlSet($eventid, $page, $g_results_changefinish, array($growl_txt));
 
         // reset rescore flag
         $_SESSION["e_$eventid"]['result_valid'] = false;
@@ -273,9 +349,11 @@ if ($eventid AND $pagestate)
             u_growlSet($eventid, $page, $g_race_msg_fail);
         }
     }
+
+
     else
     {
-        // pagestate value ont recognised
+        // pagestate value not recognised
         u_exitnicely($scriptname, $eventid,"program control option not recognised [pagestate: $pagestate]",
             "please contact your raceManager administrator");
     }
@@ -292,37 +370,32 @@ else
 }
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------
-function combinegrowls($eventid, $page, $pagestate, $counts, $rpt_bufr, $error)
+function creategrowl($eventid, $page, $pagestate, $counts, $rpt_bufr)
 {    
-    if ($counts['protests'] > 0) { $protests = "&nbsp;[ {$counts['protests']} protest".u_plural($counts['protests'])." ]"; }
+    echo "<pre>counts: ".print_r($counts,true)."</pre>";
 
+    $protest_txt = "";
+    if ($counts['protests'] > 0) { $protest_txt = "&nbsp;&nbsp;[ {$counts['protests']} protest(s) ]"; }
 
+    $title = "";
     if ($pagestate == "retirements")
     {
-        $title = "<p>Processing: {$counts['retires']} retirements $protests</p>";
+        $title.= "<p>Processed: {$counts['retires']} retirement(s) $protest_txt</p>";
     }
     elseif ($pagestate == "declarations")
     {
-        $title = "<p>Processing: {$counts['declares']} declarations, {$counts['retires']} retirements $protests</p>";
+        $title.= "<p>Processed: {$counts['declares']} declaration(s), {$counts['retires']} retirement(s) $protest_txt</p>";
     }
 
-    if ($error)
+    $gclose = 10000;
+    $gstyle = "success";
+    if (!empty($rpt_bufr))
     {
-        $rpt_bufr = "<p>$rpt_bufr</p><p>Please use the edit function to manually apply failed declarations / retirements</p>";
-        $gclose = 50000;
-        $gstyle = "danger";
+        $rpt_bufr = "<p>$rpt_bufr</p><p>Please use the inline edit button to manually apply failed declarations / retirements</p>";
+        $gclose = 30000;
+        $gstyle = "warning";
     }
-    else
-    {
-        $gclose = 5000;
-        $gstyle = "success";
-    }
+    u_growlSet($eventid, $page, array("type" => $gstyle, "delay"=> $gclose, "msg" => "$title $rpt_bufr"), array());
 
-    $g_content = array(
-        "type" => $gstyle,
-        "delay"=> $gclose,
-        "msg"  => "$title $rpt_bufr",
-    );
-    
-    u_growlSet($eventid, $page, $g_content, array());
+    return ;
 }

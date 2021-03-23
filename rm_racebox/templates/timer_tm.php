@@ -48,8 +48,8 @@ EOT;
         {
             $panels .= <<<EOT
             <div role="tabpanel" class="tab-pane" id="fleet$i">
-                <div class="alert alert-warning" role="alert" style="margin-left: 0%; margin-right: 40%; text-align: center;"
-                   <span><b>no entries in the {$fleet['name']} fleet </b></span><br>
+                <div class="alert alert-info text-center" role="alert" style="margin-right: 40%;">
+                   <h3>no entries in the {$fleet['name']} fleet</h3><br>
                 </div>
             </div>
 EOT;
@@ -173,7 +173,9 @@ EOT;
                 $row_link = vsprintf($timelap_link,
                     array($r['fleet'], $r['start'], $r['id'], $boat, $r['lap'], $r['pn'], $r['etime'] ));
 
-                $link = "timer_sc.php?eventid=$eventid&pagestate=setcode&fleet={$r['fleet']}&entryid={$r['id']}&boat=$boat&racestatus={$r['status']}";
+                $link = "timer_sc.php?eventid=$eventid&pagestate=setcode&fleet={$r['fleet']}
+                         &entryid={$r['id']}&boat=$boat&racestatus={$r['status']}
+                         &declaration={$r['declaration']}&lap={$r['lap']}&finishlap={$r['finishlap']}";
                 $code_link = get_code($r['code'], $link, "timercodes");
 
                 $edit_link = editlaps_html($eventid, $r['id'], $boat, $r['laptimes']);
@@ -545,25 +547,27 @@ function fm_timer_setlaps($params=array())
     if ($params['mode'] == "shorten")
     {
         $lapskey = "shlaps";
+        $action = "shortened";
         $instruction1 = <<<EOT
             Each fleet will be shortened to finish on the <b>next lap</b> as shown below &hellip;<br>
             you can also change the required finish lap manually before submitting
 EOT;
         $instruction2 = <<<EOT
-            click <b>SHORTEN ALL</b> to apply the changes 
+            click <b>SHORTEN ALL</b> button below to apply the changes 
 EOT;
 
     }
     else
     {
         $lapskey = "maxlaps";
+        $action = "changed";
         $instruction1 = <<<EOT
             You can set/change the laps for each fleet here &hellip;<br>
             This can also be used to <b>undo a shorten course</b> if you applied one by mistake
 
 EOT;
         $instruction2 = <<<EOT
-            click <b>SET LAPS</b> to apply the changes 
+            click <b>SET LAPS</b> button below to apply the changes 
 EOT;
 
     }
@@ -571,20 +575,79 @@ EOT;
     $fields_bufr = "";
     foreach ($params['fleets'] as $i=>$fleet )
     {
-        $fields_bufr.=<<<EOT
-        <div class="form-group">
-            <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
-            <div class="col-xs-3 inputfieldgroup">
-                <input type="number" class="form-control" id="laps$i" name="laps$i" value="{$fleet[$lapskey]}"
-                    required data-fv-notempty-message="the lap for shortening is required" min="1"
-                    data-fv-greaterthan-message="The no. of laps must be greater than 0"
-                />
-            </div> 
-            <div class="col-xs-3 control-label" style="text-align: left;">
-                <label> laps </label>
-            </div>    
-        </div >
+        if ($fleet['scoring'] == "pursuit")
+        {
+            $fields_bufr.=<<<EOT
+                <div class="form-group">
+                    <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
+                    <div class="col-xs-6 ">
+                        <p class="text-info">pursuit race - laps cannot be $action</p>
+                        <input type="hidden" id="laps$i" name="lapskey$i" value="{$fleet[$lapskey]}">
+                    </div>   
+                </div >
 EOT;
+        }
+        elseif ($fleet['status'] == "finishing" OR $fleet['status'] == "allfinished" )
+        {
+            $fields_bufr.=<<<EOT
+            <div class="form-group">
+                <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
+                <div class="col-xs-6 ">
+                    <p class="text-info">boats have finished or are finishing on lap {$fleet['maxlaps']} - cannot be $action</p>
+                    <input type="hidden" id="laps$i" name="lapskey$i" value="{$fleet[$lapskey]}">
+                </div>   
+            </div >
+EOT;
+        }
+        elseif ($fleet['status'] == "notstarted")
+        {
+            if ($params['mode'] == "shorten")
+            {
+                $fields_bufr.=<<<EOT
+                <div class="form-group">
+                    <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
+                    <div class="col-xs-6 ">
+                        <p class="text-info">race not started - cannot be $action</p>
+                        <input type="hidden" id="laps$i" name="lapskey$i" value="{$fleet[$lapskey]}">
+                    </div>   
+                </div >
+EOT;
+            }
+            else
+            {
+                $fields_bufr.=<<<EOT
+                <div class="form-group">
+                    <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
+                    <div class="col-xs-3 inputfieldgroup">
+                        <input type="number" class="form-control" id="laps$i" name="$lapskey$i" value="{$fleet[$lapskey]}"
+                            required data-fv-notempty-message="the lap for shortening is required" min="1"
+                            data-fv-greaterthan-message="The no. of laps must be greater than 0"
+                        />
+                    </div> 
+                    <div class="col-xs-3 control-label" style="text-align: left;">
+                        <label> laps </label>
+                    </div>    
+                </div >
+EOT;
+            }
+        }
+        else   // in progress
+        {
+            $fields_bufr.=<<<EOT
+            <div class="form-group">
+                <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
+                <div class="col-xs-3 inputfieldgroup">
+                    <input type="number" class="form-control" id="laps$i" name="laps$i" value="{$fleet[$lapskey]}"
+                        required data-fv-notempty-message="the lap for shortening is required" min="1"
+                        data-fv-greaterthan-message="The no. of laps must be greater than 0"
+                    />
+                </div> 
+                <div class="col-xs-3 control-label" style="text-align: left;">
+                    <label> laps </label>
+                </div>    
+            </div >
+EOT;
+        }
     }
 
 // form  - instructions + fields

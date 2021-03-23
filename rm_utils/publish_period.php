@@ -3,7 +3,7 @@
  * publishes or unpublishes all events in a period
  */
 $loc  = "..";
-$page = "publish_peiod";     //
+$page = "publish_period";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
 $styletheme = "flatly_";

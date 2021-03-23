@@ -181,6 +181,7 @@ function process_member(WebCollectResource $resource)
     global $sql_insert_data, $print_data, $member_input, $member_output, $rota_total;
 
     $member_input++;
+    $stop = false;
 
     $member = array(
       "firstname"  => "",

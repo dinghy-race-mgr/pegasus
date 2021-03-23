@@ -243,52 +243,89 @@ if ($eventid AND $pagestate)
         {
             $lapsetfail = false;
             $growlmsg   = "Setting laps:<br>";
+
             for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
             {
                 $fleetname = $_SESSION["e_$eventid"]["fl_$i"]['name'];
-                $status = $race_o->race_laps_set($i, $_REQUEST['laps'][$i]);
-                if ($status)
+                $rs = $race_o->race_laps_set($i, $_REQUEST['laps'][$i]);
+
+                $str = array(
+                    "pursuit_race" => "&nbsp;&nbsp;$fleetname is a pursuit race - laps cannot be set <br>",
+                    "less_than_current" => "&nbsp;&nbsp;$fleetname - laps not changed, boats already on lap {$rs['currentlap']} <br>",
+                    "finishing" => "&nbsp;&nbsp;$fleetname - laps not changed, boats already finishing <br>",
+                    "already_set" => "&nbsp;&nbsp;$fleetname - laps already set to {$rs['finishlap']} <br>",
+                );
+
+                echo "<pre>$fleetname - ".print_r($rs,true)."</pre>";
+                if (empty($rs['result']) or $rs['result'] == "failed")
                 {
-                    if ($status == "less_than_current")
-                    {
-                        $growlmsg.="$fleetname - not set, at least one boat is on this lap already<br>";
-                        $lapsetfail = true;
-                    }
-                    else
-                    {
-                        u_writelog("setlaps: $fleetname - {$_REQUEST['laps'][$i]} laps", $eventid);
-                    }
+                    u_writelog("setlaps: $fleetname - failed [{$_REQUEST['laps'][$i]} laps]", $eventid);
+                    $growlmsg.= "&nbsp;&nbsp;$fleetname - laps set FAILED <br>";
+                    $lapsetfail = true;
+                }
+                elseif($_REQUEST['laps'][$i] == $_SESSION["e_$eventid"]["fl_$i"]['maxlap'])
+                {
+                    $growlmsg.= "&nbsp;&nbsp;$fleetname - no change <br>";
                 }
                 else
                 {
-                    u_writelog("setlaps: $fleetname - failed [{$_REQUEST['laps'][$i]}] laps", $eventid);
-                    $growlmsg.= "$fleetname - laps set FAILED <br>";
-                    $lapsetfail = true;
+                    if ($rs['result'] == "ok")
+                    {
+                        u_writelog("setlaps: $fleetname - {$_REQUEST['laps']} laps", $eventid);
+                        $growlmsg.= "&nbsp;&nbsp;$fleetname - laps changed to {$rs['finishlap']} <br>";
+                    }
+                    else
+                    {
+                        $growlmsg.= $str["{$rs['result']}"];
+                        $lapsetfail = true;
+                    }
                 }
             }
-            if ($lapsetfail)  { u_growlSet($eventid, $page, $g_race_lapset_fail, array($growlmsg)); }
+            echo "<pre>".print_r($_SESSION["e_$eventid"]['growl'],true)."</pre>";
+            if ($lapsetfail)
+            {
+                u_growlSet($eventid, $page, $g_race_lapset_fail, array($growlmsg));
+            }
+            else
+            {
+                u_growlSet($eventid, $page, $g_race_lapset_success, array($growlmsg));
+            }
+
         }
 
         elseif ($pagestate == "setlap")   // sets lap for one fleet
         {
             $fleetname = $_SESSION["e_$eventid"]["fl_{$_REQUEST['fleet']}"]['name'];
             $rs = $race_o->race_laps_set($_REQUEST['fleet'], $_REQUEST['laps']);
-            //-- u_writedbg("status = $status", __FILE__,__FUNCTION__,__LINE__);
-            if ($rs)
+
+            $str = array(
+                "pursuit_race" => " $fleetname is a pursuit race - laps cannot be set",
+                "less_than_current" => " $fleetname - laps not changed, boats already on or completed lap {$rs['currentlap']}",
+                "finishing" => " $fleetname - laps not changed, boats already finishing <br>",
+                "already_set" => " $fleetname - laps already set to {$rs['finishlap']} <br>",
+            );
+
+            echo "<pre>$fleetname - ".print_r($rs,true)."</pre>";
+            if (empty($rs['result']) or $rs['result'] == "failed")
             {
-                if ($rs['result'] === "less_than_current")
-                {
-                    u_growlSet($eventid, $page, $g_race_fleetset_notok, array($fleetname));
-                }
-                else
-                {
-                    u_writelog("setlaps: $fleetname - {$_REQUEST['laps']} laps", $eventid);
-                }
+                u_writelog("setlaps: $fleetname - failed [{$_REQUEST['laps']} laps]", $eventid);
+                u_growlSet($eventid, $page, $g_race_fleetset_fail, array($fleetname));
+
             }
             else
             {
-                u_writelog("setlaps: $fleetname - failed [{$_REQUEST['laps'][$i]} laps]", $eventid);
-                u_growlSet($eventid, $page, $g_race_fleetset_fail, array($fleetname));
+                if ($rs['result'] == "ok")
+                {
+                    u_writelog("setlaps: $fleetname - {$_REQUEST['laps']} laps", $eventid);
+                }
+                else
+                {
+                    //$txt = u_format($str["{$rs['result']}"], array($rs['currentlap']));
+                    $txt = $str["{$rs['result']}"];
+                    u_growlSet($eventid, $page, $g_race_lapset_fail, array($txt));
+                    echo "<pre>$txt </pre>";
+                    echo "<pre>".print_r($_SESSION["e_$eventid"]['growl'],true)."</pre>";
+                }
             }
         }
 
@@ -298,7 +335,7 @@ if ($eventid AND $pagestate)
         }
         
         // return to race page
-        header("Location: race_pg.php?eventid=$eventid&pagestate=race");
+        //header("Location: race_pg.php?eventid=$eventid&pagestate=race");
         exit();
     } 
     else

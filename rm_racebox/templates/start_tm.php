@@ -191,7 +191,7 @@ function infringe($params)
             if (($drop_dirn == "") and ($i > $params['entries']/2) and ($i > 6) ) { $drop_dirn = "dropup"; }
 
             $boat = "{$entry['class']}-{$entry['sailnum']}";
-            $link = "start_infringements_pg.php?eventid=$eventid&pagestate=setcode&startnum=$startnum&entryid={$entry['id']}&boat=$boat&racestatus={$entry['status']}";
+            $link = "start_infringements_pg.php?eventid=$eventid&pagestate=setcode&startnum=$startnum&entryid={$entry['id']}&boat=$boat&racestatus={$entry['status']}&declaration={$entry['declaration']}";
             $code_link = get_code($entry['code'], $link, "startcodes", $drop_dirn);
 
 

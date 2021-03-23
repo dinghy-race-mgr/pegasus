@@ -87,7 +87,7 @@ body > .container { padding: 10px 0px 0px 0px; }
 .modal-sm {width: 600px !important}
 
 /* navpills */
-.pill-fleet li.active a, .pill-fleet li.active a:focus, .pill-fleet li.active a:hover { background-color: slategray; }
+.pill-fleet li.active a, .pill-fleet li.active a:focus, .pill-fleet li.active a:hover { background-color: orange; }
 .pill-fleet li {min-width:200px; }
 .pill-fleet li a {border: 3px solid lightgrey !important;}
 

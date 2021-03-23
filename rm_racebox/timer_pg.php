@@ -86,7 +86,7 @@ else
     // display boats as defined by display mode
     if ($_SESSION['timer_options']['mode'] == "tabbed")
     {
-        $rs_race = $race_o->race_gettimings(true, 0, 0);
+        $rs_race = $race_o->race_gettimings();
         $lbufr.= $tmpl_o->get_template("timer_tabs", array(),
               array("eventid" => $eventid, "num-fleets" => $_SESSION["e_$eventid"]['rc_numfleets'], "timings" => $rs_race));
 
@@ -102,15 +102,6 @@ else
         $lbufr.= $tmpl_o->get_template("under_construction", array("title" => "Timer: option", "info" => "Never heard of it"));
     }
 
-//    if (!$_SESSION["e_$eventid"]['pursuit'])
-//    {
-//        $params = array(
-//            "lapstatus" => check_lap_status($eventid),
-//            "fleet-data" => $fleet_data,
-//        );
-//        $mdl_setlaps['body'] = $tmpl_o->get_template("fm_timer_setlaps", array(), $params);
-//        $lbufr_bot = $tmpl_o->get_template("modal", $mdl_setlaps['fields'], $mdl_setlaps);
-//    }
 }
 
 // ----- right hand panel --------------------------------------------------------------------
@@ -127,17 +118,22 @@ for ($i = 1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
 {
     $fleet_laps[$i] = array(
         "name"    => $_SESSION["e_$eventid"]["fl_$i"]["name"],
+        "scoring" => $_SESSION["e_$eventid"]["fl_$i"]["scoring"],
         "shlaps"  => $_SESSION["e_$eventid"]["fl_$i"]['currentlap'] + 1,
-        "maxlaps" => $_SESSION["e_$eventid"]["fl_$i"]['maxlap']
+        "maxlaps" => $_SESSION["e_$eventid"]["fl_$i"]['maxlap'],
+        "status"  => $_SESSION["e_$eventid"]["fl_$i"]['status'],
     );
 }
 $mdl_shorten['fields']['body'] = $tmpl_o->get_template("fm_timer_setlaps", array(), array("mode"=>"shorten", "fleets" => $fleet_laps));
 $rbufr.= $tmpl_o->get_template("modal", $mdl_shorten['fields'], $mdl_shorten);
 
 // set laps
-$rbufr.= $tmpl_o->get_template("btn_modal", $btn_setlaps['fields'], $btn_setlaps);
-$mdl_setlaps['fields']['body'] = $tmpl_o->get_template("fm_timer_setlaps", array(), array("mode"=>"set", "fleets" => $fleet_laps));
-$rbufr.= $tmpl_o->get_template("modal", $mdl_setlaps['fields'], $mdl_setlaps);
+if (!$_SESSION["e_$eventid"]['pursuit'])
+{
+    $rbufr.= $tmpl_o->get_template("btn_modal", $btn_setlaps['fields'], $btn_setlaps);
+    $mdl_setlaps['fields']['body'] = $tmpl_o->get_template("fm_timer_setlaps", array(), array("mode"=>"set", "fleets" => $fleet_laps));
+    $rbufr.= $tmpl_o->get_template("modal", $mdl_setlaps['fields'], $mdl_setlaps);
+}
 
 $rbufr.= "<hr>";
 

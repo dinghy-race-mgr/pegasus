@@ -4,8 +4,9 @@
 USAGE:
 - take tide .doc file and convert to text file
 - converts to bst for the relevant dates
-- run script with parameters
+- run script with parameters - outputs a csv file with a header line
    ../tide_data_scrape.php?infile=<pathtoinputfile>&outfile=<pathtooutfile>&start-date=<YYYY-MM-DD>&end-date=<YYYY-MM-DD>
+- then run tide import data function on rm_admin tide page to load csv file on your PC
 */
 $loc  = "..";
 $page = "programmeMaker";     //

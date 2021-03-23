@@ -250,7 +250,7 @@ function r_initfleetsession($db_o, $eventid, $fleetnum, $fleet)
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxskill']     = $fleet['max_skill'];
 
     // extend fleet session data with current t_racestate data
-    $fleetdata = $db_o->db_get_row("SELECT * FROM t_racestate WHERE eventid=$eventid AND race=$fleetnum");
+    $fleetdata = $db_o->db_get_row("SELECT * FROM t_racestate WHERE eventid=$eventid AND fleet=$fleetnum");
 
     // set fleet details
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['startdelay'] = $fleetdata['startdelay'];
@@ -272,7 +272,7 @@ function r_initfleetdb($db_o, $eventid, $fleetnum, $fleet, $start_scheme, $start
     // if new or reset - set values into t_racestate  (doesn't update database if we are rejoining)
 
         $data = array(
-            "race"       => $fleetnum,
+            "fleet"       => $fleetnum,
             "racename"   => $fleet['fleet_name'],
             "start"      => $fleet['start_num'],
             "eventid"    => $eventid,
@@ -353,6 +353,7 @@ function r_getelapsedtime ($mode, $origin, $clock, $startdelay, $delta=0)
 
 function r_decoderacestatus($currentstatus)
 {
+    // FIXME change this an associative array
     if (in_array($currentstatus, array("completed","cancelled","abandoned")))
     {
         return "complete";
@@ -377,6 +378,8 @@ function r_decoderacestatus($currentstatus)
 
 function r_styleracestatus($currentstatus)
 {
+    // FIXME change this an associative array
+
     if (in_array($currentstatus, array("completed","cancelled","abandoned")))
     {
         return "success";                                          // complete

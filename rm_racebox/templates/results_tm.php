@@ -29,23 +29,23 @@ function result_tabs($params = array())
         if (count($params['warning'][$i]) > 0)
         {
             $tab_label = <<<EOT
-            <small><span class="label label-danger">
-                <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
-            </span></small>
+            <span class="label pull-right">
+                <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></br>&nbsp;</span>
+            </span>
 EOT;
         }
         else
         {
             $tab_label = <<<EOT
-            <small><span class="label label-success">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-            </span></small>
+            <span class="label pull-right">
+                <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+            </span>           
 EOT;
         }
 
         $tabs.= <<<EOT
         <li role="presentation" class="lead text-center">
-              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">
+              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill" style="padding-top: 20px;">
               <b>{$fleet['name']}</b> <br> $tab_label             
               </a>
         </li>
@@ -57,8 +57,8 @@ EOT;
         {
             $panels .= <<<EOT
             <div role="tabpanel" class="tab-pane" id="fleet$i">
-                <div class="alert alert-warning" role="alert" style="margin-left: 0%; margin-right: 40%">
-                   <b>no entries in the {$fleet['name']} fleet</b><br>
+                <div class="alert alert-info text-center" role="alert" style="margin-right: 40%;">
+                   <h3>no entries in the {$fleet['name']} fleet</h3><br>
                 </div>
             </div>
 EOT;
@@ -280,7 +280,9 @@ EOT;
         $boat = $boat = "{$result['class']} - {$result['sailnum']}";
 
         // code
-        $link = "results_sc.php?eventid=$eventid&pagestate=setcode&fleet={$result['fleet']}&entryid={$result['entryid']}&boat={$result['boat']}&racestatus={$result['status']}";
+        $link = "results_sc.php?eventid=$eventid&pagestate=setcode&fleet={$result['fleet']}
+                 &entryid={$result['entryid']}&boat={$result['boat']}&racestatus={$result['status']}
+                 &declaration={$result['declaration']}&lap={$result['lap']}&finishlap={$result['finishlap']}";
         $code_link = get_code($result['code'], $link, "resultcodes");
 
         if ($racetype == "level")  // pn and corrected time not required
@@ -679,8 +681,8 @@ function fm_change_finish($params)
     $html = <<<EOT
     <div class="alert well well-sm text-info" role="alert">
         <p>This can be useful if you...<br> - have forgotten to shorten course and boats are showing as 'still racing', OR<br>
-         - had to abandon the race and want to take the results from a previously completed lap</p>
-        <p>Set the finish lap for each fleet to the lap you want the boats to finish on.</p>
+         - you have abandoned the race and want to take the results from a previously completed lap</p>
+        <p>Set the finish lap for each fleet to the lap you want the boats to finish on (leading boat if an 'average lap' race).</p>
     </div>
 
     <div class="row text-info">
@@ -690,21 +692,48 @@ function fm_change_finish($params)
 EOT;
 
     // create input fields - one per fleet
-    $rows = "";
-    for ($i=1; $i<=$params['rc_numfleets']; $i++)
+    $fields_bufr = "";
+    foreach ($params['fleets'] as $i=>$fleet)
     {
-        $current = $params["fl_$i"]['maxlap'];
-        if ($current>0)
+        if ($fleet['status'] == "notstarted")
         {
-            $html .= <<<EOT
+            $fields_bufr.=<<<EOT
+                <div class="form-group">
+                    <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
+                    <div class="col-xs-6 ">
+                        <p class="text-info">race not started - finishing lap cannot be changed</p>
+                        <input type="hidden" id="finlap$i" name="finlap$i" value="{$fleet['maxlaps']}">
+                    </div>   
+                </div >
+EOT;
+        }
+        elseif ($fleet['scoring'] == "pursuit")
+        {
+            $fields_bufr.=<<<EOT
+                <div class="form-group">
+                    <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
+                    <div class="col-xs-6 ">
+                        <p class="text-info">pursuit race - finishing lap cannot be changed</p>
+                        <input type="hidden" id="finlap$i" name="finlap$i" value="{$fleet['maxlaps']}">
+                    </div>   
+                </div >
+EOT;
+        }
+        else
+        {
+            $fields_bufr.=<<<EOT
             <div class="form-group">
-                <label class="col-xs-5 control-label">{$params["fl_$i"]['name']}</label>
-                <div class="col-xs-2 inputfieldgroup">
-                <input type="text" class="form-control" name="finishlap[$i]" min="1" max="$current" value="$current"
-                    required data-fv-between-message="must be a value between 1 and $current"
-                />
-                </div>
-            </div>
+                <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
+                <div class="col-xs-3 inputfieldgroup">
+                    <input type="number" class="form-control" id="laps$i" name="finlap$i" value="{$fleet['maxlaps']}"
+                        required data-fv-notempty-message="you need to provide the required finishing lap" min="1" max="{$fleet['maxlaps']}"
+                        data-fv-between-message="must be a value between 1 and {$fleet['maxlaps']}"
+                    />
+                </div> 
+                <div class="col-xs-3 control-label" style="text-align: left;">
+                    <label> laps </label>
+                </div>   
+            </div >
 EOT;
         }
     }

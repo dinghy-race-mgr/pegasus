@@ -159,7 +159,7 @@ EOT;
                <h3>Suggested Fix!</h3>
                <span class="text-warning">Your database may be corrupted.</span><br><br>
                To recover from this please read the Imports section in the user guide
-               [your back up recovery file can be found at <strong>{recovery-file]}</strong> in your raceManager folder.
+               [your back up recovery file can be found at <strong>{recovery-file}</strong> in your raceManager folder.
             </div>
 EOT;
         }

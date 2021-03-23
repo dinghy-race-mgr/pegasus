@@ -9,38 +9,90 @@
 */
 
 $loc  = "..";
-$page = "signon_mapping";     //
+$page = "entries";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
-session_start();
-
-// configuration - rm_sailor database
-$_SESSION['db_host'] = "127.0.0.1";
-$_SESSION['db_user'] = "rmuser";
-$_SESSION['db_pass'] = "pegasus";
-$_SESSION['db_name'] = "pegasus";
-$_SESSION['db_port'] = "3306";
-
+require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
-require_once ("{$loc}/common/lib/util_lib.php");
+
+// initialisation
+session_start();
+session_unset();
+$_SESSION['mode'] = "race";
+
+// initialisation for application
+$init_status = u_initialisation("$loc/config/racemanager_cfg.php", "$loc/config/rm_sailor_cfg.php", $loc, $scriptname);
+
+// timezone
+date_default_timezone_set($_SESSION['timezone']);   // set timezone
+
+// error reporting - full for development
+$_SESSION['sys_type'] == "live" ? error_reporting(E_ERROR) : error_reporting(E_ALL);
+
+$tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php", "./templates/entry_list_tm.php"));
 
 $db_o    = new DB;                      // database object
 $event_o = new EVENT($db_o);            // event object
 
+// get ini variables from database
+foreach ($db_o->db_getinivalues(true, "club") as $k => $v) {
+    $_SESSION[$k] = $v;
+}
+
 // find next event
 $event = $event_o->get_nextevent(date("Y-m-d"), $requiredtype = "racing");
-echo "<pre>".print_r($event,true)."</pre>";
+//echo "<pre>".print_r($event,true)."</pre>";
 $eventid = $event['id'];
 
+// get entries (sorted by competitor id and date)
+$entry_o  = new ENTRY($db_o, $eventid);
+$entries = $entry_o->get_signons("all");
 
-// get entries
-$entry_o  = new ENTRY($db_o, $eventid);   // entry object
-$num_signons = $entry_o->count_signons("entries");
-$entries = $entry_o->get_signons();
-echo "<pre>".print_r($entries,true)."</pre>";
+// order by class, competitor id, create date
+$entries = u_array_orderby($entries, 'classname', SORT_ASC, 'id', SORT_ASC, 'createdate', SORT_ASC);
+
+// consolidate records for the same boat - create status
+$last_comp = 0;
+
+foreach ($entries as $k=>$entry)
+{
+    if ($entry['id'] == $last_comp)
+    {
+        unset($entries[$k-1]);  // remove obsolete entry record for this competitor
+    }
+
+    // deal with updates
+    if (!empty($entry['chg_helm'])) { $entries[$k]['helmname'] = ucwords($entry['chg_helm']); }
+    if (!empty($entry['chg_crew'])) { $entries[$k]['crewname'] = ucwords($entry['chg_crew']); }
+    if (!empty($entry['chg_sailnum'])) { $entries[$k]['sailnum'] = ucwords($entry['chg_sailnum']); }
+
+    $last_comp = $entry['id'];
+}
+
+// process entries (order by )
+$_SESSION['pagefields'] = array(
+    "title" => "rm_sailor",
+    "theme" => $_SESSION['sailor_theme'],
+    "background" => $_SESSION['background'],
+    "loc" => $loc,
+    "stylesheet" => "./style/rm_sailor.css",
+    "header-left" => "raceManager SAILOR",
+    "header-center" => "Entries Next Race",
+    "header-right" => "",
+    "body" => $tmpl_o->get_template("display_entries", array(), array("entries"=>$entries, "event" => $event)),
+    "footer-left" => $_SESSION['clubname']."<br>".$_SESSION['sys_copyright'].": ".$_SESSION['sys_name'] ." ". $_SESSION['sys_version'],
+    "footer-center" => "",
+    "footer-right" => ""
+);
+
+echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields'] );
+exit();
+
+
+/*
 
 //$query = "SELECT action, eventid, competitorid, `chg-crew`, `chg-sailnum`, classid, classname, b.sailnum, helm,
 //b.crew from t_entry as a JOIN t_competitor as b ON a.competitorid=b.id JOIN t_class as c ON b.classid=c.id
@@ -72,10 +124,6 @@ foreach ($entries as $row)
 
 // sort array by class and sailnumber
 $sorted = u_array_orderby($output, 'classname', SORT_ASC, 'sailnum', SORT_ASC);
-
-
-
-
 
 $outdata = array();
 $d_data = array();
@@ -174,5 +222,5 @@ function display_row($data)
         <td>{$data['action']}</td>
     </tr>
 EOT;
-
 }
+*/

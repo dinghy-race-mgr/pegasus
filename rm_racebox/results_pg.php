@@ -69,11 +69,18 @@ if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need 
         $fleet_rs['data'] = array();
         if (!empty($rs_data[$i]))
         {
-            $fleet_rs = $race_o->race_score($_SESSION["e_$eventid"]["fl_$i"]['scoring'], $rs_data[$i] );
+            $fleet_rs = $race_o->race_score($eventid, $i, $_SESSION["e_$eventid"]["fl_$i"]['scoring'], $rs_data[$i] );
         }
         if (!empty($fleet_rs['warning'])) { $warning_count++; }
         $results['warning'][$i] = $fleet_rs['warning'];
         $results['data'][$i]    = $fleet_rs['data'];
+
+        $stillracing = $race_o->race_stillracing($i);
+        if (!$stillracing)
+        {
+            $upd = $race_o->racestate_update(array("status"=>"allfinished"), " eventid = '$eventid' and fleet = '$i' ");
+            if ($upd > 0) { $_SESSION["e_$eventid"]["fl_$i"]['status'] = "allfinished"; }
+        }
     }
     //$warning_count>0 ? $growl = $g_results_recalc_fail : $growl = $g_results_recalc_success ;
     //u_growlset($eventid, $page, $growl);
@@ -119,7 +126,6 @@ else
 EOT;
 }
 
-
 // retirements button
 if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
 {
@@ -130,19 +136,22 @@ if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
         $num_retirements = $entry_o->count_signons("retirements");
         if ($num_retirements > 0)
         {
+            $text_style = "text-primary";
+            $template = "btn_link_blink";
             $btn_loadret['fields']['style'] = "warning";
-            $btn_loadret['fields']['label'] =
-                "Load Retirements<br><small></small><span class='text-info' style='padding-left: 30px'>$num_retirements waiting</span></small>";
-            $rbufr.= $tmpl_o->get_template("btn_link_blink", $btn_loadret['fields'], $btn_loadret);
-            $rbufr.= "<hr>";
         }
         else
         {
-            $btn_loadret['fields']['label'] =
-                "Load Retirements<br><small></small><span class='text-warning' style='padding-left: 30px'>$num_retirements waiting</span></small>";
-            $rbufr.= $tmpl_o->get_template("btn_link", $btn_loadret['fields'], $btn_loadret);
-            $rbufr.= "<hr>";
+            $text_style = "text-info";
+            $template = "btn_link";
         }
+        $btn_loadret['fields']['label'] = <<<EOT
+            Load Retirements<br>
+            <small>
+                <span class='$text_style' style='padding-left: 30px'><b>$num_retirements waiting</b></span>
+            </small>
+EOT;
+        $rbufr.= $tmpl_o->get_template("$template", $btn_loadret['fields'], $btn_loadret)."<hr>";
     }
 
     /*  FIXME - I don't think I need declarations (not in RRS) - has impact on rm_sailor
@@ -167,14 +176,31 @@ if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
 }
 
 // function buttons
-
-$rbufr.= $tmpl_o->get_template("btn_modal", $btn_changefinish['fields'], $btn_changefinish);      // change finish lap button
+if (!$_SESSION["e_$eventid"]['pursuit'])
+{
+    $rbufr .= $tmpl_o->get_template("btn_modal", $btn_changefinish['fields'], $btn_changefinish);  // change finish lap button
+}
 $rbufr.= $tmpl_o->get_template("btn_modal", $btn_message['fields'], $btn_message);                // send message button
 $rbufr.= $tmpl_o->get_template("btn_modal", $btn_publish['fields'], $btn_publish);                // publish results button
 
-// change finish modal
-$mdl_changefinish['fields']['body'] = $tmpl_o->get_template("fm_change_finish", $mdl_changefinish['fields'], $_SESSION["e_$eventid"]);
-$rbufr.= $tmpl_o->get_template("modal", $mdl_changefinish['fields'], $mdl_changefinish);          // finish lap modal
+// modal code
+if (!$_SESSION["e_$eventid"]['pursuit'])
+{
+    // change finish modal
+    $fleet_laps = array();
+    for ($i = 1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
+    {
+        $fleet_laps[$i] = array(
+            "name"    => $_SESSION["e_$eventid"]["fl_$i"]["name"],
+            "scoring" => $_SESSION["e_$eventid"]["fl_$i"]["scoring"],
+            "laps"  => $_SESSION["e_$eventid"]["fl_$i"]['currentlap'],
+            "maxlaps" => $_SESSION["e_$eventid"]["fl_$i"]['maxlap'],
+            "status"  => $_SESSION["e_$eventid"]["fl_$i"]['status']
+        );
+    }
+    $mdl_changefinish['fields']['body'] = $tmpl_o->get_template("fm_change_finish", $mdl_changefinish['fields'], array("fleets" => $fleet_laps));
+    $rbufr.= $tmpl_o->get_template("modal", $mdl_changefinish['fields'], $mdl_changefinish);          // finish lap modal
+}
 
 // send message modal
 $mdl_message['fields']['body'] = $tmpl_o->get_template("fm_race_message", array());

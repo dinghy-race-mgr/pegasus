@@ -113,7 +113,7 @@ elseif (trim(strtolower($_REQUEST['pagestate'])) == "submit")
 
     $cols = array("member", "subscription", "start", "end", "berth", "reg_no",
         "class", "colour", "sail_no", "name", "features",
-        "owner_type", "notes", "sticker_19", "sort");
+        "owner_type", "notes", "sort");
 
     // get the webcollect member records
     $client = new WebcollectRestapiClient();
@@ -134,7 +134,7 @@ elseif (trim(strtolower($_REQUEST['pagestate'])) == "submit")
     foreach ($output as $row)
     {
         $print_data.= <<<EOT
-           <tr><td>{$row['member']}</td><td>{$row['berth']}</td><td>{$row['class']} {$row['sail_no']}</td><td>{$row['sticker_19']}</td></tr>
+           <tr><td>{$row['member']}</td><td>{$row['berth']}</td><td>{$row['class']} {$row['sail_no']}</td></tr>
 EOT;
     }
 
@@ -280,7 +280,7 @@ function process_member(WebCollectResource $resource)
                     //"alt_mobile"   => $sub['form_data']['Alternative_Contact_Tel_No_mob'],
                     "owner_type" => $sub['form_data']['Owner_type'],
                     "notes" => $sub['form_data']['Berth_Marshall_Notes'],
-                    "sticker_19" => $sub['form_data']['Boat_Sticker_No_2019'],
+                    /*"sticker_19" => $sub['form_data']['Boat_Sticker_No_2019'],*/
                     "sort" => strtolower($last)
                 );
                 $output[] = $member;
