@@ -30,8 +30,8 @@
 	.bs-gridcell[data-field=nodiscard]:before {
 		content: "{$label t_cfgseries nodiscard}";
 	}
-	.bs-gridcell[data-field=doublepoint]:before {
-		content: "{$label t_cfgseries doublepoint}";
+	.bs-gridcell[data-field=multiplier]:before {
+		content: "{$label t_cfgseries multiplier}";
 	}
 	.bs-gridcell[data-field=avgscheme]:before {
 		content: "{$label t_cfgseries avgscheme}";
@@ -39,8 +39,8 @@
 	.bs-gridcell[data-field=dutypoints]:before {
 		content: "{$label t_cfgseries dutypoints}";
 	}
-	.bs-gridcell[data-field=dutynum]:before {
-		content: "{$label t_cfgseries dutynum}";
+	.bs-gridcell[data-field=maxduty]:before {
+		content: "{$label t_cfgseries maxduty}";
 	}
 	.bs-gridcell[data-field=notes]:before {
 		content: "{$label t_cfgseries notes}";
@@ -59,22 +59,12 @@
 		<thead>
 		<tr>
 			<th class="{$seriestype_class}">{$label t_cfgseries seriestype}</th>
-			<th class="{$discard_class}">{$label t_cfgseries discard}</th>
-			<th class="{$avgscheme_class}">{$label t_cfgseries avgscheme}</th>
-			<th class="{$dutypoints_class}">{$label t_cfgseries dutypoints}</th>
-			<th class="{$dutynum_class}">{$label t_cfgseries dutynum}</th>
-			<th class="{$notes_class}">{$label t_cfgseries notes}</th>
 		</tr>
 	</thead>
 	
 	<tbody>
 		<tr>
 			<td class="{$seriestype_class} bs-gridcell" data-field=seriestype>{$seriestype_mastervalue}</td>
-			<td class="{$discard_class} bs-gridcell" data-field=discard>{$discard_mastervalue}</td>
-			<td class="{$avgscheme_class} bs-gridcell" data-field=avgscheme>{$avgscheme_mastervalue}</td>
-			<td class="{$dutypoints_class} bs-gridcell" data-field=dutypoints>{$dutypoints_mastervalue}</td>
-			<td class="{$dutynum_class} bs-gridcell" data-field=dutynum>{$dutynum_mastervalue}</td>
-			<td class="{$notes_class} bs-gridcell" data-field=notes>{$notes_mastervalue}</td>
 		</tr>
 	</tbody>
 

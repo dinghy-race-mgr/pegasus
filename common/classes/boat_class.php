@@ -100,6 +100,38 @@ class BOAT
         return $detail;
     }
 
+//    public function get_mergeclasses($merge_str)
+//        //  FIXME THIS IS A DUPLICATE OF FUNCTION IN SERIESRESULT.PHP #575
+//    {
+//        /* 2d array of groups of classes to be merged
+//           t_series merge field: laser,laser 4.7,laser radial|rs100 8.4,rs100 10.2
+//              $merge_classes = array(
+//                    "1" => array ("laser", "laser 4.7", "laser radial")
+//                    "2" => array ("rs100 8.4", "rs100 10.2")
+//                    )
+//       */
+//        $merge = array();
+//        $i = 0;
+//        $data = explode("|", $merge_str);
+//        foreach ($data as $list)
+//        {
+//            if (!empty($list))
+//            {
+//                $i++;
+//                $items = explode(",", $list);
+//                if (count($items) > 1)
+//                {
+//                    $merge[$i] = array();
+//                    foreach ($items as $class)
+//                    {
+//                        $merge[$i][] = strtolower(trim($class));
+//                    }
+//                }
+//            }
+//        }
+//        return $merge;
+//    }
+//
 
 
     public function boat_getdetail($classname, $classid=0)

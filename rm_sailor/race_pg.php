@@ -52,7 +52,8 @@ if ($_SESSION['events']['numevents'] > 0)
     $signon_entry_list = set_event_status_list($_SESSION['events']['details'], $_SESSION['entries'], $action);
 
     $_SESSION['pagefields']['body'] = $tmpl_o->get_template("race_control", $race_fields,
-        array('state'=>"submitentry", 'event-list'=>$signon_entry_list, 'opt_cfg' =>$_SESSION['option_cfg'] ));
+        array('state'=>"submitentry", 'numdays'=> $_SESSION['events']['numdays'],
+              'event-list'=>$signon_entry_list, 'opt_cfg' =>$_SESSION['option_cfg'] ));
 }
 
 else

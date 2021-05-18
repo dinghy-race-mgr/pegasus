@@ -164,12 +164,12 @@ foreach ($rs as $k=>$row)
         $duty_found = true;
         $duty_total++;
 
-        // remove repeating whitespace in duty name    FIXME NOT WORKING FOR MULTIPLE FIRST NAMES
+        // extract name into first and last name
+        // works for John Allen MBE, Fred van Tam etc. - doesn't work if middle name included
         $name = trim(preg_replace('/\s+/', ' ',$duty['person']));
-        $names = explode(' ', $name);
-        $num_names = count($names);
-        $first_name = ucwords($names[0]);
-        $last_name = ucwords($names[$num_names - 1]);
+        $parts = explode(" ", $name);
+        $first_name = array_shift($parts);
+        $last_name = implode(" ", $parts);
 
         $duty_type = $dutycode_map["{$duty['dutycode']}"];
 

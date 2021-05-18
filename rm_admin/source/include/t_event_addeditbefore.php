@@ -1,7 +1,7 @@
 <?php
 $msg = "";
 isset($oldvalues) ? $mode = "edit" : $mode = "add";
-$values['event_date'] = date("Y-m-d", strtotime($values['event_date']));
+//$values['event_date'] = date("Y-m-d", strtotime($values['event_date']));
 
 // individual field checks
 if ($values['event_type'] == "racing") {

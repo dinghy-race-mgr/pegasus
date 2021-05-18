@@ -42,7 +42,7 @@ $event_o  = new EVENT($db_o);
 $rota_o  = new ROTA($db_o);
 $event = $event_o->get_event_byid($eventid);
 
-$racecfg = $event_o->event_getracecfg($eventid, $event['event_format']);
+$racecfg = $event_o->event_getracecfg($event['event_format'], $eventid);
 
 $duties = $rota_o->get_event_duties($eventid);
 $viewbufr = createdutypanel($duties, $eventid, "in");

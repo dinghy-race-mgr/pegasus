@@ -24,7 +24,7 @@ require_once("$loc/common/classes/db_class.php");
 require_once("{$loc}/common/classes/template_class.php");
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php",".c/templateslayouts_tm.php", "./templates/webcollect_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/webcollect_tm.php"));
 
 // initialise session if this is first call
 if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
@@ -203,7 +203,7 @@ function process_member(WebCollectResource $resource)
     else
     {
         $member['firstname'] = ucfirst(strtolower(trim($array["{$_SESSION['webcollect']['firstname_fld']}"])));
-        $member['familyname'] = ucfirst(strtolower(trim($array["{$_SESSION['webcollect']['familyname_fld']}"])));
+        $member['familyname'] = ucfirst(trim($array["{$_SESSION['webcollect']['familyname_fld']}"]));
         $member['rota_str'] = strtolower(trim($array['form_data']["{$_SESSION['webcollect']['rota_fld']}"]));
 
         // translate each webcollect rota code into a raceManager rota code

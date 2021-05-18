@@ -80,7 +80,7 @@ $db_o = new DB();
 $sql = "SELECT a.id, event_date, event_start, event_name, series_code, event_format, tide_time, tide_height, 
                event_entry, event_status, event_notes 
                FROM `t_event` as a 
-               WHERE active=1 and `event_type`='racing' and event_date>='2021-04-01' and event_date<='2021-04-30' 
+               WHERE active=1 and `event_type`='racing' and event_date>='$start_date' and event_date<='$end_date' 
                ORDER BY event_date ASC, event_order ASC, event_start ASC";
 //echo "<pre>".print_r($sql,true)."</pre>";
 $rs = $db_o->db_get_rows($sql);
@@ -98,7 +98,15 @@ foreach ($rs as $k=>$event)
     $dutyrs = $db_o->db_get_rows($sql);
     count($dutyrs) > 0 ? $event['person'] = $dutyrs[0]['person'] : $event['person'] = "unknown";
 
-    empty($event['series_code']) ? $series_code = "" : $series_code = strtok($event['series_code'], '-');
+    if (empty($event['series_code']))
+    {
+        $series_code = "";
+    }
+    else
+    {
+        $series_code = substr($event['series_code'], 0, strpos($event['series_code'], '-')).date("y", strtotime($event['event_date']));
+    }
+
 
     if (!empty($event['series_code']))
     {
@@ -113,6 +121,15 @@ foreach ($rs as $k=>$event)
     {
         $sequence_count = 1;
     }
+
+    $cols = array("EventID","EventDate","StartTime", "Event",  "series", "EventType", "HighWater","Height","notes","RN", "RaceSeq", "signontype" , "status", "OOD");
+
+    $cols_bufr= "<tr>";
+    foreach ($cols as $label)
+    {
+        $cols_bufr.= "<th><b>$label</b></th>";
+    }
+    $cols_bufr.= "</tr>";
 
     $arr = array(
         "EventID"   => $event['id'],
@@ -147,7 +164,6 @@ foreach ($rs as $k=>$event)
 
 // now create csv file
 $fp = fopen($filepath, 'wb');
-$cols = array("EventID","EventDate","StartTime", "Event",  "series", "EventType", "HighWater","Height","notes","RN", "RaceSeq", "signontype" , "status", "OOD");
 
 fputcsv($fp, $cols, ',');
 foreach ($out as $k=>$v)
@@ -173,16 +189,17 @@ body {
 <body>
      <h1>RM9 event import</h1>
      <p>Generating programme details from clubManager as a csv file<br><br>
-	 Using database server [{$_SESSION['db_host']}/{$_SESSION['db_name']}]<br><br></p>
-	 Races processed $num_records
-	 
+	 Using database server [{$_SESSION['db_host']}/{$_SESSION['db_name']}]<br><br>
+     Start Date: $start_date  End Date: $end_date<br><br>
+	 Races processed $num_records</p>
+ 
 	 <p>Please check the series number and event sequence carefully</p>
 	 
 	 <p><a href="$filepath">CSV file for import</a></p>
 
 	<h3>Exported records:</h3> 
-	<table border=0 width=60%>
-	<thead></thead>
+	<table border=0 width=100%>
+	<thead>$cols_bufr</thead>
 	<tbody>$htm_bufr</tbody>
 	</table>
 </body>

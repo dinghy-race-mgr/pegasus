@@ -113,6 +113,17 @@ EOT;
     $bufr.=<<<EOT
     <div class="container"></div>
         <h1>Duty Check Report </h1>
+        
+        <div class="row margin-top-20">
+            <div class="col-sm-5 col-sm-offset-1">
+                <h1>Duty Check Report </h1>
+            </div>
+            <div class="col-sm-5">    
+                <a class="btn btn-lg btn-warning" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+                <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Close</b></a>
+            </div>
+        </div>
+        
         <h3>[{rotas}]</h3>
         <table class="table table-condensed">
             <tr><thead>
@@ -128,6 +139,17 @@ EOT;
         <div><p class="pull-right"><small>Report generated - {date}</small></p></div>
 
     </div>
+
+    <script language="javascript">
+    function quitBox(cmd)
+    {   
+        if (cmd=='quit')
+        {
+            open(location, '_self').close();
+        }   
+        return false;   
+    }
+    </script>
 EOT;
 
     return $bufr;

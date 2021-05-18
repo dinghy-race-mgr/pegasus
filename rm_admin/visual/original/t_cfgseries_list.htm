@@ -348,8 +348,8 @@
 	.bs-gridcell[data-field=nodiscard]:before {
 		content: "{$label t_cfgseries nodiscard}";
 	}
-	.bs-gridcell[data-field=doublepoint]:before {
-		content: "{$label t_cfgseries doublepoint}";
+	.bs-gridcell[data-field=multiplier]:before {
+		content: "{$label t_cfgseries multiplier}";
 	}
 	.bs-gridcell[data-field=avgscheme]:before {
 		content: "{$label t_cfgseries avgscheme}";
@@ -357,8 +357,8 @@
 	.bs-gridcell[data-field=dutypoints]:before {
 		content: "{$label t_cfgseries dutypoints}";
 	}
-	.bs-gridcell[data-field=dutynum]:before {
-		content: "{$label t_cfgseries dutynum}";
+	.bs-gridcell[data-field=maxduty]:before {
+		content: "{$label t_cfgseries maxduty}";
 	}
 	.bs-gridcell[data-field=notes]:before {
 		content: "{$label t_cfgseries notes}";
@@ -444,15 +444,15 @@
 									
 									
 									
-									{BEGIN dutynum_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$dutynum_class}" data-field=dutynum>
-									{BEGIN dutynum_fieldheader}
-																				<span {$dutynum_orderlinkattrs}>
-											{$label t_cfgseries dutynum}
+									{BEGIN maxduty_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$maxduty_class}" data-field=maxduty>
+									{BEGIN maxduty_fieldheader}
+																				<span {$maxduty_orderlinkattrs}>
+											{$label t_cfgseries maxduty}
 										</span>
-									{END dutynum_fieldheader}
+									{END maxduty_fieldheader}
 									</th>
-									{END dutynum_fieldheadercolumn}
+									{END maxduty_fieldheadercolumn}
 									
 									
 									
@@ -580,11 +580,11 @@
 {END dutypoints_fieldcolumn}
 
 
-	{BEGIN dutynum_fieldcolumn}
-	<td class="bs-gridcell {$dutynum_class}"  data-field=dutynum {$rowstyle} {$recordattrs}>
-		{$dutynum_value}
+	{BEGIN maxduty_fieldcolumn}
+	<td class="bs-gridcell {$maxduty_class}"  data-field=maxduty {$rowstyle} {$recordattrs}>
+		{$maxduty_value}
 	</td>
-{END dutynum_fieldcolumn}
+{END maxduty_fieldcolumn}
 
 
 	{BEGIN notes_fieldcolumn}

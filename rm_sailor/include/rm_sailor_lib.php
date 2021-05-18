@@ -178,16 +178,23 @@ function map_fleet_cfg($format)
 }
 
 
-function get_fixed_event($event_list)
+function get_fixed_event($eventid_list)
 {
     global $event_o;
     $err = false;
 
-    $data = array("mode" => "fixed", "numevents" => 0, "event_day"=> "", "nextevent" => array(), "details" => array());
-    if (!empty($eventid_list)) {                         // if event list has values - get details for those events
+    $data = array("mode" => "fixed", "numevents" => 0, "numdays"=> "",  "eventday" => "",
+                  "nextevent" => array(), "details" => array());
 
+    if (!empty($eventid_list)) // if event list has values - get details for those events
+    {
+        $num_days = 0;
+        $day = "";
         foreach ($eventid_list as $k => $id) {
             $rs = $event_o->get_event_byid($id, "racing");   // get event if it is a racing event
+
+            if ($day != $rs['event_date'] ) { $num_days++; }
+
             if ($rs) {
                 $data['details'][$rs['id']] = $rs;
                 $cfg = map_fleet_cfg($rs['event_format']);   // get fleet configurations for this event
@@ -197,19 +204,20 @@ function get_fixed_event($event_list)
                     $err = true;
                 }
             }
+            $day = $rs['event_date'];
         }
     }
 
-    if ($err) {
-        $data['numevents'] = -1;
-    } else {
-        $data['numevents'] = count($data['details']);
-    }
+    $err ? $data['numevents'] = -1 : $data['numevents'] = count($data['details']);
 
+    $data['numdays'] = $num_days;
+    if ($num_days == 1) { $data['eventday'] = $day; }
+
+    // get next event details
     $rs = $event_o->get_nextevent(date("Y-m-d"), "racing");
-    if ($rs) {
-        $data['nextevent'] = $rs;
-    }
+    $rs ? $data['nextevent'] = $rs : $data['nextevent'] = array();
+    
+    //echo "<pre>".print_r($data,true)."</pre>";
 
     return $data;
 }
@@ -418,6 +426,7 @@ function set_event_status_list($events, $entries, $action = array())
 
         $event_arr[$eventid] = array(
             "name" => $event['event_name'],
+            "date" => $event['event_date'],
             "time" => $event['event_start'],
             "start" => $entries[$eventid]['allocate']['start'],
             "signon" => $event['event_entry'],

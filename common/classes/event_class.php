@@ -444,8 +444,8 @@ class EVENT
             return "codeinvalid";
         }
                 
-        // check event_format is recognised (using dummy eventid)
-        $racecfg = $this->event_getracecfg(0, $fields['event_format']);
+        // check event_format is recognised
+        $racecfg = $this->event_getracecfg($fields['event_format']);
         if (empty($racecfg))
         {
             return "noraceformat";
@@ -706,7 +706,7 @@ class EVENT
         return $detail;
     }
 
-    public function event_getracecfg($eventid, $racecfgid)
+    public function event_getracecfg($racecfgid, $eventid = 0)
     {
         // return race cfg details as array
         $query  = "SELECT * FROM t_cfgrace WHERE id = $racecfgid AND active=1";       
@@ -715,17 +715,21 @@ class EVENT
         { 
             $detail = false; 
         } 
-        else  // check if 
+        else  // check if a change has been made to start scheme/intervals
         {
-            if (!empty($_SESSION["e_$eventid"]['ev_startscheme']))
+            if ($eventid > 0)
             {
-                $detail['start_scheme'] = $_SESSION["e_$eventid"]['ev_startscheme'];
+                if (!empty($_SESSION["e_$eventid"]['ev_startscheme']))
+                {
+                    $detail['start_scheme'] = $_SESSION["e_$eventid"]['ev_startscheme'];
+                }
+
+                if (!empty($_SESSION["e_$eventid"]['ev_startint']))
+                {
+                    $detail['start_interval'] = $_SESSION["e_$eventid"]['ev_startint'];
+                }
             }
-            
-            if (!empty($_SESSION["e_$eventid"]['ev_startint']))
-            {
-                $detail['start_interval'] = $_SESSION["e_$eventid"]['ev_startint'];
-            }
+
         }       
         return $detail;
     }
@@ -781,11 +785,9 @@ class EVENT
     }
 
 
-    public function event_getracestate ($currentstatus)
+    public function get_eventstate ($currentstatus)
     {
-        // FIXME this is confusing: - this is the event status rather than the racestatus
-        // FIXME at the very least it needs a different name
-        // FIXME - the running state can have a different RACE state for each fleet
+        // This returns the state of the entire event
         if (in_array($currentstatus, array("completed","cancelled","abandoned")))
         {
             return "complete";
@@ -855,7 +857,7 @@ class EVENT
         }
 
         $query = "SELECT a.id as id, seriescode, seriesname, a.seriestype as seriestype, b.seriestype as seriestypename,
-                  startdate, enddate, classresults, discard, nodiscard, doublepoint, avgscheme, dutypoints, dutynum
+                  race_format, startdate, enddate, merge, classresults, discard, nodiscard, multiplier, avgscheme, dutypoints, maxduty
                   FROM t_series as a JOIN t_cfgseries as b ON a.seriestype=b.id WHERE a.active=1
                   AND seriescode = '$rootcode'  ORDER BY seriesname ASC";
         // echo "SERIES QUERY: $query<br>";
@@ -894,11 +896,11 @@ class EVENT
     }
 
 
-    public function series_eventlist($code)
+    public function series_eventarr($code)
     {
         // gets list of events that are part of the specified series
         $query = "SELECT id FROM t_event WHERE active=1
-                  AND series_code = '$code' ORDER BY event_date ASC";
+                  AND series_code = '$code' ORDER BY event_date ASC, event_time ASC";
         $detail = $this->db->db_get_rows( $query );
 
         if (empty($detail)) { $detail = false; }

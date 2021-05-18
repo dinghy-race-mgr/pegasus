@@ -11,7 +11,7 @@
  * @param string  mode    domain  [cruise|race]                         (default: race)
  * @param string  demo    operating mode [live|demo]                    (default: live)
  * @param string  debug   debug level [0|1|2]                           (default: 0)
- * @param string  event   list of event ids (e.g 101,123,145)           (optional)
+ * @param string  event   list of event ids (e.g 101,123,145)           (optional) - only relevant for mode = race
  * $param string  sailor  competitor id for sailor                      (optional - only relevant for usage:single)
  *
  * 
@@ -150,9 +150,12 @@ function initialise_params($arg)
 
     // are we going to use a fixed set of events
     $_SESSION['event_passed'] = array();
-    if (array_key_exists('event', $arg)) {
-        $_SESSION['event_passed'] = explode(",", $arg['event']);
+    if ($_SESSION['mode'] == "race" and array_key_exists('event', $arg)) {
+        if (!empty($arg['event'])) {
+            $_SESSION['event_passed'] = explode(",", $arg['event']);
+        }
     }
+
 }
 
 function error_stop($cause)

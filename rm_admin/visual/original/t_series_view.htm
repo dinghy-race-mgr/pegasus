@@ -59,18 +59,6 @@
 
 
 <div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
-	{BEGIN seriescode_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_seriescode} bs-viewform-group" data-fieldname="seriescode">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_seriescode}">
-			{$label t_series seriescode}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$seriescode_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END seriescode_fieldblock}
 	{BEGIN seriesname_fieldblock}
 <div class="container">
 	<div class="{$fielddispclass_seriesname} bs-viewform-group" data-fieldname="seriesname">
@@ -83,6 +71,18 @@
 	</div>
 </div>
 {END seriesname_fieldblock}
+	{BEGIN seriescode_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_seriescode} bs-viewform-group" data-fieldname="seriescode">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_seriescode}">
+			{$label t_series seriescode}
+		</label>
+		<div class="col-md-6 bs-horizontal-value" >
+			{$seriescode_value}&nbsp;
+		</div>
+	</div>
+</div>
+{END seriescode_fieldblock}
 	{BEGIN seriestype_fieldblock}
 <div class="container">
 	<div class="{$fielddispclass_seriestype} bs-viewform-group" data-fieldname="seriestype">
@@ -95,18 +95,18 @@
 	</div>
 </div>
 {END seriestype_fieldblock}
-	{BEGIN classresults_fieldblock}
+	{BEGIN race_format_fieldblock}
 <div class="container">
-	<div class="{$fielddispclass_classresults} bs-viewform-group" data-fieldname="classresults">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_classresults}">
-			{$label t_series classresults}
+	<div class="{$fielddispclass_race_format} bs-viewform-group" data-fieldname="race_format">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_race_format}">
+			{$label t_series race_format}
 		</label>
 		<div class="col-md-6 bs-horizontal-value" >
-			{$classresults_value}&nbsp;
+			{$race_format_value}&nbsp;
 		</div>
 	</div>
 </div>
-{END classresults_fieldblock}
+{END race_format_fieldblock}
 	{BEGIN startdate_fieldblock}
 <div class="container">
 	<div class="{$fielddispclass_startdate} bs-viewform-group" data-fieldname="startdate">
@@ -131,6 +131,30 @@
 	</div>
 </div>
 {END enddate_fieldblock}
+	{BEGIN classresults_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_classresults} bs-viewform-group" data-fieldname="classresults">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_classresults}">
+			{$label t_series classresults}
+		</label>
+		<div class="col-md-6 bs-horizontal-value" >
+			{$classresults_value}&nbsp;
+		</div>
+	</div>
+</div>
+{END classresults_fieldblock}
+	{BEGIN merge_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_merge} bs-viewform-group" data-fieldname="merge">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_merge}">
+			{$label t_series merge}
+		</label>
+		<div class="col-md-6 bs-horizontal-value" >
+			{$merge_value}&nbsp;
+		</div>
+	</div>
+</div>
+{END merge_fieldblock}
 	{BEGIN notes_fieldblock}
 <div class="container">
 	<div class="{$fielddispclass_notes} bs-viewform-group" data-fieldname="notes">
@@ -155,6 +179,42 @@
 	</div>
 </div>
 {END active_fieldblock}
+	{BEGIN createdate_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_createdate} bs-viewform-group" data-fieldname="createdate">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_createdate}">
+			{$label t_series createdate}
+		</label>
+		<div class="col-md-6 bs-horizontal-value" >
+			{$createdate_value}&nbsp;
+		</div>
+	</div>
+</div>
+{END createdate_fieldblock}
+	{BEGIN upddate_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_upddate} bs-viewform-group" data-fieldname="upddate">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_upddate}">
+			{$label t_series upddate}
+		</label>
+		<div class="col-md-6 bs-horizontal-value" >
+			{$upddate_value}&nbsp;
+		</div>
+	</div>
+</div>
+{END upddate_fieldblock}
+	{BEGIN updby_fieldblock}
+<div class="container">
+	<div class="{$fielddispclass_updby} bs-viewform-group" data-fieldname="updby">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_updby}">
+			{$label t_series updby}
+		</label>
+		<div class="col-md-6 bs-horizontal-value" >
+			{$updby_value}&nbsp;
+		</div>
+	</div>
+</div>
+{END updby_fieldblock}
 </div>
 
 

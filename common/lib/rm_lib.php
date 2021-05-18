@@ -83,7 +83,7 @@ function r_initialiseevent($mode, $eventid)
 
     if ($status == "ok")
     {
-        $racecfg_rs = $event_o->event_getracecfg($eventid, $_SESSION["e_$eventid"]['ev_format']);
+        $racecfg_rs = $event_o->event_getracecfg($_SESSION["e_$eventid"]['ev_format'], $eventid);
         if ($racecfg_rs AND $racecfg_rs['active'] == 1)
         {
             //get fleet configuration for this race format and add to session
@@ -891,11 +891,16 @@ function r_allocate_fleet($class, $fleets, $competitor = array())
 
     // FIXME: Still doesn't handle: - flight restrictions     (limits not in t_cfgrace)
 
+
+
     $alloc = array("status" => false, "alloc_code" => "", "start" => "", "fleet" => ""); //  aray to return allocation
 
     if ($fleets)
     {
-        u_array_sort_by_column($fleets, "defaultfleet"); // reset event array to put default fleet last in array
+        // FIXME there is a BUG here - if you sort to get the default to the bottom - it doesn't necessarily try them in fleet order
+        // FIXME and doesn't work with the current club series format - putting all the assy boats in the first fleet that matches (fleet 2
+        // FIXME probably need a system to allow the club to decide what order the fleets should be tested for allocation
+        //u_array_sort_by_column($fleets, "defaultfleet"); // reset event array to put default fleet last in array
         // debug:u_writedbg(u_check($fleets, "FLEETS"),__FILE__,__FUNCTION__,__LINE__);  // debug:
 
         // check which fleet this competitor is allocated too
@@ -925,6 +930,12 @@ function r_allocate_fleet($class, $fleets, $competitor = array())
             // debug:u_writedbg(u_check($fleetcfg, "FLEETCFG"),__FILE__,__FUNCTION__,__LINE__);
             // debug:u_writedbg(u_check($classexc, "EXCLUDES"),__FILE__,__FUNCTION__,__LINE__);
             // debug:u_writedbg(u_check($entry, "ENTRY"),__FILE__,__FUNCTION__,__LINE__);
+
+//echo $fleetcfg['fleet_num']." - ".$class['classname']."<br>";
+//echo "<pre>".print_r($class,true)."</pre>";
+//echo "<pre>".print_r($fleetcfg,true)."</pre>";
+
+
 
             if (in_array(strtolower($class['classname']), $classexc, true))  // check for exclusions
             {
@@ -1076,6 +1087,9 @@ function r_allocate_fleet($class, $fleets, $competitor = array())
         // debug:u_writedbg(" - no configuration found ",__FILE__,__FUNCTION__,__LINE__);  // debug:
         $alloc = array("status" => false, "alloc_code" => "X", "start" => "", "fleet" => ""); //  X - no configuration
     }
+
+//echo "<pre>".print_r($alloc, true)."</pre>";
+//exit();
 
     return $alloc;
 

@@ -74,7 +74,14 @@ class ROTA
         }
         else
         {
-            $query = "SELECT * FROM t_rotamember WHERE $where AND active = 1 GROUP BY familyname, firstname ORDER BY familyname ASC, firstname ASC";
+            // query to resolve issue with sql_mode='ONLY_FULL_GROUP_BY' in later version of mysql
+            $query = "SELECT max(id) as id, max(memberid) as memberid, firstname, familyname, max(rota) as rota, 
+                             max(phone) as phone, max(email) as email, max( note) as note, max(partner) as partner, 
+                             max(active) as active, max(updby) as updby, max(createdate) as createdate, max(upddate) as upddate 
+                             FROM t_rotamember 
+                             WHERE $where AND active = 1 
+                             GROUP BY familyname, firstname 
+                             ORDER BY familyname ASC, firstname ASC";
         }
         //echo "<pre>$query</pre>";
         $detail = $this->db->db_get_rows($query);

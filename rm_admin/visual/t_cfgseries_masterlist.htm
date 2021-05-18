@@ -1,11 +1,17 @@
+<div {$pageattrs}>
+
+{BEGIN container_column}<div class="rnr-c rnr-ch rnr-c-column">
+
+{BEGIN masterlist_title}<div  class="style1 rnr-bl rnr-b-masterlistheader {$brickclass_masterlistheader}"><a {$backtomasterlink_attrs} class="btn btn-link btn-xs">Back to {$backtomasterlink_caption}</a></div>
+{END masterlist_title}
+
+<div class="rnr-hfiller"></div>
+</div>
+{END container_column}
 
 
-<DIV {$pageattrs}>
-{BEGIN container_column}<DIV class="rnr-c rnr-ch rnr-c-column">
-{BEGIN masterlist_title}<DIV class="style1 rnr-bl rnr-b-masterlistheader {$brickclass_masterlistheader}"><A class="btn btn-link btn-xs" {$backtomasterlink_attrs}>Back to 
-{$backtomasterlink_caption}</A></DIV>{END masterlist_title} 
-<DIV class="rnr-hfiller"></DIV></DIV>
-{END container_column}{BEGIN container_mastergrid}<STYLE>
+
+{BEGIN container_mastergrid}<style>
 	.bs-gridcell[data-field=id]:before {
 		content: "{$label t_cfgseries id}";
 	}
@@ -18,8 +24,8 @@
 	.bs-gridcell[data-field=nodiscard]:before {
 		content: "{$label t_cfgseries nodiscard}";
 	}
-	.bs-gridcell[data-field=doublepoint]:before {
-		content: "{$label t_cfgseries doublepoint}";
+	.bs-gridcell[data-field=multiplier]:before {
+		content: "{$label t_cfgseries multiplier}";
 	}
 	.bs-gridcell[data-field=avgscheme]:before {
 		content: "{$label t_cfgseries avgscheme}";
@@ -27,8 +33,8 @@
 	.bs-gridcell[data-field=dutypoints]:before {
 		content: "{$label t_cfgseries dutypoints}";
 	}
-	.bs-gridcell[data-field=dutynum]:before {
-		content: "{$label t_cfgseries dutynum}";
+	.bs-gridcell[data-field=maxduty]:before {
+		content: "{$label t_cfgseries maxduty}";
 	}
 	.bs-gridcell[data-field=notes]:before {
 		content: "{$label t_cfgseries notes}";
@@ -42,34 +48,25 @@
 	.bs-gridcell[data-field=updby]:before {
 		content: "{$label t_cfgseries updby}";
 	}
-</STYLE>
- 
-<TABLE class="table rnr-b-mastergridfields rnr-gridtable bs-flexgrid" data-brick="masterlistgrid" data-pageid="{$pageid}" {$masterlistgrid_hiddenattr}>
-  <THEAD>
-  <TR>
-    <TH class="{$seriestype_class}">
-      {$label t_cfgseries seriestype}</TH>
-    <TH class="{$discard_class}">
-      {$label t_cfgseries discard}</TH>
-    <TH class="{$avgscheme_class}">
-      {$label t_cfgseries avgscheme}</TH>
-    <TH class="{$dutypoints_class}">
-      {$label t_cfgseries dutypoints}</TH>
-    <TH class="{$dutynum_class}">
-      {$label t_cfgseries dutynum}</TH>
-    <TH class="{$notes_class}">
-      {$label t_cfgseries notes}</TH></TR></THEAD>
-  <TBODY>
-  <TR>
-    <TD class="{$seriestype_class} bs-gridcell" data-field="seriestype">
-      {$seriestype_mastervalue}</TD>
-    <TD class="{$discard_class} bs-gridcell" data-field="discard">
-      {$discard_mastervalue}</TD>
-    <TD class="{$avgscheme_class} bs-gridcell" data-field="avgscheme">
-      {$avgscheme_mastervalue}</TD>
-    <TD class="{$dutypoints_class} bs-gridcell" data-field="dutypoints">
-      {$dutypoints_mastervalue}</TD>
-    <TD class="{$dutynum_class} bs-gridcell" data-field="dutynum">
-      {$dutynum_mastervalue}</TD>
-    <TD class="{$notes_class} bs-gridcell" data-field="notes">
-      {$notes_mastervalue}</TD></TR></TBODY></TABLE>{END container_mastergrid}</DIV>
+</style>
+<table {$masterlistgrid_hiddenattr} data-pageid="{$pageid}" data-brick="masterlistgrid" class="table rnr-b-mastergridfields rnr-gridtable bs-flexgrid" >
+		<thead>
+		<tr>
+			<th class="{$seriestype_class}">{$label t_cfgseries seriestype}</th>
+		</tr>
+	</thead>
+	
+	<tbody>
+		<tr>
+			<td class="{$seriestype_class} bs-gridcell" data-field=seriestype>{$seriestype_mastervalue}</td>
+		</tr>
+	</tbody>
+
+</table> 
+
+
+
+
+{END container_mastergrid}
+
+</div>

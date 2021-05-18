@@ -294,8 +294,8 @@
 		<a>
 		  <div class="checkbox">
 			<label>
-			  <input type="checkbox" id="hide_seriescode" checked="checked" value="1" data-field="seriescode">
-			  <span>{$label t_series seriescode}</span>
+			  <input type="checkbox" id="hide_seriesname" checked="checked" value="1" data-field="seriesname">
+			  <span>{$label t_series seriesname}</span>
 			</label>
 		</div>
 		</a>
@@ -304,8 +304,8 @@
 		<a>
 		  <div class="checkbox">
 			<label>
-			  <input type="checkbox" id="hide_seriesname" checked="checked" value="1" data-field="seriesname">
-			  <span>{$label t_series seriesname}</span>
+			  <input type="checkbox" id="hide_seriescode" checked="checked" value="1" data-field="seriescode">
+			  <span>{$label t_series seriescode}</span>
 			</label>
 		</div>
 		</a>
@@ -324,6 +324,16 @@
 		<a>
 		  <div class="checkbox">
 			<label>
+			  <input type="checkbox" id="hide_race_format" checked="checked" value="1" data-field="race_format">
+			  <span>{$label t_series race_format}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
 			  <input type="checkbox" id="hide_startdate" checked="checked" value="1" data-field="startdate">
 			  <span>{$label t_series startdate}</span>
 			</label>
@@ -334,8 +344,8 @@
 		<a>
 		  <div class="checkbox">
 			<label>
-			  <input type="checkbox" id="hide_classresults" checked="checked" value="1" data-field="classresults">
-			  <span>{$label t_series classresults}</span>
+			  <input type="checkbox" id="hide_enddate" checked="checked" value="1" data-field="enddate">
+			  <span>{$label t_series enddate}</span>
 			</label>
 		</div>
 		</a>
@@ -475,6 +485,12 @@ Sort by&nbsp;{$sortByDropdown}
 	.bs-gridcell[data-field=enddate]:before {
 		content: "{$label t_series enddate}";
 	}
+	.bs-gridcell[data-field=race_format]:before {
+		content: "{$label t_series race_format}";
+	}
+	.bs-gridcell[data-field=merge]:before {
+		content: "{$label t_series merge}";
+	}
 	.bs-gridcell[data-field=classresults]:before {
 		content: "{$label t_series classresults}";
 	}
@@ -489,6 +505,9 @@ Sort by&nbsp;{$sortByDropdown}
 	}
 	.bs-gridcell[data-field=updby]:before {
 		content: "{$label t_series updby}";
+	}
+	.bs-gridcell[data-field=createdate]:before {
+		content: "{$label t_series createdate}";
 	}
 </style>
 <table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
@@ -507,19 +526,6 @@ Sort by&nbsp;{$sortByDropdown}
 									{END checkbox_column}
 
 																		
-									{BEGIN seriescode_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$seriescode_class}" data-field=seriescode>
-									{BEGIN seriescode_fieldheader}
-																				<span {$seriescode_orderlinkattrs}>
-											{$label t_series seriescode}
-										</span>
-									{END seriescode_fieldheader}
-									</th>
-									{END seriescode_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN seriesname_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$seriesname_class}" data-field=seriesname>
 									{BEGIN seriesname_fieldheader}
@@ -529,6 +535,19 @@ Sort by&nbsp;{$sortByDropdown}
 									{END seriesname_fieldheader}
 									</th>
 									{END seriesname_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN seriescode_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$seriescode_class}" data-field=seriescode>
+									{BEGIN seriescode_fieldheader}
+																				<span {$seriescode_orderlinkattrs}>
+											{$label t_series seriescode}
+										</span>
+									{END seriescode_fieldheader}
+									</th>
+									{END seriescode_fieldheadercolumn}
 									
 									
 									
@@ -546,6 +565,19 @@ Sort by&nbsp;{$sortByDropdown}
 									
 									
 									
+									{BEGIN race_format_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$race_format_class}" data-field=race_format>
+									{BEGIN race_format_fieldheader}
+																				<span {$race_format_orderlinkattrs}>
+											{$label t_series race_format}
+										</span>
+									{END race_format_fieldheader}
+									</th>
+									{END race_format_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN startdate_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$startdate_class}" data-field=startdate>
 									{BEGIN startdate_fieldheader}
@@ -559,15 +591,15 @@ Sort by&nbsp;{$sortByDropdown}
 									
 									
 									
-									{BEGIN classresults_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$classresults_class}" data-field=classresults>
-									{BEGIN classresults_fieldheader}
-																				<span {$classresults_orderlinkattrs}>
-											{$label t_series classresults}
+									{BEGIN enddate_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$enddate_class}" data-field=enddate>
+									{BEGIN enddate_fieldheader}
+																				<span {$enddate_orderlinkattrs}>
+											{$label t_series enddate}
 										</span>
-									{END classresults_fieldheader}
+									{END enddate_fieldheader}
 									</th>
-									{END classresults_fieldheadercolumn}
+									{END enddate_fieldheadercolumn}
 									
 									
 									
@@ -648,18 +680,18 @@ Sort by&nbsp;{$sortByDropdown}
 
 	
 
-	{BEGIN seriescode_fieldcolumn}
-	<td class="bs-gridcell {$seriescode_class}"  data-field=seriescode {$rowstyle} {$recordattrs}>
-		{$seriescode_value}
-	</td>
-{END seriescode_fieldcolumn}
-
-
 	{BEGIN seriesname_fieldcolumn}
 	<td class="bs-gridcell {$seriesname_class}"  data-field=seriesname {$rowstyle} {$recordattrs}>
 		{$seriesname_value}
 	</td>
 {END seriesname_fieldcolumn}
+
+
+	{BEGIN seriescode_fieldcolumn}
+	<td class="bs-gridcell {$seriescode_class}"  data-field=seriescode {$rowstyle} {$recordattrs}>
+		{$seriescode_value}
+	</td>
+{END seriescode_fieldcolumn}
 
 
 	{BEGIN seriestype_fieldcolumn}
@@ -669,6 +701,13 @@ Sort by&nbsp;{$sortByDropdown}
 {END seriestype_fieldcolumn}
 
 
+	{BEGIN race_format_fieldcolumn}
+	<td class="bs-gridcell {$race_format_class}"  data-field=race_format {$rowstyle} {$recordattrs}>
+		{$race_format_value}
+	</td>
+{END race_format_fieldcolumn}
+
+
 	{BEGIN startdate_fieldcolumn}
 	<td class="bs-gridcell {$startdate_class}"  data-field=startdate {$rowstyle} {$recordattrs}>
 		{$startdate_value}
@@ -676,11 +715,11 @@ Sort by&nbsp;{$sortByDropdown}
 {END startdate_fieldcolumn}
 
 
-	{BEGIN classresults_fieldcolumn}
-	<td class="bs-gridcell {$classresults_class}"  data-field=classresults {$rowstyle} {$recordattrs}>
-		{$classresults_value}
+	{BEGIN enddate_fieldcolumn}
+	<td class="bs-gridcell {$enddate_class}"  data-field=enddate {$rowstyle} {$recordattrs}>
+		{$enddate_value}
 	</td>
-{END classresults_fieldcolumn}
+{END enddate_fieldcolumn}
 
 
 	{BEGIN notes_fieldcolumn}

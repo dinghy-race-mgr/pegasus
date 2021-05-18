@@ -82,23 +82,6 @@
 
 
 
-			{BEGIN seriescode_fieldblock}<div class=container>
-<div class="form-group {$fielddispclass_seriescode}" data-fieldname="seriescode" data-signal-error-for="seriescode{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_seriescode}">
-		{BEGIN seriescode_label}{$label t_series seriescode}{END seriescode_label}
-	</label>
-	<div class="col-md-5" >
-		{$seriescode_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="seriescode">
-		<div class="text-muted" >
-		{$tooltip t_series seriescode}
-		</div>
-	</div>
-</div>
-</div>
-{END seriescode_fieldblock}
-
 			{BEGIN seriesname_fieldblock}<div class=container>
 <div class="form-group {$fielddispclass_seriesname}" data-fieldname="seriesname" data-signal-error-for="seriesname{$id}" >
 	<label class="col-md-3 control-label" for="{$labelfor_seriesname}">
@@ -115,6 +98,23 @@
 </div>
 </div>
 {END seriesname_fieldblock}
+
+			{BEGIN seriescode_fieldblock}<div class=container>
+<div class="form-group {$fielddispclass_seriescode}" data-fieldname="seriescode" data-signal-error-for="seriescode{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_seriescode}">
+		{BEGIN seriescode_label}{$label t_series seriescode}{END seriescode_label}
+	</label>
+	<div class="col-md-5" >
+		{$seriescode_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="seriescode">
+		<div class="text-muted" >
+		{$tooltip t_series seriescode}
+		</div>
+	</div>
+</div>
+</div>
+{END seriescode_fieldblock}
 
 			{BEGIN seriestype_fieldblock}<div class=container>
 <div class="form-group {$fielddispclass_seriestype}" data-fieldname="seriestype" data-signal-error-for="seriestype{$id}" >
@@ -133,22 +133,22 @@
 </div>
 {END seriestype_fieldblock}
 
-			{BEGIN classresults_fieldblock}<div class=container>
-<div class="form-group {$fielddispclass_classresults}" data-fieldname="classresults" data-signal-error-for="classresults{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_classresults}">
-		{BEGIN classresults_label}{$label t_series classresults} &nbsp;(pick classes) {END classresults_label}
+			{BEGIN race_format_fieldblock}<div class=container>
+<div class="form-group {$fielddispclass_race_format}" data-fieldname="race_format" data-signal-error-for="race_format{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_race_format}">
+		{BEGIN race_format_label}{$label t_series race_format}{END race_format_label}
 	</label>
 	<div class="col-md-5" >
-		{$classresults_editcontrol}
+		{$race_format_editcontrol}
 	</div>
-	<div class="col-md-4 help-block" data-helpfor="classresults">
+	<div class="col-md-4 help-block" data-helpfor="race_format">
 		<div class="text-muted" >
-		{$tooltip t_series classresults}
+		{$tooltip t_series race_format}
 		</div>
 	</div>
 </div>
 </div>
-{END classresults_fieldblock}
+{END race_format_fieldblock}
 
 			{BEGIN startdate_fieldblock}<div class=container>
 <div class="form-group {$fielddispclass_startdate}" data-fieldname="startdate" data-signal-error-for="startdate{$id}" >
@@ -183,6 +183,40 @@
 </div>
 </div>
 {END enddate_fieldblock}
+
+			{BEGIN classresults_fieldblock}<div class=container>
+<div class="form-group {$fielddispclass_classresults}" data-fieldname="classresults" data-signal-error-for="classresults{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_classresults}">
+		{BEGIN classresults_label}{$label t_series classresults} &nbsp;(pick classes) {END classresults_label}
+	</label>
+	<div class="col-md-5" >
+		{$classresults_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="classresults">
+		<div class="text-muted" >
+		{$tooltip t_series classresults}
+		</div>
+	</div>
+</div>
+</div>
+{END classresults_fieldblock}
+
+			{BEGIN merge_fieldblock}<div class=container>
+<div class="form-group {$fielddispclass_merge}" data-fieldname="merge" data-signal-error-for="merge{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_merge}">
+		{BEGIN merge_label}{$label t_series merge}{END merge_label}
+	</label>
+	<div class="col-md-5" >
+		{$merge_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="merge">
+		<div class="text-muted" >
+		{$tooltip t_series merge}
+		</div>
+	</div>
+</div>
+</div>
+{END merge_fieldblock}
 
 			{BEGIN notes_fieldblock}<div class=container>
 <div class="form-group {$fielddispclass_notes}" data-fieldname="notes" data-signal-error-for="notes{$id}" >

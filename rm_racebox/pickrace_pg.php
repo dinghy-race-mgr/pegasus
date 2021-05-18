@@ -59,7 +59,7 @@ if ($events)
     foreach ($events as $event)
     {
         $eventid   = $event['id'];
-        $racecfg   = $event_o->event_getracecfg($eventid, $event['event_format']);       // get race format
+        $racecfg   = $event_o->event_getracecfg($event['event_format'], $eventid);       // get race format
         $fields    = configurestate($eventid, $event['event_status'] );                  //configure race based on status
 
         $fields['eventid']   = $eventid;

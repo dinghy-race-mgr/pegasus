@@ -38,9 +38,14 @@ EOT;
 
     } elseif ($params['state'] == "submitentry") {
         $event_list = "";
+//        echo "<pre>".print_r($params,true)."</pre>";
+//        exit();
         foreach ($params['event-list'] as $eventid => $row) {   // loop over events
+
+            $params['numdays'] > 1 ?  $event_date = " - ".date("jS M", strtotime($row['date'])) : $event_date = "" ;
+
             // race identity
-            $race_txt = $row['time'] . "<br>" . $row['name'];
+            $race_txt = $row['time'] . $event_date . "<br>" . $row['name'];
 
             if ($row['event-status'] == "cancelled") {                // race is cancelled
                 $event_list .= <<<EOT

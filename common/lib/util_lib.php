@@ -70,6 +70,21 @@ function u_2darray_search($array, $field, $match)
     return $keys;
 }
 
+function u_array_column($data, $key)
+{
+    /* similar to std PHP array_column function except uses row key as index
+    */
+    $column = array();
+    foreach($data as $origKey => $value)
+    {
+        if (isset($value[$key]))
+        {
+            $column[$origKey] = $value[$key];
+        }
+    }
+    return $column;
+}
+
 function u_array_orderby()
 // sorts array by multiple columns
 // $out_arr = array_orderby($in_arr, 'key1', SORT_DESC, 'key2', SORT_ASC);

@@ -316,18 +316,42 @@ function list_events($params = array())
 {
     $bufr = "";
 
+    // display for date
+    $today = date("Y-m-d");
+    $eventday = date("Y-m-d", strtotime($params['eventday']));
+    if ($params['numdays'] == 1 and $today == $eventday)                           // event(s) all today
+    {
+        $when = "today";
+    }
+    elseif ($params['numdays'] == 1 and strtotime($today) < strtotime($eventday))  // event(s) all on same day in future
+    {
+        $when = "on ".date("l jS F", strtotime($params['event_day']));
+    }
+    else                                                                           // multiple days
+    {
+        $when = "";
+    }
+
+    // display for number of races
+    $params['numevents'] == 1 ? $num = "1 race" : $num = $params['numevents']." races";
+
     // list events
     $event_table = "";
     foreach ($params['details'] as $k => $row) {
-        if ($row['event_status'] != "cancelled") {
+
+        if ($row['event_status'] != "cancelled")
+        {
+            $params['numdays'] <= 1 ? $event_date = "" : $event_date = " - ".date("jS M", strtotime($row['event_date'])) ;
+
             $event_table .= <<<EOT
             <tr>
-                <td class="rm-text-md rm-text-trunc" width="50%">{$row['event_name']}</td>
+                <td class="rm-text-md rm-text-trunc" width="50%">{$row['event_name']}$event_date</td>
                 <td class="rm-text-md" width="20%">{$row['event_start']}</td>
                 <td class="rm-text-md" width="40%">{$row['race_name']}</td>
             </tr>
 EOT;
-        } else {
+        } else
+        {
             $event_table .= <<<EOT
             <tr>
                 <td class="rm-text-md rm-text-trunc" width="50%">{$row['event_name']}</td>
@@ -337,8 +361,6 @@ EOT;
         }
     }
 
-    $params['event_day'] != date("Y-m-d") ? $when = "on ".date("l jS F", strtotime($params['event_day'])) : $when = "today";
-    $params['numevents'] == 1 ? $num = "1 race" : $num = $params['numevents']." races";
 
     $bufr.= <<<EOT
          <h2 class="text-success">$num $when</h2>
