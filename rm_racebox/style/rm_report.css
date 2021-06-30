@@ -6,60 +6,83 @@
     primary = #2B669A
 
 */
-*       {box-sizing: border-box;}
-body    {font-family: verdana,sans-serif; font-size: 1.0em;}
-h1      {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 200%; letter-spacing: -1px; color: rgb(44, 76, 124);}
-h2      {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 150%; color: rgb(44, 76, 124);}
-h3      {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 125%; color: rgb(194, 0, 0);}
-p       {font-weight: normal; color: rgb(0, 0, 0); line-height: 1.2em; padding-bottom: 0.2em;}
+:root {
+   --blue: steelblue;
+   --darkblue: rgb(44, 76, 124);
+   --red: rgb(194, 0, 0);
+   --darkred: darkred;
+   --white: white;
+}
 
-td      {display: table-cell; vertical-align: inherit;}
-th      {font-size: 0.8em !important; font-weight: normal !important;}
-a:link  {color: rgb(44, 76, 124); text-decoration: none;}
 
-.title {font-family: Kalinga,arial,helvetica,sans-serif; font-weight: bold; font-size: 200%; letter-spacing: -1px; color: rgb(44, 76, 124);}
-.title2 {font-family: Kalinga,arial,helvetica,sans-serif; font-weight: bold; font-size: 150%; color: rgb(44, 76, 124); padding-top: 40px}
+*            {box-sizing: border-box;}
+body         {font-family: verdana,sans-serif; font-size: 1.0em;}
+h1           {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 200%; letter-spacing: -1px; color: var(--darkblue);}
+h2           {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 150%; color: var(--darkblue);}
+h3           {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 125%; color: var(--red);}
+p            {font-weight: normal; color: rgb(0, 0, 0); font-size: 1.0em; line-height: 1.2em; padding-bottom: 0.2em;}
 
-.divider   {border-top: 1px solid slategrey; margin-top: 15px; margin-bottom: 5px;}
-.clearfix  {display: block;}
+td           {display: table-cell; vertical-align: inherit;}
+th           {font-size: 0.8em !important; font-weight: normal !important;}
+a:link       {color: var(--darkblue); text-decoration: none;}
 
-.table {display: table; width: 100%;}
-.table-row {display: table-row;}
-.table-cell {display: table-cell;}
-.truncate {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.title       {font-family: Kalinga,arial,helvetica,sans-serif; font-weight: bold; font-size: 200%; letter-spacing: -1px; color: var(--darkblue);}
+.title2      {font-family: Kalinga,arial,helvetica,sans-serif; font-weight: bold; font-size: 150%; color: var(--darkblue); padding-top: 40px}
+
+.divider     {border-top: 1px solid slategrey; margin-top: 15px; margin-bottom: 5px;}
+.clearfix    {display: block;}
 
 .text-center {text-align: center;}
-.text-right {text-align: right; padding-right: 15px; }
-.text-left {text-align: left; padding-left: 15px; }
+.text-right  {text-align: right; padding-right: 15px; }
+.text-left   {text-align: left; padding-left: 15px; }
 .text-grey   {color: slategrey;}
-.text-alert  {color: darkred;}
-.text-info   {color: #3498db;}
-.small-note   {color: steelblue; font-weight: normal; line-height: 1.0em; font-size: 0.8em;}
-.note    {font-weight: normal; color: rgb(0, 0, 0); line-height: 1.2em; margin: 0px; }
+.text-alert  {color: var(--darkred);}
+.text-info   {color: var(--blue);}
+.small-note  {color: var(--blue); font-weight: normal; line-height: 1.0em; font-size: 0.8em;}
+.note        {font-weight: normal; color: rgb(0, 0, 0); line-height: 1.2em; margin: 0px; }
 
 .pull-right  {text-align: right;}
 .pull-left   {text-align: left;}
 .pull-center {text-align: center;}
 .pull-top    {vertical-align: top;}
 
-.noshade   {background: none repeat scroll 0% 0% rgb(255, 255, 255);}
-.lightshade{background: none repeat scroll 0% 0% rgb(238, 238, 238);}
-.darkshade {background: none repeat scroll 0% 0% rgb(153, 153, 153);}
+.noshade     {background: none repeat scroll 0% 0% rgb(255, 255, 255);}
+.lightshade  {background: none repeat scroll 0% 0% rgb(238, 238, 238);}
+.darkshade   {background: none repeat scroll 0% 0% rgb(153, 153, 153);}
 
-@media all {
-   .page-break	{ display: none; }
-}
+/* --------------------------------------------------------------------------------------------------------------------*/
+
+.report-hdr  {font-family: Kalinga,Verdana,sans-serif; font-weight: bold; font-size: 150%; color: var(--darkblue); padding-top: 40px; text-align: right;}
+.club-logo   {border: 1px solid #ddd; border-radius: 4px; padding: 5px; width: 330px;}
+.event-hdr-left  {font-family: Kalinga,Verdana,sans-serif; font-weight: bold; font-size: 200%; letter-spacing: -1px; color: var(--darkblue); text-align: left; width: 50%; display: inline-block;}
+.event-hdr-right {width: 45%; display: inline-block; text-align: right; color: var(--darkred);}
+.series-notes {text-align: left; color: var(--darkred);}
+.fleet-hdr   {font-family: Kalinga,arial,helvetica,sans-serif; font-weight: bold; font-size: 150%; color: var(--darkblue); padding-top: 40px}
+.fleet-info  {font-family: Verdana,sans-serif; font-size: 1.0em; text-align: left;}
+.spacer      {border-top: 1px solid slategrey; margin-top: 15px; margin-bottom: 5px; display: block;}
+.codes-info  {color: var(--blue); font-weight: normal; line-height: 1.0em; font-size: 0.8em; margin-top: 25px;}
+.footer      {color: var(--blue); font-weight: normal; line-height: 1.0em; font-size: 0.8em; margin-top: 25px;}
+
+.table       {display: table; width: 100%; min-width: 70%}
+.table-col   {font-size: 0.8em !important; font-weight: normal !important; background: none repeat scroll 0% 0% rgb(153, 153, 153);}
+.table-row   {display: table-row;}
+.table-cell  {display: table-cell; vertical-align: inherit;}
+.truncate    {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+
+
+
+@media all   {.page-break	{ display: none; }  }
 
 /* print styles */
 @media print {
-   @page { size: A4 portrait; }
-   @page :left { margin-left: 2cm; }
-   @page :right { margin-left: 2cm; }
+   @page         { size: A4 portrait; }
+   @page :left   { margin-left: 2cm; }
+   @page :right  { margin-left: 2cm; }
 
    table, figure { page-break-inside: avoid; }
-   body { font-size: 12pt; }
+   body          { font-size: 12pt; }
 
-   .noprint { display: none; }
-   .page-break	{ display: block; page-break-before: always; }
+   .noprint      { display: none; }
+   .page-break	 { display: block; page-break-before: always; }
 }
          

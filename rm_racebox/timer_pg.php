@@ -34,8 +34,9 @@ if ($display_mode) { $_SESSION['timer_options']['mode'] = $display_mode; }
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
-require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
+require_once ("{$loc}/common/classes/bunch_class.php");
+require_once ("{$loc}/common/classes/template_class.php");
 
 // app includes
 require_once ("./include/rm_racebox_lib.php");
@@ -56,6 +57,7 @@ $_SESSION['timer_options']['listorder']     = "class";     // options "class|pn|
 $_SESSION['timer_options']['laptime']       = "button";    // options "row|button|both"
 $_SESSION['timer_options']['notify_length'] = "on ";       // options "on|off"
 $_SESSION['timer_options']['notify_undo']   = "on";        // options "on|off"
+if (empty($_SESSION['timer_options']['mode']))  { $_SESSION['timer_options']['mode'] = "tabbed"; }
 
 $fleet_data = array();
 for ($fleetnum=1; $fleetnum<=$_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum++)
@@ -66,7 +68,8 @@ for ($fleetnum=1; $fleetnum<=$_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum+
 
 // ----- navbar -----------------------------------------------------------------------------
 $fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
-$params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
+$params = array("page" => $page, "current_view" => $_SESSION['timer_options']['mode'],
+                "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
 $nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
 
 // ----- left hand panel --------------------------------------------------------------------
@@ -97,10 +100,7 @@ else
     {
         $lbufr.= $tmpl_o->get_template("under_construction", array("title" => "Timer: List option", "info" => "We are still working on this"));
     }
-    else
-    {
-        $lbufr.= $tmpl_o->get_template("under_construction", array("title" => "Timer: option", "info" => "Never heard of it"));
-    }
+
 
 }
 
@@ -137,6 +137,24 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
 
 $rbufr.= "<hr>";
 
+// bunch display
+if ($_SESSION['racebox_timer_bunch'])
+{
+    if (!array_key_exists("bunch", $_SESSION["e_$eventid"])) { $_SESSION["e_$eventid"]['bunch'] = array(); };
+    $bunch_o = new BUNCH($eventid, "timer_sc.php", $_SESSION["e_$eventid"]['bunch']);
+
+    $bunch_o->is_empty() ? $bunch_htm = "<div style='text-align: center'><i> --- empty ---</i></div>" : $bunch_htm = $bunch_o->render();
+
+    $rbufr.=<<<EOT
+    <div style = "border: 1px solid steelblue; min-height: 100px; border-radius: 10px;;">
+        <h4 class="text-info" style ="padding-left:10px">bunch&hellip;</h4>
+        $bunch_htm
+    </div>
+
+EOT;
+
+}
+
 //// quick timer option
 //$rbufr .= $tmpl_o->get_template("btn_modal", $btn_quicktime['fields], $btn_quicktime);
 //$rbufr .= $tmpl_o->get_template("modal", $mdl_quicktime['fields], $btn_quicktime);
@@ -161,7 +179,7 @@ $rbufr.= "<hr>";
 $db_o->db_disconnect();
 
 $fields = array(
-    "title"      => "racebox",
+    "title"      => $_SESSION["e_$eventid"]['ev_label'],
     "theme"      => $_SESSION['racebox_theme'],
     "loc"        => $loc,
     "stylesheet" => "./style/rm_racebox.css",

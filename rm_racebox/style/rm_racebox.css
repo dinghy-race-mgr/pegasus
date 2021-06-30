@@ -106,7 +106,7 @@ body > .container { padding: 10px 0px 0px 0px; }
 /* timer page row classes #e6e6e6*/
 .table > tbody > tr.finished {background-color: lightgrey; color: slategrey;}
 .table > tbody > tr.excluded {background-color: lightgrey; color: slategrey;}
-.table > tbody > tr.lastlap {background-color: #F6F9D4 ; color: black;}
+.table > tbody > tr.lastlap  {background-color: #F6F9D4 ; color: black;}
 
 /*.label-finished { background-color: lightgrey;}*/
 
@@ -177,16 +177,16 @@ body > .container { padding: 10px 0px 0px 0px; }
 */
 
 /* style for navbar brand link */
-.rm-brand-title {
-    font-size: 160% !important;;
-}
+.rm-brand-title { font-size: 160% !important; }
+.rm-brand-title:hover {color: #F39C12;}
 
 /* styles for navbar menu items */
-.rm-navmenu { font-size: 160%; color: white; }
-.rm-navmenu:hover { color: #F39C12; }
-.rm-navmenu-active { font-size: 160%; color:  #E74C3C; }
+.rm-navmenu              { font-size: 160%; color: white; }
+.rm-navmenu:hover        { color: #F39C12; }
+.rm-navmenu-active       { font-size: 160%; color:  #E74C3C; }
 .rm-navmenu-active:hover { color: #F39C12; }
-.rm-navmenu-right { font-size: 160%; }
+.rm-navmenu-right        { font-size: 160%; }
+.rm-navmenu-icon:hover   {color: #F39C12;}
 
 @media (min-width: 1600px){
     .navbar li {

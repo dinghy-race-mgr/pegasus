@@ -20,7 +20,7 @@
  *    unduty        -  inline button to remove entry points from a competitor
  *    remove        -  inline button to remove entries
  **/
-/*
+
 /*
   BUTTONS
     Parameters

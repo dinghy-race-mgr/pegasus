@@ -226,112 +226,133 @@ EOT;
 
 function racebox_navbar($params=array())
 {
+    /*
+     *   fields:
+     *      eventid:      id for event (int) - not required on pickrace page
+     *      brand:        label on left of navbar (str)
+     *      club:         club acronym (e.g. SYC) (str)
+     *
+     *   params:
+     *      page:         page name (str)
+     *      pursuit:      flag if pursuit race (int:  1 | 0 )
+     *      baseurl:      url to racemanager startup page (str) - only required on pickrace page
+     *      links:        local links for custom menu (array) - can be empty array
+     *      current_view: current view on timer page (str: tabbed | list ) - only required on timer page
+     */
+
     $options = array(
-//        "1" => array("name" => "dashboard", "label" => "programme", "target" => "pickrace_pg.php"),
-        "2" => array("name" => "race", "label" => "status", "target" => "race_pg.php"),
-        "3" => array("name" => "entries", "label" => "entries", "target" => "entries_pg.php"),
-        "4" => array("name" => "start", "label" => "start", "target" => "start_pg.php"),
-        "5" => array("name" => "timer", "label" => "timer", "target" => "timer_pg.php"),
-        "6" => array("name" => "pursuit", "label" => "pursuit", "target" => "pursuit_pg.php"),
-        "7" => array("name" => "results", "label" => "results", "target" => "results_pg.php"),
+        "1" => array("name" => "race",      "label" => "status",    "target" => "race_pg.php"),
+        "2" => array("name" => "entries",   "label" => "entries",   "target" => "entries_pg.php"),
+        "3" => array("name" => "start",     "label" => "start",     "target" => "start_pg.php"),
+        "4" => array("name" => "timer",     "label" => "timer",     "target" => "timer_pg.php"),
+        "5" => array("name" => "pursuit",   "label" => "pursuit",   "target" => "pursuit_pg.php"),
+        "6" => array("name" => "results",   "label" => "results",   "target" => "results_pg.php"),
     );
 
-
+    // build up options bufr
     $option_bufr = "";
-    $view_bufr = "";
-    foreach ($options as $k=> $option)
+
+    if ($params['page'] != "pickrace")
     {
-        if ($option['name'] == "pursuit" and !$params['pursuit']) {
-            continue;
-        }
-        $params['page'] == $option['name'] ? $state = "rm-navmenu-active" : $state = "rm-navmenu" ;
-        $option_bufr.= <<<EOT
+        $brand_href = "pickrace_pg.php?eventid={eventid}&page={$params['page']}&menu=true";
+
+        foreach ($options as $k=> $option)
+        {
+            if ($option['name'] == "pursuit" and !$params['pursuit'])   // FIXME ned
+            {
+                continue;
+            }
+
+            // set class for state of option (active or not)
+            $params['page'] == $option['name'] ? $state = "rm-navmenu-active" : $state = "rm-navmenu" ;
+
+            $option_bufr.= <<<EOT
             <li>
                 <a href="{$option['target']}?eventid={eventid}&menu=true" >
                   <span class="$state" >{$option['label']}</span>
                 </a>
             </li>
 EOT;
-    }
-
-    if ($params['page'] == "timer") {
-        $view_bufr = <<<EOT
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                    <span class="rm-navmenu-right text-success">view<span class="caret"></span></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="timer_pg.php?eventid=180&mode=tabbed">Tabbed</a></li>
-                <li><a href="timer_pg.php?eventid=180&mode=list">List</a></li>
-                <li><a href="timer_pg.php?eventid=180&mode=quick">Quick</a></li>
-              </ul>
-            </li>
-EOT;
+        }
     }
     else
     {
+        $brand_href = $params['baseurl'];
+    }
+
+    // change view on timer page
+    $view_bufr = "";
+    if ($params['page'] == "timer")
+    {
+        $params["current_view"] == "tabbed" ? $display_mode = "list" : $display_mode = "tabbed";
         $view_bufr = <<<EOT
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                    <span class="rm-navmenu-right text-success">view<span class="caret"></span></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">no view options</a></li>
-              </ul>
-            </li>
+        <a href="timer_pg.php?eventid={eventid}&mode=$display_mode" title="switch to $display_mode view" role="button" >
+            <span class="rm-navmenu-right rm-navmenu-icon text-success">
+                <span class="glyphicon glyphicon-transfer" aria-hidden="true" ></span>
+            </span>
+        </a>
 EOT;
     }
 
-// setup club menu
-    $club_menu = "";
-    if (!empty($params['links'])) {
-        foreach ($params['links'] as $link) {
-            $club_menu .= <<<EOT
+    // setup club local links menu
+    $club_bufr = "";
+    if (!empty($params['links']))
+    {
+        $club_links = "";
+        foreach ($params['links'] as $link)
+        {
+            $club_links .= <<<EOT
             <li ><a href="{$link['url']}" target="_blank">{$link['label']}</a></li>
 EOT;
         }
+
+        $club_bufr.=<<<EOT
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title="{club} Info">
+                <span class="rm-navmenu-right rm-navmenu-icon text-success"> 
+                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                    <span class="caret"></span>
+                </span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+                <li ><b>{club} links</b></li>
+                <li class="divider"></li>
+                $club_links
+            </ul>
+        </li>
+EOT;
+
     }
 
     $html = <<<EOT
-    
-<nav class="navbar navbar-default navbar-fixed-top">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand rm-brand-title" href="pickrace_pg.php?eventid={eventid}&page={page}&menu=true" target="_parent">
-        <span class="text-success" style="padding-right: 40px">{brand}</span>
-      </a>
-    </div>
-
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        $option_bufr
-      </ul>
-      
-      <ul class="nav navbar-nav navbar-right">
-        $view_bufr
-        <li>
-          <a href="help_pg.php?eventid={eventid}&page={$params['page']}&menu=true" >
-              <span class="rm-navmenu-right text-success">help</span>
-          </a>
-        </li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-              <span class="rm-navmenu-right text-success">{club} <span class="caret"></span></span>
-          </a>
-          <ul class="dropdown-menu" role="menu">
-              <li ><b>Local stuff &hellip;</b></li>
-              <li class="divider"></li>
-              $club_menu
-          </ul>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand rm-brand-title" href="$brand_href" target="_parent">
+                    <span class="rm-navmenu-icon text-success" style="padding-right: 40px">{brand}</span>
+                </a>
+            </div>
+        
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">$option_bufr</ul>
+                
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        $view_bufr
+                    </li>
+                    
+                    <li>
+                        <a href="help_pg.php?eventid={eventid}&page={$params['page']}" title="Help">
+                            <span class="rm-navmenu-right rm-navmenu-icon text-success">
+                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                            </span>
+                        </a>
+                    </li>
+                    $club_bufr
+                </ul>
+            </div>
+        </div>
+    </nav>
 EOT;
     return $html;
 }

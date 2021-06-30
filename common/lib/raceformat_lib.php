@@ -183,17 +183,19 @@ EOT;
  * @param $event
  * @return array|int
  */
-function getsignaldetail($event_o, $event)
+//function getsignaldetail($event_o, $event)
+function getsignaldetail($racecfg, $fleetcfg, $event)
 {
     $signal = array();
     $racecfgid = $event['event_format'];
+
     
     // get race config
-    $racecfg = $event_o->event_getracecfg($event['id'], $racecfgid);
+    //$racecfg = $event_o->event_getracecfg($event['id'], $racecfgid);
     if (!$racecfg) { return -1; }
     
     // get all fleet config 
-    $fleetcfg = $event_o->event_getfleetcfg($racecfgid);
+    //$fleetcfg = $event_o->event_getfleetcfg($racecfgid);
     if (!$fleetcfg) { return -2; }
     
     // convert sequence string into integer array

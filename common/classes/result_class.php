@@ -93,14 +93,6 @@ class RESULT
         return $filename;
     }
 
-// THIS IS NOW IN SERIESRESULT_CLASS.PHP
-//    public function get_series_filename($series)
-//    {
-//        // series file is the series code in the event record (i.e including year) with any
-//        // non-standard characters removed
-//        $filename = preg_replace('/[^a-zA-Z0-9\-\._]/', '', $series['event_seriescode']);
-//        return $filename.".htm";
-//    }
 
     public function get_inventory_filename()
     {
@@ -138,9 +130,15 @@ class RESULT
         return true;   // FIXME
     }
 
-    public function get_result_files($eventid)
+    public function get_result_files($eventid, $type="")
     {
-        $files = $this->db->db_get_rows("SELECT * FROM t_resultfile WHERE eventid = $eventid");
+        $where = "eventid = $eventid ";
+        if (!empty($type))
+        {
+            $where.= "result_type = '".strtolower($type)."' ";
+        }
+
+        $files = $this->db->db_get_rows("SELECT * FROM t_resultfile WHERE $where");
         return $files;
     }
 
@@ -315,9 +313,18 @@ EOT;
         }
 
         // get code information for codes used
-        $codes_info = $this->get_result_codes_used(array_unique($codes_used));
-        //u_writedbg("<pre>".print_r($codes_info,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
-        //echo "<pre>".print_r($codes_info,true)."</pre>";
+        $result_codes = $this->get_result_codes_used(array_unique($codes_used));
+        $codes_info = u_get_result_codes_info($result_codes, $codes_used);
+
+        $opts = array(
+            "inc-pagebreak" => false,                                                // page break after each fleet
+            "inc-codes"     => true,                                                 // include key of codes used
+            "inc-club"      => true,                                                 // include club name for each competitor
+            "inc-turnout"   => true,                                                 // include turnout statistics
+            "race-label"    => "number",                                             // use race number or date for labelling races
+            "club-logo"     => $_SESSION['baseurl']."/config/images/club_logo.jpg",  // if set include club logo
+            "styles" => file_get_contents($_SESSION['baseurl']."/config/style/result_std.css")     // styles to be used
+        );
 
         $fields = array(
             "club_name"     => $club['clubname'],
@@ -329,26 +336,22 @@ EOT;
             "event_ood"     => $ood['person'],
             "result_notes"  => $result_notes,
             "result_status" => $result_status,
-            "sys_website"   => $_SESSION['sys_website'],
             "sys_name"      => $_SESSION['sys_name'],
             "sys_version"   => $_SESSION['sys_version'],
+            "sys_release"   => $_SESSION['sys_release'],
+            "sys_copyright" => "Elmswood Software " . date("Y"),
             "pagetitle"     => $event['event_name']." ".$event['event_start'],
-            "styles"        => file_get_contents("./style/rm_report.css")
         );
 
         $params = array(
-            "style"         => "$loc/style/rm_report.css",   //"$loc/style/rm_export_classic.htm",
-            "pagination"    => $club['result_pagination'],
-            "add_codes"     => $club['result_addcodes'],
-            "inc_club"      => $include_club,
-            "inc_codes"     => $codes_info,
             "fleet"         => $fleet,
             "result"        => $result,
+            "opts"          => $opts,
+            "codes"         => $codes_info,
+            "sys_website"   => $_SESSION['sys_website']
         );
 
-        //u_writedbg("<pre>" . print_r($params, true) . "</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
         //echo "<pre>".print_r($params,true)."</pre>";
-
         $htm = $tmpl_o->get_template("race_sheet", $fields, $params);
 
         return $htm;

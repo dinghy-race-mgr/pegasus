@@ -61,10 +61,9 @@ unset($_SESSION["e_$eventid"]['enter_rst']);
 unset($_SESSION["e_$eventid"]['enter_err']);
 
 // ----- navbar -----------------------------------------------------------------------------
-
-$fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
-$params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
-$nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
+$nav_fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
+$nav_params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
+$nbufr = $tmpl_o->get_template("racebox_navbar", $nav_fields, $nav_params);
 
 // ----- left hand panel --------------------------------------------------------------------
 $lbufr = u_growlProcess($eventid, $page);

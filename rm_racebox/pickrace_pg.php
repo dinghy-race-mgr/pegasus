@@ -16,11 +16,11 @@ $page       = "pickrace";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
-require_once ("{$loc}/common/lib/raceformat_lib.php");
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/rota_class.php");
+require_once ("{$loc}/common/lib/raceformat_lib.php");
 
 // starts session and sets error reporting
 u_initpagestart("", $page, false);
@@ -42,10 +42,12 @@ $rota_o = new ROTA($db_o);
 $_SESSION['mode'] == "demo"? $status = "demo" : $status = "active";
 $events = $event_o->get_events("racing", $status, array("start" => $today, "end" => $today), array() );
 
+// echo "<pre>".print_r($_SESSION,true)."</pre>";
 
 // ----- navbar -----------------------------------------------------------------------------
-$nav_fields = array("page" => $page, "eventid" => 0, "brand" => "raceBox PICK RACE", "rm-website" => $_SESSION['sys_website']);
-$nbufr = $tmpl_o->get_template("pickrace_navbar", $nav_fields, array("links"=>$_SESSION['clublink']));
+$nav_fields = array("page" => $page, "eventid" => 0, "brand" => "raceBox Programme", "club" => $_SESSION['clubcode']);
+$nav_params = array("page"=> $page, "baseurl"=>$_SESSION['baseurl'], "links"=>$_SESSION['clublink']);
+$nbufr = $tmpl_o->get_template("racebox_navbar", $nav_fields, $nav_params );
 
 
 // ----- left hand panel --------------------------------------------------------------------
@@ -72,9 +74,11 @@ if ($events)
         $lbufr.= $tmpl_o->get_template("race_panel", $fields, array("status" => $event['event_status']));
 
         // add view format modal
-        $viewbufr = createdutypanel($rota_o->get_event_duties($eventid, ""), $eventid, "");
-        $viewbufr.= createfleetpanel ($event_o->event_getfleetcfg($event['event_format']), $eventid, "");
-        $viewbufr.= createsignalpanel(getsignaldetail($event_o, $event), $eventid, "");
+        $racecfg = $event_o->event_getracecfg($event['event_format'], $eventid);
+        $fleetcfg = $event_o->event_getfleetcfg($event['event_format']);
+        $viewbufr = createdutypanel($rota_o->get_event_duties($eventid), $eventid, "");
+        $viewbufr.= createfleetpanel ($fleetcfg, $eventid, "");
+        $viewbufr.= createsignalpanel(getsignaldetail($racecfg, $fleetcfg, $event), $eventid, "");
 
         $mdl_format['fields']['id']     = "format".$eventid;
         $mdl_format['fields']['body']   = $viewbufr;
@@ -111,11 +115,18 @@ $toggle_fields = array(
     "right-link"  => "rm_racebox.php?mode=demo"
 );
 $_SESSION['mode'] == "live" ? $toggle_fields['on'] = "left" : $toggle_fields['on'] = "right";
+
+//$copyright = <<<EOT
+//    <span class="text-success">
+//        <span class='glyphicon glyphicon-copyright-mark' aria-hidden='true'></span> {$_SESSION['sys_copyright']}
+//    </span>
+//EOT;
+
+
 $fields = array(
-    "l_foot" => "<span class='glyphicon glyphicon-copyright-mark' aria-hidden='true'></span> ".$_SESSION['sys_copyright'],
-//    "m_foot" => $tmpl_o->get_template("demo_button", array(), array("mode"=>$_SESSION['mode'])),
-      "m_foot" => $tmpl_o->get_template("toggle_button", array(), $toggle_fields),
-    "r_foot" => "{$_SESSION['sys_release']}  {$_SESSION['sys_version']}",
+    "l_foot" => $_SESSION['sys_name']." (".$_SESSION['sys_release'].") ".$_SESSION['sys_version'],
+    "m_foot" => $tmpl_o->get_template("toggle_button", array(), $toggle_fields),
+    "r_foot" => "<span class='glyphicon glyphicon-copyright-mark' aria-hidden='true'></span> {$_SESSION['sys_copyright']}",
     "style"  => ""
 );
 $fbufr = $tmpl_o->get_template("footer", $fields, array("fixed"=>true));

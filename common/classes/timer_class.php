@@ -40,7 +40,7 @@ class TIMER
         $this->db->db_update( 't_event', array("timerstart"=>$starttime), array("id"=>$this->eventid) );
 
         // set start times in session
-        $this->set_start_times($_SESSION["e_{$this->eventid}"]['rc_startscheme'], $_SESSION["e_{$this->eventid}"]['rc_startint']);
+        $this->set_start_times("start", $starttime, $_SESSION["e_{$this->eventid}"]['rc_startscheme'], $_SESSION["e_{$this->eventid}"]['rc_startint']);
 
         // set start times in t_racestate
         $this->set_fleet_times("inprogress", $starttime);
@@ -59,7 +59,7 @@ class TIMER
         $this->db->db_update( 't_event', array("timerstart"=>0), array("id"=>$this->eventid) );
 
         // initialise start times in session
-        $this->set_start_times($_SESSION["e_{$this->eventid}"]['rc_startscheme'], $_SESSION["e_{$this->eventid}"]['rc_startint']);
+        $this->set_start_times("stop", 0, $_SESSION["e_{$this->eventid}"]['rc_startscheme'], $_SESSION["e_{$this->eventid}"]['rc_startint']);
 
         // initialise start times in t_racestate
         $this->set_fleet_times("notstarted", $stoptime);
@@ -69,12 +69,30 @@ class TIMER
     }
 
 
-    private function set_start_times($scheme, $start_interval)
+    private function set_start_times($status, $time, $scheme, $start_interval)
     {
         for ($j=1; $j<=$_SESSION["e_{$this->eventid}"]['rc_numstarts']; $j++)
         {
-            $_SESSION["e_{$this->eventid}"]["st_$j"]['startdelay'] =  r_getstartdelay($j, $scheme, $start_interval);
-            $_SESSION["e_{$this->eventid}"]["st_$j"]['starttime']  = gmdate("H:i:s",0);
+
+            // set start delay in seconds
+            if ($_SESSION['mode'] == "demo")
+            {
+                $_SESSION["e_{$this->eventid}"]["st_$j"]['startdelay'] = 0;
+            }
+            else
+            {
+                $_SESSION["e_{$this->eventid}"]["st_$j"]['startdelay'] = r_getstartdelay($j, $scheme, $start_interval);
+            }
+
+            // set start clock time in hh:mm:ss
+            if ($status === "start")   // timer started
+            {
+                $_SESSION["e_{$this->eventid}"]["st_$j"]['starttime'] = gmdate("H:i:s", $time + $_SESSION["e_{$this->eventid}"]["st_$j"]['startdelay']);
+            }
+            else                            // timer stopped
+            {
+                $_SESSION["e_{$this->eventid}"]["st_$j"]['starttime'] = 0;
+            }
         }
     }
 
@@ -86,14 +104,11 @@ class TIMER
         for ($i=1; $i <= $_SESSION["$event"]['rc_numfleets']; $i++)    // loop over each fleet
         {
             $start_delay = $_SESSION["$event"]["st_{$_SESSION["$event"]["fl_$i"]['startnum']}"]['startdelay'];
-            if ($status === "inprogress")   // timer started
-            {                                   
-                $fleet_start = $time + $start_delay;
-            }
-            else                         // timer stopped
-            {
-                $fleet_start = 0;  
-            }
+            // set actual start time depending on timer status (started | stopped)
+
+
+            $status === "start" ?  $fleet_start = $time + $start_delay : $fleet_start = 0;
+
                         
             // set starttime and status in t_racestate
             $rsupdate = array(
@@ -103,12 +118,13 @@ class TIMER
                 "prevstatus" => $_SESSION["$event"]["fl_$i"]['status'],
                 "currentlap" => 0
             );
+
             $update = $this->db->db_update("t_racestate", $rsupdate, array("eventid"=>"$this->eventid", "race"=>"$i"));
-            $_SESSION["$event"]["fl_$i"]['status']    = $status;
-            $_SESSION["$event"]["fl_$i"]['starttime'] = $fleet_start; 
+            $_SESSION["$event"]["fl_$i"]['status']     = $status;
+            $_SESSION["$event"]["fl_$i"]['starttime']  = $fleet_start;
             $_SESSION["$event"]["fl_$i"]['startdelay'] = $start_delay;
 
-            $_SESSION["$event"]["st_{$_SESSION["$event"]["fl_$i"]['startnum']}"]['starttime'] = date("H:i:s", $fleet_start);
+            //$_SESSION["$event"]["st_{$_SESSION["$event"]["fl_$i"]['startnum']}"]['starttime'] = date("H:i:s", $fleet_start);
             //u_writedbg("<pre>".print_r($_SESSION["$event"]["fl_$i"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__); // debug:
         }      
     }

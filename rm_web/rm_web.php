@@ -35,7 +35,7 @@ elseif ($page == "pyanalysis"  AND $cfg['pages']['pyanalysis'])
 }
 elseif ($page == "error")
 {
-    $if_o->pg_none($problem, $symptom, $where, $fix);
+    $if_o->pg_none($problem, $symptom, $where, $fix);   // FIXME (probably should be $_SESSION['error']['problem'] etc
 }
 else    // not recognised - go to menu page
 {

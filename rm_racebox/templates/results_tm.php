@@ -22,7 +22,6 @@ function result_tabs($params = array())
     {
         $fleet = $_SESSION["e_$eventid"]["fl_$i"];
         $num_entries = $num_entries  = $_SESSION["e_$eventid"]["fl_$i"]['entries'];
-        //empty($params['data'][$i]) ? $count = 0 : $count = count($params['data'][$i]);
         $racetype = $_SESSION["e_$eventid"]["fl_$i"]['scoring'];
 
         // create TABS

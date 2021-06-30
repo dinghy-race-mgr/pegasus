@@ -857,7 +857,8 @@ class EVENT
         }
 
         $query = "SELECT a.id as id, seriescode, seriesname, a.seriestype as seriestype, b.seriestype as seriestypename,
-                  race_format, startdate, enddate, merge, classresults, discard, nodiscard, multiplier, avgscheme, dutypoints, maxduty
+                  race_format, startdate, enddate, merge, classresults, discard, nodiscard, multiplier, avgscheme, dutypoints, 
+                  maxduty, opt_upload, opt_style, opt_scorecode, opt_clubnames, opt_pagebreak, opt_racelabel
                   FROM t_series as a JOIN t_cfgseries as b ON a.seriestype=b.id WHERE a.active=1
                   AND seriescode = '$rootcode'  ORDER BY seriesname ASC";
         // echo "SERIES QUERY: $query<br>";

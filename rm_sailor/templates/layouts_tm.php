@@ -325,7 +325,7 @@ function list_events($params = array())
     }
     elseif ($params['numdays'] == 1 and strtotime($today) < strtotime($eventday))  // event(s) all on same day in future
     {
-        $when = "on ".date("l jS F", strtotime($params['event_day']));
+        $when = "on ".date("l jS F", strtotime($params['eventday']));
     }
     else                                                                           // multiple days
     {

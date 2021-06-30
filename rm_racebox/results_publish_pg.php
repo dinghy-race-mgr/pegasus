@@ -15,24 +15,24 @@
 $loc        = "..";       // <--- relative path from script to top level folder
 $page       = "publish";     //
 $scriptname = basename(__FILE__);
-require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("$loc/common/lib/util_lib.php");
 
 u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and sets error reporting
 
 // initialising language   
 //include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
-require_once ("{$loc}/common/classes/db_class.php");
-require_once ("{$loc}/common/classes/template_class.php");
-require_once ("{$loc}/common/classes/race_class.php");
-require_once ("{$loc}/common/classes/rota_class.php");
-require_once ("{$loc}/common/classes/event_class.php");
-require_once ("{$loc}/common/classes/result_class.php");
-require_once ("{$loc}/common/classes/seriesresult_class.php");
+require_once ("$loc/common/classes/db_class.php");
+require_once ("$loc/common/classes/template_class.php");
+require_once ("$loc/common/classes/race_class.php");
+require_once ("$loc/common/classes/rota_class.php");
+require_once ("$loc/common/classes/event_class.php");
+require_once ("$loc/common/classes/result_class.php");
+require_once ("$loc/common/classes/seriesresult_class.php");
 
 // templates
-$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php",
-    "./templates/results_tm.php", "../common/templates/race_results_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php",
+    "./templates/results_tm.php", "$loc/common/templates/race_results_tm.php", "$loc/common/templates/series_results_tm.php"));
 
 $pagestate = $_REQUEST['pagestate'];
 $eventid   = $_REQUEST['eventid'];
@@ -42,9 +42,9 @@ if (empty($pagestate) OR empty($eventid))
     u_exitnicely("results_publish_pg", $eventid, "errornum", "eventid or pagestate are missing");
 }
 
-$db_o    = new DB;                      // database object
-$event_o = new EVENT($db_o);            // event object
-$race_o  = new RACE($db_o, $eventid);   // race object
+$db_o    = new DB;                        // database object
+$event_o = new EVENT($db_o);              // event object
+$result_o  = new RESULT($db_o, $eventid); // result object
 
 $event = $event_o->get_event_byid($eventid);
 
@@ -84,7 +84,9 @@ elseif ($pagestate == "process")    // run through process workflow
     flush();
     sleep(1);
 
-    // STEP 1 - archive data
+    // -----------------------------------------------------------------------------------
+    // step 1 archive data
+    // -----------------------------------------------------------------------------------
     $step = 1;
     startProcess($step, $row_start[$step], "Archiving results data...", "warning");
     $result_o = new RESULT($db_o, $eventid);
@@ -92,7 +94,6 @@ elseif ($pagestate == "process")    // run through process workflow
     $status = process_archive();
     sleep(2);
 
-    // step 1 results for next stage
     if ($status['copy'] and $status['archive'])
     {
         endProcess($step, $row_start[$step], "success", "Results archived ");
@@ -110,7 +111,9 @@ elseif ($pagestate == "process")    // run through process workflow
         $success[1] = false;
     }
 
-    // STEP 2 - create results file
+    // -----------------------------------------------------------------------------------
+    // step 2 create race results file
+    // -----------------------------------------------------------------------------------
     if ($continue)
     {
         $step = 2;
@@ -118,7 +121,7 @@ elseif ($pagestate == "process")    // run through process workflow
 
         // create race result
         $fleet_msg = array(); // TODO this is a future use feature - displays individual notes for each fleet - currently not collected anywhere
-        $status = process_result_file($loc, $result_status, $include_club, $result_notes, $fleet_msg);
+        $status = process_result_file($loc, $include_club, $result_notes, $fleet_msg, $result_status);
         sleep(2);
 
         if ($status['success'])
@@ -136,20 +139,32 @@ elseif ($pagestate == "process")    // run through process workflow
             $success[2] = false;
         }
     }
-    
-    // STEP 3 - create series file - if applicable
+
+    // -----------------------------------------------------------------------------------
+    // step 3 create series results file - if required
+    // -----------------------------------------------------------------------------------
     if ($continue)    // go to next step
     {
         $step = 3;
 
-        //check if this event is part of series
-        $series = $event_o->event_in_series($eventid);
-
-        //echo "<pre>SERIES: ".print_r($series,true)."</pre>";
-        if ($series)
+        if (!empty($_SESSION["e_$eventid"]["ev_seriescode"]))
         {
+            $series = $event_o->event_in_series($eventid);
+
+            $opts = array(
+                "inc-pagebreak" => $series['opt_pagebreak'],                                          // page break after each fleet
+                "inc-codes"     => $series['opt_addcode'],                                            // include key of codes used
+                "inc-club"      => $series['opt_clubname'],                                           // include club name for each competitor
+                "inc-turnout"   => $series['opt_turnout'],                                            // include turnout statistics
+                "race-label"    => $series['opt_racelabel'],                                          // use race number or date for labelling races
+                "club-logo"     => $_SESSION['baseurl']."/config/images/club_logo.jpg",               // if set include club logo
+                "styles" => $_SESSION['baseurl']."/config/style/result_{$series['opt_style']}.css"    // styles to be used
+            );
+
+
             startProcess($step, $row_start[$step], "Updating series results ", "warning");
-            $status = process_series_file($eventid, $loc, $result_status, $include_club, $series);
+
+            $status = process_series_file($eventid, $opts, $series['seriescode'], $result_status);
             sleep(2);
 
             if ($status['success'])
@@ -161,8 +176,15 @@ elseif ($pagestate == "process")    // run through process workflow
             }
             else
             {
+                // we have an error - process any detail information
+                $err_detail_txt = "";
+                foreach ($status['detail'] as $detail)
+                {
+                    $err_detail_txt.= " | {$detail['type']} {$detail['code']}:  {$detail['msg']}";
+                }
+
                 endProcess($step, $row_start[$step], "fail", "Series results update FAILED ");
-                u_writelog("FAILED to update series results file", $eventid);
+                u_writelog("FAILED to update series results file [$err_detail_txt]", $eventid);
                 $continue = true;  // should transfer what we can
                 $success[3] = false;
             }
@@ -171,18 +193,20 @@ elseif ($pagestate == "process")    // run through process workflow
         {
             sleep(1);
             endProcess($step, $row_start[$step], "na", "No series result to update ");
-            u_writelog("not part of a series - no series result file to update", $eventid);
+            u_writelog("Not part of a series - no series result file to update", $eventid);
             $continue = true;
         }
     }
-    
 
-    // STEP 4 - post to website
+
+    // -----------------------------------------------------------------------------------
+    // step 4 post race, series, inventory file to website
+    // -----------------------------------------------------------------------------------
     if ($continue)
     {
         $step = 4;
 
-        if ($_SESSION['result_upload'])
+        if ($result_status != "embargoed")
         {
             startProcess($step, $row_start[$step], "Transferring results files to website ", "warning");
 
@@ -216,7 +240,7 @@ elseif ($pagestate == "process")    // run through process workflow
                     $success[4] = false;
                 }
             }
-            else
+            else                                            // report issue with inventory creation
             {
                 endProcess($step, $row_start[$step], "fail", "Results inventory file transfer FAILED");
                 $continue = false;
@@ -231,9 +255,10 @@ elseif ($pagestate == "process")    // run through process workflow
         }
     }
 
-    // Report end status
-    echo $tmpl_o->get_template("process_footer", array("top" => "{$row_start[5]}"),
-                               array("complete" => $success, "step" => $step));
+    // -----------------------------------------------------------------------------------
+    // step 5 report end status
+    // -----------------------------------------------------------------------------------
+    echo $tmpl_o->get_template("process_footer", array("top" => "{$row_start[5]}"), array("complete" => $success, "step" => $step));
     ob_flush();
     flush();
 }
@@ -385,7 +410,7 @@ function process_archive()
     global $result_o;
 
     $status['copy']    = $result_o->race_copy_results();      // copy data from t_race to t_results
-    $status['archive'] = $result_o->race_copy_archive();      // copy data from t_race/t_lap to a_race/a_lap
+    $status['archive'] = $result_o->race_copy_archive();      // copy data from t_race/t_lap/t_finish to a_<tables>>
 
     return $status;
 }
@@ -395,13 +420,12 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
 {
     global $result_o;
 
-    $race_bufr = $result_o->render_race_result($loc, $result_status, $include_club, $result_notes, $fleet_msg);
+    $race_bufr = $result_o->render_race_result($loc, $include_club, $result_notes, $fleet_msg, $result_status);
 
     // get file path and url
     $race_file = $result_o->get_race_filename();
     $race_path = $_SESSION['result_path'].DIRECTORY_SEPARATOR."races".DIRECTORY_SEPARATOR.$race_file;
     $race_url  = $_SESSION['result_url']."/races/".$race_file;
-    // u_writedbg("<pre>$race_path|$race_url</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
 
     // write html to file
     $num_bytes = file_put_contents($race_path, $race_bufr);
@@ -421,47 +445,71 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
                         'path' => $race_path, 'file' => $race_file);
 
         // add result file entry to t_resultfile
-        $listed = $result_o->add_result_file(array(
-            "result_status"        => $result_status,
-            "result_type"   => "race",
-            "result_format" => "htm",
-            "result_path"   => $race_url,
-            "result_notes"  => $result_notes ));
-        if (!$listed) {  $status['err'] = "file created but not added to results list [$race_path]"; }
+        if ($result_status != "embargoed")
+        {
+            $listed = $result_o->add_result_file(array(
+                "result_status" => $result_status,
+                "result_type"   => "race",
+                "result_format" => "htm",
+                "result_path"   => $race_url,
+                "result_notes"  => $result_notes ));
+            if (!$listed) { $status= array('success' => false, 'err' => "file created but not added to results list [$race_path]"); }
+        }
+
     }
     return $status;
 }
 
 
-function process_series_file($eventid, $loc, $result_status, $include_club, $series)
+function process_series_file($eventid, $opts, $series_code, $series_status)
 {
     global $result_o;
     global $db_o;
     global $tmpl_o;
 
-    $_SESSION['merge_classes'] = array();   // FIXME - get this to be part of config
-    $series_o = new SERIES($db_o, $eventid, $_SESSION['merge_classes']);
+    $series_o = new SERIES_RESULT($db_o, $series_code, $opts, false);
 
-    // calculate series result data
-    $options = array(
-        'race_cfg' => true,                // indicates whether all races in the series need to be of the same format
-        'merge'    => true,                // indicates whether to merge nominated classes
-        'club'     => $include_club,       // indicates whether to include club name in the results
-    );
-    $result = $series_o->series_result($series['seriescode'], $options, array(1000,1001,1002,1003,1004));
-
-    if ($result['success'])
+    // set data for series result
+    $err = $series_o->set_series_data();
+    if (!$err)
     {
-        // render series result
-        $series_bufr = $series_o->render_series_result($series, $loc, $result_status, $include_club, $result['output'], "rm_export_classic.htm");
+        // calculate series result
+        $err = $series_o->calc_series_result();
 
+        if (!$err)
+        {
+            // render series result into html
+            $sys_detail = array(
+                "sys_name"      => $_SESSION['sys_name'],
+                "sys_release"   => $_SESSION['sys_release'],
+                "sys_version"   => $_SESSION['sys_version'],
+                "sys_copyright" => $_SESSION['sys_copyright'],
+                "sys_website"   => $_SESSION['sys_website'],
+            );
+
+            $htm = $series_o->series_render_styled($sys_detail,  $series_status, file_get_contents($opts['styles']));
+        }
+        else
+        {
+            $err_detail = $series_o->get_err();
+        }
+    }
+    else
+    {
+        $err_detail = $series_o->get_err();
+    }
+
+    // FIXME output error summary
+
+    if (!$err and !empty($htm))
+    {
         // get file name, path and url for series file
-        $series_file = $series_o->get_series_filename($series['seriescode']);
+        $series_file = $series_o->get_series_filename();
         $series_path = $_SESSION['result_path'].DIRECTORY_SEPARATOR."series".DIRECTORY_SEPARATOR.$series_file;
         $series_url  = $_SESSION['result_url']."/series/".$series_file;
 
-        // output to file
-        $num_bytes = file_put_contents($series_path, $series_bufr);
+        // output htm to file
+        $num_bytes = file_put_contents($series_path, $htm);
 
         if ($num_bytes === FALSE)
         {
@@ -475,26 +523,31 @@ function process_series_file($eventid, $loc, $result_status, $include_club, $ser
         {
             $status = array('success' => true, 'err' => "series file created [$series_path]", 'url' => $series_url,
                 'path' => $series_path, 'file' => $series_file);
-            // add series result file entry to t_resultfile
-            $listed = $result_o->add_result_file(array(
-                "result_status" => $result_status, // FIXME can I assume this is the same as the race status
-                "result_type"   => "series",
-                "result_format" => "htm",
-                "result_path"   => $series_url,
-                "result_notes"  => "" ));   // FIXME what results notes should I add - if anything
-            if (!$listed)
+
+            if ($series_status != "embargoed")
             {
-                $status['err'] = "file created but not added to results list [$series_path]";
+                // add series result file entry to t_resultfile
+                $resultfile_arr = array(
+                    "result_status" => $series_status,
+                    "result_type"   => "series",
+                    "result_format" => "htm",
+                    "result_path"   => $series_url,
+                    "result_notes"  => "results file created by raceManager"
+                );
+                $listed = $result_o->add_result_file($resultfile_arr);
+                if (!$listed) { $status = array('success' => false, 'err' => "file created but not added to results list [$series_path]"); }
             }
         }
     }
     else
     {
-        $status = array('success' => false, 'err' => "series calculation failed [{$result['err']}]");
+        // return calculation error with
+        $status = array('success' => false, 'err' => "series calculation failed", "detail" => $err_detail);
     }
 
     return $status;
 }
+
 
 function process_transfer($files, $protocol)
 {

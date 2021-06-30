@@ -32,6 +32,7 @@ u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and set
 require_once ("{$loc}/common/classes/db_class.php"); 
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
+require_once ("{$loc}/common/classes/bunch_class.php");
 
 // app includes
 require_once ("./include/rm_racebox_lib.php");
@@ -44,6 +45,7 @@ $pagestate = u_checkarg("pagestate", "set", "", "");
 $fleet     = u_checkarg("fleet", "set", "", "");
 
 //echo "<pre>".print_r($_REQUEST,true)."</pre>";
+//exit();
 
 if ($eventid AND $pagestate)
 {
@@ -51,9 +53,17 @@ if ($eventid AND $pagestate)
     if ($fleet) { $_SESSION["e_$eventid"]['fleet_context'] = "fleet$fleet"; }
     $event_o = new EVENT($db_o);
     $race_o  = new RACE($db_o, $eventid);
+    if ($_SESSION['racebox_timer_bunch'])
+    {
+        $bunch_o  = new BUNCH($eventid, "timer_sc.php", $_SESSION["e_$eventid"]['bunch']);
+    }
+
 
     if ($pagestate == "timelap")
     {
+        echo "in timelap<br>";
+        //exit();
+
         $if_err = false;
         empty($_REQUEST['entryid']) ? $if_err = true : $entryid = $_REQUEST['entryid'];
         empty($_REQUEST['start'])   ? $if_err = true : $start = $_REQUEST['start'];
@@ -101,6 +111,16 @@ if ($eventid AND $pagestate)
                     u_growlSet($eventid, $page, $g_timer_firstfinish, array($boat));
                 }
                 u_writelog($msg, $eventid);
+
+                // remove entry from bunch if it exists
+                if ($_SESSION['racebox_timer_bunch'])
+                {
+                    $nodeid = $bunch_o->search_nodes($entryid);   // check if in bunch array
+                    if ($nodeid !== false)
+                    {
+                        unset($_SESSION["e_$eventid"]['bunch'][$nodeid]);
+                    }
+                }
             }
             else
             {
@@ -378,12 +398,38 @@ if ($eventid AND $pagestate)
         }
     }
 
+    elseif ($pagestate == "bunch")
+    {
 
 
+//        echo "<pre>".print_r($_SESSION["e_$eventid"]['bunch'],true)."</pre>";
 
+        if ($_REQUEST['action'] == "addnode")
+        {
+            $_REQUEST['lastlap'] == "true" ? $lastlap = true : $lastlap = false;
+            $node = array(
+                "entryid" => $_REQUEST['entryid'],
+                "lastlap" => $lastlap,
+                "label"   => $_REQUEST['boat'],
+                "link"    => "timer_sc.php?pagestate=timelap&eventid=$eventid".$_REQUEST['link']
+            );
 
+            $_SESSION["e_$eventid"]['bunch'] = $bunch_o->add_node($node);
+        }
+        elseif ($_REQUEST['action'] == "delnode")
+        {
+            $_SESSION["e_$eventid"]['bunch'] = $bunch_o->del_node($_REQUEST['node']);
+        }
+        elseif ($_REQUEST['action'] == "up")
+        {
+            $_SESSION["e_$eventid"]['bunch'] = $bunch_o->siftup_node($_REQUEST['node']);
+        }
+        elseif ($_REQUEST['action'] == "down")
+        {
+            $_SESSION["e_$eventid"]['bunch'] = $bunch_o->siftdown_node($_REQUEST['node']);
+        }
 
-
+    }
 
     else
     {

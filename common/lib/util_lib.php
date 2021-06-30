@@ -622,7 +622,6 @@ function u_initconfigfile($inifile)
     
     if (is_readable($inifile)) 
     {
-        //echo "|$inifile|<br>";
         $ini = parse_ini_file($inifile, false);
         foreach ($ini as $key=>$data)
         {
@@ -635,6 +634,10 @@ function u_initconfigfile($inifile)
                   $_SESSION["email"][$i] = $email;
                   $i++;
                }
+           }
+           elseif ($key == "sys_copyright")
+           {
+               $_SESSION["sys_copyright"] = "$data ".date("Y");
            }
            else
            {
@@ -1216,7 +1219,7 @@ function ftpFiles($loc, $protocol, $ftp_env, $files)
 
 function u_get_result_codes_info($result_codes, $codes_used = array())
 {
-    $output = $result_codes;
+    $output = array();
     if (!empty($codes_used))
     {
         $output = array();

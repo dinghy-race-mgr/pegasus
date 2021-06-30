@@ -69,9 +69,9 @@ $laps_set = checklapstatus($eventid);
 if (in_array(false, $laps_set, true)) { u_growlSet($eventid, $page, $g_race_laps_not_set); }
 
 // ----- navbar -----------------------------------------------------------------------------
-$fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
-$params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
-$nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
+$nav_fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
+$nav_params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
+$nbufr = $tmpl_o->get_template("racebox_navbar", $nav_fields, $nav_params);
 
 // ----- left hand panel --------------------------------------------------------------------
 $lbufr_top = u_growlProcess($eventid, $page);                      // check for confirmations to present
@@ -142,9 +142,12 @@ $rbufr_top.= $tmpl_o->get_template("modal", $mdl_change['fields'], $mdl_change);
 // race format  - modal
 $rbufr_top.= $tmpl_o->get_template("btn_modal", $btn_format['fields'], $btn_format);
 
-$viewbufr = createdutypanel($rota_o->get_event_duties($eventid), $eventid, "");
+$racecfg  = $event_o->event_getracecfg($event['event_format'], $eventid);
+$fleetcfg = $event_o->event_getfleetcfg($event['event_format']);
+$duties   = $rota_o->get_event_duties($eventid);
+$viewbufr = createdutypanel($duties, $eventid, "");
 $viewbufr.= createfleetpanel ($event_o->event_getfleetcfg($event['event_format']), $eventid, "");
-$viewbufr.= createsignalpanel(getsignaldetail($event_o, $event), $eventid, "");
+$viewbufr.= createsignalpanel(getsignaldetail($racecfg, $fleetcfg, $event), $eventid, "");
 
 $mdl_format['fields']['body'] = $viewbufr;
 $mdl_format['fields']['title'] = "Race Format: <b>$eventname</b>";

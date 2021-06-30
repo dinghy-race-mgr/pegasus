@@ -1,6 +1,6 @@
 <?php
 /**
- * help_pg.php - race administration page
+ * help_pg.php - racebox help page
  * 
  * This page provides context sensitive help
  * 
@@ -16,43 +16,49 @@ $page       = "help";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-$eventid = u_checkarg("eventid", "checkintnotzero","");
-$menu = u_checkarg("menu", "setbool", "true", "");
+$eventid = u_checkarg("eventid", "checkint","");                 // if zero - equested from pickrace_pg
 $helppage = u_checkarg("page", "set", "", "help");
 
-u_initpagestart($_REQUEST['eventid'], $page, true);  // starts session and sets error reporting
-//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");   // language file
+u_initpagestart($_REQUEST['eventid'], $page, false);             // starts session and sets error reporting
 
 // classes
 require_once("{$loc}/common/classes/db_class.php");
+require_once("{$loc}/common/classes/help_class.php");
 require_once("{$loc}/common/classes/template_class.php");
 
 //templates
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php",
-                             "./templates/help_tm.php", "./templates/pickrace_tm.php"));
+                             "./templates/help_tm.php"));
 
 // buttons/modals
 include("./include/help_ctl.inc");
 
 // ----- navbar -----------------------------------------------------------------------------
+$nav_fields = array("eventid" => $eventid, "brand" => "raceBox: HELP", "club" => $_SESSION['clubcode']);
+$nav_params = array("page" => $helppage, "baseurl"=>$_SESSION['baseurl'], "links" => $_SESSION['clublink']);
+if ($eventid != 0) { $nav_params['pursuit'] = $_SESSION["e_$eventid"]['pursuit']; }
 
-if ($eventid != 0)   // request from pickrace page
-{
-    $fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
-    $params = array("page" => $helppage, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
-    $nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
-}
-else
-{
-    $nav_fields = array("page" => $page, "eventid" => 0, "brand" => "raceBox PICK RACE", "rm-website" => $_SESSION['sys_website']);
-    $nbufr = $tmpl_o->get_template("pickrace_navbar", $nav_fields, array("links"=>$_SESSION['clublink']));
-}
+$nbufr = $tmpl_o->get_template("racebox_navbar", $nav_fields, $nav_params);
 
 // database connection
 $db_o = new DB;
 
-// body
-$body = $tmpl_o->get_template("under_construction", array("title" => "raceManager Help:", "info" => "We are still working on the help system"));
+// ----- left hand panel --------------------------------------------------------------------
+if ($eventid == 0)  // event called from pickrace page
+{
+    $help_o = new HELP($db_o, "pickrace", 0);
+}
+else
+{
+    $help_o = new HELP($db_o, $helppage, $_SESSION["e_$eventid"]['pursuit']);
+}
+$topics = $help_o->get_help();
+$lbufr =  $help_o->render_help();
+
+// ----- right hand panel --------------------------------------------------------------------
+$rbufr = "";
+$go_back = htmlspecialchars($_SERVER['HTTP_REFERER']);
+$rbufr.= "<a class='btn btn-lg btn-success' href='$go_back'><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span> &nbsp;Close Help</a>";
 
 // disconnect database
 $db_o->db_disconnect();
@@ -61,24 +67,24 @@ $db_o->db_disconnect();
 
 $eventid != 0 ? $title = $_SESSION["e_$eventid"]['ev_label'] : $title = "racebox" ;
 $fields = array(
-    "title"      => $eventid,
+    "title"      => $_SESSION["e_$eventid"]['ev_label'],
     "theme"      => $_SESSION['racebox_theme'],
     "loc"        => $loc,
     "stylesheet" => "./style/rm_racebox.css",
     "navbar"     => $nbufr,
-    "l_top"      => $body,
+    "l_top"      => $lbufr,
     "l_mid"      => "",
     "l_bot"      => "",
-    "r_top"      => "",
+    "r_top"      => "<div class=\"margin-top-40\">".$rbufr."</div>",
     "r_mid"      => "",
     "r_bot"      => "",
     "footer"     => "",
-    "body_attr"  => "onload=\"startTime()\""
+    "body_attr"  => ""
 );
 $params = array(
     "page"      => $page,
     "refresh"   => 0,
-    "l_width"   => 9,
+    "l_width"   => 10,
     "forms"     => true,
     "tables"    => true,
 );

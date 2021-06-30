@@ -58,6 +58,8 @@ class DB
 
     public function __construct()
 	{
+	    // echo "<pre>".print_r($_SESSION,true)."</pre>";
+
 	    global $connection;
 		mb_internal_encoding( 'UTF-8' );
 		mb_regex_encoding( 'UTF-8' );

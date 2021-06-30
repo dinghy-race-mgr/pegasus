@@ -17,58 +17,6 @@
  *    fm_addrace
  */
 
-function pickrace_navbar($params=array())
-{
-    // setup club menu
-    $club_menu = "";
-    if (!empty($params['links'])) {
-        foreach ($params['links'] as $link) {
-            $club_menu .= <<<EOT
-            <li ><a href="{$link['url']}" target="_blank">{$link['label']}</a></li>
-EOT;
-        }
-    }
-
-
-    $html = <<<EOT
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="{rm-website}">{brand}</a>
-        </div>
-    
-          <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="help_pg.php?eventid={eventid}&page={page}&menu=false" >
-                       <span class="rm-navmenu">help</span>
-                    </a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                       <span class="rm-navmenu">{$_SESSION['clubcode']} <span class="caret"></span></span>
-                    </a>
-                    <ul class="dropdown-menu pull-right" role="menu">
-                        $club_menu
-                    </ul>
-                </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-EOT;
-
-
-    return $html;
-}
-
 function race_panel($params=array())
 {
     empty($field['oodname']) ? "not listed" : $field['oodname'];
@@ -114,8 +62,8 @@ EOT;
                         
                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                             <div class="col-sm-6 col-md-6" data-toggle="popover" data-content="race format details" data-placement="top">
-                                <a role="button" href="" data-toggle="modal" data-target="#format{eventid}Modal">
-                                <span class="glyphicon glyphicon-list-alt" style="vertical-align: middle; font-size: 3em" ></span>
+                                <a class="text-primary" role="button" href="" data-toggle="modal" data-target="#format{eventid}Modal">
+                                     <span class="glyphicon glyphicon-list-alt" style="vertical-align: middle; font-size: 3em; color: inherit" ></span>
                                 </a>
                             </div>
                         </div>

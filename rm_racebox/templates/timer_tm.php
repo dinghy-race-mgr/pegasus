@@ -37,8 +37,8 @@ function timer_tabs($params = array())
         // create TABS
         $tabs.= <<<EOT
         <li role="presentation" class="lead text-center">
-              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">
-              <b>{$fleet['name']}</b> <br><small>[{$fleet['maxlap']} laps]</small>
+              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill" style="padding-top: 20px;">
+              <b>{$fleet['name']}</b>              
               </a>
         </li>
 EOT;
@@ -105,11 +105,11 @@ EOT;
             // create table rows
             $rows = "";
             $finish_btn_tmpl = <<<EOT
-        <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="%s" data-placement="top">
-        <a id="finish" href="%s" role="button" class="btn btn btn-%s btn-xs %s" target="">
-            <span class="glyphicon glyphicon-flag"></span>
-        </a>
-        </span>
+                <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="%s" data-placement="top">
+                <a id="finish" href="%s" role="button" class="btn btn btn-%s btn-xs %s" target="">
+                    <span class="glyphicon glyphicon-flag"></span>
+                </a>
+                </span>
 EOT;
             //echo "<pre>".print_r($params['timings'],true)."</pre>";
 
@@ -176,20 +176,30 @@ EOT;
                 $link = "timer_sc.php?eventid=$eventid&pagestate=setcode&fleet={$r['fleet']}
                          &entryid={$r['id']}&boat=$boat&racestatus={$r['status']}
                          &declaration={$r['declaration']}&lap={$r['lap']}&finishlap={$r['finishlap']}";
+
                 $code_link = get_code($r['code'], $link, "timercodes");
 
                 $edit_link = editlaps_html($eventid, $r['id'], $boat, $r['laptimes']);
+
+                $bunch_label = "";
+                $bunch_link = "";
+                if ($_SESSION['racebox_timer_bunch'])
+                {
+                    $bunch_link = bunch_html($eventid,$r['id'], $boat, $r, $cfg);
+                    $bunch_label = "<th width='5%' style='text-align: center'>bunch</th>";
+                }
 
                 $undo_link = undoboat_html($undoboat_link, $eventid, $r['id'], $boat, $r['laptimes']);
 
                 $rows.= <<<EOT
                     <tr class="table-data {$cfg['row_style']}">
-                        <td style="width: 1%;"><a href="$row_link"></a></td>
-                        <td class="$skip truncate" >{$r['class']}</td>
+                        <td style="width: 1%;"><a href="$row_link" ></a></td>
+                        <td class="$skip truncate"          >{$r['class']}</td>
                         <td class="$skip truncate" style="padding-left:0px;" >{$r['sailnum']}</td>
-                        <td class="$skip truncate" >{$r['helm']}</td>
-                        <td class="$skip" style="padding-left:15px;">$laptimes_bufr</td>
+                        <td class="$skip truncate"          >{$r['helm']}</td>
+                        <td class="$skip" style="padding-left:15px;"       >$laptimes_bufr</td>
                         <td class="rowlink-skip" style="text-align: left">$code_link</td>
+                        $bunch_link
                         <td class="rowlink-skip" style="text-align: center">$finish_btn</td>
                         <td class="rowlink-skip" style="text-align: center">$edit_link</td>
                         <td class="rowlink-skip" style="text-align: center">$undo_link</td>
@@ -211,6 +221,7 @@ EOT;
                             <th width="10%">helm</th>                           
                             <th width="">lap times</th>
                             <th width="5%" style="text-align: center">code</th>
+                            $bunch_label
                             <th width="5%" style="text-align: center">finish</th>                           
                             <th width="5%" style="text-align: center">edit</th>
                             <th width="5%" style="text-align: center">undo</th>
@@ -364,6 +375,34 @@ EOT;
 }
 
 
+function bunch_html($eventid, $entryid, $boat, $r, $cfg)
+{
+    $cfg['row_style'] == "lastlap" ? $lastlap = "true" : $lastlap = "false";
+//    $link = "timer_sc.php?eventid=$eventid&pagestate=timelap&fleet={$r['fleet']}&start={$r['start']}&entryid={$r['id']}&boat=$boat&lap={$r['lap']}&pn={$r['pn']}&etime={$r['etime']}";
+
+    //&entryid=$entryid&boat=$boat&lastlap=$lastlap&link=$link
+    $params = array(
+        "fleet"   => $r['fleet'],
+        "start"   => $r['start'],
+        "entryid" => $r['id'],
+        "boat"    => $boat,
+        "lap"     => $r['lap'],
+        "pn"      => $r['pn'],
+        "etime"   => $r['etime']
+    );
+    $link = urlencode("&".http_build_query($params));
+
+    $bufr = <<<EOT
+    <td class="rowlink-skip" style="text-align: center">
+        <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="save for bunch" data-placement="top">
+            <a id="bunchboat" type="button" href="timer_sc.php?eventid=$eventid&pagestate=bunch&action=addnode&entryid=$entryid&boat=$boat&lastlap=$lastlap&link=$link" role="button" class="btn btn-info btn-xs" >
+                <span class="glyphicon glyphicon-pushpin"></span>
+            </a>
+        </span>
+    </td>
+EOT;
+    return $bufr;
+}
 
 
 function problems($params=array())

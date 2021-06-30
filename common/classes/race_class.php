@@ -245,7 +245,8 @@ class RACE
     
     public function race_getresults($fleetnum=0)
     {                
-        $fields = "id, fleet, class, sailnum, helm, crew, club, pn, lap, etime, ctime, atime, penalty, points, code, declaration, protest, status, note";
+        $fields = "id, fleet, class, sailnum, helm, crew, club, pn, lap, finishlap, etime, ctime, atime, 
+                   penalty, points, code, declaration, protest, status, note";
         
         $where = " AND (code != 'DNC' OR code is null) ";
         if ($fleetnum > 0) { $where.= " AND fleet = $fleetnum "; }
@@ -738,6 +739,7 @@ class RACE
                     "club"       => $rs_data[$k]['club'],
                     "pn"         => $rs_data[$k]['pn'],
                     "lap"        => $rs_data[$k]['lap'],
+                    "finishlap"  => $rs_data[$k]['finishlap'],
                     "et"         => $rs_data[$k]['etime'],
                     "ct"         => $rs_data[$k]['atime'],
                     "code"       => $rs_data[$k]['code'],

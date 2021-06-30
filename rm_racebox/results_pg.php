@@ -113,18 +113,7 @@ $rbufr = "";
 
 // results status
 // FIXME temp solution - either fix it to be something useful or remove
-if ($_SESSION["e_$eventid"]['result_valid'])
-{
-    $rbufr.=<<<EOT
-    <h2><span class="glyphicon glyphicon-ok" aria-hidden="true" style="color: green"></span></h2>
-EOT;
-}
-else
-{
-    $rbufr.=<<<EOT
-    <h2><span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: red"></span></h2>
-EOT;
-}
+$_SESSION["e_$eventid"]['result_valid'] ? $rbufr.= "<p>Result Validated</p>"  :  $rbufr.= "<p>Result Invalid</p>";
 
 // retirements button
 if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")

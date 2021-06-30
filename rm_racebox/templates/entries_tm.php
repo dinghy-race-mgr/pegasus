@@ -383,13 +383,22 @@ function entry_tabs($params = array())
         $fleet = $_SESSION["e_$eventid"]["fl_$i"];
         $fleet_count = count($entries[$i]);
 
+//        $tabs.= <<<EOT
+//        <li role="presentation" class="lead text-center" >
+//              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">
+//              <b>{$fleet['name']}</b> <br><small>[{$fleet_count} boats]</small>
+//              </a>
+//        </li>
+//EOT;
+
         $tabs.= <<<EOT
-        <li role="presentation" class="lead text-center" >
-              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">
-              <b>{$fleet['name']}</b> <br><small>[{$fleet_count} boats]</small>
+        <li role="presentation" class="lead text-center">
+              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill" style="padding-top: 20px;">
+              <b>{$fleet['name']}</b>             
               </a>
         </li>
 EOT;
+
         if ($fleet_count <= 0)
         {
             $panels .= <<<EOT
@@ -455,7 +464,9 @@ EOT;
 
             // create table
             $panels.= <<<EOT
+            
             <div role="tabpanel" class="tab-pane" id="fleet$i" style="overflow-y: auto; height:75vh;">
+                <h4 class="text-info">$fleet_count entries</h4>
                 <table class="table table-striped table-condensed table-hover table-top-padding table-top-border" style="1em">
                     <thead class="text-info" style="border-bottom: 1px solid black;">
                         <tr >
