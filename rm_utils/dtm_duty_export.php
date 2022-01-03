@@ -165,16 +165,19 @@ foreach ($rs as $k=>$row)
         $duty_total++;
 
         // extract name into first and last name
-        // works for John Allen MBE, Fred van Tam etc. - doesn't work if middle name included
-        $name = trim(preg_replace('/\s+/', ' ',$duty['person']));
-        $parts = explode(" ", $name);
-        $first_name = array_shift($parts);
-        $last_name = implode(" ", $parts);
+        // works for John Allen MBE, Fred van Tam, Sir Paul McCartney OBE, Marie Anne Beard etc.
+        $name_out = get_name($duty['person']);
+        $first_name = $name_out["fn"];
+        $last_name = $name_out["fm"];
+//        $name = trim(preg_replace('/\s+/', ' ',$duty['person']));
+//        $parts = explode(" ", $name);
+//        $first_name = array_shift($parts);
+//        $last_name = implode(" ", $parts);
 
         $duty_type = $dutycode_map["{$duty['dutycode']}"];
 
         // check if duty member is in t_rotamember table
-        $exists = check_member($name);
+        $exists = check_member(trim(preg_replace('/\s+/', ' ',$duty['person'])));
         $exists ? $exist_check = "" : $exist_check = "**** duty person missing ****";
 
         $duty['swapable'] == "1" ? $swapable = "YES" : $swapable = "NO";
@@ -268,13 +271,35 @@ function html_flush()
     flush();
 }
 
+function get_name($name)
+{
+    $name_arr = explode(' ', $name);
+    $count = count($name_arr);
+    $last = end($name_arr);
+    if (strtolower($last) == "mbe" or strtolower($last) == "cbe" or strtolower($last) == "obe")
+    {
+        $lastname = $name_arr[$count-2]." ".$last;
+        $pointer = $count - 2;
+    }
+    else
+    {
+        $lastname = $name_arr[$count-1];
+        $pointer = $count - 1;
+    }
+    $firstname = implode(" ", array_slice($name_arr, 0, $pointer));
+
+    $name_out = array("fn"=>$firstname, "fm"=>$lastname);
+
+    return $name_out;
+}
+
 function check_member($name)
 {
     global $db_o;
 
     $exists = false;
 
-    // search database (ctblmember should have same as webcollect
+    // search database (t_rotamember should have same as webcollect
     $qname = addslashes($name);
     $sql = "SELECT * FROM t_rotamember WHERE concat(firstname,' ', familyname) LIKE '$qname%'";
     $rs = $db_o->db_get_rows($sql);

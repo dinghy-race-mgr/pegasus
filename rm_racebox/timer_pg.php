@@ -31,6 +31,12 @@ else {
 // check if display mode has changed - reset session variable if necessary
 $display_mode = u_checkarg("mode", "setnotnull", "");
 if ($display_mode) { $_SESSION['timer_options']['mode'] = $display_mode; }
+if (empty($_SESSION['timer_options']['mode']))  { $_SESSION['timer_options']['mode'] = "tabbed"; }
+
+// check if display view has changed - reset session variable if necessary
+$display_view = u_checkarg("view", "setnotnull", "");
+if ($display_view) { $_SESSION['timer_options']['view'] = $display_view; }
+if (empty($_SESSION['timer_options']['view']))  { $_SESSION['timer_options']['view'] = "sailnum"; }
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
@@ -57,7 +63,8 @@ $_SESSION['timer_options']['listorder']     = "class";     // options "class|pn|
 $_SESSION['timer_options']['laptime']       = "button";    // options "row|button|both"
 $_SESSION['timer_options']['notify_length'] = "on ";       // options "on|off"
 $_SESSION['timer_options']['notify_undo']   = "on";        // options "on|off"
-if (empty($_SESSION['timer_options']['mode']))  { $_SESSION['timer_options']['mode'] = "tabbed"; }
+
+
 
 $fleet_data = array();
 for ($fleetnum=1; $fleetnum<=$_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum++)
@@ -83,13 +90,13 @@ if (in_array(true, $problems, true))
 }
 else
 {
-    // default to tabbed display mode if not set
-    if (empty($_SESSION['timer_options']['mode'])) { $_SESSION['timer_options']['mode'] = "tabbed"; }
+//    // default to tabbed display mode if not set
+//    if (empty($_SESSION['timer_options']['mode'])) { $_SESSION['timer_options']['mode'] = "tabbed"; }
 
     // display boats as defined by display mode
     if ($_SESSION['timer_options']['mode'] == "tabbed")
     {
-        $rs_race = $race_o->race_gettimings();
+        $rs_race = $race_o->race_gettimings($_SESSION['timer_options']['listorder']);
         $lbufr.= $tmpl_o->get_template("timer_tabs", array(),
               array("eventid" => $eventid, "num-fleets" => $_SESSION["e_$eventid"]['rc_numfleets'], "timings" => $rs_race));
 
@@ -98,7 +105,39 @@ else
     }
     elseif ($_SESSION['timer_options']['mode'] == "list")
     {
-        $lbufr.= $tmpl_o->get_template("under_construction", array("title" => "Timer: List option", "info" => "We are still working on this"));
+        //echo "<pre><br><br><br>OPTION: {$_SESSION['timer_options']['view']}</pre>";
+        $rs_race = $race_o->race_gettimings($_SESSION['timer_options']['view']."-list");
+        if ($_SESSION['timer_options']['view'] == "fleet")
+        {
+            $out = array();
+            foreach ($rs_race as $entry)
+            {
+                $out[$entry['fleet']][] = $entry;
+            }
+        }
+        elseif ($_SESSION['timer_options']['view'] == "class")
+        {
+            $out = array();
+            foreach ($rs_race as $entry)
+            {
+                $out[$entry['class']][] = $entry;
+            }
+        }
+        else
+        {
+            $out = array();
+            foreach ($rs_race as $entry)
+            {
+                $i = $entry['sailnum'][0];
+                $out[$i][] = $entry;
+            }
+        }
+
+        //echo "<pre>".print_r($rs_race,true)."</pre>";
+        $lbufr.= $tmpl_o->get_template("timer_list", array(), 
+            array("eventid" => $eventid, "view" => $_SESSION['timer_options']['view'], "timings" => $out));
+
+        // add modals
     }
 
 

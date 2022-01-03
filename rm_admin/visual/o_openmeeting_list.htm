@@ -1,17 +1,176 @@
-<!doctype html>
-<HTML>
-  <head>
-		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		</head>
-
-	<BODY class>
-    <P>
-      &nbsp;
-    </P>
-    <P align="center">
-      <FONT color="#808080" 
-face="Verdana" size="3">*** Under Construction***</FONT>
-    </P>
-  </body>
-</html>
+<!DOCTYPE html>
+<HTML {$html_attrs}>
+  <HEAD>
+    <META http-equiv="X-UA-Compatible" content="IE=Edge">
+    <META name="viewport" content="width=device-width, initial-scale=1.0">
+    <TITLE>
+      {$pagetitle}
+    </TITLE>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <LINK href="styles/default.css" rel="stylesheet" type="text/css">
+    {BEGIN rtlCSS}
+      <LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">
+    {END rtlCSS}
+    {BEGIN styleCSSFiles}
+      <LINK href="{$stylepath}" rel="stylesheet" type="text/css">
+    {END styleCSSFiles}
+    <META name="GENERATOR" content="MSHTML 11.00.10570.1001">
+  </HEAD>
+  <BODY class="{$stylename} function-list" {$bodyattrs}>
+    {BEGIN body}
+      {$header}
+      <STYLE>
+        {$containerCss}
+      </STYLE>
+      {BEGIN container_menu}
+        <NAV class="navbar navbar-default" data-container="menu" data-pageid="{$pageid}" {$menu_chiddenattr}>
+          {BEGIN container_hdr}
+            <DIV class="navbar-header" data-container="hdr" data-pageid="{$pageid}" {$hdr_chiddenattr}>
+              {BEGIN logo_block}
+                <A class="navbar-brand" href="{$home_link}" data-brick="logo" data-pageid="{$pageid}" {$logo_hiddenattr}>
+                  {$logo}
+                </A>
+              {END logo_block}
+              {BEGIN collapse_block}
+                <BUTTON class="navbar-toggle collapsed" type="button" data-brick="bsnavbarcollapse" data-pageid="{$pageid}" data-target=".bs-navcontrolled" data-runner-toggle="collapse" {$bsnavbarcollapse_hiddenattr}>
+                  <SPAN class="sr-only">
+                    Toggle navigation
+                  </SPAN>
+                  <SPAN class="icon-bar">
+                  </SPAN>
+                </BUTTON>
+              {END collapse_block}
+            </DIV>
+          {END container_hdr}
+          {BEGIN container_menu_1}
+            <DIV class="bs-navform navbar-collapse bs-navcontrolled bs-hidden-xs" aria-expanded="false" data-container="menu_1" data-pageid="{$pageid}" {$menu_1_chiddenattr}>
+              {BEGIN menu_block}
+                {$menu main horizontal}
+              {END menu_block}
+              {BEGIN container_more}
+                <DIV class="navbar-right navbar-form" data-container="more" data-pageid="{$pageid}" {$more_chiddenattr}>
+                  {BEGIN more_list}
+                    <DIV class="btn-group bs-navsection" data-brick="morebutton" data-pageid="{$pageid}" {$morebutton_hiddenattr}>
+                      <BUTTON class="btn btn-default dropdown-toggle" aria-expanded="false" aria-haspopup="true" type="button" data-toggle="dropdown">
+                        <SPAN class="glyphicon glyphicon-cog">
+                        </SPAN>
+                        <SPAN class="caret">
+                        </SPAN>
+                      </BUTTON>
+                      <UL class="dropdown-menu">
+                        {BEGIN deleteselected_link}
+                          <LI class="massButton{$id} disabled">
+                            <A href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>
+                              Delete selected
+                            </A>
+                          </LI>
+                        {END deleteselected_link}
+                        <LI class="divider" role="separator">
+                        </LI>
+                      </UL>
+                    </DIV>
+                  {END more_list}
+                  {BEGIN security_block}
+                    <SPAN class="bs-navsection" id="login_block{$id}" data-brick="loggedas" data-pageid="{$pageid}" {$loggedas_hiddenattr}>
+                      {BEGIN guestloginbutton}
+                        <BUTTON class="btn btn-info" type="button" {$guestloginlink_attrs}>
+                          Login
+                        </BUTTON>
+                      {END guestloginbutton}
+                      {BEGIN loggedas_message}
+                        <SPAN class="dropdown">
+                          <BUTTON class="btn btn-info dropdown-toggle" aria-expanded="false" aria-haspopup="true" type="button" data-toggle="dropdown">
+                            <SPAN class="glyphicon glyphicon-user">
+                            </SPAN>
+                            {$username}
+                          </BUTTON>
+                          <UL class="dropdown-menu">
+                            {BEGIN logoutbutton}
+                              <LI>
+                                <A href="#" {$logoutlink_attrs}>
+                                  Log out
+                                </A>
+                              </LI>
+                            {END logoutbutton}
+                            {BEGIN adminarea_link}
+                              <LI>
+                                <A href="admin_rights_list.php" {$adminarealink_attrs}>
+                                  Admin Area
+                                </A>
+                              </LI>
+                            {END adminarea_link}
+                            {BEGIN changepwd_link}
+                              <LI>
+                                <A href="#" {$changepwdlink_attrs}>
+                                  Change password
+                                </A>
+                              </LI>
+                            {END changepwd_link}
+                          </UL>
+                        </SPAN>
+                      {END loggedas_message}
+                    </SPAN>
+                  {END security_block}
+                </DIV>
+              {END container_more}
+              {BEGIN container_more_1}
+                <DIV class="navbar-right navbar-form" data-container="more_1" data-pageid="{$pageid}" {$more_1_chiddenattr}>
+                  {BEGIN searchform_block}
+                    <SPAN class="form-group" data-brick="search" data-pageid="{$pageid}" {$search_hiddenattr}>
+                    </SPAN>
+                  {END searchform_block}
+                </DIV>
+              {END container_more_1}
+            </DIV>
+          {END container_menu_1}
+        </NAV>
+      {END container_menu}
+      <DIV class="bs-middle">
+        <DIV class="bs-topmiddle">
+          {BEGIN container_breadcrumbs}
+            <DIV class=" " data-container="breadcrumbs" data-pageid="{$pageid}" {$breadcrumbs_chiddenattr}>
+              {BEGIN container_bc}
+                <DIV class=" " data-container="bc" data-pageid="{$pageid}" {$bc_chiddenattr}>
+                  {BEGIN breadcrumbs}
+                    <OL class="breadcrumb">
+                      <LI>
+                        <A href="{$home_link}">
+                          <SPAN class="glyphicon glyphicon-home">
+                          </SPAN>
+                        </A>
+                        {$crumb_dropdown}
+                      </LI>
+                      {BEGIN crumb}
+                        <LI class="{$crumb_item_class}">
+                          {BEGIN crumb_title_link}
+                            <A {$crumb_attrs}>
+                              {$crumb_title}
+                            </A>
+                          {END crumb_title_link}
+                          {BEGIN crumb_title_span}
+                            <SPAN {$crumb_attrs}>
+                              {$crumb_title}
+                            </SPAN>
+                          {END crumb_title_span}
+                          {$crumb_dropdown}
+                        </LI>
+                      {END crumb}
+                    </OL>
+                  {END breadcrumbs}
+                </DIV>
+              {END container_bc}
+            </DIV>
+          {END container_breadcrumbs}
+        </DIV>
+        <DIV class="bs-left" {$blockattr_left}>
+        </DIV>
+        <div style="display: flex; justify-content: center;">
+          <img src="../../common/images/web_graphics/uc_hat_t.png" alt="under construction" height="200" width="200">
+        </div>
+        <DIV class="bs-right">
+        </DIV>
+        {$footer}
+      </DIV>
+    {END body}
+  </BODY>
+</HTML>

@@ -61,8 +61,6 @@ if ($eventid AND $pagestate)
 
     if ($pagestate == "timelap")
     {
-        echo "in timelap<br>";
-        //exit();
 
         $if_err = false;
         empty($_REQUEST['entryid']) ? $if_err = true : $entryid = $_REQUEST['entryid'];
@@ -89,7 +87,12 @@ if ($eventid AND $pagestate)
                 $newlap = $lap + 1;
                 $_SESSION["e_$eventid"]['result_valid']   = false;
                 $_SESSION["e_$eventid"]['result_publish'] = false;
-                $_SESSION["e_$eventid"]['lastclick']['entryid']   = $entryid;
+                $_SESSION["e_$eventid"]['lastclick'] = array(
+                    "entryid"   => $entryid,
+                    "clicktime" => $_SERVER['REQUEST_TIME'],
+                    "boat"      => $boat
+                );
+
                 $_SESSION["e_$eventid"]['lastclick']['clicktime'] = $_SERVER['REQUEST_TIME'];
                 update_racestate($eventid, $fleet, $status, $newlap);  # update racestate and session
 
@@ -160,8 +163,11 @@ if ($eventid AND $pagestate)
                 $newlap = $lap + 1;
                 $_SESSION["e_$eventid"]['result_valid']   = false;
                 $_SESSION["e_$eventid"]['result_publish'] = false;
-                $_SESSION["e_$eventid"]['lastclick']['entryid']   = $entryid;
-                $_SESSION["e_$eventid"]['lastclick']['clicktime'] = $_SERVER['REQUEST_TIME'];
+                $_SESSION["e_$eventid"]['lastclick'] = array(
+                    "entryid"   => $entryid,
+                    "clicktime" => $_SERVER['REQUEST_TIME'],
+                    "boat"      => $boat
+                );
                 update_racestate($eventid, $fleet, $status, $newlap);           // update racestate and session
                 u_writelog("lap $newlap: $boat finished ", $eventid);
                 if ($_SESSION['timer_options']['growl_finish'] == "on")
@@ -400,21 +406,41 @@ if ($eventid AND $pagestate)
 
     elseif ($pagestate == "bunch")
     {
-
-
 //        echo "<pre>".print_r($_SESSION["e_$eventid"]['bunch'],true)."</pre>";
 
         if ($_REQUEST['action'] == "addnode")
         {
+            $params = array(
+                "entryid" => $_REQUEST['entryid'],
+                "boat"    => $_REQUEST['boat'],
+                "fleet"   => $_REQUEST['fleet'],
+                "start"   => $_REQUEST['start'],
+                "lap"     => $_REQUEST['lap'],
+                "pn"      => $_REQUEST['pn'],
+                "etime"   => $_REQUEST['etime'],
+            );
+            //$link = urlencode("&".http_build_query($params));
+
             $_REQUEST['lastlap'] == "true" ? $lastlap = true : $lastlap = false;
             $node = array(
                 "entryid" => $_REQUEST['entryid'],
                 "lastlap" => $lastlap,
                 "label"   => $_REQUEST['boat'],
-                "link"    => "timer_sc.php?pagestate=timelap&eventid=$eventid".$_REQUEST['link']
+                "link"    => "timer_sc.php?eventid=$eventid&pagestate=timelap&".http_build_query($params)
             );
 
-            $_SESSION["e_$eventid"]['bunch'] = $bunch_o->add_node($node);
+            $success = $bunch_o->add_node($node);
+
+            if ($success)
+            {
+                $_SESSION["e_$eventid"]['bunch'] = $bunch_o->get_bunch();
+            }
+            else
+            {
+                u_growlSet($eventid, $page, $g_timer_addbunch_fail, array());
+            }
+
+
         }
         elseif ($_REQUEST['action'] == "delnode")
         {

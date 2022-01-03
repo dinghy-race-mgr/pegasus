@@ -39,12 +39,14 @@ class TEMPLATE
      */
     public function get_template($template, $fields, $data=array())
     {
+        //echo "<pre>".debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function']." | ".$template."</pre>";
+
         $func = "$template";
         $html = $func($data);
         foreach ($fields as $field => $value) {
             if (is_array($value))
             {
-                $err = "Bugger: $field is an array not a string  [$template: $field,$value]<br>";
+                $err = "Bugger: $field is an array not a string  [$template: $field, $value]<br>";
                 u_writedbg($err, __FILE__, __FUNCTION__, __LINE__); //debug:);
             }
             $html = str_replace("{" . $field . "}", $value, $html);
@@ -54,4 +56,3 @@ class TEMPLATE
 
 }
 
-?>

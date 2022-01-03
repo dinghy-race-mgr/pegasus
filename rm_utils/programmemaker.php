@@ -780,7 +780,10 @@ function pg_allocate_fixed_nonracing()
         if ($_SESSION['debug']) {echo "++++ {$event['name']}<br>";}
 
         if (strtolower($event['status'] == "schedule") and
-            ( $event['type']['category'] == "social" or $event['type']['category'] == "training"))
+            ( $event['type']['category'] == "social" or
+              $event['type']['category'] == "training" or
+              $event['type']['category'] == "cruise")
+            )
         {
             $date = $event['date']['value'];
 

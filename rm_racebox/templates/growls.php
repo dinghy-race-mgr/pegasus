@@ -153,7 +153,7 @@ $g_race_laps_not_set = array(
 );
 
 $g_race_lapset_fail = array(
-    "type" => "danger",
+    "type" => "warning",
     "msg"  => "%s",
 );
 
@@ -372,6 +372,11 @@ $g_timer_shorten_fail = array(
 $g_timer_setlaps_report = array(
     "type" => "success",
     "msg"  => "%s",
+);
+
+$g_timer_addbunch_fail = array(
+    "type" => "warning",
+    "msg"  => "Not added - already in bunch",
 );
 
 

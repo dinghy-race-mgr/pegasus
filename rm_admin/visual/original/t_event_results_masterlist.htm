@@ -90,21 +90,21 @@
 	.bs-gridcell[data-field=updby]:before {
 		content: "{$label t_event_results updby}";
 	}
+	.bs-gridcell[data-field=series_root]:before {
+		content: "{$label t_event_results series_root}";
+	}
+	.bs-gridcell[data-field=id1]:before {
+		content: "{$label t_event_results id1}";
+	}
 </style>
 <table {$masterlistgrid_hiddenattr} data-pageid="{$pageid}" data-brick="masterlistgrid" class="table rnr-b-mastergridfields rnr-gridtable bs-flexgrid" >
 		<thead>
 		<tr>
-			<th class="{$event_date_class}">{$label t_event_results event_date}</th>
-			<th class="{$series_code_class}">{$label t_event_results series_code}</th>
-			<th class="{$event_name_class}">{$label t_event_results event_name}</th>
 		</tr>
 	</thead>
 	
 	<tbody>
 		<tr>
-			<td class="{$event_date_class} bs-gridcell" data-field=event_date>{$event_date_mastervalue}</td>
-			<td class="{$series_code_class} bs-gridcell" data-field=series_code>{$series_code_mastervalue}</td>
-			<td class="{$event_name_class} bs-gridcell" data-field=event_name>{$event_name_mastervalue}</td>
 		</tr>
 	</tbody>
 

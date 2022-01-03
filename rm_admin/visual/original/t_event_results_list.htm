@@ -71,10 +71,14 @@
 		<span class="caret"></span>
 	</button>
 	<ul class="dropdown-menu">
-		
+				{BEGIN editselected_link}
+		<li class="massButton{$id} disabled"><a href="#" {$editselectedlink_attrs} {$editselectedlink_span} >Edit selected</a></li>
+		{END editselected_link}
+
 				
 				
-		
+				<li role="separator" class="divider"></li>	
+
 				{BEGIN asearch_link}
 		<li><a href="t_event_results_search.php" {$advsearchlink_attrs}>Advanced search</a></li>
 		{END asearch_link}
@@ -83,7 +87,14 @@
 		<li><a href=# id="showOptPanel{$id}">Show search panel</a></li>
 		{END searchPanelTopButtons}	
 		
-				
+				<li role="separator" class="divider"></li>	
+		{BEGIN saveSeachButton}
+		<li><a href=# id="saveSearch{$id}"  >Save search</a></li>
+		{END saveSeachButton}
+		{BEGIN savedSeachesButton}
+		<li><a {$saveSearchButtonAttrs} id="savedSearches{$id}">Saved searches:</a></li>
+		{END savedSeachesButton}
+		
 				
 				
 		
@@ -249,7 +260,13 @@
 
 {BEGIN record_controls_block}
 <span {$recordcontrol_hiddenattr} data-pageid="{$pageid}" data-brick="recordcontrol">
-			</span>
+				{BEGIN saveall_link}
+		<button type="button" class="btn btn-primary" {$savealllink_attrs} {$savealllink_span}>Save all</button>
+	{END saveall_link}
+	{BEGIN cancelall_link}
+		<button type="button" class="btn btn-default" {$cancelalllink_attrs} {$cancelalllink_span}>Cancel</button>
+	{END cancelall_link}
+</span>
 
 {END record_controls_block}
 
@@ -329,8 +346,8 @@
 		<a>
 		  <div class="checkbox">
 			<label>
-			  <input type="checkbox" id="hide_event_status" checked="checked" value="1" data-field="event_status">
-			  <span>{$label t_event_results event_status}</span>
+			  <input type="checkbox" id="hide_series_code" checked="checked" value="1" data-field="series_code">
+			  <span>{$label t_event_results series_code}</span>
 			</label>
 		</div>
 		</a>
@@ -339,8 +356,8 @@
 		<a>
 		  <div class="checkbox">
 			<label>
-			  <input type="checkbox" id="hide_series_code" checked="checked" value="1" data-field="series_code">
-			  <span>{$label t_event_results series_code}</span>
+			  <input type="checkbox" id="hide_event_status" checked="checked" value="1" data-field="event_status">
+			  <span>{$label t_event_results event_status}</span>
 			</label>
 		</div>
 		</a>
@@ -355,6 +372,16 @@
 		</div>
 		</a>
 		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_id1" checked="checked" value="1" data-field="id1">
+			  <span>{$label t_event_results id1}</span>
+			</label>
+		</div>
+		</a>
+		</li>
 	</ul>
 </div>
 
@@ -365,27 +392,6 @@
 </div>
 {END container_gridinfo}
 
-
-
-
-
-
-
-
-{BEGIN container_gridinfo_sort}
-<div {$gridinfo_sort_chiddenattr} data-pageid="{$pageid}" data-container="gridinfo_sort" class=" bottom-margin pull-right text-right col-md-12 "> 
-
-{BEGIN reorder_records}
-<div {$reorder_records_hiddenattr} data-pageid="{$pageid}" data-brick="reorder_records" class="form-inline sortby-ctrl">
-Sort by&nbsp;{$sortByDropdown}
-</div>
-
-{END reorder_records}
-
-
-
-</div>
-{END container_gridinfo_sort}
 
 
 
@@ -524,6 +530,12 @@ Sort by&nbsp;{$sortByDropdown}
 	.bs-gridcell[data-field=updby]:before {
 		content: "{$label t_event_results updby}";
 	}
+	.bs-gridcell[data-field=series_root]:before {
+		content: "{$label t_event_results series_root}";
+	}
+	.bs-gridcell[data-field=id1]:before {
+		content: "{$label t_event_results id1}";
+	}
 </style>
 <table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
 	<thead>
@@ -534,7 +546,12 @@ Sort by&nbsp;{$sortByDropdown}
 									<th iEditCont="all">&nbsp;</th>
 									{END listIcons_column}	
 
-									
+																		{BEGIN checkbox_column}
+									<th class="">
+										<input type="checkbox" {$checkboxheader_attrs}>
+									</th>
+									{END checkbox_column}
+
 																		{BEGIN t_event_results_dtable_column}
 									<th >&nbsp;</th>
 									{END t_event_results_dtable_column}
@@ -591,19 +608,6 @@ Sort by&nbsp;{$sortByDropdown}
 									
 									
 									
-									{BEGIN event_status_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$event_status_class}" data-field=event_status>
-									{BEGIN event_status_fieldheader}
-																				<span {$event_status_orderlinkattrs}>
-											{$label t_event_results event_status}
-										</span>
-									{END event_status_fieldheader}
-									</th>
-									{END event_status_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN series_code_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$series_code_class}" data-field=series_code>
 									{BEGIN series_code_fieldheader}
@@ -617,6 +621,19 @@ Sort by&nbsp;{$sortByDropdown}
 									
 									
 									
+									{BEGIN event_status_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$event_status_class}" data-field=event_status>
+									{BEGIN event_status_fieldheader}
+																				<span {$event_status_orderlinkattrs}>
+											{$label t_event_results event_status}
+										</span>
+									{END event_status_fieldheader}
+									</th>
+									{END event_status_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN result_notes_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$result_notes_class}" data-field=result_notes>
 									{BEGIN result_notes_fieldheader}
@@ -626,6 +643,19 @@ Sort by&nbsp;{$sortByDropdown}
 									{END result_notes_fieldheader}
 									</th>
 									{END result_notes_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN id1_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$id1_class}" data-field=id1>
+									{BEGIN id1_fieldheader}
+																				<span {$id1_orderlinkattrs}>
+											{$label t_event_results id1}
+										</span>
+									{END id1_fieldheader}
+									</th>
+									{END id1_fieldheadercolumn}
 									
 									
 									
@@ -653,46 +683,66 @@ Sort by&nbsp;{$sortByDropdown}
 	{END edit_link}
 	{END edit_column}
 
-		
+		{BEGIN inlineedit_column}
+	{BEGIN inlineedit_link}
+			<a class="glyphicon glyphicon-edit" {$inlineeditlink_attrs} title="Inline Edit"></a>
+	{END inlineedit_link}
+	{END inlineedit_column}
+	
 	<span data-hidden {$ieditbuttonsholder_attrs}></span>
 
 	
 		</td>	
 	{END listIcons_column}	
 
-	
+		{BEGIN checkbox_column}
+	<td  iEditCont="checkBox" class="bs-gridcheckbox" {$rowstyle} {$recordattrs}>
+	{BEGIN checkbox}
+	<input type="checkbox" {$checkbox_attrs}>
+	{END checkbox}
+	</td>
+	{END checkbox_column}
+
 		{BEGIN t_event_results_dtable_column}
 	<td class="rnr-nowrap bs-griddetails" {$rowstyle} {$recordattrs}>
 	
-			{BEGIN dtables_link}
-		
-							
-				
-							
-				
-							
-				
-				<a {$dtables_link_attrs} class="glyphicon glyphicon-th-list {$dtables_link_class}" title="Show details"></a>
-								{BEGIN t_message_childcount}
-				<a {$t_message_link_attrs} class="{$t_message_dlink_class}" title="Messages">
-					<span class="details-badge badge t_message_badge" {$t_message_childnumber_attr}>
-						{$t_message_childnumber}
-					</span></a>
-				{END t_message_childcount}
-								{BEGIN t_resultfile_childcount}
-				<a {$t_resultfile_link_attrs} class="{$t_resultfile_dlink_class}" title="Result Files">
-					<span class="details-badge badge t_resultfile_badge" {$t_resultfile_childnumber_attr}>
-						{$t_resultfile_childnumber}
-					</span></a>
-				{END t_resultfile_childcount}
-								{BEGIN t_result_childcount}
-				<a {$t_result_link_attrs} class="{$t_result_dlink_class}" title="Results">
-					<span class="details-badge badge t_result_badge" {$t_result_childnumber_attr}>
-						{$t_result_childnumber}
-					</span></a>
-				{END t_result_childcount}
-		{END dtables_link}
-	
+			{BEGIN t_result_dtable_link}
+		<span>
+			<a {$t_result_dtablelink_attrs}>
+			Results
+							<span {$t_result_childnumber_attr} dir="ltr">
+				{BEGIN t_result_childcount}
+					({$t_result_childnumber})
+				{END t_result_childcount}</span>
+			</a>
+						<br/>
+		</span>
+		{END t_result_dtable_link}
+		{BEGIN t_message_dtable_link}
+		<span>
+			<a {$t_message_dtablelink_attrs}>
+			Messages
+							<span {$t_message_childnumber_attr} dir="ltr">
+				{BEGIN t_message_childcount}
+					({$t_message_childnumber})
+				{END t_message_childcount}</span>
+			</a>
+						<br/>
+		</span>
+		{END t_message_dtable_link}
+		{BEGIN t_resultfile_dtable_link}
+		<span>
+			<a {$t_resultfile_dtablelink_attrs}>
+			Result Files
+							<span {$t_resultfile_childnumber_attr} dir="ltr">
+				{BEGIN t_resultfile_childcount}
+					({$t_resultfile_childnumber})
+				{END t_resultfile_childcount}</span>
+			</a>
+						<br/>
+		</span>
+		{END t_resultfile_dtable_link}
+
 	
 	</td>
 	{END t_event_results_dtable_column}
@@ -726,13 +776,6 @@ Sort by&nbsp;{$sortByDropdown}
 {END event_format_fieldcolumn}
 
 
-	{BEGIN event_status_fieldcolumn}
-	<td class="bs-gridcell {$event_status_class}"  data-field=event_status {$rowstyle} {$recordattrs}>
-		{$event_status_value}
-	</td>
-{END event_status_fieldcolumn}
-
-
 	{BEGIN series_code_fieldcolumn}
 	<td class="bs-gridcell {$series_code_class}"  data-field=series_code {$rowstyle} {$recordattrs}>
 		{$series_code_value}
@@ -740,11 +783,25 @@ Sort by&nbsp;{$sortByDropdown}
 {END series_code_fieldcolumn}
 
 
+	{BEGIN event_status_fieldcolumn}
+	<td class="bs-gridcell {$event_status_class}"  data-field=event_status {$rowstyle} {$recordattrs}>
+		{$event_status_value}
+	</td>
+{END event_status_fieldcolumn}
+
+
 	{BEGIN result_notes_fieldcolumn}
 	<td class="bs-gridcell {$result_notes_class}"  data-field=result_notes {$rowstyle} {$recordattrs}>
 		{$result_notes_value}
 	</td>
 {END result_notes_fieldcolumn}
+
+
+	{BEGIN id1_fieldcolumn}
+	<td class="bs-gridcell {$id1_class}"  data-field=id1 {$rowstyle} {$recordattrs}>
+		{$id1_value}
+	</td>
+{END id1_fieldcolumn}
 
 	{BEGIN endrecord_block}
 	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>

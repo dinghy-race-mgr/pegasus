@@ -15,10 +15,10 @@ $bunch_o = new BUNCH($bunch);
 
 $bunch_o->is_empty() ? $state = "empty" : $state = "not empty";
 echo "bunch is $state<br>";
-
-$node1 = array("label" => "Hornet 1234", "link"  => "http:www.bbc.co.uk", "fin"   => false, "comp"  => 123456);
-$node2 = array("label" => "HurricaneSX 123", "link"  => "http:www.bbc.co.uk", "fin"   => false, "comp"  => 123465);
-$node3 = array("label" => "Laser 123078", "link"  => "http:www.bbc.co.uk", "fin"   => true, "comp"  => 123654);
+// dummy data
+$node1 = array("entryid"=> 123456, "lastlap" => false, "label" => "Hornet 1234", "link"  => "http:www.bbc.co.uk");
+$node2 = array("entryid"=> 123465, "lastlap" => false, "label" => "HurricaneSX 123", "link"  => "http:www.bbc.co.uk");
+$node3 = array("entryid"=> 123458, "lastlap" => true, "label" => "Laser 123078", "link"  => "http:www.bbc.co.uk");
 
 $bunch = $bunch_o->add_node($node1);
 $bunch = $bunch_o->add_node($node2);
@@ -77,10 +77,24 @@ class BUNCH
 
     public function add_node($node = array())
     {
-        $this->bunch[] = $node;
-        $this->bunch = $this->reindex_nodes();
+        // check not a duplicate
+        $add = true;
+        foreach ($this->bunch as $current_node)
+        {
+            if (strtolower($node['label']) == strtolower($current_node['label']) )
+            {
+                $add = false;
+                break;
+            }
+        }
 
-        return $this->bunch;
+        if ($add)
+        {
+            $this->bunch[] = $node;
+            $this->bunch = $this->reindex_nodes();
+        }
+
+        return $add;
     }
 
     public function del_node($nodeid)

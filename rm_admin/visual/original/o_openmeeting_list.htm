@@ -416,19 +416,6 @@
 									{END checkbox_column}
 
 																		
-									{BEGIN id_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$id_class}" data-field=id>
-									{BEGIN id_fieldheader}
-																				<span {$id_orderlinkattrs}>
-											{$label o_openmeeting id}
-										</span>
-									{END id_fieldheader}
-									</th>
-									{END id_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN endrecordheader_block}
 									<th class="rnr-cs">&nbsp;</th>
 									
@@ -473,13 +460,6 @@
 	{END checkbox_column}
 
 	
-
-	{BEGIN id_fieldcolumn}
-	<td class="bs-gridcell {$id_class}"  data-field=id {$rowstyle} {$recordattrs}>
-		{$id_value}
-	</td>
-{END id_fieldcolumn}
-
 	{BEGIN endrecord_block}
 	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
 	{END endrecord_block}

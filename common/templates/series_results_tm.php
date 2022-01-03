@@ -172,8 +172,8 @@ EOT;
 EOT;
 
     // format results for each fleet
-    $discard = explode(",", $series['discard']);
-    !empty($discard[$series['races_complete']]) ? $discard_txt = "| discards: <b>{$discard[$series['races_complete']]}</b>" : $discard_txt = "";
+    //$discard = explode(",", $series['discard']);
+    !empty($discard[$series['races_complete']]) ? $discard_txt = "| discards: <b>{$series['discard'][$series['races_complete']]}</b>" : $discard_txt = "";
     $fleet_block = array();
     foreach($fleets as $i=>$fleet)
     {
@@ -222,7 +222,7 @@ EOT;
     // info section
     // codes list - including result code list if required)
     $code_info = "";
-    if ($opts['inc-codes']) { $code_info = format_result_codes($codes); }
+    if ($opts['inc-codes']) { $code_info = format_series_codes($codes); }
 
     // get race status info
     $race_status_info = format_event_status_info($races, $opts['race-label']);
@@ -280,7 +280,7 @@ EOT;
 }
 
 
-function format_result_codes($codes)
+function format_series_codes($codes)
 {
     $code_str = "";
     $count = 0;

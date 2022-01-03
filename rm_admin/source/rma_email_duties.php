@@ -10,4 +10,3 @@ Possible better to produce something that deals with a single event and then thi
 
 EOT;
 
-?>

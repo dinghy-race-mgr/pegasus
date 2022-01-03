@@ -65,10 +65,19 @@ if ($eventid and ($mode == "init" or $mode == "reset" or $mode == "rejoin"))
 }
 else
 {
-    u_exitnicely($scriptname, $eventid, "the requested event has an invalid record identifier [{$_REQUEST['arg']}]",
+    u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}] or mode [{$_REQUEST['mode']}]",
         "please contact your raceManager administrator");
 }
 
-header("Location: race_pg.php?eventid=$eventid");
-exit();
+if ($mode == "init")
+{
+    // first time accessing this event - show relevant reminders
+    header("Location: reminder_pg.php?eventid=$eventid&afterlink=race_pg.php?eventid=$eventid");
+}
+else
+{
+    // not first time accessing this event - go straight to race page
+    header("Location: race_pg.php?eventid=$eventid");
+}
+
 

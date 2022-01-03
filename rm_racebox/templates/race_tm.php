@@ -400,8 +400,8 @@ EOT;
 
 function race_detail_display($params=array())
 {
-    empty($params['tide-detail']) ? $tide_str = "": $tide_str = "[Tide: {tide-detail} ]";
-    empty($params['series-name']) ? $series_str = "-- n/a --" : $series_str = $params['series-name'];
+    empty($params['tide-detail']) ? $tide_str = "": $tide_str = "&nbsp;|&nbsp;<small>tide:</small> <span class=\"lead\"><b>{tide-detail}</b></span>";
+    empty($params['series-name']) ? $series_str = "none" : $series_str = $params['series-name'];
 
     // event statue
     $event_status = r_decoderacestatus($params['event-status']);
@@ -412,20 +412,21 @@ function race_detail_display($params=array())
     }
 
     $html = <<<EOT
-    <div class="margin-top-10">
-        <div class="row ">
+    <div class="margin-top-10 well">
+        <div class="row">
             <div class="col-md-6">
                 <h3 class="text-default" style="text-transform: uppercase;">{event-name}
                     <span class="text-$event_style"> - $event_status</span></h3>
             </div>
-
-            <div class="col-md-5 margin-top-10 well well-sm">
-                <dl class="dl-horizontal text-primary">
-                  <dt>start time</dt><dd>{start-time}&nbsp;&nbsp;&nbsp;$tide_str</dd>
-                  <dt>race officer</dt><dd>{ood-name}</dd>
-                  <dt>race format</dt><dd><span class="text-capitalize">{race-format}</span> - {race-starts} start(s)</dd>
-                  <dt>series</dt><dd>$series_str</dd>
-                </dl>
+            <div class="col-md-5 margin-top-10">
+                <h4 class="text-info">
+                  <small>start:</small> <span class="lead"><b>{start-time}</b></span>
+                  $tide_str
+                  &nbsp;|&nbsp;<small>ood:</small> <span class="lead"><b>{ood-name}</b></span><br>
+                  <small>format:</small> <span class="lead"><b>{race-format}</b></span>
+                  &nbsp;|&nbsp;<small>starts:</small> <span class="lead"><b>{race-starts}</b></span>
+                  &nbsp;|&nbsp;<small>series:</small> <span class="lead"><b>$series_str</b></span>
+                </h4>
             </div>
         </div>
     </div>
@@ -436,6 +437,8 @@ EOT;
 
 function race_status_display($params)
 {
+    global $db_o;
+
     $table = "";
     $eventid = $params['eventid'];
     if ($params['fleet-data'])
@@ -456,19 +459,22 @@ function race_status_display($params)
             }
             else
             {
-                if ($fleet['maxlap'] == 0)
-                {
-                    $style = "danger";
-                    $label = "set";
-                }
-                else
-                {
-                    $style = "success";
-                    $label = "change";
-                }
-                $setlaps_bufr = set_laps_control($eventid, $fleet['fleet'], $fleet['maxlap'], $style, $label);
+                $setlaps_bufr = $fleet['maxlap'];
+//                if ($fleet['maxlap'] == 0)
+//                {
+//                    $style = "danger";
+//                    $label = "set";
+//                }
+//                else
+//                {
+//                    $style = "success";
+//                    $label = "change";
+//                }
+//                $setlaps_bufr = set_laps_control($eventid, $fleet['fleet'], $fleet['maxlap'], $style, $label);
             }
 
+            // race type
+            $race_type = $db_o->db_getsystemlabel("race_type", $fleet['racetype']);
 
             // current lap
             $laps = $fleet['currentlap'];
@@ -501,12 +507,10 @@ function race_status_display($params)
 
             $table.= <<<EOT
             <tr class="lead">
-                <td class="truncate" >$fleetname</td>
-                <td style="text-align: left"> 
-                    {$fleet['start']} &nbsp;                   
-                </td>
+                <td class="truncate text-info" ><b>$fleetname</b></td>
+                <td style="text-align: center">{$fleet['start']}</td>
                 <td ><img class="img-responsive" src="../common/images/signal_flags/$warning_flag" alt="warning flag"></td>
-                <td style="text-align: center">{$fleet['racetype']}</td>
+                <td style="text-align: center">$race_type</td>
                 <td style="text-align: center">{$fleet['entries']}</td>
                 <td style="text-align: center">$num_racing</td>
                 <td align="center">$setlaps_bufr</td>
@@ -516,6 +520,14 @@ function race_status_display($params)
             </tr>
 EOT;
         }
+        $table.=<<<EOT
+        <tr>       
+            <td colspan="6">&nbsp;</td>
+            <td class="text-center"><a class="btn btn-md btn-info btn-block" href="#setlapsModal" data-toggle="modal">Set Laps</a></td>
+            <td colspan="3">&nbsp;</td>
+        </tr>
+EOT;
+
     }
     else
     {
@@ -525,8 +537,8 @@ EOT;
     }
 
     $html =<<<EOT
-    <div class="row">
-        <div class="col-md-11">
+    <div class="row margin-top-20">
+        <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading clearfix" >
                      <div class="row">
@@ -540,23 +552,24 @@ EOT;
                     </div> 
                 </div>
                 <div class="panel-body bg-default">
-                    <table id="racetable" class="table" style="position: relative; display: inline-block;">
+                    <table id="racetable" class="table table-striped table-hover" style="position: relative; display: inline-block;">
                         <thead class="text-info" >
-                            <th>fleet</th>
-                            <th>start</th>
-                            <th width="5%">&nbsp;</th>
-                            <th>scoring type</th>
-                            <th>entries</th>
-                            <th>no. racing</th>
-                            <th style="text-align: center">set laps</th>
-                            <th>current lap</th>
-                            <th>elapsed</th>
-                            <th>status</th>
+                            <th width="15%"><h4>fleet</h4></th>
+                            <th><h4 class="pull-right">start</h4></th>
+                            <th style="text-align: center" width="3%"><h4>&nbsp;</h4></th>
+                            <th style="text-align: center"><h4>scoring</h4></th>
+                            <th style="text-align: center"><h4>entries</h4></th>
+                            <th style="text-align: center"><h4>no. racing</h4></th>
+                            <th style="text-align: center"><h4>set laps</h4></th>
+                            <th style="text-align: center"><h4>current lap</h4></th>
+                            <th style="text-align: center"><h4>elapsed time</h4></th>
+                            <th style="text-align: center"><h4>status</h4></th>
                         </thead>
                         <tbody>
                             $table
                         </tbody>
                     </table>
+                    
                 </div>
             </div>
         </div>
@@ -566,37 +579,37 @@ EOT;
 }
 
 // ---- internal function called by template race_status_display
-function set_laps_control($eventid, $race, $maxlap, $style, $label)
-{
-    $html = <<<EOT
-    <div style="display:inline-block">
-    <div class="btn-group" >
-      <button type="button" class="btn btn-primary disabled btn-md " style="width: 5em; font-size: 0.8em">
-         <span >$maxlap laps</span>
-      </button>
-
-      <button type="button" class="btn btn-$style btn-md dropdown-toggle" style="width: 5em; font-size: 0.8em"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="caret"></span>
-        <span class="sr-only">Toggle Dropdown</span>
-        $label
-      </button>
-      <ul class="dropdown-menu">
-        <li><a href="race_sc.php?eventid=$eventid&fleet=$race&laps=1&pagestate=setlap">1 lap</a></li>
-        <li><a href="race_sc.php?eventid=$eventid&fleet=$race&laps=2&pagestate=setlap">2 laps</a></li>
-        <li><a href="race_sc.php?eventid=$eventid&fleet=$race&laps=3&pagestate=setlap">3</a></li>
-        <li><a href="race_sc.php?eventid=$eventid&fleet=$race&laps=4&pagestate=setlap">4</a></li>
-        <li><a href="race_sc.php?eventid=$eventid&fleet=$race&laps=5&pagestate=setlap">5</a></li>
-        <li><a href="race_sc.php?eventid=$eventid&fleet=$race&laps=6&pagestate=setlap">6</a></li>
-        <li role="separator" class="divider"></li>
-        <li><a href="#setlapsModal" data-toggle="modal">more ...</a></li>
-      </ul>
-    </div>
-    </div>
-EOT;
-
-    return $html;
-}
+//function set_laps_control($eventid, $race, $maxlap, $style, $label)
+//{
+//    $html = <<<EOT
+//    <div style="display:inline-block">
+//    <div class="btn-group" >
+//      <button type="button" class="btn btn-primary disabled btn-md " style="width: 5em; font-size: 0.8em">
+//         <span >$maxlap laps</span>
+//      </button>
+//
+//      <button type="button" class="btn btn-$style btn-md dropdown-toggle" style="width: 5em; font-size: 0.8em"
+//              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+//        <span class="caret"></span>
+//        <span class="sr-only">Toggle Dropdown</span>
+//        $label
+//      </button>
+//      <ul class="dropdown-menu">
+//        <li><a href="race_sc.php?eventid=$eventid&fleet=$race&laps=1&pagestate=setlap">1 lap</a></li>
+//        <li><a href="race_sc.php?eventid=$eventid&fleet=$race&laps=2&pagestate=setlap">2 laps</a></li>
+//        <li><a href="race_sc.php?eventid=$eventid&fleet=$race&laps=3&pagestate=setlap">3</a></li>
+//        <li><a href="race_sc.php?eventid=$eventid&fleet=$race&laps=4&pagestate=setlap">4</a></li>
+//        <li><a href="race_sc.php?eventid=$eventid&fleet=$race&laps=5&pagestate=setlap">5</a></li>
+//        <li><a href="race_sc.php?eventid=$eventid&fleet=$race&laps=6&pagestate=setlap">6</a></li>
+//        <li role="separator" class="divider"></li>
+//        <li><a href="#setlapsModal" data-toggle="modal">more ...</a></li>
+//      </ul>
+//    </div>
+//    </div>
+//EOT;
+//
+//    return $html;
+//}
 
 function fm_race_setlaps($params)
 {

@@ -19,6 +19,8 @@
 
 function race_sheet($params = array())
 {
+    //echo "<pre>".print_r($params,true)."</pre>";
+
     $opts = $params['opts'];
 
     $layout = array(
@@ -55,7 +57,7 @@ function race_sheet($params = array())
 
             <!-- Custom styles for this template - includes print styles  - obtained from .css file -->
             <style>
-               {styles}
+               {$opts['styles']}
             </style>
 
     </head>
@@ -127,8 +129,8 @@ EOT;
         // fleet data
         if (count($params["result"][$i]) > 0)   // results to display
         {
-            $fleet_cols_bufr = format_race_columns($fleet['scoring'], $layout, $params['inc_club']);
-            $fleet_data_bufr = format_race_data($params["result"][$i], $fleet['scoring'], $layout, $params['inc_club']);
+            $fleet_cols_bufr = format_race_columns($fleet['scoring'], $layout, $opts['inc-club']);
+            $fleet_data_bufr = format_race_data($params["result"][$i], $fleet['scoring'], $layout, $opts['inc-club']);
 
             $fleet_block[$i] = <<<EOT
                 <div>$fleet_detail_bufr</div>
@@ -145,7 +147,7 @@ EOT;
         {
             $fleet_block[$i] = <<<EOT
                 <div>$fleet_detail_bufr</div>
-                <div class="pull-center"><b>&hellip; no entries in this fleet &hellip;</b></div>
+                <div class="info-notes indent20">&hellip; no entries in this fleet &hellip;</div>
 EOT;
         }
     }
@@ -191,7 +193,7 @@ EOT;
     // info section
     // codes list - including result code list if required)
     $code_info = "";
-    if ($opts['inc-codes']) { $code_info = format_result_codes($params['codes']); }
+    if ($opts['inc-codes']) { $code_info = format_race_codes($params['codes']); }
 
     $info_bufr = <<<EOT
         <div class="spacer"></div>
@@ -292,7 +294,7 @@ EOT;
 }
 
 
-function format_result_codes($codes)
+function format_race_codes($codes)
 {
     // get codes into html bufr
     $code_str = "";

@@ -78,6 +78,7 @@ body         {font-family: Kalinga,verdana,sans-serif; font-size: 1.0em;}
 .table-points    {text-align: center; min-width: 4em;}
 .truncate        {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 
+.indent20        {padding-left: 20px;}
 .noshade         {background: none repeat scroll 0% 0% rgb(255, 255, 255);}
 .lightshade      {background: none repeat scroll 0% 0% rgb(238, 238, 238);}
 .darkshade       {background: none repeat scroll 0% 0% rgb(153, 153, 153);}

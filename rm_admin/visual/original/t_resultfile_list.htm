@@ -363,20 +363,29 @@
 	.bs-gridcell[data-field=eventid]:before {
 		content: "{$label t_resultfile eventid}";
 	}
-	.bs-gridcell[data-field=result_type]:before {
-		content: "{$label t_resultfile result_type}";
+	.bs-gridcell[data-field=folder]:before {
+		content: "{$label t_resultfile folder}";
 	}
-	.bs-gridcell[data-field=result_format]:before {
-		content: "{$label t_resultfile result_format}";
+	.bs-gridcell[data-field=format]:before {
+		content: "{$label t_resultfile format}";
 	}
-	.bs-gridcell[data-field=result_path]:before {
-		content: "{$label t_resultfile result_path}";
+	.bs-gridcell[data-field=filename]:before {
+		content: "{$label t_resultfile filename}";
 	}
-	.bs-gridcell[data-field=result_notes]:before {
-		content: "{$label t_resultfile result_notes}";
+	.bs-gridcell[data-field=label]:before {
+		content: "{$label t_resultfile label}";
 	}
-	.bs-gridcell[data-field=result_status]:before {
-		content: "{$label t_resultfile result_status}";
+	.bs-gridcell[data-field=notes]:before {
+		content: "{$label t_resultfile notes}";
+	}
+	.bs-gridcell[data-field=status]:before {
+		content: "{$label t_resultfile status}";
+	}
+	.bs-gridcell[data-field=rank]:before {
+		content: "{$label t_resultfile rank}";
+	}
+	.bs-gridcell[data-field=upload]:before {
+		content: "{$label t_resultfile upload}";
 	}
 	.bs-gridcell[data-field=upddate]:before {
 		content: "{$label t_resultfile upddate}";
@@ -404,67 +413,106 @@
 									{END checkbox_column}
 
 																		
-									{BEGIN result_type_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$result_type_class}" data-field=result_type>
-									{BEGIN result_type_fieldheader}
-																				<span {$result_type_orderlinkattrs}>
-											{$label t_resultfile result_type}
+									{BEGIN folder_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$folder_class}" data-field=folder>
+									{BEGIN folder_fieldheader}
+																				<span {$folder_orderlinkattrs}>
+											{$label t_resultfile folder}
 										</span>
-									{END result_type_fieldheader}
+									{END folder_fieldheader}
 									</th>
-									{END result_type_fieldheadercolumn}
+									{END folder_fieldheadercolumn}
 									
 									
 									
 									
-									{BEGIN result_format_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$result_format_class}" data-field=result_format>
-									{BEGIN result_format_fieldheader}
-																				<span {$result_format_orderlinkattrs}>
-											{$label t_resultfile result_format}
+									{BEGIN format_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$format_class}" data-field=format>
+									{BEGIN format_fieldheader}
+																				<span {$format_orderlinkattrs}>
+											{$label t_resultfile format}
 										</span>
-									{END result_format_fieldheader}
+									{END format_fieldheader}
 									</th>
-									{END result_format_fieldheadercolumn}
+									{END format_fieldheadercolumn}
 									
 									
 									
 									
-									{BEGIN result_path_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$result_path_class}" data-field=result_path>
-									{BEGIN result_path_fieldheader}
-																				<span {$result_path_orderlinkattrs}>
-											{$label t_resultfile result_path}
+									{BEGIN label_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$label_class}" data-field=label>
+									{BEGIN label_fieldheader}
+																				<span {$label_orderlinkattrs}>
+											{$label t_resultfile label}
 										</span>
-									{END result_path_fieldheader}
+									{END label_fieldheader}
 									</th>
-									{END result_path_fieldheadercolumn}
+									{END label_fieldheadercolumn}
 									
 									
 									
 									
-									{BEGIN result_notes_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$result_notes_class}" data-field=result_notes>
-									{BEGIN result_notes_fieldheader}
-																				<span {$result_notes_orderlinkattrs}>
-											{$label t_resultfile result_notes}
+									{BEGIN filename_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$filename_class}" data-field=filename>
+									{BEGIN filename_fieldheader}
+																				<span {$filename_orderlinkattrs}>
+											{$label t_resultfile filename}
 										</span>
-									{END result_notes_fieldheader}
+									{END filename_fieldheader}
 									</th>
-									{END result_notes_fieldheadercolumn}
+									{END filename_fieldheadercolumn}
 									
 									
 									
 									
-									{BEGIN result_status_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$result_status_class}" data-field=result_status>
-									{BEGIN result_status_fieldheader}
-																				<span {$result_status_orderlinkattrs}>
-											{$label t_resultfile result_status}
+									{BEGIN notes_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$notes_class}" data-field=notes>
+									{BEGIN notes_fieldheader}
+																				<span {$notes_orderlinkattrs}>
+											{$label t_resultfile notes}
 										</span>
-									{END result_status_fieldheader}
+									{END notes_fieldheader}
 									</th>
-									{END result_status_fieldheadercolumn}
+									{END notes_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN status_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$status_class}" data-field=status>
+									{BEGIN status_fieldheader}
+																				<span {$status_orderlinkattrs}>
+											{$label t_resultfile status}
+										</span>
+									{END status_fieldheader}
+									</th>
+									{END status_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN rank_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$rank_class}" data-field=rank>
+									{BEGIN rank_fieldheader}
+																				<span {$rank_orderlinkattrs}>
+											{$label t_resultfile rank}
+										</span>
+									{END rank_fieldheader}
+									</th>
+									{END rank_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN upload_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$upload_class}" data-field=upload>
+									{BEGIN upload_fieldheader}
+																				<span {$upload_orderlinkattrs}>
+											{$label t_resultfile upload}
+										</span>
+									{END upload_fieldheader}
+									</th>
+									{END upload_fieldheadercolumn}
 									
 									
 									
@@ -496,7 +544,12 @@
 	<span data-hidden {$ieditbuttonsholder_attrs}></span>
 
 	
-		</td>	
+		{BEGIN view_column}
+	{BEGIN view_link}
+			<a class="glyphicon glyphicon-search" {$viewlink_attrs} title="View"></a>
+	{END view_link}
+	{END view_column}
+	</td>	
 	{END listIcons_column}	
 
 		{BEGIN checkbox_column}
@@ -509,39 +562,60 @@
 
 	
 
-	{BEGIN result_type_fieldcolumn}
-	<td class="bs-gridcell {$result_type_class}"  data-field=result_type {$rowstyle} {$recordattrs}>
-		{$result_type_value}
+	{BEGIN folder_fieldcolumn}
+	<td class="bs-gridcell {$folder_class}"  data-field=folder {$rowstyle} {$recordattrs}>
+		{$folder_value}
 	</td>
-{END result_type_fieldcolumn}
+{END folder_fieldcolumn}
 
 
-	{BEGIN result_format_fieldcolumn}
-	<td class="bs-gridcell {$result_format_class}"  data-field=result_format {$rowstyle} {$recordattrs}>
-		{$result_format_value}
+	{BEGIN format_fieldcolumn}
+	<td class="bs-gridcell {$format_class}"  data-field=format {$rowstyle} {$recordattrs}>
+		{$format_value}
 	</td>
-{END result_format_fieldcolumn}
+{END format_fieldcolumn}
 
 
-	{BEGIN result_path_fieldcolumn}
-	<td class="bs-gridcell {$result_path_class}"  data-field=result_path {$rowstyle} {$recordattrs}>
-		{$result_path_value}
+	{BEGIN label_fieldcolumn}
+	<td class="bs-gridcell {$label_class}"  data-field=label {$rowstyle} {$recordattrs}>
+		{$label_value}
 	</td>
-{END result_path_fieldcolumn}
+{END label_fieldcolumn}
 
 
-	{BEGIN result_notes_fieldcolumn}
-	<td class="bs-gridcell {$result_notes_class}"  data-field=result_notes {$rowstyle} {$recordattrs}>
-		{$result_notes_value}
+	{BEGIN filename_fieldcolumn}
+	<td class="bs-gridcell {$filename_class}"  data-field=filename {$rowstyle} {$recordattrs}>
+		{$filename_value}
 	</td>
-{END result_notes_fieldcolumn}
+{END filename_fieldcolumn}
 
 
-	{BEGIN result_status_fieldcolumn}
-	<td class="bs-gridcell {$result_status_class}"  data-field=result_status {$rowstyle} {$recordattrs}>
-		{$result_status_value}
+	{BEGIN notes_fieldcolumn}
+	<td class="bs-gridcell {$notes_class}"  data-field=notes {$rowstyle} {$recordattrs}>
+		{$notes_value}
 	</td>
-{END result_status_fieldcolumn}
+{END notes_fieldcolumn}
+
+
+	{BEGIN status_fieldcolumn}
+	<td class="bs-gridcell {$status_class}"  data-field=status {$rowstyle} {$recordattrs}>
+		{$status_value}
+	</td>
+{END status_fieldcolumn}
+
+
+	{BEGIN rank_fieldcolumn}
+	<td class="bs-gridcell {$rank_class}"  data-field=rank {$rowstyle} {$recordattrs}>
+		{$rank_value}
+	</td>
+{END rank_fieldcolumn}
+
+
+	{BEGIN upload_fieldcolumn}
+	<td class="bs-gridcell {$upload_class}"  data-field=upload {$rowstyle} {$recordattrs}>
+		{$upload_value}
+	</td>
+{END upload_fieldcolumn}
 
 	{BEGIN endrecord_block}
 	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>

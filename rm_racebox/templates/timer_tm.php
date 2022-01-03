@@ -1,7 +1,330 @@
 <?php
 
+function timer_list($params = array())
+{
+    // get display for list view
+
+    // view selector buttons
+    $view_arr = array(
+        "sailnum" => array ("label"=>"Sail No.", "mode"=>"list", "style"=>"btn-default", "params"=>""),
+        "class"   => array ("label"=>"Class", "mode"=>"list", "style"=>"btn-default", "params"=>""),
+        "fleet"   => array ("label"=>"Fleet", "mode"=>"list", "style"=>"btn-default", "params"=>""),
+        "tab"     => array ("label"=>"Tabbed", "mode"=>"tabbed", "style"=>"btn-default", "params"=>""),
+    );
+
+    $view_option = "";
+    foreach ($view_arr as $view=>$val)
+    {
+        $view == $params['view'] ? $btn_state = "btn-warning" : $btn_state = "btn-default";
+        $view == "tab" ? $view_str = "" : $view_str = "&view=$view";
+        $optlink = "timer_pg.php?eventid={$params['eventid']}&mode={$val['mode']}$view_str";
+
+        $view_option.= <<<EOT
+            <a class="btn btn-md $btn_state text-center lead" href="$optlink">{$val['label']}</a>
+EOT;
+    }
+
+    // get boat display
+    $view_bufr = timer_list_view($params['eventid'], $params['timings'], $params['view'], 1);
+
+    $last_click_txt = "";
+    if (array_key_exists("boat", $_SESSION["e_{$params['eventid']}"]['lastclick']))
+    {
+        $last_click_txt = "<blockquote><h4>Last Time Recorded: {$_SESSION["e_{$params['eventid']}"]['lastclick']['boat']}</h4></blockquote>";
+    }
+
+    // final page body layout
+    $html = <<<EOT
+    <div class="margin-top-40" >
+        <div class="btn-group pull-left"  style="display: block;">$view_option</div>
+        <div class="pull-right text-info"  style="display: block;">$last_click_txt</div>
+        <div class="clearfix"></div>
+            $view_bufr
+    </div>
+EOT;
+
+    return $html;
+}
+
+function timer_list_view($eventid, $data, $view, $rows = 1)
+{
+    $timelap_link = "timer_sc.php?eventid=$eventid&pagestate=timelap";
+    $undo_link = "timer_sc.php?eventid=$eventid&pagestate=undoboat";
+    $bunch_link = "timer_sc.php?eventid=$eventid&pagestate=bunch&action=addnode";
+    $finish_link = "timer_sc.php?eventid=$eventid&pagestate=finish";
+    $edit_link = "";  // fixme
+
+    if ($view == "fleet")
+    {
+        $configured = true;
+        $category = array();
+        $dbuf = array();
+        for ($i=1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
+        {
+            $category[$i] = $_SESSION["e_$eventid"]["fl_$i"]['code'];
+            $dbufr[$i] = array();
+        }
+
+        if ($configured) {
+            foreach ($data as $item => $group) {
+                foreach ($group as $entry) {
+                    $dbufr[$item][] = array(
+                        "entryid" => $entry['id'],
+                        "class"   => $entry['class'],
+                        "sailnum" => $entry['sailnum'],
+                        "boat"    => "{$entry['class']} - {$entry['sailnum']}",
+                        "fleet"   => $entry['fleet'],
+                        "start"   => $entry['start'],
+                        "lap"     => $entry['lap'],
+                        "code"    => $entry['code'],
+                        "pn"      => $entry['pn'],
+                        "etime"   => $entry['etime'],
+                    );
+                }
+            }
+        }
+    }
+    elseif ($view == "class")
+    {
+        $configured = true;
+        $classes = array();
+        if (array_key_exists("racebox_class_category", $_SESSION))
+        {
+            $classes = explode("|", $_SESSION["racebox_class_category"]);
+        }
+        if (empty($classes))
+        {
+            $configured = false;
+        }
+        else
+        {
+            $category = array();
+            for ($i=1; $i <= count($classes); $i++)
+            {
+                $category[$i] = $classes[$i-1];
+            }
+            $category[$i+1] = "MISC";
+        }
+
+        if ($configured) {
+            $dbuf = array();
+            for ($i = 1; $i <= count($category); $i++) {
+                $dbufr[$i] = array();
+            }
+
+            foreach ($data as $class => $group) {
+                foreach ($group as $entry) {
+                    $set = false;
+                    for ($i = 1; $i < count($category); $i++) {
+                        if (strpos(strtolower($entry['class']), strtolower($category[$i])) !== false) {
+                            $dbufr[$i][] = array(
+                                "entryid" => $entry['id'],
+                                "class"   => $entry['class'],
+                                "sailnum" => $entry['sailnum'],
+                                "boat"    => "{$entry['class']} - {$entry['sailnum']}",
+                                "fleet"   => $entry['fleet'],
+                                "start"   => $entry['start'],
+                                "lap"     => $entry['lap'],
+                                "code"    => $entry['code'],
+                                "pn"      => $entry['pn'],
+                                "etime"   => $entry['etime'],
+                            );
+                            $set = true;
+                            break;
+                        }
+                    }
+
+                    if (!$set) {                                    // add to misc group
+                        $dbufr[count($category)][] = array(
+                            "entryid" => $entry['id'],
+                            "class"   => $entry['class'],
+                            "sailnum" => $entry['sailnum'],
+                            "boat"    => "{$entry['class']} - {$entry['sailnum']}",
+                            "fleet"   => $entry['fleet'],
+                            "start"   => $entry['start'],
+                            "lap"     => $entry['lap'],
+                            "code"    => $entry['code'],
+                            "pn"      => $entry['pn'],
+                            "etime"   => $entry['etime'],
+                        );
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        $configured = true;
+        $category = array(1=>"1", 2=>"2", 3=>"3", 4=>"4", 5=>"5", 6=>"6", 7=>"7", 8=>"8", 9=>"9", 0=>"0",);
+        $dbufr = array(1=>array(), 2=>array(), 3=>array(), 4=>array(), 5=>array(), 6=>array(), 7=>array(), 8=>array(), 9=>array(), 0=>array() );
+
+        if ($configured) {
+            foreach ($data as $item => $group) {
+                foreach ($group as $entry) {
+
+                    $dbufr[$item][] = array(
+                        "entryid" => $entry['id'],
+                        "class"   => $entry['class'],
+                        "sailnum" => $entry['sailnum'],
+                        "boat"    => "{$entry['class']} - {$entry['sailnum']}",
+                        "fleet"   => $entry['fleet'],
+                        "start"   => $entry['start'],
+                        "lap"     => $entry['lap'],
+                        "code"    => $entry['code'],
+                        "pn"      => $entry['pn'],
+                        "etime"   => $entry['etime'],
+                    );
+                }
+            }
+        }
+    }
+
+
+    if ($configured) {
+        // use col-2 unless more than 5 categories
+        count($category) <= 5 ? $cols = 2 : $cols = 1;
+
+        $label_bufr = "<div class=\"row\">";
+        $data_bufr = "<div class=\"row\" style=\"margin-left: 10px; margin-bottom: 10px\">";
+        foreach ($category as $i => $label) {
+            // category labels
+            $label_bufr .= <<<EOT
+            <div class="col-md-$cols text-center"><h4>$label</h4></div>
+EOT;
+
+            // boat buttons
+            $data_bufr .= "<div class=\"col-md-$cols\" style=\"padding: 0px 0px 0px 0px;\">";
+            foreach ($dbufr[$i] as $entry) {
+                // fixme this will a) need to have links and b) change depending on race type
+                // fixme - finish will only be required for average lap
+
+                $laps = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['maxlap'];
+                $status = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['status'];
+                $scoring = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['scoring'];
+
+                /*
+                button color states:
+                     -  racing not last lap (info)       (laps > 0 and lap < laps)
+                     -  racing last lap (warning)        (laps > 0 and lap = laps - 1 or average lap race is finishing
+                     -  racing finished (default)        (laps > 0 and lap = laps)
+
+                hover - should display:  class sailnum lap laptime code
+                */
+
+                $bcolor = "btn-info";
+                $state = "racing";
+// debug
+//            if ($entry['entryid'] == 183)
+//            {
+//                echo "<pre>{$entry['lap']}, $laps, $status, $scoring</pre>";
+//                exit();
+//            }
+
+                if (($laps > 0 and $entry['lap'] == $laps - 1)
+                    OR ($status == "finishing" AND $scoring == "average" AND $entry['lap'] < $laps))  // on last lap
+                {
+                    $bcolor = "btn-warning";
+                    $state = "lastlap";
+                } elseif ($laps > 0 and $entry['lap'] == $laps) // finished
+                {
+                    $bcolor = "btn-default";
+                    $state = "finished";
+                }
+
+                $label = $entry['sailnum'];
+
+                $laptime = gmdate("H:i:s", $entry['etime']);
+
+                $popup = "{$entry['class']}<br><small>lap {$entry['lap']} - $laptime - {$entry['code']}</small>";
+
+                $state == "lastlap" ? $bunch_link .= "&lastlap=true" : $bunch_link .= "&lastlap=false";
+
+                unset($entry['class']);
+                unset($entry['sailnum']);
+
+                $params_list = "&" . http_build_query($entry);
+
+                $finish_option = "";
+                if ($scoring == "average") {
+                    $finish_option = <<<EOT
+                <li><a href="$finish_link$params_list">Finish</a></li>
+EOT;
+                }
+
+                $options_bufr = <<<EOT
+                <ul class="dropdown-menu">
+                    <li><a href="$undo_link$params_list">Undo Timing</a></li>
+                    <li><a href="$bunch_link$params_list">Bunch</a></li>
+                    $finish_option
+                    <li><a href="timer_sc.php?">Edit*</a></li>
+                </ul>
+EOT;
+
+                $data_bufr .= <<<EOT
+                <div class="btn-group btn-block" role="group" aria-label="...">
+                    <a type="button" href="$timelap_link$params_list" class="btn $bcolor btn-xs" style="width:70%" 
+                        data-toggle="tooltip" data-placement="top" title="$popup"">
+                        <div class="pull-left">$label</div>
+                    </a>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-primary btn-xs dropdown-toggle" 
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </button>
+                        $options_bufr
+                    </div>
+                </div>
+
+EOT;
+            }
+            $data_bufr .= "</div>";
+
+        }
+        $label_bufr .= "</div>";
+        $data_bufr .= "</div>";
+
+
+        $html = $label_bufr . $data_bufr;
+    }
+    else
+    {
+        $html = <<<EOT
+        <div class="pull-left text-info"  style="display: block;">
+            <blockquote>
+                <h4>This view is not configured - please contact your system administrator</h4>
+            </blockquote>
+        </div>
+EOT;
+
+    }
+
+    return $html;
+}
+
+
+function timer_list_class($data, $rows = 1)
+{
+    $html = <<<EOT
+    <h4>This option is still under development</h4>
+EOT;
+
+    return $html;
+}
+
+function timer_list_fleet($data, $rows = 1)
+{
+    $html = <<<EOT
+    <h4>This option is still under development</h4>
+EOT;
+
+    return $html;
+}
+
+
 function timer_tabs($params = array())
 {
+
+    // display for tabbed view
 
     $eventid = $params['eventid'];
 
@@ -12,7 +335,7 @@ function timer_tabs($params = array())
         "default"  => array("row_style" => "default", "label_style" => "label-primary", "annotation" => ""),
         "racing"   => array("row_style" => "racing", "label_style" => "label-default", "annotation" => " <span class='text-primary glyphicon glyphicon-time'></span> "),
         "finished" => array("row_style" => "finished", "label_style" => "label-finished", "annotation" => " FINISHED"),
-        "lastlap"  => array("row_style" => "lastlap", "label_style" => "label-danger", "annotation" => "<span class='text-danger'> LAST LAP</span>"),
+        "lastlap"  => array("row_style" => "lastlap", "label_style" => "label-danger", "annotation" => "<span class='text-info'> LAST LAP</span>"),
         "excluded" => array("row_style" => "excluded", "label_style" => "label-primary", "annotation" => " EXCLUDED"),
     );
 
@@ -20,19 +343,18 @@ function timer_tabs($params = array())
     $timelap_link  = $url_base."&pagestate=timelap&fleet=%s&start=%s&entryid=%s&boat=%s&lap=%s&pn=%s&etime=%s";
     $finish_link_tmpl   = $url_base."&pagestate=finish&fleet=%s&start=%s&entryid=%s&boat=%s&lap=%s&pn=%s&etime=%s";
     $undoboat_link = $url_base."&pagestate=undoboat&entryid=%s";
-//    $setcode_link  = $url_base."&pagestate=setcode&fleet=%s&entryid=%s&boat=%s&racestatus=%s";
+//  $setcode_link  = $url_base."&pagestate=setcode&fleet=%s&entryid=%s&boat=%s&racestatus=%s";
 
 
     //echo "<pre>".print_r($_SESSION["e_$eventid"],true)."</pre>";
     for ($i = 1; $i <= $params['num-fleets']; $i++)   // loop for each fleet
     {
+        // fixme - would be good not to use session variables
         $fleet        = $_SESSION["e_$eventid"]["fl_$i"];
         $num_entries  = $_SESSION["e_$eventid"]["fl_$i"]['entries'];
         $num_racing   = count($params['timings'][$i]);
         $all_finished = "";
         $laps_btn     = "";
-
-
 
         // create TABS
         $tabs.= <<<EOT
@@ -107,7 +429,7 @@ EOT;
             $finish_btn_tmpl = <<<EOT
                 <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="%s" data-placement="top">
                 <a id="finish" href="%s" role="button" class="btn btn btn-%s btn-xs %s" target="">
-                    <span class="glyphicon glyphicon-flag"></span>
+                    <span class="glyphicon glyphicon-volume-up"></span>
                 </a>
                 </span>
 EOT;
@@ -134,7 +456,6 @@ EOT;
                         {
                             $finish_btn  = vsprintf($finish_btn_tmpl, array("finish boat", $finish_link, "danger", " "));
                         }
-
                     }
                     else                                                              // not on last lap
                     {
@@ -185,7 +506,8 @@ EOT;
                 $bunch_link = "";
                 if ($_SESSION['racebox_timer_bunch'])
                 {
-                    $bunch_link = bunch_html($eventid,$r['id'], $boat, $r, $cfg);
+                    $cfg['row_style'] == "lastlap" ? $lastlap = "true" : $lastlap = "false";
+                    $bunch_link = bunch_html($eventid, $r['id'], $boat, $r, $lastlap);
                     $bunch_label = "<th width='5%' style='text-align: center'>bunch</th>";
                 }
 
@@ -375,12 +697,10 @@ EOT;
 }
 
 
-function bunch_html($eventid, $entryid, $boat, $r, $cfg)
+function bunch_html($eventid, $entryid, $boat, $r, $lastlap)
+    // creates button to add a boat to the bunch list
 {
-    $cfg['row_style'] == "lastlap" ? $lastlap = "true" : $lastlap = "false";
-//    $link = "timer_sc.php?eventid=$eventid&pagestate=timelap&fleet={$r['fleet']}&start={$r['start']}&entryid={$r['id']}&boat=$boat&lap={$r['lap']}&pn={$r['pn']}&etime={$r['etime']}";
-
-    //&entryid=$entryid&boat=$boat&lastlap=$lastlap&link=$link
+    // array to pass data to bunch process
     $params = array(
         "fleet"   => $r['fleet'],
         "start"   => $r['start'],
@@ -388,19 +708,22 @@ function bunch_html($eventid, $entryid, $boat, $r, $cfg)
         "boat"    => $boat,
         "lap"     => $r['lap'],
         "pn"      => $r['pn'],
-        "etime"   => $r['etime']
+        "etime"   => $r['etime'],
+        "lastlap" => $lastlap
     );
-    $link = urlencode("&".http_build_query($params));
+
+    $link_txt = "timer_sc.php?eventid=$eventid&pagestate=bunch&action=addnode&".http_build_query($params);
 
     $bufr = <<<EOT
     <td class="rowlink-skip" style="text-align: center">
         <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="save for bunch" data-placement="top">
-            <a id="bunchboat" type="button" href="timer_sc.php?eventid=$eventid&pagestate=bunch&action=addnode&entryid=$entryid&boat=$boat&lastlap=$lastlap&link=$link" role="button" class="btn btn-info btn-xs" >
+            <a id="bunchboat" type="button" href="$link_txt" role="button" class="btn btn-info btn-xs" >
                 <span class="glyphicon glyphicon-pushpin"></span>
             </a>
         </span>
     </td>
 EOT;
+
     return $bufr;
 }
 

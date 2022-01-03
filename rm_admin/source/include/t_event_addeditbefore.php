@@ -20,16 +20,6 @@ if ($values['event_type'] == "racing") {
         $msg .= "- default start scheme has changed and the start interval must be set<br>";
     }
 
-//    // check if race is part of series but no series specified
-//    $array = explode(" ", strtolower($values['event_name']));
-//    if (in_array('series', $array))
-//    {
-//        if (empty($values['series_code']))
-//        {
-//            $msg .= "- event name implies a series - but no series specified<br>";
-//        }
-//    }
-
     // check provided series code exists
     if (!empty($values['series_code']) and ($values['series_code']))
     {

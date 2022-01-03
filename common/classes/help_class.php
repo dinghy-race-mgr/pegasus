@@ -3,9 +3,9 @@
 
 */
 
-/*
+
 // for test purposes
-$page       = "help";     //
+/*$page       = "help";     //
 $scriptname = basename(__FILE__);
 require_once ("../lib/util_lib.php");
 require_once ("./db_class.php");
@@ -20,13 +20,11 @@ $_SESSION['db_port'] = "3306";
 $_SESSION['db_name'] = "pegasus";
 $_SESSION['sql_debug'] = false;
 $db_o = new DB;
-$help_o = new HELP($db_o, "race", "average");
+//$help_o = new HELP($db_o, "race", array("pursuit"=>0, "numrace"=>1, "name"=>"", "format"=>"", "date"=>"");
+$help_o = new HELP($db_o, "reminder", array("pursuit"=>1, "numrace"=>2, "name"=>"demo series", "format"=>"1", "date"=>"2021-11-28"));
 
-echo "<pre>get help ...</pre>";
 $topics = $help_o->get_help();
-echo "<pre>".count($topics)." topics ...</pre>";
 //$htm =  $help_o->render_help();
-
 $htm =  $help_o->render_reminders();
 
 $tmpl_o = new TEMPLATE(array("../templates/general_tm.php", "../../rm_racebox/templates/layouts_tm.php"));
@@ -38,13 +36,20 @@ class HELP
     private $db;
 
     //Method: construct class object
-    public function __construct(DB $db, $page, $pursuit = false)
+    public function __construct(DB $db, $page, $constraints = array())
     {
         $this->db = $db;
         $this->page = strtolower($page);
-        $this->pursuit = $pursuit;
+        $this->constraints = $constraints;
         $this->topics = array();
 
+        /* constraints are (* only relevent to reminder page)
+        pursuit - true if a pursuit race
+        multirace - true if more than one race today
+        name* - event name
+        format* - race format id
+        date* - event date (yyyy-mm-dd)
+        */
     }
 
 
@@ -53,15 +58,65 @@ class HELP
         $where = " category LIKE '%".$this->page."%' and active = 1 ";
         $topics = $this->db->db_get_rows("SELECT * FROM t_help WHERE $where ORDER by rank ASC");
 
-        // remove pursuit topics if not a pursuit race
-        if (!$this->pursuit)
+        foreach ($topics as $k=>$topic)
         {
-            foreach ($topics as $k=>$topic)
+            // if not a pursuit race and this topic is only for pursuit races - remove
+            if (!$this->constraints['pursuit'])
             {
-                if ($topic['pursuit'])  { unset($topics[$k]); }
+                if ($topic['pursuit'])
+                {
+                    unset($topics[$k]);
+                }
             }
-            $this->topics = array_values($topics);    // reindex
+
+            // multiple races
+            if ($this->constraints['numrace'] <= 1)
+            {
+                if ($topic['multirace'])
+                {
+                    unset($topics[$k]);
+                }
+            }
+
+            // check other constraints if a reminder page
+            if ($this->page == "reminder") {
+
+                //  does it match event name
+                if (!empty($topic['eventname'])) {
+                    if (strpos(strtolower($this->constraints['name']), strtolower($topic['eventname'])) === false) {
+                        unset($topics[$k]);
+                    }
+                }
+
+                // event format
+                if (!empty($topic['format'])) {
+                    if ($this->constraints['format'] != $topic['format']) {
+                        unset($topics[$k]);
+                    }
+                }
+
+                // dates
+                //echo "dates: {$topic['startdate']} | {$topic['enddate']} | {$this->constraints['date']}<br>";
+                if (!empty($topic['startdate']) or !empty($topic['enddate'])) {
+                    if (!empty($topic['startdate']) and !empty($topic['enddate'])) {
+                        if (strtotime($this->constraints['date']) < strtotime($topic['startdate']) or
+                            strtotime($this->constraints['date']) > strtotime($topic['enddate'])) {
+                            unset($topics[$k]);
+                        }
+                    } elseif (!empty($topic['startdate'])) {
+                        if (strtotime($this->constraints['date']) < strtotime($topic['startdate'])) {
+                            unset($topics[$k]);
+                        }
+                    } elseif (!empty($topic['enddate'])) {
+                        if (strtotime($this->constraints['date']) > strtotime($topic['enddate'])) {
+                            unset($topics[$k]);
+                        }
+                    }
+                }
+            }
         }
+
+        $this->topics = array_values($topics);    // reindex
 
         return $topics;
     }
@@ -84,20 +139,23 @@ EOT;
             foreach ($this->topics as $k=>$topic)
             {
                 $panel_bufr.= <<<EOT
-                <div class="bg-danger">
-                    <blockquote>
-                        <p class="lead">{$topic['question']}</p>
-                        <p>{$topic['answer']}</p>
-                        <p><small>{$topic['notes']}</small></p>
-                    </blockquote>                
+                <div class="row">
+                <div class="col-md-8 col-md-offset-2">                   
+                    <div class="alert alert-danger" role="alert"><p class="lead">{$topic['question']}</p></div>
+                    <div>
+                        <blockquote>                        
+                            <p>{$topic['answer']}</p>
+                            <p><small>{$topic['notes']}</small></p>
+                        </blockquote>                
+                    </div>
                 </div>
-                </br>
+                </div>
 EOT;
             }
 
             // add outer div
             $htm = <<<EOT
-            <h2>Reminders ...</h2>
+            <h2>Reminders for Today ...</h2>
             <div>
                 $panel_bufr  
             </div>
@@ -112,7 +170,7 @@ EOT;
     public function render_help()
     {
         // title
-        $this->page == "reminders" ? $title = "reminders" : $title = "help for ".strtoupper($this->page)." page" ;
+        $this->page == "reminders" ? $title = "Reminders &hellip" : $title = "Help for ".strtoupper($this->page)." page" ;
 
         if (count($this->topics) <= 0)
         {
@@ -163,18 +221,7 @@ EOT;
                 </div>
             </div>
 EOT;
-
-            return $htm;
         }
-
-
-
-
-
-
-
-
-
 
         return $htm;
     }

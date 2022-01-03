@@ -1,17 +1,16 @@
-<DIV {$pageattrs}>
-  {BEGIN container_column}
-    <DIV class="rnr-c rnr-ch rnr-c-column">
-      {BEGIN masterlist_title}
-        <DIV class="style1 rnr-bl rnr-b-masterlistheader {$brickclass_masterlistheader}">
-          <P>
-            <A class="btn btn-link btn-xs" {$backtomasterlink_attrs}>
-              Back to{$backtomasterlink_caption}
-            </A>
-          </P>
-        </DIV>
-      {END masterlist_title}
-      <DIV class="rnr-hfiller">
-      </DIV>
-    </DIV>
-  {END container_column}
-</DIV>
+<div {$pageattrs}>
+
+{BEGIN container_column}<div class="rnr-c rnr-ch rnr-c-column">
+
+{BEGIN masterlist_title}<div  class="style1 rnr-bl rnr-b-masterlistheader {$brickclass_masterlistheader}"><a {$backtomasterlink_attrs} class="btn btn-link btn-xs">
+            Back to&nbsp;{$backtomasterlink_caption}</a><br>&nbsp;
+          <span>{$pagetitlelabel t_event_results masterlist}</span></div>
+{END masterlist_title}
+
+<div class="rnr-hfiller"></div>
+</div>
+{END container_column}
+
+
+
+</div>

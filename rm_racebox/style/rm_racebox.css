@@ -1,6 +1,19 @@
 /* custom styles for rm_racebox application
 -------------------------------------------------- */
 
+/*
+:root {
+   --blue: steelblue;
+   --darkblue: rgb(44, 76, 124);
+   --red: rgb(194, 0, 0);
+   --darkred: darkred;
+   --white: white;
+   --grey: slategrey
+
+
+ */
+
+
 /* flatly colours
  - primary     #2C3E50
  - success     #18BC9C
@@ -104,11 +117,11 @@ body > .container { padding: 10px 0px 0px 0px; }
 }
 
 /* timer page row classes #e6e6e6*/
+.table > tbody > tr.default  {}
+.table > tbody > tr.racing   {}
 .table > tbody > tr.finished {background-color: lightgrey; color: slategrey;}
 .table > tbody > tr.excluded {background-color: lightgrey; color: slategrey;}
-.table > tbody > tr.lastlap  {background-color: #F6F9D4 ; color: black;}
-
-/*.label-finished { background-color: lightgrey;}*/
+.table > tbody > tr.lastlap  {background-color: orange ;  }
 
 .truncate {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 
@@ -194,6 +207,8 @@ body > .container { padding: 10px 0px 0px 0px; }
         margin-right : 1.5em;
     }
 }
+
+
 
 /* timer styles */
 .timer-lg {

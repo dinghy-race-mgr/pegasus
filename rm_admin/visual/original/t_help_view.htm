@@ -59,78 +59,44 @@
 
 
 <div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
-	{BEGIN question_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_question} bs-viewform-group" data-fieldname="question">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_question}">
-			{$label t_help question}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$question_value}&nbsp;
+	<div class="container">	
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Details1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Details1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Details1_xtrclass}" role="tabpanel"  {$section_Details1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Details1}
+		  </div>
 		</div>
 	</div>
-</div>
-{END question_fieldblock}
-	{BEGIN answer_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_answer} bs-viewform-group" data-fieldname="answer">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_answer}">
-			{$label t_help answer}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$answer_value}&nbsp;
+
+	</div>
+	<div class="container">	
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Controls_on_when_topic_appears____1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Controls_on_when_topic_appears____1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Controls_on_when_topic_appears____1_xtrclass}" role="tabpanel"  {$section_Controls_on_when_topic_appears____1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Controls_on_when_topic_appears____1}
+		  </div>
 		</div>
 	</div>
-</div>
-{END answer_fieldblock}
-	{BEGIN notes_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_notes} bs-viewform-group" data-fieldname="notes">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_notes}">
-			{$label t_help notes}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$notes_value}&nbsp;
-		</div>
+
 	</div>
-</div>
-{END notes_fieldblock}
-	{BEGIN category_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_category} bs-viewform-group" data-fieldname="category">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_category}">
-			{$label t_help category}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$category_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END category_fieldblock}
-	{BEGIN author_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_author} bs-viewform-group" data-fieldname="author">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_author}">
-			{$label t_help author}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$author_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END author_fieldblock}
-	{BEGIN rank_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_rank} bs-viewform-group" data-fieldname="rank">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_rank}">
-			{$label t_help rank}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$rank_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END rank_fieldblock}
 </div>
 
 

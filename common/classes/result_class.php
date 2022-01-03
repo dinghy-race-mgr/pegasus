@@ -75,21 +75,50 @@ class RESULT
         $this->db = $db;
         $this->eventid = $eventid;
 
-        // FIXME - not ideal for using outside of racebox app
-        $this->pursuit = false;
-        if (isset($_SESSION["e_$eventid"]['pursuit']))
+        // get event details
+        $event_arr = $this->db->db_get_row("SELECT * FROM t_event WHERE `id` = {$this->eventid} and `event_type` = 'racing'");
+        if ($event_arr)
         {
-            $this->pursuit = $_SESSION["e_$eventid"]['pursuit'];
+            $event_cfg = $this->db->db_get_row("SELECT * FROM t_cfgrace WHERE `id` = {$event_arr['event_format']}");
+            $fleet_cfg = $this->db->db_get_rows("SELECT * FROM t_cfgfleet WHERE `eventcfgid` = {$event_arr['event_format']}");
+
+            if ($event_cfg and $fleet_cfg)
+            {
+                $this->eventname = $event_arr['event_name'];
+                $this->eventdate = $event_arr['event_date'];
+                $this->rc_code   = $event_cfg['race_code'];
+                $this->pursuit   = $event_cfg['pursuit'];
+
+                $this->fleet = array();
+                foreach ($fleet_cfg as $fleet)
+                {
+                    $this->fleet["{$fleet['fleet_num']}"] = $fleet;
+                }
+            }
+            else
+            {
+                // exit nicely
+                echo "<pre> FAILED to initiate RESULT object: race configuration missing<br>".print_r($this,true)."</pre>";
+            }
+
         }
+        else
+        {
+            // exit nicely
+            echo "<pre> FAILED to initiate RESULT object: event details missing or not race event<br>".print_r($this,true)."</pre>";
+        }
+
+        //echo "<pre>".print_r($this,true)."</pre>";
+
     }
 
 /* -------------- results files functions ---------------------------------------------------------- */
     public function get_race_filename()
     {
-        // race filename is eventname (bad characters removed) + event date + race configuration code + eventid
-        $eventname = preg_replace('/[^a-zA-Z0-9\-\._]/', '', $_SESSION["e_{$this->eventid}"]['ev_name']);
-        $filename = sprintf("%s_%s_%s_%s.htm", $eventname, $_SESSION["e_{$this->eventid}"]['ev_date'],
-                                   $_SESSION["e_{$this->eventid}"]['rc_code'], $this->eventid);
+         // race filename is eventname (bad characters removed) + event date + race configuration code + eventid
+        $eventname = preg_replace('/[^a-zA-Z0-9\-\._]/', '', $this->eventname);
+        $filename = sprintf("%s_%s_%s_%s.htm", $eventname, $this->eventdate, $this->rc_code, $this->eventid);
+
         return $filename;
     }
 
@@ -107,13 +136,14 @@ class RESULT
         $filespec['eventid'] = $this->eventid;
         $exists = $this->db->db_num_rows("SELECT * FROM t_resultfile
                                           WHERE `eventid` = {$this->eventid}
-                                          AND result_type = '{$filespec['result_type']}'
-                                          AND result_format = '{$filespec['result_format']}'");
+                                          AND folder = '{$filespec['folder']}'
+                                          AND format = '{$filespec['format']}'
+                                          AND filename = '{$filespec['filename']}'");
 
         if ($exists > 0)
         {
             $update = $this->db->db_update("t_resultfile", $filespec,
-                array("eventid" => $this->eventid, "result_type" => $filespec['result_type'], "result_format" => $filespec['result_format']));
+                array("eventid" => $this->eventid, "folder" => $filespec['folder'], "format" => $filespec['format'], "filename" => $filespec['filename']));
             if ($update >= 0) { $status = true; }
         }
         else
@@ -135,7 +165,7 @@ class RESULT
         $where = "eventid = $eventid ";
         if (!empty($type))
         {
-            $where.= "result_type = '".strtolower($type)."' ";
+            $where.= "folder = '".strtolower($type)."' ";
         }
 
         $files = $this->db->db_get_rows("SELECT * FROM t_resultfile WHERE $where");
@@ -144,10 +174,10 @@ class RESULT
 
 
     /* -------------- results table functions ---------------------------------------------------------- */
-    public function clear_results($race = 0)
+    public function clear_results($fleet = 0)
     {
         $constraint = array("eventid" => $this->eventid);
-        if ($race != 0) { $constraint[] = array("race" => $race); }
+        if ($fleet != 0) { $constraint[] = array("fleet" => $fleet); }
         $num_rows = $this->db->db_delete("t_result", $constraint);
 
         return $num_rows;
@@ -173,7 +203,7 @@ class RESULT
 EOT;
         foreach($select as $key=>$row)
         {
-            $racetype = $_SESSION["e_{$this->eventid}"]["fl_{$row['fleet']}"]['scoring'];
+            $racetype = $this->fleet["{$row['fleet']}"]['scoring'];
             $query.= "\n($this->eventid, {$row['fleet']}, '$racetype', {$row['competitorid']}, '{$row['class']}', ".
                      "'{$row['sailnum']}', {$row['pn']}, '{$row['helm']}', '{$row['crew']}', '{$row['club']}', ".
                      "{$row['lap']}, {$row['etime']}, {$row['ctime']}, {$row['atime']}, '{$row['code']}', ".
@@ -323,7 +353,7 @@ EOT;
             "inc-turnout"   => true,                                                 // include turnout statistics
             "race-label"    => "number",                                             // use race number or date for labelling races
             "club-logo"     => $_SESSION['baseurl']."/config/images/club_logo.jpg",  // if set include club logo
-            "styles" => file_get_contents($_SESSION['baseurl']."/config/style/result_std.css")     // styles to be used
+            "styles"        => file_get_contents($_SESSION['baseurl']."/config/style/result_classic.css")     // styles to be used
         );
 
         $fields = array(
@@ -370,6 +400,7 @@ EOT;
 
         $inventory = array();
 
+        // FIXME - are these session variables set up
         $inventory["admin"] = array(
             "type"       => "event_inventory",
             "createdate" => date("Y-m-d H:i"),
@@ -403,7 +434,7 @@ EOT;
             );
 
             // get duties
-            $duties = $rota_o->get_event_duties($event['id']);  // FIXME - if no duties allocated then can't do foreach loop
+            $duties = $rota_o->get_event_duties($event['id']);
             $dutyarray = array();
             if ($duties)
             {

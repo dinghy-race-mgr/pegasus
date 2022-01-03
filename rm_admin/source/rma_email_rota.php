@@ -8,4 +8,3 @@ it will use the html mailto: option as described here https://css-tricks.com/sni
 
 EOT;
 
-?>

@@ -14,7 +14,7 @@
 	</head>
 
 	<body class="{$stylename} function-list" {$bodyattrs}>
-	{BEGIN body}{$header}
+	{BEGIN body}{$header}{$event t_result_snippet}
 		<style>
 			{$containerCss}
 		</style>
@@ -278,68 +278,20 @@
 {END details_found}
 
 
-{BEGIN print_friendly}<span {$printpanel_hiddenattr} data-pageid="{$pageid}" data-brick="printpanel" class="bs-printpanel" id="printpanelblock{$id}">
-	<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Print-friendly page">
-		<span class="glyphicon glyphicon-print" ></span>
-		<span class="caret"></span>
-    </button>
-	<ul class="dropdown-menu pull-right" >
-		<li>
-			<div class="container-fluid" id="print_friendly_scope{$id}">
-				<div class="row">
-					<div class="col-md-4">Scope:</div>
-										{BEGIN print_friendly_all}<div class="col-md-8">
-						<label for="printAll{$id}">
-							<input type="radio" id="printAll{$id}" data-href="t_result_print.php?all=1&amp;{$crosstable_attrs}" name="printScope">
-							Print all pages
-						</label>
-					</div>
-					{END print_friendly_all}
-				</div>
-				<div class="row">
-					<div class="col-md-4">&nbsp;</div>
-					<div class="col-md-8">
-						<label for="printPage{$id}">
-							<input type="radio" id="printPage{$id}" data-href="t_result_print.php?{$crosstable_attrs}" name="printScope" checked>
-							Print this page
-						</label>
-					</div>
-				</div>
-								<div class="row">
-					<div class="col-md-4">&nbsp;</div>
-					<div class="col-md-8">
-						<label for="printSelection{$id}" style="color: gray;">
-							<input type="radio" id="printSelection{$id}" name="printScope" disabled="disabled">
-							Print selected
-						</label>
-					</div>
-				</div>
-			</div>
-		</li>
-		<li class="divider" role="separator"></li>
-
-		
-				<li>	
-			<div class="rnr-printdetails">
-				<label for="printPerPage{$id}">
-											Records Per Page:
-				</label>
-				<input type="number" id="printPerPage{$id}" value="{$print_recspp}" class="rnr-printrecspp">		
-			</div>
-		</li>
-		<li class="divider" role="separator"></li>
-		<li class="rnr-printbutton">				
-			<button type="button" class="btn btn-primary" id="print_friendly_button{$id}" >Print</button>			
-		</li>
-	</ul>	
-</span>
-
-{END print_friendly}
-
 
 {BEGIN field_hide_panel}<div {$bsfieldhidepanel_hiddenattr} data-pageid="{$pageid}" data-brick="bsfieldhidepanel" id="fildhidepanel{$id}" class="keep-open btn-group" title="Show/hide columns">
 	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button"><i class="glyphicon glyphicon-th-list"></i> <span class="caret"></span></button>
 	<ul role="menu" class="dropdown-menu dropdown-left">
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_fleet" checked="checked" value="1" data-field="fleet">
+			  <span>{$label t_result fleet}</span>
+			</label>
+		</div>
+		</a>
+		</li>
 		<li>
 		<a>
 		  <div class="checkbox">
@@ -364,18 +316,8 @@
 		<a>
 		  <div class="checkbox">
 			<label>
-			  <input type="checkbox" id="hide_fleet" checked="checked" value="1" data-field="fleet">
-			  <span>{$label t_result fleet}</span>
-			</label>
-		</div>
-		</a>
-		</li>
-		<li>
-		<a>
-		  <div class="checkbox">
-			<label>
-			  <input type="checkbox" id="hide_declaration" checked="checked" value="1" data-field="declaration">
-			  <span>{$label t_result declaration}</span>
+			  <input type="checkbox" id="hide_helm" checked="checked" value="1" data-field="helm">
+			  <span>{$label t_result helm}</span>
 			</label>
 		</div>
 		</a>
@@ -396,6 +338,16 @@
 			<label>
 			  <input type="checkbox" id="hide_etime" checked="checked" value="1" data-field="etime">
 			  <span>{$label t_result etime}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_atime" checked="checked" value="1" data-field="atime">
+			  <span>{$label t_result atime}</span>
 			</label>
 		</div>
 		</a>
@@ -434,8 +386,28 @@
 		<a>
 		  <div class="checkbox">
 			<label>
+			  <input type="checkbox" id="hide_declaration" checked="checked" value="1" data-field="declaration">
+			  <span>{$label t_result declaration}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
 			  <input type="checkbox" id="hide_note" checked="checked" value="1" data-field="note">
 			  <span>{$label t_result note}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_warning" checked="checked" value="1" data-field="warning">
+			  <span>{$label t_result warning}</span>
 			</label>
 		</div>
 		</a>
@@ -450,25 +422,6 @@
 </div>
 {END container_gridinfo}
 
-
-
-
-
-
-
-
-{BEGIN container_gridinfo_sort}<div {$gridinfo_sort_chiddenattr} data-pageid="{$pageid}" data-container="gridinfo_sort" class=" bottom-margin pull-right text-right col-md-12 "> 
-
-{BEGIN reorder_records}<div {$reorder_records_hiddenattr} data-pageid="{$pageid}" data-brick="reorder_records" class="form-inline sortby-ctrl">
-Sort by&nbsp;{$sortByDropdown}
-</div>
-
-{END reorder_records}
-
-
-
-</div>
-{END container_gridinfo_sort}
 
 
 
@@ -524,9 +477,7 @@ Sort by&nbsp;{$sortByDropdown}
 
 
 
-{BEGIN container_grid}<div {$grid_chiddenattr} data-pageid="{$pageid}" data-container="grid" class="bs-grid    "> 
-
-{BEGIN grid_block}<style>
+{BEGIN container_grid}<DIV class="bs-grid" style="width: 1305.7%; height: 102px;" data-container="grid" data-pageid="{$pageid}" {$grid_chiddenattr}>{BEGIN grid_block}<style>
 	.bs-gridcell[data-field=id]:before {
 		content: "{$label t_result id}";
 	}
@@ -569,6 +520,9 @@ Sort by&nbsp;{$sortByDropdown}
 	.bs-gridcell[data-field=etime]:before {
 		content: "{$label t_result etime}";
 	}
+	.bs-gridcell[data-field=etval]:before {
+		content: "{$label t_result etval}";
+	}
 	.bs-gridcell[data-field=ctime]:before {
 		content: "{$label t_result ctime}";
 	}
@@ -590,6 +544,9 @@ Sort by&nbsp;{$sortByDropdown}
 	.bs-gridcell[data-field=note]:before {
 		content: "{$label t_result note}";
 	}
+	.bs-gridcell[data-field=warning]:before {
+		content: "{$label t_result warning}";
+	}
 	.bs-gridcell[data-field=upddate]:before {
 		content: "{$label t_result upddate}";
 	}
@@ -606,12 +563,22 @@ Sort by&nbsp;{$sortByDropdown}
 									{BEGIN record_header}{BEGIN listIcons_column}<th iEditCont="all">&nbsp;</th>
 									{END listIcons_column}	
 
-																		{BEGIN checkbox_column}<th class="">
-										<input type="checkbox" {$checkboxheader_attrs}>
+																		{BEGIN checkbox_column}<TH><input type="checkbox" {$checkboxheader_attrs}>
 									</th>
 									{END checkbox_column}
 
 																		
+									{BEGIN fleet_fieldheadercolumn}<th class="rnr-gridfieldlabel {$fleet_class}" data-field=fleet>
+									{BEGIN fleet_fieldheader}<span {$fleet_orderlinkattrs}>
+											{$label t_result fleet}
+										</span>
+									{END fleet_fieldheader}
+									</th>
+									{END fleet_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN class_fieldheadercolumn}<th class="rnr-gridfieldlabel {$class_class}" data-field=class>
 									{BEGIN class_fieldheader}<span {$class_orderlinkattrs}>
 											{$label t_result class}
@@ -634,24 +601,13 @@ Sort by&nbsp;{$sortByDropdown}
 									
 									
 									
-									{BEGIN fleet_fieldheadercolumn}<th class="rnr-gridfieldlabel {$fleet_class}" data-field=fleet>
-									{BEGIN fleet_fieldheader}<span {$fleet_orderlinkattrs}>
-											{$label t_result fleet}
+									{BEGIN helm_fieldheadercolumn}<th class="rnr-gridfieldlabel {$helm_class}" data-field=helm>
+									{BEGIN helm_fieldheader}<span {$helm_orderlinkattrs}>
+											{$label t_result helm}
 										</span>
-									{END fleet_fieldheader}
+									{END helm_fieldheader}
 									</th>
-									{END fleet_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN declaration_fieldheadercolumn}<th class="rnr-gridfieldlabel {$declaration_class}" data-field=declaration>
-									{BEGIN declaration_fieldheader}<span {$declaration_orderlinkattrs}>
-											{$label t_result declaration}
-										</span>
-									{END declaration_fieldheader}
-									</th>
-									{END declaration_fieldheadercolumn}
+									{END helm_fieldheadercolumn}
 									
 									
 									
@@ -674,6 +630,17 @@ Sort by&nbsp;{$sortByDropdown}
 									{END etime_fieldheader}
 									</th>
 									{END etime_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN atime_fieldheadercolumn}<th class="rnr-gridfieldlabel {$atime_class}" data-field=atime>
+									{BEGIN atime_fieldheader}<span {$atime_orderlinkattrs}>
+											{$label t_result atime}
+										</span>
+									{END atime_fieldheader}
+									</th>
+									{END atime_fieldheadercolumn}
 									
 									
 									
@@ -711,6 +678,17 @@ Sort by&nbsp;{$sortByDropdown}
 									
 									
 									
+									{BEGIN declaration_fieldheadercolumn}<th class="rnr-gridfieldlabel {$declaration_class}" data-field=declaration>
+									{BEGIN declaration_fieldheader}<span {$declaration_orderlinkattrs}>
+											{$label t_result declaration}
+										</span>
+									{END declaration_fieldheader}
+									</th>
+									{END declaration_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN note_fieldheadercolumn}<th class="rnr-gridfieldlabel {$note_class}" data-field=note>
 									{BEGIN note_fieldheader}<span {$note_orderlinkattrs}>
 											{$label t_result note}
@@ -718,6 +696,17 @@ Sort by&nbsp;{$sortByDropdown}
 									{END note_fieldheader}
 									</th>
 									{END note_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN warning_fieldheadercolumn}<th class="rnr-gridfieldlabel {$warning_class}" data-field=warning>
+									{BEGIN warning_fieldheader}<span {$warning_orderlinkattrs}>
+											{$label t_result warning}
+										</span>
+									{END warning_fieldheader}
+									</th>
+									{END warning_fieldheadercolumn}
 									
 									
 									
@@ -760,6 +749,12 @@ Sort by&nbsp;{$sortByDropdown}
 
 	
 
+	{BEGIN fleet_fieldcolumn}<td class="bs-gridcell {$fleet_class}"  data-field=fleet {$rowstyle} {$recordattrs}>
+		{$fleet_value}
+	</td>
+{END fleet_fieldcolumn}
+
+
 	{BEGIN class_fieldcolumn}<td class="bs-gridcell {$class_class}"  data-field=class {$rowstyle} {$recordattrs}>
 		{$class_value}
 	</td>
@@ -772,16 +767,10 @@ Sort by&nbsp;{$sortByDropdown}
 {END sailnum_fieldcolumn}
 
 
-	{BEGIN fleet_fieldcolumn}<td class="bs-gridcell {$fleet_class}"  data-field=fleet {$rowstyle} {$recordattrs}>
-		{$fleet_value}
+	{BEGIN helm_fieldcolumn}<td class="bs-gridcell {$helm_class}"  data-field=helm {$rowstyle} {$recordattrs}>
+		{$helm_value}
 	</td>
-{END fleet_fieldcolumn}
-
-
-	{BEGIN declaration_fieldcolumn}<td class="bs-gridcell {$declaration_class}"  data-field=declaration {$rowstyle} {$recordattrs}>
-		{$declaration_value}
-	</td>
-{END declaration_fieldcolumn}
+{END helm_fieldcolumn}
 
 
 	{BEGIN lap_fieldcolumn}<td class="bs-gridcell {$lap_class}"  data-field=lap {$rowstyle} {$recordattrs}>
@@ -794,6 +783,12 @@ Sort by&nbsp;{$sortByDropdown}
 		{$etime_value}
 	</td>
 {END etime_fieldcolumn}
+
+
+	{BEGIN atime_fieldcolumn}<td class="bs-gridcell {$atime_class}"  data-field=atime {$rowstyle} {$recordattrs}>
+		{$atime_value}
+	</td>
+{END atime_fieldcolumn}
 
 
 	{BEGIN code_fieldcolumn}<td class="bs-gridcell {$code_class}"  data-field=code {$rowstyle} {$recordattrs}>
@@ -814,10 +809,28 @@ Sort by&nbsp;{$sortByDropdown}
 {END points_fieldcolumn}
 
 
-	{BEGIN note_fieldcolumn}<td class="bs-gridcell {$note_class}"  data-field=note {$rowstyle} {$recordattrs}>
-		{$note_value}
+	{BEGIN declaration_fieldcolumn}<td class="bs-gridcell {$declaration_class}"  data-field=declaration {$rowstyle} {$recordattrs}>
+		{$declaration_value}
 	</td>
+{END declaration_fieldcolumn}
+
+
+	{BEGIN note_fieldcolumn}<td class="bs-gridcell {$note_class}"  data-field=note {$rowstyle} {$recordattrs}>
+		<FONT 
+      color="#8b0000"></FONT><FONT color="#000000">
+      {$note_value}
+	</FONT> </td>
 {END note_fieldcolumn}
+
+
+	{BEGIN warning_fieldcolumn}<td class="bs-gridcell {$warning_class}"  data-field=warning {$rowstyle} {$recordattrs}>
+		<FONT 
+      color="#8b0000"></FONT><FONT 
+      color="#8b0000">
+      {$warning_value}
+	</FONT> 
+    </td>
+{END warning_fieldcolumn}
 
 	{BEGIN endrecord_block}<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
 	{END endrecord_block}

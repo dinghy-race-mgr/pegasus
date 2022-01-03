@@ -228,15 +228,16 @@ class SERIES_RESULT
 
         if (empty($this->testfile))
         {
-            if ($this->report) { echo "- getting series data from database<br>"; }
+            if ($this->report) { echo "- getting series data from database for {$this->series_code}<br>"; }
 
             // get array of event ids in series and collect some basic information on races completed and turnouts
             $fatalerr = $this->set_eventarr($this->series_code, $event_list);
             if ($fatalerr) {
                 return $fatalerr;
             } else {
-                if ($this->report) { echo ".... event list<br>"; }
+                if ($this->report) { echo ".... event list<br>"; /*echo "<pre>EVENT LIST".print_r($this->event_arr,true)."</pre>";*/}
             }
+
 
             // get club detail and series configuration information
             $this->series = $this->set_seriesinfo($this->series_code);
@@ -244,24 +245,25 @@ class SERIES_RESULT
                 return $this->err_fatal;
             } else {
                 if ($this->report) {
-                    echo ".... series configuration<br>";
+                    echo ".... series configuration<br>"; /*echo "<pre>SERIES".print_r($this->series,true)."</pre>";*/
                 }
             }
 
+            
             // get fleet configuration information
-            $this->fleets = $this->set_fleetinfo($this->series['race_format']);
+            $this->fleets = $this->set_fleetinfo($this->series['raceformat']);
             if ($this->err_fatal) {
                 return $this->err_fatal;
             } else {
                 if ($this->report) {
-                    echo ".... fleet configuration<br>";
+                    echo ".... fleet configuration<br>"; /*echo "<pre>FLEETS".print_r($this->fleets,true)."</pre>";*/
                 }
             }
 
             // get merge class data
             $this->merge_classes = $this->set_mergeclasses($this->series['merge']);
             if ($this->report and !empty($this->merge_classes)) {
-                echo ".... merge classes<br>";
+                echo ".... merge classes<br>"; /*echo "<pre>MERGE CLASSES".print_r($this->merge_classes,true)."</pre>";*/
             }
 
             // get races data
@@ -270,7 +272,7 @@ class SERIES_RESULT
                 return $this->err_fatal;
             } else {
                 if ($this->report) {
-                    echo ".... series race information<br>";
+                    echo ".... series race information<br>"; /*echo "<pre>RACES".print_r($this->races,true)."</pre>";*/
                 }
             }
 
@@ -280,7 +282,7 @@ class SERIES_RESULT
                 return $this->err_fatal;
             } else {
                 if ($this->report) {
-                    echo ".... competitor information<br>";
+                    echo ".... competitor information<br>"; /*echo "<pre>COMPETITORS".print_r($this->sailor,true)."</pre>";*/
                 }
             }
 
@@ -290,7 +292,7 @@ class SERIES_RESULT
                 return $this->err_fatal;
             } else {
                 if ($this->report) {
-                    echo ".... race results information<br>";
+                    echo ".... race results information<br>"; /*echo "<pre>RESULTS".print_r($this->results,true)."</pre>";*/
                 }
             }
         }
@@ -328,7 +330,7 @@ class SERIES_RESULT
         // get array of scoring codes used in this series
         $this->codes_used = $this->set_scoringcodes();
         if ($this->report and !empty($this->codes_used)) {
-            echo "<pre>Scoring codes used".print_r($this->codes_used,true)."</pre>";;
+            echo "scoring codes collected ..."; //echo "<pre>".print_r($this->codes_used,true)."</pre>";;
         }
 
         return $this->err_fatal;
@@ -506,13 +508,15 @@ class SERIES_RESULT
         $data = array();
         $format = 0;
         $i = 0;
+
+
         foreach($this->event_arr as $eventid)
         {
             $i++;
             // get event details
             $event = $this->event_o->get_event_byid($eventid);
 
-            $result_o = new RESULT($this->db);
+            $result_o = new RESULT($this->db, $eventid);
             $rfile = $result_o->get_result_files($eventid, "race");
             if ($rfile[0])
             {
@@ -539,9 +543,9 @@ class SERIES_RESULT
             }
 
             // check if non discardable race
-            if (array_key_exists($i, $this->series['no_discard']))
+            if (array_key_exists($i, $this->series['nodiscard']))
             {
-                $no_discard = $this->series['no_discard'][$i];
+                $no_discard = $this->series['nodiscard'][$i];
             }
 
             // check if race has multiple score
@@ -558,7 +562,7 @@ class SERIES_RESULT
                 "no_discard"   => $no_discard,
                 "multiplier"   => $multiplier,
                 'status'       => $event['event_status'],
-                'notes'        => $event['results_status'],
+                'notes'        => $event['result_notes'],
                 'url'          => $event['url']
             );
         }
@@ -585,12 +589,12 @@ class SERIES_RESULT
         foreach ($sailors as $i=>$sailor)
         {
             $data[$i] =  array(
-                "id"      => $sailor['id'],
+                "id"      => $sailor['competitorid'],
                 "helm"    => $sailor['helm'],
                 "crew"    => $sailor['crew'],
                 "club"    => $sailor['club'],
                 "class"   => $sailor['class'],
-                'sailnum' => $sailor['sailnum'],
+                'sailno'  => $sailor['sailnum'],
                 'fleet'   => $sailor['fleet'],
                 'pn'      => $sailor['pn'],
                 'note'    => $sailor['note'],
@@ -608,6 +612,7 @@ class SERIES_RESULT
         {
             $results = $this->get_results_sailor($comp['id']);
 
+            $sailorkey = $k;
             $i = 0;
             foreach ($this->races as $race)
             {
@@ -615,14 +620,15 @@ class SERIES_RESULT
                 $racekey = "r$i";
 
                 // check event has been sailed
-                if ($race['status']  == "completed")
+                if ($race['status']  == "completed" OR $race['status']  == "sailed")
                 {
                     // get data for this result
-                    $key = array_search($race['eventid'], array_column($results, 'eventid'));
-                    if ($key !== false)
+                    $col = array_column($results, 'eventid');
+                    $eventkey = array_search($race['eventid'], array_column($results, 'eventid'));
+                    if ($eventkey !== false)
                     {
-                        $points = $results[$key]['pts'];
-                        $code = $results[$key]['code'];
+                        $points = $results[$eventkey]['points'];
+                        $code = $results[$eventkey]['code'];
                     }
                     else
                     {
@@ -630,7 +636,7 @@ class SERIES_RESULT
                         $code = "DNC";
                     }
 
-                    $data[$racekey] = array(
+                    $data[$sailorkey][$racekey] = array(
                         "pts" => $points,
                         "code" => $code,
                         "discard" => false,
@@ -656,13 +662,11 @@ class SERIES_RESULT
     private function get_results_sailor($competitorid)
     {
         $list = implode(",", $this->event_arr);
-        $query = "SELECT code, penalty, points, declaration, note  FROM `t_result` as a JOIN `t_event` as b ON b.id=a.eventid 
+        $query = "SELECT eventid, code, penalty, points, declaration, note  FROM `t_result` as a JOIN `t_event` as b ON b.id=a.eventid 
                       WHERE eventid IN ($list) AND `competitorid` = $competitorid 
-                      ORDER BY event_date, event_time";
+                      ORDER BY event_date, event_start";
         // u_writedbg("$query", __FILE__, __FUNCTION__, __LINE__); //debug:);
-        $results = $this->db->db_get_rows($query);
-
-        return $results;
+        return $this->db->db_get_rows($query);
     }
 
 // --------- CALCULATE RESULTS METHODS ------------------------
@@ -721,7 +725,7 @@ class SERIES_RESULT
 
     public function calc_series_result()
     {
-        if ($this->report) { echo "<pre>RST - initial [races: {$this->races_complete_num}] : ".print_r($this->rst,true)."</pre>";; }
+        //if ($this->report) { echo "<pre>RST - initial [races: {$this->races_complete}] : ".print_r($this->rst,true)."</pre>";; }
         if ($this->report) { echo "- calc step 1<br>"; }
 
         // check that we have some completed races in the series
@@ -745,38 +749,39 @@ class SERIES_RESULT
         // get number of sailors
         if ($this->report) { echo "- calc step 3: Count Sailors<br>"; }
         $this->count_sailors();
-        if ($this->report) { echo "<pre>FLEETS: ".print_r($this->fleets,true)."</pre>";; }
+        //if ($this->report) { echo "<pre>FLEETS: ".print_r($this->fleets,true)."</pre>";; }
 
         // add DNC scores
         if ($this->report) { echo "- calc step 4: Apply DNC<br>"; }
         $this->score_dnc();
-        if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
+        //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
         // apply series discards
         if ($this->report) { echo "- calc step 5: Apply Discards<br>"; }
         $this->series_discard();
-        if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
+        //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
         // apply average scores
         if ($this->report) { echo "- calc step 6: Apply AVG Score<br>"; }
         $this->score_avg();
-        if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
+        //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
         // redo discards in case average score changes it
         if ($this->report) { echo "- calc step 7: Apply Discards Again<br>"; }
         $this->series_discard();                            // FIXME is there a better way of doing this - it only applies to one AVG option
-        if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
+        //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
         if ($this->report) { echo "- calc step 8: Set Series Points<br>"; }
         $this->series_points();
-        if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
+        //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
         $this->results = $this->series_score();
 
-        $this->set_turnoutstats($this->series["races_complete"]);
-
         if ($this->report) { echo "Final Results<br>"; }
-        if (1==1) { echo "<pre>RST: ".print_r($this->results,true)."</pre>";; }
+        if ($this->report) { echo "<pre>RST: ".print_r($this->results,true)."</pre>";; }
+
+        if ($this->report) { echo "get turnout stats ...<br>"; }
+        $this->set_turnoutstats($this->series["races_complete"]);
 
         return $this->err_fatal;
 
@@ -872,8 +877,9 @@ class SERIES_RESULT
     private function series_discard()
     {
         // get number to count
-        $profile = explode(",", $this->series['discard']);
-        $num_to_count = $this->races_complete - $profile[$this->races_complete - 1];
+        //$profile = explode(",", $this->series['discard']);
+        //$num_to_count = $this->races_complete - $this->series['discard'][$this->races_complete - 1];
+        $num_to_count = $this->races_complete - $this->series['discard'][$this->races_complete];
 
         // apply discards for each sailor's results
         foreach ($this->sailor as $s_id=>$sailor)
@@ -1050,6 +1056,7 @@ class SERIES_RESULT
                 "num-competitors" => $this->fleets[$k]['nsailors']
             );
             $rownum = 0;
+            $output['fleets'][$k]['sailors'] = array();
             foreach($this->sailor_fleet as $i=>$row)
             {
                 // add information back to object array
@@ -1069,6 +1076,7 @@ class SERIES_RESULT
                 );
                 if (!$this->opts['inc-club']) { unset($output['fleets'][$k]['sailors'][$rownum]['club']); }
 
+
                 foreach($this->rst[$i] as $j=>$result)
                 {
                     $output['fleets'][$k]['sailors'][$rownum]['rst'][$j]= array(
@@ -1077,6 +1085,8 @@ class SERIES_RESULT
                         "discard" => $result['discard'],
                     );
                 }
+
+
             }
         }
         return $output;
@@ -1249,13 +1259,11 @@ class SERIES_RESULT
             $total_fleet_race[$k] = array();
         }
 
-        foreach ($this->results['fleets'] as $fleetnum=>$fleet)
+        foreach ($this->results['fleets'] as $fleetnum => $fleet)
         {
-            // get fleet for sailor $k
-
+            //if ($this->report) {echo "{$fleet['fleet-name']}"; echo"<pre>".print_r($fleet['sailors'],true)."</pre>";}
             foreach ($fleet['sailors'] as $s=>$sailor)
             {
-
                 foreach($sailor["rst"] as $j=>$race)
                 {
                     $racenum = substr($j, 1);
@@ -1274,8 +1282,6 @@ class SERIES_RESULT
                         {
                             if (!array_key_exists($racenum, $total_race)) { $total_race[$racenum] = 0; }
                             $total_race[$racenum]++;
-
-
                             $total_fleet_race[$fleetnum][$racenum]++;
                         }
                     }
@@ -1290,9 +1296,25 @@ class SERIES_RESULT
 
         foreach ($this->fleets as $k=>$fleet)
         {
-            $this->results['fleets'][$k]['avg_turnout'] = round((float)($total_fleet[$k]/$races_complete),1);
-            $this->results['fleets'][$k]['max_turnout'] = round(max($total_fleet_race[$k]),0,PHP_ROUND_HALF_UP);
-            $this->results['fleets'][$k]['min_turnout'] = round(min($total_fleet_race[$k]),0,PHP_ROUND_HALF_UP);
+            if (empty($total_fleet[$k]))
+            {
+                $this->results['fleets'][$k]['avg_turnout'] = "n/a";
+            }
+            else
+            {
+                $this->results['fleets'][$k]['avg_turnout'] = round((float)($total_fleet[$k]/$races_complete),1);
+            }
+
+            if (empty($total_fleet_race[$k]))
+            {
+                $this->results['fleets'][$k]['max_turnout'] = "n/a";
+                $this->results['fleets'][$k]['min_turnout'] = "n/a";
+            }
+            else
+            {
+                $this->results['fleets'][$k]['max_turnout'] = round(max($total_fleet_race[$k]),0,PHP_ROUND_HALF_UP);
+                $this->results['fleets'][$k]['min_turnout'] = round(min($total_fleet_race[$k]),0,PHP_ROUND_HALF_UP);
+            }
         }
 
     }

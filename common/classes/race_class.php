@@ -53,7 +53,8 @@ class RACE
     private $db;
     
     //Method: construct class object
-    public function __construct(DB $db, $eventid)
+    //public function __construct(DB $db, $eventid)
+    public function __construct($db, $eventid)
     {
 	    $this->db = $db;
 	    $this->eventid = $eventid;
@@ -220,7 +221,7 @@ class RACE
     
     public function race_getstarters($constraint)
     {
-        $fields  = "id, class, sailnum, helm, code, status, declaration";
+        $fields  = "id, fleet, class, sailnum, helm, code, status, declaration";
         
         if (empty($constraint)) 
         { 
@@ -278,15 +279,27 @@ class RACE
 //    }
     
     
-    public function race_gettimings($fleetnum = 0, $entryid = 0)
+    public function race_gettimings($listorder = "", $fleetnum = 0)
     {
         $cfg = array(
             "class"    => array(
                 "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "fleet ASC, class, sailnum ASC",
             ),
+            "class-list"    => array(
+                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
+                "order"  => "class, CAST(sailnum AS unsigned)",
+            ),
+            "sailnum-list"    => array(
+                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
+                "order"  => "CAST(sailnum AS unsigned), sailnum ASC",
+            ),
+            "fleet-list"    => array(
+                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
+                "order"  => "fleet, CAST(sailnum AS unsigned)",
+            ),
             "position" => array(
-                "fields" => "class, sailnum, helm, lap, finishlap, etime, code, position, id, fleet, declaration",
+                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "fleet ASC, position ASC, pn DESC, class, sailnum ASC",
             ),
             "pn"       => array(
@@ -301,12 +314,12 @@ class RACE
 
         $where = "";
         if (!empty($fleetnum)) { $where.= " AND fleet = $fleetnum "; }
-        if (!empty($entryid)) { $where.= " AND id = $entryid "; }
+//        if (!empty($entryid)) { $where.= " AND id = $entryid "; }
 
-        if (isset($_SESSION['timer_options']['listorder']))
+        if (isset($listorder))
         {
-            $fields = $cfg["{$_SESSION['timer_options']['listorder']}"]['fields'];
-            $order  = $cfg["{$_SESSION['timer_options']['listorder']}"]['order'];
+            $fields = $cfg[$listorder]['fields'];
+            $order  = $cfg[$listorder]['order'];
         }
         else
         {
@@ -317,7 +330,7 @@ class RACE
         if ($this->pursuit) { $order = "fleet ASC, lap DESC, etime DESC, pn DESC, class, sailnum ASC"; }
         
         $rs = $this->race_entry_get($fields, $where, $order, true);
-        if (empty($fleetnum))
+        if (empty($fleetnum) and strpos($listorder, "-list") === false)
         {
             $timings = array();
             for ($i = 1; $i <= $_SESSION["e_{$this->eventid}"]['rc_numfleets']; $i++)
@@ -594,24 +607,22 @@ class RACE
         return $stillracing;
     }
 
-    public function race_score($eventid, $fleetnum, $racetype, $rs_data)
+
+    public function fleet_score($eventid, $fleetnum, $racetype, $rs_data)
     {
         // FIXME issues:  this won't work for pursuit - that needs to be done by finish pursuit
         // FIXME issues: how do I handle declarations (not here - in display + button to mark all non-decl as rtd)
-
-
-
+        // FIXME issues: why are $eventid and $fleetnum arguments
 
         $warnings = array();
-        $rs_row = array();
+
         if ($rs_data)
         {
-            //echo "<pre>".print_r($rs_data,true)."</pre>";
-
-            $race_entries = count($rs_data);                                                         // get number of entries in this fleet
-
+            $race_entries = count($rs_data);                                                       // get number of entries in this fleet
             $maxscore = $this->resultcode_points($_SESSION['resultcodes']['DNF'], $race_entries);  // get points for DNF (max score)
-            $maxlap = max(array_column($rs_data, 'lap'));                                           // get nax no. of laps
+            $maxlap = max(array_column($rs_data, 'lap'));                                          // get max no. of laps
+
+            // error_log("entries: $race_entries - maxscore: $maxscore - maxlap: $maxlap\n",3, $_SESSION['dbg_file']);
 
             $still_racing = 0;
             $lap_arr    = array();  // sorting array for laps
@@ -619,9 +630,10 @@ class RACE
             $points_arr = array();  // sorting array for points
             foreach ($rs_data as $k => $row)
             {
-                $boat = $row['class']." ".$row['sailnum'];
+                // error_log("boat $k: {$rs_data[$k]['class']} {$rs_data[$k]['sailnum']}\n",3, $_SESSION['dbg_file']);
 
-                // if ($fleet == 1) { echo "$boat<br>"; }
+                $boat = $row['class']." ".$row['sailnum'];
+                empty($row['code']) ? $code_arr = array() : $code_arr = $_SESSION['resultcodes'][$row['code']]; // set code details
 
                 if ($row['status'] == "R")                           // this boat not finished
                 {
@@ -631,7 +643,7 @@ class RACE
                 {
                     if ($racetype == "level" OR $racetype == "handicap")
                     {
-                        if ($row['lap'] != $maxlap) {
+                        if ($row['lap'] != $maxlap and (empty($row['code']) or $code_arr['scoringtype'] == "penalty")) {
                             $warnings[] = array("type"=>"warning", "msg"=>"$boat has not completed all laps");
                         }
                     }
@@ -648,10 +660,236 @@ class RACE
                     if ($code_arr['scoringtype'] == "penalty")    // this is a penalty code - don't process yet
                     {
                         $rs_data[$k]['points'] = 0;
+                        //error_log("penalty code {$row['code']} - points {$rs_data[$k]['points']}\n",3, $_SESSION['dbg_file']);
                     }
                     elseif ($code_arr['scoringtype'] == "race")   // this is a race code
                     {
-                        // $rs_data[$k]['penalty'] = 0;
+                        $rs_data[$k]['points'] = $this->resultcode_points($code_arr, $race_entries);
+                        //error_log("code {$row['code']} - points {$rs_data[$k]['points']}\n",3, $_SESSION['dbg_file']);
+                    }
+                    else                                          // this is not a valid code for a race
+                    {
+                        $rs_data[$k]['points'] = 0;
+                        $warnings[] = array("type"=>"warning", "msg"=>"$boat has an invalid result code");
+                        //error_log("invalid code {$row['code']} \n",3, $_SESSION['dbg_file']);
+                    }
+                }
+                else  // no code
+                {
+                    $rs_data[$k]['points'] = 0;
+                    //error_log("no code - points {$rs_data[$k]['points']}\n",3, $_SESSION['dbg_file']);
+                }
+
+                $atime_arr[]  = $rs_data[$k]['atime'];        // arrays for sorting results
+                $points_arr[] = $rs_data[$k]['points'];
+            }
+
+
+            if ($still_racing > 0)  // set warning if boats still racing
+            {
+                $warnings[] = array("type"=>"danger", "msg"=>"there are $still_racing boats still racing in this fleet");
+            }
+
+            // sort array on points then aggregate time
+            array_multisort($points_arr, SORT_ASC, $atime_arr, SORT_ASC, $rs_data);
+
+            // end dbg chk
+            //foreach ($rs_data as $r){error_log("PRE CHK: {$r['class']} {$r['sailnum']} {$r['atime']} {$r['penalty']} {$r['code']} {$r['points']} \n",3, $_SESSION['dbg_file']);}
+
+            // loop over sorted array setting position and points - including handling ties
+            $pos = 0;
+            $atime = 0;
+            $prevpos = 0;
+            $tie = 0;
+            $sum = 0;
+            $points_arr = array();
+            foreach ($rs_data as $k => $row)
+            {
+                //error_log("PROCESSING $k: {$row['class']} {$row['sailnum']} {$row['atime']} {$row['code']} {$row['points']} \n",3, $_SESSION['dbg_file']);
+
+                if ($rs_data[$k]['points'] == 0)
+                {
+                    empty($row['code']) ? $code_arr = array() : $code_arr = $_SESSION['resultcodes'][$row['code']];
+
+                    // apply points - checking for ties
+                    if ($row['atime'] != $atime)           // not a tie
+                    {
+                        //error_log("- not a tie [$tie] \n",3, $_SESSION['dbg_file']);
+                        if ($tie > 0)                      // end of tie - reset allocated points to tie points
+                        {
+                            $tie++;
+                            $score = round(($sum + $prevpos) / $tie, 1);
+                            for ($i = $tie; $i > 0; $i--) {
+                                $r = $k - $i;
+                                //error_log("- allocating tie points ($score) to id [$r] \n",3, $_SESSION['dbg_file']);
+                                $rs_data[$k - $i]['points'] = $score;
+                            }
+                            $tie = 0;                      // reset tie counts
+                            $sum = 0;
+                        }
+                        $pos++;
+                        //error_log("- allocating points ($pos) to id [$k] \n",3, $_SESSION['dbg_file']);
+                        $rs_data[$k]['points'] = $pos;
+                    }
+                    else                                   // is a tie - record and move on
+                    {
+                        //error_log("- a tie \n",3, $_SESSION['dbg_file']);
+                        $tie++;
+                        $pos++;
+                        $sum = $sum + $prevpos;
+                    }
+                    $prevpos = $pos;
+                    $atime = $row['atime'];
+
+                    // add any penalties applied
+                    if (!empty($code_arr) and $code_arr['scoringtype'] == "penalty") {
+                        //error_log("- checking penalties for id [$k] \n",3, $_SESSION['dbg_file']);
+                        $rs_data[$k]['penalty'] = $this->penaltycode_points($code_arr, $race_entries, $rs_data[$k]['penalty']);
+                        if ($rs_data[$k]['penalty'] > 0) {
+                            $rs_data[$k]['points'] = $rs_data[$k]['points'] + $rs_data[$k]['penalty'];
+                            if ($rs_data[$k]['points'] > $maxscore) {
+                                $rs_data[$k]['points'] = $maxscore;
+                            }
+                        }
+                    }
+                }
+                //error_log("points for $k: {$rs_data[$k]['points']} \n",3, $_SESSION['dbg_file']);
+                $points_arr[] = $rs_data[$k]['points'];  // sort array
+            }
+            //error_log("RSDATA: ".print_r($rs_data,true). "\n",3, $_SESSION['dbg_file']);
+
+            // re-sort data array to account for any penalties applied
+            array_multisort($points_arr, SORT_ASC, $rs_data);
+        }
+
+        // end dbg chk
+        //foreach ($rs_data as $r) { error_log("END CHK: {$r['class']} {$r['sailnum']} {$r['atime']} {$r['penalty']} {$r['code']} {$r['points']} \n",3, $_SESSION['dbg_file']);}
+
+        $fleet_rs['warning'] = $warnings;
+        $fleet_rs['data']    = $rs_data;
+        return $fleet_rs;
+    }
+
+    public function race_score($eventid, $fleetnum, $racetype, $rs_data, $table = "t_race")
+    {
+        // FIXME issues:  this won't work for pursuit - that needs to be done by finish pursuit
+        // FIXME issues: how do I handle declarations (not here - in display + button to mark all non-decl as rtd)
+        // FIXME issues: why are $eventid and $fleetnum arguments
+
+        $fleet_rs = $this->fleet_score($eventid, $fleetnum, $racetype, $rs_data);
+        $rs_data  = $fleet_rs['data'];
+
+        if ($table == "t_race")
+        {
+            foreach($rs_data as $k => $row)
+            {
+                $update_arr = array(                               // update t_race record
+                    "ctime"   => $rs_data[$k]['ctime'],
+                    "atime"   => $rs_data[$k]['atime'],
+                    "penalty" => $rs_data[$k]['penalty'],
+                    "points"  => $rs_data[$k]['points']
+                );
+                $update = $this->entry_update($row['id'], $update_arr);
+
+                $rs_row = array();
+                $rs_row[] = array(                                  // for return data
+                    "entryid"    => $rs_data[$k]['id'],
+                    "fleet"      => $rs_data[$k]['fleet'],
+                    "class"      => $rs_data[$k]['class'],
+                    "sailnum"    => $rs_data[$k]['sailnum'],
+                    "boat"       => $rs_data[$k]['class']." ".$rs_data[$k]['sailnum'],
+                    "helm"       => $rs_data[$k]['helm'],
+                    "crew"       => $rs_data[$k]['crew'],
+                    "competitor" => rtrim($rs_data[$k]['helm'] . "/" . $rs_data[$k]['crew'], "/ "),
+                    "club"       => $rs_data[$k]['club'],
+                    "pn"         => $rs_data[$k]['pn'],
+                    "lap"        => $rs_data[$k]['lap'],
+                    "finishlap"  => $rs_data[$k]['finishlap'],
+                    "et"         => $rs_data[$k]['etime'],
+                    "ct"         => $rs_data[$k]['atime'],
+                    "code"       => $rs_data[$k]['code'],
+                    "points"     => $rs_data[$k]['points'],
+                    "penalty"    => $rs_data[$k]['penalty'],
+                    "note"       => $rs_data[$k]['note'],
+                    "status"     => $rs_data[$k]['status'],
+                    "declaration"=> $rs_data[$k]['declaration'],
+                    "status_flag"=> $this->entry_resultstatus($rs_data[$k]['status'], $rs_data[$k]['declaration'],
+                        $rs_data[$k]['protest'], $this->eventid)
+                );
+            }
+            $fleet_rs['data'] = $rs_row;
+        }
+        elseif ($table == "t_result")
+        {
+            foreach($rs_data as $k => $row)
+            {
+
+                // update t_result record
+                $rs_row = array(
+                    "ctime"   => $rs_data[$k]['ctime'],
+                    "atime"   => $rs_data[$k]['atime'],
+                    "penalty" => $rs_data[$k]['penalty'],
+                    "points"  => $rs_data[$k]['points']
+                );
+
+                $numrows = $this->db->db_update("t_result", $rs_row, array("id"=>$rs_data[$k]['id']));
+                //error_log("UPD: {$row['class']} {$row['sailnum']} - $numrows \n",3, $_SESSION['dbg_file']);
+
+            }
+        }
+
+        return $fleet_rs;
+
+
+        /*
+        $warnings = array();
+        $rs_row = array();
+        if ($rs_data)
+        {
+            //echo "<pre>".print_r($rs_data,true)."</pre>";
+
+            $race_entries = count($rs_data);                                                       // get number of entries in this fleet
+
+            $maxscore = $this->resultcode_points($_SESSION['resultcodes']['DNF'], $race_entries);  // get points for DNF (max score)
+            $maxlap = max(array_column($rs_data, 'lap'));                                          // get max no. of laps
+
+            $still_racing = 0;
+            $lap_arr    = array();  // sorting array for laps
+            $atime_arr  = array();  // sorting array for corrected time
+            $points_arr = array();  // sorting array for points
+            foreach ($rs_data as $k => $row)
+            {
+                $boat = $row['class']." ".$row['sailnum'];  // set boat description
+                empty($row['code']) ? $code_arr = array() : $code_arr = $_SESSION['resultcodes'][$row['code']];  // set code details
+
+                if ($row['status'] == "R")                           // this boat not finished
+                {
+                    $still_racing++;
+                }
+                elseif ($row['status'] == "F")                      // finished - check if correct no. of laps
+                {
+                    if ($racetype == "level" OR $racetype == "handicap")
+                    {
+                        if ($row['lap'] != $maxlap and (empty($row['code']) or $code_arr['scoringtype'] == "penalty")) {
+                            $warnings[] = array("type"=>"warning", "msg"=>"$boat has not completed all laps");
+                        }
+                    }
+                }
+
+                // get corrected time and aggregate time
+                $rs_data[$k]['ctime'] = $this->entry_calc_ct($row['etime'], $row['pn'], $racetype);
+                $rs_data[$k]['atime'] = $this->entry_calc_at($row['etime'], $row['pn'], $racetype, $row['lap'], $maxlap);
+
+                // set initial points to 0 unless it has a non-penalty scoring code (e.g. DNF, OCS, NCS)
+
+                if (!empty($code_arr))
+                {
+                    if ($code_arr['scoringtype'] == "penalty")    // this is a penalty code - don't process yet
+                    {
+                        $rs_data[$k]['points'] = 0;
+                    }
+                    elseif ($code_arr['scoringtype'] == "race")   // this is a race code
+                    {
                         $rs_data[$k]['points'] = $this->resultcode_points($code_arr, $race_entries);
                     }
                     else                                          // this is not a valid code for a race
@@ -680,26 +918,40 @@ class RACE
 
             // loop over sorted array setting position and points - including handling ties
             $pos = 0;
-            $jump = 0;
-            $last_atime = 0;
+            $atime = 0;
+            $prevpos = 0;
+            $tie = 0;
+            $sum = 0;
             $points_arr = array();
             foreach ($rs_data as $k => $row) {
-                if ($row['points'] == 0) {
-                    if ($row['atime'] != $last_atime)   // not a tie
+                // apply points - checking for ties
+                if ($row['atime'] != $atime)           // not a tie
+                {
+                    if ($tie > 0)                      // end of tie - reset allocated points to tie points
                     {
-                        $pos = $pos + $jump + 1;
-                        $jump = 0;
-                    } else                               // its a tie
-                    {
-                        $jump++;
+                        $tie++;
+                        $score = round(($sum + $prevpos)/$tie, 1);
+                        for ($i = $tie; $i > 0; $i--)
+                        {
+                            $r = $k - $i;
+                            $data[$k-$i]['pos'] = $score;
+                        }
+                        $tie = 0;                      // reset tie counts
+                        $sum=0;
                     }
-                    $rs_data[$k]['points'] = $pos;
+                    $pos++;
+                    $data[$k]['pos'] = $pos;
                 }
-                $last_atime = $row['atime'];
+                else                                   // is a tie - record and move on
+                {
+                    $tie++;
+                    $pos++;
+                    $sum = $sum + $prevpos;
+                }
+                $prevpos = $pos;
+                $atime = $row['atime'];
 
                 // add any penalties applied
-                empty($row['code']) ? $code_arr = array() : $code_arr = $_SESSION['resultcodes'][$row['code']];
-
                 if (!empty($code_arr) and $code_arr['scoringtype'] == "penalty") {
                     $rs_data[$k]['penalty'] = $this->penaltycode_points($code_arr, $race_entries, $rs_data[$k]['penalty']);
                     if ($rs_data[$k]['penalty'] > 0) {
@@ -753,9 +1005,11 @@ class RACE
                 );
             }
         }
+
         $fleet_rs['warning'] = $warnings;
         $fleet_rs['data']    = $rs_row;
         return $fleet_rs;
+        */
     }
 
 /**

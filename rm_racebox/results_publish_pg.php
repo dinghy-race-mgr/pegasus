@@ -72,7 +72,7 @@ elseif ($pagestate == "process")    // run through process workflow
     empty($_REQUEST['result_notes']) ? $result_notes = "" : $result_notes = $_REQUEST['result_notes'];
 
     // update event with form details
-    $update = $event_o->event_changedetail($eventid, array("result_notes" => $_REQUEST['result_notes'],
+    $update = $event_o->event_changedetail($eventid, array("result_notes" => $result_notes,
         "ws_start" => $_REQUEST['ws_start'], "wd_start" => $_REQUEST['wd_start'],
         "ws_end" => $_REQUEST['ws_end'], "wd_end" => $_REQUEST['wd_end'] ));
     if ($update) {u_writelog("Updated event wind details and notes", $eventid); }
@@ -420,7 +420,7 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
 {
     global $result_o;
 
-    $race_bufr = $result_o->render_race_result($loc, $include_club, $result_notes, $fleet_msg, $result_status);
+    $race_bufr = $result_o->render_race_result($loc, $result_status, $include_club, $result_notes, $fleet_msg);
 
     // get file path and url
     $race_file = $result_o->get_race_filename();
@@ -448,11 +448,13 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
         if ($result_status != "embargoed")
         {
             $listed = $result_o->add_result_file(array(
-                "result_status" => $result_status,
-                "result_type"   => "race",
-                "result_format" => "htm",
-                "result_path"   => $race_url,
-                "result_notes"  => $result_notes ));
+                "status"   => $result_status,
+                "folder"   => "races",
+                "format"   => "htm",
+                "filename" => $race_file,
+                "label"    => "race",
+                "rank"     => "1",
+                "notes"    => $result_notes ));
             if (!$listed) { $status= array('success' => false, 'err' => "file created but not added to results list [$race_path]"); }
         }
 
@@ -524,19 +526,19 @@ function process_series_file($eventid, $opts, $series_code, $series_status)
             $status = array('success' => true, 'err' => "series file created [$series_path]", 'url' => $series_url,
                 'path' => $series_path, 'file' => $series_file);
 
-            if ($series_status != "embargoed")
-            {
-                // add series result file entry to t_resultfile
-                $resultfile_arr = array(
-                    "result_status" => $series_status,
-                    "result_type"   => "series",
-                    "result_format" => "htm",
-                    "result_path"   => $series_url,
-                    "result_notes"  => "results file created by raceManager"
-                );
-                $listed = $result_o->add_result_file($resultfile_arr);
-                if (!$listed) { $status = array('success' => false, 'err' => "file created but not added to results list [$series_path]"); }
-            }
+            // add series result file entry to t_resultfile
+            $listed = $result_o->add_result_file(array(
+                "status"   => $series_status,
+                "folder"     => "race",
+                "format"   => "htm",
+                "filename" => $series_file,
+                "label"    => "series",
+                "rank"     => "2",
+                "notes"    => "results file created by raceManager"
+            ));
+
+            if (!$listed) { $status = array('success' => false, 'err' => "file created but not added to results list [$series_path]"); }
+
         }
     }
     else

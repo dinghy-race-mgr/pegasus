@@ -58,7 +58,7 @@ class DB
 
     public function __construct()
 	{
-	    // echo "<pre>".print_r($_SESSION,true)."</pre>";
+	    //echo "<pre>".print_r($_SESSION,true)."</pre>";
 
 	    global $connection;
 		mb_internal_encoding( 'UTF-8' );
@@ -85,14 +85,24 @@ class DB
     {
         if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
         $results = $this->link->query( $query );
-        return $results;
+
+        if( $this->link->error )
+        {
+            $this->db_log_errors( $this->link->error, $query );
+            return false;
+        }
+        else
+        {
+            return $results;
+        }
     }
     
 
     public function db_get_row( $query )
     {
-        if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
+        if ($_SESSION['sql_debug']) { u_writedbg("db_get_row: $query",__FILE__,__FUNCTION__,__LINE__); }
         $row = $this->link->query( $query );
+
         if( $this->link->error )
         {
             $this->db_log_errors( $this->link->error, $query );
@@ -109,7 +119,7 @@ class DB
     public function db_get_rows( $query )
     {
         //Overwrite the $row var to null
-        if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
+        if ($_SESSION['sql_debug']) { u_writedbg("db_get_rows: $query",__FILE__,__FUNCTION__,__LINE__); }
         $results = $this->link->query( $query );
 
         if( $this->link->error )
@@ -131,8 +141,9 @@ class DB
 
     public function db_num_rows( $query )
     {
-        if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
+        if ($_SESSION['sql_debug']) { u_writedbg("db_num_rows: $query",__FILE__,__FUNCTION__,__LINE__); }
         $num_rows = $this->link->query( $query );
+
         if( $this->link->error )
         {
             $this->db_log_errors( $this->link->error, $query );
@@ -182,11 +193,10 @@ class DB
 
     public function db_insert( $table, $variables = array() )
     {
+        // echo "<pre>".debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function']."</pre>";
+
         //Make sure the array isn't empty
-        if( empty( $variables ) )
-        {
-            return false;
-        }
+        if( empty( $variables ) ) { return false; }
         
         $query = "INSERT INTO ". $table;
         $fields = array();
@@ -201,10 +211,10 @@ class DB
         
         $query .= $fields .' VALUES '. $values;
 
-        if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
+        if ($_SESSION['sql_debug']) { u_writedbg("db_insert: query: $query",__FILE__,__FUNCTION__,__LINE__); }
         $insert  = $this->link->query( $query );
         $numrows = $this->link->affected_rows;
-        //echo "<pre>INSERT QUERY: ".$query."<br>".$numrows."</pre>";
+        if ($_SESSION['sql_debug']) { u_writedbg("db_update: rows inserted: $numrows ",__FILE__,__FUNCTION__,__LINE__); }
         
         if( $this->link->error )
         {
@@ -227,11 +237,10 @@ class DB
 
     public function db_delete( $table, $where = array(), $limit = '' )
     {
+        // echo "<pre>".debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function']."</pre>";
+
         //Delete clauses require a where param, otherwise use "truncate"
-        if( empty( $where ) )
-        {
-            return false;
-        }
+        if( empty( $where ) ) { return false; }
         
         $query = "DELETE FROM ". $table;
         $clause = array();
@@ -246,10 +255,11 @@ class DB
             $query .= " LIMIT ". $limit;
         }
 
-        if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
+        if ($_SESSION['sql_debug']) { u_writedbg("db_delete: query: $query",__FILE__,__FUNCTION__,__LINE__); }
         $delete = $this->link->query( $query );
         $numrows = $this->link->affected_rows;
-        //echo "<pre>DELETE QUERY: ".$query."<br>".$numrows."</pre>";
+        if ($_SESSION['sql_debug']) { u_writedbg("db_update: rows deleted: $numrows ",__FILE__,__FUNCTION__,__LINE__); }
+
 
         if( $this->link->error )
         {
@@ -265,18 +275,22 @@ class DB
 
     public function db_update( $table, $variables = array(), $where = array(), $limit = '' )
     {
+        // echo "<pre>".debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function']."</pre>";
+
         // returns -1 if update failed, 0 if successful but no rows changed, >1 no. rows changed
-        if( empty( $variables ) )
-        {
-            return -1;
-        }
+        if( empty( $variables ) ) { return -1; }
+
         $query = "UPDATE ". $table ." SET ";
         $updates = array();
+        $dbg_txt = "UPDATE $table: <br>";
         foreach( $variables as $field => $value )
-        {            
+        {
+            $dbg_txt.= "<pre>field: $field | value: $value | type: ".gettype($value)."<br></pre>";
             $updates[] = "`$field` = '".addslashes($value)."'";
         }
         $query .= implode(', ', $updates);
+
+        if ($_SESSION['sql_debug']) { u_writedbg("db_update: fields: $dbg_txt ",__FILE__,__FUNCTION__,__LINE__); }
         
         //Add the $where clauses as needed
         if( !empty( $where ) )
@@ -295,11 +309,10 @@ class DB
             $query .= ' LIMIT '. $limit;
         }
 
-        if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
-        //echo "<pre>$query</pre>";
+        if ($_SESSION['sql_debug']) { u_writedbg("db_update: query: $query ",__FILE__,__FUNCTION__,__LINE__); }
         $update = $this->link->query( $query );
         $numrows = $this->link->affected_rows;         // might be zero if no records changed
-        //echo "<pre> UPDATE QUERY: ".$query."<br>".$numrows."</pre>";
+        if ($_SESSION['sql_debug']) { u_writedbg("db_update: rows affected: $numrows ",__FILE__,__FUNCTION__,__LINE__); }
 
 
         if( $this->link->error )
@@ -307,7 +320,7 @@ class DB
             $this->db_log_errors( $this->link->error, $query );
             $numrows = -1;
         }
-        //u_writedbg("$query|$numrows", __FILE__, __FUNCTION__, __LINE__);
+
         return $numrows;
     }
     
@@ -530,26 +543,25 @@ class DB
         }
         return $result;
     }
-
-   // FIXME - next two methods should be private
    
     // Method: send error messages to error log
-    public function db_log_errors( $error, $query )
+    private function db_log_errors( $error, $query )
     {    
         $message = "DATABASE ERROR [".date('Y-m-d H:i:s')."]".PHP_EOL;
         $message.= "Query: ". htmlentities( $query ).PHP_EOL;
         $message.= "Error: $error<br />".PHP_EOL;
         error_log($message, 3, $_SESSION['syslog']);
+        if ($_SESSION['sql_debug']) { u_writedbg($message,__FILE__,__FUNCTION__,__LINE__); }
     }
     
-    // Method: send debug messages to debug log
-    public function db_log_debug( $method, $query )
-    {    
-        $message = "DEBUG [".date('Y-m-d H:i:s')."]".PHP_EOL;
-        $message.= "Method: $method".PHP_EOL;
-        $message.= "Query: ". htmlentities( $query ).PHP_EOL;
-        error_log($message, 3, $_SESSION['debuglog']);
-    }
+//    // Method: send debug messages to debug log
+//    public function db_log_debug( $method, $query )
+//    {
+//        $message = "DEBUG [".date('Y-m-d H:i:s')."]".PHP_EOL;
+//        $message.= "Method: $method".PHP_EOL;
+//        $message.= "Query: ". htmlentities( $query ).PHP_EOL;
+//        error_log($message, 3, $_SESSION['debuglog']);
+//    }
     
 }
 

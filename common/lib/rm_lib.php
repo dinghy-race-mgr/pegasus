@@ -45,10 +45,11 @@ function r_initialiseevent($mode, $eventid)
     $_SESSION['resultcodes'] = $db_o->db_getresultcodes("result");
 
     // setup where list of codes to continue timing
+    // FIXME not sure this is used
     $codelist = $db_o->db_getresultcodes("timing");
     $_SESSION['timercodelist'] = "";
     foreach ($codelist as $row) {
-        $_SESSION['timercodelist'] .= "'{$row['code']}'}'";
+        $_SESSION['timercodelist'] .= "'{$row['code']}',";
     }
 
     // get event details
@@ -269,41 +270,49 @@ function r_initfleetsession($db_o, $eventid, $fleetnum, $fleet)
 
 function r_initfleetdb($db_o, $eventid, $fleetnum, $fleet, $start_scheme, $start_interval)
 {
-    // if new or reset - set values into t_racestate  (doesn't update database if we are rejoining)
+    // only called if initialising or reset - set values into t_racestate  (doesn't update database if we are rejoining)
 
-        $data = array(
-            "fleet"       => $fleetnum,
-            "racename"   => $fleet['fleet_name'],
-            "start"      => $fleet['start_num'],
-            "eventid"    => $eventid,
-            "racetype"   => $fleet['scoring'],
-            "startdelay" => r_getstartdelay($fleet['start_num'], $start_scheme, $start_interval),
-            "starttime"  => gmdate("H:i:s", 0),
-            "currentlap" => 0,
-            "entries"    => 0,
-            "status"     => "notstarted",
-        );
+    $data = array(
+        "fleet"       => $fleetnum,
+        "racename"   => $fleet['fleet_name'],
+        "start"      => $fleet['start_num'],
+        "eventid"    => $eventid,
+        "racetype"   => $fleet['scoring'],
+        "startdelay" => r_getstartdelay($fleet['start_num'], $start_scheme, $start_interval),
+        "starttime"  => gmdate("H:i:s", 0),
+        "currentlap" => 0,
+        "entries"    => 0,
+        "status"     => "notstarted",
+    );
 
-        $_SESSION["e_$eventid"]['pursuit'] ? $data['maxlap'] = 1000 : $data['maxlap'] = $fleet['defaultlaps'];
+    $_SESSION["e_$eventid"]['pursuit'] ? $data['maxlap'] = 1000 : $data['maxlap'] = $fleet['defaultlaps'];
 
-        $insert_rs = $db_o->db_insert("t_racestate", $data);
+    $insert_rs = $db_o->db_insert("t_racestate", $data);
     
     // extend fleet session data with current t_racestate data
-    $fleetdata = $db_o->db_get_row("SELECT * FROM t_racestate WHERE eventid=$eventid AND race=$fleetnum");
+    //$fleetdata = $db_o->db_get_row("SELECT * FROM t_racestate WHERE eventid=$eventid AND fleet=$fleetnum");
     
-    // set fleet details
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['startdelay'] = $fleetdata['startdelay'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']  = $fleetdata['starttime'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxlap']     = $fleetdata['maxlap'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] = $fleetdata['currentlap'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['entries']    = $fleetdata['entries'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['status']     = $fleetdata['status'];
+    // set fleet details into session
+//    $_SESSION["e_$eventid"]["fl_$fleetnum"]['startdelay'] = $fleetdata['startdelay'];
+//    $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']  = $fleetdata['starttime'];
+//    $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxlap']     = $fleetdata['maxlap'];
+//    $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] = $fleetdata['currentlap'];
+//    $_SESSION["e_$eventid"]["fl_$fleetnum"]['entries']    = $fleetdata['entries'];
+//    $_SESSION["e_$eventid"]["fl_$fleetnum"]['status']     = $fleetdata['status'];
+
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['startdelay'] = $data['startdelay'];
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']  = $data['starttime'];
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxlap']     = $data['maxlap'];
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] = $data['currentlap'];
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['entries']    = $data['entries'];
+    $_SESSION["e_$eventid"]["fl_$fleetnum"]['status']     = $data['status'];
     
     // set start details
-    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['startdelay'] = $fleetdata['startdelay'];
-    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['starttime']  = $fleetdata['starttime'];
+//    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['startdelay'] = $fleetdata['startdelay'];
+//    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['starttime']  = $fleetdata['starttime'];
 
-    
+    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['startdelay'] = $data['startdelay'];
+    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['starttime']  = $data['starttime'];
     return $insert_rs;
 }
 

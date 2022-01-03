@@ -415,27 +415,6 @@
 
 
 
-
-{BEGIN container_gridinfo_sort}
-<div {$gridinfo_sort_chiddenattr} data-pageid="{$pageid}" data-container="gridinfo_sort" class=" bottom-margin pull-right text-right col-md-12 "> 
-
-{BEGIN reorder_records}
-<div {$reorder_records_hiddenattr} data-pageid="{$pageid}" data-brick="reorder_records" class="form-inline sortby-ctrl">
-Sort by&nbsp;{$sortByDropdown}
-</div>
-
-{END reorder_records}
-
-
-
-</div>
-{END container_gridinfo_sort}
-
-
-
-
-
-
 </div>{END container_gridcontrols}
 
 
@@ -540,7 +519,9 @@ Sort by&nbsp;{$sortByDropdown}
 									{BEGIN label_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$label_class}" data-field=label>
 									{BEGIN label_fieldheader}
-																				{$label t_ini label}
+																				<span {$label_orderlinkattrs}>
+											{$label t_ini label}
+										</span>
 									{END label_fieldheader}
 									</th>
 									{END label_fieldheadercolumn}
@@ -551,7 +532,9 @@ Sort by&nbsp;{$sortByDropdown}
 									{BEGIN value_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$value_class}" data-field=value>
 									{BEGIN value_fieldheader}
-																				{$label t_ini value}
+																				<span {$value_orderlinkattrs}>
+											{$label t_ini value}
+										</span>
 									{END value_fieldheader}
 									</th>
 									{END value_fieldheadercolumn}
@@ -562,7 +545,9 @@ Sort by&nbsp;{$sortByDropdown}
 									{BEGIN notes_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$notes_class}" data-field=notes>
 									{BEGIN notes_fieldheader}
-																				{$label t_ini notes}
+																				<span {$notes_orderlinkattrs}>
+											{$label t_ini notes}
+										</span>
 									{END notes_fieldheader}
 									</th>
 									{END notes_fieldheadercolumn}
@@ -573,7 +558,9 @@ Sort by&nbsp;{$sortByDropdown}
 									{BEGIN category_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$category_class}" data-field=category>
 									{BEGIN category_fieldheader}
-																				{$label t_ini category}
+																				<span {$category_orderlinkattrs}>
+											{$label t_ini category}
+										</span>
 									{END category_fieldheader}
 									</th>
 									{END category_fieldheadercolumn}

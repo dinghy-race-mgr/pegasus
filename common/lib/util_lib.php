@@ -35,6 +35,7 @@ function u_checkarg($arg, $mode, $check, $default = "")
     // $external = u_checkarg("state", "setbool", "init", true)
     // $action['event'] = u_checkarg("event", "set", "", 0)
 
+    $val = "";
     if (key_exists($arg, $_REQUEST)) {  // if key exists do checks according to mode
         if ($mode == "set") {
             empty($_REQUEST[$arg]) ? $val = $default : $val = $_REQUEST[$arg];

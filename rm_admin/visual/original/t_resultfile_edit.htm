@@ -93,95 +93,149 @@
 
 
 
-			{BEGIN result_type_fieldblock}
+			{BEGIN folder_fieldblock}
 <div class=container>
-<div class="form-group {$fielddispclass_result_type}" data-fieldname="result_type" data-signal-error-for="result_type{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_result_type}">
-		{BEGIN result_type_label}{$label t_resultfile result_type}{END result_type_label}
+<div class="form-group {$fielddispclass_folder}" data-fieldname="folder" data-signal-error-for="folder{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_folder}">
+		{BEGIN folder_label}{$label t_resultfile folder}{END folder_label}
 	</label>
 	<div class="col-md-5" >
-		{$result_type_editcontrol}
+		{$folder_editcontrol}
 	</div>
-	<div class="col-md-4 help-block" data-helpfor="result_type">
+	<div class="col-md-4 help-block" data-helpfor="folder">
 		<div class="text-muted" >
-		{$tooltip t_resultfile result_type}
+		{$tooltip t_resultfile folder}
 		</div>
 	</div>
 </div>
 </div>
-{END result_type_fieldblock}
+{END folder_fieldblock}
 
-			{BEGIN result_format_fieldblock}
+			{BEGIN format_fieldblock}
 <div class=container>
-<div class="form-group {$fielddispclass_result_format}" data-fieldname="result_format" data-signal-error-for="result_format{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_result_format}">
-		{BEGIN result_format_label}{$label t_resultfile result_format}{END result_format_label}
+<div class="form-group {$fielddispclass_format}" data-fieldname="format" data-signal-error-for="format{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_format}">
+		{BEGIN format_label}{$label t_resultfile format}{END format_label}
 	</label>
 	<div class="col-md-5" >
-		{$result_format_editcontrol}
+		{$format_editcontrol}
 	</div>
-	<div class="col-md-4 help-block" data-helpfor="result_format">
+	<div class="col-md-4 help-block" data-helpfor="format">
 		<div class="text-muted" >
-		{$tooltip t_resultfile result_format}
+		{$tooltip t_resultfile format}
 		</div>
 	</div>
 </div>
 </div>
-{END result_format_fieldblock}
+{END format_fieldblock}
 
-			{BEGIN result_path_fieldblock}
+			{BEGIN label_fieldblock}
 <div class=container>
-<div class="form-group {$fielddispclass_result_path}" data-fieldname="result_path" data-signal-error-for="result_path{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_result_path}">
-		{BEGIN result_path_label}{$label t_resultfile result_path}{END result_path_label}
+<div class="form-group {$fielddispclass_label}" data-fieldname="label" data-signal-error-for="label{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_label}">
+		{BEGIN label_label}{$label t_resultfile label}{END label_label}
 	</label>
 	<div class="col-md-5" >
-		{$result_path_editcontrol}
+		{$label_editcontrol}
 	</div>
-	<div class="col-md-4 help-block" data-helpfor="result_path">
+	<div class="col-md-4 help-block" data-helpfor="label">
 		<div class="text-muted" >
-		{$tooltip t_resultfile result_path}
+		{$tooltip t_resultfile label}
 		</div>
 	</div>
 </div>
 </div>
-{END result_path_fieldblock}
+{END label_fieldblock}
 
-			{BEGIN result_notes_fieldblock}
+			{BEGIN filename_fieldblock}
 <div class=container>
-<div class="form-group {$fielddispclass_result_notes}" data-fieldname="result_notes" data-signal-error-for="result_notes{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_result_notes}">
-		{BEGIN result_notes_label}{$label t_resultfile result_notes}{END result_notes_label}
+<div class="form-group {$fielddispclass_filename}" data-fieldname="filename" data-signal-error-for="filename{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_filename}">
+		{BEGIN filename_label}{$label t_resultfile filename}{END filename_label}
 	</label>
 	<div class="col-md-5" >
-		{$result_notes_editcontrol}
+		{$filename_editcontrol}
 	</div>
-	<div class="col-md-4 help-block" data-helpfor="result_notes">
+	<div class="col-md-4 help-block" data-helpfor="filename">
 		<div class="text-muted" >
-		{$tooltip t_resultfile result_notes}
+		{$tooltip t_resultfile filename}
 		</div>
 	</div>
 </div>
 </div>
-{END result_notes_fieldblock}
+{END filename_fieldblock}
 
-			{BEGIN result_status_fieldblock}
+			{BEGIN notes_fieldblock}
 <div class=container>
-<div class="form-group {$fielddispclass_result_status}" data-fieldname="result_status" data-signal-error-for="result_status{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_result_status}">
-		{BEGIN result_status_label}{$label t_resultfile result_status}{END result_status_label}
+<div class="form-group {$fielddispclass_notes}" data-fieldname="notes" data-signal-error-for="notes{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_notes}">
+		{BEGIN notes_label}{$label t_resultfile notes}{END notes_label}
 	</label>
 	<div class="col-md-5" >
-		{$result_status_editcontrol}
+		{$notes_editcontrol}
 	</div>
-	<div class="col-md-4 help-block" data-helpfor="result_status">
+	<div class="col-md-4 help-block" data-helpfor="notes">
 		<div class="text-muted" >
-		{$tooltip t_resultfile result_status}
+		{$tooltip t_resultfile notes}
 		</div>
 	</div>
 </div>
 </div>
-{END result_status_fieldblock}
+{END notes_fieldblock}
+
+			{BEGIN status_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_status}" data-fieldname="status" data-signal-error-for="status{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_status}">
+		{BEGIN status_label}{$label t_resultfile status}{END status_label}
+	</label>
+	<div class="col-md-5" >
+		{$status_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="status">
+		<div class="text-muted" >
+		{$tooltip t_resultfile status}
+		</div>
+	</div>
+</div>
+</div>
+{END status_fieldblock}
+
+			{BEGIN rank_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_rank}" data-fieldname="rank" data-signal-error-for="rank{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_rank}">
+		{BEGIN rank_label}{$label t_resultfile rank}{END rank_label}
+	</label>
+	<div class="col-md-5" >
+		{$rank_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="rank">
+		<div class="text-muted" >
+		{$tooltip t_resultfile rank}
+		</div>
+	</div>
+</div>
+</div>
+{END rank_fieldblock}
+
+			{BEGIN upload_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_upload}" data-fieldname="upload" data-signal-error-for="upload{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_upload}">
+		{BEGIN upload_label}{$label t_resultfile upload}{END upload_label}
+	</label>
+	<div class="col-md-5" >
+		{$upload_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="upload">
+		<div class="text-muted" >
+		{$tooltip t_resultfile upload}
+		</div>
+	</div>
+</div>
+</div>
+{END upload_fieldblock}
 
 
 </div>

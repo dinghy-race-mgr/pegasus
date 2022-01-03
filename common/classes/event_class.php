@@ -858,7 +858,7 @@ class EVENT
 
         $query = "SELECT a.id as id, seriescode, seriesname, a.seriestype as seriestype, b.seriestype as seriestypename,
                   race_format, startdate, enddate, merge, classresults, discard, nodiscard, multiplier, avgscheme, dutypoints, 
-                  maxduty, opt_upload, opt_style, opt_scorecode, opt_clubnames, opt_pagebreak, opt_racelabel
+                  maxduty, opt_upload, opt_style, opt_turnout, opt_scorecode, opt_clubnames, opt_pagebreak, opt_racelabel, a.notes
                   FROM t_series as a JOIN t_cfgseries as b ON a.seriestype=b.id WHERE a.active=1
                   AND seriescode = '$rootcode'  ORDER BY seriesname ASC";
         // echo "SERIES QUERY: $query<br>";
@@ -901,11 +901,22 @@ class EVENT
     {
         // gets list of events that are part of the specified series
         $query = "SELECT id FROM t_event WHERE active=1
-                  AND series_code = '$code' ORDER BY event_date ASC, event_time ASC";
+                  AND series_code = '$code' ORDER BY event_date ASC, event_start ASC";
         $detail = $this->db->db_get_rows( $query );
 
-        if (empty($detail)) { $detail = false; }
-        return $detail;
+        if (empty($detail))
+        {
+            return false;
+        }
+        else
+        {
+            $rs = array();
+            foreach($detail as $k=>$row)
+            {
+                $rs[$k] = $row['id'];
+            }
+        }
+        return $rs;
     }
 
 
