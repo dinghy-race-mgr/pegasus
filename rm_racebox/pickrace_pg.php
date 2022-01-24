@@ -25,6 +25,7 @@ require_once ("{$loc}/common/lib/raceformat_lib.php");
 // starts session and sets error reporting
 u_initpagestart("", $page, false);
 if ($_SESSION['debug']==2) { u_sessionstate($scriptname, $page, 0); } // if debug send session to file
+u_sessionstate($scriptname, $page, 0);
 
 // required templates
 $tmpl_o  = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/pickrace_tm.php"));

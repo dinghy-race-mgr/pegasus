@@ -13,6 +13,15 @@
 
  */
 
+:root {
+    --primary: #2C3E50;
+    --darkblue: rgb(44, 76, 124);
+    --red: rgb(194, 0, 0);
+    --darkred: darkred;
+    --white: white;
+    --grey: slategrey
+}
+
 
 /* flatly colours
  - primary     #2C3E50
@@ -100,7 +109,7 @@ body > .container { padding: 10px 0px 0px 0px; }
 .modal-sm {width: 600px !important}
 
 /* navpills */
-.pill-fleet li.active a, .pill-fleet li.active a:focus, .pill-fleet li.active a:hover { background-color: orange; }
+.pill-fleet li.active a, .pill-fleet li.active a:focus, .pill-fleet li.active a:hover { background-color:var(--primary); }
 .pill-fleet li {min-width:200px; }
 .pill-fleet li a {border: 3px solid lightgrey !important;}
 
@@ -121,7 +130,7 @@ body > .container { padding: 10px 0px 0px 0px; }
 .table > tbody > tr.racing   {}
 .table > tbody > tr.finished {background-color: lightgrey; color: slategrey;}
 .table > tbody > tr.excluded {background-color: lightgrey; color: slategrey;}
-.table > tbody > tr.lastlap  {background-color: orange ;  }
+.table > tbody > tr.lastlap  {background-color: palegoldenrod ;  }
 
 .truncate {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 

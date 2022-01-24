@@ -82,11 +82,13 @@ $nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
 // ----- left hand panel --------------------------------------------------------------------
 $lbufr = u_growlProcess($eventid, $page);
 $lbufr_bot = "";
+$bunch_display = true;
 
 $problems = problem_check($eventid);    // check problems preventing timing
 if (in_array(true, $problems, true))
 {
     $lbufr.= $tmpl_o->get_template("problems", array("eventid" => $eventid), $problems);
+    $bunch_display = false;
 }
 else
 {
@@ -128,7 +130,15 @@ else
             $out = array();
             foreach ($rs_race as $entry)
             {
-                $i = $entry['sailnum'][0];
+
+                if (ctype_digit($entry['sailnum'][0]))    // if first char of sailnumber is number - use it for group index
+                {
+                    $i = $entry['sailnum'][0];
+                }
+                else                                      // first char is not a number - use group 0
+                {
+                    $i = 0;
+                }
                 $out[$i][] = $entry;
             }
         }
@@ -177,7 +187,7 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
 $rbufr.= "<hr>";
 
 // bunch display
-if ($_SESSION['racebox_timer_bunch'])
+if ($_SESSION['racebox_timer_bunch'] and $bunch_display)
 {
     if (!array_key_exists("bunch", $_SESSION["e_$eventid"])) { $_SESSION["e_$eventid"]['bunch'] = array(); };
     $bunch_o = new BUNCH($eventid, "timer_sc.php", $_SESSION["e_$eventid"]['bunch']);
@@ -185,11 +195,10 @@ if ($_SESSION['racebox_timer_bunch'])
     $bunch_o->is_empty() ? $bunch_htm = "<div style='text-align: center'><i> --- empty ---</i></div>" : $bunch_htm = $bunch_o->render();
 
     $rbufr.=<<<EOT
-    <div style = "border: 1px solid steelblue; min-height: 100px; border-radius: 10px;;">
-        <h4 class="text-info" style ="padding-left:10px">bunch&hellip;</h4>
-        $bunch_htm
+    <div class="panel panel-info">
+        <div class="panel-heading"><h4 class="panel-title">Bunch ...</h4></div>
+        <div class="panel-body">$bunch_htm</div>
     </div>
-
 EOT;
 
 }

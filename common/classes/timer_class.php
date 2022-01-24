@@ -106,8 +106,8 @@ class TIMER
             $start_delay = $_SESSION["$event"]["st_{$_SESSION["$event"]["fl_$i"]['startnum']}"]['startdelay'];
             // set actual start time depending on timer status (started | stopped)
 
-
-            $status === "start" ?  $fleet_start = $time + $start_delay : $fleet_start = 0;
+            u_writedbg("<pre>fleet $i status: $status time: $time startdelay: $start_delay </pre>", __FILE__, __FUNCTION__, __LINE__); // debug
+            $status === "inprogress" ?  $fleet_start = $time + $start_delay : $fleet_start = 0;
 
                         
             // set starttime and status in t_racestate

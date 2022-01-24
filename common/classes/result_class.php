@@ -123,9 +123,9 @@ class RESULT
     }
 
 
-    public function get_inventory_filename()
+    public function get_inventory_filename($year)
     {
-        $filename = "racemanager_".date("Y-m-d\TH-i-s").".inv";
+        $filename = "inventory_".$year.".json";
         return $filename;
     }
 
@@ -307,6 +307,8 @@ EOT;
 
         // get event info
         $event = $this->db->db_get_row("SELECT * FROM t_event WHERE id = $this->eventid");
+        $event_label = $event['event_name'];
+        !empty($event['event_start']) ? $event_label.= " - ".date("H:i", strtotime($event['event_start'])) : $event_label.= " - ".$event['event_order'];
         //u_writedbg("<pre>".print_r($event,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
         //echo "<pre>".print_r($event,true)."</pre>";
 
@@ -349,7 +351,7 @@ EOT;
         $opts = array(
             "inc-pagebreak" => false,                                                // page break after each fleet
             "inc-codes"     => true,                                                 // include key of codes used
-            "inc-club"      => true,                                                 // include club name for each competitor
+            "inc-club"      => $include_club,                                        // include club name for each competitor
             "inc-turnout"   => true,                                                 // include turnout statistics
             "race-label"    => "number",                                             // use race number or date for labelling races
             "club-logo"     => $_SESSION['baseurl']."/config/images/club_logo.jpg",  // if set include club logo
@@ -370,7 +372,7 @@ EOT;
             "sys_version"   => $_SESSION['sys_version'],
             "sys_release"   => $_SESSION['sys_release'],
             "sys_copyright" => "Elmswood Software " . date("Y"),
-            "pagetitle"     => $event['event_name']." ".$event['event_start'],
+            "pagetitle"     => $event_label,
         );
 
         $params = array(
@@ -388,8 +390,13 @@ EOT;
     }
 
 
-    public function create_result_inventory($filepath, $startdate = "")
+    public function create_result_inventory($inventory_year, $target_filepath, $system_info)
     {
+        // FIXME arguments in result_publish_pg/#219  and publish_results/#298
+
+        // set default start date to first day of relevant year
+        $startdate = "$inventory_year-01-01";
+
         // get duty codes
         $codes = array();
         $dutycodes = $this->db->db_getsystemcodes("rota_type");
@@ -404,32 +411,34 @@ EOT;
         $inventory["admin"] = array(
             "type"       => "event_inventory",
             "createdate" => date("Y-m-d H:i"),
-            "source"     => $_SESSION['sys_name'] . "-" . $_SESSION['sys_version'],
-            "club"       => $_SESSION['clubname'],
-            "resultpath" => $_SESSION['result_path'],
-            "resulturl"  => $_SESSION['result_url'],
+            "source"     => $system_info['sys_name'] . "-" . $system_info['sys_version'],
+            "club"       => $system_info['clubname'],
+            "resultpath" => $system_info['result_path'],
+            "resulturl"  => $system_info['result_url'],
         );
+        
+        //echo "<pre>".print_r($inventory["admin"],true)."</pre>";
 
         $event_o = new EVENT($this->db);
         $rota_o = new ROTA($this->db);
 
         // get all events from startdate
-        $events = $event_o->get_events("racing", "active", array("start"=>$startdate)); // FIXME what if start date is empty
+        $events = $event_o->get_events("racing", "active", array("start"=>$startdate));
 
         $inventory["events"] = array();
         foreach ($events as $event) {
             $inventory["events"][$event['id']] = array(
-                "eventdate" => $event['event_date'],
-                "eventtime" => $event['event_start'],
-                "eventorder" => $event['event_order'],
-                "eventname" => $event['event_name'],
-                "eventtype" => $event['event_type'],
-                "eventfmt" => $event['event_format'],
-                "eventnotes" => $event['event_notes'],
-                "resultnotes" => $event['result_notes'],
-                "eventstatus" => $event['event_status'],
-                "tidetime" => $event['tide_time'],
-                "tideheight" => $event['tide_height'],
+                "eventdate"    => $event['event_date'],
+                "eventtime"    => $event['event_start'],
+                "eventorder"   => $event['event_order'],
+                "eventname"    => $event['event_name'],
+                "eventtype"    => $event['event_type'],
+                "eventfmt"     => $event['event_format'],
+                "eventnotes"   => $event['event_notes'],
+                "resultnotes"  => $event['result_notes'],
+                "eventstatus"  => $event['event_status'],
+                "tidetime"     => $event['tide_time'],
+                "tideheight"   => $event['tide_height'],
                 "eventdisplay" => $event['display_code']
             );
 
@@ -442,7 +451,7 @@ EOT;
                     $dutyarray[] = array(
                         "dutytype" => $codes["{$duty['dutycode']}"],
                         "dutyname" => $duty['person'],
-                        "dutynote" => $duty['notes'],
+                        "dutyphone"=> $duty['phone'],
                     );
                 }
             }
@@ -451,14 +460,17 @@ EOT;
 
             // get results files for this event
             $files = $this->get_result_files($event['id']);
+
             $resultsfiles = array();
             foreach ($files as $file) {
+                //echo "<pre>FILEDATA".print_r($file,true)."</pre>";
                 $resultsfiles[] = array(
-                    "type"   => $file["result_type"],
-                    "format" => $file["result_format"],
-                    "path"   => $file["result_path"],
-                    "notes"  => $file["result_notes"],
-                    "status" => $file["result_status"],
+                    "type"   => $file["folder"],
+                    "format" => $file["format"],
+                    "file"   => $file["filename"],
+                    "notes"  => $file["notes"],
+                    "status" => $file["status"],
+                    "rank"   => $file["rank"],
                     "update" => $file["upddate"],
                 );
             }
@@ -471,7 +483,7 @@ EOT;
         // echo $jbufr;
 
         // create inventory file
-        $status = file_put_contents($filepath, $jbufr);
+        $status = file_put_contents($target_filepath, $jbufr);
 
         return $status;
     }
@@ -489,33 +501,34 @@ EOT;
         foreach ($results as $key => $result)
         {
             $results[$key]['team'] = u_conv_team($result['helm'], $result['crew']);
-            $results[$key]['result'] = u_conv_result($result['code'], $result['points']);
 
-            $no_times = false;
+            $inc_times = true;
+            $inc_points = true;
+            $code_info['scoringtype'] = "";
             if (!empty($result['code']))
             {
                 $code_info = $this->db->db_getresultcode($result['code']);
-//                if ($code_info['scoringtype'] != "manual" OR $code_info['scoring'] != "AVG" OR
-//                    strpos($code_info['scoring'], "P") != FALSE)
-                if ($code_info['scoringtype'] == "race")
+                if ($code_info['scoringtype'] == "race" or $code_info['scoringtype'] == "series")
                 {
-                    $no_times = true;
+                    $inc_times = false;
                 }
             }
 
-            if ($no_times)
-            {
-                $results[$key]['etime']  = " - ";
-                $results[$key]['ctime']  = " - ";
-                $results[$key]['atime']  = " - ";
-            }
-            else
+            if ($inc_times)
             {
                 $results[$key]['etime']  = u_conv_secstotime($result['etime']);
                 $results[$key]['ctime']  = u_conv_secstotime($result['ctime']);
                 $results[$key]['atime']  = u_conv_secstotime($result['atime']);
             }
+            else
+            {
+                $results[$key]['etime']  = " - ";
+                $results[$key]['ctime']  = " - ";
+                $results[$key]['atime']  = " - ";
+            }
 
+
+            $results[$key]['result'] = u_conv_result($result['code'], $code_info['scoringtype'], $result['points']);
         }
 
         return $results;

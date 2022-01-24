@@ -26,8 +26,6 @@ require_once ("{$loc}/common/lib/rm_lib.php");
 // process parameters  (eventid, pagestate)
 $eventid   = u_checkarg("eventid", "checkintnotzero","");
 $pagestate = u_checkarg("pagestate", "set", "", "");
-//$eventid   = (!empty($_REQUEST['eventid']))? $_REQUEST['eventid']: "";
-//$pagestate = (!empty($_REQUEST['pagestate']))? $_REQUEST['pagestate']: "";
 
 u_initpagestart($eventid, $page, false);   // starts session and sets error reporting
 

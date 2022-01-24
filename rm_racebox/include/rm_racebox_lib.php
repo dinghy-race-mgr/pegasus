@@ -1,5 +1,38 @@
 <?php
 
+//function process_code($eventid, $params)
+//{
+//    $fail_reason = "";
+//    $err = false;
+//    key_exists("entryid", $params)    ? $entryid = $params['entryid'] : $err = true;
+//    key_exists("boat", $params)       ? $boat = $params['boat'] : $err = true;
+//    key_exists("racestatus", $params) ? $racestatus = $params['racestatus'] : $err = true;
+//    key_exists("declaration", $params)? $declaration = $params['declaration'] : $err = true;
+//    key_exists("lap", $params)        ? $lap = $params['lap'] : $err = true;
+//    key_exists("finishlap", $params)  ? $finishlap = $params['finishlap'] : $err = true;
+//    key_exists("code", $params)       ? $code = $params['code'] : $code = "";
+//
+//    echo "<pre>|err: $err|<br>".print_r($params,true)."</pre>";
+//
+//    if ($err)
+//    {
+//        $fail_reason = "required parameters were invalid
+//                       (id: {$_REQUEST['entryid']}; boat: {$_REQUEST['boat']}; status: {$_REQUEST['racestatus']};)";
+//        u_writelog("$boat - set code failed - $fail_reason", $eventid);
+//    }
+//    else {
+//        $update = set_code($eventid, $entryid, $code, $racestatus, $declaration, $boat, $finishlap, $lap);
+//
+//        if (!$update) {
+//            $fail_reason = "database update failed";
+//            u_writelog("$boat - attempt to set code to $code] FAILED" - $fail_reason, $eventid);
+//        }
+//    }
+//
+//    return $fail_reason;
+//}
+
+
 function get_code($code, $link, $domain, $dirn = "", $set = "danger", $unset= "primary" )
 /*
  * displays codes dropdown for each entry on start(infringe), timer and results page
@@ -39,32 +72,89 @@ EOT;
 }
 
 
-function set_code($eventid, $entryid, $code, $racestatus, $declaration, $boat, $finish_lap = 0, $current_lap = 0)
+function set_code($eventid, $params) //$entryid, $code, $racestatus, $declaration, $boat, $finish_lap = 0, $current_lap = 0)
     /*
      * sets or clears code in t_race
      */
 {
     global $race_o;
 
-    if ($finish_lap and $current_lap)
+    // get parameters
+    $result = true;
+    $err = false;
+    key_exists("entryid", $params)    ? $entryid = $params['entryid'] : $err = true;
+    key_exists("boat", $params)       ? $boat = $params['boat'] : $err = true;
+    key_exists("racestatus", $params) ? $racestatus = $params['racestatus'] : $err = true;
+    key_exists("declaration", $params)? $declaration = $params['declaration'] : $err = true;
+    key_exists("lap", $params)        ? $current_lap = $params['lap'] : $err = true;
+    key_exists("finishlap", $params)  ? $finish_lap = $params['finishlap'] : $err = true;
+    key_exists("code", $params)       ? $code = $params['code'] : $code = "";
+
+    if ($err)            // stop if params are invalid
     {
+        $result = "required parameters were invalid
+                       (id: {$_REQUEST['entryid']}; boat: {$_REQUEST['boat']}; status: {$_REQUEST['racestatus']};)";
+        u_writelog("$boat - set code failed - $result", $eventid);
+    }
+    else                // process code change
+    {
+        // check if finished
         $finish_lap <= $current_lap ? $finish_check = true : $finish_check = false;
-    }
-    else
-    {
-        $finish_check = false;
+
+        if ($code)      // set a scoring code
+        {
+            $update = $race_o->entry_code_set($entryid, $code, $finish_check);
+            if ($update)  // deal with response
+            {
+                u_writelog("$boat - code set to $code", $eventid);
+            }
+            elseif ($update == -1)
+            {
+                $result = "boat id ($entryid) not found in t_race";
+                u_writelog("$boat - code not set - $result", $eventid);
+                u_writelog("dbg: codeset - entryid($entryid), code($code) fcheck($finish_check)", $eventid);
+            }
+            elseif ($update == -2)
+            {
+                $result = "code specified ($code) not recognised ";
+                u_writelog("$boat - code not set - $result", $eventid);
+                u_writelog("dbg: codeset - entryid($entryid), code($code) fcheck($finish_check)", $eventid);
+            }
+            elseif ($update == -3)
+            {
+                $result = "database update not completed ";
+                u_writelog("$boat - code not set - $result", $eventid);
+                u_writelog("dbg: codeset - entryid($entryid), code($code) fcheck($finish_check)", $eventid);
+            }
+            else
+            {
+                $result = "failed (reason unknown) ";
+                u_writelog("$boat - code set ($code) - $result", $eventid);
+            }
+
+        }
+        else  // clear scoring code
+        {
+            $update = $race_o->entry_code_unset($entryid, $racestatus, $declaration, $finish_check);
+
+            if ($update)
+            {
+                u_writelog("$boat - code ($code) cleared", $eventid);
+                u_writelog("dbg: codeunset - entryid($entryid), code($code) fcheck($finish_check)", $eventid);
+            }
+            elseif ($update == -3)
+            {
+                $result = "database update not completed ";
+                u_writelog("$boat - code ($code) unset attempt - $result", $eventid);
+                u_writelog("dbg: codeset - entryid($entryid), code($code) fcheck($finish_check)", $eventid);
+            }
+            else
+            {
+                $result = "failed (reason unknown) ";
+                u_writelog("$boat - code ($code) unset attempt - $result", $eventid);
+            }
+        }
     }
 
-    if ($code)
-    {
-        $update = $race_o->entry_code_set($entryid, $code, $finish_check);
-        if ($update) { u_writelog("$boat - code set to $code", $eventid); }
-    }
-    else
-    {
-        $update = $race_o->entry_code_unset($entryid, $racestatus, $declaration, $finish_check);
-        if ($update) { u_writelog("$boat - code unset", $eventid); }
-    }
-
-    return $update;
+    return $result;
 }

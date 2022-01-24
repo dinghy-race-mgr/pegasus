@@ -32,10 +32,13 @@ if (empty($pagestate) OR empty($eventid))
 
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/start_tm.php"));
 
+// page controls
+include ("./templates/growls.php");
+
 $db_o    = new DB;              // create database object
 $race_o  = new RACE($db_o, $eventid);
 
-// display list of entries for this start
+// ---- pagestate INIT ---------------------- display list of entries for this start
 if ($pagestate == "init")
 {
     // get entries for this start
@@ -47,7 +50,6 @@ if ($pagestate == "init")
         "entries"    => count($entries),
         "entry-data" => $entries,
     );
-    $body = $tmpl_o->get_template("infringe", array(), $params);
 
     $fields = array(
         "title"      => "start infringements",
@@ -55,48 +57,26 @@ if ($pagestate == "init")
         "loc"        => $loc,
         "stylesheet" => "./style/rm_racebox.css",
         "navbar"     => "",
-        "body"       => $body,
+        "body"       => $tmpl_o->get_template("infringe", array(), $params),
         "footer"     => "",
     );
     echo $tmpl_o->get_template("basic_page", $fields);
 }
 
-// change code for specified entry
+// ---- pagestate SETCODE ---------------------- change code for specified entry
 elseif ($pagestate == "setcode")
 {
-    $err = false;
+    $setcode = set_code($eventid, $_REQUEST);
 
-    empty($_REQUEST['entryid'])    ? $err = true : $entryid = $_REQUEST['entryid'];
-    empty($_REQUEST['boat'])       ? $err = true : $boat = $_REQUEST['boat'];
-    empty($_REQUEST['racestatus']) ? $err = true : $racestatus = $_REQUEST['racestatus'];
-    empty($_REQUEST['declaration'])? $err = true : $declaration = $_REQUEST['declaration'];
-    empty($_REQUEST['lap'])        ? $err = true : $lap = $_REQUEST['lap'];
-    empty($_REQUEST['finishlap'])  ? $err = true : $finishlap = $_REQUEST['finishlap'];
-    empty($_REQUEST['code'])       ? $code = ""  : $code = $_REQUEST['code'];
-
-    if ($err)
+    if($setcode !== true)
     {
-        $reason = "required parameters were invalid
-                       (id: {$_REQUEST['entryid']}; boat: {$_REQUEST['boat']}; status: {$_REQUEST['racestatus']};)";
-        u_writelog("$boat - set code failed - $reason", $eventid);
-        u_growlSet($eventid, $page, $g_timer_setcodefailed, array($boat, $reason));
-    }
-    else
-    {
-        $update = set_code($eventid, $entryid, $code, $racestatus, $declaration, $boat, $finishlap, $lap);
-
-        if (!$update)
-        {
-            $reason = "database update failed";
-            u_writelog("$boat - attempt to set code to $code] FAILED" - $reason, $eventid);
-            u_growlSet($eventid, $page, $g_timer_setcodefailed, array($boat, $reason));
-        }
+        u_growlSet($eventid, $page, $g_timer_setcodefailed, array($_REQUEST['boat'], $setcode));
     }
 
     header("Location: start_infringements_pg.php?eventid=$eventid&startnum=$startnum&pagestate=init");
 }
 
-// deal with invalid pagestate
+// ---- pagestate 'unknown'' ---------------------- tdeal with invalid pagestate
 else
 {
     u_exitnicely("start_infringements_pg", $eventid, "errornum", "pagestate ($pagestate) is not recognised");

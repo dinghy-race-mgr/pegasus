@@ -8,45 +8,9 @@
    --red: rgb(194, 0, 0);
    --darkred: darkred;
    --white: white;
-   --grey: slategrey
+   --grey: slategrey;
+   --lightgrey: rgb(153, 153, 153)
 }
-
-/*
-*            {box-sizing: border-box;}
-body         {font-family: Kalinga,verdana,sans-serif; font-size: 1.0em;}
-h1           {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 200%; letter-spacing: -1px; color: var(--darkblue);}
-h2           {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 150%; color: var(--darkblue);}
-h3           {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 125%; color: var(--red);}
-p            {font-weight: normal; color: rgb(0, 0, 0); font-size: 1.0em; line-height: 1.2em; padding-bottom: 0.2em;}
-
-td           {display: table-cell; vertical-align: inherit;}
-th           {font-size: 0.8em !important; font-weight: normal !important;}
-a:link       {color: var(--darkblue); text-decoration: none;}
-
-.title       {font-family: Kalinga,arial,helvetica,sans-serif; font-weight: bold; font-size: 200%; letter-spacing: -1px; color: var(--darkblue);}
-.title2      {font-family: Kalinga,arial,helvetica,sans-serif; font-weight: bold; font-size: 150%; color: var(--darkblue); padding-top: 40px}
-
-.divider     {border-top: 1px solid var(--grey); margin-top: 15px; margin-bottom: 5px;}
-.clearfix    {display: block;}
-
-.text-center {text-align: center;}
-.text-right  {text-align: right; padding-right: 15px; }
-.text-left   {text-align: left; padding-left: 15px; }
-.text-grey   {color: var(--grey);}
-.text-alert  {color: var(--darkred);}
-.text-info   {color: var(--blue);}
-.small-note  {color: var(--blue); font-weight: normal; line-height: 1.0em; font-size: 0.8em;}
-.note        {font-weight: normal; color: rgb(0, 0, 0); line-height: 1.2em; margin: 0px; }
-
-.pull-right  {text-align: right;}
-.pull-left   {text-align: left;}
-.pull-center {text-align: center;}
-.pull-top    {vertical-align: top;}
-
-.noshade     {background: none repeat scroll 0% 0% rgb(255, 255, 255);}
-.lightshade  {background: none repeat scroll 0% 0% rgb(238, 238, 238);}
-.darkshade   {background: none repeat scroll 0% 0% rgb(153, 153, 153);}
-*/
 
 /* --------------------------------------------------------------------------------------------------------------------*/
 
@@ -68,14 +32,14 @@ body         {font-family: Kalinga,verdana,sans-serif; font-size: 1.0em;}
 .spacer          {border-top: 1px solid var(--grey); margin-top: 15px; margin-bottom: 5px; display: block;}
 .codes-info      {color: var(--blue); font-weight: normal; line-height: 1.0em; font-size: 0.8em; margin-top: 25px;}
 
-.table           {display: table; width: 100%; min-width: 70%}
-.table-col       {color: var(--white); font-size: 0.8em !important; font-weight: normal !important; padding-left: 5px; padding-right: 5px;
-                  background: none repeat scroll 0% 0% rgb(153, 153, 153);}
+.table           {display: table; width: 30cm; min-width: 70%}
+.table-col       {color: var(--white); font-size: 0.9em !important; font-weight: normal !important; padding-left: 5px; padding-right: 5px;
+                  background: var(--darkblue);}
 .table-row       {display: table-row;}
-.table-cell      {display: table-cell; vertical-align: inherit; font-size: 0.9em; padding-left: 5px; padding-right: 5px;}
-.table-cell-right{display: table-cell; vertical-align: inherit; text-align: right; font-size: 0.9em; padding-left: 5px; padding-right: 5px;}
-.table-cell-ctr  {display: table-cell; vertical-align: inherit; text-align: center; font-size: 0.9em; padding-left: 5px; padding-right: 5px;}
-.table-points    {text-align: center; min-width: 4em;}
+.table-cell      {display: table-cell; vertical-align: inherit; padding-left: 5px; padding-right: 5px;}
+.table-cell-right{display: table-cell; vertical-align: inherit; text-align: right; padding-left: 5px; padding-right: 5px;}
+.table-cell-ctr  {display: table-cell; vertical-align: inherit; text-align: center; padding-left: 5px; padding-right: 5px;}
+.table-points    {text-align: left; padding-left: 20px; min-width: 4em;}
 .truncate        {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 
 .indent20        {padding-left: 20px;}
@@ -83,7 +47,7 @@ body         {font-family: Kalinga,verdana,sans-serif; font-size: 1.0em;}
 .lightshade      {background: none repeat scroll 0% 0% rgb(238, 238, 238);}
 .darkshade       {background: none repeat scroll 0% 0% rgb(153, 153, 153);}
 
-button           {background: var(--blue); cursor: pointer; color: var(--white); border-radius: 15px}
+button           {background: var(--darkred); cursor: pointer; color: var(--white); border-radius: 5px; font-size: 1.5em;}
 
 @media all   {.page-break	{ display: none; }  }
 

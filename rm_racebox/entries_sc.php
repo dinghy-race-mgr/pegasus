@@ -126,6 +126,8 @@ if ($eventid)
             $entered = 0;
             foreach ($signons as $signon)
             {
+                //echo "<pre>Processing record {$signon['id']}: </pre>";
+
                 if ($signon['action'] == "delete" OR $signon['action'] == "update" OR $signon['action'] == "replace")
                 {
                     // delete entry if it exists
@@ -135,11 +137,14 @@ if ($eventid)
                         $entries_deleted++;
                         $upd = $entry_o->confirm_entry($signon['t_entry_id'], "L");
                     }
+                    //echo "<pre>deleting/updating/replacing</pre>";
                 }
 
                 if ($signon['action'] == "enter" OR $signon['action'] == "update" OR $signon['action'] == "replace")
                 {
+                    //echo "<pre>adding [{$signon['action']} - $eventid]</pre>";
                     $status = enter_boat($signon, $eventid, "signon");  // add new or replacement record
+                    //echo "<pre>result [$status]</pre>";
                     if ($status == "entered")
                     {
                         $entered++;
@@ -149,8 +154,8 @@ if ($eventid)
                         $entries_replaced++;
                     }
                 }
-
             }
+
             u_growlSet($eventid, $page, $g_entries_report, array($entries_found, $entered, $entries_replaced, $entries_deleted));
             $delta = $entries_found - ($entered + $entries_deleted + $entries_replaced);
             if ($delta != 0) {
@@ -161,6 +166,7 @@ if ($eventid)
         {
             u_growlSet($eventid, $page, $g_entries_none);
         }
+        exit("stopping after signon");
     }
     
     // loads competitors marked as regular

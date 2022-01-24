@@ -136,18 +136,17 @@ function fleet_panel($params)
     $html = <<<EOT
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default margin-top-10" style="border: 2px solid lightblue">
-                <div class="panel-heading" style="padding-top:2px; padding-bottom:2px">
+            <div class="panel panel-info margin-top-10" >
+                <div class="panel-heading" style="padding-top:5px; padding-bottom:5px">
                     <div class="panel-title">
                         <span class="lead">
                          <div class="row">
                             <div class="col-md-2">Start {startnum}</div>
-                            <div class="col-md-7">
-                                
+                            <div class="col-md-7">                                
                                 {fleet-list}
                             </div>
                             <div class="col-md-3">
-                                <span class="pull-right text-info">$startdisplay</span>
+                                <span class="pull-right">$startdisplay</span>
                             </div>
                          </div>
                          </span>
@@ -156,13 +155,11 @@ function fleet_panel($params)
                 <div class="panel-body" style="padding: 8px 15px;">
                     <div class="row">
                         <div class="col-md-2">
-                            <div class="timer-sm" id="startclock{startnum}" data-clock="c{startnum}" data-countdown="{start-secs}">
-                                {start-delta}
-                            </div>
+                            <div class="timer-sm" id="startclock{startnum}" data-clock="c{startnum}" data-countdown="{start-secs}">{start-delta}</div>
                         </div>
-                        <div class="col-md-4">&nbsp;<img src="../common/images/signal_flags/{flag}" alt="warning flag" width="15%" height="15%"></div>
-                        <div class="col-md-3">$infringe_bufr</div>
-                        <div class="col-md-3">$recall_bufr</div>
+                        <div class="col-md-2">&nbsp;<img src="../common/images/signal_flags/{flag}" alt="warning flag" width="50px" height="35px"></div>
+                        <div class="col-md-4">$infringe_bufr</div>
+                        <div class="col-md-4">$recall_bufr</div>
                     </div>
                 </div> <!-- end of panel-body -->
             </div> <!-- end of panel -->
@@ -175,6 +172,8 @@ EOT;
 
 function infringe($params)
 {
+
+
 
     $eventid = $params['eventid'];
     $startnum= $params['startnum'];
@@ -191,7 +190,8 @@ function infringe($params)
             if (($drop_dirn == "") and ($i > $params['entries']/2) and ($i > 6) ) { $drop_dirn = "dropup"; }
 
             $boat = "{$entry['class']}-{$entry['sailnum']}";
-            $link = "start_infringements_pg.php?eventid=$eventid&pagestate=setcode&startnum=$startnum&entryid={$entry['id']}&boat=$boat&racestatus={$entry['status']}&declaration={$entry['declaration']}";
+            $link = "start_infringements_pg.php?eventid=$eventid&pagestate=setcode&startnum=$startnum&entryid={$entry['id']}
+            &boat=$boat&racestatus={$entry['status']}&declaration={$entry['declaration']}&lap={$entry['lap']}&finishlap={$entry['finishlap']}";
             $code_link = get_code($entry['code'], $link, "startcodes", $drop_dirn);
 
 

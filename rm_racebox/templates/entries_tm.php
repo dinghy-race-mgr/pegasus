@@ -382,19 +382,12 @@ function entry_tabs($params = array())
     {
         $fleet = $_SESSION["e_$eventid"]["fl_$i"];
         $fleet_count = count($entries[$i]);
-
-//        $tabs.= <<<EOT
-//        <li role="presentation" class="lead text-center" >
-//              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill">
-//              <b>{$fleet['name']}</b> <br><small>[{$fleet_count} boats]</small>
-//              </a>
-//        </li>
-//EOT;
+        $fleet_name = strtolower($fleet['name']);
 
         $tabs.= <<<EOT
         <li role="presentation" class="lead text-center">
-              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill" style="padding-top: 20px;">
-              <b>{$fleet['name']}</b>             
+              <a class="text-primary" href="#fleet$i" aria-controls="$fleet_name" role="tab" data-toggle="pill" style="padding-top: 20px;">
+              <b>$fleet_name</b>             
               </a>
         </li>
 EOT;
@@ -403,7 +396,7 @@ EOT;
         {
             $panels .= <<<EOT
             <div role="tabpanel" class="tab-pane" id="fleet$i">
-                <div class="well well-sm text-warning lead"><span>no entries in the {$fleet['name']} fleet yet</span></div>
+                <div class="well well-sm text-warning lead"><span>no entries in the $fleet_name fleet yet</span></div>
             </div>
 EOT;
         }
@@ -492,7 +485,7 @@ EOT;
 
     $html = <<<EOT
     <div class="margin-top-10" role="tabpanel">
-        <ul class="nav nav-pills pill-fleet" role="tablist">
+        <ul class="nav nav-pills pill-fleet" role="tablist"> 
            $tabs
         </ul>
         <div class="tab-content">

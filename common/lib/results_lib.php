@@ -61,7 +61,7 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
                 "folder"   => "races",
                 "format"   => "htm",
                 "filename" => $race_file,
-                "label"    => "race",
+                "label"    => "race results",
                 "rank"     => "1",
                 "notes"    => $result_notes ));
             if (!$listed) { $status= array('success' => false, 'err' => "file created but not added to results list [$race_path]"); }
@@ -81,7 +81,7 @@ function process_series_file($eventid, $opts, $series_code, $series_status)
     global $db_o;
     global $tmpl_o;
 
-    $series_o = new SERIES_RESULT($db_o, $series_code, $opts, true);
+    $series_o = new SERIES_RESULT($db_o, $series_code, $opts, false);
 
     // set data for series result
     $err = $series_o->set_series_data();
@@ -141,12 +141,12 @@ function process_series_file($eventid, $opts, $series_code, $series_status)
             // add series result file entry to t_resultfile
             $listed = $result_o->add_result_file(array(
                 "status"   => $series_status,
-                "folder"     => "race",
+                "folder"   => "series",
                 "format"   => "htm",
                 "filename" => $series_file,
-                "label"    => "series",
+                "label"    => "series results",
                 "rank"     => "2",
-                "notes"    => "results file created by raceManager"
+                "notes"    => ""
             ));
 
             if (!$listed) { $status = array('success' => false, 'err' => "file created but not added to results list [$series_path]"); }
@@ -163,38 +163,33 @@ function process_series_file($eventid, $opts, $series_code, $series_status)
 }
 
 
-function process_transfer($files, $protocol)
-    /*
-     * transfers results files to website
-     * [Note - it doesn't create or transfer the results inventory file]
-     */
-{
-    global $loc;
-    $ftp_env = array(
-        "server" => $_SESSION['ftp_server'],
-        "user"   => $_SESSION['ftp_userr'],
-        "pwd"    => $_SESSION['ftp_pwd'],
-    );
-
-    $status = ftpFiles($loc, $protocol, $ftp_env, $files);
-
-    $num_files = count($files);
-    $file_count = 0;
-    foreach ($files as $key => $file)
-        if ($status['file'][$key])
-        {
-            $file_count++;
-        }
-
-    $status['success'] = "none";
-    if ($file_count == $num_files)
-    {
-        $status['success'] = "all";
-    }
-    elseif($file_count > 0)
-    {
-        $status['success'] = "some";
-    }
-
-    return $status;
-}
+//function process_transfer($files, $ftp_env, $protocol)
+//    /*
+//     * transfers results files to website
+//     * [Note - it doesn't create or transfer the results inventory file]
+//     */
+//{
+//    global $loc;
+//
+//    $status = ftpFiles($loc, $protocol, $ftp_env, $files);
+//
+//    $num_files = count($files);
+//    $file_count = 0;
+//    foreach ($files as $key => $file)
+//        if ($status['file'][$key])
+//        {
+//            $file_count++;
+//        }
+//
+//    $status['success'] = "no";                           // no files transferred
+//    if ($file_count == $num_files)
+//    {
+//        $status['success'] = "all";                      // all files transfered
+//    }
+//    elseif($file_count > 0)
+//    {
+//        $status['success'] = "some";                     // some files transferred
+//    }
+//
+//    return $status;
+//}

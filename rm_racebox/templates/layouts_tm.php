@@ -287,7 +287,7 @@ EOT;
         $params["current_view"] == "tabbed" ? $display_mode = "list" : $display_mode = "tabbed";
         $view_bufr = <<<EOT
         <a href="timer_pg.php?eventid={eventid}&mode=$display_mode" title="switch to $display_mode view" role="button" >
-            <span class="rm-navmenu-right rm-navmenu-icon text-success">
+            <span class="rm-navmenu-right rm-navmenu-icon text-muted">
                 <span class="glyphicon glyphicon-transfer" aria-hidden="true" ></span>
             </span>
         </a>
@@ -309,7 +309,7 @@ EOT;
         $club_bufr.=<<<EOT
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" title="{club} Info">
-                <span class="rm-navmenu-right rm-navmenu-icon text-success"> 
+                <span class="rm-navmenu-right rm-navmenu-icon text-muted"> 
                     <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                     <span class="caret"></span>
                 </span>
@@ -342,8 +342,8 @@ EOT;
                     </li>
                     
                     <li>
-                        <a href="help_pg.php?eventid={eventid}&page={$params['page']}" title="Help">
-                            <span class="rm-navmenu-right rm-navmenu-icon text-success">
+                        <a href="help_pg.php?eventid={eventid}&page={$params['page']}" title="HELP!">
+                            <span class="rm-navmenu-right rm-navmenu-icon text-muted">
                                 <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                             </span>
                         </a>

@@ -53,9 +53,12 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
     }
 }
 
+//echo "<pre>".print_r($_SESSION,true)."</pre>";
+
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
+require_once ("{$loc}/common/classes/rota_class.php");
 require_once ("{$loc}/common/classes/seriesresult_class.php");
 require_once ("{$loc}/common/lib/results_lib.php");
 
@@ -66,6 +69,20 @@ foreach ($db_o->db_getinivalues(false) as $data)
 {
     $_SESSION["{$data['parameter']}"] = $data['value'];
 }
+
+$system_info = array(
+    "sys_name"    => $_SESSION['sys_name'],
+    "sys_version" => $_SESSION['sys_version'],
+    "clubname"    => $_SESSION['clubname'],
+    "result_path" => $_SESSION['result_path'],
+    "result_url"  => $_SESSION['result_url']
+);
+
+$ftp_info = array(
+    "server" => $_SESSION['ftp_server'],
+    "user"   => $_SESSION['ftp_user'],
+    "pwd"    => $_SESSION['ftp_pwd'],
+);
 
 // set templates
 $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "$loc/common/templates/race_results_tm.php",
@@ -289,25 +306,48 @@ elseif ($_REQUEST['pagestate'] == "submit")
                 {
 
                     // get inventory file name/path
-                    $inventory_file = $result_o->get_inventory_filename();
+                    $inventory_year = date("Y", strtotime($event['event_date']));
+                    $inventory_file = $result_o->get_inventory_filename($inventory_year);
                     $inventory_path = $_SESSION['result_path'] . DIRECTORY_SEPARATOR . $inventory_file;
                     $inventory_url = $_SESSION['result_url'] . "/" . $inventory_file;
 
                     // create inventory
-                    $inventory = $result_o->create_result_inventory($inventory_path);
+                    $inventory = $result_o->create_result_inventory($inventory_year, $inventory_path, $system_info);
 
-                    if ($inventory['success'])                         // if inventory created successfully then proceed
+                    if ($inventory)                         // if inventory created successfully then proceed
                     {
                         // add inventory file to file to be transferred
                         $transfer_files[] = array("path" => $inventory_path, "url" => $inventory_url,
                             "file" => $inventory_file);
 
+                        $num_files = count($transfer_files);
+
                         // transfer files using relevant protocol
-                        $status = process_transfer($transfer_files, $_SESSION['ftp_protocol']);
+                        //$status = process_transfer($transfer_files, $ftp_info, );
+                        $status = ftpFiles($loc,$_SESSION['ftp_protocol'], $ftp_info, $transfer_files);
 
                         $continue = false;
                         $status['success'] == "all" or $status['success'] == "some" ? $report_arr['result'] = "success" : $report_arr['result'] = "fail";;
                         $report_arr['msg'] = "{$status['success']} files successfully transferred";
+
+                        if (!$status['login'])
+                        {
+                            $report_arr['result'] = "fail";
+                            $report_arr['msg'] = "Failed to connect and/or login to remote archive - results not uploaded";
+                        }
+                        elseif ($status['transferred'] < $num_files)
+                        {
+                            $report_arr['result'] = "fail";
+                            $report_arr['msg'] = "Some files failed to upload";
+                            $report_arr['detail'] = $status['log'];
+
+                        }
+                        elseif ($status['transferred'] == $num_files)
+                        {
+                            $report_arr['result'] = "success";
+                            $report_arr['msg'] = "All files failed uploaded";
+                            $report_arr['detail'] = $status['log'];
+                        }
                     }
                 }
             }
@@ -322,7 +362,9 @@ elseif ($_REQUEST['pagestate'] == "submit")
         else  // not requested
         {
             $report_arr['result'] = "notrequested";
+            $report_arr['msg'] = "result files transfer not requested ..";
         }
+
         echo $tmpl_o->get_template("publishresults_item_rpt", array(), $report_arr);
         ob_flush();
         flush();

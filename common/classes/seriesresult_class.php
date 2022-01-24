@@ -245,7 +245,7 @@ class SERIES_RESULT
                 return $this->err_fatal;
             } else {
                 if ($this->report) {
-                    echo ".... series configuration<br>"; /*echo "<pre>SERIES".print_r($this->series,true)."</pre>";*/
+                    echo ".... series configuration<br>"; /*echo "<pre>SERIES".print_r($this->series,true)."</pre>"*/;
                 }
             }
 
@@ -256,14 +256,14 @@ class SERIES_RESULT
                 return $this->err_fatal;
             } else {
                 if ($this->report) {
-                    echo ".... fleet configuration<br>"; /*echo "<pre>FLEETS".print_r($this->fleets,true)."</pre>";*/
+                    echo ".... fleet configuration<br>"; u_writelog("<pre>FLEETS".print_r($this->fleets,true)."</pre>", 10371);/*echo "<pre>FLEETS".print_r($this->fleets,true)."</pre>";*/
                 }
             }
 
             // get merge class data
             $this->merge_classes = $this->set_mergeclasses($this->series['merge']);
             if ($this->report and !empty($this->merge_classes)) {
-                echo ".... merge classes<br>"; /*echo "<pre>MERGE CLASSES".print_r($this->merge_classes,true)."</pre>";*/
+                echo ".... merge classes<br>"; u_writelog("<pre>MERGE CLASSES".print_r($this->merge_classes,true)."</pre>", 10371);/*echo "<pre>MERGE CLASSES".print_r($this->merge_classes,true)."</pre>";*/
             }
 
             // get races data
@@ -272,7 +272,7 @@ class SERIES_RESULT
                 return $this->err_fatal;
             } else {
                 if ($this->report) {
-                    echo ".... series race information<br>"; /*echo "<pre>RACES".print_r($this->races,true)."</pre>";*/
+                    echo ".... series race information<br>"; u_writelog("<pre>RACES".print_r($this->races,true)."</pre>", 10371); /*echo "<pre>RACES".print_r($this->races,true)."</pre>";*/
                 }
             }
 
@@ -282,7 +282,7 @@ class SERIES_RESULT
                 return $this->err_fatal;
             } else {
                 if ($this->report) {
-                    echo ".... competitor information<br>"; /*echo "<pre>COMPETITORS".print_r($this->sailor,true)."</pre>";*/
+                    echo ".... competitor information<br>"; u_writelog("<pre>COMPETITORS".print_r($this->sailor,true)."</pre>", 10371); /*echo "<pre>COMPETITORS".print_r($this->sailor,true)."</pre>";*/
                 }
             }
 
@@ -292,7 +292,7 @@ class SERIES_RESULT
                 return $this->err_fatal;
             } else {
                 if ($this->report) {
-                    echo ".... race results information<br>"; /*echo "<pre>RESULTS".print_r($this->results,true)."</pre>";*/
+                    echo ".... race results information<br>"; u_writelog("<pre>RESULTS".print_r($this->results,true)."</pre>", 10371); /*echo "<pre>RESULTS".print_r($this->results,true)."</pre>";*/
                 }
             }
         }

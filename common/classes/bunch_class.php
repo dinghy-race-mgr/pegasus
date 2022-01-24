@@ -163,7 +163,7 @@ class BUNCH
             $htm.= <<<EOT
             <div class="row" style="margin-left: 10px; margin-bottom: 10px">
                 <div class="col-md-9" style="padding: 0px 0px 0px 0px;">
-                    <a type="button" href="{$node['link']}" class="btn btn-block btn-$bcolor btn-md">{$node['label']}</a>
+                    <a type="button" href="{$node['link']}" class="btn btn-block btn-$bcolor btn-md" style="color:black; font-weight: bold">{$node['label']}</a>
                 </div>
                 <div class="col-md-1" style="padding: 0px 0px 0px 0px;">
                     <a type="button" href="{$this->link}?pagestate=bunch&eventid={$this->eventid}&node=$i&action=up" class="btn btn-link btn-md"  title="up" style="padding: 0px 0px 0px 10px;">

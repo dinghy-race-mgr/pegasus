@@ -32,8 +32,9 @@ $mode = check_argument("mode", "set", "", "");
 $usage= check_argument("usage", "checkset", "single", "multi");
 $debug= check_argument("debug", "checkint", "", "0");
 $closed = u_checkarg("closed", "set", "", "");
-$event = $_REQUEST['event'];
+$event = $_REQUEST['event'];  // fixme this should check if $_REQUEST['event exists
 
+//fixme - don't put args not used in string (use form url php command
 $race_option = "rm_sailor.php?mode=race&demo=$demo&usage=$usage&event=$event&debug=$debug";
 $cruise_option = "rm_sailor.php?mode=cruise&demo=$demo&usage=$usage&event=$event&debug=$debug";
 

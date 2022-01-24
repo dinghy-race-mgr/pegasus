@@ -28,12 +28,17 @@ if (!$eventid)
 }
 
 u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
+//echo "<pre><br><br><br>".print_r($_SESSION,true)."</pre>";
 
 // classes  (remove classes not required)
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
+require_once ("{$loc}/common/classes/event_class.php");
+
+// debug file location
+$_SESSION['dbglog'] = "../logs/dbglogs/rm_racebox_dbg.log";
 
 // app includes
 require_once ("./include/rm_racebox_lib.php");
@@ -58,11 +63,13 @@ foreach ($race_o->race_getresults() as $result)
     $rs_data[$result['fleet']][] = $result;                    // raw results data
 }
 
+
 // ---- Recalculate results if required ----------------------------------
 $results = array("eventid" => $eventid, "num-fleets" => $numfleets);
 if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need recalculating
 {
     $warning_count = 0;
+    $event_still_running = false;
     for ($i = 1; $i <= $numfleets; $i++)
     {
         $fleet_rs['warning'] = array();
@@ -71,23 +78,36 @@ if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need 
         {
             $fleet_rs = $race_o->race_score($eventid, $i, $_SESSION["e_$eventid"]["fl_$i"]['scoring'], $rs_data[$i] );
         }
+        //echo "<pre><br><br><br>AFTER SCORE".print_r($fleet_rs,true)."</pre>";
         if (!empty($fleet_rs['warning'])) { $warning_count++; }
         $results['warning'][$i] = $fleet_rs['warning'];
         $results['data'][$i]    = $fleet_rs['data'];
 
-        $stillracing = $race_o->race_stillracing($i);
-        if (!$stillracing)
+        $fleet_still_racing = $race_o->race_stillracing($i);
+        if (!$fleet_still_racing)
         {
-            $upd = $race_o->racestate_update(array("status"=>"allfinished"), " eventid = '$eventid' and fleet = '$i' ");
+            $upd = $race_o->racestate_update(array("status"=>"allfinished"), array("eventid"=>"$eventid", "fleet"=>"$i"));
             if ($upd > 0) { $_SESSION["e_$eventid"]["fl_$i"]['status'] = "allfinished"; }
         }
+        else
+        {
+            $event_still_running = true;
+        }
     }
-    //$warning_count>0 ? $growl = $g_results_recalc_fail : $growl = $g_results_recalc_success ;
-    //u_growlset($eventid, $page, $growl);
+
+    $event_o = new EVENT($db_o);
+    if ($event_still_running)
+    {
+        // set event status to running
+        $upd = $event_o->event_updatestatus($eventid, "running");
+    }
+    else
+    {
+        // set event status to sailed
+        $upd = $event_o->event_updatestatus($eventid, "sailed");
+    }
 
 }
-//echo "<pre>".print_r($results['warning'],true)."</pre>";
-//echo "<pre>".print_r($results['data'],true)."</pre>";
 
 // ----- navbar -----------------------------------------------------------------------------
 $fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
@@ -102,9 +122,6 @@ $lbufr = u_growlProcess($eventid, $page);       // check for confirmations to pr
 $lbufr.= $tmpl_o->get_template("result_tabs", array(), $results);
 
 // add modals for inline buttons
-//$fields = array( "entryid" => "" );
-//$data = array("resultcodes" => $_SESSION['resultcodes'], "allocation" => $_SESSION['points_allocation']);
-
 $lbufr.= $tmpl_o->get_template("modal", $mdl_edit['fields'], $mdl_edit);
 $lbufr.= $tmpl_o->get_template("modal", $mdl_remove['fields'], $mdl_remove);
 

@@ -30,12 +30,22 @@ require_once ("$loc/common/classes/event_class.php");
 require_once ("$loc/common/classes/result_class.php");
 require_once ("$loc/common/classes/seriesresult_class.php");
 
+require_once ("$loc/common/lib/results_lib.php");
+
 // templates
 $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php",
     "./templates/results_tm.php", "$loc/common/templates/race_results_tm.php", "$loc/common/templates/series_results_tm.php"));
 
 $pagestate = $_REQUEST['pagestate'];
 $eventid   = $_REQUEST['eventid'];
+
+$system_info = array(
+    "sys_name"    => $_SESSION['sys_name'],
+    "sys_version" => $_SESSION['sys_version'],
+    "clubname"    => $_SESSION['clubname'],
+    "result_path" => $_SESSION['result_path'],
+    "result_url"  => $_SESSION['result_url']
+);
 
 if (empty($pagestate) OR empty($eventid))
 {
@@ -59,6 +69,7 @@ if ($pagestate == "init")    // display information collection form
 // FIXME need to provide more information if there is a problem - probably a publishing log that can be accessed
 elseif ($pagestate == "process")    // run through process workflow
 {
+    
     $continue = true;
     $success = array(1=>true, 2=>true, 3=>true, 4=>true );
     u_writelog("Results processing started: ", $eventid);
@@ -103,9 +114,9 @@ elseif ($pagestate == "process")    // run through process workflow
     else
     {
         $status['copy'] ?  $msg1 = "results copied " : $msg1 = "results copy failed ";
-        $status['archive'] ?  $msg2 = "results archived" : $msg2 = "results archiving failed";
+        $status['archive'] ?  $msg2 = "results archived" : $msg2 = "archiving failed";
 
-        endProcess($step, $row_start[$step], "fail", "Results archiving FAILED [$msg1 : $msg2]");
+        endProcess($step, $row_start[$step], "fail", "Results archiving FAILED <br><i>$msg1 : $msg2]</i>");
         u_writelog("FAILED to archive results [$msg1 : $msg2]", $eventid);
         $continue = false;
         $success[1] = false;
@@ -121,7 +132,7 @@ elseif ($pagestate == "process")    // run through process workflow
 
         // create race result
         $fleet_msg = array(); // TODO this is a future use feature - displays individual notes for each fleet - currently not collected anywhere
-        $status = process_result_file($loc, $include_club, $result_notes, $fleet_msg, $result_status);
+        $status = process_result_file($loc, $result_status, $include_club, $result_notes, $fleet_msg);
         sleep(2);
 
         if ($status['success'])
@@ -153,8 +164,8 @@ elseif ($pagestate == "process")    // run through process workflow
 
             $opts = array(
                 "inc-pagebreak" => $series['opt_pagebreak'],                                          // page break after each fleet
-                "inc-codes"     => $series['opt_addcode'],                                            // include key of codes used
-                "inc-club"      => $series['opt_clubname'],                                           // include club name for each competitor
+                "inc-codes"     => $series['opt_scorecode'],                                          // include key of codes used
+                "inc-club"      => $series['opt_clubnames'],                                          // include club name for each competitor
                 "inc-turnout"   => $series['opt_turnout'],                                            // include turnout statistics
                 "race-label"    => $series['opt_racelabel'],                                          // use race number or date for labelling races
                 "club-logo"     => $_SESSION['baseurl']."/config/images/club_logo.jpg",               // if set include club logo
@@ -164,7 +175,7 @@ elseif ($pagestate == "process")    // run through process workflow
 
             startProcess($step, $row_start[$step], "Updating series results ", "warning");
 
-            $status = process_series_file($eventid, $opts, $series['seriescode'], $result_status);
+            $status = process_series_file($eventid, $opts, $_SESSION["e_$eventid"]["ev_seriescode"], $result_status);
             sleep(2);
 
             if ($status['success'])
@@ -211,12 +222,13 @@ elseif ($pagestate == "process")    // run through process workflow
             startProcess($step, $row_start[$step], "Transferring results files to website ", "warning");
 
             // get inventory file name/path
-            $inventory_file = $result_o->get_inventory_filename();
+            $inventory_year = date("Y", strtotime($_SESSION["e_$eventid"]['ev_date']));
+            $inventory_file = $result_o->get_inventory_filename($inventory_year);
             $inventory_path = $_SESSION['result_path'].DIRECTORY_SEPARATOR.$inventory_file;
             $inventory_url  = $_SESSION['result_url']."/".$inventory_file;
 
             // create inventory
-            $inventory = $result_o->create_result_inventory($inventory_path);
+            $inventory = $result_o->create_result_inventory($inventory_year, $inventory_path, $system_info);
 
             if ($inventory['success'])                         // if inventory created successfully then proceed
             {
@@ -404,7 +416,7 @@ function close_page()
     return "</body></html>";
 }
 
-
+/*
 function process_archive()
 {
     global $result_o;
@@ -581,5 +593,7 @@ function process_transfer($files, $protocol)
     }
 
     return $status;
+
 }
 
+*/

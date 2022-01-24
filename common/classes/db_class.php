@@ -211,10 +211,12 @@ class DB
         
         $query .= $fields .' VALUES '. $values;
 
+        //$_SESSION['sql_debug'] = true;
         if ($_SESSION['sql_debug']) { u_writedbg("db_insert: query: $query",__FILE__,__FUNCTION__,__LINE__); }
         $insert  = $this->link->query( $query );
         $numrows = $this->link->affected_rows;
         if ($_SESSION['sql_debug']) { u_writedbg("db_update: rows inserted: $numrows ",__FILE__,__FUNCTION__,__LINE__); }
+        //$_SESSION['sql_debug'] = false;
         
         if( $this->link->error )
         {
@@ -309,10 +311,13 @@ class DB
             $query .= ' LIMIT '. $limit;
         }
 
+
         if ($_SESSION['sql_debug']) { u_writedbg("db_update: query: $query ",__FILE__,__FUNCTION__,__LINE__); }
+        //echo "<pre>$query</pre>";
         $update = $this->link->query( $query );
         $numrows = $this->link->affected_rows;         // might be zero if no records changed
         if ($_SESSION['sql_debug']) { u_writedbg("db_update: rows affected: $numrows ",__FILE__,__FUNCTION__,__LINE__); }
+
 
 
         if( $this->link->error )

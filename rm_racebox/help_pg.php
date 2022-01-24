@@ -50,7 +50,14 @@ if ($eventid == 0)  // event called from pickrace page
 }
 else
 {
-    $help_o = new HELP($db_o, $helppage, $_SESSION["e_$eventid"]['pursuit']);
+    $constraints = array(
+        "name" => $_SESSION["e_$eventid"]['ev_fname'],
+        "format" => $_SESSION["e_$eventid"]['ev_format'],
+        "date" => $_SESSION["e_$eventid"]['ev_date'],
+        "numrace" => $_SESSION["events_today"],
+        "pursuit" => $_SESSION["e_$eventid"]['pursuit']
+    );
+    $help_o = new HELP($db_o, $helppage, $constraints);
 }
 $topics = $help_o->get_help();
 $lbufr =  $help_o->render_help();

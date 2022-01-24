@@ -2,6 +2,8 @@
 
 function timer_list($params = array())
 {
+    //echo "<pre>".print_r($params,true)."</pre>";
+    
     // get display for list view
 
     // view selector buttons
@@ -52,7 +54,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
     $undo_link = "timer_sc.php?eventid=$eventid&pagestate=undoboat";
     $bunch_link = "timer_sc.php?eventid=$eventid&pagestate=bunch&action=addnode";
     $finish_link = "timer_sc.php?eventid=$eventid&pagestate=finish";
-    $edit_link = "";  // fixme
+    $edit_link = "";  // fixme no edit on timer page - is this needed
 
     if ($view == "fleet")
     {
@@ -72,13 +74,14 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "entryid" => $entry['id'],
                         "class"   => $entry['class'],
                         "sailnum" => $entry['sailnum'],
-                        "boat"    => "{$entry['class']} - {$entry['sailnum']}",
+                        "boat"    => $entry['class']." - ".$entry['sailnum'],
                         "fleet"   => $entry['fleet'],
                         "start"   => $entry['start'],
                         "lap"     => $entry['lap'],
                         "code"    => $entry['code'],
                         "pn"      => $entry['pn'],
                         "etime"   => $entry['etime'],
+                        "label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum']   // FIXME - should use stored class acronym if available
                     );
                 }
             }
@@ -90,7 +93,8 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
         $classes = array();
         if (array_key_exists("racebox_class_category", $_SESSION))
         {
-            $classes = explode("|", $_SESSION["racebox_class_category"]);
+            $classes = explode("|", $_SESSION["racebox_class_category"]);   // FIXME instead of using a fixed list would it be better to have number threshold
+                                                                            // FIXME and just generate classes who reach the threshold
         }
         if (empty($classes))
         {
@@ -103,10 +107,11 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
             {
                 $category[$i] = $classes[$i-1];
             }
-            $category[$i+1] = "MISC";
+            $category[] = "MISC";
         }
 
-        if ($configured) {
+        if ($configured)    // FIXME - what happens if this is not configured
+        {
             $dbuf = array();
             for ($i = 1; $i <= count($category); $i++) {
                 $dbufr[$i] = array();
@@ -128,6 +133,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                                 "code"    => $entry['code'],
                                 "pn"      => $entry['pn'],
                                 "etime"   => $entry['etime'],
+                                "label"   => $entry['sailnum']
                             );
                             $set = true;
                             break;
@@ -146,16 +152,17 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                             "code"    => $entry['code'],
                             "pn"      => $entry['pn'],
                             "etime"   => $entry['etime'],
+                            "label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum']    // FIXME - should use stored class acronym if available
                         );
                     }
                 }
             }
         }
     }
-    else
+    else   // sailnumber view
     {
         $configured = true;
-        $category = array(1=>"1", 2=>"2", 3=>"3", 4=>"4", 5=>"5", 6=>"6", 7=>"7", 8=>"8", 9=>"9", 0=>"0",);
+        $category = array(1=>"1", 2=>"2", 3=>"3", 4=>"4", 5=>"5", 6=>"6", 7=>"7", 8=>"8", 9=>"9", 0=>"other",);
         $dbufr = array(1=>array(), 2=>array(), 3=>array(), 4=>array(), 5=>array(), 6=>array(), 7=>array(), 8=>array(), 9=>array(), 0=>array() );
 
         if ($configured) {
@@ -173,6 +180,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "code"    => $entry['code'],
                         "pn"      => $entry['pn'],
                         "etime"   => $entry['etime'],
+                        "label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum']   // FIXME - should use stored class acronym if available
                     );
                 }
             }
@@ -182,7 +190,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
 
     if ($configured) {
         // use col-2 unless more than 5 categories
-        count($category) <= 5 ? $cols = 2 : $cols = 1;
+        count($category) <= 6 ? $cols = 2 : $cols = 1;
 
         $label_bufr = "<div class=\"row\">";
         $data_bufr = "<div class=\"row\" style=\"margin-left: 10px; margin-bottom: 10px\">";
@@ -208,7 +216,7 @@ EOT;
                      -  racing last lap (warning)        (laps > 0 and lap = laps - 1 or average lap race is finishing
                      -  racing finished (default)        (laps > 0 and lap = laps)
 
-                hover - should display:  class sailnum lap laptime code
+                hover - should display:  class sailnum lap etime code
                 */
 
                 $bcolor = "btn-info";
@@ -231,11 +239,15 @@ EOT;
                     $state = "finished";
                 }
 
-                $label = $entry['sailnum'];
+                empty($entry['code']) ? $cog_style = "primary" : $cog_style = "danger";
 
-                $laptime = gmdate("H:i:s", $entry['etime']);
+                $title = $entry['label'];
 
-                $popup = "{$entry['class']}<br><small>lap {$entry['lap']} - $laptime - {$entry['code']}</small>";
+                $etime = gmdate("H:i:s", $entry['etime']);
+
+                //$popup = "{$entry['class']}<br><small>lap {$entry['lap']} - $etime - {$entry['code']}</small>";
+                $ptitle = $entry['class'];
+                $pcontent = "lap: {$entry['lap']}<br>et: $etime<br>code: {$entry['code']}";
 
                 $state == "lastlap" ? $bunch_link .= "&lastlap=true" : $bunch_link .= "&lastlap=false";
 
@@ -253,21 +265,23 @@ EOT;
 
                 $options_bufr = <<<EOT
                 <ul class="dropdown-menu">
-                    <li><a href="$undo_link$params_list">Undo Timing</a></li>
+                    <li><a href="$undo_link$params_list">Undo Last Timing</a></li>
                     <li><a href="$bunch_link$params_list">Bunch</a></li>
                     $finish_option
-                    <li><a href="timer_sc.php?">Edit*</a></li>
+                    <li><a href="timer_sc.php?">Edit (future)</a></li>
                 </ul>
 EOT;
+
+
 
                 $data_bufr .= <<<EOT
                 <div class="btn-group btn-block" role="group" aria-label="...">
                     <a type="button" href="$timelap_link$params_list" class="btn $bcolor btn-xs" style="width:70%" 
-                        data-toggle="tooltip" data-placement="top" title="$popup"">
-                        <div class="pull-left">$label</div>
+                        data-toggle="popover" data-placement="top"  title="$ptitle" data-content="$pcontent">
+                        <div class="pull-left">$title</div>
                     </a>
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-primary btn-xs dropdown-toggle" 
+                        <button type="button" class="btn btn-$cog_style btn-xs dropdown-toggle" 
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                         </button>
@@ -351,6 +365,7 @@ function timer_tabs($params = array())
     {
         // fixme - would be good not to use session variables
         $fleet        = $_SESSION["e_$eventid"]["fl_$i"];
+        $fleet_name   = strtolower($fleet['name']);
         $num_entries  = $_SESSION["e_$eventid"]["fl_$i"]['entries'];
         $num_racing   = count($params['timings'][$i]);
         $all_finished = "";
@@ -359,8 +374,8 @@ function timer_tabs($params = array())
         // create TABS
         $tabs.= <<<EOT
         <li role="presentation" class="lead text-center">
-              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill" style="padding-top: 20px;">
-              <b>{$fleet['name']}</b>              
+              <a class="text-primary" href="#fleet$i" aria-controls="$fleet_name" role="tab" data-toggle="pill" style="padding-top: 20px;">
+              <b>$fleet_name</b>              
               </a>
         </li>
 EOT;
@@ -371,7 +386,7 @@ EOT;
             $panels .= <<<EOT
             <div role="tabpanel" class="tab-pane" id="fleet$i">
                 <div class="alert alert-info text-center" role="alert" style="margin-right: 40%;">
-                   <h3>no entries in the {$fleet['name']} fleet</h3><br>
+                   <h3>no entries in the $fleet_name fleet</h3><br>
                 </div>
             </div>
 EOT;
@@ -383,7 +398,7 @@ EOT;
                 $all_finished = <<<EOT
                 <div role="tabpanel" class="tab-pane" id="fleet$i">
                     <div class="alert alert-warning" role="alert" style="margin-left: 0%; margin-right: 40%; text-align: center;"
-                       <span><b>all finished - no more boats to time in the {$fleet['name']} fleet </b></span><br>
+                       <span><b>all finished - no more boats to time in the $fleet_name fleet </b></span><br>
                     </div>
                 </div>
 EOT;
@@ -502,13 +517,16 @@ EOT;
 
                 $edit_link = editlaps_html($eventid, $r['id'], $boat, $r['laptimes']);
 
-                $bunch_label = "";
-                $bunch_link = "";
+
                 if ($_SESSION['racebox_timer_bunch'])
                 {
-                    $cfg['row_style'] == "lastlap" ? $lastlap = "true" : $lastlap = "false";
-                    $bunch_link = bunch_html($eventid, $r['id'], $boat, $r, $lastlap);
                     $bunch_label = "<th width='5%' style='text-align: center'>bunch</th>";
+                    $bunch_link = "<td class='rowlink-skip' style='text-align: center'></td>";
+                    if ($r['status'] != "F")
+                    {
+                        $cfg['row_style'] == "lastlap" ? $lastlap = "true" : $lastlap = "false";
+                        $bunch_link = bunch_html($eventid, $r['id'], $boat, $r, $lastlap);
+                    }
                 }
 
                 $undo_link = undoboat_html($undoboat_link, $eventid, $r['id'], $boat, $r['laptimes']);
@@ -516,10 +534,10 @@ EOT;
                 $rows.= <<<EOT
                     <tr class="table-data {$cfg['row_style']}">
                         <td style="width: 1%;"><a href="$row_link" ></a></td>
-                        <td class="$skip truncate"          >{$r['class']}</td>
-                        <td class="$skip truncate" style="padding-left:0px;" >{$r['sailnum']}</td>
-                        <td class="$skip truncate"          >{$r['helm']}</td>
-                        <td class="$skip" style="padding-left:15px;"       >$laptimes_bufr</td>
+                        <td class="$skip truncate" >{$r['class']}</td>
+                        <td class="$skip" >{$r['sailnum']}</td>
+                        <td class="$skip truncate" style="padding-left:10px;">{$r['helm']}</td>
+                        <td class="$skip" style="padding-left:15px;" >$laptimes_bufr</td>
                         <td class="rowlink-skip" style="text-align: left">$code_link</td>
                         $bunch_link
                         <td class="rowlink-skip" style="text-align: center">$finish_btn</td>

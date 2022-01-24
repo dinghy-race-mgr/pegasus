@@ -18,7 +18,7 @@
 $loc        = "..";          // <--- relative path from script to top level folder
 $page       = "results";     
 $debug      = false;
-$stop_here  = true;
+$stop_here  = false;
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
@@ -27,12 +27,11 @@ $eventid   = u_checkarg("eventid", "checkintnotzero","", false);
 $pagestate = u_checkarg("pagestate", "set", "", false);
 $entryid   = u_checkarg("entryid", "set", "", "");
 
-echo "<pre>Entering results_sc: ".print_r($_REQUEST,true)."</pre>";
-
 u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and sets error reporting
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
+require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 
@@ -124,32 +123,11 @@ if ($eventid AND $pagestate)
 
     elseif ($pagestate == "setcode")
     {
-        $err = false;
-        empty($_REQUEST['entryid'])    ? $err = true : $entryid = $_REQUEST['entryid'];
-        empty($_REQUEST['boat'])       ? $err = true : $boat = $_REQUEST['boat'];
-        empty($_REQUEST['racestatus']) ? $err = true : $racestatus = $_REQUEST['racestatus'];
-        empty($_REQUEST['declaration'])? $err = true : $declaration = $_REQUEST['declaration'];
-        empty($_REQUEST['lap'])        ? $err = true : $lap = $_REQUEST['lap'];
-        empty($_REQUEST['finishlap'])  ? $err = true : $finishlap = $_REQUEST['finishlap'];
-        empty($_REQUEST['code'])       ? $code = ""  : $code = $_REQUEST['code'];
+        $setcode = set_code($eventid, $_REQUEST);
 
-        if ($err)
+        if($setcode !== true)
         {
-            $reason = "required parameters were invalid
-                       (id: {$_REQUEST['entryid']}; boat: {$_REQUEST['boat']}; status: {$_REQUEST['racestatus']};)";
-            u_writelog("$boat - set code failed - $reason", $eventid);
-            u_growlSet($eventid, $page, $g_timer_setcodefailed, array($boat, $reason));
-        }
-        else
-        {
-            $update = set_code($eventid, $entryid, $code, $racestatus, $declaration, $boat, $finishlap, $lap);
-
-            if (!$update)
-            {
-                $reason = "database update failed";
-                u_writelog("$boat - attempt to set code to $code] FAILED" - $reason, $eventid);
-                u_growlSet($eventid, $page, $g_timer_setcodefailed, array($boat, $reason));
-            }
+            u_growlSet($eventid, $page, $g_timer_setcodefailed, array($_REQUEST['boat'], $setcode));
         }
     }
 // code for ediing lap times below
@@ -236,6 +214,7 @@ if ($eventid AND $pagestate)
         // loop over fleets
         foreach ($racestate as $i=>$fleet) {
             $log_text = "";
+            $fleetnum = $fleet['fleet'];
             $new_maxlap = $_REQUEST["finlap$i"];
 
             if ($fleet['maxlap'] != $new_maxlap)  // laps have been changed
@@ -359,7 +338,6 @@ if ($eventid AND $pagestate)
     }
     
     if (!$stop_here) { header("Location: results_pg.php?eventid=$eventid"); exit(); }  // back to results page
-    exit();
        
 }
 else

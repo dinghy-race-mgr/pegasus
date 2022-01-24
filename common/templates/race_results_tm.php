@@ -42,7 +42,7 @@ function race_sheet($params = array())
         ),
     );
 
-    $doc_head_bufr = <<<EOT
+    $htm_head_bufr = <<<EOT
     <!DOCTYPE html><html lang="en">
     <head>
             <title>{pagetitle}</title>
@@ -75,14 +75,7 @@ EOT;
     </div>
 EOT;
 
-
-//    // header
-//    $header_bufr = <<<EOT
-//    <!-- header -->
-//    <div class="title2 pull-right">{club_name} Results</div>
-//EOT;
-
-    // event detail
+    // event detail ( + print button)
     $event_bufr = <<<EOT
     <div class="flex-container">
         <div class="flex-child">
@@ -97,23 +90,7 @@ EOT;
     </div>
 EOT;
 
-//    // event detail
-//    $event_bufr = <<<EOT
-//    <!-- event detail -->
-//    <div>
-//        <span class="title pull-left" style="width: 50%; display: inline-block;">{event_name}</span>
-//        <span class="pull-right" style="width: 45%; display: inline-block;">
-//            <a class="noprint" onclick="window.print()" href="#">Print results</a>
-//        </span>
-//    </div>
-//    <div class="pull-left" ><span class="text-alert">{result_notes}</span></div>
-//    <div class="pull-left small-note">
-//        date: <b>{event_date}</b> | start: <b>{event_start}</b> | wind: <b>{event_wind}</b> | ood: <b>{event_ood}</b> | status: <b>{result_status}</b>
-//    </div>
-//EOT;
-
     // format results for each fleet
-
     $fleet_block = array();
     foreach($params['fleet'] as $i=>$fleet)
     {
@@ -135,7 +112,7 @@ EOT;
             $fleet_block[$i] = <<<EOT
                 <div>$fleet_detail_bufr</div>
                 <div>               
-                    <table>
+                    <table class="table">
                         $fleet_cols_bufr
                         $fleet_data_bufr
                     </table>
@@ -152,45 +129,7 @@ EOT;
         }
     }
 
-
-//    // format results for each fleet
-//    $fleet_block = array();
-//    foreach($params['fleet'] as $race=>$fleet)
-//    {
-//        // fleet detail
-//        $fleet_detail_bufr = <<<EOT
-//        <!-- fleet detail -->
-//        <div class="title2">{$fleet['fleet_name']}</div>
-//        <div class="divider clearfix"></div>
-//        <div class="pull-left" style="width:60%;"><span class="text-alert">{$fleet['msg']}</span></div>
-//        <div class="pull-left small-note" style="width:50%;">
-//            scoring: <b>{$fleet['scoring']}</b> | yardstick: <b>{$fleet['py_type']}</b>
-//        </div>
-//EOT;
-
-//        if (count($params["result"][$race]) > 0)
-//        {
-//            $fleet_results_bufr = format_result_columns($fleet['scoring'], $layout, $params['inc_club']);
-//            $fleet_results_bufr.= format_result_data($params["result"][$race], $fleet['scoring'], $layout, $params['inc_club']);
-//
-//            // add layout for each fleet
-//            $fleet_block[$race] = <<<EOT
-//            $fleet_detail_bufr
-//            <table style="width: 95%; align: center;" >
-//                $fleet_results_bufr
-//            </table>
-//EOT;
-//        }
-//        else
-//        {
-//            $fleet_block[$race] = <<<EOT
-//            $fleet_detail_bufr
-//            <div class="pull-center"><b>&hellip; no entries in this fleet &hellip;</b></div>
-//EOT;
-//        }
-//    }
-
-    // info section
+    // INFO SECTION
     // codes list - including result code list if required)
     $code_info = "";
     if ($opts['inc-codes']) { $code_info = format_race_codes($params['codes']); }
@@ -203,18 +142,11 @@ EOT;
         </div>
 EOT;
 
-//    // codes used - including result code list if required)
-//    $code_bufr = "";
-//    if ($params['add_codes'])
-//    {
-//        if ($params['inc_codes'] ) { $code_bufr = format_result_codes($params['inc_codes']); }
-//    }
-
-    // footer
+    // DOC FOOTER
     if (!empty($params['sys_website']))
     {
         $system_txt = <<<EOT
-            <button onclick="location.href='{$params['sys_website']}'" type="button">{sys_name} </button> ({sys_release}) {sys_version}
+            <button class="noprint" onclick="location.href='{$params['sys_website']}'" type="button">{sys_name} </button> ({sys_release}) {sys_version}
 EOT;
     }
     else
@@ -230,14 +162,6 @@ EOT;
             <div class="flex-child" style="text-align: right"><span class="footer">Copyright: {sys_copyright}</span></div> 
         </div>
 EOT;
-
-//    // footer
-//    $createdate = date("D j M y H:i");
-//    $footer_bufr = <<<EOT
-//        <div class='divider'>
-//            <p class="pull-right small-note"><a href='{sys_website}'>{sys_name} - ({sys_version})</a>  - created $createdate</p>
-//        </div>
-//EOT;
 
 // report layout
     if ($opts['inc-pagebreak'])
@@ -259,38 +183,7 @@ EOT;
         $body = $header_bufr.$event_bufr.$htm.$info_bufr.$footer_bufr;
     }
 
-    return $doc_head_bufr.$body;
-
-//    // results page layout
-//    if ($params['pagination'])     // produce separate page for each fleet
-//    {
-//        $body = "";
-//        foreach ($fleet_block as $fleet_bufr)
-//        {
-//            $body.= $header_bufr.$event_bufr.$fleet_bufr.$code_bufr.$footer_bufr;
-//            $body.= "<div class='page-break'>&nbsp;</div>";
-//        }
-//        $htm = $doc_head_bufr.$body;
-//    }
-//    else
-//    {
-//        $body = "";                // produce continuous report for all fleets
-//        foreach ($fleet_block as $fleet_bufr)
-//        {
-//            $body.=$fleet_bufr;
-//        }
-//
-//        $htm = <<<EOT
-//        $doc_head_bufr
-//        $header_bufr
-//        $event_bufr
-//        $body
-//        $code_bufr
-//        $footer_bufr
-//EOT;
-//    }
-//
-//    return $htm;
+    return $htm_head_bufr.$body;
 }
 
 
@@ -341,7 +234,7 @@ function format_race_columns($scoring, $layout, $include_club)
         "etime"   => "<th class='table-col' width='%s%%'>elapsed</th>",
         "ctime"   => "<th class='table-col' width='%s%%'>corrected</th>",
         "atime"   => "<th class='table-col' width='%s%%'>corrected</th>",
-        "result"  => "<th class='table-col' width='%s%%'>position</th>",
+        "result"  => "<th class='table-col' width='%s%%'>points</th>",
     );
 
     $field_list = explode(",",$layout[$scoring]['fields']);

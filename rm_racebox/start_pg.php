@@ -95,16 +95,16 @@ for ($startnum=1; $startnum<=$_SESSION["e_$eventid"]['rc_numstarts']; $startnum+
         {
             $fleetlist.= "{$_SESSION["e_$eventid"]["fl_$fleetnum"]['name']}, ";
             $start_fleet["$fleetnum"] = $_SESSION["e_$eventid"]["fl_$fleetnum"];
-
             $warning_flag = $_SESSION["e_$eventid"]["fl_$fleetnum"]['warnsignal'];
         }
     }
     $fleetlist = rtrim($fleetlist, ", ");
 
     // infringe start button
-    $btn_infringestart['fields']['id']   = "infringestart$startnum";
+    $btn_infringestart['fields']['id'] = "infringestart$startnum";
     $btn_infringestart['data'] = "data-start=\"$startnum\"";
-    $start[$startnum] > constant('START_WARN_SECS') ? $btn_infringestart['fields']["style"] = "default": $btn_infringestart['fields']["style"] = "warning";
+    // change button colour with 30 seconds to go
+    $start[$startnum] > constant('START_WARN_SECS') ? $btn_infringestart['fields']["style"] = "default": $btn_infringestart['fields']["style"] = "primary";
     $infringebufr = $tmpl_o->get_template("btn_modal", $btn_infringestart['fields'], $btn_infringestart);
 
     $mdl_infringestart['fields']['id'] = "infringestart$startnum";
@@ -130,9 +130,10 @@ EOT;
                 + $_SESSION["e_$eventid"]["st_$startnum"]['startdelay']);
         }
 
-        $start[$startnum] > constant('START_WARN_SECS') ? $btn_generalrecall['fields']["style"] = "default" : $btn_generalrecall['fields']["style"] = "warning";
         $btn_generalrecall['fields']['id'] = "generalrecall$startnum";
         $btn_generalrecall['data'] = "data-start=\"$startnum\"  data-starttime=\"$startdisplay\" ";
+        // change button colour with 30 seconds to go
+        $start[$startnum] > constant('START_WARN_SECS') ? $btn_generalrecall['fields']["style"] = "default" : $btn_generalrecall['fields']["style"] = "primary";
         $recallbufr.= $tmpl_o->get_template("btn_modal", $btn_generalrecall['fields'], $btn_generalrecall);
 
         $mdl_generalrecall['fields']['id'] = "generalrecall$startnum";
@@ -180,8 +181,6 @@ else
 
 // Timer
 $fields = array(
-//    "event-state"  => $event_state,
-//    "timer-start"  => $timer_start,
     "start-master" => $start_master,
     "start-delta"  => gmdate("H:i:s", $start_master),
     "timer-btn"    => $timer_btn_bufr,

@@ -257,7 +257,7 @@ if ($eventid AND $pagestate)
                     "already_set"       => "&nbsp;&nbsp;$fleetname - laps already set to {$rs['finishlap']} <br>",
                 );
 
-                echo "<pre>$fleetname - ".print_r($rs,true)."</pre>";
+                //echo "<pre>$fleetname - ".print_r($rs,true)."</pre>";
                 if (empty($rs['result']) or $rs['result'] == "failed")
                 {
                     u_writelog("setlaps: $fleetname - failed [{$_REQUEST['laps'][$i]} laps]", $eventid);
@@ -284,7 +284,7 @@ if ($eventid AND $pagestate)
                 }
             }
 
-            echo "<pre>lapsetfail - $lapsetfail</pre>";
+            //echo "<pre>lapsetfail - $lapsetfail</pre>";
 
             if ($lapsetfail)
             {
@@ -296,7 +296,7 @@ if ($eventid AND $pagestate)
                 empty($growlmsg) ?  $growlmsg = "Setting laps - no changes made" : $growlmsg = "Setting laps:<br>".$growlmsg;
                 u_growlSet($eventid, $page, $g_race_lapset_success, array($growlmsg));
             }
-            echo "<pre>".print_r($_SESSION["e_$eventid"]['growl'],true)."</pre>";
+            //echo "<pre>".print_r($_SESSION["e_$eventid"]['growl'],true)."</pre>";
 
         }
 
@@ -342,7 +342,7 @@ if ($eventid AND $pagestate)
         }
         
         // return to race page
-        //header("Location: race_pg.php?eventid=$eventid&pagestate=race");
+        header("Location: race_pg.php?eventid=$eventid&pagestate=race");
         exit();
     } 
     else

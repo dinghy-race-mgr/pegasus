@@ -298,7 +298,7 @@ class ENTRY
          *
          */
     {
-        //echo "<pre>SET_ENTRY: ".print_r($entry,true)."</pre>";
+        // echo "<pre>SET_ENTRY: ".print_r($entry,true)."</pre>";
 
         if (!empty($entry))
         {
@@ -375,6 +375,8 @@ class ENTRY
             $result = array( "status" => false, "class" => "unknown", "sailnum" => "", "helm" => "",
                              "problem" => "not registered", "raceid" => 0);
         }
+
+        //echo "<pre>SET ENTRY RESULT ".print_r($result,true)."</pre>";
 
         return $result;   // if status is "entered" update $_SESSION to mark result status invalid and add 1 to no. of entries
     }

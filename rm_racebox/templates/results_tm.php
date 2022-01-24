@@ -2,14 +2,15 @@
 
 function result_tabs($params = array())
 {
-    //echo "<pre>".print_r($params,true)."</pre>";
+    //echo "<pre><br><br><br></br>PARAMS".print_r($params,true)."</pre>";
+    //echo "<pre>".print_r($params['data'],true)."</pre>";
     
     $eventid = $params['eventid'];
 
     $tabs = "";
     $panels = "";
 
-    // state settings
+    // state settings  // FIXME - not used and looks like timer settings
     $state_cfg = array(
         "default"  => array("row_style" => "default", "label_style" => "label-primary", "annotation" => ""),
         "racing"   => array("row_style" => "racing", "label_style" => "label-default", "annotation" => " <span class='text-primary glyphicon glyphicon-time'></span> "),
@@ -20,8 +21,12 @@ function result_tabs($params = array())
 
     for ($i = 1; $i <= $params['num-fleets']; $i++)
     {
+        //echo "<pre> ENTRIES".print_r($_SESSION["e_$eventid"]["fl_$i"],true)."</pre>";
+
+        // FIXME - not great to use session variables
         $fleet = $_SESSION["e_$eventid"]["fl_$i"];
-        $num_entries = $num_entries  = $_SESSION["e_$eventid"]["fl_$i"]['entries'];
+        $fleet_name = strtolower($fleet['name']);
+        $num_entries = $_SESSION["e_$eventid"]["fl_$i"]['entries'];
         $racetype = $_SESSION["e_$eventid"]["fl_$i"]['scoring'];
 
         // create TABS
@@ -44,8 +49,8 @@ EOT;
 
         $tabs.= <<<EOT
         <li role="presentation" class="lead text-center">
-              <a class="text-primary" href="#fleet$i" aria-controls="{$fleet['name']}" role="tab" data-toggle="pill" style="padding-top: 20px;">
-              <b>{$fleet['name']}</b> <br> $tab_label             
+              <a class="text-primary" href="#fleet$i" aria-controls="$fleet_name" role="tab" data-toggle="pill" style="padding-top: 20px;">
+              <b>$fleet_name</b> <br> $tab_label             
               </a>
         </li>
 EOT;
@@ -57,7 +62,7 @@ EOT;
             $panels .= <<<EOT
             <div role="tabpanel" class="tab-pane" id="fleet$i">
                 <div class="alert alert-info text-center" role="alert" style="margin-right: 40%;">
-                   <h3>no entries in the {$fleet['name']} fleet</h3><br>
+                   <h3>no entries in the $fleet_name fleet</h3><br>
                 </div>
             </div>
 EOT;
@@ -259,8 +264,10 @@ EOT;
 function format_rows($eventid, $racetype, $race_results)
 {
     $rows = "";
-    foreach($race_results as $result)
+    foreach($race_results as $k => $result)
     {
+        //echo "<pre> ROW $k: ".print_r($result,true)."</pre>";
+
         $result['editbtn'] = editresult_html($eventid, $result['entryid'], $result['boat']);
         $result['deletebtn'] = <<<EOT
             <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="remove boat from race" data-placement="top">
@@ -276,13 +283,19 @@ EOT;
         // conversions
         $result['et'] = u_conv_secstotime($result['et']);
         $result['ct'] = u_conv_secstotime($result['ct']);
-        $boat = $boat = "{$result['class']} - {$result['sailnum']}";
+        //$boat = $boat = "{$result['class']} - {$result['sailnum']}";
+        if ($result['lap'] == 0 and empty($result['code'])) { $result['points'] = ""; }
 
         // code
-        $link = "results_sc.php?eventid=$eventid&pagestate=setcode&fleet={$result['fleet']}
-                 &entryid={$result['entryid']}&boat={$result['boat']}&racestatus={$result['status']}
-                 &declaration={$result['declaration']}&lap={$result['lap']}&finishlap={$result['finishlap']}";
+        $link = <<<EOT
+        results_sc.php?eventid=$eventid&pagestate=setcode&fleet={$result['fleet']}
+&entryid={$result['entryid']}&boat={$result['boat']}&racestatus={$result['status']}
+&declaration={$result['declaration']}&lap={$result['lap']}&finishlap={$result['finishlap']}
+EOT;
         $code_link = get_code($result['code'], $link, "resultcodes");
+
+        // points
+        $result['points'] >= 999 ? $points = " - " : $points = $result['points'];
 
         if ($racetype == "level")  // pn and corrected time not required
         {
@@ -295,7 +308,7 @@ EOT;
                <td style="text-align: center">{$result['et']}</td>
                <td style="text-align: center">{$result['lap']}</td>
                <td style="text-align: center">$code_link</td>
-               <td style="text-align: center">{$result['points']}</td>
+               <td style="text-align: center">$points</td>
                <td >&nbsp;</td>
                <td >{$result['editbtn']}</td>
                <td >{$result['deletebtn']}</td>
@@ -313,7 +326,7 @@ EOT;
                <td style="text-align: center">{$result['et']}</td>
                <td style="text-align: center">{$result['lap']}</td>
                <td style="text-align: center">$code_link</td>
-               <td style="text-align: center">{$result['points']}</td>
+               <td style="text-align: center">$points</td>
                <td >&nbsp;</td>
                <td >{$result['editbtn']}</td>
                <td >{$result['deletebtn']}</td>
@@ -333,7 +346,7 @@ EOT;
                <td style="text-align: center">{$result['ct']}</td>
                <td style="text-align: center">{$result['lap']}</td>
                <td style="text-align: center">$code_link</td>
-               <td style="text-align: center">{$result['points']}</td>
+               <td style="text-align: center">$points</td>
                <td >&nbsp;</td>
                <td >{$result['editbtn']}</td>
                <td >{$result['deletebtn']}</td>
@@ -353,7 +366,7 @@ EOT;
                <td style="text-align: center">{$result['ct']}</td>
                <td style="text-align: center">{$result['lap']}</td>
                <td style="text-align: center">$code_link</td>
-               <td style="text-align: center">{$result['points']}</td>
+               <td style="text-align: center">$points</td>
                <td >&nbsp;</td>
                <td >{$result['editbtn']}</td>
                <td >{$result['deletebtn']}</td>

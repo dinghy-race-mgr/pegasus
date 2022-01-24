@@ -216,7 +216,7 @@ class EVENT
          *
          */
     {
-        $select = "SELECT id, event_date, event_start, event_order, event_name, series_code, event_type, event_format, 
+        $select = "SELECT id, event_date, TIME_FORMAT(event_start, '%H:%i') AS event_start, event_order, event_name, series_code, event_type, event_format, 
                           event_entry, event_status, event_open, event_ood, tide_time, tide_height, start_scheme,
                           start_interval, timerstart, ws_start, wd_start, ws_end, wd_end, event_notes, 
                           result_notes, result_valid, result_publish, weblink, 

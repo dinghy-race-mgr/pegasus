@@ -117,6 +117,8 @@ function series_sheet($params = array())
     $fleets = $params['fleets'];
     $sys    = $params['sys'];
 
+    //echo "<pre>TEMPLATE series_sheet: ".print_r($opts,true)."</pre>";
+
     $doc_head_bufr = <<<EOT
     <!DOCTYPE html><html lang="en">
     <head>
@@ -194,15 +196,15 @@ EOT;
             </div>
 EOT;
         // fleet data
+        $fleet_cols_bufr = format_series_columns($races, $opts['inc-club'], $opts['race-label']);
         if ($fleet['num-competitors'] > 0)   // results to display
         {
-            $fleet_cols_bufr = format_series_columns($races, $opts['inc-club'], $opts['race-label']);
             $fleet_data_bufr = format_series_data($fleet, $races, $opts['inc-club']);
 
             $fleet_block[$i] = <<<EOT
                 <div>$fleet_detail_bufr</div>
                 <div>               
-                    <table>
+                    <table class="table">
                         $fleet_cols_bufr
                         $fleet_data_bufr
                     </table>
@@ -214,7 +216,11 @@ EOT;
         {
             $fleet_block[$i] = <<<EOT
                 <div>$fleet_detail_bufr</div>
-                <div class="pull-center"><b>&hellip; no entries in this fleet &hellip;</b></div>
+                <div>               
+                    <table>
+                        $fleet_cols_bufr
+                    </table>
+                </div>
 EOT;
         }
     }
@@ -312,7 +318,7 @@ function format_series_codes($codes)
 
 function format_series_columns($races, $inc_club, $race_label)
 {
-    $inc_club ? $club_col = "<th class='table-col'>club</th>" : $club_col = "" ;
+    $inc_club ? $club_col = "<th class='table-col' style='width: 100px'>club</th>" : $club_col = "" ;
 
     $race_cols = "";
     foreach ($races as $i=>$race)
@@ -321,22 +327,22 @@ function format_series_columns($races, $inc_club, $race_label)
         {
             if (!empty($race['race-url']))
             {
-                $race_cols.= "<th class='table-col'><a href='{$race['race-url']}' target='_blank' >{$race['race-short-date']}</a></th>";
+                $race_cols.= "<th class='table-col' style='width: 100px' ><a href='{$race['race-url']}' target='_blank' >{$race['race-short-date']}</a></th>";
             }
             else
             {
-                $race_cols.= "<th class='table-col'>{$race['race-short-date']}</th>";
+                $race_cols.= "<th class='table-col' style='width: 100px'>{$race['race-short-date']}</th>";
             }
         }
         else
         {
             if (!empty($race['race-url']))
             {
-                $race_cols.= "<th class='table-col'><a href='{$race['race-url']}' target='_blank' >R$i</a></th>";
+                $race_cols.= "<th class='table-col' style='width: 100px'><a href='{$race['race-url']}' target='_blank' >R$i</a></th>";
             }
             else
             {
-                $race_cols.= "<th class='table-col'>R$i</th>";
+                $race_cols.= "<th class='table-col' style='width: 100px'>R$i</th>";
             }
         }
     }
@@ -344,14 +350,14 @@ function format_series_columns($races, $inc_club, $race_label)
     $htm = <<<EOT
     <thead>
         <tr>
-            <th class='table-col'>pos</th>
-            <th class='table-col'>class</th>
-            <th class='table-col'>no.</th>
-            <th class='table-col'>team</th>
+            <th class='table-col' style='width: 5%'>pos</th>
+            <th class='table-col truncate' style='width: 15%'>class</th>
+            <th class='table-col' style='width: 10%'>no.</th>
+            <th class='table-col truncate' style='width: 20%' >team</th>
             $club_col
             $race_cols
-            <th class='table-col'>total pts</th>
-            <th class='table-col'>net pts</th>
+            <th class='table-col' style='width: 5%'>total pts</th>
+            <th class='table-col' style='width: 5%'>net pts</th>
         </tr>
     </thead>
 EOT;
@@ -367,22 +373,24 @@ function format_series_data($fleet, $races, $inc_club)
     foreach ($fleet['sailors'] as $i => $sailor)
     {
         $race_cells = "";
-        foreach ($races as $j => $race) {
-            if ($race['race-status'] == "completed")
+        foreach ($races as $j => $race)
+        {
+            if ($race['race-status'] == "completed" or $race['race-status'] == "sailed")
             {
                 if (array_key_exists("r$j", $sailor['rst'])) {
-                    // get score for this race and this sailor - if score includes code display as points/code
-                    if (empty($sailor['rst']["r$j"]['code']))
+
+                    // get score for this race and this sailor
+
+                    $points = $sailor['rst']["r$j"]['result'];
+                    $score = ($points == (int) $points) ? (int) $points : (float) $points;  // convert to int if possible
+
+                    if (!empty($sailor['rst']["r$j"]['code']))                              // add code if set
                     {
-                        $score = $sailor['rst']["r$j"]['result'];
-                    }
-                    else
-                    {
-                        $score = $sailor['rst']["r$j"]['result'] . "/" . $sailor['rst']["r$j"]['code'];
+                        $score = $score . "/" . $sailor['rst']["r$j"]['code'];
                     }
 
-                    // if score is discarded display score as in brackets
-                    if ($sailor['rst']["r$j"]['discard']) {
+                    if ($sailor['rst']["r$j"]['discard'])                                    // if score is discarded display score as in brackets
+                    {
                         $score = "[$score]";
                     }
 
@@ -395,13 +403,15 @@ function format_series_data($fleet, $races, $inc_club)
             }
         }
 
+        $inc_club ? $club_cell = "<td class='table-cell truncate'>{$sailor['club']}</td>" : $club_cell = "";
+
         $rows_htm .= <<<EOT
             <tr class="table-row">
                 <td class="table-cell">{$sailor['posn']}</td>
                 <td class="table-cell truncate">{$sailor['class']}</td>
                 <td class="table-cell">{$sailor['sailnum']}</td>
                 <td class="table-cell truncate">{$sailor['team']}</td>
-                <td class="table-cell truncate">{$sailor['club']}</td>
+                $club_cell
                 $race_cells
                 <td class="table-cell table-points" >{$sailor['total']}</td>
                 <td class="table-cell table-points" >{$sailor['net']}</td>                   

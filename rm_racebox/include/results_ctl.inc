@@ -207,7 +207,7 @@ $btn_publish = array(
     "fields"    => array(
         "id"         => "publish",
         "size"       => "lg",
-        "style"      => "info",
+        "style"      => "danger",
         "label"      => "Publish",
         "glyph"      => "glyphicon-list-alt",
         "popover"    => "click here to publish the final results - you can correct errors and republish them again if necessary",
@@ -228,7 +228,7 @@ $mdl_publish = array(
     "fields"  => array(
         "id"         => "publish",
         "size"       => "lg",
-        "style"      => "success",
+        "style"      => "info",
         "title"      => "<b>Publish Race Results</b>",
         "body"       => "<iframe src=\"results_publish_pg.php?eventid=$eventid&pagestate=init\" style=\"width: 100%; height: 550px; border:0px\" id=\"entryframe\"></iframe>",
         "script"     => "",

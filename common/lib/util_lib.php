@@ -243,24 +243,24 @@ function u_pick ($newvalue, $oldvalue)
     return $pick;
 }
 
-function u_conv_result($code, $points)
+function u_conv_result($code, $code_type, $points)
 {
-    if ($code)
+    if (empty($code))
     {
-        if ($code =="ZFP" OR $code =="SCP")
-        {
-            $result = "($points)";
-        }
-        else
-        {
-            $result = $code;
-        }
+        $result = "$points";
     }
     else
     {
-        $result = $points;
+        if ($code_type == "series")
+        {
+            $result = "$code";
+        }
+        else
+        {
+            $result = "$points ($code)";
+        }
     }
-    
+
     return $result;
 }
 
@@ -1126,10 +1126,11 @@ EOT;
 
 function ftpFiles($loc, $protocol, $ftp_env, $files)
 {
-    // initialise logfile
+    echo "<pre>".print_r($ftp_env,true)."</pre>";
 
     error_reporting(0);  //error_reporting(E_ERROR | E_WARNING | E_PARSE);
-
+    error_reporting(E_ERROR | E_WARNING | E_PARSE);
+    
     $status = array();
     if ($protocol == 'ftp')
     {
@@ -1145,16 +1146,16 @@ function ftpFiles($loc, $protocol, $ftp_env, $files)
                 $status['login'] = true;
                 $status['log'].= " - logged in to ftp server<br>";
 
+                $files_transferred = 0;
                 foreach($files as $key=>$file)   // loop over all files
                 {
                     if (ftp_put($conn_id, $file['dest'], $file['source'], FTP_BINARY))   // transfer file
                     {
-                        $status['file'][$key] = true;
+                        $files_transferred++;
                         $status['log'].= " - file transferred ({$file['source']})<br>";
                     }
                     else
                     {
-                        $status['file'][$key] = false;
                         $status['log'].= " - file transfer failed ({$file['source']})<br>";
                     }
                 }
@@ -1174,44 +1175,58 @@ function ftpFiles($loc, $protocol, $ftp_env, $files)
     }
     elseif ($protocol == 'sftp')
     {
+        set_include_path(get_include_path() . PATH_SEPARATOR . "{$_SESSION['basepath']}/common/oss/phpseclib");
+        include('Net/SFTP.php');
+        define('NET_SFTP_LOGGING', NET_SFTP_LOG_COMPLEX);
+        echo "<pre># 1</pre>";
+
         $status['log'] = "Transferring results files using sftp protocol<br>";
 
-        include("$loc/common/oss/phpseclib/Net/SFTP.php");
         define('NET_SFTP_LOGGING', NET_SFTP_LOG_COMPLEX);
-
+        echo "<pre># 2</pre>";
         $sftp = new Net_SFTP($ftp_env['server']);
-
-        if ($sftp->login($ftp_env['user'], $ftp_env['pwd']))
+        if ($sftp)                                                    // fixme do I need this block
         {
             $status['connect'] = true;
+            echo "<pre>connected....</pre>";
+        }
+        echo "<pre># 3</pre>";
+        if ($sftp->login($ftp_env['user'], $ftp_env['pwd']))
+        {
+            echo "<pre># 4</pre>";
             $status['login'] = true;
             $status['log'].= " - logged in to sftp server<br>";
 
+            $files_transferred = 0;
             foreach ($files as $key => $file)   // loop over all files
             {
+                echo "<pre># 5</pre>";
                 if ($sftp->put($file['dest'], $file['source'], NET_SFTP_LOCAL_FILE))   // transfer file
                 {
-                    $status['file'][$key] = true;
+                    $files_transferred++;
                     $status['log'].= " - file transferred ({$file['source']})<br>";
                 }
                 else
                 {
-                    $status['file'][$key] = false;
                     $status['log'].= " - file transfer failed ({$file['source']})<br>";
                 }
             }
         }
         else
         {
+            echo "<pre># 6</pre>";
             $status['login'] = false;
-            $status['connect'] = false;
             $status['log'].= " - failed to login to sftp server ({$ftp_env['user']}/{$ftp_env['pwd']})<br>";
         }
     }
     else
     {
+        echo "<pre># 7</pre>";
+        $status['login'] = false;
         $status['log'].= "File transfer not possible - protocol [$protocol] not supported<br>";
     }
+
+    $status['transferred'] = $files_transferred;
 
     error_reporting(E_ERROR);
     return $status;

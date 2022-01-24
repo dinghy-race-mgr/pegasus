@@ -45,7 +45,7 @@ class HELP
 
         /* constraints are (* only relevent to reminder page)
         pursuit - true if a pursuit race
-        multirace - true if more than one race today
+        numrace - true if more than one race today
         name* - event name
         format* - race format id
         date* - event date (yyyy-mm-dd)
@@ -141,7 +141,7 @@ EOT;
                 $panel_bufr.= <<<EOT
                 <div class="row">
                 <div class="col-md-8 col-md-offset-2">                   
-                    <div class="alert alert-danger" role="alert"><p class="lead">{$topic['question']}</p></div>
+                    <div class="alert alert-warning" role="alert"><p class="lead">{$topic['question']}</p></div>
                     <div>
                         <blockquote>                        
                             <p>{$topic['answer']}</p>
@@ -155,7 +155,7 @@ EOT;
 
             // add outer div
             $htm = <<<EOT
-            <h2>Reminders for Today ...</h2>
+            <h2 style="margin-top:60px; margin-bottom:20px;">Reminders for Today ... </h2>
             <div>
                 $panel_bufr  
             </div>
@@ -175,7 +175,7 @@ EOT;
         if (count($this->topics) <= 0)
         {
             $htm = <<<EOT
-                <h2 style="margin-top:40px; margin-bottom:20px;">$title&hellip;</h2>
+                <h2 style="margin-top:60px; margin-bottom:20px;">$title&hellip;</h2>
                 <blockquote style="margin-left: 100px;">
                     <p class="lead">Sorry - no help information for this page</p>
                 </blockquote>
@@ -191,14 +191,17 @@ EOT;
             {
                 $i++;
                 $panel_bufr.= <<<EOT
+                
                 <div class="panel panel-info">
-                    <div class="panel-heading" role="tab" id="heading$i">
-                        <h2 class="panel-title" style="font-size: 24px;">
-                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$i" aria-expanded="true" aria-controls="collapse$i">
-                              {$topic['question']}
-                            </a>
+                     <div class="panel-heading" role="tab" id="heading$i">
+                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$i" 
+                        aria-expanded="true" aria-controls="collapse$i" style="text-decoration: none;">
+                        <h2 class="panel-title" style="color: white; font-size: 24px;">                           
+                              {$topic['question']}                             
                         </h2>
+                        </a>
                     </div>
+                    
                     <div id="collapse$i" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading$i">
                         <div class="panel-body">
                             <div class="">{$topic['answer']}</div>
@@ -206,13 +209,14 @@ EOT;
                         </div>
                     </div>
                 </div>
+
                 </br>
 EOT;
             }
 
             // add outer div
             $htm = <<<EOT
-            <h2 style="margin-top:40px; margin-bottom:20px;">$title&hellip;</h2>
+            <h2 style="margin-top:60px; margin-bottom:20px;">$title&hellip; <small>click for information</small></h2>
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">

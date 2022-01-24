@@ -1,6 +1,6 @@
 <?php
-/**
- * rbx_sc_raceinit - event initialisation functionality
+/*
+ * raceinit_sc - event initialisation functionality
  * 
  * The event session information is stored in a session array using the eventid
  * as an index, e.g $_SESSION[e_1234]['ev_name'] holds the eventname for event

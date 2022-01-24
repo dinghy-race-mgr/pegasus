@@ -29,7 +29,7 @@ $eventid = u_checkarg("eventid", "checkintnotzero","");
 u_initpagestart($_REQUEST['eventid'], $page, true);
 include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php"); // language file
 //u_writedbg("<pre>session".print_r($_SESSION,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
-//echo "<pre>".print_r($_SESSION,true)."</pre>";
+
 
 if (!$eventid) { u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
                               "please contact your raceManager administrator");  }
