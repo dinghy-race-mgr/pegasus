@@ -83,47 +83,92 @@ class RACE
 
 */
 
-// FIXME this is duplicated in racestate_class
+//    public function racestate_delete($fleetnum=0)
+//    {
+//        $constraint = array("eventid"=>$this->eventid);
+//        if ($fleetnum != 0)
+//        {
+//            //$constraint[] = array("race"=>$fleetnum);
+//            $constraint[] = array("fleet"=>$fleetnum);
+//        }
+//
+//        $numrows = $this->db->db_delete("t_racestate", $constraint);
+//
+//        return $numrows;
+//    }
 
-    public function racestate_delete($fleetnum=0)
+    public function racestate_analyse($fleetnum, $starttime, $racetype)
     {
-        $constraint = array("eventid"=>$this->eventid);
-        if ($fleetnum != 0)
-        {
-            //$constraint[] = array("race"=>$fleetnum);
-            $constraint[] = array("fleet"=>$fleetnum);
-        }
-        
-        $numrows = $this->db->db_delete("t_racestate", $constraint);
+        $result = array(
+            "starttime" => $starttime,
+            "maxlap" => 0,
+            "currentlap" => 0,
+            "entries" => 0,
+            "status" => "unknown"
+        );
 
-        return $numrows;
-    }
+        // initialise counts (R = racing, F = finished after sailing all laps, X = excluded (e.g. NCS),
+        // FF = force finished in a average lap race before the leader has finished)
+        $status_counts = array("R" => 0, "F" => 0, "X" => 0, "FF" => 0);
 
-    public function racestate_analyse($fleetnum, $starttime)
-    {
-        $status_counts = array("R" => 0, "F" => 0, "X" => 0);
         $race = $this->race_getresults($fleetnum);  // get race data for this fleet
+        $result['entries'] = count($race);
 
+        $maxlap = 0;
+        $currentlap = 0;
         foreach ($race as $entry)
         {
-            $status_counts["{$entry['status']}"]++;
+            if ($racetype == "average")
+            {
+                if ($entry['status'] == "F")
+                {
+                    $status_counts["F"]++;
+                    if ($entry['lap'] < $entry['finishlap']) { $status_counts["FF"]++; }  // count as force finished by OOD
+                }
+                else
+                {
+                    $status_counts["{$entry['status']}"]++;
+                }
+            }
+            else
+            {
+                $status_counts["{$entry['status']}"]++;
+            }
+
+            if ($entry['finishlap'] > $maxlap) { $maxlap = $entry['finishlap']; }
+            if ($entry['lap'] > $currentlap) { $currentlap = $entry['lap']; }
         }
 
-        $status = "unknown";
         if ($race)
         {
-            if ($starttime == "00:00:00") {
-                $status = "notstarted";
-            } elseif ($status_counts['R'] == 0) {
-                $status = "allfinished";
-            } elseif ($status_counts['R'] > 0 and $status_counts['F'] > 0) {
-                $status = "finishing";
-            } else {
-                $status = "inprogress";
+            if ($starttime == "00:00:00")                                                    // race no started yet
+            {
+                $result['status'] = "notstarted";
             }
+            elseif ($status_counts['R'] == 0)                                                // nobody racing (all finished or excluded)
+            {
+                $result['status'] = "allfinished";
+            }
+            elseif ($status_counts['R'] > 0 )                                                // some people still racing
+            {
+                if ($status_counts['F'] > 0 and $status_counts['F'] == $status_counts['FF']) // only finishers are force finishes - race still in progress
+                {
+                    $result['status'] = "inprogress";
+                }
+                elseif ($status_counts['F'] > 0)                                             // some people finished so race is finishing
+                {
+                    $result['status'] = "finishing";
+                }
+            }
+            else                                                                             // race is still in progress (no finishers)
+            {
+                $result['status'] = "inprogress";
+            }
+            $result['maxlap'] = $maxlap;
+            $result['currentlap'] = $currentlap;
         }
 
-        return $status;
+        return $result;
     }
     
     
@@ -159,15 +204,52 @@ class RACE
     }
     
     
-    public function racestate_updateentries($fleetnum, $change)
-    {        
+//    public function racestate_updateentries($fleetnum, $change)
+//    {
 //        $result = $this->db->db_query("UPDATE t_racestate SET entries = entries $change
-//                                       WHERE eventid = {$this->eventid} and race = $fleetnum");
-        $result = $this->db->db_query("UPDATE t_racestate SET entries = entries $change 
-                                       WHERE eventid = {$this->eventid} and fleet = $fleetnum");
-        $_SESSION["e_{$this->eventid}"]['result_status'] = "invalid";
-        
-        return $result;
+//                                       WHERE eventid = {$this->eventid} and fleet = $fleetnum");
+//        $_SESSION["e_{$this->eventid}"]['result_status'] = "invalid";
+//
+//        return $result;
+//    }
+
+    public function racestate_updatestatus_all($numfleets, $page)
+    {
+        for ($i = 1; $i <= $numfleets; $i++)
+        {
+            $status_change = false;
+            $racestatus = $this->racestate_analyse($i, $_SESSION["e_{$this->eventid}"]["fl_$i"]['starttime'],
+                $_SESSION["e_{$this->eventid}"]["fl_$i"]['scoring']);
+
+            if ($racestatus == "unknown")
+            {
+                // send message to syslog
+                error_log("$page/racestate_updatestatus_all - fleet $i - UNKNOWN status", 3, $_SESSION['syslog']);
+            }
+            else
+            {
+                if ($racestatus['status'] != $_SESSION["e_{$this->eventid}"]["fl_$i"]['status'])
+                {
+                    $status_change = true;
+                    $racestatus['prevstatus'] = $_SESSION["e_{$this->eventid}"]["fl_$i"]['status'];
+                }
+
+                $upd = $this->racestate_update($racestatus, array("fleet"=>$i));
+                if ($upd >= 0)
+                {
+                    $_SESSION["e_{$this->eventid}"]["fl_$i"]['starttime'] = $racestatus['starttime'];
+                    $_SESSION["e_{$this->eventid}"]["fl_$i"]['maxlap'] = $racestatus['maxlap'];
+                    $_SESSION["e_{$this->eventid}"]["fl_$i"]['currentlap'] = $racestatus['currentlap'];
+                    $_SESSION["e_{$this->eventid}"]["fl_$i"]['entries'] = $racestatus['entries'];
+                    $_SESSION["e_{$this->eventid}"]["fl_$i"]['status'] = $racestatus['status'];
+                }
+
+                if ($status_change)
+                {
+                    u_writelog("race status change: ".$_SESSION["e_{$this->eventid}"]["fl_$i"]['code']." fleet to ".$racestatus['status'], $this->eventid);
+                }
+            }
+        }
     }
     
     
@@ -248,8 +330,7 @@ class RACE
     {                
         $fields = "id, fleet, class, sailnum, helm, crew, club, pn, lap, finishlap, etime, ctime, atime, 
                    penalty, points, code, declaration, protest, status, note";
-        
-        //$where = " AND (code != 'DNC' OR code is null) ";
+
         $where = "  ";
         if ($fleetnum > 0) { $where.= " AND fleet = $fleetnum "; }
         
@@ -478,17 +559,17 @@ class RACE
 
         if ($change_lap)
         {
-            // update t_racestate
-            $upd_racestate = $this->racestate_update(array("maxlap"=>$laps), array("fleet"=>$fleetnum));
-            if ($dbg) { echo "<pre>update racestate: $upd_racestate</pre>"; }
+            // update t_racestate   FIXME - this can probably be removed (only used in race_sc and timer_sc) - would be caught by racestate check
+            //$upd_racestate = $this->racestate_update(array("maxlap"=>$laps), array("fleet"=>$fleetnum));
+            //if ($dbg) { echo "<pre>update racestate: $upd_racestate</pre>"; }
 
             // update t_race + session
-            if ($upd_racestate >= 0)
-            {
+//            if ($upd_racestate >= 0)
+//            {
                 $upd_race = $this->race_update(array("finishlap"=>$laps), $fleetnum);
                 if ($dbg) { echo "<pre>update race: $upd_race</pre>"; }
 
-                // reset session
+                // reset session  FIXME - this can probabaly be removed - (only used in race_sc and timer_sc) - would be caught by racestate check
                 $_SESSION["e_{$this->eventid}"]["fl_$fleetnum"]['maxlap'] = $laps;
 
                 if ($upd_race >= 0)
@@ -499,7 +580,7 @@ class RACE
                 {
                     $update = array("result" => "failed", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap);
                 }
-            }
+ //           }
         }
         if ($dbg) { echo "<-- exit race_set_laps -->"; }
         return $update;
@@ -530,7 +611,9 @@ class RACE
     
     public function race_laps_current($fleetnum)
     {
-        $result = $this->db->db_get_row("SELECT MAX(lap) AS maxlaps FROM `t_race` WHERE fleet='$fleetnum' GROUP BY fleet");
+        $sql = "SELECT MAX(lap) AS maxlaps FROM `t_race` WHERE eventid= {$this->eventid} and fleet=$fleetnum GROUP BY fleet";
+        u_writedbg("db_update: query: $sql ",__FILE__,__FUNCTION__,__LINE__);
+        $result = $this->db->db_get_row($sql);
         return $result['maxlaps'];        
     }
 
@@ -538,7 +621,7 @@ class RACE
     public function race_times_init($fleetnum=0)
     {
         $constraint = array("eventid"=>$this->eventid);
-        if ($fleetnum != 0) { $constraint[] = array("race"=>$fleetnum); }
+        if ($fleetnum != 0) { $constraint[] = array("fleet"=>$fleetnum); }
         
         $update = array(
            "lap"     => 0,
@@ -551,8 +634,8 @@ class RACE
         );
         
         $numrows = $this->db->db_update("t_race", $update, $constraint);  // update entries
-        $this->race_laps_delete($fleetnum);         // remove all lap times
-        $this->race_finish_delete();                // remove all finish line data for pursuit race
+        $this->race_laps_delete($fleetnum);                               // remove all lap times
+        $this->race_finish_delete();                                      // remove all finish line data for pursuit race
         
         return $numrows;
     }
@@ -597,15 +680,59 @@ class RACE
         return $count;
     }
 
-    public function race_stillracing($fleetnum)
+    public function fleet_race_stillracing($fleetnum)
     {
-        $sql = "SELECT id FROM t_race WHERE eventid = '{$this->eventid}' and fleet = '$fleetnum' and status = 'R'";
-        //echo "<pre>$sql</pre>";
-        $count = $this->db->db_num_rows($sql);
+        $sql = "SELECT id, class, sailnum, lap, code, status FROM t_race WHERE eventid = '{$this->eventid}' and fleet = '$fleetnum' AND status != 'D'";
+        $rs = $this->db->db_get_rows($sql);
 
-        $count == 0 ? $stillracing = false : $stillracing = true;
+        $still_racing = 0;
+        foreach ($rs as $comp)
+        {
+            if ($comp['status'] == "R")
+            {
+                if (!empty($comp['code']))
+                {
+                    $code_arr = $this->db->db_getresultcode($comp['code']);
+                    if ($code_arr['scoringtype'] == "penalty")
+                    {
+                        $still_racing++;
+                    }
+                }
+                else
+                {
+                    $still_racing++;
+                }
+            }
+        }
+
+        $still_racing == 0 ? $stillracing = false : $stillracing = true;
 
         return $stillracing;
+    }
+
+    public function boat_stillracing($entryid, $code_arr)
+    {
+
+        $sql = "SELECT id, class, sailnum, lap, code, status FROM t_race WHERE eventid = '{$this->eventid}' and id = '$entryid'";
+        $comp = $this->db->db_get_row($sql);
+
+        $still_racing = false;
+        if ($comp['status'] == "R")
+        {
+            if (!empty($code_arr))
+            {
+                if ($code_arr['scoringtype'] == "penalty")
+                {
+                    $still_racing = true;
+                }
+            }
+            else
+            {
+                $still_racing = true;
+            }
+        }
+
+        return $still_racing;
     }
 
 
@@ -619,7 +746,7 @@ class RACE
 
         if ($rs_data)
         {
-            $race_entries = $this->get_race_entries($rs_data);                                                       // get number of entries in this fleet
+            $race_entries = $this->get_race_entries($rs_data);                                     // get number of entries in this fleet
             $maxscore = $this->resultcode_points($_SESSION['resultcodes']['DNF'], $race_entries);  // get points for DNF (max score)
             $maxlap = max(array_column($rs_data, 'lap'));                                          // get max no. of laps
 
@@ -636,11 +763,18 @@ class RACE
                 $boat = $row['class']." ".$row['sailnum'];
                 empty($row['code']) ? $code_arr = array() : $code_arr = $_SESSION['resultcodes'][$row['code']]; // set code details
 
-                if ($row['status'] == "R")                           // this boat not finished
+                // check if still racing
+                if ($this->boat_stillracing($row['id'], $code_arr))
                 {
                     $still_racing++;
+                    $rs_data[$k]['stillracing'] = "Y";
                 }
-                elseif ($row['status'] == "F")                      // finished - check if correct no. of laps
+                else
+                {
+                    $rs_data[$k]['stillracing'] = "N";
+                }
+
+                if ($row['status'] == "F")                      // finished - check if correct no. of laps
                 {
                     if ($racetype == "level" OR $racetype == "handicap")
                     {
@@ -766,7 +900,7 @@ class RACE
                 }
 
             }
-            error_log("RSDATA: ".print_r($rs_data,true). "\n",3, $_SESSION['dbglog']);
+            //error_log("RSDATA: ".print_r($rs_data,true). "\n",3, $_SESSION['dbglog']);
 
             // re-sort data array to account for any penalties applied
 //            echo "<br><br><br><pre>Points array: ".count($points_arr)." rs_data array: ".count($rs_data)."</pre>";
@@ -795,6 +929,7 @@ class RACE
 
         $fleet_rs = $this->fleet_score($eventid, $fleetnum, $racetype, $rs_data);
         //echo "<pre>FLEET SCORE".print_r($fleet_rs,true)."</pre>";
+
         $rs_data  = $fleet_rs['data'];
 
         if ($table == "t_race")
@@ -831,7 +966,8 @@ class RACE
                     "status"     => $row['status'],
                     "declaration"=> $row['declaration'],
                     "laptimes"   => $row['laptimes'],
-                    "status_flag"=> $this->entry_resultstatus($row['status'], $row['declaration'], $row['protest'], $this->eventid)
+                    "stillracing"=> $row['stillracing'],
+                    "status_flag"=> $this->entry_resultstatus($row['status'], $row['code'], $row['declaration'], $row['protest'], $row['stillracing'], $this->eventid)
                 );
 
                 $fleet_rs['data'][$k] = $rs_row;
@@ -1057,26 +1193,35 @@ class RACE
         else
         {
             $code_arr = $this->db->db_getresultcode($code); // get timing flag for code
+            u_writedbg("<pre> SETCODE code array: ".print_r($code_arr,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
+
             if (!$code_arr)
             {
                 $status = -2;                              // code specified not found
             }
             else
             {
-                if (!$code_arr['timing'])   // if code indicates stop timing set to excluded
+                // if code cfg indicates stop timing or it is a code that can only be enumerated in the series result set to excluded
+                if (!$code_arr['timing'] or $code_arr['scoringtype'] == "series")
                 {
-                    // boat is 'excluded'
-                    $numrows = $this->entry_update($entryid, array("code" => $code, "status" => "X"));
-                }
-                elseif ($code_arr['scoringtype'] == "series")   // if code can only be determined in the series result set to excluded and points = 9999
-                {
-                    $numrows = $this->entry_update($entryid, array("code" => $code, "points" => "999", "status" => "X"));
+                    if ($code_arr['scoringtype'] == "series")  // boat is 'excluded' with placeholder points
+                    {
+                        $numrows = $this->entry_update($entryid, array("code" => $code, "points" => "999", "status" => "X"));
+                        u_writedbg("SETCODE setting X - series code",__FILE__,__FUNCTION__,__LINE__);
+                    }
+                    else  // just excluded
+                    {
+                        $numrows = $this->entry_update($entryid, array("code" => $code, "status" => "X"));
+                        u_writedbg("SETCODE setting X - not a series code",__FILE__,__FUNCTION__,__LINE__);
+                    }
+
                 }
                 else
                 {
-                    // boat is 'racing'
-                    $finish_check ? $status = "F" : $status = "R";
-                    $numrows = $this->entry_update($entryid, array("code" => $code, "status" => $status));
+                    // boat is 'racing' or 'finished'
+                    $finish_check ? $state = "F" : $state = "R";
+                    $numrows = $this->entry_update($entryid, array("code" => $code, "status" => $state));
+                    u_writedbg("SETCODE setting $state ",__FILE__,__FUNCTION__,__LINE__);
                 }
 
                 if ($numrows<=0 ) {$status = -3; }         // database not updated";
@@ -1168,13 +1313,17 @@ class RACE
 //        return $numrows;
 //    }
 
-    public function entry_resultstatus($status, $declaration, $protest, $eventid)
+    public function entry_resultstatus($status, $code, $declaration, $protest, $stillracing, $eventid)
     {
         $decl    = "";
 
-        if ($status == 'R')          // racing
+        if ($status == 'R' and $stillracing == "Y")          // racing
         {
             $status_arr = array("msg"=>"still racing", "color"=>"orange", "glyph"=>"glyphicon glyphicon-flag");
+        }
+        elseif ($status == 'R' and $stillracing == "N")
+        {
+            $status_arr = array("msg"=>"finished $code", "color"=>"black", "glyph"=>"glyphicon glyphicon-flag");
         }
         elseif ($status == 'F')      // finished
         {
@@ -1247,18 +1396,14 @@ class RACE
 
    
     public function entry_time($entryid, $fleetnum, $currentlap, $pn, $clicktime, $prev_et = 0, $force_finish = false)
-    {   
-        global $debug;
-        
-        $return = "fail";
-        // FIXME need to update leaders current lap in racestate and session
+    {
                             
         $event      = "e_".$this->eventid;                                                        // set fleet number
         $lap        = $currentlap + 1;                                                            // increment lap
         $racestatus = $_SESSION["$event"]["fl_$fleetnum"]['status'];
         $maxlap     = $_SESSION["$event"]["fl_$fleetnum"]['maxlap'];
 
-        //u_writedbg("FLEET:<pre>".print_r( $_SESSION["$event"]["fl_$fleetnum"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__); // debug:)
+        u_writedbg("FLEET:<pre>".print_r( $_SESSION["$event"]["fl_$fleetnum"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__); // debug:)
 
         $et = $this->entry_calc_et($clicktime, $_SESSION["$event"]["fl_$fleetnum"]['starttime']);  // elapsed time
         $ct = $this->entry_calc_ct($et, $pn, $this->scoring["$fleetnum"]);                         // corrected time
@@ -1269,13 +1414,13 @@ class RACE
         {
             $status = "F";
             $return = "force_finish";
-            if ($debug) { echo " - force finish by OOD <br>"; }
+            u_writedbg("- force finish by OOD", __FILE__, __FUNCTION__, __LINE__);
         }
         elseif ($this->scoring["$fleetnum"] == 'average' AND $racestatus=="finishing")   // average lap race and we have already started finishing
         {
             $status = "F";
             $return = "finish";
-            if ($debug) { echo " - avg lap race but not first finisher - so finish anyway <br>"; }
+            u_writedbg("- avg lap race but not first finisher - so finish anyway", __FILE__, __FUNCTION__, __LINE__);
         }
         elseif ($lap >= $maxlap)                                  //  finish because boat has reached required number of laps        
         {
@@ -1283,19 +1428,19 @@ class RACE
             if ($this->scoring["$fleetnum"] == 'average' AND $racestatus != "finishing")   // this is first finisher in average lap race
             {                
                 $return = "first_finish";
-                if ($debug) { echo " - avg lap race - first finisher  <br>"; }
+                u_writedbg("- avg lap race - first finisher", __FILE__, __FUNCTION__, __LINE__);
             }
             else
             {
                 $return = "finish";
-                if ($debug) { echo " - boat has completed final lap <br>"; }
+                u_writedbg("- boat has completed final lap", __FILE__, __FUNCTION__, __LINE__);
             }
         }
         else  // not finishing this lap
         {            
             $status = "R";
             $return = "time";
-            if ($debug) { echo " - not a finisher <br>"; }
+            u_writedbg("- not a finisher", __FILE__, __FUNCTION__, __LINE__);
         }
         
         // update t_race record
@@ -1617,7 +1762,7 @@ class RACE
         {
             // evaluate penalty score
             $expr = str_replace("N", $race_entries, $code_arr['scoring']);
-            $penalty = round(eval("return $expr;"), 0, PHP_ROUND_HALF_UP);
+            $penalty = eval("return $expr;");
         }
 
         return $penalty;

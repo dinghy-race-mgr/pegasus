@@ -650,7 +650,7 @@ class EVENT
     // Method: update event status
     public function event_updatestatus($eventid, $status)
     {
-       // debug: u_writedbg("status:s_status:s_p_status - $status|{$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}", __FILE__, __FUNCTION__,__LINE__); // debug:
+       // u_writedbg("status:s_status:s_p_status - $status|{$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}", __FILE__, __FUNCTION__,__LINE__); // debug:
 
        $success  = false;
        $status_ok = (in_array($status, $_SESSION['race_states']))? true : false;  // status is known
@@ -676,7 +676,11 @@ class EVENT
                $success = true;
            }           
        }
-        // debug: u_writedbg("status:s_status:s_p_status - $status|{$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}", __FILE__, __FUNCTION__,__LINE__); // debug:
+       else
+       {
+           u_writedbg("status:s_status:s_p_status - $status|{$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}", __FILE__, __FUNCTION__,__LINE__); // debug:
+       }
+
 
         return $success;
     }
@@ -761,7 +765,7 @@ class EVENT
                   FROM t_racestate as a
                   WHERE a.eventid = $eventid
                   ORDER BY fleet";
-//        $query  = "SELECT * FROM t_racestate WHERE eventid = $eventid ORDER BY race";
+
         $detail = $this->db->db_get_rows( $query );
         if (empty($detail)) 
         { 
@@ -1001,12 +1005,13 @@ class EVENT
             }
 
             // update event record
-            if ($mode == "init" or $mode == "reset")
-            {
-                $setstate = $this->event_updatestatus($eventid, "selected");                         // status
-
-                $upd = $this->db->db_query("UPDATE t_event SET timerstart = 0 WHERE id = $eventid"); // timer start
-            }
+//            if ($mode == "init" or $mode == "reset")
+//            {
+//                $_SESSION["e_$eventid"]['ev_status'] = "selected";                                   // status
+//                $setstate = $this->event_updatestatus($eventid, "selected");
+//
+//                $upd = $this->db->db_query("UPDATE t_event SET timerstart = 0 WHERE id = $eventid"); // timer start
+//            }
 
             // now reinitialise event
             $status = r_initialiseevent($mode, $eventid);

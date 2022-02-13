@@ -21,6 +21,199 @@
  *    race_status_display
  */
 
+function race_detail_display($params=array())
+{
+    empty($params['tide-detail']) ? $tide_str = "": $tide_str = "&nbsp;|&nbsp;<small>tide:</small> <span class=\"lead\"><b>{tide-detail}</b></span>";
+    empty($params['series-name']) ? $series_str = "none" : $series_str = $params['series-name'];
+
+    // event statue
+    $event_status = r_decoderacestatus($params['event-status']);
+    $event_style  = r_styleracestatus($params['event-status']);
+    if ($params['event-status'] == "cancelled" OR $params['event-status'] == "abandoned") {
+        $event_status .= " - " . ucfirst($params['event-status']);
+        $event_style = "danger";
+    }
+
+    $html = <<<EOT
+    <div class="margin-top-10 well">
+        <div class="row">
+            <div >
+                <h3 class="text-default" style="text-transform: uppercase;">{event-name}
+                    <span class="text-$event_style"> - $event_status</span></h3>
+            </div>
+            <div class="margin-top-10">
+                <h3 class="text-info">
+                  <small>start:</small> <b>{start-time}</b>
+                  $tide_str
+                  &nbsp;|&nbsp;<small>ood:</small> <span class="lead"><b>{ood-name}</b></span>
+                  &nbsp;|&nbsp;<small>format:</small> <span class="lead"><b>{race-format}</b></span>
+                  &nbsp;|&nbsp;<small>starts:</small> <span class="lead"><b>{race-starts}</b></span>
+                  &nbsp;|&nbsp;<small>series:</small> <span class="lead"><b>$series_str</b></span>
+                </h3>
+            </div>
+        </div>
+    </div>
+EOT;
+
+//    $html = <<<EOT
+//    <div class="margin-top-10 well">
+//        <div class="row">
+//            <div class="col-md-6">
+//                <h3 class="text-default" style="text-transform: uppercase;">{event-name}
+//                    <span class="text-$event_style"> - $event_status</span></h3>
+//            </div>
+//            <div class="col-md-5 margin-top-10">
+//                <h4 class="text-info">
+//                  <small>start:</small> <span class="lead"><b>{start-time}</b></span>
+//                  $tide_str
+//                  &nbsp;|&nbsp;<small>ood:</small> <span class="lead"><b>{ood-name}</b></span><br>
+//                  <small>format:</small> <span class="lead"><b>{race-format}</b></span>
+//                  &nbsp;|&nbsp;<small>starts:</small> <span class="lead"><b>{race-starts}</b></span>
+//                  &nbsp;|&nbsp;<small>series:</small> <span class="lead"><b>$series_str</b></span>
+//                </h4>
+//            </div>
+//        </div>
+//    </div>
+//EOT;
+    return $html;
+}
+
+
+function race_status_display($params)
+{
+    global $db_o;
+
+    $table = "";
+    $eventid = $params['eventid'];
+    $pursuit = $params['pursuit'];
+
+    if ($params['fleet-data'])
+    {
+        foreach ($params['fleet-data'] as $fleet)
+        {
+            // fleet
+            $fleetname = ucwords($fleet['racename']);
+
+            // warning flag
+            $warning_flag = $params['flag-data'][$fleet['fleet']];
+
+            // number racing
+            empty($fleet['num_racing']) ? $num_racing = 0 : $num_racing = $fleet['num_racing'];
+
+            // set laps
+            $pursuit ? $setlaps = "n/a" : $setlaps = $fleet['maxlap'];
+
+            // race type
+            $race_type = $db_o->db_getsystemlabel("race_type", $fleet['racetype']);
+
+            // current lap
+            $laps = $fleet['currentlap'];
+
+            // elapsed time/status
+            $elapsed = r_getelapsedtime("secs", $params['timer-start'], time(), $fleet['startdelay']);
+            if ($params['timer-start']==0)
+            {
+                $fleet['elapsed'] = "00:00:00";
+            }
+            else
+            {
+                $fleet_prep = r_getstartdelay($fleet['start'], $params['start-scheme'], $params['start-interval']);
+                if ($elapsed > 0)
+                {
+                    $fleet['elapsed'] = gmdate("H:i:s", $elapsed);
+                }
+                elseif ($elapsed >= (0 - $fleet_prep))
+                {
+                    $fleet['elapsed'] = "<span style='color: red;'>- ".gmdate("H:i:s", abs($elapsed))."</span>";
+                    $fleet['status'] = "start sequence";
+                }
+                else
+                {
+                    $fleet['elapsed'] = "00:00:00";
+                    $fleet['status'] = "not started";
+                }
+            }
+            
+            $table.= <<<EOT
+            <tr class="lead">
+                <td class="truncate text-info" ><b>$fleetname</b></td>
+                <td style="text-align: center">{$fleet['start']}</td>
+                <td ><img class="img-responsive" src="../common/images/signal_flags/$warning_flag" alt="warning flag"></td>
+                <td style="text-align: center">$race_type</td>
+                <td style="text-align: center">{$fleet['entries']}</td>
+                <td style="text-align: center">$num_racing</td>
+                <td align="center">$setlaps</td>
+                <td style="text-align: center">$laps</td>
+                <td style="text-align: center">{$fleet['elapsed']}</td>
+                <td style="text-align: center">{$fleet['status']}</td>
+            </tr>
+EOT;
+        }
+
+        if (!$pursuit)
+        {
+            $table.=<<<EOT
+        <tr>       
+            <td colspan="6">&nbsp;</td>
+            <td class="text-center"><a class="btn btn-md btn-info btn-block" href="#setlapsModal" data-toggle="modal">Set Laps</a></td>
+            <td colspan="3">&nbsp;</td>
+        </tr>
+EOT;
+        }
+
+    }
+    else
+    {
+        $table = <<<EOT
+        <tr><td class="text-danger" colspan="8"><strong>Fleet information missing !</strong></td></tr>
+EOT;
+    }
+
+    $html =<<<EOT
+    <div class="row margin-top-20">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix" >
+                     <div class="row">
+                        <div class="col-md-9">
+                            <h3 class="text-primary">Fleet Status</h3>
+                        </div>
+                        <div class="col-md-3">
+                            <a class="btn btn-sm btn-primary pull-right" type="submit" onclick="location.reload();">
+                                <span class="glyphicon glyphicon-refresh"></span> Refresh</a>
+                        </div>
+                    </div> 
+                </div>
+                <div class="panel-body bg-default">
+                    <table id="racetable" class="table table-striped table-hover" style="position: relative; display: inline-block;">
+                        <thead class="text-info" >
+                            <th width="15%"><h4>fleet</h4></th>
+                            <th><h4 class="pull-right">start</h4></th>
+                            <th style="text-align: center" width="3%"><h4>&nbsp;</h4></th>
+                            <th style="text-align: center"><h4>scoring</h4></th>
+                            <th style="text-align: center"><h4>entries</h4></th>
+                            <th style="text-align: center"><h4>no. racing</h4></th>
+                            <th style="text-align: center"><h4>set laps</h4></th>
+                            <th style="text-align: center"><h4>current lap</h4></th>
+                            <th style="text-align: center"><h4>elapsed time</h4></th>
+                            <th style="text-align: center"><h4>status</h4></th>
+                        </thead>
+                        <tbody>
+                            $table
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+EOT;
+    return $html;
+}
+
+
+
+
 function fm_changerace($params=array())
 {
     global $db_o;
@@ -398,185 +591,7 @@ EOT;
 }
 
 
-function race_detail_display($params=array())
-{
-    empty($params['tide-detail']) ? $tide_str = "": $tide_str = "&nbsp;|&nbsp;<small>tide:</small> <span class=\"lead\"><b>{tide-detail}</b></span>";
-    empty($params['series-name']) ? $series_str = "none" : $series_str = $params['series-name'];
 
-    // event statue
-    $event_status = r_decoderacestatus($params['event-status']);
-    $event_style  = r_styleracestatus($params['event-status']);
-    if ($params['event-status'] == "cancelled" OR $params['event-status'] == "abandoned") {
-        $event_status .= " - " . ucfirst($params['event-status']);
-        $event_style = "danger";
-    }
-
-    $html = <<<EOT
-    <div class="margin-top-10 well">
-        <div class="row">
-            <div class="col-md-6">
-                <h3 class="text-default" style="text-transform: uppercase;">{event-name}
-                    <span class="text-$event_style"> - $event_status</span></h3>
-            </div>
-            <div class="col-md-5 margin-top-10">
-                <h4 class="text-info">
-                  <small>start:</small> <span class="lead"><b>{start-time}</b></span>
-                  $tide_str
-                  &nbsp;|&nbsp;<small>ood:</small> <span class="lead"><b>{ood-name}</b></span><br>
-                  <small>format:</small> <span class="lead"><b>{race-format}</b></span>
-                  &nbsp;|&nbsp;<small>starts:</small> <span class="lead"><b>{race-starts}</b></span>
-                  &nbsp;|&nbsp;<small>series:</small> <span class="lead"><b>$series_str</b></span>
-                </h4>
-            </div>
-        </div>
-    </div>
-EOT;
-    return $html;
-}
-
-
-function race_status_display($params)
-{
-    global $db_o;
-
-    $table = "";
-    $eventid = $params['eventid'];
-    if ($params['fleet-data'])
-    {
-        foreach ($params['fleet-data'] as $fleet)
-        {
-            // fleet/flag
-            $fleetname = ucwords($fleet['racename']);
-            $warning_flag = $params['flag-data'][$fleet['fleet']];
-
-            // number racing
-            empty($fleet['num_racing']) ? $num_racing = 0 : $num_racing = $fleet['num_racing'];
-
-            // set laps
-            if ($fleet['maxlap'] == "pursuit")
-            {
-                $setlaps_bufr = "n/a";
-            }
-            else
-            {
-                $setlaps_bufr = $fleet['maxlap'];
-//                if ($fleet['maxlap'] == 0)
-//                {
-//                    $style = "danger";
-//                    $label = "set";
-//                }
-//                else
-//                {
-//                    $style = "success";
-//                    $label = "change";
-//                }
-//                $setlaps_bufr = set_laps_control($eventid, $fleet['fleet'], $fleet['maxlap'], $style, $label);
-            }
-
-            // race type
-            $race_type = $db_o->db_getsystemlabel("race_type", $fleet['racetype']);
-
-            // current lap
-            $laps = $fleet['currentlap'];
-
-            // elapsed time/status
-            $elapsed = r_getelapsedtime("secs", $params['timer-start'], time(), $fleet['startdelay']);
-            if ($params['timer-start']==0)
-            {
-                $fleet['elapsed'] = "00:00:00";
-            }
-            else
-            {
-                $fleet_prep = r_getstartdelay($fleet['start'], $params['start-scheme'], $params['start-interval']);
-                if ($elapsed > 0)
-                {
-                    $fleet['elapsed'] = gmdate("H:i:s", $elapsed);
-                    $fleet['status'] = "racing";
-                }
-                elseif ($elapsed >= (0 - $fleet_prep))
-                {
-                    $fleet['elapsed'] = "<span style='color: red;'>- ".gmdate("H:i:s", abs($elapsed))."</span>";
-                    $fleet['status'] = "start sequence";
-                }
-                else
-                {
-                    $fleet['elapsed'] = "00:00:00";
-                    $fleet['status'] = "not started";
-                }
-            }
-
-            $table.= <<<EOT
-            <tr class="lead">
-                <td class="truncate text-info" ><b>$fleetname</b></td>
-                <td style="text-align: center">{$fleet['start']}</td>
-                <td ><img class="img-responsive" src="../common/images/signal_flags/$warning_flag" alt="warning flag"></td>
-                <td style="text-align: center">$race_type</td>
-                <td style="text-align: center">{$fleet['entries']}</td>
-                <td style="text-align: center">$num_racing</td>
-                <td align="center">$setlaps_bufr</td>
-                <td style="text-align: center">$laps</td>
-                <td style="text-align: center">{$fleet['elapsed']}</td>
-                <td style="text-align: center">{$fleet['status']}</td>
-            </tr>
-EOT;
-        }
-        $table.=<<<EOT
-        <tr>       
-            <td colspan="6">&nbsp;</td>
-            <td class="text-center"><a class="btn btn-md btn-info btn-block" href="#setlapsModal" data-toggle="modal">Set Laps</a></td>
-            <td colspan="3">&nbsp;</td>
-        </tr>
-EOT;
-
-    }
-    else
-    {
-        $table = <<<EOT
-        <tr><td class="text-danger" colspan="8"><strong>Fleet information missing !</strong></td></tr>
-EOT;
-    }
-
-    $html =<<<EOT
-    <div class="row margin-top-20">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading clearfix" >
-                     <div class="row">
-                        <div class="col-md-9">
-                            <h3 class="text-primary">Fleet Status</h3>
-                        </div>
-                        <div class="col-md-3">
-                            <a class="btn btn-sm btn-primary pull-right" type="submit" onclick="location.reload();">
-                                <span class="glyphicon glyphicon-refresh"></span> Refresh</a>
-                        </div>
-                    </div> 
-                </div>
-                <div class="panel-body bg-default">
-                    <table id="racetable" class="table table-striped table-hover" style="position: relative; display: inline-block;">
-                        <thead class="text-info" >
-                            <th width="15%"><h4>fleet</h4></th>
-                            <th><h4 class="pull-right">start</h4></th>
-                            <th style="text-align: center" width="3%"><h4>&nbsp;</h4></th>
-                            <th style="text-align: center"><h4>scoring</h4></th>
-                            <th style="text-align: center"><h4>entries</h4></th>
-                            <th style="text-align: center"><h4>no. racing</h4></th>
-                            <th style="text-align: center"><h4>set laps</h4></th>
-                            <th style="text-align: center"><h4>current lap</h4></th>
-                            <th style="text-align: center"><h4>elapsed time</h4></th>
-                            <th style="text-align: center"><h4>status</h4></th>
-                        </thead>
-                        <tbody>
-                            $table
-                        </tbody>
-                    </table>
-                    
-                </div>
-            </div>
-        </div>
-    </div>
-EOT;
-    return $html;
-}
 
 // ---- internal function called by template race_status_display
 //function set_laps_control($eventid, $race, $maxlap, $style, $label)
@@ -611,38 +626,88 @@ EOT;
 //    return $html;
 //}
 
-function fm_race_setlaps($params)
+
+function fm_race_setlaps($params = array())
 {
-    $html = "";
-    if ($params['lapstatus']==0)
+    global $tmpl_o;
+
+    $data = array(
+        "mode"       => "setlaps",
+        "instruction"=> true,
+        "footer"     => true
+    );
+
+    $fields = array(
+        "instr_content" => "Set the number of laps for EACH fleet",
+        "footer_content" => "click the Set laps button to submit changes"
+    );
+
+    foreach ($params['fleet-data'] as $i=>$fleet)
     {
-        $html.= <<<EOT
-        <div class="alert alert-danger alert-dismissable" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
-            Please set the number of laps for ALL fleets.
-        </div>
-EOT;
+        // debug
+//        if ($i == 1)
+//        {$fleet['status'] = "notstarted";}
+//        elseif ($i == 2)
+//        {$fleet['status'] = "inprogress";}
+//        elseif ($i == 3)
+//        {$fleet['status'] = "finishing";}
+//        elseif ($i == 4)
+//        {$fleet['status'] = "allfinished";}
+
+        $data['fleets'][$i] = array(
+            "fleetname"  => ucwords($fleet['name']),
+            "fleetnum"   => $i,
+            "fleetlaps"  => $fleet['maxlap'],
+            "status"     => $fleet['status']
+        );
+
+        if ($fleet['status'] == "notstarted")
+        {
+                $data['fleets'][$i]['minvallaps'] = array("val"=>1, "msg"=>"cannot be less than 1 lap");
+        }
+        elseif ($fleet['status'] == "inprogress")
+        {
+            $minval = $fleet['currentlap'];
+            $data['fleets'][$i]['minvallaps'] = array("val"=>$minval, "msg"=>"cannot be less than $minval lap(s)");
+            $data['fleets'][$i]['maxvallaps'] = array("val"=>$fleet['maxlap'], "msg"=>"cannot be more than {$fleet['maxlap']} lap(s)");;
+        }
     }
 
-    foreach($params['fleet-data'] as $fleet)
-    {
-        ( isset($fleet['maxlap']) AND $fleet['maxlap']>0 ) ? $laps = "{$fleet['maxlap']}" : $laps = "";
-
-        $html.= <<<EOT
-        <div class="form-group" >
-             <label class="col-xs-5 control-label">
-                {$fleet['name']}
-             </label>
-             <div class="col-xs-3 inputfieldgroup">
-                 <input type="number" class="form-control" style="padding-right:10px;" name="laps[{$fleet['fleetnum']}]"
-                    value="$laps" placeholder="set laps" min="1"
-                    data-fv-greaterthan-message="The no. of laps must be greater than 0"
-                  />
-             </div>
-        </div>
-EOT;
-    }
-
-    return $html;
+    return $tmpl_o->get_template("fm_set_laps", $fields, $data);
 }
+
+//function fm_race_setlaps($params)
+//{
+//    $html = "";
+//    if ($params['lapstatus']==0)
+//    {
+//        $html.= <<<EOT
+//        <div class="alert alert-danger alert-dismissable" role="alert">
+//            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+//            <span aria-hidden="true">&times;</span></button>
+//            Please set the number of laps for ALL fleets.
+//        </div>
+//EOT;
+//    }
+//
+//    foreach($params['fleet-data'] as $fleet)
+//    {
+//        ( isset($fleet['maxlap']) AND $fleet['maxlap']>0 ) ? $laps = "{$fleet['maxlap']}" : $laps = "";
+//
+//        $html.= <<<EOT
+//        <div class="form-group" >
+//             <label class="col-xs-5 control-label">
+//                {$fleet['name']}
+//             </label>
+//             <div class="col-xs-3 inputfieldgroup">
+//                 <input type="number" class="form-control" style="padding-right:10px;" name="laps[{$fleet['fleetnum']}]"
+//                    value="$laps" placeholder="set laps" min="1"
+//                    data-fv-greaterthan-message="The no. of laps must be greater than 0"
+//                  />
+//             </div>
+//        </div>
+//EOT;
+//    }
+//
+//    return $html;
+//}

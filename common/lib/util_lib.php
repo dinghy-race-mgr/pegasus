@@ -245,20 +245,11 @@ function u_pick ($newvalue, $oldvalue)
 
 function u_conv_result($code, $code_type, $points)
 {
-    if (empty($code))
-    {
-        $result = "$points";
-    }
-    else
-    {
-        if ($code_type == "series")
-        {
-            $result = "$code";
-        }
-        else
-        {
-            $result = "$points ($code)";
-        }
+    $val = number_format((float)$points, 1, '.', '');
+    if (empty($code)) {
+        $result = "$val";
+    } else {
+        $code_type == "series" ? $result = "$code" : $result = "$val ($code)";
     }
 
     return $result;
@@ -508,10 +499,10 @@ function u_requestdbg($arg_list, $file, $function, $line, $inline=false)
 
 function u_startsyslog($scriptname, $app)
 {
-    global $loc;
-    $_SESSION['syslog'] = "{$loc}/logs/syslogs/sys_".date("Y-m-d").".log";       // e.g  log/sys_2014-08-08.log
-    //$_SESSION['dbglog'] = "{$loc}/logs/dbglogs/dbg_".date("Y-m-d_H-i").".log";  // e.g  log/debug_2014-08-08_14-50.log
-    $_SESSION['dbglog'] = "{$loc}/logs/dbglogs/debug.log";  // FIXME - temp while developing
+//    global $loc;
+//    $_SESSION['syslog'] = "{$loc}/logs/syslogs/sys_".date("Y-m-d").".log";       // e.g  log/sys_2014-08-08.log
+//    //$_SESSION['dbglog'] = "{$loc}/logs/dbglogs/dbg_".date("Y-m-d_H-i").".log";  // e.g  log/debug_2014-08-08_14-50.log
+//    $_SESSION['dbglog'] = "{$loc}/logs/dbglogs/debug.log";  // FIXME - temp while developing
 
     u_writelog("$app START: $scriptname --------------------------", 0);
 }
@@ -519,10 +510,8 @@ function u_startsyslog($scriptname, $app)
 
 function u_starteventlogs($scriptname, $eventid, $mode)
 {
-    global $loc;
-    
-    $_SESSION["e_$eventid"]['eventlog'] = "./logs/eventlogs/event_$eventid.log";     // setup event log e.g  event_907.log
-    u_writelog("initialising event: $scriptname --- [eventid: $eventid] ", 0);              // add system log entry
+    $_SESSION["e_$eventid"]['eventlog'] = "./logs/event_$eventid.log";     // setup event log e.g  event_907.log
+    u_writelog("initialising event: $scriptname --- [eventid: $eventid] ", 0);       // add system log entry
     u_writelog(date("Y-m-d")." EVENT START: $scriptname --- [eventid: $eventid mode: $mode] ", $eventid);
 }
 
@@ -757,13 +746,13 @@ function u_getfleetcontext($eventid, $page)
 function u_dropdown_resultcodes($codes, $detail, $link)
 {
     $bufr = <<<EOT
-    <li><a href="$link&code=" > -- clear code --</a></li>
+    <li><a href="{$link}&code=" > -- clear code --</a></li>
     <li role="separator" class="divider" style="padding: 0px"></li>
 EOT;
     foreach ($codes as $code)
     {       
         $bufr.= <<<EOT
-            <li><a href="$link&code={$code['code']}" ><b>{$code['code']}</b>: {$code["$detail"]}</a></li>
+            <li><a href="{$link}&code={$code['code']}"><b>{$code['code']}</b>: {$code["$detail"]}</a></li>
 EOT;
     }
    
@@ -1123,10 +1112,19 @@ EOT;
     return $bufr;
 }
 
-
-function ftpFiles($loc, $protocol, $ftp_env, $files)
+function u_folder_exist($folder)
 {
-    echo "<pre>".print_r($ftp_env,true)."</pre>";
+    // Get canonicalized absolute pathname
+    $path = realpath($folder);
+
+    // If it exist, check if it's a directory
+    return ($path !== false AND is_dir($path)) ? $path : false;
+}
+
+
+function u_ftpFiles($protocol, $ftp_env, $files)
+{
+    //echo "<pre>".print_r($ftp_env,true)."</pre>";
 
     error_reporting(0);  //error_reporting(E_ERROR | E_WARNING | E_PARSE);
     error_reporting(E_ERROR | E_WARNING | E_PARSE);

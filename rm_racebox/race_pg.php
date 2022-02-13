@@ -51,9 +51,7 @@ $rota_o = new ROTA($db_o);
 $event = $event_o->get_event_byid($eventid);
 
 include ("./include/race_ctl.inc");
-include("./templates/growls.php");                      // FIXME why is this here - this is not a template as such
-
-//echo "<pre>".print_r($_SESSION,true)."</pre>";
+include("./templates/growls.php");                      // FIXME why is this here - this is not a template as such - should be in include
 
 $fleet_data = array();
 $flag_data = array();
@@ -62,7 +60,6 @@ for ($fleetnum=1; $fleetnum<=$_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum+
     $fleet_data["$fleetnum"] = $_SESSION["e_$eventid"]["fl_$fleetnum"];
     $flag_data["$fleetnum"] = $_SESSION["e_$eventid"]["fl_$fleetnum"]['warnsignal'];
 }
-//echo "<pre>".print_r($flag_data,true)."</pre>";
 
 //  check laps status
 $laps_set = checklapstatus($eventid);
@@ -106,7 +103,7 @@ else
     $params = array(
         "eventid"        => $eventid,
         "timer-start"    => $_SESSION["e_$eventid"]['timerstart'],       // time watch started
-        "fleet-data"     => $event_o->get_fleetstatus($eventid),    // current fleet status
+        "fleet-data"     => $event_o->get_fleetstatus($eventid),         // current fleet status
         "flag-data"      => $flag_data,
         "pursuit"        => $_SESSION["e_$eventid"]['pursuit'],
         "start-scheme"   => $_SESSION["e_$eventid"]['rc_startscheme'],
@@ -114,13 +111,13 @@ else
     );
     $lbufr_mid = $tmpl_o->get_template("race_status_display", array(), $params);
 
-    // full laps control (will not be accessible if a pursuit race
-    $params = array(
-        "lapstatus" => $laps_set[0],
-        "fleet-data" => $fleet_data,
-    );
-    $mdl_setlaps['fields']['body'] = $tmpl_o->get_template("fm_race_setlaps", array(), $params);
-    $lbufr_bot = $tmpl_o->get_template("modal", $mdl_setlaps['fields'], $mdl_setlaps);
+    // full laps control (not required if a pursuit race)
+    if (!$_SESSION["e_$eventid"]['pursuit'])
+    {
+        $mdl_setlaps['fields']['body'] = $tmpl_o->get_template("fm_race_setlaps", array(), array("fleet-data"=>$fleet_data));
+        $lbufr_bot = $tmpl_o->get_template("modal", $mdl_setlaps['fields'], $mdl_setlaps);
+    }
+
 }
 
 // ----- right hand panel --------------------------------------------------------------------

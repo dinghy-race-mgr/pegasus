@@ -85,7 +85,7 @@ $mdl_addrace = array(
         "action"      => "pickrace_sc.php?pagestate=addrace",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "add race",
         "footer"      => ""

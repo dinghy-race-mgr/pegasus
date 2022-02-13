@@ -2,7 +2,7 @@
 /* class for standard script functions
 
 */
-
+/*
 class SCRIPT
 {
 //    private $db;
@@ -134,3 +134,4 @@ EOT;
     }
 }
 
+*/

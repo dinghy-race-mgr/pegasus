@@ -65,10 +65,15 @@ if ($events)
         $racecfg   = $event_o->event_getracecfg($event['event_format'], $eventid);       // get race format
         $fields    = configurestate($eventid, $event['event_status'] );                  //configure race based on status
 
+        // set event details
         $fields['eventid']   = $eventid;
         $fields['eventname'] = $event['event_name'];
+
         empty($racecfg['race_name']) ? $fields['raceformat'] = "unknown race format!" : $fields['raceformat'] = $racecfg['race_name'];
+
         $fields['oodname']   = $rota_o->get_duty_person($eventid, "ood_p");
+        if (empty($fields['oodname'])) { $fields['oodname'] = $event['event_ood'] ; }
+
         $fields['starttime'] = $event['event_start'];
         empty($event['tide_time']) ? $fields['tidetime'] = "" : $fields['tidetime'] = " [ HW {$event['tide_time']} {$event['tide_height']}m ]";
 
@@ -159,6 +164,8 @@ $params = array(
 );
 
 echo $tmpl_o->get_template("two_col_page", $fields, $params);
+
+echo "<pre>CURRENT SESSION: <br>".print_r($_SESSION,true)."</pre>";
 
 
 // ----- page specific functions ---------------------------------------------------------------

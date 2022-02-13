@@ -26,9 +26,8 @@ require_once ("{$loc}/common/lib/rm_lib.php");
 
 u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and sets error reporting
 
-// initialising language
-//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
+// app classes
 require_once ("{$loc}/common/classes/db_class.php"); 
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
@@ -50,7 +49,7 @@ $fleet     = u_checkarg("fleet", "set", "", "");
 if ($eventid AND $pagestate)
 {
     $db_o    = new DB;
-    if ($fleet) { $_SESSION["e_$eventid"]['fleet_context'] = "fleet$fleet"; }
+    if ($fleet) { $_SESSION["e_$eventid"]['fleet_context'] = "fleet$fleet"; }  // set context
     $event_o = new EVENT($db_o);
     $race_o  = new RACE($db_o, $eventid);
     if ($_SESSION['racebox_timer_bunch'])
@@ -78,23 +77,24 @@ if ($eventid AND $pagestate)
             empty($_REQUEST['pn'])    ? $pn = 0      : $pn = $_REQUEST['pn'];
             empty($_REQUEST['etime']) ? $last_et = 0 : $last_et = $_REQUEST['etime'];
 
+            // do checks before registering new lap time
             check_double_click($eventid, $entryid, $_SERVER['REQUEST_TIME']); # return to timer page if double click of same boat
             check_race_started($eventid, $start, $_SERVER['REQUEST_TIME']);   # return to time page if race not started
 
-            $status = $race_o->entry_time($entryid, $fleet, $lap, $pn, $_SERVER['REQUEST_TIME'], $last_et, false);
+            $status = $race_o->entry_time($entryid, $fleet, $lap, $pn, $_SERVER['REQUEST_TIME'], $last_et, false);  // log lap time
+            // return status can be time|finish|first_finish|force_finish
+
             if ($status == "time" OR $status == "finish" OR $status == "first_finish")
             {
                 $newlap = $lap + 1;
-                $_SESSION["e_$eventid"]['result_valid']   = false;
-                $_SESSION["e_$eventid"]['result_publish'] = false;
-                $_SESSION["e_$eventid"]['lastclick'] = array(
-                    "entryid"   => $entryid,
-                    "clicktime" => $_SERVER['REQUEST_TIME'],
-                    "boat"      => $boat
-                );
 
-                $_SESSION["e_$eventid"]['lastclick']['clicktime'] = $_SERVER['REQUEST_TIME'];
-                update_racestate($eventid, $fleet, $status, $newlap);  # update racestate and session
+                $_SESSION["e_$eventid"]['result_valid']   = false;    // mark results as requiring update
+                $_SESSION["e_$eventid"]['result_publish'] = false;    // mark publishing as requiring refresh
+
+                $_SESSION["e_$eventid"]['lastclick'] = array("entryid" => $entryid, "clicktime" => $_SERVER['REQUEST_TIME'], "boat" => $boat);
+
+                // FIXME  - shouldn't be necesary as racestate catchall will get this
+                //update_racestate_lap($eventid, $fleet, $status, $newlap);  # update racestate and session
 
                 if ($status == "time")
                 {
@@ -102,7 +102,7 @@ if ($eventid AND $pagestate)
                 }
                 elseif ($status == "finish")
                 {
-                    $msg = "lap $newlap: $boat finished";
+                    $msg = "lap $newlap: $boat -- finished";
                     if ($_SESSION['timer_options']['growl_finish'] == "on")
                     {
                         u_growlSet($eventid, $page, $g_timer_finish, array($boat));
@@ -110,7 +110,7 @@ if ($eventid AND $pagestate)
                 }
                 elseif ($status == "first_finish")
                 {
-                    $msg = "lap $newlap: $boat finished";
+                    $msg = "lap $newlap: $boat -- first finished";
                     u_growlSet($eventid, $page, $g_timer_firstfinish, array($boat));
                 }
                 u_writelog($msg, $eventid);
@@ -168,8 +168,12 @@ if ($eventid AND $pagestate)
                     "clicktime" => $_SERVER['REQUEST_TIME'],
                     "boat"      => $boat
                 );
-                update_racestate($eventid, $fleet, $status, $newlap);           // update racestate and session
+
+                // FIXME - this shouldn't be necessary as it will be handled by catchall
+                //update_racestate_lap($eventid, $fleet, $status, $newlap);           // update racestate and session
+
                 u_writelog("lap $newlap: $boat finished ", $eventid);
+
                 if ($_SESSION['timer_options']['growl_finish'] == "on")
                 {
                     u_growlSet($eventid, $page, $g_timer_finish, array($boat));
@@ -186,11 +190,15 @@ if ($eventid AND $pagestate)
     
     elseif  ($pagestate == "setcode")
     {
-        $setcode = set_code($eventid, $_REQUEST);
-
-        if($setcode !== true)
+        if (!empty($_REQUEST['fleet']))
         {
-            u_growlSet($eventid, $page, $g_timer_setcodefailed, array($_REQUEST['boat'], $setcode));
+            $setcode = set_code($eventid, $_REQUEST);
+
+            if ($setcode !== true) { u_growlSet($eventid, $page, $g_timer_setcodefailed, array($_REQUEST['boat'], $setcode)); }
+        }
+        else
+        {
+            error_log("timer_sc.php/pagestate=setcode : fleet argument not set", 3, $_SESSION['syslog']);
         }
     }
     
@@ -370,8 +378,7 @@ if ($eventid AND $pagestate)
                 }
             }
         }
-        echo "<pre>".print_r($_SESSION["e_$eventid"]['growl'],true)."</pre>";
-        // FIXME need to check these growl messages are correct
+
         if ($lapsetfail)
         {
             u_growlSet($eventid, $page, $g_race_lapset_fail, array($growlmsg));
@@ -440,13 +447,17 @@ if ($eventid AND $pagestate)
         u_growlSet($eventid, $page, $g_sys_invalid_pagestate, array($pagestate, $page)); //
     }
 
+    // check race state / update session
+    $race_o->racestate_updatestatus_all($_SESSION["e_{$this->eventid}"]['rc_numfleets'], $page);
+
     // return to timer page
     if (!$stop_here) { header("Location: timer_pg.php?eventid=$eventid"); exit(); }
 }
 else
 {
     //FIXME - needs to be a way to get back
-    u_exitnicely($scriptname, $eventid,"sys005",$lang['err']['exit-action']);
+    u_exitnicely($scriptname, $eventid,"0","Close this window and try to restart the application.  
+    If the problems continue please report the error to your system administrator");
 }
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------
@@ -490,40 +501,38 @@ function shorten_fleet($eventid, $fleetnum, $new_finish_lap = 0)
 }
 
 
-function update_racestate($eventid, $fleetnum, $state, $lap)
-{
-    // FIXME - this doesn't seem to handle the allfinished state
-
-    global $race_o;
-
-    $update = array();
-      
-    if ($state == "time" OR $state == "finish" OR $state == "first_finish" OR $state == "force_finish")
-    {
-        if ($lap > $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'])   # check if current lap for this fleet has changed
-        {
-            $update['currentlap'] = $lap;
-            $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] = $lap;
-        }
-        if ($state == "finish" OR $state == "first_finish")                 # check if fleet status has changed
-        {
-            if ($_SESSION["e_$eventid"]["fl_$fleetnum"]['status'] == "inprogress")
-            {
-                $update['status'] = "finishing";
-                $_SESSION["e_$eventid"]["fl_$fleetnum"]['status'] = "finishing";
-            }
-        }
-        elseif($state == "force_finish")                                    # don't change status if a force finisher'
-        {
-
-        }
-    }
-    if (!empty($update))
-    {        
-        //$check = $race_o->racestate_update($update, array("eventid"=>"$eventid", "race"=>"$fleetnum"));
-        $check = $race_o->racestate_update($update, array("eventid"=>"$eventid", "fleet"=>"$fleetnum"));
-    }    
-}
+//function update_racestate_lap($eventid, $fleetnum, $state, $lap)
+//{
+//    global $race_o;
+//
+//    $update = array();
+//
+//    if ($state == "time" OR $state == "finish" OR $state == "first_finish" OR $state == "force_finish")
+//    {
+//        if ($lap > $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'])   // check if current lap for this fleet has changed
+//        {
+//            $update['currentlap'] = $lap;
+//            $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] = $lap;
+//        }
+//
+//        if ($state == "finish" OR $state == "first_finish")                 // check if fleet status has changed - not changed if force_finish
+//        {
+//            if ($_SESSION["e_$eventid"]["fl_$fleetnum"]['status'] == "inprogress")  // set race state to finishing
+//            {
+//                $update['status'] = "finishing";
+//                $_SESSION["e_$eventid"]["fl_$fleetnum"]['status'] = "finishing";
+//            }
+//        }
+//    }
+//
+//    // check if boats still racing in this fleet
+//    if($race_o->fleet_race_stillracing($fleetnum)) { $update['status'] = "allfinished"; }
+//
+//    if (!empty($update))
+//    {
+//        $check = $race_o->racestate_update($update, array("eventid"=>"$eventid", "fleet"=>"$fleetnum"));
+//    }
+//}
 
 function check_double_click($eventid, $entryid, $server_time)       
 // return to timer page if double click of same boat within 5 seconds

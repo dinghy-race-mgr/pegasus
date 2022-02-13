@@ -173,8 +173,6 @@ EOT;
 function infringe($params)
 {
 
-
-
     $eventid = $params['eventid'];
     $startnum= $params['startnum'];
 
@@ -190,11 +188,11 @@ function infringe($params)
             if (($drop_dirn == "") and ($i > $params['entries']/2) and ($i > 6) ) { $drop_dirn = "dropup"; }
 
             $boat = "{$entry['class']}-{$entry['sailnum']}";
-            $link = "start_infringements_pg.php?eventid=$eventid&pagestate=setcode&startnum=$startnum&entryid={$entry['id']}
-            &boat=$boat&racestatus={$entry['status']}&declaration={$entry['declaration']}&lap={$entry['lap']}&finishlap={$entry['finishlap']}";
+            $link = <<<EOT
+start_infringements_pg.php?eventid=$eventid&pagestate=setcode&startnum=$startnum&fleet={$entry['fleet']}&entryid={$entry['id']}
+&boat=$boat&racestatus={$entry['status']}&declaration={$entry['declaration']}&lap={$entry['lap']}&finishlap={$entry['finishlap']}
+EOT;
             $code_link = get_code($entry['code'], $link, "startcodes", $drop_dirn);
-
-
 
             $entry_bufr.= <<<EOT
             <tr class = "table-data">

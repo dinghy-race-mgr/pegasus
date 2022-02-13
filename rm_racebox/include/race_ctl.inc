@@ -83,7 +83,7 @@ $mdl_change = array(
         "action"      => "race_sc.php?eventid=$eventid&pagestate=change",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "change details",
         "footer"      => "",
@@ -174,7 +174,7 @@ $mdl_message = array(
         "action"      => "race_sc.php?eventid=$eventid&pagestate=message",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "send message",
         "footer"      => ""
@@ -219,7 +219,7 @@ $mdl_pursuit = array(
         "action"      => "rbx_ex_pursuitstart.php?eventid=$eventid&print=false",
         "target"      => "_BLANK",
         "onsubmit"    => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "close",
         "reset-lbl"   => "",
         "submit-lbl"  => "get start times",
         "footer"      => ""
@@ -398,7 +398,7 @@ $mdl_unabandon = array(
         "action"      => "race_sc.php?eventid=$eventid&eventname=$eventname&pagestate=unabandon&prevstatus={$_SESSION["e_$eventid"]['ev_prevstatus']}",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "no thanks",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "reset abandoned race",
         "footer"      => ""
@@ -533,7 +533,7 @@ $mdl_setlaps = array(
         "action"      => "race_sc.php?eventid=$eventid&pagestate=setalllaps",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "set laps",
         "footer"      => ""

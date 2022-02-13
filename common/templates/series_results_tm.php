@@ -277,7 +277,7 @@ EOT;
         $htm = "";
         foreach ($fleet_block as $fleet_bufr)
         {
-            $htm.=$fleet_bufr;
+            $htm.= "<div style='break-inside: avoid'>".$fleet_bufr."</div>";
         }
         $body = $header_bufr.$event_bufr.$htm.$info_bufr.$footer_bufr;
     }

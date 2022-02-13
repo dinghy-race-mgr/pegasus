@@ -49,10 +49,7 @@ if ($eventid AND $pagestate)
 
     if ($pagestate == "starttimer")
     {        
-        $status = $event_o->event_updatestatus($eventid, "running");       // update event status
-        $race_o->race_times_init();                                        // reset timings in t_race, t_lap and t_finish
-        $timer_o->start($_SERVER['REQUEST_TIME']);                         // start timer
-
+        // if option for collect late entries is set - add them now
         if ($_SESSION['racebox_entry_sweep'])   // check for last minute entries that may not be loaded
         {
             $entry_o = new ENTRY($db_o, $eventid);
@@ -100,6 +97,14 @@ if ($eventid AND $pagestate)
                 }
             }
         }
+
+        // process start time data
+        $status = $event_o->event_updatestatus($eventid, "running");       // update event status
+
+        $race_o->race_times_init();                                        // reset timings in t_race, delete relevant t_lap and t_finish
+
+        $timer_o->start($_SERVER['REQUEST_TIME']);                         // start timer - updating t_event, t_racestate and session
+
     }
     
     elseif ($pagestate == "stoptimer")
@@ -193,7 +198,11 @@ if ($eventid AND $pagestate)
 //            u_growlSet($eventid, $page, $g_start_fleetset_fail, array($fleetname));
 //        }
 //    }
-        
+
+    // check race state / update session
+    $race_o->racestate_updatestatus_all($_SESSION["e_{$this->eventid}"]['rc_numfleets'], $page);
+
+    // return to start page
     if (!$stop_here){ header("Location: start_pg.php?eventid=$eventid"); exit(); }    // back to entries page
        
 }
@@ -206,6 +215,8 @@ else
 // ------------- FUNCTIONS ---------------------------------------------------------------------------
 
 // FIXME this is a copy of a function in entries_sc - its untested in this context and needs to be in a lib or class
+// FIXME the one in entries_sc needs to be in class or library and this one removed
+// FIXME only used here to catch late entries
 function enter_boat($entry, $eventid, $type)
 {
     global $entry_o, $db_o;
@@ -225,7 +236,7 @@ function enter_boat($entry, $eventid, $type)
     {                                              // ok to load entry
         $entry = array_merge($entry, $alloc);
         $i = $entry['fleet'];
-        $result = $entry_o->set_entry($entry, $_SESSION["e_$eventid"]["fl_$i"]['pytype']);
+        $result = $entry_o->set_entry($entry, $_SESSION["e_$eventid"]["fl_$i"]['pytype'], $_SESSION["e_$eventid"]["fl_$i"]['maxlap']);
         // debug:u_writedbg(u_check($result, "LOAD"),__FILE__,__FUNCTION__,__LINE__);  // debug:
         if ($result['status'])
         {

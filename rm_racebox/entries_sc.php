@@ -21,7 +21,7 @@ require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/boat_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/comp_class.php");
-require_once ("{$loc}/common/classes/racestate_class.php");
+require_once("{$loc}/common/classes/race_class.php");
 
 
 //include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");      // language file
@@ -38,7 +38,9 @@ include ("./templates/growls.php");
 if ($eventid)
 {
     $db_o = new DB;
+    $event_o = new EVENT($db_o);
     $entry_o = new ENTRY($db_o, $eventid);
+    $race_o = new RACE($db_o, $eventid);
 
     // ------- per entry functions --------------------------------------------------------------------------
     if ($entryid)   // deal with in table button functions
@@ -156,6 +158,12 @@ if ($eventid)
                 }
             }
 
+//            // update t_racestate for each fleet
+//            for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
+//            {
+//                $update = $race_o->racestate_update(array("entries"=>$_SESSION["e_$eventid"]["fl_$i"]['entries']), array("fleet"=>$i));
+//            }
+
             u_growlSet($eventid, $page, $g_entries_report, array($entries_found, $entered, $entries_replaced, $entries_deleted));
             $delta = $entries_found - ($entered + $entries_deleted + $entries_replaced);
             if ($delta != 0) {
@@ -166,7 +174,6 @@ if ($eventid)
         {
             u_growlSet($eventid, $page, $g_entries_none);
         }
-        exit("stopping after signon");
     }
     
     // loads competitors marked as regular
@@ -192,6 +199,15 @@ if ($eventid)
                     $entries_replaced++;
                 }
             }
+
+            // FIXME - shouldn't be necessary
+//            // update t_racestate for each fleet
+//            for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
+//            {
+//                $update = $race_o->racestate_update(array("entries"=>$_SESSION["e_$eventid"]["fl_$i"]['entries']), array("fleet"=>$i));
+//            }
+
+
             if ($entered != $entries_found) {
                 u_growlSet($eventid, $page, $g_entries_failed, array($entries_found - $entered));
             } else {
@@ -225,6 +241,13 @@ if ($eventid)
                     $entries_replaced++;
                 }
             }
+
+            // FIXME shouldn't be necessary
+//            // update t_racestate for each fleet
+//            for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
+//            {
+//                $update = $race_o->racestate_update(array("entries"=>$_SESSION["e_$eventid"]["fl_$i"]['entries']), array("fleet"=>$i));
+//            }
 
             if ($entered != $entries_found) {
                 u_growlSet($eventid, $page, $g_entries_failed, array($entries_found - $entered));
@@ -321,9 +344,11 @@ if ($eventid)
         u_growlSet($eventid, $page, $g_invalid_pagestate, array($pagestate, $page));
     }
 
-    //echo "<pre>END: ".print_r($_SESSION["e_$eventid"],true)."</pre>";
-    header("Location: entries_pg.php?eventid=$eventid");    // back to entries page
-    exit();
+    // check race state / update session
+    $race_o->racestate_updatestatus_all($_SESSION["e_{$this->eventid}"]['rc_numfleets'], $page);
+
+    // return to page
+    if (!$stop_here) { header("Location: entries_pg.php?eventid=$eventid"); exit(); }   // back to entries page
 }
 else
 {
@@ -333,9 +358,8 @@ else
 // ------------- FUNCTIONS ---------------------------------------------------------------------------
 function enter_boat($entry, $eventid, $type)
 {
-    global $entry_o, $db_o;
+    global $entry_o, $event_o, $db_o;
 
-    $event_o = new EVENT($db_o);
     $boat_o = new BOAT($db_o);
     $classcfg = $boat_o->boat_getdetail($entry['classname']);
     $fleets = $event_o->event_getfleetcfg($_SESSION["e_$eventid"]['ev_format']);
@@ -350,7 +374,7 @@ function enter_boat($entry, $eventid, $type)
     {                                              // ok to load entry
         $entry = array_merge($entry, $alloc);
         $i = $entry['fleet'];
-        $result = $entry_o->set_entry($entry, $_SESSION["e_$eventid"]["fl_$i"]['pytype']);
+        $result = $entry_o->set_entry($entry, $_SESSION["e_$eventid"]["fl_$i"]['pytype'], $_SESSION["e_$eventid"]["fl_$i"]['maxlap']);
         // debug:u_writedbg(u_check($result, "LOAD"),__FILE__,__FUNCTION__,__LINE__);  // debug:
         if ($result['status'])
         {

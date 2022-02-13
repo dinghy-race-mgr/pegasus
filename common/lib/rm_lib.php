@@ -44,13 +44,13 @@ function r_initialiseevent($mode, $eventid)
     $_SESSION['timercodes']  = $db_o->db_getresultcodes("timer");
     $_SESSION['resultcodes'] = $db_o->db_getresultcodes("result");
 
-    // setup where list of codes to continue timing
-    // FIXME not sure this is used
-    $codelist = $db_o->db_getresultcodes("timing");
-    $_SESSION['timercodelist'] = "";
-    foreach ($codelist as $row) {
-        $_SESSION['timercodelist'] .= "'{$row['code']}',";
-    }
+//    // setup where list of codes to continue timing
+//    // FIXME not sure this is used
+//    $codelist = $db_o->db_getresultcodes("timing");
+//    $_SESSION['timercodelist'] = "";
+//    foreach ($codelist as $row) {
+//        $_SESSION['timercodelist'] .= "'{$row['code']}',";
+//    }
 
     // get event details
     $event_rs = $event_o->get_event_byid($eventid);
@@ -97,43 +97,56 @@ function r_initialiseevent($mode, $eventid)
             // add fleet format info into event session
             if ($fleetcfg_rs)
             {
-                foreach ($fleetcfg_rs as $fleet) {
+                foreach ($fleetcfg_rs as $fleet)
+                {
                     $i = $fleet['fleet_num'];
 
                     // create racestate information for each fleet in init or reset
-                    if ($mode == "init" or $mode == "reset")
-                    {
-                        r_initfleetdb($db_o, $eventid, $i, $fleet, $racecfg_rs['start_scheme'], $racecfg_rs['start_interval']);
-                    }
+                    $rs_db = r_initfleetdb($mode, $eventid, $i, $fleet, $racecfg_rs['start_scheme'], $racecfg_rs['start_interval']);
+
 
                     // add fleet information to session
-                    r_initfleetsession($db_o, $eventid, $i, $fleet);
+                    $rs_sess = r_initfleetsession($eventid, $i, $fleet);
+
+                    if (!$rs_db or !$rs_sess) { $status = "fleetinit_error" ;}
+
                 }
                 // now determine if timer has been started.
-                //$_SESSION["e_$eventid"]['timerstart'] = 0;
                 if (!empty($event_rs['timerstart']))  // race has already started
                 {
                     $_SESSION["e_$eventid"]['timerstart'] = $event_rs['timerstart'];
                 }
-            } else {
-                $status = "fleet_error";
             }
-        } else {
-            $status = "race_error";
+            else
+            {
+                $status = "fleetcfg_error";
+            }
+        }
+        else
+        {
+            $status = "racecfg_error";
         }
     }
 
+    echo "<pre>status = |$status|</pre>";
     if ($status == "ok") {
-        // check event status - if scheduled, update status to selected in database and session
-        if ($_SESSION["e_$eventid"]['ev_status'] == "scheduled")
+        // set status to selected in database and session if mode is init or reset
+        if ($mode == "init" or $mode == "reset")
         {
             $eventchange = $event_o->event_updatestatus($eventid, "selected");
             $_SESSION["e_$eventid"]['ev_status'] = "selected";
         }
     }
+    else
+    {
+        u_exitnicely("rm_lib/r_initialiseevent", $eventid, 0, "Failed to initialise application correctly [fail due to  - please report this problem to your system administrator");
+    }
        
     // disconnect database
-    $db_o->db_disconnect(); 
+    $db_o->db_disconnect();
+
+//    echo "<pre>SESSION AFTER INIT<br>".print_r($_SESSION,true)."</pre>";
+//    exit("stopping r_initialiseevent ");
     
     return $status;
 }
@@ -169,7 +182,7 @@ function r_seteventinsession($mode, $eventid, $event, $series_rs, $ood_rs = arra
     // initialised variables
     if ($mode == "init" or $mode == "reset")
     {
-        $_SESSION["e_$eventid"]['timerstart']     = 0;                        // actual start time as timestamp (not reset if rejoin)
+        $_SESSION["e_$eventid"]['timerstart'] = 0;                        // actual start time as timestamp (not reset if rejoin)
     }
 
     $_SESSION["e_$eventid"]['ev_prevstatus']  = "";                       // status before current status for this event
@@ -199,6 +212,7 @@ function r_seteventinsession($mode, $eventid, $event, $series_rs, $ood_rs = arra
     // last click time
     $_SESSION["e_$eventid"]['lastclick']['entryid'] = 0;
     $_SESSION["e_$eventid"]['lastclick']['clicktime'] = 0;
+
 }
 
 
@@ -221,8 +235,11 @@ function r_setraceinsession($eventid, $racecfg, $fleetnum)
 
 }
 
-function r_initfleetsession($db_o, $eventid, $fleetnum, $fleet)
+function r_initfleetsession($eventid, $fleetnum, $fleet)
 {
+    // sets fleet information and racestate data into session
+    global $db_o;
+
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['fleetnum']     = $fleetnum;
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['startnum']     = $fleet['start_num'];
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['code']         = $fleet['fleet_code'];
@@ -250,72 +267,70 @@ function r_initfleetsession($db_o, $eventid, $fleetnum, $fleet)
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['minskill']     = $fleet['min_skill'];
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxskill']     = $fleet['max_skill'];
 
-    // extend fleet session data with current t_racestate data
-    $fleetdata = $db_o->db_get_row("SELECT * FROM t_racestate WHERE eventid=$eventid AND fleet=$fleetnum");
+    // retrieve current racestate values
+    $sql = "SELECT * FROM t_racestate WHERE eventid = $eventid and fleet = $fleetnum order by fleet ASC";
+    $fleetdata = $db_o->db_get_row($sql);
 
-    // set fleet details
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['startdelay'] = $fleetdata['startdelay'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']  = strtotime($fleetdata['starttime']);
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxlap']     = $fleetdata['maxlap'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] = $fleetdata['currentlap'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['entries']    = $fleetdata['entries'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['status']     = $fleetdata['status'];
+//    echo "<pre>$sql</pre>";
+//    echo "<pre>RACESTATE FOR F$fleetnum<br>".print_r($fleetdata,true)."</pre>";
+//    exit("stopping r_initfleetsession");
 
-    // set start details
-    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['startdelay'] = $fleetdata['startdelay'];
-    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['starttime']  = $fleetdata['starttime'];
+    if (!empty($fleetdata))
+    {
+        $status = true;
 
-    return;
+        // set fleet details
+        $_SESSION["e_$eventid"]["fl_$fleetnum"]['startdelay'] = $fleetdata['startdelay'];
+        $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']  = strtotime($fleetdata['starttime']);
+        $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxlap']     = $fleetdata['maxlap'];
+        $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] = $fleetdata['currentlap'];
+        $_SESSION["e_$eventid"]["fl_$fleetnum"]['entries']    = $fleetdata['entries'];
+        $_SESSION["e_$eventid"]["fl_$fleetnum"]['status']     = $fleetdata['status'];
+
+        // set start details
+        $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['startdelay'] = $fleetdata['startdelay'];
+        $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['starttime']  = $fleetdata['starttime'];
+    }
+    else
+    {
+        $status = false;
+    }
+
+    return $status;
 }
 
-function r_initfleetdb($db_o, $eventid, $fleetnum, $fleet, $start_scheme, $start_interval)
+function r_initfleetdb($mode, $eventid, $fleetnum, $fleet, $start_scheme, $start_interval)
 {
-    // only called if initialising or reset - set values into t_racestate  (doesn't update database if we are rejoining)
+//    If mode is init or reset intialises the racestate record for this fleet
+//    Sets racestate current values into session
 
-    $data = array(
-        "fleet"       => $fleetnum,
-        "racename"   => $fleet['fleet_name'],
-        "start"      => $fleet['start_num'],
-        "eventid"    => $eventid,
-        "racetype"   => $fleet['scoring'],
-        "startdelay" => r_getstartdelay($fleet['start_num'], $start_scheme, $start_interval),
-        "starttime"  => gmdate("H:i:s", 0),
-        "currentlap" => 0,
-        "entries"    => 0,
-        "status"     => "notstarted",
-    );
+    global $db_o;
+    $status = true;
 
-    $_SESSION["e_$eventid"]['pursuit'] ? $data['maxlap'] = 1000 : $data['maxlap'] = $fleet['defaultlaps'];
+    if ($mode == "init" or $mode == "reset")
+    {
+        $data = array(
+            "fleet"       => $fleetnum,
+            "racename"   => $fleet['fleet_name'],
+            "start"      => $fleet['start_num'],
+            "eventid"    => $eventid,
+            "racetype"   => $fleet['scoring'],
+            "startdelay" => r_getstartdelay($fleet['start_num'], $start_scheme, $start_interval),
+            "starttime"  => gmdate("H:i:s", 0),
+            "currentlap" => 0,
+            "entries"    => 0,
+            "status"     => "notstarted",
+        );
 
-    $insert_rs = $db_o->db_insert("t_racestate", $data);
-    
-    // extend fleet session data with current t_racestate data
-    //$fleetdata = $db_o->db_get_row("SELECT * FROM t_racestate WHERE eventid=$eventid AND fleet=$fleetnum");
-    
-    // set fleet details into session
-//    $_SESSION["e_$eventid"]["fl_$fleetnum"]['startdelay'] = $fleetdata['startdelay'];
-//    $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']  = $fleetdata['starttime'];
-//    $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxlap']     = $fleetdata['maxlap'];
-//    $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] = $fleetdata['currentlap'];
-//    $_SESSION["e_$eventid"]["fl_$fleetnum"]['entries']    = $fleetdata['entries'];
-//    $_SESSION["e_$eventid"]["fl_$fleetnum"]['status']     = $fleetdata['status'];
+        // set initial laps according to whether a pursuit race or a fleet configuration
+        $_SESSION["e_$eventid"]['pursuit'] ? $data['maxlap'] = 1000 : $data['maxlap'] = $fleet['defaultlaps'];
 
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['startdelay'] = $data['startdelay'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']  = $data['starttime'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxlap']     = $data['maxlap'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] = $data['currentlap'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['entries']    = $data['entries'];
-    $_SESSION["e_$eventid"]["fl_$fleetnum"]['status']     = $data['status'];
-    
-    // set start details
-//    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['startdelay'] = $fleetdata['startdelay'];
-//    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['starttime']  = $fleetdata['starttime'];
+        // add initial data settings to t_racestate
+        $status = $db_o->db_insert("t_racestate", $data);
+    }
 
-    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['startdelay'] = $data['startdelay'];
-    $_SESSION["e_$eventid"]["st_{$fleet['start_num']}"]['starttime']  = $data['starttime'];
-    return $insert_rs;
+    return $status;
 }
-
 
 
 //function r_clearfleetdb($db, $eventid)
@@ -362,53 +377,36 @@ function r_getelapsedtime ($mode, $origin, $clock, $startdelay, $delta=0)
 
 function r_decoderacestatus($currentstatus)
 {
-    // FIXME change this an associative array
-    if (in_array($currentstatus, array("completed","cancelled","abandoned")))
-    {
-        return "complete";
-    }
-    elseif(in_array($currentstatus, array("running","sailed")))
-    {
-        return "in progress";
-    }
-    elseif(in_array($currentstatus, array("selected")))
-    {
-        return "not started";
-    }
-    elseif(in_array($currentstatus, array("scheduled")))
-    {
-        return "scheduled";
-    }
-    else
-    {
-        return "unknown";
-    }
+    $status_arr = array(
+        "scheduled" => "scheduled",
+        "selected"  => "not started",
+        "running"   => "in progress",
+        "sailed"    => "in progress",
+        "completed" => "complete",
+        "cancelled" => "complete",
+        "abandoned" => "complete",
+    );
+
+    key_exists($currentstatus, $status_arr) ? $status = $status_arr[$currentstatus] : $status = "unknown";
+
+    return $status;
 }
 
 function r_styleracestatus($currentstatus)
 {
-    // FIXME change this an associative array
+    $style_arr = array(
+        "scheduled" => "info",
+        "selected"  => "info",
+        "running"   => "warning",
+        "sailed"    => "warning",
+        "completed" => "success",
+        "cancelled" => "success",
+        "abandoned" => "success",
+    );
 
-    if (in_array($currentstatus, array("completed","cancelled","abandoned")))
-    {
-        return "success";                                          // complete
-    }
-    elseif(in_array($currentstatus, array("running","sailed")))    // in progress
-    {
-        return "warning";
-    }
-    elseif(in_array($currentstatus, array("selected")))            // not started
-    {
-        return "info";
-    }
-    elseif(in_array($currentstatus, array("scheduled")))           // scheduled
-    {
-        return "danger";
-    }
-    else                                                           // unknown
-    {
-        return "default";
-    }
+    key_exists($currentstatus, $style_arr) ? $style = $style_arr[$currentstatus] : $style = "default";
+
+    return $style;
 }
 
 
@@ -679,212 +677,253 @@ function r_oktoreset($eventid)
 //    return $result;
 //}
 
-function r_getresultcolumns($racetype, $raceopen, $cellattr)
-{
-    $columns = array (
-          "class"      => array( "attr" => "{$cellattr['class']}", "width" => "10%", "label" => "class" ),
-          "sailnum"    => array( "attr" => "{$cellattr['sailnum']}", "width" => "7%", "label"  => "no." ),
-          "competitor" => array( "attr" => "{$cellattr['competitor']}", "width" => "20%", "label" => "competitor" )
-          );
-    
-    if($raceopen!="local")
-    {
-        $columns['club'] = array( "attr" => "{$cellattr['club']}", "width" => "", "label" => "club" );
-    }
-    
-    if ($racetype =="level")
-    {
-        $columns['etime'] =  array( "attr" => "{$cellattr['etime']}", "width" => "", "label"  => "ET" );
-    }
-    elseif ($racetype == "hcap")
-    {
-        $columns['pn'] = array( "attr" => "{$cellattr['pn']}", "width" => "", "label"  => "pn" );
-        $columns['etime'] = array( "attr" => "{$cellattr['etime']}", "width" => "", "label"  => "ET" );
-        $columns['ctime'] = array( "attr" => "{$cellattr['ctime']}", "width" => "", "label"  => "CT" );
-        
-    }
-    elseif ($racetype == "avglap")
-    {
-        $columns['pn'] = array( "attr" => "{$cellattr['pn']}", "width" => "", "label"  => "pn" );
-        $columns['lap']= array( "attr" => "{$cellattr['lap']}", "width" => "", "label"  => "lap" );
-        $columns['etime'] = array( "attr" => "{$cellattr['etime']}", "width" => "", "label"  => "ET" );
-        $columns['atime'] = array( "attr" => "{$cellattr['atime']}", "width" => "", "label"  => "CT" );
-    }
-    elseif ($racetype == "pursuit")
-    {
-        $columns['pn'] = array( "attr" => "{$cellattr['pn']}", "width" => "", "label"  => "pn" );
-        $columns['lap']= array( "attr" => "{$cellattr['lap']}", "width" => "", "label"  => "lap" );
-    }
-    else
-    {
-        return false;
-    }
-    $columns['points']  = array( "attr" => "{$cellattr['points']}", "width" => "", "label"  => "points");
-    $columns['code']    = array( "attr" => "{$cellattr['code']}", "width" => "", "label"  => "code" );
-    $columns['status']  = array( "attr" => "{$cellattr['status']}", "width" => "", "label"  => "status" );
-    $columns['buttons'] = array( "attr" => "", "width" => "15%", "label" => "actions" );
-        
-    return $columns;
-}
+//function r_getresultcolumns($racetype, $raceopen, $cellattr)
+//{
+//    $columns = array (
+//          "class"      => array( "attr" => "{$cellattr['class']}", "width" => "10%", "label" => "class" ),
+//          "sailnum"    => array( "attr" => "{$cellattr['sailnum']}", "width" => "7%", "label"  => "no." ),
+//          "competitor" => array( "attr" => "{$cellattr['competitor']}", "width" => "20%", "label" => "competitor" )
+//          );
+//
+//    if($raceopen!="local")
+//    {
+//        $columns['club'] = array( "attr" => "{$cellattr['club']}", "width" => "", "label" => "club" );
+//    }
+//
+//    if ($racetype =="level")
+//    {
+//        $columns['etime'] =  array( "attr" => "{$cellattr['etime']}", "width" => "", "label"  => "ET" );
+//    }
+//    elseif ($racetype == "hcap")
+//    {
+//        $columns['pn'] = array( "attr" => "{$cellattr['pn']}", "width" => "", "label"  => "pn" );
+//        $columns['etime'] = array( "attr" => "{$cellattr['etime']}", "width" => "", "label"  => "ET" );
+//        $columns['ctime'] = array( "attr" => "{$cellattr['ctime']}", "width" => "", "label"  => "CT" );
+//
+//    }
+//    elseif ($racetype == "avglap")
+//    {
+//        $columns['pn'] = array( "attr" => "{$cellattr['pn']}", "width" => "", "label"  => "pn" );
+//        $columns['lap']= array( "attr" => "{$cellattr['lap']}", "width" => "", "label"  => "lap" );
+//        $columns['etime'] = array( "attr" => "{$cellattr['etime']}", "width" => "", "label"  => "ET" );
+//        $columns['atime'] = array( "attr" => "{$cellattr['atime']}", "width" => "", "label"  => "CT" );
+//    }
+//    elseif ($racetype == "pursuit")
+//    {
+//        $columns['pn'] = array( "attr" => "{$cellattr['pn']}", "width" => "", "label"  => "pn" );
+//        $columns['lap']= array( "attr" => "{$cellattr['lap']}", "width" => "", "label"  => "lap" );
+//    }
+//    else
+//    {
+//        return false;
+//    }
+//    $columns['points']  = array( "attr" => "{$cellattr['points']}", "width" => "", "label"  => "points");
+//    $columns['code']    = array( "attr" => "{$cellattr['code']}", "width" => "", "label"  => "code" );
+//    $columns['status']  = array( "attr" => "{$cellattr['status']}", "width" => "", "label"  => "status" );
+//    $columns['buttons'] = array( "attr" => "", "width" => "15%", "label" => "actions" );
+//
+//    return $columns;
+//}
 
-function r_getresultdata($results, $racetype, $raceopen)
-{
-    //u_writedbg ("<pre>".print_r($results,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
-    //u_writedbg ("<pre>$racetype|$raceopen</pre>", __FILE__, __FUNCTION__, __LINE__);
-    $out_rs = array();
-    $i = 0;
-    foreach ($results as $key=>$row)
-    {
-        $i++;
-        $out_rs[$i]['id']         = $row['id'];
-        $out_rs[$i]['class']      = $row['class'];
-        $out_rs[$i]['sailnum']    = $row['sailnum'];
-        $out_rs[$i]["competitor"] = u_truncatestring(rtrim($row['helm']."/".$row['crew'], "/"), 25);
-        $out_rs[$i]['helm']       = $row['helm'];
-        $out_rs[$i]['crew']       = $row['crew'];
-        
-        if($raceopen!="local")
-        {
-            $out_rs[$i]['club'] = $row['club'];
-        }
+//function r_getresultdata($results, $racetype, $raceopen)
+//{
+//    //u_writedbg ("<pre>".print_r($results,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+//    //u_writedbg ("<pre>$racetype|$raceopen</pre>", __FILE__, __FUNCTION__, __LINE__);
+//    $out_rs = array();
+//    $i = 0;
+//    foreach ($results as $key=>$row)
+//    {
+//        $i++;
+//        $out_rs[$i]['id']         = $row['id'];
+//        $out_rs[$i]['class']      = $row['class'];
+//        $out_rs[$i]['sailnum']    = $row['sailnum'];
+//        $out_rs[$i]["competitor"] = u_truncatestring(rtrim($row['helm']."/".$row['crew'], "/"), 25);
+//        $out_rs[$i]['helm']       = $row['helm'];
+//        $out_rs[$i]['crew']       = $row['crew'];
+//
+//        if($raceopen!="local")
+//        {
+//            $out_rs[$i]['club'] = $row['club'];
+//        }
+//
+//        if ($racetype =="level")
+//        {
+//            $out_rs[$i]['pn']    = $row['pn'];
+//            $out_rs[$i]['lap']   = $row['lap'];                                 // needed
+//            $out_rs[$i]['etime'] = u_conv_secstotime($row['etime']);            // needed
+//            $out_rs[$i]['ctime'] = 0;
+//            $out_rs[$i]['atime'] = 0;
+//        }
+//        elseif ($racetype == "handicap")
+//        {
+//            $out_rs[$i]['pn']    = $row['pn'];                                  // needed
+//            $out_rs[$i]['lap']   = $row['lap'];                                 // needed
+//            $out_rs[$i]['etime'] = u_conv_secstotime($row['etime']);            // needed
+//            $out_rs[$i]['ctime'] = u_conv_secstotime($row['ctime']);            // needed
+//            $out_rs[$i]['atime'] = u_conv_secstotime($row['atime']);
+//
+//        }
+//        elseif ($racetype == "average")
+//        {
+//            $out_rs[$i]['pn']    = $row['pn'];                                  // needed
+//            $out_rs[$i]['lap']   = $row['lap'];                                 // needed
+//            $out_rs[$i]['etime'] = u_conv_secstotime($row['etime']);            // needed
+//            $out_rs[$i]['ctime'] = u_conv_secstotime($row['ctime']);
+//            $out_rs[$i]['atime'] = u_conv_secstotime($row['atime']);            // needed
+//        }
+//        elseif ($racetype == "pursuit")
+//        {
+//            $out_rs[$i]['pn']    = $row['pn'];                                  // needed
+//            $out_rs[$i]['lap']   = $row['lap'];                                 // needed
+//            $out_rs[$i]['etime'] = u_conv_secstotime($row['etime']);
+//            $out_rs[$i]['ctime'] = u_conv_secstotime($row['ctime']);
+//            $out_rs[$i]['atime'] = u_conv_secstotime($row['atime']);
+//        }
+//        else
+//        {
+//            return false;
+//        }
+//        $out_rs[$i]['points']      = $row['points'];
+//        $out_rs[$i]['code']        = $row['code'];
+//        $out_rs[$i]['declaration'] = $row['declaration'];
+//        $out_rs[$i]['status']      = $row['status'];
+//        $out_rs[$i]['penalty']     = $row['penalty'];
+//        $out_rs[$i]['note']        = $row['note'];
+//
+//    }
+//
+//    return $out_rs;
+//}
 
-        if ($racetype =="level")
-        {           
-            $out_rs[$i]['pn']    = $row['pn'];
-            $out_rs[$i]['lap']   = $row['lap'];                                 // needed
-            $out_rs[$i]['etime'] = u_conv_secstotime($row['etime']);            // needed
-            $out_rs[$i]['ctime'] = 0;
-            $out_rs[$i]['atime'] = 0;
-        }
-        elseif ($racetype == "handicap")
+
+
+//function r_correct_time($racetype, $pn, $etime)
+//{
+//    if ($pn > 0 AND $etime > 0)
+//    {
+//        if ($racetype == "level")
+//        {
+//            $ctime = $etime;
+//        }
+//        elseif ($racetype == "handicap" OR $racetype == "average")
+//        {
+//            $ctime = round(($etime * 1000)/$pn);
+//        }
+//        elseif ($racetype == "pursuit")
+//        {
+//            $ctime = 0;
+//        }
+//        else
+//        {
+//            $ctime = 0;
+//        }
+//    }
+//    else
+//    {
+//        $ctime = 0;
+//    }
+//    return $ctime;
+//
+//}
+
+
+//function r_aggregate_time($racetype, $pn, $etime, $lap, $maxlap)
+//{
+//    if ($pn > 0 AND $etime > 0 AND $lap > 0 and $maxlap > 0)
+//    {
+//        if ($racetype == "level")
+//        {
+//            $atime = $etime;
+//        }
+//        elseif ($racetype == "handicap" OR $racetype == "average")
+//        {
+//            $atime = round((($etime * 1000)/$pn) * $maxlap/$lap);
+//        }
+//        elseif ($racetype == "pursuit")
+//        {
+//            $atime = 0;
+//        }
+//        else
+//        {
+//            $atime = 0;
+//        }
+//    }
+//    else
+//    {
+//        $atime = 0;
+//    }
+//    return $atime;
+//}
+
+//
+
+
+function r_enter_boat($entry, $eventid, $type)
+{
+    /*
+     * Enters a boat into a race
+     *
+     * Args:
+     * $entry
+     * $eventid
+     * $type
+     *
+     */
+
+    global $entry_o, $boat_o, $event_o, $db_o;
+
+    //$boat_o = new BOAT($db_o);
+    $classcfg = $boat_o->boat_getdetail($entry['classname']);
+    $fleets = $event_o->event_getfleetcfg($_SESSION["e_$eventid"]['ev_format']);
+    $alloc = r_allocate_fleet($classcfg, $fleets);
+
+    $success = "failed";
+    $entry_tag = "{$entry['classname']} - {$entry['sailnum']}";
+
+    // debug:u_writedbg(u_check($alloc, "ALLOCATE"),__FILE__,__FUNCTION__,__LINE__);  // debug:
+
+    if ($alloc['status'])
+    {                                              // ok to load entry
+        $entry = array_merge($entry, $alloc);
+        $i = $entry['fleet'];
+        $result = $entry_o->set_entry($entry, $_SESSION["e_$eventid"]["fl_$i"]['pytype'], $_SESSION["e_$eventid"]["fl_$i"]['maxlap']);
+        // debug:u_writedbg(u_check($result, "LOAD"),__FILE__,__FUNCTION__,__LINE__);  // debug:
+        if ($result['status'])
         {
-            $out_rs[$i]['pn']    = $row['pn'];                                  // needed
-            $out_rs[$i]['lap']   = $row['lap'];                                 // needed
-            $out_rs[$i]['etime'] = u_conv_secstotime($row['etime']);            // needed
-            $out_rs[$i]['ctime'] = u_conv_secstotime($row['ctime']);            // needed
-            $out_rs[$i]['atime'] = u_conv_secstotime($row['atime']);
-            
-        }
-        elseif ($racetype == "average")
-        {
-            $out_rs[$i]['pn']    = $row['pn'];                                  // needed
-            $out_rs[$i]['lap']   = $row['lap'];                                 // needed
-            $out_rs[$i]['etime'] = u_conv_secstotime($row['etime']);            // needed
-            $out_rs[$i]['ctime'] = u_conv_secstotime($row['ctime']);            
-            $out_rs[$i]['atime'] = u_conv_secstotime($row['atime']);            // needed
-        }
-        elseif ($racetype == "pursuit")
-        {
-            $out_rs[$i]['pn']    = $row['pn'];                                  // needed
-            $out_rs[$i]['lap']   = $row['lap'];                                 // needed
-            $out_rs[$i]['etime'] = u_conv_secstotime($row['etime']);            
-            $out_rs[$i]['ctime'] = u_conv_secstotime($row['ctime']);            
-            $out_rs[$i]['atime'] = u_conv_secstotime($row['atime']);            
+            $i = $entry['fleet'];
+
+            if ($result["exists"])
+            {
+                u_writelog("ENTRY ($type) UPDATED: $entry_tag", $eventid);
+                $success = "exists";
+            }
+            else
+            {
+                u_writelog("ENTRY ($type): $entry_tag", $eventid);
+                $success = "entered";
+                $_SESSION["e_$eventid"]["fl_$i"]['entries']++;   // increment no. of entries
+            }
+            if ($type == "signon") {  $upd = $entry_o->confirm_entry($entry['t_entry_id'], "L", $result['raceid']); }
+
+            $fleet_name = $_SESSION["e_$eventid"]["fl_$i"]['code'];
+            $_SESSION["e_$eventid"]['enter_rst'][] = "$entry_tag [$fleet_name]";
+
+            $_SESSION["e_$eventid"]['result_status'] = "invalid";           // set results update flag
         }
         else
         {
-            return false;
-        }
-        $out_rs[$i]['points']      = $row['points'];
-        $out_rs[$i]['code']        = $row['code'];
-        $out_rs[$i]['declaration'] = $row['declaration'];
-        $out_rs[$i]['status']      = $row['status'];
-        $out_rs[$i]['penalty']     = $row['penalty'];
-        $out_rs[$i]['note']        = $row['note'];
-        
-    }
-    
-    return $out_rs;
-}
-
-
-
-function r_correct_time($racetype, $pn, $etime)
-{
-    if ($pn > 0 AND $etime > 0)
-    {
-        if ($racetype == "level")
-        {
-            $ctime = $etime;
-        }
-        elseif ($racetype == "handicap" OR $racetype == "average")
-        {
-            $ctime = round(($etime * 1000)/$pn);
-        }
-        elseif ($racetype == "pursuit")
-        {
-            $ctime = 0;
-        }
-        else
-        {
-            $ctime = 0;
+            u_writelog("ENTRY ($type) FAILED: $entry_tag [{$result["problem"]}]", $eventid);
+            if ($type == "signon") {  $upd = $entry_o->confirm_entry($entry['t_entry_id'], "F"); }
         }
     }
     else
     {
-        $ctime = 0;
+        u_writelog("ENTRY ($type) FAILED: $entry_tag [no fleet allocation - {$alloc['alloc_code']}]", $eventid);
+        if ($type == "signon") {  $upd = $entry_o->confirm_entry($entry['t_entry_id'], $alloc['alloc_code']); }
     }
-    return $ctime;
 
+    return $success;
 }
-
-
-function r_aggregate_time($racetype, $pn, $etime, $lap, $maxlap)
-{
-    if ($pn > 0 AND $etime > 0 AND $lap > 0 and $maxlap > 0)
-    {
-        if ($racetype == "level")
-        {
-            $atime = $etime;
-        }
-        elseif ($racetype == "handicap" OR $racetype == "average")
-        {
-            $atime = round((($etime * 1000)/$pn) * $maxlap/$lap);
-        }
-        elseif ($racetype == "pursuit")
-        {
-            $atime = 0;
-        }
-        else
-        {
-            $atime = 0;
-        }
-    }
-    else
-    {
-        $atime = 0;
-    }
-    return $atime;
-}
-
-function r_evaluate_code_race($code, $race_entries)
-{
-    $value = 0;
-
-    if ($code['scoringtype'] == "penalty")
-    {
-
-
-        if ($code['scoring'] == "20%")
-        {
-            $value = round($race_entries * 0.2);
-        }
-    }
-    elseif ($code['scoringtype'] == "race")
-    {
-        if ($code['scoring'] == "N+1")
-        {
-            $value = $race_entries + 1;
-        }
-    }
-    elseif ($code['scoringtype'] == "series")
-    {
-        $value = 9999;
-    }
-
-    return $value;
-}
-
 
 function r_allocate_fleet($class, $fleets, $competitor = array())
 {

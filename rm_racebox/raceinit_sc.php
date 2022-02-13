@@ -52,12 +52,17 @@ if ($eventid and ($mode == "init" or $mode == "reset" or $mode == "rejoin"))
         u_exitnicely($scriptname, $eventid, "the requested event details can not be found in the raceManager database",
             "please contact your raceManager administrator");
     }
-    elseif ($status == "fleet_error")
+    elseif ($status == "fleetcfg_error")
     {
         u_exitnicely($scriptname, $eventid, "the fleet format details for the selected event can not be found in the raceManager database.",
             "please contact your raceManager administrator");
     }
-    elseif ($status == "race_error")
+    elseif ($status == "fleetinit_error")
+    {
+        u_exitnicely($scriptname, $eventid, "the fleet information for this race was not correctly installed in the database.",
+            "please contact your raceManager administrator");
+    }
+    elseif ($status == "racecfg_error")
     {
         u_exitnicely($scriptname, $eventid, "the race format requested for the selected event can not be found in the raceManager database, or is not currently used.",
             "please contact your raceManager administrator");

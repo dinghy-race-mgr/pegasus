@@ -72,7 +72,7 @@ EOT;
 }
 
 
-function set_code($eventid, $params) //$entryid, $code, $racestatus, $declaration, $boat, $finish_lap = 0, $current_lap = 0)
+function set_code($eventid, $params)
     /*
      * sets or clears code in t_race
      */
@@ -89,12 +89,13 @@ function set_code($eventid, $params) //$entryid, $code, $racestatus, $declaratio
     key_exists("lap", $params)        ? $current_lap = $params['lap'] : $err = true;
     key_exists("finishlap", $params)  ? $finish_lap = $params['finishlap'] : $err = true;
     key_exists("code", $params)       ? $code = $params['code'] : $code = "";
+    u_writedbg("<pre> SETCODE PARAMS: ".print_r($params,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
 
     if ($err)            // stop if params are invalid
     {
-        $result = "required parameters were invalid
-                       (id: {$_REQUEST['entryid']}; boat: {$_REQUEST['boat']}; status: {$_REQUEST['racestatus']};)";
+        $result = "required parameters were invalid (id: {$params['entryid']}; boat: {$params['boat']}; status: {$params['racestatus']};)";
         u_writelog("$boat - set code failed - $result", $eventid);
+        u_writedbg("$boat - set code failed - $result",__FILE__,__FUNCTION__,__LINE__);
     }
     else                // process code change
     {

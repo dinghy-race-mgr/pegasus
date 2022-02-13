@@ -467,8 +467,8 @@ function set_result_data($sailorid, $events)
         );
 
         $arr['list'][$eventid]['racestate'] = "unknown";
-        $rstate_o = new RACESTATE($db_o, $eventid);
-        $rstate_rst = $rstate_o->racestate_get($fleet);
+        $race_o = new RACE($db_o, $eventid);
+        $rstate_rst = $race_o->racestate_get($fleet);
         if ($rstate_rst) {
             $arr['list'][$eventid]['racestate'] = $rstate_rst[$fleet]['status'];
         }

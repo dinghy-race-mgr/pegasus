@@ -155,17 +155,17 @@ class RESULT
         return $status;
     }
 
-    function transfer_results_files()
-    {
-        return true;   // FIXME
-    }
+//    function transfer_results_files()
+//    {
+//        return true;   // FIXME
+//    }
 
-    public function get_result_files($eventid, $type="")
+    public function get_result_files($eventid, $type="")  // FIXME - don't need to pass $eventid - already in class
     {
         $where = "eventid = $eventid ";
         if (!empty($type))
         {
-            $where.= "folder = '".strtolower($type)."' ";
+            $where.= "AND folder = '".strtolower($type)."' ";
         }
 
         $files = $this->db->db_get_rows("SELECT * FROM t_resultfile WHERE $where");

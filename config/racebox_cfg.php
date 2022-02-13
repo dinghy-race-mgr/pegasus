@@ -7,9 +7,10 @@
     --------------------------------------------------------------------------------------
 */
 
-$_SESSION['app_name']      = "racebox";
+$_SESSION['app_name'] = "racebox";
 
-$_SESSION['syslog'] = "racebox_".date("Y-m-d").".log";                   // sys log file
+$_SESSION['syslog'] = "../logs/syslogs/sys_".date("Y-m-d").".log";                                  // sys log file
+$_SESSION['dbglog'] = "../logs/dbglogs/" . $_SESSION['app_name'] . "_" . date("Y-m-d") . ".log";   // debug log
 
 $_SESSION['race_states']    = array("scheduled", "selected", "running", "sailed", "completed", "cancelled", "abandoned");
 

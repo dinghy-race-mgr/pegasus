@@ -16,6 +16,7 @@
 $loc        = "..";                                                 // relative path from script to top level folder
 $page       = "race";     // 
 $scriptname = basename(__FILE__);
+$stop_here  = false;
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 
@@ -338,22 +339,27 @@ if ($eventid AND $pagestate)
 
         else
         {
-            u_exitnicely($scriptname, $eventid,"event001",$lang['err']['exit-action']);
+            u_exitnicely($scriptname, $eventid,"Unable to process request",
+                "race_sc.php - pagestate not recognised [$pagestate] - please contact your support team");
         }
+
+        // check race state / update session
+        $race_o->racestate_updatestatus_all($_SESSION["e_$eventid"]['rc_numfleets'], $page);
         
         // return to race page
-        header("Location: race_pg.php?eventid=$eventid&pagestate=race");
-        exit();
+        if (!$stop_here) { header("Location: race_pg.php?eventid=$eventid&pagestate=race"); exit();}  // back to race status page
+
     } 
     else
     {
-        u_exitnicely($scriptname, $eventid,"sys005",$lang['err']['exit-action']);
-    }  
-       
+        u_exitnicely($scriptname, $eventid,"Unable to process request", "race_sc.php - event record not found - please contact your support team");
+    }
+
 }
 else
 {
-    u_exitnicely($scriptname, $eventid,"sys005",$lang['err']['exit-action']);
+    u_exitnicely($scriptname, $eventid,"Unable to process request",
+        "race_sc.php - eventid and/or pagestate missing - please contact your support team");
 }
 
 // --- FUNCTIONS ---------------------------------------------------------------------------

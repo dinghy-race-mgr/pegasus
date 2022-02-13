@@ -277,7 +277,7 @@ class DB
 
     public function db_update( $table, $variables = array(), $where = array(), $limit = '' )
     {
-        // echo "<pre>".debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function']."</pre>";
+        $calling_function = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
 
         // returns -1 if update failed, 0 if successful but no rows changed, >1 no. rows changed
         if( empty( $variables ) ) { return -1; }
@@ -311,14 +311,12 @@ class DB
             $query .= ' LIMIT '. $limit;
         }
 
+        //u_writedbg("from $calling_function - db_update: query: $query ",__FILE__,__FUNCTION__,__LINE__);
 
-        if ($_SESSION['sql_debug']) { u_writedbg("db_update: query: $query ",__FILE__,__FUNCTION__,__LINE__); }
-        //echo "<pre>$query</pre>";
         $update = $this->link->query( $query );
+
         $numrows = $this->link->affected_rows;         // might be zero if no records changed
-        if ($_SESSION['sql_debug']) { u_writedbg("db_update: rows affected: $numrows ",__FILE__,__FUNCTION__,__LINE__); }
-
-
+        //u_writedbg("db_update: rows affected: $numrows ",__FILE__,__FUNCTION__,__LINE__);
 
         if( $this->link->error )
         {

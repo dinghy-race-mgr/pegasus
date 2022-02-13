@@ -18,26 +18,28 @@
 $loc        = "..";       // <--- relative path from script to top level folder
 $page       = "pursuit";     //
 $scriptname = basename(__FILE__);
+
+// required libraries
 require_once ("{$loc}/common/lib/util_lib.php");
-require_once ("{$loc}/common/lib/rm_lib.php");
+//require_once ("{$loc}/common/lib/rm_lib.php");
 
-$eventid = $_REQUEST['eventid'];
+// get script parameters
+$eventid = u_checkarg("eventid", "", "", "");
 
-u_initpagestart($eventid, $page, $_REQUEST['menu']);   // starts session and sets error reporting
-if ($_SESSION['debug']!=0) { u_sessionstate($scriptname, $page, $eventid); }
-
-// initialising language
-include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");
-
-// check we have request id - if not stop with system error
-if (empty($eventid) or !is_numeric($eventid))
-{
-    u_exitnicely($scriptname, 0, $lang['err']['sys002'], "event id is not defined");
+$eventid = u_checkarg("eventid", "checkintnotzero","");
+if (!$eventid) {
+    u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
+        "please contact your raceManager administrator");  }
+else {
+    u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
 }
 
-include ("{$loc}/common/classes/db_class.php");
-include ("{$loc}/common/classes/template_class.php");
-include ("{$loc}/common/classes/event_class.php");
+if ($_SESSION['debug']!=0) { u_sessionstate($scriptname, $page, $eventid); }
+
+// app classes for this page
+require_once ("{$loc}/common/classes/db_class.php");
+require_once ("{$loc}/common/classes/template_class.php");
+require_once ("{$loc}/common/classes/event_class.php");
 
 // templates
 $tmpl_o = new TEMPLATE(array("../templates/general_tm.php",
@@ -108,4 +110,3 @@ $fields = array(
 echo $tmpl_o->get_template("two_col_page", $fields);
 
 
-?>

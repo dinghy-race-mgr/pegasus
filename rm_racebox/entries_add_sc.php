@@ -14,7 +14,6 @@ $eventid = u_checkarg("eventid", "checkintnotzero","");
 $page_state = u_checkarg("pagestate", "set","");
 
 u_initpagestart($_REQUEST['eventid'], $page, false);
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
 if (!$eventid) {
     u_exitnicely($scriptname, $eventid, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
@@ -31,6 +30,7 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/boat_class.php");
 require_once ("{$loc}/common/classes/comp_class.php");
+require_once("{$loc}/common/classes/race_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 
 $db_o = new DB;
@@ -47,12 +47,13 @@ elseif ($page_state == "enterone")       // add competitor to current event
     $entry_o = new ENTRY($db_o, $eventid);
     // debug:u_writedbg("competitor {$_REQUEST['competitorid']}",__FILE__,__FUNCTION__,__LINE__);  // debug:
     $entry = $entry_o->get_competitor($_REQUEST['competitorid']);
+
     //echo "<pre>".print_r($entry,true)."</pre>";
-    // debug:u_writedbg(u_check($entry, "ENTRY"),__FILE__,__FUNCTION__,__LINE__);  // debug:
+    // debug:
 
     if ($entry)
     {
-        enter_boat($entry, $eventid);
+        $status = enter_boat($entry, $eventid);
     }
     else
     {
@@ -70,7 +71,8 @@ exit();
 
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------
-function enter_boat($entry, $eventid, $race = "")
+function enter_boat($entry, $eventid)
+    // FIXME this is very similar to the same function in entries_sc.php
 {
     global $entry_o, $db_o;
 
@@ -78,18 +80,18 @@ function enter_boat($entry, $eventid, $race = "")
 
     $event_o = new EVENT($db_o);
     $boat_o = new BOAT($db_o);
+    $race_o = new RACE($db_o, $eventid);
+
     $classcfg = $boat_o->boat_getdetail($entry['classname']);
     $fleets = $event_o->event_getfleetcfg($_SESSION["e_$eventid"]['ev_format']);
     $alloc = r_allocate_fleet($classcfg, $fleets);
-//    $alloc = $entry_o->allocate($entry);
-    //u_writedbg(u_check($alloc, "ALLOCATE"),__FILE__,__FUNCTION__,__LINE__); //debug:
 
     if ($alloc['status'])           // ok to load entry
     {
         $entry = array_merge($entry, $alloc);
         $i = $entry['fleet'];
-        $entry_alloc = "[S {$entry['start']} / F $i]";
-        $result = $entry_o->set_entry($entry, $_SESSION["e_$eventid"]["fl_$i"]['pytype']);
+        $entry_alloc = "[S {$entry['start']} / F {$entry['fleet']}]";
+        $result = $entry_o->set_entry($entry, $_SESSION["e_$eventid"]["fl_$i"]['pytype'], $_SESSION["e_$eventid"]["fl_$i"]['maxlap']);
 
         if ($result['status'])
         {
@@ -98,6 +100,10 @@ function enter_boat($entry, $eventid, $race = "")
             $_SESSION["e_$eventid"]['enter_rst'][] = $entry_tag;
 
             $_SESSION["e_$eventid"]["fl_$i"]['entries']++;                  // increment no. of entries
+
+            // FIXME removed becuase this should be handled by "sc" racestate catchup
+            //$update = $race_o->racestate_update(array("entries"=>$_SESSION["e_$eventid"]["fl_$i"]['entries']), array("fleet"=>$i));  // updae racestate
+
             $_SESSION["e_$eventid"]['result_status'] = "invalid";           // set results update flag
 
             u_writelog("ENTRY: $entry_tag", $eventid);
@@ -113,4 +119,6 @@ function enter_boat($entry, $eventid, $race = "")
         $_SESSION["e_$eventid"]['enter_err']= "$entry_tag - allocation failed ({$alloc['alloc_code']}))";
         u_writelog("ENTRY FAILED: $entry_tag [no fleet allocation - {$alloc['alloc_code']}]", $eventid);
     }
+
+    return $result['status'];
 }

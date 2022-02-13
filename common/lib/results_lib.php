@@ -163,33 +163,87 @@ function process_series_file($eventid, $opts, $series_code, $series_status)
 }
 
 
-//function process_transfer($files, $ftp_env, $protocol)
-//    /*
-//     * transfers results files to website
-//     * [Note - it doesn't create or transfer the results inventory file]
-//     */
-//{
-//    global $loc;
-//
-//    $status = ftpFiles($loc, $protocol, $ftp_env, $files);
-//
-//    $num_files = count($files);
-//    $file_count = 0;
-//    foreach ($files as $key => $file)
-//        if ($status['file'][$key])
+function process_transfer($result_year, $files, $protocol)
+    /*
+     * transfers results files to website using network, ftp or sftp
+     * [Note - it doesn't create the results inventory file]
+     *
+     * $inventory_year = date("Y", strtotime($_SESSION["e_$eventid"]['ev_date']));
+            $inventory_file = $result_o->get_inventory_filename($inventory_year);
+            $inventory_path = $_SESSION['result_path'].DIRECTORY_SEPARATOR.$inventory_file;
+            $inventory_url  = $_SESSION['result_url']."/".$inventory_file;
+
+            // create inventory
+            $inventory = $result_o->create_result_inventory($inventory_year, $inventory_path, $system_info);
+
+            if ($inventory['success'])                         // if inventory created successfully then proceed
+            {
+                // add inventory file to file to be transferred
+                $transfer_files[] = array("path" => $inventory_path, "url" => $inventory_url,
+                                          "file" => $inventory_file);
+
+
+    $source = "foo/fileA.txt";
+$destination = "bar/"; // note how the destination has no file.
+$newFile = "somefile.txt";
+touch($destination . $newFile);
+// then do the copy part
+copy($source, $destination.$newFile);
+     */
+{
+    global $loc;
+
+    if ($protocol == "local")   // transfer
+    {
+        $status = array("result" => true, "complete" => "all", "connect"=>true, "login" => true, "log"=>"", "transferred" => 0 ); // FIXME set connect to false if dir doesn't exist or create it??
+
+//        foreach($files as $key=>$file)   // loop over all files
 //        {
-//            $file_count++;
+//            $source = "foo/fileA.txt";
+//            $destination = "bar/"; // note how the destination has no file.
+//            $newfile = "somefile.txt";
+//            touch($destination . $newfile);
+//// then do the copy part
+//
+//
+//
+//            if (copy($source, $destination.$newfile))   // transfer file
+//            {
+//                $status['transferred']++;
+//                $status['log'].= " - file transferred ({$file['source']})<br>";
+//            }
+//            else
+//            {
+//                $status['log'].= " - file transfer failed ({$file['source']})<br>";
+//            }
 //        }
-//
-//    $status['success'] = "no";                           // no files transferred
-//    if ($file_count == $num_files)
-//    {
-//        $status['success'] = "all";                      // all files transfered
-//    }
-//    elseif($file_count > 0)
-//    {
-//        $status['success'] = "some";                     // some files transferred
-//    }
-//
-//    return $status;
-//}
+    }
+    else // use ftp/sftp
+    {
+        $status = u_ftpFiles($protocol, $_SESSION['ftp_protocol'], $files);
+
+        $num_files = count($files);
+        $file_count = 0;
+        foreach ($files as $key => $file)  // what is happening here
+        {
+            if ($status['file'][$key])
+            {
+                $file_count++;
+            }
+        }
+
+        $status['complete'] = "none";                         // no files transferred
+
+        if ($file_count == $num_files)
+        {
+            $status['complete'] = "all";                      // all files transfered
+        }
+        elseif($file_count > 0)
+        {
+            $status['complete'] = "some";                     // some files transferred
+        }
+    }
+
+
+    return $status;
+}

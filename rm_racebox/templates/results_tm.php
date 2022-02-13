@@ -10,24 +10,13 @@ function result_tabs($params = array())
     $tabs = "";
     $panels = "";
 
-    // state settings  // FIXME - not used and looks like timer settings
-    $state_cfg = array(
-        "default"  => array("row_style" => "default", "label_style" => "label-primary", "annotation" => ""),
-        "racing"   => array("row_style" => "racing", "label_style" => "label-default", "annotation" => " <span class='text-primary glyphicon glyphicon-time'></span> "),
-        "finished" => array("row_style" => "finished", "label_style" => "label-finished", "annotation" => " FINISHED"),
-        "lastlap"  => array("row_style" => "lastlap", "label_style" => "label-danger", "annotation" => "<span class='text-danger'> LAST LAP</span>"),
-        "excluded" => array("row_style" => "excluded", "label_style" => "label-primary", "annotation" => " EXCLUDED"),
-    );
-
     for ($i = 1; $i <= $params['num-fleets']; $i++)
     {
-        //echo "<pre> ENTRIES".print_r($_SESSION["e_$eventid"]["fl_$i"],true)."</pre>";
 
-        // FIXME - not great to use session variables
-        $fleet = $_SESSION["e_$eventid"]["fl_$i"];
+        $fleet = $_SESSION["e_$eventid"]["fl_$i"];     // FIXME - not great to use session variables in templates
         $fleet_name = strtolower($fleet['name']);
-        $num_entries = $_SESSION["e_$eventid"]["fl_$i"]['entries'];
-        $racetype = $_SESSION["e_$eventid"]["fl_$i"]['scoring'];
+        //$num_entries = $_SESSION["e_$eventid"]["fl_$i"]['entries'];
+        $racetype = $_SESSION["e_$eventid"]["fl_$i"]['scoring'];    // FIXME - not great to use session variables in templates
 
         // create TABS
         if (count($params['warning'][$i]) > 0)
@@ -57,7 +46,7 @@ EOT;
 
 
         // create PANELS
-        if ($num_entries <= 0)
+        if (empty($params['data'][$i]))
         {
             $panels .= <<<EOT
             <div role="tabpanel" class="tab-pane" id="fleet$i">
@@ -266,7 +255,6 @@ function format_rows($eventid, $racetype, $race_results)
     $rows = "";
     foreach($race_results as $k => $result)
     {
-        //echo "<pre> ROW $k: ".print_r($result,true)."</pre>";
 
         $result['editbtn'] = editresult_html($eventid, $result['entryid'], $result['boat']);
         $result['deletebtn'] = <<<EOT
@@ -294,13 +282,15 @@ EOT;
 EOT;
         $code_link = get_code($result['code'], $link, "resultcodes");
 
+        $result['stillracing'] == "Y" ? $row_style = "lastlap" : $row_style = "";
+
         // points
-        $result['points'] >= 999 ? $points = " - " : $points = $result['points'];
+        $result['points'] >= 999 ? $points = " - " : $points = number_format((float)$result['points'], 1, '.', '');;
 
         if ($racetype == "level")  // pn and corrected time not required
         {
             $rows.= <<<EOT
-            <tr class="table-data">
+            <tr class="table-data $row_style" >
                <td >{$result['status_flag']}</td>
                <td class="truncate">{$result['class']}</td>
                <td class="truncate">{$result['sailnum']}</td>
@@ -333,7 +323,7 @@ EOT;
             </tr>
 EOT;
         }
-        elseif ($racetype == "handicap")
+        elseif ($racetype == "handicap $row_style")
         {
             $rows.= <<<EOT
             <tr class="table-data">
@@ -356,7 +346,7 @@ EOT;
         else  // average lap
         {
             $rows.= <<<EOT
-            <tr class="table-data">
+            <tr class="table-data $row_style">
                <td >{$result['status_flag']}</td>
                <td class="truncate">{$result['class']}</td>
                <td class="">{$result['sailnum']}</td>
@@ -685,72 +675,117 @@ EOT;
     return $html;
 }
 
-function fm_change_finish($params)
+function fm_change_finish($params = array())
 {
-    //echo "<pre>".print_r($params,true)."</pre>";
 
-    // instructions
-    $html = <<<EOT
-    <div class="alert well well-sm text-info" role="alert">
-        <p>This can be useful if you...<br> - have forgotten to shorten course and boats are showing as 'still racing', OR<br>
-         - you have abandoned the race and want to take the results from a previously completed lap</p>
-        <p>Set the finish lap for each fleet to the lap you want the boats to finish on (leading boat if an 'average lap' race).</p>
-    </div>
+    global $tmpl_o;
 
-    <div class="row text-info">
-            <div class="col-xs-5" style="text-align:right;"><b>FLEET</b></div>
-            <div class="col-xs-7" ><b>FINISH LAP</b></div>
-    </div>
-EOT;
+    $data = array(
+        "mode"       => "changefinish",
+        "instruction"=> true,
+        "footer"     => true
+    );
 
-    // create input fields - one per fleet
-    $fields_bufr = "";
-    foreach ($params['fleets'] as $i=>$fleet)
+    $fields = array(
+        "instr_content" => "<p>This can be useful in two situations ... if you have:<br>&nbsp;&nbsp;&nbsp;- forgotten to SHORTEN course and boats are showing as 'still racing' ... OR<br>
+         &nbsp;&nbsp;&nbsp;- ABANDONED the race and want to take the results from a PREVIOUS completed lap</p>
+        <p>Set the finish lap for each fleet to the lap you want the boats to finish on (i.e. the laps for the finish of the leading boat).</p>",
+        "footer_content" => "click the Set laps button to set the finish lap for each fleet"
+    );
+
+    foreach ($params['fleet-data'] as $i=>$fleet)
     {
+        // debug
+        if ($i == 1)
+        {$fleet['status'] = "notstarted";}
+        elseif ($i == 2)
+        {$fleet['status'] = "inprogress";}
+        elseif ($i == 3)
+        {$fleet['status'] = "finishing";}
+        elseif ($i == 4)
+        {$fleet['status'] = "allfinished";}
+
+        $data['fleets'][$i] = array(
+            "fleetname"  => ucwords($fleet['name']),
+            "fleetnum"   => $i,
+            "fleetlaps"  => $fleet['maxlap'],  // FIXME is this correct or does it need to be +1
+            "status"     => $fleet['status']
+        );
+
         if ($fleet['status'] == "notstarted")
         {
-            $fields_bufr.=<<<EOT
-                <div class="form-group">
-                    <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
-                    <div class="col-xs-6 ">
-                        <p class="text-info">race not started - finishing lap cannot be changed</p>
-                        <input type="hidden" id="finlap$i" name="finlap$i" value="{$fleet['maxlaps']}">
-                    </div>   
-                </div >
-EOT;
-        }
-        elseif ($fleet['scoring'] == "pursuit")
-        {
-            $fields_bufr.=<<<EOT
-                <div class="form-group">
-                    <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
-                    <div class="col-xs-6 ">
-                        <p class="text-info">pursuit race - finishing lap cannot be changed</p>
-                        <input type="hidden" id="finlap$i" name="finlap$i" value="{$fleet['maxlaps']}">
-                    </div>   
-                </div >
-EOT;
+            $data['fleets'][$i]['minvallaps'] = array("val"=>1, "msg"=>"cannot be less than 1 lap");;
         }
         else
         {
-            $fields_bufr.=<<<EOT
-            <div class="form-group">
-                <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
-                <div class="col-xs-3 inputfieldgroup">
-                    <input type="number" class="form-control" id="laps$i" name="finlap$i" value="{$fleet['maxlaps']}"
-                        required data-fv-notempty-message="you need to provide the required finishing lap" min="1" max="{$fleet['maxlaps']}"
-                        data-fv-between-message="must be a value between 1 and {$fleet['maxlaps']}"
-                    />
-                </div> 
-                <div class="col-xs-3 control-label" style="text-align: left;">
-                    <label> laps </label>
-                </div>   
-            </div >
-EOT;
+            $data['fleets'][$i]['minvallaps'] = array("val"=>1, "msg"=>"cannot be less than 1 lap");
+            $data['fleets'][$i]['maxvallaps'] = array("val"=>$fleet['maxlap'], "msg"=>"cannot be more than {$fleet['maxlap']} lap(s)");;
         }
     }
 
-    return $html;
+    return $tmpl_o->get_template("fm_set_laps", $fields, $data);
+//    // instructions
+//    $html = <<<EOT
+//    <div class="alert well well-sm text-info" role="alert">
+//        <p>This can be useful if you...<br> - have forgotten to shorten course and boats are showing as 'still racing', OR<br>
+//         - you have abandoned the race and want to take the results from a previously completed lap</p>
+//        <p>Set the finish lap for each fleet to the lap you want the boats to finish on (leading boat if an 'average lap' race).</p>
+//    </div>
+//
+//    <div class="row text-info">
+//            <div class="col-xs-5" style="text-align:right;"><b>FLEET</b></div>
+//            <div class="col-xs-7" ><b>FINISH LAP</b></div>
+//    </div>
+//EOT;
+//
+//    // create input fields - one per fleet
+//    $fields_bufr = "";
+//    foreach ($params['fleets'] as $i=>$fleet)
+//    {
+//        if ($fleet['status'] == "notstarted")
+//        {
+//            $fields_bufr.=<<<EOT
+//                <div class="form-group">
+//                    <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
+//                    <div class="col-xs-6 ">
+//                        <p class="text-info">race not started - finishing lap cannot be changed</p>
+//                        <input type="hidden" id="finlap$i" name="finlap$i" value="{$fleet['maxlaps']}">
+//                    </div>
+//                </div >
+//EOT;
+//        }
+//        elseif ($fleet['scoring'] == "pursuit")
+//        {
+//            $fields_bufr.=<<<EOT
+//                <div class="form-group">
+//                    <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
+//                    <div class="col-xs-6 ">
+//                        <p class="text-info">pursuit race - finishing lap cannot be changed</p>
+//                        <input type="hidden" id="finlap$i" name="finlap$i" value="{$fleet['maxlaps']}">
+//                    </div>
+//                </div >
+//EOT;
+//        }
+//        else
+//        {
+//            $fields_bufr.=<<<EOT
+//            <div class="form-group">
+//                <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
+//                <div class="col-xs-3 inputfieldgroup">
+//                    <input type="number" class="form-control" id="laps$i" name="finlap$i" value="{$fleet['maxlaps']}"
+//                        required data-fv-notempty-message="you need to provide the required finishing lap" min="1" max="{$fleet['maxlaps']}"
+//                        data-fv-between-message="must be a value between 1 and {$fleet['maxlaps']}"
+//                    />
+//                </div>
+//                <div class="col-xs-3 control-label" style="text-align: left;">
+//                    <label> laps </label>
+//                </div>
+//            </div >
+//EOT;
+//        }
+//    }
+//
+//    return $html;
 }
 
 

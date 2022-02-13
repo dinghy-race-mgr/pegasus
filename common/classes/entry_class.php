@@ -291,7 +291,7 @@ class ENTRY
         return $num_signons;
     }
 
-    public function set_entry($entry, $pytype)
+    public function set_entry($entry, $pytype, $finishlap = 0)
         /*
          *
          * sets entry into t_race
@@ -343,6 +343,7 @@ class ENTRY
                     "classcode"    => $entry['acronym'],
                     "sailnum"      => $entry['sailnum'],
                     "pn"           => $pn,
+                    "finishlap"    => $finishlap,
                     "status"       => "R",
                 );
 
@@ -358,7 +359,7 @@ class ENTRY
 
                     // set entry counts and flags
                     $fnum = $record['fleet'];
-                    $rs = $this->db->db_query("UPDATE t_racestate SET entries = entries + 1 WHERE eventid = {$this->eventid} and race = $fnum");
+                    $rs = $this->db->db_query("UPDATE t_racestate SET entries = entries + 1 WHERE eventid = {$this->eventid} and fleet = $fnum");
                 }
                 else    //  entry to t_race failed
                 {
@@ -396,7 +397,7 @@ class ENTRY
     {
         $status = true;
         $fields = $this->get_by_raceid($entryid);
-        $fleetnum = $fields['fleet'];
+        //$fleetnum = $fields['fleet'];
         $this->db->db_delete("t_finish", array("entryid"=>$entryid));           // delete pursuit finish records
         $this->db->db_delete("t_lap", array("entryid"=>$entryid));              // delete lap records
         $num_rows = $this->db->db_delete("t_race", array("id"=>$entryid));      // delete race record
@@ -406,8 +407,7 @@ class ENTRY
         }
         else
         {                                                                       // update racestate entry count
-            $rs = $this->db->db_query("UPDATE t_racestate SET entries = entries -1
-                                           WHERE eventid = {$this->eventid} and race = $fleetnum");
+            $rs = $this->db->db_query("UPDATE t_racestate SET entries = entries - 1 WHERE eventid = {$this->eventid} and fleet = {$fields['fleet']}");
         }
 
         return $status;   // if status is "true" update $_SESSION to mark result status invalid and delete 1 to no. of entries

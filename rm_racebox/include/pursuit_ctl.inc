@@ -95,4 +95,3 @@ $mdl_xxxx = array(
 );
 
 
-?>

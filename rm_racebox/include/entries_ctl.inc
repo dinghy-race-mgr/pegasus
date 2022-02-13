@@ -246,7 +246,7 @@ $mdl_addcompetitor = array(
         "action"      => "entries_sc.php?eventid=$eventid&pagestate=addcompetitor",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "add boat",
         "footer"      => ""
@@ -290,7 +290,7 @@ $mdl_addclass = array(
         "action"      => "entries_sc.php?eventid=$eventid&pagestate=addclass",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "add class",
         "footer"      => ""
@@ -344,7 +344,7 @@ $mdl_change = array(
         "onsubmit"    => "",
         "action"      => "entries_sc.php?eventid=$eventid&pagestate=change",
         "target"      => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "reset",
         "submit-lbl"  => "update entry",
         "footer"      => ""
@@ -375,7 +375,7 @@ $mdl_duty = array(
         "onsubmit"    => "",
         "action"      => "entries_sc.php?eventid=$eventid&pagestate=dutypoints",
         "target"      => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "reset",
         "submit-lbl"  => "dutypoints",
         "footer"      => ""
@@ -406,7 +406,7 @@ $mdl_unduty = array(
         "onsubmit"    => "",
         "action"      => "entries_sc.php?eventid=$eventid&pagestate=unduty",
         "target"      => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "reset",
         "submit-lbl"  => "remove duty points",
         "footer"      => ""
@@ -437,7 +437,7 @@ $mdl_remove = array(
         "onsubmit"    => "",
         "action"      => "entries_sc.php?eventid=$eventid&pagestate=delete",
         "target"      => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "reset",
         "submit-lbl"  => "remove entry",
         "footer"      => ""

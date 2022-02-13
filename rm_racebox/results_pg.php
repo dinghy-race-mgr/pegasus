@@ -37,9 +37,6 @@ require_once ("{$loc}/common/classes/race_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 
-// debug file location
-$_SESSION['dbglog'] = "../logs/dbglogs/rm_racebox_dbg.log";
-
 // app includes
 require_once ("./include/rm_racebox_lib.php");
 
@@ -66,6 +63,7 @@ foreach ($race_o->race_getresults() as $result)
 
 // ---- Recalculate results if required ----------------------------------
 $results = array("eventid" => $eventid, "num-fleets" => $numfleets);
+
 if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need recalculating
 {
     $warning_count = 0;
@@ -83,16 +81,17 @@ if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need 
         $results['warning'][$i] = $fleet_rs['warning'];
         $results['data'][$i]    = $fleet_rs['data'];
 
-        $fleet_still_racing = $race_o->race_stillracing($i);
-        if (!$fleet_still_racing)
-        {
-            $upd = $race_o->racestate_update(array("status"=>"allfinished"), array("eventid"=>"$eventid", "fleet"=>"$i"));
-            if ($upd > 0) { $_SESSION["e_$eventid"]["fl_$i"]['status'] = "allfinished"; }
-        }
-        else
-        {
-            $event_still_running = true;
-        }
+        $fleet_still_racing = $race_o->fleet_race_stillracing($i);
+        if ($fleet_still_racing) { $event_still_running = true; }
+//        if (!$fleet_still_racing)
+//        {
+//            $upd = $race_o->racestate_update(array("status"=>"allfinished"), array("eventid"=>"$eventid", "fleet"=>"$i"));
+//            if ($upd > 0) { $_SESSION["e_$eventid"]["fl_$i"]['status'] = "allfinished"; }
+//        }
+//        else
+//        {
+//            $event_still_running = true;
+//        }
     }
 
     $event_o = new EVENT($db_o);
@@ -192,19 +191,20 @@ $rbufr.= $tmpl_o->get_template("btn_modal", $btn_publish['fields'], $btn_publish
 // modal code
 if (!$_SESSION["e_$eventid"]['pursuit'])
 {
-    // change finish modal
-    $fleet_laps = array();
+    // change finish lap modal
+    $fleet_data = array();
     for ($i = 1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
     {
-        $fleet_laps[$i] = array(
-            "name"    => $_SESSION["e_$eventid"]["fl_$i"]["name"],
-            "scoring" => $_SESSION["e_$eventid"]["fl_$i"]["scoring"],
-            "laps"  => $_SESSION["e_$eventid"]["fl_$i"]['currentlap'],
-            "maxlaps" => $_SESSION["e_$eventid"]["fl_$i"]['maxlap'],
-            "status"  => $_SESSION["e_$eventid"]["fl_$i"]['status']
-        );
+        $fleet_data["$i"] = $_SESSION["e_$eventid"]["fl_$i"];
+//        $fleet_laps[$i] = array(
+//            "name"    => $_SESSION["e_$eventid"]["fl_$i"]["name"],
+//            "scoring" => $_SESSION["e_$eventid"]["fl_$i"]["scoring"],
+//            "laps"  => $_SESSION["e_$eventid"]["fl_$i"]['currentlap'],
+//            "maxlaps" => $_SESSION["e_$eventid"]["fl_$i"]['maxlap'],
+//            "status"  => $_SESSION["e_$eventid"]["fl_$i"]['status']
+//        );
     }
-    $mdl_changefinish['fields']['body'] = $tmpl_o->get_template("fm_change_finish", $mdl_changefinish['fields'], array("fleets" => $fleet_laps));
+    $mdl_changefinish['fields']['body'] = $tmpl_o->get_template("fm_change_finish", $mdl_changefinish['fields'], array("fleet-data" => $fleet_data));
     $rbufr.= $tmpl_o->get_template("modal", $mdl_changefinish['fields'], $mdl_changefinish);          // finish lap modal
 }
 

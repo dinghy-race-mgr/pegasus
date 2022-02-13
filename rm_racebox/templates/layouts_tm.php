@@ -414,3 +414,169 @@ function fm_race_message($params=array())
 EOT;
     return $html;
 }
+
+
+function not_change_laps($params = array())
+{
+    $htm = <<<EOT
+        <div class="form-group">
+            <div><label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{fleetname} </label></div>
+            <div class="col-xs-6 ">
+                <p class="text-info" style="padding-top: 11px">{reason}</p>
+                <input type="hidden" id="laps{fleetnum}" name="laps[{fleetnum}]" value="{fleetlaps}">
+            </div>
+        </div>
+EOT;
+    return $htm;
+}
+
+function ok_change_laps($params = array())
+{
+    //echo "<pre>ok_change_laps ".print_r($params,true)."</pre>";
+
+
+    $min_validation = "";
+    $max_validation = "";
+
+    if (array_key_exists("minvallaps", $params))
+    {
+        $min_validation = "min='{$params['minvallaps']['val']}' data-fv-greaterthan-message='{$params['minvallaps']['msg']}'";
+    }
+
+    if (array_key_exists("maxvallaps", $params))
+    {
+        $max_validation = "max='{$params['maxvallaps']['val']}' data-fv-lessthan-message='{$params['maxvallaps']['msg']}'";
+    }
+
+//    echo "<pre>|$min_validation|$max_validation|</pre>";
+//    exit();
+
+    $htm = <<<EOT
+        <div class="form-group">
+            <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{fleetname} </label>
+            <div class="col-xs-3 inputfieldgroup">
+                <input type="number" class="form-control" id="laps[{fleetnum}]" name="laps[{fleetnum}]" value="{fleetlaps}" placeholder="set laps"
+                    required data-fv-notempty-message="the no. of laps must be set" 
+                    $min_validation $max_validation
+                />
+            </div> 
+            <div class="col-xs-3 control-label" style="text-align: left;"><label> laps </label></div>    
+        </div>
+EOT;
+    return $htm;
+}
+
+
+function fm_set_laps($params = array())
+{
+    /* general purpose used for changing laps throughout race box application
+         -  race_pg  [set laps]
+         -  timer_pg [shorten all, reset laps]
+         -  results_pg [change finish lap]
+
+        has to deal with four race states
+         - fleet not started
+         - fleet started finishing
+         - fleet all finished ???
+
+        has three sections
+          - instructions - which can be shrunk or expanded
+          - laps for each fleet - with inline status detail
+          - footer
+
+    */
+    global $tmpl_o;
+
+    //echo "<pre>fm_set_laps ".print_r($params,true)."</pre>";
+
+    $fields_bufr = "";
+
+    foreach ($params['fleets'] as $i=>$fleet )
+    {
+        $fields = array(
+            "fleetname" => $fleet['fleetname'],
+            "fleetnum"  => "$i",
+            "fleetlaps" => "{$fleet['fleetlaps']}",
+        );
+
+        if ($fleet['status'] == "notstarted" or $fleet['status'] == "inprogress")
+        {
+            $fields_bufr.= $tmpl_o->get_template("ok_change_laps", $fields, $fleet);
+        }
+
+        elseif ($fleet['status'] == "finishing")
+        {
+            if ($params['mode'] == "changefinish")
+            {
+                $fields_bufr.= $tmpl_o->get_template("ok_change_laps", $fields, $fleet);
+            }
+            else
+            {
+                $fields['reason'] = "all boats finished - lap change not possible";
+                $fields_bufr.= $tmpl_o->get_template("not_change_laps", $fields, $fleet);
+            }
+        }
+
+        elseif ($fleet['status'] == "allfinished")
+        {
+            if ($params['mode'] == "changefinish")
+            {
+                $fields_bufr.= $tmpl_o->get_template("ok_change_laps", $fields, $fleet);
+            }
+            else
+            {
+                $fields['reason'] = "all boats finished - lap change not possible";
+                $fields_bufr.= $tmpl_o->get_template("not_change_laps", $fields, $fleet);
+            }
+        }
+
+        else
+        {
+            if ($params['mode'] == "changefinish")
+            {
+                $fields_bufr.= $tmpl_o->get_template("ok_change_laps", $fields, $fleet);
+            }
+            else
+            {
+                $fields_bufr.= $tmpl_o->get_template("not_change_laps", $fields, $fleet);
+                $fields['reason'] = "fleet status unknown - lap change not possible";
+            }
+
+        }
+    }
+
+    $instr_bufr = "";
+    if ($params['instruction'])
+    {
+        $instr_bufr.= <<<EOT
+        <div class="alert well well-sm alert-dismissable text-success" role="alert">
+            <p><span class="lead">Instructions: </span></p>
+            {instr_content}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span style="padding-right: 20px" aria-hidden="true">&times;</span>
+            </button>           
+        </div>
+EOT;
+    }
+
+    $footer_bufr = "";
+    if ($params['footer'])
+    {
+        $footer_bufr.= <<<EOT
+        <div class="alert well well-sm" role="alert">
+            <p class="text-success">{footer_content}</p>
+        </div>
+EOT;
+    }
+
+    $htm = <<<EOT
+    <div>
+        $instr_bufr
+        $fields_bufr
+        $footer_bufr            
+    </div>
+EOT;
+
+
+    return $htm;
+}

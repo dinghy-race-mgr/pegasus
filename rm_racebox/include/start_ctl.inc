@@ -104,7 +104,7 @@ $mdl_timerstop = array(
         "action"      => "start_sc.php?eventid=$eventid&pagestate=stoptimer",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "STOP race timer",
         "footer"      => ""
@@ -194,7 +194,7 @@ $mdl_generalrecall = array(
         "action"      => "start_sc.php?eventid=$eventid&pagestate=generalrecall",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "Set Time",
         "footer"      => ""
@@ -218,7 +218,7 @@ $mdl_latetimer = array(
         "action"      => "start_sc.php?eventid=$eventid&pagestate=adjusttimer",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "nope",
+        "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
         "submit-lbl"  => "Set Time",
         "footer"      => ""

@@ -15,8 +15,6 @@ function createmodaltitle($event, $close_icon)
  *  basic race information - start, tides, duties
  */
 {
-    global $lang; 
-    
     // basic race information - start, tides, duties
     $start_txt = "Start";
     $tide_txt = "";

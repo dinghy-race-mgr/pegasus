@@ -13,7 +13,9 @@ $_SESSION['app_name']      = "sailor";                        // name of applica
 $_SESSION['background']    = "bg-primary";                    // page background colour
 $_SESSION['sql_debug']     = false;                           // set to true to turn on debugging of sql commands - otherwise false
 
-$_SESSION['syslog'] = "sailor_".date("Y-m-d").".log";         // sys log  - only used when in club mode
+//$_SESSION['syslog'] = "sailor_".date("Y-m-d").".log";         // sys log  - only used when in club mode
+$_SESSION['syslog'] = "./logs/rm_sailor_".date("Y-m-d").".log";                                    // sys log  - only used when in club mode
+$_SESSION['dbglog'] = "../logs/dbglogs/" . $_SESSION['app_name'] . "_" . date("Y-m-d") . ".log";   // debug log file
 
 $_SESSION['sailor_race_sleep_delay'] = 0;                     // in multi use mode will return to search page after specified seconds
 $_SESSION['sailor_cruise_sleep_delay'] = 0;                   // 0 does not auto-return

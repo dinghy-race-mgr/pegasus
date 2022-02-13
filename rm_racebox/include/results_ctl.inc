@@ -146,7 +146,7 @@ $mdl_changefinish = array(
         "onsubmit"   => "",
         "action"     => "results_sc.php?eventid=$eventid&pagestate=changefinish",
         "target"     => "",
-        "close-lbl"  => "nope",
+        "close-lbl"  => "changed my mind",
         "reset-lbl"  => "",
         "submit-lbl" => "change finish laps",
         "footer"     => ""
@@ -190,7 +190,7 @@ $mdl_message = array(
         "onsubmit"   => "",
         "action"     => "results_sc.php?eventid=$eventid&pagestate=message",
         "target"     => "",
-        "close-lbl"  => "nope",
+        "close-lbl"  => "changed my mind",
         "reset-lbl"  => "",
         "submit-lbl" => "send message",
         "footer"     => ""

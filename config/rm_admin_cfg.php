@@ -11,6 +11,8 @@ $_SESSION['sql_debug'] = false;                        // set to true to turn on
 
 $_SESSION['result_url'] = "http://localhost/pegasus/results";     // url to results folder on website   FIXME - this needs to be handled better as already in ini file
 $_SESSION['result_path'] = "C:/xampp/htdocs/pegasus/results";   // url to results folder on website   FIXME - this needs to be handled better as already in ini file
+$_SESSION['result_target_url'] = "http://localhost/results_archive";     // url to results folder on website   FIXME - this needs to be handled better as already in ini file
+$_SESSION['result_target_path'] = "C:/xampp/htdocs/results_archive";   // url to results folder on website   FIXME - this needs to be handled better as already in ini file
 
 $_SESSION['daylight_saving']= array(
     "start_ref"   => "YYYY-04-01",

@@ -64,7 +64,7 @@ if ($eventid AND $pagestate)
 
             foreach ($declares as $declare)
             {
-                echo "<pre>".print_r($declare,true)."</pre>";
+
                 $error = false;
                 // need to get $entryid - as not provided by $_REQUEST for this function
                 $entry = $race_o->entry_get($declare['id'], "competitor");
@@ -123,14 +123,19 @@ if ($eventid AND $pagestate)
 
     elseif ($pagestate == "setcode")
     {
-        $setcode = set_code($eventid, $_REQUEST);
-
-        if($setcode !== true)
+        if (!empty($_REQUEST['fleet']))
         {
-            u_growlSet($eventid, $page, $g_timer_setcodefailed, array($_REQUEST['boat'], $setcode));
+            $setcode = set_code($eventid, $_REQUEST);
+
+            if ($setcode !== true) { u_growlSet($eventid, $page, $g_timer_setcodefailed, array($_REQUEST['boat'], $setcode)); }
         }
+        else
+        {
+            error_log("results_sc.php/pagestate=setcode : fleet argument not set", 3, $_SESSION['syslog']);
+        }
+
     }
-// code for ediing lap times below
+// code for editing lap times below
 /*
     elseif ($pagestate == "editresult")                // change result (handled through iframe
     {
@@ -272,24 +277,25 @@ if ($eventid AND $pagestate)
                     if ($entry['lap'] > $leaderlap) { $leaderlap = $entry['lap']; }
                 }
 
-                $status = $race_o->racestate_analyse($fleetnum, $racestate['starttime']);
-
-                // if status changed update
-                if ($status != $racestate['status']) {
-                    $update = array(
-                        "status" => $status,
-                        "prevstatus" => $racestate['status'],
-                        "maxlap" => $new_maxlap,
-                        "currentlap" => $leaderlap
-                    );
-                    $upd = $race_o->racestate_update($update, array("fleet" => $i));
-                    $_SESSION["e_$eventid"]["fl_$i"]['status'] = $status;
-                }
-
-                $status == "allfinished" ? $log_txt.= " - all finished": $log_txt.= " - not all finished";
-
-                u_writelog($log_txt, $eventid);  // log change
-                $growl_txt.= $log_txt."<br>";
+                $status = $race_o->racestate_analyse($fleetnum, $racestate['starttime'], $racestate['racetype']);
+// FIXME shouldn't be required now
+//
+//                // if status changed update
+//                if ($status != $racestate['status']) {
+//                    $update = array(
+//                        "status" => $status,
+//                        "prevstatus" => $racestate['status'],
+//                        "maxlap" => $new_maxlap,
+//                        "currentlap" => $leaderlap
+//                    );
+//                    $upd = $race_o->racestate_update($update, array("fleet" => $i));
+//                    $_SESSION["e_$eventid"]["fl_$i"]['status'] = $status;
+//                }
+//
+//                $status == "allfinished" ? $log_txt.= " - all finished": $log_txt.= " - not all finished";
+//
+//                u_writelog($log_txt, $eventid);  // log change
+//                $growl_txt.= $log_txt."<br>";
             }
         }
 
@@ -336,6 +342,9 @@ if ($eventid AND $pagestate)
         u_exitnicely($scriptname, $eventid,"program control option not recognised [pagestate: $pagestate]",
             "please contact your raceManager administrator");
     }
+
+    // check status / update session
+    $race_o->racestate_updatestatus_all($_SESSION["e_{$this->eventid}"]['rc_numfleets'], $page);
     
     if (!$stop_here) { header("Location: results_pg.php?eventid=$eventid"); exit(); }  // back to results page
        

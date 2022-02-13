@@ -56,10 +56,7 @@ if (!$init_status) {
     error_log(date('H:i:s') . " -- RM_SAILOR --------------------" . PHP_EOL, 3, $_SESSION['syslog']);
 
     // start debug log if required
-    if ($_SESSION['debug'] > 0)
-    {
-        $_SESSION['dbglog'] = "$loc/logs/dbglogs/" . $_SESSION['app_name'] . "_" . date("Y-m-d") . ".log";
-    }
+    if ($_SESSION['debug'] > 0) { u_writedbg("=== START DEBUG SESSION ".date("Y-m-d H:i:s")." =================", __FILE__, __FUNCTION__, __LINE__); }
 
     // set database initialisation (t_ini) into SESSION
     $db_o = new DB();

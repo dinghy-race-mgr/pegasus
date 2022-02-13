@@ -12,10 +12,10 @@ $mode     = "live";
 $debug    = "0";
 
 // includes
-include ("common/lib/util_lib.php");
+include ("./common/lib/util_lib.php");
 u_initconfigfile("config/common.ini");
-include ("config/racemanager_cfg.php");
-include ("config/lang/$langcode-startup-lang.php");
+include ("./config/racemanager_cfg.php");
+include ("./config/lang/$langcode-startup-lang.php");
 
 // document header
 echo <<<EOT

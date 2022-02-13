@@ -637,7 +637,7 @@ class SERIES_RESULT
                     }
 
                     $data[$sailorkey][$racekey] = array(
-                        "pts" => $points,
+                        "pts" => number_format((float)$points, 1, '.', ''),
                         "code" => $code,
                         "discard" => false,
                         "sort" => "",
@@ -754,6 +754,7 @@ class SERIES_RESULT
         // add DNC scores
         if ($this->report) { echo "- calc step 4: Apply DNC<br>"; }
         $this->score_dnc();
+        //u_writedbg("<pre>RST after DNC: ".print_r($this->rst,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
         //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
         // apply series discards
@@ -763,6 +764,7 @@ class SERIES_RESULT
 
         // apply average scores
         if ($this->report) { echo "- calc step 6: Apply AVG Score<br>"; }
+        //u_writedbg("<pre>RST BEFOE AVG: ".print_r($this->rst,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
         $this->score_avg();
         //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
@@ -827,10 +829,12 @@ class SERIES_RESULT
         }
 
         $dnc_score = array();
+
         foreach ($this->fleets as $k=>$fleet)
         {
             $code_func_e = str_replace("S", $fleet['nsailors'], $code_func);
-            $dnc_score[$k] = eval("return ".$code_func_e.";");
+
+            $this->fleets[$k]['dnc_score'] = eval("return ".$code_func_e.";");
         }
 
         // loop through sailors setting the DNC values to the appropriate value
@@ -839,38 +843,28 @@ class SERIES_RESULT
             // loop through races for this sailor
             foreach ($this->races as $r => $race)
             {
-                if ($race['status'] == "completed")
+                if ($race['status'] == "completed" or $race['status'] == "sailed")
                 {
                     if (array_key_exists("r$r", $this->rst[$s_id]))
                     {
                         if ($this->rst[$s_id]["r$r"]['code'] == "DNC") {
-                            $this->rst[$s_id]["r$r"]['pts'] = $dnc_score[$sailor['fleet']];
-                            $this->rst[$s_id]["r$r"]['sort'] = $dnc_score[$sailor['fleet']];
+                            $this->rst[$s_id]["r$r"]['pts'] = $this->fleets[$sailor['fleet']]['dnc_score'];
+                            $this->rst[$s_id]["r$r"]['sort'] = $this->fleets[$sailor['fleet']]['dnc_score'];
                         }
                     }
                     else
                     {
                         $this->rst[$s_id]["r$r"] = array(
-                            "pts" => $dnc_score[$sailor['fleet']],
+                            "pts" => $this->fleets[$sailor['fleet']]['dnc_score'],
                             "code" => "DNC",
                             "discard" => false,
-                            "sort" => $dnc_score[$sailor['fleet']],
+                            "sort" => $this->fleets[$sailor['fleet']]['dnc_score'],
                             "exclude" => false
                         );
                     }
                 }
             }
 
-
-
-//            foreach ($this->rst[$s_id] as $r=>$result)
-//            {
-//                if ($result['code'] == "DNC")
-//                {
-//                    $this->rst[$s_id][$r]['pts'] = $dnc_score[$sailor['fleet']];
-//                    $this->rst[$s_id][$r]['sort'] = $dnc_score[$sailor['fleet']];
-//                }
-//            }
         }
     }
 
@@ -965,9 +959,13 @@ class SERIES_RESULT
             {
                 if ($result['code'] == "AVG")
                 {
-                    if ($average != 0)    // FIXME what if only scoring race is AVG - needs to be set to DNC
+                    if ($average != 0)
                     {
                         $this->rst[$s_id][$k]['pts'] = $average;
+                    }
+                    else  // only scoring race is AVG - score is set to DNC
+                    {
+                        $this->rst[$s_id][$k]['pts'] = $this->fleets[$this->sailor[$s_id]['fleet']]['dnc_score'];
                     }
                 }
             }
