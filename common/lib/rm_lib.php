@@ -128,7 +128,7 @@ function r_initialiseevent($mode, $eventid)
         }
     }
 
-    echo "<pre>status = |$status|</pre>";
+    //echo "<pre>status = |$status|</pre>";
     if ($status == "ok") {
         // set status to selected in database and session if mode is init or reset
         if ($mode == "init" or $mode == "reset")
@@ -139,7 +139,9 @@ function r_initialiseevent($mode, $eventid)
     }
     else
     {
-        u_exitnicely("rm_lib/r_initialiseevent", $eventid, 0, "Failed to initialise application correctly [fail due to  - please report this problem to your system administrator");
+        u_exitnicely("rm_lib.php", $eventid,"Failed to initialise rm_racebox application correctly [ fail due to $status ]",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__,
+                "calledby" => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], "args" => func_get_args()));
     }
        
     // disconnect database
@@ -205,9 +207,8 @@ function r_seteventinsession($mode, $eventid, $event, $series_rs, $ood_rs = arra
         $_SESSION["e_$eventid"]['ev_ood'] = trim($_SESSION["e_$eventid"]['ev_ood'],", ");
     }
     
-    // names  (short and full)
-    $_SESSION["e_$eventid"]['ev_sname'] = strtok($event['event_name'], " /-");
-    $_SESSION["e_$eventid"]['ev_fname'] = $event['event_name'];                // FIXME - shouldn't really need this anymore'
+    // names  (display version)
+    $_SESSION["e_$eventid"]['ev_dname'] = u_conv_eventname($_SESSION["e_$eventid"]['ev_name']);
     
     // last click time
     $_SESSION["e_$eventid"]['lastclick']['entryid'] = 0;

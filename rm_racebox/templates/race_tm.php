@@ -179,7 +179,7 @@ EOT;
                             <h3 class="text-primary">Fleet Status</h3>
                         </div>
                         <div class="col-md-3">
-                            <a class="btn btn-sm btn-primary pull-right" type="submit" onclick="location.reload();">
+                            <a class="btn btn-sm btn-default pull-right" type="submit" onclick="location.reload();">
                                 <span class="glyphicon glyphicon-refresh"></span> Refresh</a>
                         </div>
                     </div> 
@@ -310,10 +310,10 @@ function fm_cancel_ok($param=array())
 {
     $html = <<<EOT
     <div class="margin-top-10">
-        <h4><b>You should only CANCEL a race if you haven't started it yet</b></h4>
-        <h4><b> - if it has already started use the ABANDON option</b></h4>
-        <p>If you are sure you want to CANCEL this race - click the button below to confirm</p>
-        <div class="alert alert-danger" role="alert">No results will be recorded!</div>
+        <p class="lead">You should only CANCEL a race if you haven't started it yet &hellip;</p>
+        <p class="lead" style="text-indent: 50px"> - if it has already started use the ABANDON option instead</p>
+        <p class="text-info">If you are sure you want to CANCEL this race - click the button below to confirm</p>
+        <div class="alert alert-warning" role="alert">No results will be recorded!</div>
     </div>
 EOT;
     return $html;
@@ -362,17 +362,17 @@ function fm_abandon_ok($param=array())
 {
     $html = <<<EOT
     <div class="margin-top-10">
-        <p>Are you sure you want to abandon this race ?</p>
-        <p><b>No results will be recorded</b></p>
-        <div class="alert alert-danger fade-in">
-            <p><b>Finish at an Earlier Lap</b></p>
+        <p class="lead">Are you sure you want to abandon this race ?</p>
+        <p class="text-danger lead" style="text-align: center;">no results will be recorded!</p>
+        <div class="alert alert-info fade-in">
+            <p class="lead">Tip: finish at an earlier lap</p>
             <p>If the boats have completed at least one lap and your sailing
-            instructions allow finishing at an earlier lap - use the <b>"reset finish lap"</b> option on the
+            instructions allow finishing at an earlier lap - use the <b>"Change Finish Lap"</b> option on the
             Results Page instead of abandoning the race.</p>
-            <p><a class="btn btn-primary" href="results_pg.php?eventid={eventid}" role="button">
-                Result Page <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-            </a></p>
+            <p class="pull-right"><a class="btn btn-default btn-sm" href="results_pg.php?eventid={eventid}" role="button">
+                go to Result Page <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a></p>
         </div>
+        <br>
     </div>
 EOT;
     return $html;
@@ -457,8 +457,8 @@ function fm_reset_ok($param=array())
 {
     $html = <<<EOT
         <!-- instructions -->
-        <h4 class="text-danger"><b>Are you REALLY REALLY sure?</b></h4>
-        <p><b>This will <u>delete</u> all entries* and lap timings you have recorded.</b></p>
+        <p class="text-danger lead"><b>Are you REALLY &nbsp;REALLY sure?</b></p>
+        <p class="lead">This will <u>delete</u> all entries* and lap timings you have recorded.</p>
         <p>If you are part way through a race and have a problem it is usually best to record
         finishing times on paper and try to resolve the problem after the race <span class="text-danger"><b>without a reset</b></span></p>
         <p class="text-primary"><small>* If entries are made through the sign on system - these can be reloaded after the reset</small></p>
@@ -466,7 +466,7 @@ function fm_reset_ok($param=array())
         <!-- confirm field -->
         <div class="well" style="margin-left: 20px; margin-right: 20px;">
             <div class="form-group" style="margin-left: 10%; margin-right: 10%;">
-                <label class="control-label">type the word "reset" to confirm you are of sound mind!</label>
+                <label class="control-label">type "reset" to confirm you are of sound mind before proceeding!</label>
                 <div class="inputfieldgroup">
                     <input type="text" class="form-control" id="confirm" name="confirm" value="" />
                 </div>

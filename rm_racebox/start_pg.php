@@ -25,8 +25,8 @@ require_once ("{$loc}/common/lib/rm_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 if (!$eventid) {
-    u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
-    "please contact your raceManager administrator");  }
+    u_exitnicely($scriptname, 0, "$page page - the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));}
 
 u_initpagestart($eventid, $page, true);  // starts session and sets error reporting
 
@@ -104,7 +104,7 @@ for ($startnum=1; $startnum<=$_SESSION["e_$eventid"]['rc_numstarts']; $startnum+
     $btn_infringestart['fields']['id'] = "infringestart$startnum";
     $btn_infringestart['data'] = "data-start=\"$startnum\"";
     // change button colour with 30 seconds to go
-    $start[$startnum] > constant('START_WARN_SECS') ? $btn_infringestart['fields']["style"] = "default": $btn_infringestart['fields']["style"] = "primary";
+    $start[$startnum] > constant('START_WARN_SECS') ? $btn_infringestart['fields']["style"] = "default": $btn_infringestart['fields']["style"] = "success";
     $infringebufr = $tmpl_o->get_template("btn_modal", $btn_infringestart['fields'], $btn_infringestart);
 
     $mdl_infringestart['fields']['id'] = "infringestart$startnum";
@@ -133,7 +133,7 @@ EOT;
         $btn_generalrecall['fields']['id'] = "generalrecall$startnum";
         $btn_generalrecall['data'] = "data-start=\"$startnum\"  data-starttime=\"$startdisplay\" ";
         // change button colour with 30 seconds to go
-        $start[$startnum] > constant('START_WARN_SECS') ? $btn_generalrecall['fields']["style"] = "default" : $btn_generalrecall['fields']["style"] = "primary";
+        $start[$startnum] > constant('START_WARN_SECS') ? $btn_generalrecall['fields']["style"] = "default" : $btn_generalrecall['fields']["style"] = "success";
         $recallbufr.= $tmpl_o->get_template("btn_modal", $btn_generalrecall['fields'], $btn_generalrecall);
 
         $mdl_generalrecall['fields']['id'] = "generalrecall$startnum";

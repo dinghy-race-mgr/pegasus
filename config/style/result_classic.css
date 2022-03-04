@@ -3,21 +3,22 @@
 
 
 :root {
-   --blue: steelblue;
-   --darkblue: rgb(44, 76, 124);
-   --red: rgb(194, 0, 0);
-   --darkred: darkred;
-   --white: white;
-   --grey: slategrey;
-   --lightgrey: rgb(153, 153, 153)
+   --blue: #4682b4;
+   --darkblue: #2c4c7c;
+   --red: #c20000;
+   --darkred: #8b0000;
+   --white: #ffffff;
+   --grey: #708090;
+   --lightgrey: #e6e6e6;
+   --verylightgrey: #eeeeee;
 }
 
 /* --------------------------------------------------------------------------------------------------------------------*/
 
-body         {font-family: Kalinga,verdana,sans-serif; font-size: 1.0em;}
+body             {font-family: Kalinga,verdana,sans-serif; font-size: 1.0em;}
 
-.flex-container { display: flex; }
-.flex-child { flex: 1; }
+.flex-container  { display: flex; }
+.flex-child      { flex: 1; }
 .flex-child:first-child { margin-right: 20px; }
 
 .report-hdr      {font-family: Kalinga,Verdana,sans-serif; font-weight: bold; font-size: 150%; color: var(--darkblue); padding-top: 40px; text-align: right;}
@@ -43,13 +44,13 @@ body         {font-family: Kalinga,verdana,sans-serif; font-size: 1.0em;}
 .truncate        {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
 
 .indent20        {padding-left: 20px;}
-.noshade         {background: none repeat scroll 0% 0% rgb(255, 255, 255);}
-.lightshade      {background: none repeat scroll 0% 0% rgb(238, 238, 238);}
-.darkshade       {background: none repeat scroll 0% 0% rgb(153, 153, 153);}
+.noshade         {background: none repeat scroll 0% 0% var(--white);}
+.lightshade      {background: none repeat scroll 0% 0% var(--verylightgrey);}
+.darkshade       {background: none repeat scroll 0% 0% var(--lightgrey);}
 
 button           {background: var(--darkred); cursor: pointer; color: var(--white); border-radius: 5px; font-size: 1.5em;}
 
-@media all   {.page-break	{ display: none; }  }
+@media all       {.page-break	{ display: none; }  }
 
 /* print styles */
 @media print {

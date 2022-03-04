@@ -28,18 +28,16 @@ $format = u_checkarg("format", "set","");
 
 u_initpagestart($_REQUEST['eventid'], $page, false);
 
-if (!$eventid) { u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
-    "please contact your raceManager administrator");  }
-
-if (empty($format)) { u_exitnicely($scriptname, 0, "the output report format has not been specified [{$_REQUEST['format']}]",
-    "please contact your raceManager administrator");  }
+if (!$eventid or empty($format))
+{
+    u_exitnicely($scriptname, 0, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}] or the output report format has not been specified [{$_REQUEST['format']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
+}
 
 // classes
 include ("{$loc}/common/classes/template_class.php");
 include ("{$loc}/common/classes/db_class.php");
 include ("{$loc}/common/classes/race_class.php");
-
-//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php"));
 
@@ -49,21 +47,17 @@ $race_o = new RACE($db_o, $eventid);
 $total = 0;
 for ($i = 1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
 {
-   //$race_o = new RACE($db_o, $eventid);
    $entries[$i] = $race_o->race_getentries(array("fleet"=>$i));
    $count[$i]   = count($entries[$i]);
    $total = $total + $count[$i];
    $fleets[$i] = array("name" => $_SESSION["e_$eventid"]["fl_$i"]['name'], "desc" => $_SESSION["e_$eventid"]["fl_$i"]['name'], "count"=>$count[$i]);
 }
 
-//echo "<pre>".print_r($_SESSION["e_$eventid"],true)."</pre>";
-//exit();
-
 // set report data structure
 $rp_data = array(
     "admin" => array(
         "club"     => $_SESSION['clubname'],
-        "event"    => $_SESSION["e_$eventid"]['ev_fname'],
+        "event"    => $_SESSION["e_$eventid"]['ev_dname'],
         "sys-url"  => $_SESSION['sys_website'],
         "sys-name" => $_SESSION['sys_name'],
         "total"    => $total,
@@ -100,9 +94,9 @@ if ($format == "entrylist" or $format == "entrylistclub")
     $rp_data['admin']['print'] = true;
     if ($format =="entrylist") { unset($rp_data['cols']['club']); }
 
-    // pass data to report as a $_GET
-    header("Location:../rm_reports/entrylist.php?json=".urlencode(json_encode($rp_data)));
-    // FIXME - this should be a post as the report content will be limited to 2M and is visible in address bar
+    // create data for report as JSON and send to report creation script via POST
+    echo u_sendJsonPost($_SESSION['baseurl']."/rm_reports/entrylist.php", $rp_data);
+
 }
 elseif($format == "declarationsheet")
 {
@@ -120,8 +114,8 @@ elseif($format == "declarationsheet")
     $rp_data['admin']['table-border'] = true;
     $rp_data['admin']['table-style'] = "width: 95%; border-collapse: collapse; border: 1px solid black";
 
-    // pass data to report as a $_GET
-    header("Location:../rm_reports/entrylist.php?json=".urlencode(json_encode($rp_data)));
+    // create data for report as JSON and send to report creation script via POST
+    echo u_sendJsonPost($_SESSION['baseurl']."/rm_reports/entrylist.php", $rp_data);
 }
 elseif($format == "timingsheet")
 {
@@ -145,8 +139,8 @@ elseif($format == "timingsheet")
     $rp_data['admin']['table-border'] = true;
     $rp_data['admin']['table-style'] = "width: 95%; border-collapse: collapse; border: 1px solid black";
 
-    // pass data to report as a $_GET
-    header("Location:../rm_reports/entrylist.php?json=".urlencode(json_encode($rp_data)));
+    // create data for report as JSON and send to report creation script via POST
+    echo u_sendJsonPost($_SESSION['baseurl']."/rm_reports/entrylist.php", $rp_data);
 
 }
 else

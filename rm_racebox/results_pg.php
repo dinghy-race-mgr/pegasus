@@ -22,13 +22,11 @@ require_once ("{$loc}/common/lib/util_lib.php");
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 if (!$eventid)
 {
-    u_exitnicely($scriptname, "not defined", "event id [{$_REQUEST['eventid']}] not recognised",
-        "Close this window and try to restart the application.  If the problems continue please report the error to your system administrator");
-    exit();
+    u_exitnicely($scriptname, 0,"$page page - event id record [{$_REQUEST['eventid']}] not defined",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
 u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
-//echo "<pre><br><br><br>".print_r($_SESSION,true)."</pre>";
 
 // classes  (remove classes not required)
 require_once ("{$loc}/common/classes/db_class.php");
@@ -46,12 +44,15 @@ $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/
 // ---- set script data
 $numfleets = $_SESSION["e_$eventid"]['rc_numfleets'];
 
-include ("./include/results_ctl.inc");
+
 include ("./templates/growls.php");
 
 // database connection
 $db_o = new DB;
 $race_o = new RACE($db_o, $eventid);
+
+// set event name
+$eventname = u_conv_eventname($_SESSION["e_$eventid"]['ev_name']);
 
 // get results into 2D array - covering all fleets
 $rs_data = array();
@@ -83,15 +84,6 @@ if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need 
 
         $fleet_still_racing = $race_o->fleet_race_stillracing($i);
         if ($fleet_still_racing) { $event_still_running = true; }
-//        if (!$fleet_still_racing)
-//        {
-//            $upd = $race_o->racestate_update(array("status"=>"allfinished"), array("eventid"=>"$eventid", "fleet"=>"$i"));
-//            if ($upd > 0) { $_SESSION["e_$eventid"]["fl_$i"]['status'] = "allfinished"; }
-//        }
-//        else
-//        {
-//            $event_still_running = true;
-//        }
     }
 
     $event_o = new EVENT($db_o);
@@ -107,6 +99,8 @@ if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need 
     }
 
 }
+
+include ("./include/results_ctl.inc");
 
 // ----- navbar -----------------------------------------------------------------------------
 $fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
@@ -126,10 +120,6 @@ $lbufr.= $tmpl_o->get_template("modal", $mdl_remove['fields'], $mdl_remove);
 
 // ----- right hand panel ------------------------------------------------------------
 $rbufr = "";
-
-// results status
-// FIXME temp solution - either fix it to be something useful or remove
-$_SESSION["e_$eventid"]['result_valid'] ? $rbufr.= "<p>Result Validated</p>"  :  $rbufr.= "<p>Result Invalid</p>";
 
 // retirements button
 if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
@@ -213,6 +203,7 @@ $mdl_message['fields']['body'] = $tmpl_o->get_template("fm_race_message", array(
 $rbufr.= $tmpl_o->get_template("modal", $mdl_message['fields'], $mdl_message);                    // send message modal
 
 // results publish modal
+
 $rbufr.= $tmpl_o->get_template("modal", $mdl_publish['fields'], $mdl_publish);                    // publish results modal
 
 // disconnect database

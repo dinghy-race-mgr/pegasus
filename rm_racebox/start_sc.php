@@ -109,7 +109,7 @@ if ($eventid AND $pagestate)
     
     elseif ($pagestate == "stoptimer")
     {
-        if (strtolower(trim($_REQUEST['confirm'])) == "stop")
+        if (strtolower(trim(str_replace('"', "", $_REQUEST['confirm'])) == "stop"))
         {
             $status = $event_o->event_updatestatus($eventid, "selected");       // update event status
             $timer_o->stop($_SERVER['REQUEST_TIME']);                           // stop timer
@@ -200,7 +200,7 @@ if ($eventid AND $pagestate)
 //    }
 
     // check race state / update session
-    $race_o->racestate_updatestatus_all($_SESSION["e_{$this->eventid}"]['rc_numfleets'], $page);
+    $race_o->racestate_updatestatus_all($_SESSION["e_$eventid"]['rc_numfleets'], $page);
 
     // return to start page
     if (!$stop_here){ header("Location: start_pg.php?eventid=$eventid"); exit(); }    // back to entries page
@@ -208,8 +208,8 @@ if ($eventid AND $pagestate)
 }
 else
 {
-    u_exitnicely($scriptname, $eventid,"event id [$eventid] or pagestate [$pagestate] not recognised",
-        "Close this window and try to restart the application.  If the problems continue please report the error to your system administrator");
+    u_exitnicely($scriptname, 0, "$page page - the requested event has an missing/invalid record identifier [{$_REQUEST['eventid']}] or pagestate [{$_REQUEST['pagestate']}",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------

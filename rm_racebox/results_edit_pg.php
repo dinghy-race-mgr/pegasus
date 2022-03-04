@@ -17,19 +17,15 @@ require_once ("{$loc}/common/lib/util_lib.php");
 
 u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
 
-// initialising language   
-//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
-
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 
-
-
 // FIXME - sort out arg processing + just display message
 if (empty($_REQUEST['pagestate']) OR empty($_REQUEST['eventid']) OR empty($_REQUEST['entryid']))
 {
-    u_exitnicely("timer_editlaptimes_pg", $eventid, "errornum", "parameters eventid, pagestate or entryid is missing");
+    u_exitnicely($scriptname, $_REQUEST['eventid'],"$page page - input parameters eventid [{$_REQUEST['eventid']}], pagestate [{$_REQUEST['pagestate']}] or entryid [{$_REQUEST['entryid']}] is missing",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 else
 {
@@ -70,7 +66,7 @@ if ($pagestate == "init")               // display form with lap times for each 
         );
 
     $pagefields['body'] = $tmpl_o->get_template("fm_result_edit", $resultedit_fields, $resultedit_params);  // create edit form
-    echo $tmpl_o->get_template("basic_page", $pagefields, array("form_validation"=>true));                 // create page with form
+    echo $tmpl_o->get_template("basic_page", $pagefields, array("form_validation"=>true));                  // create page with form
 
 }
 elseif ($pagestate == "submit")       // update t_race and t_lap records
@@ -175,7 +171,8 @@ EOT;
 
 else  // pagestate not recognised
 {
-    u_exitnicely("timer_editlaptimes_pg", $eventid, "errornum", "pagestate ($pagestate) not recognised");
+    u_exitnicely($scriptname, $_REQUEST['eventid'],"$page page - pagestate value [{$_REQUEST['pagestate']}] not recognised",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
 

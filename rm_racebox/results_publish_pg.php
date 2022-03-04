@@ -19,15 +19,12 @@ require_once ("$loc/common/lib/util_lib.php");
 
 u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and sets error reporting
 
-// initialising language   
-//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
-
 require_once ("$loc/common/classes/db_class.php");
 require_once ("$loc/common/classes/template_class.php");
 require_once ("$loc/common/classes/race_class.php");
 require_once ("$loc/common/classes/rota_class.php");
 require_once ("$loc/common/classes/event_class.php");
-require_once ("$loc/common/classes/result_class.php");
+require_once("$loc/common/classes/raceresult_class.php");
 require_once ("$loc/common/classes/seriesresult_class.php");
 
 require_once ("$loc/common/lib/results_lib.php");
@@ -36,8 +33,11 @@ require_once ("$loc/common/lib/results_lib.php");
 $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php",
     "./templates/results_tm.php", "$loc/common/templates/race_results_tm.php", "$loc/common/templates/series_results_tm.php"));
 
-$pagestate = $_REQUEST['pagestate'];
-$eventid   = $_REQUEST['eventid'];
+//echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
+// get arguments
+$eventid   = u_checkarg("eventid", "checkintnotzero","");
+$pagestate = u_checkarg("pagestate", "set", "", "");
 
 $system_info = array(
     "sys_name"    => $_SESSION['sys_name'],
@@ -47,21 +47,32 @@ $system_info = array(
     "result_url"  => $_SESSION['result_url']
 );
 
-if (empty($pagestate) OR empty($eventid))
+if (empty($pagestate) OR !$eventid)
 {
-    u_exitnicely("results_publish_pg", $eventid, "errornum", "eventid or pagestate are missing");
+    u_exitnicely($scriptname, 0,"$page page - event id record or pagestate are not defined",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
 $db_o    = new DB;                        // database object
 $event_o = new EVENT($db_o);              // event object
-$result_o  = new RESULT($db_o, $eventid); // result object
+$result_o  = new RACE_RESULT($db_o, $eventid); // result object
 
 $event = $event_o->get_event_byid($eventid);
 
 
 if ($pagestate == "init")    // display information collection form
 {
-    echo display_options_form($loc, $eventid);
+    $warning_count = u_checkarg("warnings", "checkint","");
+    $overide = u_checkarg("overide", "setbool","1");
+
+    if ($warning_count == 0 or $overide)
+    {
+        echo display_options_form($loc, $eventid);
+    }
+    else
+    {
+        echo display_warnings_page($loc, $eventid);
+    }
 
     ob_flush();
     flush();      
@@ -69,7 +80,8 @@ if ($pagestate == "init")    // display information collection form
 // FIXME need to provide more information if there is a problem - probably a publishing log that can be accessed
 elseif ($pagestate == "process")    // run through process workflow
 {
-    
+    //echo "<pre>".print_r($_REQUEST,true)."</pre>"; exit();
+
     $continue = true;
     $success = array(1=>true, 2=>true, 3=>true, 4=>true );
     u_writelog("Results processing started: ", $eventid);
@@ -78,17 +90,20 @@ elseif ($pagestate == "process")    // run through process workflow
     $transfer_files = array(); // contains files to be transferred
 
     // deal with parameters from form
-    empty($_REQUEST['result_status']) ? $result_status = "FINAL" : $result_status = strtoupper($_REQUEST['result_status']);
-    isset($_REQUEST['include_club']) ? $include_club = true : $include_club = false;
-    empty($_REQUEST['result_notes']) ? $result_notes = "" : $result_notes = $_REQUEST['result_notes'];
+    $args = array(
+        "ws_start"      => u_checkarg("ws_start", "set", "", ""),
+        "wd_start"      => u_checkarg("wd_start", "set", "", ""),
+        "ws_end"        => u_checkarg("ws_end", "set", "", ""),
+        "wd_end"        => u_checkarg("wd_end", "set", "", ""),
+        "result_status" => strtoupper(u_checkarg("result_status", "set", "", "final")),
+        "include_club"  => u_checkarg("include_club", "setbool", "on"),
+        "result_notes"  => u_checkarg("result_notes", "set", "", ""),
+    );
 
     // update event with form details
-    $update = $event_o->event_changedetail($eventid, array("result_notes" => $result_notes,
-        "ws_start" => $_REQUEST['ws_start'], "wd_start" => $_REQUEST['wd_start'],
-        "ws_end" => $_REQUEST['ws_end'], "wd_end" => $_REQUEST['wd_end'] ));
-    if ($update) {u_writelog("Updated event wind details and notes", $eventid); }
-    else { u_writelog("FAILED to update event wind details and notes", $eventid); }
-
+    $update = $event_o->event_changedetail($eventid, $args);
+    if ($update) {u_writelog(" - updated event wind details and notes", $eventid); }
+    else { u_writelog(" - FAILED to update event wind details and notes", $eventid); }
 
     echo start_page($loc);
     ob_flush();
@@ -100,7 +115,7 @@ elseif ($pagestate == "process")    // run through process workflow
     // -----------------------------------------------------------------------------------
     $step = 1;
     startProcess($step, $row_start[$step], "Archiving results data...", "warning");
-    $result_o = new RESULT($db_o, $eventid);
+    $result_o = new RACE_RESULT($db_o, $eventid);
 
     $status = process_archive();
     sleep(2);
@@ -132,7 +147,7 @@ elseif ($pagestate == "process")    // run through process workflow
 
         // create race result
         $fleet_msg = array(); // TODO this is a future use feature - displays individual notes for each fleet - currently not collected anywhere
-        $status = process_result_file($loc, $result_status, $include_club, $result_notes, $fleet_msg);
+        $status = process_result_file($loc, $args['result_status'], $args['include_club'], $args['result_notes'], $fleet_msg);
         sleep(2);
 
         if ($status['success'])
@@ -175,7 +190,8 @@ elseif ($pagestate == "process")    // run through process workflow
 
             startProcess($step, $row_start[$step], "Updating series results ", "warning");
 
-            $status = process_series_file($eventid, $opts, $_SESSION["e_$eventid"]["ev_seriescode"], $result_status);
+            $series_notes = "";   // fixme - curently not used
+            $status = process_series_file($opts, $_SESSION["e_$eventid"]["ev_seriescode"], $args['result_status'], $series_notes);
             sleep(2);
 
             if ($status['success'])
@@ -213,65 +229,149 @@ elseif ($pagestate == "process")    // run through process workflow
     // -----------------------------------------------------------------------------------
     // step 4 post race, series, inventory file to website
     // -----------------------------------------------------------------------------------
-    if ($continue)
+    if ($continue) // continue if previous processsing hasn't causes a problem
     {
         $step = 4;
+        $result_year = date("Y", strtotime($event['event_date']));
 
-        if ($result_status != "embargoed")
+        // if results from this race have been embargoed - we shouldn't transfer anything or update the inventory
+        // also check if upload is turned on in config
+        if ($args['result_status'] != "embargoed" and $_SESSION['result_upload'] != "none")
         {
             startProcess($step, $row_start[$step], "Transferring results files to website ", "warning");
 
-            // get results files
-
-            // get inventory file name/path
-            $result_year = date("Y", strtotime($_SESSION["e_$eventid"]['ev_date']));
-            $inventory_file = $result_o->get_inventory_filename($result_year);
-            $inventory_path = $_SESSION['result_path'].DIRECTORY_SEPARATOR.$inventory_file;
-            $inventory_url  = $_SESSION['result_url']."/".$inventory_file;
-
             // create inventory
-            $inventory = $result_o->create_result_inventory($result_year, $inventory_path, $system_info);
-            u_writedbg("<pre>INVENTORY STATUS: ".print_r($inventory,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
+            $inventory = process_inventory($result_year);
 
-            if ($inventory)                         // if inventory created successfully then proceed
+            if ($inventory)    // if inventory created successfully then proceed
             {
-                // add inventory file to file to be transferred
-                $transfer_files[] = array("path" => $inventory_path, "url" => $inventory_url,
-                                          "file" => $inventory_file);
+                u_writelog("FILE TRANSFER - results inventory created", $eventid);
 
-                // transfer files using relevant protocol
-                //$status = process_transfer($transfer_files, $_SESSION['ftp_protocol']);
-                $status = process_transfer($result_year, $transfer_files, $_SESSION['transfer_protocol']);
-                sleep(2);
-                u_writedbg("<pre>TRANSFER STATUS: ".print_r($status,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
-                u_writedbg("<pre>TRANSFER FILE INFO: ".print_r($transfer_files,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
+                // inventory file into array
+                $invdata = json_decode(file_get_contents($inventory['path'].DIRECTORY_SEPARATOR.$inventory['filename']), true);
 
-                if ($status['result'])
+                // create file list for transfer ( upload not done or out of date and not embargoed)
+                $files = array();
+                foreach($invdata['events'] as $id=>$invevent)
                 {
-                    endProcess($step, $row_start[$step], "success", "<pre> Results files transferred: ".print_r($transfer_files,true)."</pre>");
-                    $continue = true;
+                    foreach($invevent['resultsfiles'] as $k=>$file)
+                    {
+                        // check if file neeeds uploading
+                        $upload_time = strtotime($file['upload']);
+                        $update_time = strtotime($file['upddate']);
+                        if ($file['status'] != "embargoed" and (empty($file['upload']) or $upload_time < $update_time))
+                        {
+                            $files[] = $file;
+                        }
+                    }
                 }
-                else
+
+                // add inventory file
+                $files[] = array(
+                    "file_id" =>"",
+                    "year"   => $result_year,
+                    "type"   => "",
+                    "format" => "json",
+                    "file"   => $result_o->get_inventory_filename($result_year),
+                    "label"  => "inventory file",
+                    "notes"  => "",
+                    "status" => "final",
+                    "rank"   => 0,
+                    "upload" => "",
+                    "update" => date("Y-m-d H:i:s")
+                );
+
+
+                // transfer files
+                $num_for_transfer = count($files);
+                if ($num_for_transfer > 0) {
+
+                    // use appropriate protocol for upload
+                    if ($_SESSION['result_upload'] == "network")
+                    {
+                        empty($_SESSION["result_public_path"]) ? $target_path = "" : $target_path = $_SESSION["result_public_path"];
+                        empty($_SESSION["result_public_url"]) ? $target_url = "" : $target_url = $_SESSION["result_public_url"];
+
+                        if (empty($target_path) or empty($target_url))
+                        {
+                            sleep(1);
+                            endProcess($step, $row_start[$step], "fail", "results location for website not configured ");
+                            u_writelog("FILE TRANSFER - results location for website not configure [{$_SESSION['result_public_path']}]", $eventid);
+                        }
+                        else
+                        {
+                            $status = process_transfer_network($files, $target_path, $target_url);
+
+                        }
+
+                    }
+                    elseif ($_SESSION['result_upload'] == "ftp")
+                    {
+                        $ftp = array("protocol"=>$_SESSION["ftp_protocol"], "server"=> $_SESSION["ftp_server"],
+                                     "user"=> $_SESSION["ftp_user"], "pwd"=> $_SESSION["ftp_pwd"]);
+
+                        if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
+                        {
+                            sleep(1);
+                            endProcess($step, $row_start[$step], "fail", "ftp protocol for website not configured correctly ");
+                            u_writelog("FILE TRANSFER - ftp protocol for website not configured correctly", $eventid);
+                        }
+                        else
+                        {
+                            $status = process_transfer_ftp($files, $ftp);  // FIXME implement function
+                        }
+                    }
+                    else
+                    {
+                        sleep(1);
+                        endProcess($step, $row_start[$step], "fail", "Transfer protocol not configured correctly ");
+                        u_writelog("FILE TRANSFER - transfer protocol option not configured correctly [{$_SESSION['result_upload']}]", $eventid);
+                    }
+                }
+
+                // report on transfer process
+
+                $msg_type = "fail";
+                $txt = $status['num_files']." of $num_for_transfer uploaded";
+                if ($status['result'] and $status['complete'] )
                 {
-                    endProcess($step, $row_start[$step], "fail", "Results file transfer FAILED ");
-                    $continue = false;
-                    $success[4] = false;
+                    $msg_type = "success";
                 }
+                elseif ($status['result'])
+                {
+                    $msg_type = "warning";
+                }
+
+                $detail_htm = "";
+                $detail_txt = "";
+                if ($msg_type != "success")
+                {
+                    foreach ($status['log'] as $file)
+                    {
+                        $detail_htm.= "<p>$file</p>";
+                        $detail_txt.= "$file\n";
+                    }
+                }
+
+                sleep(1);
+                endProcess($step, $row_start[$step], $msg_type, $txt."<br><br>".$detail);
+                u_writelog("FILE TRANSFER - $txt\n$detail_txt", $eventid);
             }
-            else                                            // report issue with inventory creation
+            else
             {
-                endProcess($step, $row_start[$step], "fail", "Results inventory file transfer FAILED");
-                $continue = false;
-                $success[4] = false;
+                sleep(1);
+                endProcess($step, $row_start[$step], "fail", "Problem creating list of files to transfer ");
+                u_writelog("FILE TRANSFER - results inventory NOT created", $eventid);
             }
         }
         else
         {
             sleep(1);
             endProcess($step, $row_start[$step], "warning", "Transfer to website not requested ");
-            $continue = true;
+            u_writelog("FILE TRANSFER - NOT requested", $eventid);
         }
     }
+
 
     // -----------------------------------------------------------------------------------
     // step 5 report end status
@@ -282,7 +382,8 @@ elseif ($pagestate == "process")    // run through process workflow
 }
 else
 {
-    u_exitnicely("results_publish_pg", $eventid, "errornum", "pagestate not recognised [pagestate]");
+    u_exitnicely($scriptname, $eventid,"$page page - pagestate value not recognised [{$_REQUEST['pagestate']}",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
 echo close_page();
@@ -367,6 +468,26 @@ EOT;
     flush();
 }
 
+function display_warnings_page($loc, $eventid)
+{
+    global $event_o, $db_o, $tmpl_o;
+    // get current wind/notes settings in case this is not the first publish
+    $event = $event_o->get_event_byid($eventid);
+
+    // generate page
+    $fields = array(
+        "title"      => "publish results",
+        "loc"        => $loc,
+        "theme"      => $_SESSION['racebox_theme'],
+        "stylesheet" => "./style/rm_racebox.css",
+        "navbar"     => "",
+        "footer"     => "",
+    );
+
+    $fields['body'] = $tmpl_o->get_template("fm_publish_warning", array("eventid" => $eventid), array());
+
+    return $tmpl_o->get_template("basic_page", $fields);
+}
 
 function display_options_form($loc, $eventid)
 {

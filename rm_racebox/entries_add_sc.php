@@ -7,23 +7,18 @@ $debug      = false;
 $loc        = "..";
 $page       = "addentry";     // 
 $scriptname = basename(__FILE__);
+$stop_here  = false;
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
-$page_state = u_checkarg("pagestate", "set","");
+$pagestate = u_checkarg("pagestate", "set","");
 
 u_initpagestart($_REQUEST['eventid'], $page, false);
 
-if (!$eventid) {
-    u_exitnicely($scriptname, $eventid, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
-        "please contact your raceManager administrator");
-}
-
-if (empty($page_state)) {
-    u_exitnicely($scriptname, $eventid, "the page state has not been set",
-        "please contact your raceManager administrator");
-}
+if (!$eventid or empty($pagestate)) {
+    u_exitnicely($scriptname, 0, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}] or page state [{$_REQUEST['pagestate']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array())); }
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
@@ -36,13 +31,13 @@ require_once ("{$loc}/common/classes/entry_class.php");
 $db_o = new DB;
 $comp_o = new COMPETITOR($db_o);
 
-if($page_state == "search")                                          // do search and return results
+if($pagestate == "search")                                          // do search and return results
 {
     unset($_SESSION["e_$eventid"]['enter_opt']);                     // initialise session variables
-    $_SESSION["e_$eventid"]['enter_opt'] = $comp_o->comp_searchcompetitor($_REQUEST['searchstr']);
+    $_SESSION["e_$eventid"]['enter_opt'] = $comp_o->comp_searchcompetitor($_REQUEST['searchstr'], "racebox");
 }
 
-elseif ($page_state == "enterone")       // add competitor to current event
+elseif ($pagestate == "enterone")       // add competitor to current event
 {
     $entry_o = new ENTRY($db_o, $eventid);
     // debug:u_writedbg("competitor {$_REQUEST['competitorid']}",__FILE__,__FUNCTION__,__LINE__);  // debug:
@@ -63,11 +58,11 @@ elseif ($page_state == "enterone")       // add competitor to current event
 
 else
 {
-    u_exitnicely($scriptname, $eventid,"ENTER failed - the value of page state not recognised [$pagestate]","please contact your raceManager administrator");
+    u_exitnicely($scriptname, $eventid, "ENTER failed - the value of page state not recognised [$pagestate]\"",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
-header("Location: entries_add_pg.php?eventid=$eventid&pagestate=pick");
-exit();
+if (!$stop_here) { header("Location: entries_add_pg.php?eventid=$eventid&pagestate=pick"); exit();}  // back to entries add page
 
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------

@@ -7,15 +7,11 @@ $today = date("Y-m-d");
 include ("{$loc}/common/lib/util_lib.php");
 include ("{$loc}/common/classes/template_class.php");
 
-u_initpagestart(0, $page, false);
-
 // get templates
 $tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php", "./templates/entries_tm.php"));
 
-// get report data
-$rpData = json_decode($_REQUEST['json'], TRUE);
-//echo "<pre>".print_r($rpData,true)."</pre>";
-
+// get report data from POST as encoded JSON
+$rpData = json_decode(file_get_contents('php://input'), true);
 
 // report header
 $fields = array(

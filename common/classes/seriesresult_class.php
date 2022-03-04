@@ -516,16 +516,11 @@ class SERIES_RESULT
             // get event details
             $event = $this->event_o->get_event_byid($eventid);
 
-            $result_o = new RESULT($this->db, $eventid);
-            $rfile = $result_o->get_result_files($eventid, "race");
-            if ($rfile[0])
-            {
-                $event['url'] = $rfile['result_path'];
-            }
-            else
-            {
-                $event['url'] = "";
-            }
+            $result_o = new RACE_RESULT($this->db, $eventid);
+
+            $rfile = $result_o->get_result_files("races");
+
+            empty($rfile) ? $event['url'] = "" : $event['url'] = $_SESSION['result_public_url']."/".$rfile['folder']."/".$rfile['filename'];
 
             // event format consistency check
             if ($i == 1 )

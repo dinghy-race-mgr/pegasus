@@ -13,17 +13,18 @@
 $loc        = "..";                                              // relative path from script to top level folder
 $page       = "pickrace";
 $scriptname = basename(__FILE__);
+$stop_here  = false;
+
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 
 u_initpagestart("", $page, false);                               // starts session and sets error reporting
-//include ("{$loc}/config/{$_SESSION['lang']}-racebox-lang.php");  // language file
 
 if (!empty($_REQUEST['pagestate']))
 {
     $pagestate = $_REQUEST['pagestate'];
-    include("../templates/racebox/growls.php");
+    include("../templates/growls.php");
 
     $db_o = new DB;
     $event_o = new EVENT($db_o);
@@ -67,17 +68,18 @@ if (!empty($_REQUEST['pagestate']))
             u_growlSet(0, $page, $g_add_event_fail, array($_REQUEST['eventname'], $add));
         }
         // return to race page
-        header("Location: pickrace_pg.php?");
-        exit();
+        if (!$stop_here) { header("Location: pickrace_pg.php?"); exit(); }
     }
     
     else
     {
-        u_exitnicely($scriptname, $eventid, "event001", $lang['err']['exit-action']);        // FIXME
+        u_exitnicely($scriptname, 0, "$page page has an unknown page state [{$_REQUEST['pagestate']}] - request no processed",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
 }
 else
 {
-    u_exitnicely($scriptname, $eventid, "sys005", $lang['err']['exit-action']);              // FIXME
+    u_exitnicely($scriptname, 0, "$page page has missing page state value - request not processed",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 

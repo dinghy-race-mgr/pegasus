@@ -162,19 +162,21 @@ class BUNCH
 
             $htm.= <<<EOT
             <div class="row" style="margin-left: 10px; margin-bottom: 10px">
-                <div class="col-md-9" style="padding: 0px 0px 0px 0px;">
-                    <a type="button" href="{$node['link']}" class="btn btn-block btn-$bcolor btn-md" style="color:black; font-weight: bold">{$node['label']}</a>
+                <div class="col-md-8" style="padding: 0px 0px 0px 0px;">
+                    <a type="button" href="{$node['link']}" class="btn btn-block btn-$bcolor btn-sm" style="color:black; font-weight: bold">{$node['label']}</a>
                 </div>
-                <div class="col-md-1" style="padding: 0px 0px 0px 0px;">
-                    <a type="button" href="{$this->link}?pagestate=bunch&eventid={$this->eventid}&node=$i&action=up" class="btn btn-link btn-md"  title="up" style="padding: 0px 0px 0px 10px;">
+                
+                <div class="col-md-2" style="padding: 0px 0px 0px 0px;">
+                    <a type="button" href="{$this->link}?pagestate=bunch&eventid={$this->eventid}&node=$i&action=up" class="btn btn-link btn-sm"  title="up" style="padding: 0px 0px 0px 10px;">
                         <span class="glyphicon glyphicon-chevron-up"  aria-hidden="false"></span>
                     </a>
-                    <a type="button" href="{$this->link}?pagestate=bunch&eventid={$this->eventid}&node=$i&action=down" class="btn btn-link btn-md"  title="down" style="padding: 0px 0px 0px 10px;"">
+                    <a type="button" href="{$this->link}?pagestate=bunch&eventid={$this->eventid}&node=$i&action=down" class="btn btn-link btn-sm"  title="down" style="padding: 0px 0px 0px 10px;"">
                         <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                     </a>
                 </div>
+                 
                 <div class="col-md-2" style="padding: 0px 0px 0px 0px;">
-                    <a type="button" href="{$this->link}?pagestate=bunch&eventid={$this->eventid}&node=$i&action=delnode" class="btn btn-link btn-md" style="padding: 10px 0px 0px 10px; color: darkred" title="remove">
+                    <a type="button" href="{$this->link}?pagestate=bunch&eventid={$this->eventid}&node=$i&action=delnode" class="btn btn-link btn-sm" style="padding: 10px 0px 0px 10px; color: darkred" title="remove">
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     </a>
                 </div>                    

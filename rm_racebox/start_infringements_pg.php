@@ -27,7 +27,8 @@ $startnum  = $_REQUEST['startnum'];
 
 if (empty($pagestate) OR empty($eventid))
 {
-    u_exitnicely("start_infringements_pg", $eventid, "errornum", "eventid ($eventid), or pagestate ($pagestate) or startnum()$startnum is missing");
+    u_exitnicely($scriptname, $eventid,"$page page - event id record [{$_REQUEST['eventid']}], start number [{$_REQUEST['startnum']}] or pagestate value [{$_REQUEST['pagestate']}] not set",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/start_tm.php"));
@@ -119,6 +120,7 @@ elseif ($pagestate == "setcode")
 // ---- pagestate 'unknown'' ---------------------- tdeal with invalid pagestate
 else
 {
-    u_exitnicely("start_infringements_pg", $eventid, "errornum", "pagestate ($pagestate) is not recognised");
+    u_exitnicely($scriptname, $eventid,"$page page - pagestate value not recognised [{$_REQUEST['pagestate']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 

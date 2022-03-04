@@ -1,7 +1,58 @@
 <?php
-/*
- *  under_construction
- */
+
+//exit nicely
+function exit_nicely($params = array())
+{
+    $html = <<<EOT
+    <!DOCTYPE html><html lang="en">
+    <head>
+            <title>{title}</title>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="description" content="">
+            <meta name="author" content="">
+
+            <link   rel="shortcut icon"    href="{loc}/common/images/favicon.ico">
+            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap341/css/{theme}bootstrap.min.css" >
+            <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>
+            <script type="text/javascript" src="{loc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="{loc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
+    </head>
+    <body class="{body_attr}">
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <div class="navbar-header navbar-brand">raceManager</div>
+            <div>
+              <ul class="nav navbar-nav navbar-right"><li>System Error</li></ul>
+            </div>
+          </div>
+        </nav>
+        <div class="container" style="margin-top: 50px;">
+            <div class="jumbotron">
+              <p class="text-info lead">Oops sorry...we have encountered an unexpected error</p>
+              <p class="text-primary">{error}</p>
+            </div>
+            <div>
+                <div class="alert alert-info">
+                  <p class="lead">You could try ...</p> 
+                  <p>{action} 
+                  - if this doesn't work contact your raceManager administrator</p>
+                </div>
+            </div>
+            <div class="well well-lg">
+                The problem is probably due to some frankly shoddy coding by the system developer!! - the details below might help him find and fix the problem<br>
+                {script} {function} (line {line}) - called by {called by} with {args} 
+            </div>
+        </div>
+    </body>
+    </html>
+EOT;
+    return $html;
+}
+
+
+// under_construction
 function under_construction($params=array())
     /*
      FIELDS
@@ -29,7 +80,7 @@ EOT;
 }
 
 
-
+// error message as alert
 function error_msg($params = array())
 {
     $bufr = <<<EOT
@@ -47,41 +98,6 @@ function error_msg($params = array())
 EOT;
     return $bufr;
 }
-
-//function growls($params=array())
-///*
-// FIELDS
-//    none
-//
-// PARAMS
-//    eventid :  event id
-//    page    :  page to display growl on
-//*/
-//{
-//    $eventid = $params["eventid"];
-//    $page    = $params["page"];
-//    $html = "";
-//    // first check that we have a current growl and that it is for this page
-//    if (!empty($_SESSION["e_$eventid"]['growl']["$page"]))
-//    {
-//        $html.= <<<EOT
-//        <script>
-//        $(function() {
-//            $.bootstrapGrowl("<h4 class=\"alert-heading\">{$_SESSION["e_$eventid"]['growl']['msg']}</h4>", {
-//                type: '{$_SESSION["e_$eventid"]['growl']['type']}',
-//                offset: {from: 'top', amount: 70},
-//                align: 'left',
-//                width: '600',
-//                delay: {$_SESSION["e_$eventid"]['growl']['close']},
-//                allow_dismiss: true
-//            });
-//        });
-//        </script>
-//EOT;
-//        unset($_SESSION["e_$eventid"]['growl']);    // now unset growls
-//    }
-//    return $html;
-//}
 
 function footer($params = array())
 /*
@@ -286,6 +302,10 @@ EOT;
         </div>
     </div>
     <script>
+         <!-- allows iframe to close modal -->
+         window.closeModal = function(){
+           $('#{id}Modal').modal('hide');
+         };
          <!-- moves modal content outside of container -->
          $('#{id}Modal').appendTo("body");
          <!-- allows information to be passed from button to modal -->

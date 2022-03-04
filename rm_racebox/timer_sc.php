@@ -448,16 +448,15 @@ if ($eventid AND $pagestate)
     }
 
     // check race state / update session
-    $race_o->racestate_updatestatus_all($_SESSION["e_{$this->eventid}"]['rc_numfleets'], $page);
+    $race_o->racestate_updatestatus_all($_SESSION["e_$eventid"]['rc_numfleets'], $page);
 
     // return to timer page
     if (!$stop_here) { header("Location: timer_pg.php?eventid=$eventid"); exit(); }
 }
 else
 {
-    //FIXME - needs to be a way to get back
-    u_exitnicely($scriptname, $eventid,"0","Close this window and try to restart the application.  
-    If the problems continue please report the error to your system administrator");
+    u_exitnicely($scriptname, $eventid, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}] or page state [{$_REQUEST['pagestate']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------

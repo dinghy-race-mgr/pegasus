@@ -26,7 +26,8 @@ require_once ("{$loc}/common/classes/race_class.php");
 
 if (empty($_REQUEST['pagestate']) OR empty($_REQUEST['eventid']) OR empty($_REQUEST['entryid']))
 {
-    u_exitnicely("timer_editlaptimes_pg", $eventid, "errornum", "parameters eventid, pagestate or entryid is missing");
+    u_exitnicely($scriptname, 0, "$page page - the requested event has an missing/invalid record identifier [{$_REQUEST['eventid']}] or pagestate [{$_REQUEST['pagestate']}",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 else
 {
@@ -69,9 +70,6 @@ $laptimes = $race_o->entry_laptimes_get($entryid);
 //    unset($laptimes[0]);
 //}
 //echo "<pre>".print_r($laptimes,true)."</pre>";
-
-
-
 
 // set key parameters
 $boat_detail = array(
@@ -124,7 +122,8 @@ elseif ($pagestate == "submit")       // correct modified lap times and return t
 }
 else  // pagestate not recognised
 {
-    u_exitnicely("timer_editlaptimes_pg", $eventid, "errornum", "pagestate ($pagestate) not recognised");
+    u_exitnicely($scriptname, 0, "$page page - the pagestate value [{$_REQUEST['pagestate']} is not recognised",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
 

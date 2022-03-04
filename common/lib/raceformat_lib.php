@@ -385,8 +385,8 @@ function createprintbutton($eventid, $print)
     if ($print)
     {
         $html = <<<EOT
-        <a class="btn btn-primary active pull-right" role="button"
-           href="race_format_pg.php?eventid=$eventid" target="_BLANK" style="width: 200px" >
+        <a class="btn btn-info btn-md active pull-right" role="button"
+           href="race_format_pg.php?eventid=$eventid" target="_BLANK" >
            print friendly &raquo;
         </a>
 EOT;

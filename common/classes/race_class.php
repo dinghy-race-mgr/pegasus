@@ -826,7 +826,7 @@ class RACE
 
             if ($still_racing > 0)  // set warning if boats still racing
             {
-                $warnings[] = array("type"=>"danger", "msg"=>"there are $still_racing boats still racing in this fleet");
+                $warnings[] = array("type"=>"danger", "msg"=>"there are $still_racing boat(s) still racing in this fleet");
             }
 
             // sort array on points then aggregate time
@@ -900,15 +900,6 @@ class RACE
                 }
 
             }
-            //error_log("RSDATA: ".print_r($rs_data,true). "\n",3, $_SESSION['dbglog']);
-
-            // re-sort data array to account for any penalties applied
-//            echo "<br><br><br><pre>Points array: ".count($points_arr)." rs_data array: ".count($rs_data)."</pre>";
-//            if ($fleetnum == 2)
-//            {
-//                echo "<pre>SECOND SORT".print_r($points_arr,true)."</pre>";
-//                //echo "<pre>".print_r($rs_data,true)."</pre>";
-//            }
 
             array_multisort($points_arr, SORT_ASC, $rs_data);
         }
@@ -989,7 +980,6 @@ class RACE
 
                 $numrows = $this->db->db_update("t_result", $rs_row, array("id"=>$rs_data[$k]['id']));
                 //error_log("UPD: {$row['class']} {$row['sailnum']} - $numrows \n",3, $_SESSION['dbg_file']);
-
             }
         }
 

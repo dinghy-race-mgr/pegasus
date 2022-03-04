@@ -7,13 +7,14 @@ function fm_start_adjusttimer($params=array())
 
     $html = <<<EOT
     <div class="well" role="alert">
-        <div>If you have forgotten to set the timer at the first signal,
-        enter the (approx) clock time of the first signal e.g 10:30:00</div>
+        <p class="lead">Forgotten to set the timer at the first signal?</p>
+        <p class="lead" style="text-indent: 50px">&hellip; enter the (approx) time of the first signal e.g 10:32:30</p>
     </div>
+    <br>
 
     <!-- field #1 - restart time -->
     <div class="form-group margin-top-20">
-        <label class="$labelwidth control-label">Clock Time of First Signal</label>
+        <label class="$labelwidth control-label">Time of First Warning Signal</label>
         <div class="$fieldwidth inputfieldgroup">
             <input type="text" class="form-control" id="adjusttime" name="adjusttime" value=""
                 placeholder="hh:mm:ss (24 hour clock)"
@@ -35,14 +36,13 @@ function fm_start_genrecall($params=array())
 
     $html = <<<EOT
     <div class="alert well well-sm" role="alert">
-        <p class="text-info">Use this form to adjust the timer for a general recall of this fleet
-                 - enter the planned <b>START</b> time for the restart (not the preparatory or warning signals).</p>
-        <p class="text-danger"><b>Note:</b> This can also be used to delay this start for reasons other than a general recall</p>
+        <p class="text-info lead">If you have a general recall - enter the actual START time for this fleet.</p>
+        <p class="text-primary lead"><small>Note: This can also be used to correct for a delayed start for other reasons</small></p>
     </div>
 
     <!-- field #1 - restart time -->
     <div class="form-group margin-top-20">
-        <label class="$labelwidth control-label">Clock Time of Re-Start</label>
+        <label class="$labelwidth control-label">Time of RESTART</label>
         <div class="$fieldwidth inputfieldgroup">
             <input type="text" class="form-control" id="restarttime" name="restarttime" value=""
                 placeholder="hh:mm:ss (24 hour clock)"
@@ -51,7 +51,7 @@ function fm_start_genrecall($params=array())
                 data-fv-regexp-regexp="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
                 data-fv-regexp-message="start time must be in HH:MM:SS format"
             />
-            <span class="pull-right text-primary"><i>[current start time <span id="origstart{$params['startnum']}"></span>]</i></span>
+            <span class="pull-right text-primary">[ current start time for this fleet <span id="origstart{$params['startnum']}"></span> ]</span>
         </div>
     </div>
     <input name="startnum" type="hidden" id="start{$params['startnum']}" value={$params['startnum']} />
@@ -73,7 +73,7 @@ function fm_stoptimer_ok($param=array())
         <!-- confirm field -->
         <div class="well" style="margin-left: 20px; margin-right: 20px;">
             <div class="form-group" style="margin-left: 10%; margin-right: 10%;">
-                <label class="control-label">type the word "stop" to confirm you want to reset the timer!</label>
+                <label class="control-label">type "stop" to confirm you want to reset the timer!</label>
                 <div class="inputfieldgroup">
                     <input type="text" class="form-control" id="confirm" name="confirm" value="" />
                 </div>
@@ -87,16 +87,16 @@ function timer($params=array())
 {
     if ($params['event-state'] == "not started")
     {
-        $timer_msg = "Not started</small>";
+        $timer_msg = "Not started";
     }
     else
     {
-        $timer_msg = "First preparatory signal at ".date("H:i:s", $params['timer-start']);
+        $timer_msg = "First warning signal was at ".date("H:i:s", $params['timer-start']);
     }
 
     $html = <<<EOT
-       <h1>Race Timer</h1>
-       <span class="text-primary">$timer_msg</span>
+       <h1 class="margin-top-10">Race Timer</h1>
+       <p class="text-primary">$timer_msg</p>
        <div class="timer-lg" id="clock" data-clock="c0" data-countdown="{start-master}">
            {start-delta}
        </div>
@@ -136,7 +136,7 @@ function fleet_panel($params)
     $html = <<<EOT
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-info margin-top-10" >
+            <div class="panel panel-primary margin-top-10" >
                 <div class="panel-heading" style="padding-top:5px; padding-bottom:5px">
                     <div class="panel-title">
                         <span class="lead">

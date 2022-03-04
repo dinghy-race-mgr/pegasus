@@ -171,13 +171,12 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
     else   // sailnumber view
     {
         $configured = true;    // fixme this needs to be set somewhere
-        $category = array(1=>"1", 2=>"2", 3=>"3", 4=>"4", 5=>"5", 6=>"6", 7=>"7", 8=>"8", 9=>"9", 0=>"other",);
-        $dbufr = array(1=>array(), 2=>array(), 3=>array(), 4=>array(), 5=>array(), 6=>array(), 7=>array(), 8=>array(), 9=>array(), 0=>array() );
+        $category = array(1=>"1 &hellip;", 2=>"2 &hellip;", 3=>"3 &hellip;", 4=>"4 &hellip;", 5=>"5 &hellip;", 6=>"6 &hellip;", 7=>"7 &hellip;", 8=>"8 &hellip;", 9=>"9 &hellip;", 10=>"other",);
+        $dbufr = array(1=>array(), 2=>array(), 3=>array(), 4=>array(), 5=>array(), 6=>array(), 7=>array(), 8=>array(), 9=>array(), 10=>array() );
 
         if ($configured) {
             foreach ($data as $item => $group) {
                 foreach ($group as $entry) {
-
                     $dbufr[$item][] = array(
                         "entryid" => $entry['id'],
                         "class"   => $entry['class'],
@@ -215,8 +214,8 @@ EOT;
         $label_bufr = "<div class='row'>";
         $data_bufr = "<div class='row' style='margin-left: 10px; margin-bottom: 10px'>";
         foreach ($category as $i => $label) {
-            // flush buffers if we need to go to second or third row
-            if ($i == 7 or $i == 14)
+            // flush buffers if we need to go to second or third row (6 columns per row)
+            if ($i % 7 === 0)
             {
                 $html.= $label_bufr . $data_bufr;
                 $label_bufr = "</div><br><br><div class='row'>";
@@ -286,7 +285,7 @@ EOT;
 timer_sc.php?eventid=$eventid&pagestate=setcode&fleet={$entry['fleet']}&entryid={$entry['entryid']}&boat={$entry['boat']}
 &racestatus={$entry['status']}&declaration={$entry['declaration']}&lap={$entry['lap']}&finishlap=$laps}
 EOT;
-
+                // finish button
                 $finish_option = "";
                 if ($scoring == "average") {
                     $finish_option = <<<EOT
@@ -367,10 +366,10 @@ function timer_tabs($params = array())
 
     $state_cfg = array(
         "default"  => array("row_style" => "default",  "label_style" => "label-primary",  "annotation" => " "),
-        "racing"   => array("row_style" => "racing",   "label_style" => "label-info",  "annotation" => " "),
-        "finished" => array("row_style" => "finished", "label_style" => "label-primary", "annotation" => " FINISHED"),
-        "lastlap"  => array("row_style" => "lastlap",  "label_style" => "label-warning",  "annotation" => " LAST LAP"),
-        "excluded" => array("row_style" => "excluded", "label_style" => "label-primary",  "annotation" => " NOT RACING"),
+        "racing"   => array("row_style" => "racing",   "label_style" => "laptime-racing",  "annotation" => " "),
+        "finished" => array("row_style" => "finished", "label_style" => "laptime-finish", "annotation" => " FINISHED"),
+        "lastlap"  => array("row_style" => "lastlap",  "label_style" => "laptime-lastlap",  "annotation" => " LAST LAP"),
+        "excluded" => array("row_style" => "excluded", "label_style" => "label-finish",  "annotation" => " NOT RACING"),
     );
 
     $url_base      = "timer_sc.php?eventid=$eventid";
@@ -731,9 +730,8 @@ function undoboat_html($link, $eventid, $entryid, $boat, $laptimes_str)
 
         $bufr = <<<EOT
         <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="remove last lap time for this boat" data-placement="top">
-            <a id="undoboat" type="button" href="$link" role="button" class="btn btn-danger btn-xs" >
-                <!-- span class="glyphicon glyphicon-step-backward"></span -->
-                <span class="glyphicon glyphicon-arrow-left"></span>
+            <a id="undoboat" type="button" href="$link" role="button" class="btn btn-warning btn-xs" >
+                <span class="glyphicon glyphicon-step-backward"></span>
             </a>
         </span>
 EOT;
@@ -965,9 +963,10 @@ function fm_timer_shortenall($params=array())
     );
 
     $fields = array(
-        "instr_content" => "Use the form below to set the shortened laps for each fleet - the laps shown for each fleet are the current lap for the leading boat in that fleet.<br><br>  
-                            You can also use this form to reset laps if you made a mistake shortening - be careful to not set a lap higher than the laps originally set for each fleet ",
-        "footer_content" => "click the Set laps button to shorten each fleet<br><span class='text-danger'><b>REMEMBER TO SIGNAL THE SHORTENED COURSE(S)</b></span>"
+        "instr_content" => "<p>Use the form below to set the shortened laps for each fleet - the laps shown for each fleet are the current lap for the leading boat in that fleet.</p>  
+                            <p>You can also use this form to reset laps if you made a mistake shortening - be careful to not set it higher than the laps <u>originally</u> set for each fleet ",
+        "footer_content" => "<p>click the <span class='lead'>Change Finish Laps</span> button to set/reset the finish lap for each fleet<br>",
+        "reminder" => "<div class='alert alert-danger'><b>REMEMBER</b> - that you need to signal the shorten course</div>"
     );
 
     foreach ($params['fleet-data'] as $i=>$fleet)

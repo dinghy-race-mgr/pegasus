@@ -28,7 +28,6 @@ $stylesheet = "./style/rm_utils.css";
 require_once ("{$loc}/common/lib/util_lib.php");
 
 session_start();
-$_SESSION['dbglog'] = "../logs/dbglogs/rm_utils_dbg.log";
 
 // initialise session if this is first call
 if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
@@ -44,12 +43,16 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
         $_SESSION['syslog'] = "$loc/logs/adminlogs/".$_SESSION['syslog'];
         error_log(date('H:i:s')." -- PUBLISH ALL --------------------".PHP_EOL, 3, $_SESSION['syslog']);
 
+        // debug log
+        $_SESSION['dbglog'] = "../logs/dbglogs/rm_utils_dbg.log";
+
         // set initialisation flag
         $_SESSION['util_app_init'] = true;
     }
     else
     {
-        u_exitnicely($scriptname, 0, "initialisation failure", "one or more problems with script initialisation");
+        u_exitnicely($scriptname, 0, "one or more problems with script initialisation",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
 }
 
@@ -69,14 +72,6 @@ foreach ($db_o->db_getinivalues(false) as $data)
 {
     $_SESSION["{$data['parameter']}"] = $data['value'];
 }
-
-$system_info = array(
-    "sys_name"    => $_SESSION['sys_name'],
-    "sys_version" => $_SESSION['sys_version'],
-    "clubname"    => $_SESSION['clubname'],
-    "result_path" => $_SESSION['result_path'],
-    "result_url"  => $_SESSION['result_url']
-);
 
 $ftp_info = array(
     "server" => $_SESSION['ftp_server'],
@@ -175,9 +170,9 @@ elseif ($_REQUEST['pagestate'] == "submit")
     // if event exists do requested processing
     if ($event)
     {
-        require_once ("{$loc}/common/classes/result_class.php");
+        require_once("{$loc}/common/classes/raceresult_class.php");
 
-        $result_o = new RESULT($db_o, $eventid);
+        $result_o = new RACE_RESULT($db_o, $eventid);
         $transfer_file = array();
         $report = array();
         $continue = true;
@@ -188,6 +183,8 @@ elseif ($_REQUEST['pagestate'] == "submit")
         echo $tmpl_o->get_template("basic_page", $pagefields, array());
         ob_flush();
         flush();
+
+        // ----------- race result -------------------------------------------------------------------------------------
 
         $report_arr = array("action"=>"race");
         if ($race_results)
@@ -231,6 +228,8 @@ elseif ($_REQUEST['pagestate'] == "submit")
         ob_flush();
         flush();
 
+        // ----------- series result -------------------------------------------------------------------------------------
+
         $report_arr = array("action"=>"series");
         if ($series_results)
         {
@@ -250,7 +249,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
                         "styles" => $_SESSION['baseurl']."/config/style/result_{$series['opt_style']}.css"    // styles to be used
                     );
 
-                    $status = process_series_file($eventid, $opts, $event['series_code'], $result_status);
+                    $status = process_series_file($opts, $event['series_code'], $result_status);
 
                     if ($status['success'])
                     {
@@ -297,56 +296,146 @@ elseif ($_REQUEST['pagestate'] == "submit")
         flush();
 
 
+        // ----------- transfer results files -------------------------------------------------------------------------------------
+
         $report_arr = array("action"=>"transfer");
         if ($post_results)
         {
-            if ($continue)
+            if ($continue)     // continue if previous processsing hasn't causes a problem
             {
-                if ($result_status != "embargoed")  // FIXME - where is embargoed applied
+                // if results from this race have been embargoed - we shouldn't transfer anything or update the inventory
+                // also check if upload is turned on in config
+                if ($result_status != "embargoed" and $_SESSION['result_upload'] != "none")
                 {
-
-                    // get inventory file name/path
-                    $inventory_year = date("Y", strtotime($event['event_date']));
-                    $inventory_file = $result_o->get_inventory_filename($inventory_year);
-                    $inventory_path = $_SESSION['result_path'] . DIRECTORY_SEPARATOR . $inventory_file;
-                    $inventory_url = $_SESSION['result_url'] . "/" . $inventory_file;
-
                     // create inventory
-                    $inventory = $result_o->create_result_inventory($inventory_year, $inventory_path, $system_info);
+                    $result_year = date("Y", strtotime($event['event_date']));
+                    $inventory = process_inventory($result_year );
 
                     if ($inventory)                         // if inventory created successfully then proceed
                     {
-                        // add inventory file to file to be transferred
-                        $transfer_files[] = array("path" => $inventory_path, "url" => $inventory_url,
-                            "file" => $inventory_file);
+                        // inventory file into array
+                        $invdata = json_decode(file_get_contents($inventory['path'].DIRECTORY_SEPARATOR.$inventory['filename']), true);
 
-                        $num_files = count($transfer_files);
-
-                        // transfer files using relevant protocol
-                        //$status = process_transfer($transfer_files, $ftp_info, );
-                        $status = ftpFiles($loc,$_SESSION['ftp_protocol'], $ftp_info, $transfer_files);
-
-                        $continue = false;
-                        $status['success'] == "all" or $status['success'] == "some" ? $report_arr['result'] = "success" : $report_arr['result'] = "fail";;
-                        $report_arr['msg'] = "{$status['success']} files successfully transferred";
-
-                        if (!$status['login'])
+                        // create file list for transfer ( upload not done or out of date and not embargoed)
+                        $files = array();
+                        foreach($invdata['events'] as $id=>$invevent)
                         {
-                            $report_arr['result'] = "fail";
-                            $report_arr['msg'] = "Failed to connect and/or login to remote archive - results not uploaded";
+                            foreach($invevent['resultsfiles'] as $k=>$file)
+                            {
+                                // check if file neeeds uploading
+                                $upload_time = strtotime($file['upload']);
+                                $update_time = strtotime($file['upddate']);
+                                if ($file['status'] != "embargoed" and (empty($file['upload']) or $upload_time < $update_time))
+                                {
+                                    $files[] = $file;
+                                }
+                            }
                         }
-                        elseif ($status['transferred'] < $num_files)
-                        {
-                            $report_arr['result'] = "fail";
-                            $report_arr['msg'] = "Some files failed to upload";
-                            $report_arr['detail'] = $status['log'];
 
+                        // add inventory file
+                        $files[] = array(
+                            "file_id" =>"",
+                            "year"   => $result_year,
+                            "type"   => "",
+                            "format" => "json",
+                            "file"   => $result_o->get_inventory_filename($result_year),
+                            "label"  => "inventory file",
+                            "notes"  => "",
+                            "status" => "final",
+                            "rank"   => 0,
+                            "upload" => "",
+                            "update" => date("Y-m-d H:i:s")
+                        );
+
+                        // transfer files
+                        $num_for_transfer = count($files);
+                        if ($num_for_transfer > 0) {
+
+                            // use appropriate protocol for upload
+                            if ($_SESSION['result_upload'] == "network")
+                            {
+                                empty($_SESSION['result_public_path']) ? $target_path = "" : $target_path = $_SESSION['result_public_path'];
+                                empty($_SESSION['result_public_url']) ? $target_url = "" : $target_url = $_SESSION['result_public_url'];
+
+                                if (empty($target_path) or empty($target_url))
+                                {
+                                    $continue = true;
+                                    $report_arr['result'] = "stopped";
+                                    $report_arr['msg'] = "results location for website not configure [{$_SESSION['result_public_path']}<br>result files update processing stopped ..";
+                                }
+                                else
+                                {
+                                    $status = process_transfer_network($files, $target_path, $target_url);
+                                    $msg_type = "fail";
+                                    $txt = $status['num_files']." of $num_for_transfer uploaded";
+                                    if ($status['result'] and $status['complete'] )
+                                    {
+                                        $msg_type = "success";
+                                    }
+                                    elseif ($status['result'])
+                                    {
+                                        $msg_type = "warning";
+                                    }
+
+                                    $detail_htm = "";
+                                    $detail_txt = "";
+                                    if ($msg_type != "success")
+                                    {
+                                        foreach ($status['log'] as $file)
+                                        {
+                                            $detail_htm.= "<p>$file</p>";
+                                            $detail_txt.= "$file\n";
+                                        }
+                                    }
+                                }
+
+                            }
+                            elseif ($_SESSION['result_upload'] == "ftp")
+                            {
+                                $ftp = array("protocol"=>$_SESSION["ftp_protocol"], "server"=> $_SESSION["ftp_server"],
+                                    "user"=> $_SESSION["ftp_user"], "pwd"=> $_SESSION["ftp_pwd"]);
+
+                                if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
+                                {
+                                    $continue = true;
+                                    $report_arr['result'] = "stopped";
+                                    $report_arr['msg'] = "ftp protocol for website not configured correctly<br>result files update processing stopped ..";
+                                }
+                                else
+                                {
+                                    $status = process_transfer_ftp($files, $ftp); // FIXME implement function
+                                }
+                            }
+                            else
+                            {
+                                $continue = true;
+                                $report_arr['result'] = "stopped";
+                                $report_arr['msg'] = "transfer protocol option not configured correctly [{$_SESSION['result_upload']}]<br>result files update processing stopped ..";
+                            }
                         }
-                        elseif ($status['transferred'] == $num_files)
+
+
+                        // report on transfer process - FIXME
+                        $detail_htm = "";
+                        foreach ($status['log'] as $file) { $detail_htm.= "<p>$file</p>"; }
+
+                        $txt = $status['num_files']." of $num_for_transfer uploaded";
+                        if ($status['result'] and $status['complete'] )
                         {
                             $report_arr['result'] = "success";
-                            $report_arr['msg'] = "All files failed uploaded";
-                            $report_arr['detail'] = $status['log'];
+                            $report_arr['msg'] = "SUCCESS - $txt";
+                        }
+                        elseif ($status['result'])
+                        {
+                            $report_arr['result'] = "success";
+                            $report_arr['msg'] = "PARTIAL SUCCESS - $txt";
+                            $report_arr['detail'] = $detail_htm;
+                        }
+                        else
+                        {
+                            $report_arr['result'] = "fail";
+                            $report_arr['msg'] = "FAILED - no files uploaded";
+                            $report_arr['detail'] = $detail_htm;
                         }
                     }
                 }

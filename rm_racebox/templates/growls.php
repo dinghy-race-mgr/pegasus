@@ -9,9 +9,9 @@
 
 // ----- GENERAL ----------------------------------------------------------------------------
 $g_sys_invalid_pagestate = array(
-    "type" => "danger",
+    "type" => "warning",
     "delay"=> 0,
-    "msg"  => "<b>That is WEIRD</b><br> - the command (%s) sent to the %s page is not recognised<br><i>Please let your raceManager guru know.</i>",
+    "msg"  => "<b>That is WEIRD</b><br> - the command (%s) sent to the %s page is not recognised <br><i>Please let your raceManager guru know.</i>",
 );
 // ----- page: PICKRACE ---------------------------------------------------------------------
 

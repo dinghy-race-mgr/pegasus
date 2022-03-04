@@ -24,8 +24,8 @@ $eventid   = u_checkarg("eventid", "checkintnotzero","");        // current even
 // check arguments to see if we can show reminders
 if (!$afterlink)
 {
-    u_exitnicely($scriptname, $eventid, "the reminders page has been requested with invalid arguments [eventid: $eventid, link: $afterlink]",
-        "please contact your raceManager administrator");
+    u_exitnicely($scriptname, $eventid,"$page page - has been requested with invalid arguments [eventid: $eventid, link: $afterlink]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 else
 {

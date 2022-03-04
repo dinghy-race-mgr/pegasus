@@ -14,6 +14,7 @@
 $loc        = "..";                                                 // relative path from script to raceManager
 $page       = "entries";
 $scriptname = basename(__FILE__);
+$stop_here  = false;
 require_once ("{$loc}/common/lib/util_lib.php"); 
 require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("{$loc}/common/classes/db_class.php");
@@ -22,9 +23,6 @@ require_once ("{$loc}/common/classes/boat_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/comp_class.php");
 require_once("{$loc}/common/classes/race_class.php");
-
-
-//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");      // language file
 
 // process parameters  (eventid, pagestate, entryid)
 $eventid   = u_checkarg("eventid", "checkintnotzero","");
@@ -35,7 +33,7 @@ u_initpagestart($eventid, $page, false);                                // gets 
 
 include ("./templates/growls.php");
 
-if ($eventid)
+if ($eventid and !empty($pagestate))
 {
     $db_o = new DB;
     $event_o = new EVENT($db_o);
@@ -117,9 +115,6 @@ if ($eventid)
     {
         $signons = $entry_o->get_signons("entries");
         $entries_found = count($signons);
-//echo "<pre>".print_r($signons,true)."</pre>";
-//        u_writedbg(u_check($signons, "signon candidates"),__FILE__,__FUNCTION__,__LINE__);
-
 
         if ($entries_found > 0)                      // deal with entries
         {
@@ -128,8 +123,6 @@ if ($eventid)
             $entered = 0;
             foreach ($signons as $signon)
             {
-                //echo "<pre>Processing record {$signon['id']}: </pre>";
-
                 if ($signon['action'] == "delete" OR $signon['action'] == "update" OR $signon['action'] == "replace")
                 {
                     // delete entry if it exists
@@ -139,14 +132,11 @@ if ($eventid)
                         $entries_deleted++;
                         $upd = $entry_o->confirm_entry($signon['t_entry_id'], "L");
                     }
-                    //echo "<pre>deleting/updating/replacing</pre>";
                 }
 
                 if ($signon['action'] == "enter" OR $signon['action'] == "update" OR $signon['action'] == "replace")
                 {
-                    //echo "<pre>adding [{$signon['action']} - $eventid]</pre>";
                     $status = enter_boat($signon, $eventid, "signon");  // add new or replacement record
-                    //echo "<pre>result [$status]</pre>";
                     if ($status == "entered")
                     {
                         $entered++;
@@ -225,7 +215,7 @@ if ($eventid)
     elseif ($pagestate == "loadprevious")
     {
         $entries = $entry_o->get_previous(date("Y-m-d"));
-        //u_writedbg(u_check($entries, "previous competitor"),__FILE__,__FUNCTION__,__LINE__);
+
         if ($entries)
         {
             $entries_found = count($entries);
@@ -318,7 +308,6 @@ if ($eventid)
         if (!empty($_REQUEST['keel']))      { $newclass['keel']      = $_REQUEST['keel']; }
         
         // add class to t_class table
-        //u_writedbg(u_check($newclass, "new class"),__FILE__,__FUNCTION__,__LINE__);
         $result = $boat_o->boat_addclass($newclass);
         if ($result['msg'] =="ok")
         {
@@ -345,14 +334,15 @@ if ($eventid)
     }
 
     // check race state / update session
-    $race_o->racestate_updatestatus_all($_SESSION["e_{$this->eventid}"]['rc_numfleets'], $page);
+    $race_o->racestate_updatestatus_all($_SESSION["e_$eventid"]['rc_numfleets'], $page);
 
     // return to page
     if (!$stop_here) { header("Location: entries_pg.php?eventid=$eventid"); exit(); }   // back to entries page
 }
 else
 {
-    u_exitnicely($scriptname, $eventid,"event id not specified","try closing the browser and restarting racemanager");
+    u_exitnicely($scriptname, 0, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}] or page state [{$_REQUEST['pagestate']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------

@@ -12,8 +12,8 @@ function fm_addcompetitor($params = array())
 // form  - instructions + fields
     $html = <<<EOT
         <div class="alert well well-sm" role="alert">
-            <p class="text-info">This form will add a new competitor to the raceManager database so you can then enter them into your race &hellip;</p>
-            <p class="text-danger">WARNING - This form does NOT enter the new competitor in the race</p>
+            <p class="text-info lead">This form will add a new boat to raceManager so you can enter them into this race &hellip;</p>
+            <p class="text-danger">WARNING - This form does NOT enter the boat in the race - use the <b>Enter Boats</b> option after registering it here</p>
         </div>
 
         <!-- field #1 - class -->
@@ -90,7 +90,7 @@ function fm_addclass($params = array())
 // form instructions
     $html = <<<EOT
     <div class="alert well well-sm" role="alert">
-        <p class="text-info"><b>Care</b> - please provide accurate information so that the class will be allocated to the correct fleet.</p>
+        <p class="text-info lead"><b>Care</b> - please provide accurate information so that the class will be allocated to the correct fleet.</p>
     </div>
 
     <!-- field #1 - class name -->
@@ -236,7 +236,7 @@ function fm_addentry($params = array())
             <div class="col-lg-12 col-lg-offset-1">
                 <div class="alert well well-sm" role="alert">
                     <!-- button type="button" class="close" style="right: 1px !important" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button -->
-                    <p class="text-info">Search for boats by class, sail number, or helm name - then click enter to add them to the race.</p>
+                    <p class="text-info">Search for boats by class, sail number, or helm name - then click enter button.</p>
                 </div>
                 <hr>
             </div>
@@ -296,8 +296,8 @@ EOT;
             $button = <<<EOT
             <span >
                 <a id="enterone" href="entries_add_sc.php?eventid={eventid}&pagestate=enterone&competitorid={$result['id']}"
-                   role="button" class="btn btn-link" style="padding-top: 0px !important" target="_self">
-                    <span class="label label-primary">enter&nbsp;<span class="glyphicon glyphicon-triangle-right"></span>&nbsp;
+                   role="button" class="btn btn-link" style="padding: 0px 0px 0px 0px !important; font-weight: 100;" target="_self">
+                    <span class="label label-success">enter&nbsp;<span class="glyphicon glyphicon-triangle-right"></span>&nbsp;
                 </a>
             </span>
 EOT;

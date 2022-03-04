@@ -66,48 +66,48 @@
 */
 
 // -----------------------------------------------------------------------------------
-$btn_setlaps = array(
-    "label"     => true,
-    "glyph"     => true,
-    "g-pos"     => "left",
-    "popover"   => true,
-    "fields"    => array(
-        "id"          => "setlaps",
-        "style"       => "primary",
-        "size"        => "lg",
-        "label"       => "Reset Laps",
-        "link"        => "",
-        "glyph"       => "glyphicon-flag",
-        "popover"     => "click here to change laps for each fleet",
-        "pop-pos"     => "left",
-        "block"       => "btn-block",
-        "disabled"    => "",
-        "top-margin"  => "margin-top-10"
-    ),
-);
-$mdl_setlaps = array(
-    "form"    => true,
-    "footer"  => true,
-    "reload"  => false,
-    "close"   => true,
-    "reset"   => false,
-    "submit"  => true,
-    "fields"  => array(
-        "id"          => "setlaps",
-        "size"        => "md",
-        "style"       => "primary",
-        "title"       => "Set Laps",
-        "body"        => "",
-        "script"      => "",
-        "action"      => "timer_sc.php?eventid=$eventid&pagestate=setlaps",
-        "target"      => "",
-        "onsubmit"    => "",
-        "close-lbl"   => "changed my mind",
-        "reset-lbl"   => "",
-        "submit-lbl"  => "set laps",
-        "footer"      => ""
-    ),
-);
+//$btn_setlaps = array(
+//    "label"     => true,
+//    "glyph"     => true,
+//    "g-pos"     => "left",
+//    "popover"   => true,
+//    "fields"    => array(
+//        "id"          => "setlaps",
+//        "style"       => "primary",
+//        "size"        => "lg",
+//        "label"       => "Reset Laps",
+//        "link"        => "",
+//        "glyph"       => "glyphicon-flag",
+//        "popover"     => "click here to change laps for each fleet",
+//        "pop-pos"     => "left",
+//        "block"       => "btn-block",
+//        "disabled"    => "",
+//        "top-margin"  => "margin-top-10"
+//    ),
+//);
+//$mdl_setlaps = array(
+//    "form"    => true,
+//    "footer"  => true,
+//    "reload"  => false,
+//    "close"   => true,
+//    "reset"   => false,
+//    "submit"  => true,
+//    "fields"  => array(
+//        "id"          => "setlaps",
+//        "size"        => "md",
+//        "style"       => "primary",
+//        "title"       => "Set Laps",
+//        "body"        => "",
+//        "script"      => "",
+//        "action"      => "timer_sc.php?eventid=$eventid&pagestate=setlaps",
+//        "target"      => "",
+//        "onsubmit"    => "",
+//        "close-lbl"   => "changed my mind",
+//        "reset-lbl"   => "",
+//        "submit-lbl"  => "set laps",
+//        "footer"      => ""
+//    ),
+//);
 
 // -------- shorten all----------------------------------------------------------------
 $btn_shorten = array(
@@ -119,7 +119,7 @@ $btn_shorten = array(
         "id"          => "shorten",
         "style"       => "primary",
         "size"        => "lg",
-        "label"       => "Shorten All / Reset",
+        "label"       => "Shorten / Reset Laps",
         "link"        => "",
         "glyph"       => "glyphicon-flag",
         "popover"     => "click here to shorten ALL fleets at the end of the next lap",
@@ -139,8 +139,8 @@ $mdl_shorten = array(
     "submit"  => true,
     "fields"  => array(
         "id"          => "shorten",
-        "size"        => "md",
-        "style"       => "primary",
+        "size"        => "lg",
+        "style"       => "success",
         "title"       => "Shorten All Fleets",
         "body"        => "",
         "script"      => "",
@@ -149,7 +149,7 @@ $mdl_shorten = array(
         "target"      => "",
         "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
-        "submit-lbl"  => "shorten all",
+        "submit-lbl"  => "change finish laps",
         "footer"      => ""
     ),
 );
@@ -252,7 +252,7 @@ $btn_undo = array(
     "popover"   => true,
     "fields"    => array(
         "id"             => "undo",
-        "style"          => "danger",
+        "style"          => "warning",
         "size"           => "lg",
         "label"          => "Undo Timing",
         "link"           => "",

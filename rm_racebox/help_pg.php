@@ -51,7 +51,7 @@ if ($eventid == 0)  // event called from pickrace page
 else
 {
     $constraints = array(
-        "name" => $_SESSION["e_$eventid"]['ev_fname'],
+        "name" => $_SESSION["e_$eventid"]['ev_dname'],
         "format" => $_SESSION["e_$eventid"]['ev_format'],
         "date" => $_SESSION["e_$eventid"]['ev_date'],
         "numrace" => $_SESSION["events_today"],

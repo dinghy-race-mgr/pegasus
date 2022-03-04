@@ -132,6 +132,7 @@ EOT;
         <!-- tooltip activation for all tooltips -->
         <script type="text/javascript">
             $(document).ready(function() {
+            $('[data-toggle=tooltip]').tooltip({container: 'body'});
             $("[data-toggle=tooltip]").tooltip({trigger: 'hover',html: 'true'});
             });
         </script>
@@ -380,7 +381,7 @@ function fm_race_message($params=array())
 
     $html = <<<EOT
         <!-- instructions -->
-        <p class="well well-sm text-info">Use this form to let the raceManager support team know about any problems you had </p>
+        <p class="well well-sm text-info">Use this form to let the raceManager support team know about any issues you had ... <i>(plaudits also welcome)</i> </p>
 
         <!-- field #1 - name -->
         <div class="form-group">
@@ -550,12 +551,12 @@ function fm_set_laps($params = array())
     {
         $instr_bufr.= <<<EOT
         <div class="alert well well-sm alert-dismissable text-success" role="alert">
-            <p><span class="lead">Instructions: </span></p>
-            {instr_content}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span style="padding-right: 20px" aria-hidden="true">&times;</span>
-            </button>           
-        </div>
+            </button>
+            <p><span class="lead">Instructions: </span></p>
+            {instr_content}                      
+        </div>       
 EOT;
     }
 
@@ -566,6 +567,7 @@ EOT;
         <div class="alert well well-sm" role="alert">
             <p class="text-success">{footer_content}</p>
         </div>
+        {reminder}
 EOT;
     }
 

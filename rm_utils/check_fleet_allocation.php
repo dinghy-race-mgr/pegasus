@@ -43,7 +43,8 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
     }
     else
     {
-        u_exitnicely($scriptname, 0, "initialisation failure", "one or more problems with script initialisation");
+        u_exitnicely($scriptname, 0, "one or more problems with script initialisation",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
 }
 

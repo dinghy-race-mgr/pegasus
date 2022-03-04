@@ -18,6 +18,7 @@
 $loc        = "..";       // <--- relative path from script to top level folder
 $page       = "pursuit";     //
 $scriptname = basename(__FILE__);
+$stop_here  = false;
 
 // required libraries
 require_once ("{$loc}/common/lib/util_lib.php");
@@ -25,7 +26,6 @@ require_once ("{$loc}/common/lib/util_lib.php");
 // script parameters
 $eventid   = u_checkarg("eventid", "checkintnotzero","");
 $pagestate = u_checkarg("pagestate", "set", "", "");
-$stop_here = false;
 
 u_initpagestart($eventid, $page, false);   // starts session and sets error reporting
 
@@ -62,7 +62,6 @@ if ($eventid AND $pagestate)
 }
 else
 {
-    u_exitnicely($scriptname, $eventid, "0", "Either the event id [{$_REQUEST['id']} or the requested operation [{$_REQUEST['pagestate']}]
-    was not recognised.  Close this browser and restart raceManager to return to your race.  If the problems continue please report 
-    the error to your system administrator");
+    u_exitnicely($scriptname, $eventid, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}] or page state [{$_REQUEST['pagestate']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }

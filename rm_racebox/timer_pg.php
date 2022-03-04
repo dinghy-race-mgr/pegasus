@@ -22,8 +22,9 @@ require_once ("{$loc}/common/lib/rm_lib.php");
 // set event id
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 if (!$eventid) {
-    u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
-        "please contact your raceManager administrator");  }
+    u_exitnicely($scriptname, 0, "$page page - the requested event has an missing/invalid record identifier [{$_REQUEST['eventid']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
+}
 else {
     u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
 }
@@ -63,8 +64,6 @@ $_SESSION['timer_options']['listorder']     = "class";     // options "class|pn|
 $_SESSION['timer_options']['laptime']       = "button";    // options "row|button|both"
 $_SESSION['timer_options']['notify_length'] = "on ";       // options "on|off"
 $_SESSION['timer_options']['notify_undo']   = "on";        // options "on|off"
-
-
 
 $fleet_data = array();
 for ($fleetnum=1; $fleetnum<=$_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum++)
@@ -135,9 +134,9 @@ else
                 {
                     $i = $entry['sailnum'][0];
                 }
-                else                                      // first char is not a number - use group 0
+                else                                      // first char is not a number - use group 10
                 {
-                    $i = 0;
+                    $i = 10;
                 }
                 $out[$i][] = $entry;
             }
@@ -239,7 +238,7 @@ $fields = array(
     "l_top"      => $lbufr,
     "l_mid"      => "",
     "l_bot"      => $lbufr_bot,
-    "r_top"      => "<div class=\"margin-top-40\">".$rbufr."</div>",
+    "r_top"      => $rbufr, //"<div class=\"margin-top-40\">".$rbufr."</div>",
     "r_mid"      => "",
     "r_bot"      => "", //$tmpl_o->get_template("toggle_button", array(), $toggle_fields),
     "footer"     => "",

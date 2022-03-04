@@ -180,8 +180,6 @@ function u_conv_timetosecs($time)
     return strtotime("1970-01-01 $time UTC");
 }
 
-
-
 function u_conv_boat($class, $sailnum, $code, $length=0)
 {
     if ($length == 0)
@@ -214,6 +212,17 @@ function u_conv_team($helm, $crew, $length=0)
     }
 
     return $team;
+}
+
+function u_conv_eventname($eventname)
+{
+    $words = explode(" ",$eventname);
+    $last_key = count($words) - 1;
+    if ($last_key > 0 and strtolower($words[$last_key] != "race"))
+    {
+        $eventname = ucwords($eventname." race");
+    }
+    return $eventname;
 }
 
 function u_change($newvalue, $oldvalue)
@@ -378,55 +387,83 @@ function u_timeresolution($resolution, $time)
  * 
  * @param string    $script      name of script where problem occured
  * @param int       $eventid     eventid or 0 if not event 
- * @param string    $error       standard system error code (e.g. sys001)
- * @param string    $msg         custom error message for this occurence 
+ * @param string    $error       description of error
+ * @param string    $action      suggested action to take
+ * @param array    $attr        array with filename, function, line no., calling script, calling arguments
  * @return void
  */
- function u_exitnicely($script, $eventid, $error, $msg)
+ function u_exitnicely($script, $eventid, $error, $action, $attr = array())
 {
     global $loc;
-    
+
+    empty($_SESSION['racebox_theme']) ? $theme = $_SESSION['racebox_theme'] : $theme = "flatly_";
+    $title = "raceManager";
+    if (empty($action)) { $action = "Closing the browser completely and restarting the part of raceManager you were using"; }
+    $function = $attr['function'];
+
+    $line = $attr['line'];
+
+    empty($attr['calledby']) ? $calledby = "" : $calledby = "- called by {$attr['calledby']}";
+
+    $argtxt = "";
+    if (!empty($calledby) and !empty($attr['args']))
+    {
+        foreach ($attr['args'] as $i=>$arg) { $argtxt.= $i.": ".$arg.", "; }
+        $argtxt = " with args [ ".rtrim($argtxt, ", ")." ]";
+    }
+
+
     echo <<<EOT
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <link rel="shortcut icon" href="{$loc}/common/images/favicon.ico">             
-        <link rel="stylesheet"    href="{$loc}/common/oss/bootstrap341/css/bootstrap.min.css" >      
-        <link rel="stylesheet"    href="{$loc}/common/oss/bootstrap341/css/bootstrap-theme.min.css">
-                
-        <script type="text/javascript" src="{$loc}/common/oss/jquery/jquery.min.js"></script>
-        <script type="text/javascript" src="{$loc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
-    
-      </head>
-      
-      <body>
+    <!DOCTYPE html><html lang="en">
+    <head>
+            <title>$title</title>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="description" content="">
+            <meta name="author" content="">
+
+            <link   rel="shortcut icon"    href="$loc/common/images/favicon.ico">
+            <link   rel="stylesheet"       href="$loc/common/oss/bootstrap341/css/{$theme}bootstrap.min.css" >
+            <script type="text/javascript" src="$loc/common/oss/jquery/jquery.min.js"></script>
+            <script type="text/javascript" src="$loc/common/oss/bootstrap341/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="$loc/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
+    </head>
+    <body class="{body_attr}">
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <div class="navbar-header navbar-brand">raceManager</div>           
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav"></ul>
+              <ul class="nav navbar-nav navbar-right"><li><a href="#">FATAL SYSTEM ERROR</a></li></ul>
+            </div>
+          </div>
+        </nav>     
+        
         <div class="container" style="margin-top: 50px;">
             <div class="jumbotron">
-              <h1>Sorry</h1>
-              <p>we have encountered an unexpected error</p>
-              <p class="text-danger">$error</p>
-              <br>
-              <p>
-                  <span class="pull-right"><small><i>$msg [script: $script]</i></small></span>
-              </p>
+              <h2 class="text-info">Oops sorry... &nbsp;&nbsp;we have encountered an unexpected error</h2>
+              <p class="text-primary">$error</p>
+            </div>
+            <div>
+                <div class="alert alert-info" style="margin-top: 60px;">
+                  <h3>You could try ...</h3> 
+                  <p class="lead">$action<br>
+                  - if this doesn't work contact your raceManager administrator</p>
+                </div>
+            </div>
+            <div class="well well-lg" style="margin-top: 80px;">
+                The problem is probably due to some frankly shoddy coding by the deranged system developer!! - the details below might help him find and fix the problem.<br>
+                $script $function (line $line) $calledby $argtxt 
             </div>
         </div>
-      </body>
+    </body>
     </html>
 EOT;
     
-    $logmsg = "**** FATAL ERROR - $error".PHP_EOL."script: $script, event: $eventid, message: $msg";
-    
-    u_writelog($logmsg, 0);                // write to system log
-    if ($eventid!=0)
-    {
-        u_writelog($logmsg, $eventid);     // write to event log
-    }    
+    $logmsg = "**** FATAL ERROR - $error".PHP_EOL."script: $script, event: $eventid, function: $function, line: $line, calledby: $calledby, args: $argtxt";
+    u_writelog($logmsg, 0);                                // write to system log
+    if ($eventid!=0) { u_writelog($logmsg, $eventid); }    // write to event log
     exit();
 }
 
@@ -552,8 +589,9 @@ function u_initialisation($rm_cfg_file, $app_cfg_file, $loc, $scriptname)
     else
     {
         $status = false;
-        u_exitnicely($scriptname, 0, "configuration file failure",
-            "raceManager configuration file ($rm_cfg_file) does not exist or is unreadable");
+        u_exitnicely("util_lib.php", 0,"File error - raceManager configuration file ($rm_cfg_file) does not exist or is unreadable",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__,
+                "calledby" => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], "args" => func_get_args()));
     }
 
     // set application config file content into SESSION
@@ -564,8 +602,9 @@ function u_initialisation($rm_cfg_file, $app_cfg_file, $loc, $scriptname)
     else
     {
         $status = false;
-        u_exitnicely($scriptname, 0, "configuration file failure",
-            "application configuration file ($app_cfg_file) does not exist or is unreadable");
+        u_exitnicely("util_lib.php", 0,"File error - application configuration file ($app_cfg_file) does not exist or is unreadable",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__,
+                "calledby" => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], "args" => func_get_args()));
     }
 
     // process common (system wide) ini file
@@ -577,8 +616,9 @@ function u_initialisation($rm_cfg_file, $app_cfg_file, $loc, $scriptname)
     else
     {
         $status = false;
-        u_exitnicely($scriptname, 0, "configuration file failure",
-            "application configuration file ($common_ini_file) does not exist or is unreadable");
+        u_exitnicely("util_lib.php", 0,"File error - application configuration file ($common_ini_file) does not exist or is unreadable",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__,
+                "calledby" => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], "args" => func_get_args()));
     }
     // process application specific ini file
     if (!empty($_SESSION['app_ini'])) {
@@ -587,8 +627,9 @@ function u_initialisation($rm_cfg_file, $app_cfg_file, $loc, $scriptname)
             u_initconfigfile($app_ini_file);
         } else {
             $status = false;
-            u_exitnicely($scriptname, 0, "configuration file failure",
-                "application configuration file ($app_ini_file) does not exist or is unreadable");
+            u_exitnicely("util_lib.php", 0,"File error - application configuration file ($app_ini_file) does not exist or is unreadable",
+                "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__,
+                    "calledby" => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], "args" => func_get_args()));
         }
     }
     // deal with php ini setting changes
@@ -637,7 +678,9 @@ function u_initconfigfile($inifile)
     }
     else
     {
-        u_exitnicely($scriptname,0,"configuration file error","application initialisation file ($inifile) does not exist");
+        u_exitnicely("util_lib.php", 0,"File error - application initialisation file ($inifile) does not exist or is unreadable",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__,
+                "calledby" => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], "args" => func_get_args()));
     }
 }
 
@@ -647,13 +690,13 @@ function u_initsetparams($lang, $mode, $debug)
     global $loc;
 
     $_SESSION['lang'] = "en";
-    if (!empty($lang))
-    { 
-        if (file_exists("$loc/config/lang/$lang-racebox-lang.php"))
-        {
-            $_SESSION['lang'] = $lang;
-        }
-    }
+//    if (!empty($lang))
+//    {
+//        if (file_exists("$loc/config/lang/$lang-racebox-lang.php"))
+//        {
+//            $_SESSION['lang'] = $lang;
+//        }
+//    }
 //    else
 //    {
 //        $_SESSION['lang'] = "en";
@@ -671,7 +714,6 @@ function u_initsetparams($lang, $mode, $debug)
     {
         if (is_numeric($debug) AND $debug>=0 AND $debug<=2) { $_SESSION['debug'] = $debug; }
     }
-//    u_writelog("parameters: lang = {$_SESSION['lang']}, mode = {$_SESSION['mode']}, debug = {$_SESSION['debug']}", 0);
 }
 
 
@@ -1009,7 +1051,7 @@ function u_growlProcess($eventid, $page)
        "ele"             => "body",
        "type"            => "info",
        "offset_from"     => "bottom",
-       "offset_amount"   => "10",
+       "offset_amount"   => "20",
        "align"           => "left",
        "width"           => "800",
        "delay"           => "4000",
@@ -1017,34 +1059,23 @@ function u_growlProcess($eventid, $page)
        "stackup_spacing" => "20",
     );
 
-    $glyph = array(
-        "success" => "<span class='glyphicon glyphicon-ok'></span>&nbsp;&nbsp;&nbsp;",
-        "warning" => "<span class='glyphicon glyphicon-exclamation-sign'></span>&nbsp;&nbsp;&nbsp;",
-        "info"    => "<span class='glyphicon glyphicon-info-sign'></span>&nbsp;&nbsp;&nbsp;",
-        "primary" => "<span class='glyphicon glyphicon-info-sign'></span>&nbsp;&nbsp;&nbsp;",
-        "danger"  => "<span class='glyphicon glyphicon-remove'></span>&nbsp;&nbsp;&nbsp;",
-    );
+    $glyph = array("success" => "thumbs-up", "warning" => "alert", "info" => "info-sign", "primary" => "question-sign", "danger" => "thumbs-down");
+    // "danger"  => "<span class='glyphicon glyphicon-thumbs-down'></span>&nbsp;&nbsp;&nbsp;",
 
     $html = "";
-    // first check that we have a current growl  and that it is for this page
+    // check that we have current growl(s) for this page
     if (!empty($_SESSION["e_$eventid"]['growl']["$page"]))
     {
         $jscript = "";
         foreach ($_SESSION["e_$eventid"]['growl']["$page"] as $growl)
         {
-            if (key_exists("delay", $growl))
-            {
-                $att_default['delay'] = $growl['delay'];
-            }
-
-//            if ($growl['type'] == "danger") {
-//                $att_default['delay'] = "30000";
-//            }
-
+            // merge default setting with growl specific settings
             $att = array_merge($att_default, $growl);
-            $att["glyph"] ? $glyph_htm = $glyph["{$att["type"]}"] : $glyph_htm = "" ;   // add contextual glyph
 
-            //$msg = "<p class='text-growl'> $glyph_htm {$att["msg"]} </p>";
+            // add contextual glyph if defined
+            array_key_exists($att["type"], $glyph) ? $glyph_htm = "<span class='glyphicon glyphicon-".$glyph["{$att["type"]}"]."'></span>" : $glyph_htm = "" ;
+
+            // set message
             $msg = "<div class='growl-container'><div class='growl-left'>$glyph_htm</div><div class='growl-right'>{$att['msg']}</div></div>";
 
             $jscript.= <<<EOT
@@ -1060,6 +1091,7 @@ function u_growlProcess($eventid, $page)
                     });
 EOT;
         }
+
         $html.= <<<EOT
         <script>
         $(function() {
@@ -1121,6 +1153,18 @@ function u_folder_exist($folder)
     return ($path !== false AND is_dir($path)) ? $path : false;
 }
 
+function u_sendJsonPost($url, $data)
+{
+    $ch = curl_init($url);                                                          // create a new cURL resource
+    $payload = json_encode($data);                                                  // set data array into json format
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);                                 // attach encoded JSON string to the POST fields
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));   // Set the content type to application/json
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                 // return response instead of outputting
+    $result = curl_exec($ch);                                                       // execute the POST request
+    curl_close($ch);                                                                // close cURL resource
+
+    return $result;
+}
 
 function u_ftpFiles($protocol, $ftp_env, $files)
 {

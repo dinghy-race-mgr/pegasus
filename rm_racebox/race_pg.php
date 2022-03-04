@@ -27,12 +27,9 @@ require_once ("{$loc}/common/lib/util_lib.php");
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 
 u_initpagestart($_REQUEST['eventid'], $page, true);
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php"); // language file
-//u_writedbg("<pre>session".print_r($_SESSION,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
 
-
-if (!$eventid) { u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
-                              "please contact your raceManager administrator");  }
+if (!$eventid) { u_exitnicely($scriptname, 0, "requested event has an invalid or missing record identifier [{$_REQUEST['eventid']}]",
+    "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));  }
 
 require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("{$loc}/common/lib/raceformat_lib.php");
@@ -41,7 +38,7 @@ include ("{$loc}/common/classes/template_class.php");
 include ("{$loc}/common/classes/event_class.php");
 include ("{$loc}/common/classes/rota_class.php");
 
-$eventname = $_SESSION["e_$eventid"]['ev_name'];
+$eventname = u_conv_eventname($_SESSION["e_$eventid"]['ev_name']);
 
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/race_tm.php"));
 

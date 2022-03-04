@@ -20,8 +20,11 @@ $stop_here  = false;
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 
-$eventid   = (!empty($_REQUEST['eventid']))? $_REQUEST['eventid']: "";
-$pagestate = (!empty($_REQUEST['pagestate']))? $_REQUEST['pagestate']: "";
+
+$eventid   = u_checkarg("eventid", "checkintnotzero","");
+$pagestate = u_checkarg("pagestate", "set", "", "");
+//$eventid   = (!empty($_REQUEST['eventid']))? $_REQUEST['eventid']: "";
+//$pagestate = (!empty($_REQUEST['pagestate']))? $_REQUEST['pagestate']: "";
 
 u_initpagestart($eventid, $page, false);                               // starts session and sets error reporting
 //include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");     // language file
@@ -96,7 +99,7 @@ if ($eventid AND $pagestate)
             // set fields to enter
             $fields = array();
             $fields["name"]    = $_REQUEST['msgname'];
-            $fields["subject"] = $_SESSION["e_$eventid"]['ev_fname']." - OOD message";
+            $fields["subject"] = $_SESSION["e_$eventid"]['ev_dname']." - OOD message";
             $fields["message"] = $_REQUEST['message'];
             !empty($_REQUEST['email']) ? $fields["email"] = $_REQUEST['email'] : $fields["email"] = "";
             $fields["status"]  = "received";
@@ -190,7 +193,7 @@ if ($eventid AND $pagestate)
                 // set fields to enter
                 $fields = array(
                     "name"    => "OOD",
-                    "subject" => $_SESSION["e_$eventid"]['ev_fname']." - OOD closing message",
+                    "subject" => $_SESSION["e_$eventid"]['ev_dname']." - OOD closing message",
                     "message" => $_REQUEST['message'],
                     "email"   => "",
                     "status"  => "received",
@@ -219,7 +222,7 @@ if ($eventid AND $pagestate)
         // ------- RESET --------------------------------------------------------------------------
         elseif ($pagestate == "reset")
         {           
-            if (strtolower($_REQUEST['confirm'] == "reset"))
+            if (strtolower(trim(str_replace('"', "", $_REQUEST['confirm'])) == "reset"))
             {
                 $result = $event_o->event_reset($eventid, "reset");
                 if ($result)
@@ -339,8 +342,8 @@ if ($eventid AND $pagestate)
 
         else
         {
-            u_exitnicely($scriptname, $eventid,"Unable to process request",
-                "race_sc.php - pagestate not recognised [$pagestate] - please contact your support team");
+            u_exitnicely($scriptname, $eventid,"$page page - unable to process request - pagestate not recognised [$pagestate]",
+                "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
         }
 
         // check race state / update session
@@ -352,16 +355,16 @@ if ($eventid AND $pagestate)
     } 
     else
     {
-        u_exitnicely($scriptname, $eventid,"Unable to process request", "race_sc.php - event record not found - please contact your support team");
+        u_exitnicely($scriptname, $eventid,"$page page - unable to process request - details for event if [$eventid] not found",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
 
 }
 else
 {
-    u_exitnicely($scriptname, $eventid,"Unable to process request",
-        "race_sc.php - eventid and/or pagestate missing - please contact your support team");
+    u_exitnicely($scriptname, $eventid,"$page page - unable to process request - either event id [$eventid] or pagestate missing [$pagestate]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
 // --- FUNCTIONS ---------------------------------------------------------------------------
 
-?>

@@ -314,7 +314,7 @@ if ($eventid AND $pagestate)
         // set fields to enter
         $fields = array();
         $fields["name"]    = $_REQUEST['msgname'];
-        $fields["subject"] = $_SESSION["e_$eventid"]['ev_fname']." - OOD message";
+        $fields["subject"] = $_SESSION["e_$eventid"]['ev_dname']." - OOD message";
         $fields["message"] = $_REQUEST['message'];
         !empty($_REQUEST['email']) ? $fields["email"] = $_REQUEST['email'] : $fields["email"] = "racebox";
         $fields["status"]  = "received";
@@ -338,22 +338,20 @@ if ($eventid AND $pagestate)
 
     else
     {
-        // pagestate value not recognised
-        u_exitnicely($scriptname, $eventid,"program control option not recognised [pagestate: $pagestate]",
-            "please contact your raceManager administrator");
+        u_exitnicely($scriptname, $eventid,"$page page - pagestate value not recognised [{$_REQUEST['pagestate']}]",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
 
     // check status / update session
-    $race_o->racestate_updatestatus_all($_SESSION["e_{$this->eventid}"]['rc_numfleets'], $page);
+    $race_o->racestate_updatestatus_all($_SESSION["e_$eventid"]['rc_numfleets'], $page);
     
     if (!$stop_here) { header("Location: results_pg.php?eventid=$eventid"); exit(); }  // back to results page
        
 }
 else
 {
-    // input parameter missing
-    u_exitnicely($scriptname, $eventid,"program parameters eventid and/or pagestate not recognised [eventid: $eventid, pagestate: $pagestate]",
-        "please contact your raceManager administrator");
+    u_exitnicely($scriptname, $eventid,"$page page - event id record [{$_REQUEST['eventid']}] or pagestate value not recognised [{$_REQUEST['pagestate']}] not defined",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
 // ------------- FUNCTIONS ---------------------------------------------------------------------------

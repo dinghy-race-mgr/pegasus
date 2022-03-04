@@ -555,6 +555,9 @@ class EVENT
     {
         $change = false;
 
+        unset($fields['result_status']);
+        unset($fields['include_club']);
+
         $success = $this->db->db_update( 't_event', $fields, array("id"=>$eventid) );
         if ($success>=0)
         {

@@ -66,7 +66,8 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
     }
     else
     {
-        u_exitnicely($scriptname, 0, "initialisation failure", "one or more problems with script initialisation");
+        u_exitnicely($scriptname, 0, "one or more problems with script initialisation",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
 }
 
@@ -111,24 +112,27 @@ if ($_REQUEST['pagestate'] == "init")
 
 elseif (trim(strtolower($_REQUEST['pagestate'])) == "submit")
 {
-
-
     // arguments
     if (empty($_REQUEST['start']) or empty($_REQUEST['end']))
     {
-        u_exitnicely($scriptname, 0, "Argument Error", "Start and/or End date are missing");
+        u_exitnicely($scriptname, 0, "Argument Error - Start and/or End date are missing", "resubmit script with valid date values",
+            array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
     elseif (strtotime($_REQUEST['start']) > strtotime($_REQUEST['end']))
     {
-        u_exitnicely($scriptname, 0, "Argument Error", "Start date is after End date");
+        u_exitnicely($scriptname, 0, "Argument Error - Start date is after End date", "resubmit script with valid date values",
+            array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
     elseif (!strtotime($_REQUEST['start']))
     {
-        u_exitnicely($scriptname, 0, "Argument Error", "Start date is not a valid date");
+        u_exitnicely($scriptname, 0, "Argument Error - Start date is not a valid date", "resubmit script with valid date values",
+            array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
     elseif (!strtotime($_REQUEST['end']))
     {
-        u_exitnicely($scriptname, 0, "Argument Error", "End date is not a valid date");
+
+        u_exitnicely($scriptname, 0, "Argument Error - End date is not a valid date", "resubmit script with valid date values",
+            array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
     else
     {
@@ -156,7 +160,9 @@ elseif (trim(strtolower($_REQUEST['pagestate'])) == "submit")
     $arr = read_csv_file($_FILES['dutymanfile']['tmp_name']);
     if (!$arr)
     {
-        u_exitnicely($scriptname, 0, "File Error", "Cannot read csv file [{$_FILES['dutymanfile']['tmp_name']}]");
+        u_exitnicely($scriptname, 0, "File Error - Cannot read selected csv file [{$_FILES['dutymanfile']['tmp_name']}]",
+            "check and correct csv file including access permissions and then resubmit the script",
+            array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
     else
     {

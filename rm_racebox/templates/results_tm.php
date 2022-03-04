@@ -22,16 +22,16 @@ function result_tabs($params = array())
         if (count($params['warning'][$i]) > 0)
         {
             $tab_label = <<<EOT
-            <span class="label pull-right">
-                <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></br>&nbsp;</span>
+            <span class="label label-danger label-sm pull-right" style="font-weight: normal; width: 120px">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Warnings
             </span>
 EOT;
         }
         else
         {
             $tab_label = <<<EOT
-            <span class="label pull-right">
-                <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+            <span class="label label-success label-sm pull-right" style="font-weight: normal; width: 120px">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> &nbsp;&nbsp;OK
             </span>           
 EOT;
         }
@@ -39,7 +39,7 @@ EOT;
         $tabs.= <<<EOT
         <li role="presentation" class="lead text-center">
               <a class="text-primary" href="#fleet$i" aria-controls="$fleet_name" role="tab" data-toggle="pill" style="padding-top: 20px;">
-              <b>$fleet_name</b> <br> $tab_label             
+              <b>$fleet_name</b><br><br>$tab_label        
               </a>
         </li>
 EOT;
@@ -219,32 +219,23 @@ function format_warnings($warnings)
     foreach ($warnings as $warning)
     {
         $warn_bufr.= <<<EOT
-        &nbsp;- {$warning['msg']}<br>
+        - &nbsp;&nbsp;&nbsp;{$warning['msg']}<br>
 EOT;
     }
     $warn_bufr = rtrim($warn_bufr, "<br>");
     if (!empty($warn_bufr))
     {
         $warn_bufr = rtrim($warn_bufr, "<br>");
+
         $bufr.= <<<EOT
-        <div class="bg-warning" style="width: 50%; color: white; font-size: 20px">
-            <div class="row" style="padding:5px 5px 5px 5px!important">
-                <div class="col-md-3" ><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> Warnings</div>
-                <div class="col-md-9" >$warn_bufr</div>
-            </div>
+        <div class="col-md-8 alert alert-danger">
+            <span class="lead">
+                <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;<b>Warnings&hellip;</b>
+            </span>
+            <p style="text-indent: 50px; font-size: 1.2em;">$warn_bufr</p>
         </div>
 EOT;
-    }
-    else  // placeholder
-    {
-        $bufr.= <<<EOT
-        <div class="" style="width: 50%; color: white; font-size: 20px">
-            <div class="row" style="padding:5px 5px 5px 5px!important">
-                <div class="col-md-3" >&nbsp;</div>
-                <div class="col-md-9" >&nbsp;</div>
-            </div>
-        </div>
-EOT;
+
     }
 
     return $bufr;
@@ -690,20 +681,20 @@ function fm_change_finish($params = array())
         "instr_content" => "<p>This can be useful in two situations ... if you have:<br>&nbsp;&nbsp;&nbsp;- forgotten to SHORTEN course and boats are showing as 'still racing' ... OR<br>
          &nbsp;&nbsp;&nbsp;- ABANDONED the race and want to take the results from a PREVIOUS completed lap</p>
         <p>Set the finish lap for each fleet to the lap you want the boats to finish on (i.e. the laps for the finish of the leading boat).</p>",
-        "footer_content" => "click the Set laps button to set the finish lap for each fleet"
+        "footer_content" => "click the <span>Change Finish lap</span> button to set the finish lap for each fleet"
     );
 
     foreach ($params['fleet-data'] as $i=>$fleet)
     {
         // debug
-        if ($i == 1)
-        {$fleet['status'] = "notstarted";}
-        elseif ($i == 2)
-        {$fleet['status'] = "inprogress";}
-        elseif ($i == 3)
-        {$fleet['status'] = "finishing";}
-        elseif ($i == 4)
-        {$fleet['status'] = "allfinished";}
+//        if ($i == 1)
+//        {$fleet['status'] = "notstarted";}
+//        elseif ($i == 2)
+//        {$fleet['status'] = "inprogress";}
+//        elseif ($i == 3)
+//        {$fleet['status'] = "finishing";}
+//        elseif ($i == 4)
+//        {$fleet['status'] = "allfinished";}
 
         $data['fleets'][$i] = array(
             "fleetname"  => ucwords($fleet['name']),
@@ -892,7 +883,8 @@ function fm_publish($params)
     <div class="container" style="margin-top: -40px;">
               
         <div class="alert well well-sm" role="alert">
-            <p class="text-info"><b>Add details on the WIND during the race and any NOTES to be included in the published results</p>
+            <p class="text-info lead">Add details on wind conditions and any notes to be included in the published results</p>
+            <p class="text-info"><small>Note: 'embargoed' results will be produced but not transferred to the website</small></p>
         </div>
 
         <div class="margin-top-05">
@@ -914,8 +906,8 @@ function fm_publish($params)
             >
 
                 <div class="row">
-                    <label class="col-xs-3 col-xs-offset-3 control-label text-success" style="text-align: center !important;">Race Start</label>
-                    <label class="col-xs-3 control-label text-success" style="text-align: center !important;">Race End</label>
+                    <label class="col-xs-3 col-xs-offset-3 control-label" style="text-align: right !important;">Race Start</label>
+                    <label class="col-xs-3 control-label" style="text-align: right !important;">Race End</label>
                     <hr class="col-xs-9 col-xs-offset-1" style="margin-top: 0px;">
                 </div>
                 <div class="row">
@@ -983,8 +975,8 @@ function fm_publish($params)
 
                 <div class="row">
                     <br>
-                    <div class="col-xs-10">
-                         <button class="btn btn-primary btn-md pull-right" type="submit">
+                    <div class="col-xs-12">
+                         <button class="btn btn-info btn-md pull-right" type="submit">
                              &nbsp;&nbsp;Publish&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                          </button>
                     </div>
@@ -1001,6 +993,68 @@ function fm_publish($params)
                          $('#').data('bootstrapValidator').resetForm(true);
                       });
 
+                      $("[data-toggle=popover]").popover({trigger: 'hover',html: 'true'});
+                  });
+             </script>
+        </div>
+    </div>
+EOT;
+
+    return $html;
+
+}
+
+
+function fm_publish_warning($params)
+{
+    /**
+     * This form reports.
+     *
+     * @author Mark Elkington <mark.elkington@blueyonder.co.uk>
+     *
+     * %%copyright%%
+     * %%license%%
+     *
+     */
+
+    $html = <<<EOT
+    <div class="container" style="margin-top: -40px;">
+              
+        <div class="alert alert-danger" role="alert">
+            <p class="lead">Results for this race still have unresolved warnings &hellip;</p>
+            <br>
+            <p class="">This is usually either because a boat has not been given a scoring code (e.g. DNF) or has not been recorded with the required no. of laps to complete the race.</p>
+            <p>You can go back and correct these issues on the RESULTS page - more information on resolving the warnings can be found on the Help page - <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></p>
+            <br>
+            <hr>
+            <p style="text-indent: 50px"><b>Alternatively you can publish the results without fixing the warnings</b></p>
+            <p style="text-indent: 80px"> - the results will <b>not</b> be accessible from the website</p>
+            <p style="text-indent: 80px"> - you will be able to view and print the results</p>
+        </div>
+
+        <div class="margin-top-05">
+            <form class="form-horizontal" id="checkForm" method="post" role="search" autocomplete="off"
+                  action="results_publish_pg.php?eventid={eventid}&pagestate=init&overide=1" >
+
+                <div class="row">
+                    <br>
+                    <div class="col-md-offset-8 col-md-2">
+                         <!-- go back to results page -->
+                         <button type="button" id="closeBtn" class="btn btn-warning btn-md" onclick="window.parent.closeModal();">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>&nbsp;&nbsp;Fix Issues&nbsp;&nbsp;
+                         </button>
+                    </div>
+                    <div class="col-md-2">    
+                         <!-- continue with publishing -->
+                         <button class="btn btn-primary btn-md" type="submit">
+                             &nbsp;&nbsp;Publish Anyway&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                         </button>
+                    </div>
+                </div>
+
+            </form>
+            <script>
+                  $(document).ready(function() {
                       $("[data-toggle=popover]").popover({trigger: 'hover',html: 'true'});
                   });
              </script>

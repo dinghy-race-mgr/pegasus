@@ -473,7 +473,7 @@ function set_result_data($sailorid, $events)
             $arr['list'][$eventid]['racestate'] = $rstate_rst[$fleet]['status'];
         }
 
-        $result_o = new RESULT($db_o, $eventid);
+        $result_o = new RACE_RESULT($db_o, $eventid);
         $fleet_rst = $result_o->get_race_results($fleet);
 
         $arr['list'][$eventid]['position'] = "?";

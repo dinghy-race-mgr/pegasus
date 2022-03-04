@@ -22,7 +22,7 @@ u_initpagestart(0,"results_pg",false);   // starts session and sets error report
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
-require_once ("{$loc}/common/classes/result_class.php");
+require_once("{$loc}/common/classes/raceresult_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 
 $db_o = new DB();

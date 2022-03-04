@@ -24,8 +24,6 @@ require_once ("{$loc}/common/lib/raceformat_lib.php");
 
 // starts session and sets error reporting
 u_initpagestart("", $page, false);
-if ($_SESSION['debug']==2) { u_sessionstate($scriptname, $page, 0); } // if debug send session to file
-u_sessionstate($scriptname, $page, 0);
 
 // required templates
 $tmpl_o  = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/pickrace_tm.php"));
@@ -42,8 +40,6 @@ $event_o  = new EVENT($db_o);
 $rota_o = new ROTA($db_o);
 $_SESSION['mode'] == "demo"? $status = "demo" : $status = "active";
 $events = $event_o->get_events("racing", $status, array("start" => $today, "end" => $today), array() );
-
-// echo "<pre>".print_r($_SESSION,true)."</pre>";
 
 // ----- navbar -----------------------------------------------------------------------------
 $nav_fields = array("page" => $page, "eventid" => 0, "brand" => "raceBox Programme", "club" => $_SESSION['clubcode']);

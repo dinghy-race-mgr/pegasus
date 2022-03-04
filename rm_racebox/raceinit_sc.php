@@ -49,29 +49,29 @@ if ($eventid and ($mode == "init" or $mode == "reset" or $mode == "rejoin"))
 
     if ($status == "event_error")
     {
-        u_exitnicely($scriptname, $eventid, "the requested event details can not be found in the raceManager database",
-            "please contact your raceManager administrator");
+        u_exitnicely($scriptname, $eventid,"race initialisation - the requested event details can not be found in the raceManager database",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
     elseif ($status == "fleetcfg_error")
     {
-        u_exitnicely($scriptname, $eventid, "the fleet format details for the selected event can not be found in the raceManager database.",
-            "please contact your raceManager administrator");
+        u_exitnicely($scriptname, $eventid,"race initialisation - fleet format details for the selected event can not be found in the raceManager database",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
     elseif ($status == "fleetinit_error")
     {
-        u_exitnicely($scriptname, $eventid, "the fleet information for this race was not correctly installed in the database.",
-            "please contact your raceManager administrator");
+        u_exitnicely($scriptname, $eventid,"race initialisation - fleet information for this race was not correctly installed in the raceManager database",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
     elseif ($status == "racecfg_error")
     {
-        u_exitnicely($scriptname, $eventid, "the race format requested for the selected event can not be found in the raceManager database, or is not currently used.",
-            "please contact your raceManager administrator");
+        u_exitnicely($scriptname, $eventid,"race initialisation - the race format requested for the selected event cannot be found in the raceManager database, or is not currently used",
+            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
 }
 else
 {
-    u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}] or mode [{$_REQUEST['mode']}]",
-        "please contact your raceManager administrator");
+    u_exitnicely($scriptname, $eventid,"race initialisation - the event has an invalid record identifier [{$_REQUEST['eventid']}] or initialisation mode [{$_REQUEST['mode']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
 if ($mode == "init")

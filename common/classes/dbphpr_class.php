@@ -72,17 +72,17 @@ class DBPHPR
         if( $this->link->connect_errno )
         {
             $this->db_log_errors( "Connect failed", $this->link->connect_error );
-            u_exitnicely("db_class.php",0, "database connection error",
-                "host: {$_SESSION['db_host']}, user: {$_SESSION['db_user']}, dbase: {$_SESSION['db_name']}");
+            u_exitnicely("dbphpr_class.php",0,"database connection error - host: {$_SESSION['db_host']}, user: {$_SESSION['db_user']}, dbase: {$_SESSION['db_name']}",
+                "check configuration setup - either fix configuration or set database user to match configuration",
+                array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__,
+                "calledby" => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], "args" => func_get_args()));
         }
 	}
-    
 
     public function db_disconnect()
     {
 		$this->link->close();
 	}
-
 
     public function db_query($query)
     {
@@ -90,7 +90,6 @@ class DBPHPR
         $results = $this->link->query( $query );
         return $results;
     }
-    
 
     public function db_get_row( $query )
     {

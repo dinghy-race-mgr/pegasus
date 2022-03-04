@@ -24,17 +24,13 @@ require_once ("{$loc}/common/lib/util_lib.php");
 //require_once ("{$loc}/common/lib/rm_lib.php");
 
 // get script parameters
-$eventid = u_checkarg("eventid", "", "", "");
-
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 if (!$eventid) {
-    u_exitnicely($scriptname, 0, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
-        "please contact your raceManager administrator");  }
+    u_exitnicely($scriptname, 0, "$page page - requested event has an invalid or missing record identifier [{$_REQUEST['eventid']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));  }
 else {
     u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
 }
-
-if ($_SESSION['debug']!=0) { u_sessionstate($scriptname, $page, $eventid); }
 
 // app classes for this page
 require_once ("{$loc}/common/classes/db_class.php");
@@ -58,7 +54,7 @@ include ("./include/pursuit_ctl.inc");
 // ----- navbar -----------------------------------------------------------------------------
 $fields = array(
     "eventid"  => $eventid,
-    "brand"    => "raceBox PURSUIT FINISH - {$_SESSION["e_$eventid"]['ev_sname']}",
+    "brand"    => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}",
     "page"     => $page,
     "pursuit"  => $_SESSION["e_$eventid"]['pursuit'],
 );

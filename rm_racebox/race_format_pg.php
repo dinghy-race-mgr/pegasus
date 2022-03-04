@@ -60,6 +60,7 @@ EOT;
 $fields = array(
     "title"      => $title,
     "loc"        => $loc,
+    "theme"      => $_SESSION['racebox_theme'],
     "stylesheet" => "",
     "navbar"     => "",
     "body"       => $body,

@@ -100,7 +100,7 @@ class COMPETITOR
 //        return $detail;
 //    }
 
-   public function comp_searchcompetitor($searchstr)
+   public function comp_searchcompetitor($searchstr, $app = "")
    {
        /* free text search for competitors based on search string containing one or more of class name, helms name and sailnum */
 
@@ -163,6 +163,8 @@ class COMPETITOR
        }
        $where = implode(" AND ", $clause);
 
+       // add application specific where clauses
+       $app == "racebox" ? $app_where = "AND b.category != 'P'" : $app_where = "" ;
 
        if (empty($where)) {
            $result = array();
@@ -170,11 +172,8 @@ class COMPETITOR
            $query = "SELECT a.id, classname, sailnum, helm, a.crew
                   FROM `t_competitor` as a
                   JOIN t_class as b ON a.classid=b.id
-                  WHERE 1=0 OR ( ($where) AND a.active = 1)
+                  WHERE 1=0 OR ( ($where) $app_where AND a.active = 1)
                   ORDER BY  classname, sailnum * 1";
-//           echo "<pre>".$query."</pre>";
-//           exit();
-//           u_writedbg($query, __FILE__, __FUNCTION__, __LINE__, false);
            $result = $this->db->db_get_rows($query);
        }
 

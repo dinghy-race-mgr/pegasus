@@ -19,20 +19,13 @@ $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
-$page_state = u_checkarg("pagestate", "set","");
+$pagestate = u_checkarg("pagestate", "set","");
 
 u_initpagestart($_REQUEST['eventid'], $page, "");
-include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
 
-if (!$eventid) {
-    u_exitnicely($scriptname, $eventid, "the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
-        "please contact your raceManager administrator");
-}
-
-if (empty($page_state)) {
-    u_exitnicely($scriptname, $eventid, "the page state has not been set",
-        "please contact your raceManager administrator");
-}
+if (!$eventid or empty($pagestate)) {
+    u_exitnicely($scriptname, 0, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}] or page state [{$_REQUEST['pagestate']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array())); }
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
@@ -45,10 +38,10 @@ include("./include/entries_ctl.inc");
 // create database object
 $db_o    = new DB;
 
-$page_state == "pick" ? $search = $_SESSION["e_$eventid"]['enter_opt'] : $search = array();
+$pagestate == "pick" ? $search = $_SESSION["e_$eventid"]['enter_opt'] : $search = array();
 
 $params = array(
-    "pagestate" => $page_state,
+    "pagestate" => $pagestate,
     "error"     => isset($_SESSION["e_$eventid"]['enter_err']) ? $_SESSION["e_$eventid"]['enter_err'] : null,
     "search"    => $search,
     "entries"   => isset($_SESSION["e_$eventid"]['enter_rst']) ? $_SESSION["e_$eventid"]['enter_rst'] : array(),

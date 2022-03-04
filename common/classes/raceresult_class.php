@@ -65,7 +65,7 @@ Methods
 
 */
 
-class RESULT
+class RACE_RESULT
 {
     private $db;
 
@@ -129,44 +129,70 @@ class RESULT
         return $filename;
     }
 
-    public function add_result_file($filespec)
+    public function add_result_file($fields)
     {
-        $status = false;
 
-        $filespec['eventid'] = $this->eventid;
-        $exists = $this->db->db_num_rows("SELECT * FROM t_resultfile
-                                          WHERE `eventid` = {$this->eventid}
-                                          AND folder = '{$filespec['folder']}'
-                                          AND format = '{$filespec['format']}'
-                                          AND filename = '{$filespec['filename']}'");
+        $insert = $this->db->db_insert("t_resultfile", $fields);
 
-        if ($exists > 0)
-        {
-            $update = $this->db->db_update("t_resultfile", $filespec,
-                array("eventid" => $this->eventid, "folder" => $filespec['folder'], "format" => $filespec['format'], "filename" => $filespec['filename']));
-            if ($update >= 0) { $status = true; }
-        }
-        else
-        {
-            $insert = $this->db->db_insert("t_resultfile", $filespec);
-            if ($insert) { $status = true; }
-        }
+        $insert ? $status = true : $status = false;
+
+//        $filespec['eventid'] = $this->eventid;
+//        $exists = $this->db->db_num_rows("SELECT * FROM t_resultfile
+//                                          WHERE `eventid` = {$this->eventid}
+//                                          AND folder = '{$filespec['folder']}'
+//                                          AND format = '{$filespec['format']}'
+//                                          AND filename = '{$filespec['filename']}'");
+//
+//        if ($exists > 0)
+//        {
+//            $update = $this->db->db_update("t_resultfile", $filespec,
+//                array("eventid" => $this->eventid, "folder" => $filespec['folder'], "format" => $filespec['format'], "filename" => $filespec['filename']));
+//            if ($update >= 0) { $status = true; }
+//        }
+//        else
+//        {
+//            $insert = $this->db->db_insert("t_resultfile", $filespec);
+//            if ($insert) { $status = true; }
+//        }
 
         return $status;
     }
 
-//    function transfer_results_files()
-//    {
-//        return true;   // FIXME
-//    }
-
-    public function get_result_files($eventid, $type="")  // FIXME - don't need to pass $eventid - already in class
+    public function del_obsolete_file($attr, $filename = "")
     {
-        $where = "eventid = $eventid ";
-        if (!empty($type))
+        // checks for file matching attributes in t_resultfile - deletes if found
+        // optionally includes check on filename
+
+        $num_deleted = 0;
+        $sql = "DELETE FROM t_resultfile WHERE eventid = {$attr['eventid']} and folder = {$attr['folder']}";
+        if (!empty($filename)) { $sql.= " and filename = '$filename'"; }
+
+        $del = $this->db->db_query($sql);
+        if ($del) { $num_deleted = count($del); }
+
+        return $num_deleted;
+    }
+
+    public function set_upload_time($file_id)
+    {
+        // sets datetime file was uploaded to the website
+        // file_id is 0 for inventory file - so no update
+        if ($file_id > 0)
         {
-            $where.= "AND folder = '".strtolower($type)."' ";
+            $upd = $this->db->db_query("UPDATE t_resultfile SET upload = CURRENT_TIMESTAMP where id = $file_id");
         }
+        else
+        {
+            $upd = false;
+        }
+
+        return $upd;
+    }
+
+    public function get_result_files($type="")
+    {
+        $where = "eventid = ".$this->eventid;
+        if (!empty($type)) { $where.= "AND folder = '".strtolower($type)."' "; }
 
         $files = $this->db->db_get_rows("SELECT * FROM t_resultfile WHERE $where");
         return $files;
@@ -407,7 +433,6 @@ EOT;
 
         $inventory = array();
 
-        // FIXME - are these session variables set up
         $inventory["admin"] = array(
             "type"       => "event_inventory",
             "createdate" => date("Y-m-d H:i"),
@@ -459,19 +484,23 @@ EOT;
             $inventory["events"][$event['id']]['duties'] = $dutyarray;
 
             // get results files for this event
-            $files = $this->get_result_files($event['id']);
+            $files = $this->get_result_files();
 
             $resultsfiles = array();
             foreach ($files as $file) {
                 //echo "<pre>FILEDATA".print_r($file,true)."</pre>";
                 $resultsfiles[] = array(
-                    "type"   => $file["folder"],
+                    "file_id" =>$file['id'],
+                    "year"   => $file['eventyear'],
+                    "type"   => $file['folder'],
                     "format" => $file["format"],
                     "file"   => $file["filename"],
+                    "label"  => $file["label"],
                     "notes"  => $file["notes"],
                     "status" => $file["status"],
                     "rank"   => $file["rank"],
-                    "update" => $file["upddate"],
+                    "upload" => $file['upload'],
+                    "update" => $file["upddate"]
                 );
             }
 
@@ -480,7 +509,6 @@ EOT;
 
         // encode as json
         $jbufr = json_encode($inventory);
-        // echo $jbufr;
 
         // create inventory file
         $status = file_put_contents($target_filepath, $jbufr);
