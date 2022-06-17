@@ -52,6 +52,7 @@ body > .container { padding: 10px 0px 0px 0px; }
 
 /* text styles */
 .lead { line-height: 1.1 !important;}
+.bunch-text { line-height: 1.2 !important; font-size: 18px !important; padding: 6px 6px !important;}
 
 /* growls */
 .growl-container { font-size: 1.2em; line-height: 1.2; }
@@ -125,7 +126,8 @@ body > .container { padding: 10px 0px 0px 0px; }
 .table > tbody > tr.lastlap  {background-color: var(--lightyellow); }
 
 .truncate        { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.inline-button   { padding: 0px 5px 0px 5px; }
+.inline-button   { padding: 0px 5px 0px 5px; text-align: center; }
+
 .laptime-racing  { background-color: #18BC9C; color: var(--white); }   /* flatly: success */
 .laptime-lastlap { background-color: #F39C12; color: var(--black); }   /* flatly: warning */
 .laptime-finish  { background-color: var(--grey); color: var(--white); }

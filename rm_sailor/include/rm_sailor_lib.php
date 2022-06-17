@@ -65,34 +65,6 @@ EOT;
     return $bufr;
 }
 
-function check_argument($arg, $mode, $check, $default = "")
-{
-    // tests $_REQUEST argument for existence and sets values or defaults accordingly.
-    // e.g
-    // $external = check_argument("state", "setbool", "init", true)
-    // $action['event'] = check_argument("event", "set", "", 0)
-
-    if (key_exists($arg, $_REQUEST)) {  // if key exists do checks according to mode
-        if ($mode == "set") {
-            empty($_REQUEST[$arg]) ? $val = $default : $val = $_REQUEST[$arg];
-        }
-        elseif ($mode =="checkset") {
-            $_REQUEST[$arg] == $check ? $val = $_REQUEST[$arg] : $val = $default;
-        }
-        elseif ($mode == "setbool") {
-            $_REQUEST[$arg] == $check ? $val = true : $val = false;
-        }
-        elseif ($mode == "checkint") {
-            ctype_digit($_REQUEST[$arg]) ? $val = $_REQUEST[$arg] : $val = false;
-        }
-
-    } else {  // if key doesn't exist set to default if provided
-        empty($default) ? $val = "" : $val = $default;
-    }
-
-    return $val;
-}
-
 function check_valueinlist ($val, $list)
     // case insensitive check if value in list of values (in array)
 {
@@ -227,7 +199,7 @@ function get_dated_event($future_window)
     global $event_o;
     $err = false;
     $today = date("Y-m-d");
-    $data = array("mode" => "dated", "numevents" => 0, "event_day"=> "", "nextevent" => array(), "details" => array());
+    $data = array("mode" => "dated", "numevents" => 0, "numdays" => 1, "eventday"=> "", "nextevent" => array(), "details" => array());
 
     // check if any race events today and the next event
     $_SESSION['demo']=="demo" ? $status = "demo" : $status = "active";

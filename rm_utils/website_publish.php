@@ -24,7 +24,6 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
         if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
 
         // start log
-        $_SESSION['syslog'] = "$loc/logs/adminlogs/".$_SESSION['syslog'];
         error_log(date('H:i:s')." -- PUBLISH ALL --------------------".PHP_EOL, 3, $_SESSION['syslog']);
 
         // set initialisation flag
@@ -260,9 +259,13 @@ function create_programme_file($start_date, $end_date)
     return $status;
 }
 
-function transfer_programme()
+function transfer_programme($target_dir)
 {
-    // FIXME add transfer function
+    if ($target_dir == "../data/programme")    // local - no need to transfer
+    {
+        return true;
+    }
+    // TODO - need to add code to do transfer when required
 
     return false;
 }

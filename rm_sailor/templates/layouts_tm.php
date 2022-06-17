@@ -22,11 +22,11 @@
 
             
             <link rel="shortcut icon" href="{loc}/common/images/favicon.ico">             
-            <link rel="stylesheet"    href="{loc}/common/oss/bootstrap337/css/{theme}bootstrap.min.css" >      
+            <link rel="stylesheet"    href="{loc}/common/oss/bootstrap341/css/{theme}bootstrap.min.css" >      
             <link rel="stylesheet"    href="{loc}/common/oss/bs-dialog/css/bootstrap-dialog.min.css">
                     
             <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>
-            <script type="text/javascript" src="{loc}/common/oss/bootstrap337/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="{loc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bs-dialog/js/bootstrap-dialog.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
             <script type="text/javascript" src="{loc}/common/scripts/clock.js"></script>
@@ -46,9 +46,9 @@
             <!-- Header -->
                 <div class="container-fluid" style="border-bottom: 1px solid white; margin-bottom: 5px">
                     <div class="row">
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-left rm-text-sm">{header-left}</div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center rm-text-md text-success">{header-center}</div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-right rm-text-sm">{header-right}</div>
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 text-left rm-text-md text-warning">{header-left}</div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center rm-text-md text-warning"><span style='letter-spacing: 2px'>{header-center}</span></div>
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 text-right rm-text-sm text-warning">{header-right}</div>
                     </div>   
                 </div>
             
@@ -81,12 +81,55 @@
                 $("[data-toggle=tooltip]").tooltip({trigger: 'hover',html: 'true'});
                 });
             </script>
+            
+            <!-- quitbox -->
+            <script language="javascript">
+                function quitBox(cmd)
+                {   
+                    if (cmd=='quit')
+                    {
+                        open(location, '_self').close();
+                    }   
+                    return false;   
+                }
+            </script>
           </body>
      </html>        
 EOT;
 
     return $bufr;
- }
+}
+
+function restart_switch($params = array())
+{
+
+    if (empty($params['eventlist']))
+    {
+        $restart_url = "rm_sailor.php?mode={$_SESSION['mode']}&usage={$_SESSION['usage']}&demo={$_SESSION['demo']}&event={$_SESSION['event_arg']}";
+
+        $bufr = <<<EOT
+        <div class="pull-right">
+            <a href="$restart_url" class="rm-text-sm" style="color: white" >
+               <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> &nbsp;restart&nbsp;&nbsp;&nbsp;&nbsp;                       
+            </a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="index.php" class="rm-text-sm" style="color: white" >
+               <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> &nbsp;switch to Cruising App&nbsp;&nbsp;&nbsp;&nbsp;                        
+            </a>            
+        </div>
+EOT;
+    }
+    else
+    {
+        $bufr = <<<EOT
+        <a class="rm-text-sm pull-right" style="color: white" name="Quit" id="Quit" onclick="return quitBox('quit');">
+           <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> &nbsp;exit                        
+        </a>  
+EOT;
+    }
+
+    return $bufr;
+}
 
 
 function change_fm($params = array())
@@ -207,9 +250,9 @@ EOT;
     {
         $bufr.= <<<EOT
           <div class="pull-right">
-              <div class="btn-group">
-                  <button type="submit" class="btn btn-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <span class="glyphicon glyphicon-menu-hamburger rm-text-sm" > </span>
+              <div class="btn-group" >
+                  <button type="submit" class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="background-color: transparent;">
+                    <span class="glyphicon glyphicon-menu-hamburger rm-text-md"  > </span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right">
                     $opts_bufr

@@ -308,17 +308,11 @@ class DB
             $query .= ' WHERE '. implode(' AND ', $clause);   
         }
         
-        if( !empty( $limit ) )
-        {
-            $query .= ' LIMIT '. $limit;
-        }
-
-        //u_writedbg("from $calling_function - db_update: query: $query ",__FILE__,__FUNCTION__,__LINE__);
+        if( !empty( $limit ) ) { $query .= ' LIMIT '. $limit; }
 
         $update = $this->link->query( $query );
-
         $numrows = $this->link->affected_rows;         // might be zero if no records changed
-        //u_writedbg("db_update: rows affected: $numrows ",__FILE__,__FUNCTION__,__LINE__);
+        //u_writedbg("db_update: $query | rows affected: $numrows | result: $update ",__FILE__,__FUNCTION__,__LINE__);
 
         if( $this->link->error )
         {

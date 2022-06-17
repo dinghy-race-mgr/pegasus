@@ -442,7 +442,7 @@ $mdl_close = array(
         "action"      => "race_sc.php?eventid=$eventid&pagestate=close",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "changed my mind",
+        "close-lbl"   => "cancel",
         "reset-lbl"   => "",
         "submit-lbl"  => "CLOSE race",
         "footer"      => ""
@@ -525,17 +525,17 @@ $mdl_setlaps = array(
     "submit"  => true,
     "fields"  => array(
         "id"          => "setlaps",
-        "size"        => "md",
-        "style"       => "primary",
+        "size"        => "lg",
+        "style"       => "info",
         "title"       => "Set Laps",
         "body"        => "",
         "script"      => "",
         "action"      => "race_sc.php?eventid=$eventid&pagestate=setalllaps",
         "target"      => "",
         "onsubmit"    => "",
-        "close-lbl"   => "changed my mind",
+        "close-lbl"   => " changed my mind",
         "reset-lbl"   => "",
-        "submit-lbl"  => "set laps",
+        "submit-lbl"  => " Set Laps",
         "footer"      => ""
     ),
 );

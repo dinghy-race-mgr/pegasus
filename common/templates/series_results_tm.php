@@ -147,7 +147,7 @@ EOT;
     <div class="flex-container">
         <div class="flex-child">$club_logo</div> 
         <div class="flex-child" style="text-align: right">
-            <span class="event-hdr-right">{$series['clubname']} Results</span>
+            <span class="event-hdr-right">{$series['clubname']}</span>
         </div> 
     </div>
 EOT;
@@ -164,18 +164,19 @@ EOT;
     $event_bufr = <<<EOT
     <div class="flex-container">
         <div class="flex-child">
-            <span class="event-hdr-left" >{$series['name']}</span>
+            <span class="event-hdr-left" >{$series['name']} {$params['eventyear']}</span>
             <div class="report-notes" >{$series['notes']} | $series_turnout</div>
         </div> 
         <div class="flex-child" style="text-align: right">
-            <span class="print"><button class="noprint" onclick="window.print()" href="#" type="button">Print Results</button></span>
+            <span class="print"><a class="button-green noprint" onclick="window.print()" href="#" type="button">Print Results</a></span>
         </div> 
     </div>
 EOT;
 
     // format results for each fleet
     //$discard = explode(",", $series['discard']);
-    !empty($discard[$series['races_complete']]) ? $discard_txt = "| discards: <b>{$series['discard'][$series['races_complete']]}</b>" : $discard_txt = "";
+    !empty($discard[$series['races_complete']]) ? $discard_txt = "| discards: <b>{$series['discard'][$series['races_complete']]}</b>"
+        : $discard_txt = "";
     $fleet_block = array();
     foreach($fleets as $i=>$fleet)
     {
@@ -217,7 +218,7 @@ EOT;
             $fleet_block[$i] = <<<EOT
                 <div>$fleet_detail_bufr</div>
                 <div>               
-                    <table>
+                    <table >
                         $fleet_cols_bufr
                     </table>
                 </div>
@@ -225,15 +226,16 @@ EOT;
         }
     }
 
-    // info section
-    // codes list - including result code list if required)
+    // INFO section
+
+    // codes list - currently not showing codes on series result page so has no meaning
     $code_info = "";
-    if ($opts['inc-codes']) { $code_info = format_series_codes($codes); }
+    // if ($opts['inc-codes']) { $code_info = format_series_codes($codes); }
 
     // get race status info
     $race_status_info = format_event_status_info($races, $opts['race-label']);
     $info_bufr = <<<EOT
-        <div class="spacer"></div>
+        <div><br></div>
         <div class="flex-container">
             <div class="flex-child"><span class="info-notes">$code_info</span></div> 
             <div class="flex-child" style="text-align: right"><span class="info-notes">$race_status_info</span></div> 
@@ -244,7 +246,7 @@ EOT;
     if (!empty($sys['sys_website']))
     {
         $system_txt = <<<EOT
-            <button onclick="location.href='{$sys['sys_website']}'" type="button">{$sys['sys_name']} </button> ({$sys['sys_release']}) {$sys['sys_version']}
+            <a href="{$sys['sys_website']}">{$sys['sys_name']} </a> ({$sys['sys_release']}) {$sys['sys_version']}
 EOT;
     }
     else
@@ -254,7 +256,7 @@ EOT;
 
     $print_date = date("j M Y \a\\t H:i");
     $footer_bufr =<<<EOT
-        <div class="spacer"></div>
+        <br><div class="spacer"></div>
         <div class="flex-container">
             <div class="flex-child"><span class="footer">$system_txt  - created $print_date<span></div> 
             <div class="flex-child" style="text-align: right"><span class="footer">Copyright: {$sys['sys_copyright']}</span></div> 
@@ -320,30 +322,22 @@ function format_series_columns($races, $inc_club, $race_label)
 {
     $inc_club ? $club_col = "<th class='table-col' style='width: 100px'>club</th>" : $club_col = "" ;
 
-    $race_cols = "";
+    $race_cols_hdr = "";
     foreach ($races as $i=>$race)
     {
-        if ($race_label == "date")
+        $race_label == "date" ? $val = $race['race-short-date'] : $val = "R$i";
+
+        if (!empty($race['race-url']))
         {
-            if (!empty($race['race-url']))
-            {
-                $race_cols.= "<th class='table-col' style='width: 100px' ><a href='{$race['race-url']}' target='_blank' >{$race['race-short-date']}</a></th>";
-            }
-            else
-            {
-                $race_cols.= "<th class='table-col' style='width: 100px'>{$race['race-short-date']}</th>";
-            }
+            $race_cols_hdr.= <<<EOT
+            <td class='table-col' style='text-align: center' >
+                    <a href="{$race['race-url']}" target="_BLANK" style="color: white;" title="click for race result" >$val</a>
+            </td>
+EOT;
         }
         else
         {
-            if (!empty($race['race-url']))
-            {
-                $race_cols.= "<th class='table-col' style='width: 100px'><a href='{$race['race-url']}' target='_blank' >R$i</a></th>";
-            }
-            else
-            {
-                $race_cols.= "<th class='table-col' style='width: 100px'>R$i</th>";
-            }
+            $race_cols_hdr.= "<th class='table-col'>$val</th>";
         }
     }
 
@@ -351,13 +345,13 @@ function format_series_columns($races, $inc_club, $race_label)
     <thead>
         <tr>
             <th class='table-col' style='width: 5%'>pos</th>
-            <th class='table-col truncate' style='width: 15%'>class</th>
-            <th class='table-col' style='width: 10%'>no.</th>
-            <th class='table-col truncate' style='width: 20%' >team</th>
+            <th class='table-col' style='width: 10%'>class</th>
+            <th class='table-col' style='width: 7%'>no.</th>
+            <th class='table-col' style='width: 25%' >competitors</th>
             $club_col
-            $race_cols
-            <th class='table-col' style='width: 5%'>total pts</th>
-            <th class='table-col' style='width: 5%'>net pts</th>
+            $race_cols_hdr
+            <th class='table-col' style='width: 7%'>total</th>
+            <th class='table-col' style='width: 7%'>net</th>
         </tr>
     </thead>
 EOT;
@@ -384,10 +378,10 @@ function format_series_data($fleet, $races, $inc_club)
                     $points = $sailor['rst']["r$j"]['result'];
                     $score = ($points == (int) $points) ? (int) $points : (float) $points;  // convert to int if possible
 
-                    if (!empty($sailor['rst']["r$j"]['code']))                              // add code if set
-                    {
-                        $score = $score . "/" . $sailor['rst']["r$j"]['code'];
-                    }
+//                    if (!empty($sailor['rst']["r$j"]['code']))                              // add code if set
+//                    {
+//                        $score = $score . "/" . $sailor['rst']["r$j"]['code'];
+//                    }
 
                     if ($sailor['rst']["r$j"]['discard'])                                    // if score is discarded display score as in brackets
                     {

@@ -66,26 +66,26 @@
 */
 
 // -----------------------------------------------------------------------------------
-//$btn_setlaps = array(
+//$btn_resetlaps = array(
 //    "label"     => true,
 //    "glyph"     => true,
 //    "g-pos"     => "left",
 //    "popover"   => true,
 //    "fields"    => array(
-//        "id"          => "setlaps",
+//        "id"          => "resetlaps",
 //        "style"       => "primary",
 //        "size"        => "lg",
 //        "label"       => "Reset Laps",
 //        "link"        => "",
 //        "glyph"       => "glyphicon-flag",
-//        "popover"     => "click here to change laps for each fleet",
+//        "popover"     => "click here to change laps for each fleet (e.g after mistakenly shortening the race)",
 //        "pop-pos"     => "left",
 //        "block"       => "btn-block",
 //        "disabled"    => "",
 //        "top-margin"  => "margin-top-10"
 //    ),
 //);
-//$mdl_setlaps = array(
+//$mdl_resetlaps = array(
 //    "form"    => true,
 //    "footer"  => true,
 //    "reload"  => false,
@@ -93,18 +93,18 @@
 //    "reset"   => false,
 //    "submit"  => true,
 //    "fields"  => array(
-//        "id"          => "setlaps",
-//        "size"        => "md",
+//        "id"          => "resetlaps",
+//        "size"        => "lg",
 //        "style"       => "primary",
-//        "title"       => "Set Laps",
+//        "title"       => "Reset Laps",
 //        "body"        => "",
 //        "script"      => "",
-//        "action"      => "timer_sc.php?eventid=$eventid&pagestate=setlaps",
+//        "action"      => "timer_sc.php?eventid=$eventid&pagestate=resetlaps",
 //        "target"      => "",
 //        "onsubmit"    => "",
 //        "close-lbl"   => "changed my mind",
 //        "reset-lbl"   => "",
-//        "submit-lbl"  => "set laps",
+//        "submit-lbl"  => "Reset Laps",
 //        "footer"      => ""
 //    ),
 //);
@@ -117,12 +117,12 @@ $btn_shorten = array(
     "popover"   => true,
     "fields"    => array(
         "id"          => "shorten",
-        "style"       => "primary",
+        "style"       => "info",
         "size"        => "lg",
-        "label"       => "Shorten / Reset Laps",
+        "label"       => "Shorten ALL Fleets",
         "link"        => "",
         "glyph"       => "glyphicon-flag",
-        "popover"     => "click here to shorten ALL fleets at the end of the next lap",
+        "popover"     => "click here to shorten ALL fleets at the end of their next lap",
         "pop-pos"     => "left",
         "block"       => "btn-block",
         "disabled"    => "",
@@ -140,16 +140,16 @@ $mdl_shorten = array(
     "fields"  => array(
         "id"          => "shorten",
         "size"        => "lg",
-        "style"       => "success",
+        "style"       => "info",
         "title"       => "Shorten All Fleets",
         "body"        => "",
         "script"      => "",
         "onsubmit"    => "",
         "action"      => "timer_sc.php?eventid=$eventid&pagestate=shortenall",
         "target"      => "",
-        "close-lbl"   => "changed my mind",
+        "close-lbl"   => " don't shorten!",
         "reset-lbl"   => "",
-        "submit-lbl"  => "change finish laps",
+        "submit-lbl"  => " Confirm Changes",
         "footer"      => ""
     ),
 );

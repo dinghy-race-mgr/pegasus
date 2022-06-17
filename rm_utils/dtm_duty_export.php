@@ -29,7 +29,6 @@ $filepath = $target_dir.$filename;
 session_start();
 $_SESSION = parse_ini_file("../config/common.ini", false);
 $_SESSION['sql_debug'] = false;
-$_SESSION['syslog'] = "../logs/syslogs/sys_log".date("Y_m_d").".log";
 include("../common/classes/db_class.php");
 
 $start_date  = "";

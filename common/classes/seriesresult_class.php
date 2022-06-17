@@ -174,6 +174,7 @@ class SERIES_RESULT
         $this->db = $db;                        // database connection
         $this->testfile = $testfile;            // file containing series data in RM format
         $this->report = $report;                // option to report to terminal (for debugging)
+        $this->report = true;
         $this->series_code = $series_code;      // series code e.g. SPRING-21
 
         $this->opts = $opts;                    // results display options
@@ -235,7 +236,7 @@ class SERIES_RESULT
             if ($fatalerr) {
                 return $fatalerr;
             } else {
-                if ($this->report) { echo ".... event list<br>"; /*echo "<pre>EVENT LIST".print_r($this->event_arr,true)."</pre>";*/}
+                if ($this->report) { u_writedbg(".... event list". print_r($this->event_arr,true),__FILE__,__FUNCTION__,__LINE__); }
             }
 
 
@@ -244,9 +245,7 @@ class SERIES_RESULT
             if ($this->err_fatal) {
                 return $this->err_fatal;
             } else {
-                if ($this->report) {
-                    echo ".... series configuration<br>"; /*echo "<pre>SERIES".print_r($this->series,true)."</pre>"*/;
-                }
+                if ($this->report) { u_writedbg(".... series config". print_r($this->series,true),__FILE__,__FUNCTION__,__LINE__); }
             }
 
             
@@ -255,16 +254,13 @@ class SERIES_RESULT
             if ($this->err_fatal) {
                 return $this->err_fatal;
             } else {
-                if ($this->report) {
-                    echo ".... fleet configuration<br>"; u_writelog("<pre>FLEETS".print_r($this->fleets,true)."</pre>", 10371);/*echo "<pre>FLEETS".print_r($this->fleets,true)."</pre>";*/
-                }
+                if ($this->report) { u_writedbg(".... fleet config". print_r($this->fleets,true),__FILE__,__FUNCTION__,__LINE__); }
             }
 
             // get merge class data
             $this->merge_classes = $this->set_mergeclasses($this->series['merge']);
-            if ($this->report and !empty($this->merge_classes)) {
-                echo ".... merge classes<br>"; u_writelog("<pre>MERGE CLASSES".print_r($this->merge_classes,true)."</pre>", 10371);/*echo "<pre>MERGE CLASSES".print_r($this->merge_classes,true)."</pre>";*/
-            }
+            if ($this->report and !empty($this->merge_classes))
+            { u_writedbg(".... merge classes". print_r($this->merge_classes,true),__FILE__,__FUNCTION__,__LINE__);}
 
             // get races data
             $this->races = $this->set_raceinfo();
@@ -272,8 +268,7 @@ class SERIES_RESULT
                 return $this->err_fatal;
             } else {
                 if ($this->report) {
-                    echo ".... series race information<br>"; u_writelog("<pre>RACES".print_r($this->races,true)."</pre>", 10371); /*echo "<pre>RACES".print_r($this->races,true)."</pre>";*/
-                }
+                    u_writedbg(".... series race info". print_r($this->races,true),__FILE__,__FUNCTION__,__LINE__);}
             }
 
             // get competitor data
@@ -281,9 +276,7 @@ class SERIES_RESULT
             if ($this->err_fatal) {
                 return $this->err_fatal;
             } else {
-                if ($this->report) {
-                    echo ".... competitor information<br>"; u_writelog("<pre>COMPETITORS".print_r($this->sailor,true)."</pre>", 10371); /*echo "<pre>COMPETITORS".print_r($this->sailor,true)."</pre>";*/
-                }
+                if ($this->report) { u_writedbg(".... competitor info". print_r($this->sailor,true),__FILE__,__FUNCTION__,__LINE__); }
             }
 
             // get race results data
@@ -291,18 +284,13 @@ class SERIES_RESULT
             if ($this->err_fatal) {
                 return $this->err_fatal;
             } else {
-                if ($this->report) {
-                    echo ".... race results information<br>"; u_writelog("<pre>RESULTS".print_r($this->results,true)."</pre>", 10371); /*echo "<pre>RESULTS".print_r($this->results,true)."</pre>";*/
-                }
+                if ($this->report) { u_writedbg(".... results info". print_r($this->results,true),__FILE__,__FUNCTION__,__LINE__); }
             }
         }
         else
         {
             // get data from input file
-            if ($this->report) {
-                echo "- reading in data from file: " . $this->testfile . "<br>";
-            }
-
+            if ($this->report) { u_writedbg(".... reading data from file ". $this->testfile,__FILE__,__FUNCTION__,__LINE__); }
             $this->set_datafromfile();
         }
 
@@ -329,8 +317,9 @@ class SERIES_RESULT
 
         // get array of scoring codes used in this series
         $this->codes_used = $this->set_scoringcodes();
-        if ($this->report and !empty($this->codes_used)) {
-            echo "scoring codes collected ..."; //echo "<pre>".print_r($this->codes_used,true)."</pre>";;
+        if ($this->report and !empty($this->codes_used))
+        {
+            u_writedbg(".... scoring codes". print_r($this->codes_used,true),__FILE__,__FUNCTION__,__LINE__);
         }
 
         return $this->err_fatal;
@@ -402,22 +391,22 @@ class SERIES_RESULT
         }
 
         // convert nondiscard string into array with nondiscard indexed by race sequence
-        $nodiscard_arr = array();
-        if (!empty($detail['nodiscard'])) {
-            $arr = explode(",", $detail['nodiscard']);
-            foreach ($arr as $k => $v) {
-                $nodiscard_arr[$k + 1] = $v;
-            }
-        }
+//        $nodiscard_arr = array();
+////        if (!empty($detail['nodiscard'])) {
+////            $arr = explode(",", $detail['nodiscard']);
+////            foreach ($arr as $k => $v) {
+////                $nodiscard_arr[$k + 1] = $v;
+////            }
+////        }
 
-        // convert score multiplier string into array with multiplier indexed by race sequence
-        $multiplier_arr = array();
-        if (!empty($detail['discard'])) {
-            $arr = explode(",", $detail['multiplier']);
-            foreach ($arr as $k => $v) {
-                $multiplier_arr[$k + 1] = $v;
-            }
-        }
+//        // convert score multiplier string into array with multiplier indexed by race sequence
+//        $multiplier_arr = array();
+//        if (!empty($detail['discard'])) {
+//            $arr = explode(",", $detail['multiplier']);
+//            foreach ($arr as $k => $v) {
+//                $multiplier_arr[$k + 1] = $v;
+//            }
+//        }
 
         $data =  array(
             "clubname"     => $club['clubname'],
@@ -432,8 +421,8 @@ class SERIES_RESULT
             "classresults" => $detail['classresults'],
             "avgscheme"    => $detail['avgscheme'],
             "discard"      => $discard_arr,
-            "nodiscard"    => $discard_arr,
-            "multiplier"   => $discard_arr,
+            "nodiscard"    => $detail['nodiscard'],
+            "multiplier"   => $detail['multiplier'],
             "maxduty"      => $detail['maxduty'],
             "dutypoints"   => $detail['dutypoints'],
         );
@@ -518,9 +507,21 @@ class SERIES_RESULT
 
             $result_o = new RACE_RESULT($this->db, $eventid);
 
-            $rfile = $result_o->get_result_files("races");
+            $rfile = $result_o->get_result_files(array("eventid"=>$eventid, "folder"=>"races"));
 
-            empty($rfile) ? $event['url'] = "" : $event['url'] = $_SESSION['result_public_url']."/".$rfile['folder']."/".$rfile['filename'];
+//            u_writedbg("RFILE: ".print_r($rfile,true), __FILE__, __FUNCTION__, __LINE__);
+//            u_writedbg($_SESSION['result_public_url'], __FILE__, __FUNCTION__, __LINE__);
+//            u_writedbg("count rfile: ".count($rfile), __FILE__, __FUNCTION__, __LINE__);
+
+            if (empty($rfile[0]))
+            {
+                $event['url'] = "";
+            }
+            else
+            {
+                $event['url'] = $_SESSION['result_public_url']."/".$rfile[0]['eventyear']."/".$rfile[0]['folder']."/".$rfile[0]['filename'];
+            }
+//            u_writedbg("eventurl: ".$event['url'], __FILE__, __FUNCTION__, __LINE__);
 
             // event format consistency check
             if ($i == 1 )
@@ -537,25 +538,27 @@ class SERIES_RESULT
                 }
             }
 
-            // check if non discardable race
-            if (array_key_exists($i, $this->series['nodiscard']))
-            {
-                $no_discard = $this->series['nodiscard'][$i];
-            }
+//            // check if non discardable race
+//            if (array_key_exists($i, $this->series['nodiscard']))
+//            {
+//                $no_discard = $this->series['nodiscard'][$i];
+//            }
+//
+//            // check if race has multiple score
+//            if (array_key_exists($i, $this->series['multiplier']))
+//            {
+//                $multiplier = $this->series['multiplier'][$i];
+//            }
 
-            // check if race has multiple score
-            if (array_key_exists($i, $this->series['multiplier']))
-            {
-                $multiplier = $this->series['multiplier'][$i];
-            }
+            // FIXME need to handle nodiscard and multiplier for last race correctly - just dummy set for now
 
             $data[$i] =  array(
 
                 "eventid"      => $event['id'],
                 "date"         => $event['event_date'],
                 "name"         => $event['event_name'],
-                "no_discard"   => $no_discard,
-                "multiplier"   => $multiplier,
+                "no_discard"   => false,
+                "multiplier"   => false,
                 'status'       => $event['event_status'],
                 'notes'        => $event['result_notes'],
                 'url'          => $event['url']
@@ -715,13 +718,14 @@ class SERIES_RESULT
             }
         }
         sort($codes);
+
         return $codes;
     }
 
     public function calc_series_result()
     {
         //if ($this->report) { echo "<pre>RST - initial [races: {$this->races_complete}] : ".print_r($this->rst,true)."</pre>";; }
-        if ($this->report) { echo "- calc step 1<br>"; }
+        if ($this->report) { u_writedbg(".... calc step 1 [check some races complete]",__FILE__,__FUNCTION__,__LINE__); }
 
         // check that we have some completed races in the series
         if ($this->races_num <= 0)
@@ -732,7 +736,7 @@ class SERIES_RESULT
             return $this->err_fatal;
         }
 
-        if ($this->report) { echo "- calc step 2: Merge Classes<br>"; }
+        if ($this->report) { u_writedbg(".... calc step 2 [merge classes]",__FILE__,__FUNCTION__,__LINE__); }
 
         // if we have classes to be merged - merge results if same helm is sailing a merged class
 //        if (!empty($this->merge_classes))
@@ -742,42 +746,41 @@ class SERIES_RESULT
 //        if ($this->report) { echo "<pre>MERGES: ".print_r($this->sailors,true)."</pre>";; }
 
         // get number of sailors
-        if ($this->report) { echo "- calc step 3: Count Sailors<br>"; }
+        if ($this->report) { u_writedbg(".... calc step 3 [count sailors]",__FILE__,__FUNCTION__,__LINE__); }
         $this->count_sailors();
         //if ($this->report) { echo "<pre>FLEETS: ".print_r($this->fleets,true)."</pre>";; }
 
         // add DNC scores
-        if ($this->report) { echo "- calc step 4: Apply DNC<br>"; }
+        if ($this->report) { u_writedbg(".... calc step 4 [add DNC]",__FILE__,__FUNCTION__,__LINE__); }
         $this->score_dnc();
         //u_writedbg("<pre>RST after DNC: ".print_r($this->rst,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
         //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
         // apply series discards
-        if ($this->report) { echo "- calc step 5: Apply Discards<br>"; }
+        if ($this->report) { u_writedbg(".... calc step 5 [apply discards]",__FILE__,__FUNCTION__,__LINE__); }
         $this->series_discard();
         //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
         // apply average scores
-        if ($this->report) { echo "- calc step 6: Apply AVG Score<br>"; }
+        if ($this->report) { u_writedbg(".... calc step 6 [apply average scores]",__FILE__,__FUNCTION__,__LINE__); }
         //u_writedbg("<pre>RST BEFOE AVG: ".print_r($this->rst,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
         $this->score_avg();
         //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
         // redo discards in case average score changes it
-        if ($this->report) { echo "- calc step 7: Apply Discards Again<br>"; }
+        if ($this->report) { u_writedbg(".... calc step 7 [redo discards]",__FILE__,__FUNCTION__,__LINE__); }
         $this->series_discard();                            // FIXME is there a better way of doing this - it only applies to one AVG option
         //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
-        if ($this->report) { echo "- calc step 8: Set Series Points<br>"; }
+        if ($this->report) { u_writedbg(".... calc step 8 [set series points]",__FILE__,__FUNCTION__,__LINE__);  }
         $this->series_points();
         //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
         $this->results = $this->series_score();
 
-        if ($this->report) { echo "Final Results<br>"; }
-        if ($this->report) { echo "<pre>RST: ".print_r($this->results,true)."</pre>";; }
+        if ($this->report) { u_writedbg(".... calc step 9 [final results]".print_r($this->results,true) ,__FILE__,__FUNCTION__,__LINE__); }
 
-        if ($this->report) { echo "get turnout stats ...<br>"; }
+        if ($this->report) { u_writedbg(".... calc step 10 [get turnout stats]",__FILE__,__FUNCTION__,__LINE__); }
         $this->set_turnoutstats($this->series["races_complete"]);
 
         return $this->err_fatal;
@@ -901,8 +904,8 @@ class SERIES_RESULT
     private function score_avg()
     {
         /** Average points options
-        avg_races - average of all races
-        avg_raced - average of all non-dnc races
+        all_races - average of all races
+        all_competed - average of all non-dnc races
         avg_counting - average of all non-discarded races (tricky as the race may then replace a discarded one)
          */
 
@@ -912,25 +915,28 @@ class SERIES_RESULT
             // loop through results for this sailor
             $score_sum = 0;
             $score_count = 0;
+
             foreach ($this->rst[$s_id] as $k=>$result)
             {
                 if ($this->series['avgscheme'] == "all_races")
                 {
+                    if ( $result['code'] != "AVG" AND $result['pts'] != 999 )
                     $score_count++;
                     $score_sum = $score_sum + $result['pts'];
                 }
+
                 elseif ($this->series['avgscheme'] == "all_competed")
                 {
-                    if ($result['code'] != "DNC" AND $result['code'] != "AVG")
+                    if ( $result['code'] != "DNC" AND $result['code'] != "AVG" AND $result['pts'] != 999 )
                     {
                         $score_count++;
                         $score_sum = $score_sum + $result['pts'];
                     }
                 }
+
                 elseif  ($this->series['avgscheme'] == "all_counting")
                 {
-                    /* FIXME need to work out discarded races before doing this */
-                    if (!$result['discard'])
+                    if (!$result['discard'] AND $result['pts'] != 999 )
                     {
                         $score_count++;
                         $score_sum = $score_sum + $result['pts'];
@@ -950,13 +956,15 @@ class SERIES_RESULT
             $this->sailor[$s_id]['average'] = $average;
 
             // apply this score to relevant results
+            $average_set = 0;
             foreach ($this->rst[$s_id] as $k=>$result)
             {
-                if ($result['code'] == "AVG")
+                if ($result['code'] == "AVG" OR $result['pts'] == 999)
                 {
-                    if ($average != 0)
+                    if($average != 0)
                     {
                         $this->rst[$s_id][$k]['pts'] = $average;
+                        $average_set++;
                     }
                     else  // only scoring race is AVG - score is set to DNC
                     {
@@ -1330,13 +1338,13 @@ class SERIES_RESULT
         $result_codes = $this->db->db_getresultcodes("result");
         $codes_info = u_get_result_codes_info($result_codes, $this->codes_used);
 
-
         $data = array(
             "pagetitle"     => $this->series_code,
             "styles"        => $styles
         );
 
         $params = $this->results;
+        $params['eventyear'] = date("Y", strtotime($this->results['races'][1]['race-full-date']));
         $params['opts'] = $this->opts;
         $params['codes'] = $codes_info;
         $params['sys'] = $sys_detail;
@@ -1366,7 +1374,7 @@ class SERIES_RESULT
     {
         // series file is the series code in the event record (i.e including year) with any
         // non-standard characters removed
-        $filename = preg_replace('/[^a-zA-Z0-9\-\._]/', '', $this->series['code']);
+        $filename = preg_replace('/[^a-zA-Z0-9\-\._]/', '', $this->series_code);
         return $filename.".htm";
     }
 

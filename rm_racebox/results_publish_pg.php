@@ -17,14 +17,23 @@ $page       = "publish";     //
 $scriptname = basename(__FILE__);
 require_once ("$loc/common/lib/util_lib.php");
 
-u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and sets error reporting
+$eventid = u_checkarg("eventid", "checkintnotzero","");
+if (!$eventid)
+{
+    u_exitnicely($scriptname, 0,"$page page - event id record [{$_REQUEST['eventid']}] not defined",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
+}
+else{
+    u_initpagestart($eventid, $page, false);   // starts session and sets error reporting
+}
+
 
 require_once ("$loc/common/classes/db_class.php");
 require_once ("$loc/common/classes/template_class.php");
 require_once ("$loc/common/classes/race_class.php");
 require_once ("$loc/common/classes/rota_class.php");
 require_once ("$loc/common/classes/event_class.php");
-require_once("$loc/common/classes/raceresult_class.php");
+require_once ("$loc/common/classes/raceresult_class.php");
 require_once ("$loc/common/classes/seriesresult_class.php");
 
 require_once ("$loc/common/lib/results_lib.php");
@@ -53,9 +62,9 @@ if (empty($pagestate) OR !$eventid)
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
-$db_o    = new DB;                        // database object
-$event_o = new EVENT($db_o);              // event object
-$result_o  = new RACE_RESULT($db_o, $eventid); // result object
+$db_o    = new DB;                              // database object
+$event_o = new EVENT($db_o);                    // event object
+$result_o  = new RACE_RESULT($db_o, $eventid);  // result object
 
 $event = $event_o->get_event_byid($eventid);
 
@@ -80,13 +89,11 @@ if ($pagestate == "init")    // display information collection form
 // FIXME need to provide more information if there is a problem - probably a publishing log that can be accessed
 elseif ($pagestate == "process")    // run through process workflow
 {
-    //echo "<pre>".print_r($_REQUEST,true)."</pre>"; exit();
-
     $continue = true;
     $success = array(1=>true, 2=>true, 3=>true, 4=>true );
     u_writelog("Results processing started: ", $eventid);
 
-    $row_start = array ("1" => 5, "2" => 15, "3" => 30, "4" => 45, "5" => 65 );  // % of page height for process display
+    $row_start = array ("1" => 5, "2" => 20, "3" => 35, "4" => 50, "5" => 65 );  // % of page height for process display
     $transfer_files = array(); // contains files to be transferred
 
     // deal with parameters from form
@@ -100,10 +107,28 @@ elseif ($pagestate == "process")    // run through process workflow
         "result_notes"  => u_checkarg("result_notes", "set", "", ""),
     );
 
+    $detail_set = false;
+    foreach ($args as $arg)
+    {
+        if (!empty($arg) or $arg == "FINAL")
+        {
+            $detail_set = true;
+            break;
+        }
+    }
+
+
     // update event with form details
     $update = $event_o->event_changedetail($eventid, $args);
-    if ($update) {u_writelog(" - updated event wind details and notes", $eventid); }
-    else { u_writelog(" - FAILED to update event wind details and notes", $eventid); }
+    if ($update and $detail_set)
+    {
+        $results_msg = " - updated event wind details and notes";
+    }
+    else
+    {
+        $results_msg = " - event wind details and notes not supplied (or failed to update)";
+    }
+    u_writelog($results_msg, $eventid);
 
     echo start_page($loc);
     ob_flush();
@@ -114,7 +139,7 @@ elseif ($pagestate == "process")    // run through process workflow
     // step 1 archive data
     // -----------------------------------------------------------------------------------
     $step = 1;
-    startProcess($step, $row_start[$step], "Archiving results data...", "warning");
+    startProcess($step, $row_start[$step], "Archiving race data...", "warning");
     $result_o = new RACE_RESULT($db_o, $eventid);
 
     $status = process_archive();
@@ -122,7 +147,7 @@ elseif ($pagestate == "process")    // run through process workflow
 
     if ($status['copy'] and $status['archive'])
     {
-        endProcess($step, $row_start[$step], "success", "Results archived ");
+        endProcess($step, $row_start[$step], "success", "Archive race data " );
         u_writelog("results archived", $eventid);
         $continue = true;
     }
@@ -131,7 +156,7 @@ elseif ($pagestate == "process")    // run through process workflow
         $status['copy'] ?  $msg1 = "results copied " : $msg1 = "results copy failed ";
         $status['archive'] ?  $msg2 = "results archived" : $msg2 = "archiving failed";
 
-        endProcess($step, $row_start[$step], "fail", "Results archiving FAILED <br><i>$msg1 : $msg2]</i>");
+        endProcess($step, $row_start[$step], "fail", "Archive race data", "", "FAILED<i>$msg1 : $msg2]</i>");
         u_writelog("FAILED to archive results [$msg1 : $msg2]", $eventid);
         $continue = false;
         $success[1] = false;
@@ -143,7 +168,7 @@ elseif ($pagestate == "process")    // run through process workflow
     if ($continue)
     {
         $step = 2;
-        startProcess($step, $row_start[$step], "Creating results sheet ...", "warning");
+        startProcess($step, $row_start[$step], "Publishing race results ...", "warning");
 
         // create race result
         $fleet_msg = array(); // TODO this is a future use feature - displays individual notes for each fleet - currently not collected anywhere
@@ -152,14 +177,14 @@ elseif ($pagestate == "process")    // run through process workflow
 
         if ($status['success'])
         {
-            endProcess($step, $row_start[$step], "success", "Results sheet created", $status['url'], "Click to view");
+            endProcess($step, $row_start[$step], "success", "Publish race results", $status['url'], "Click to view");
             u_writelog("race results file created", $eventid);
             $transfer_file[] = array("path" => $status['path'], "url" => $status['url'], "file" => $status['file']);
             $continue = true;
         }
         else
         {
-            endProcess($step, $row_start[$step], "fail", "Results sheet FAILED ");
+            endProcess($step, $row_start[$step], "fail", "Publish race results", "", "FAILED");
             u_writelog("FAILED to create results file", $eventid);
             $continue = false;
             $success[2] = false;
@@ -188,15 +213,18 @@ elseif ($pagestate == "process")    // run through process workflow
             );
 
 
-            startProcess($step, $row_start[$step], "Updating series results ", "warning");
+            startProcess($step, $row_start[$step], "Publishing series results ... ", "warning");
 
             $series_notes = "";   // fixme - curently not used
+            //u_writedbg("<pre>BEFORE process_series_file: ".print_r($opts,true)."|".$_SESSION["e_$eventid"]["ev_seriescode"]."|".print_r($args,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
             $status = process_series_file($opts, $_SESSION["e_$eventid"]["ev_seriescode"], $args['result_status'], $series_notes);
             sleep(2);
 
+            u_writedbg("<pre>STATUS: ".print_r($status,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+
             if ($status['success'])
             {
-                endProcess($step, $row_start[$step], "success", "Series result sheet created", $status['url'], "Click to view");
+                endProcess($step, $row_start[$step], "success", "Publish series result", $status['url'], "Click to view");
                 u_writelog("series results file updated", $eventid);
                 $transfer_file[] = array("path" => $status['path'], "url" => $status['url'], "file" => $status['file']);
                 $continue = true;
@@ -205,12 +233,17 @@ elseif ($pagestate == "process")    // run through process workflow
             {
                 // we have an error - process any detail information
                 $err_detail_txt = "";
-                foreach ($status['detail'] as $detail)
+
+                u_writedbg("STATUS: ".print_r($status,true), __FILE__, __FUNCTION__, __LINE__);
+                if(array_key_exists("detail", $status))
                 {
-                    $err_detail_txt.= " | {$detail['type']} {$detail['code']}:  {$detail['msg']}";
+                    foreach ($status['detail'] as $detail)
+                    {
+                        $err_detail_txt.= " | {$detail['type']} {$detail['code']}:  {$detail['msg']}";
+                    }
                 }
 
-                endProcess($step, $row_start[$step], "fail", "Series results update FAILED ");
+                endProcess($step, $row_start[$step], "fail", "Publish series result", "", "FAILED");
                 u_writelog("FAILED to update series results file [$err_detail_txt]", $eventid);
                 $continue = true;  // should transfer what we can
                 $success[3] = false;
@@ -219,7 +252,7 @@ elseif ($pagestate == "process")    // run through process workflow
         else
         {
             sleep(1);
-            endProcess($step, $row_start[$step], "na", "No series result to update ");
+            endProcess($step, $row_start[$step], "na", "Publish series result", "", "No series result to update ");
             u_writelog("Not part of a series - no series result file to update", $eventid);
             $continue = true;
         }
@@ -238,7 +271,7 @@ elseif ($pagestate == "process")    // run through process workflow
         // also check if upload is turned on in config
         if ($args['result_status'] != "embargoed" and $_SESSION['result_upload'] != "none")
         {
-            startProcess($step, $row_start[$step], "Transferring results files to website ", "warning");
+            startProcess($step, $row_start[$step], "Transferring files to website ... ", "warning");
 
             // create inventory
             $inventory = process_inventory($result_year);
@@ -248,7 +281,7 @@ elseif ($pagestate == "process")    // run through process workflow
                 u_writelog("FILE TRANSFER - results inventory created", $eventid);
 
                 // inventory file into array
-                $invdata = json_decode(file_get_contents($inventory['path'].DIRECTORY_SEPARATOR.$inventory['filename']), true);
+                $invdata = json_decode(file_get_contents($inventory['path']."/".$inventory['filename']), true);
 
                 // create file list for transfer ( upload not done or out of date and not embargoed)
                 $files = array();
@@ -258,7 +291,7 @@ elseif ($pagestate == "process")    // run through process workflow
                     {
                         // check if file neeeds uploading
                         $upload_time = strtotime($file['upload']);
-                        $update_time = strtotime($file['upddate']);
+                        $update_time = strtotime($file['update']);
                         if ($file['status'] != "embargoed" and (empty($file['upload']) or $upload_time < $update_time))
                         {
                             $files[] = $file;
@@ -295,13 +328,12 @@ elseif ($pagestate == "process")    // run through process workflow
                         if (empty($target_path) or empty($target_url))
                         {
                             sleep(1);
-                            endProcess($step, $row_start[$step], "fail", "results location for website not configured ");
+                            endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "results location for website not configured ");
                             u_writelog("FILE TRANSFER - results location for website not configure [{$_SESSION['result_public_path']}]", $eventid);
                         }
                         else
                         {
                             $status = process_transfer_network($files, $target_path, $target_url);
-
                         }
 
                     }
@@ -313,8 +345,8 @@ elseif ($pagestate == "process")    // run through process workflow
                         if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
                         {
                             sleep(1);
-                            endProcess($step, $row_start[$step], "fail", "ftp protocol for website not configured correctly ");
-                            u_writelog("FILE TRANSFER - ftp protocol for website not configured correctly", $eventid);
+                            endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "Transfer software not configured correctly");
+                            u_writelog("FILE TRANSFER - ftp connection details for website not configured correctly [{$ftp['protocol']}|{$ftp['server']}|{$ftp['user']}|{$ftp['pwd']}]", $eventid);
                         }
                         else
                         {
@@ -324,15 +356,14 @@ elseif ($pagestate == "process")    // run through process workflow
                     else
                     {
                         sleep(1);
-                        endProcess($step, $row_start[$step], "fail", "Transfer protocol not configured correctly ");
-                        u_writelog("FILE TRANSFER - transfer protocol option not configured correctly [{$_SESSION['result_upload']}]", $eventid);
+                        endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "Transfer software not configured correctly");
+                        u_writelog("FILE TRANSFER - transfer protocol (ftp|sftp) option not recognised [{$_SESSION['result_upload']}]", $eventid);
                     }
                 }
 
                 // report on transfer process
-
                 $msg_type = "fail";
-                $txt = $status['num_files']." of $num_for_transfer uploaded";
+                $txt = $status['num_files']." of $num_for_transfer results files uploaded";
                 if ($status['result'] and $status['complete'] )
                 {
                     $msg_type = "success";
@@ -342,32 +373,28 @@ elseif ($pagestate == "process")    // run through process workflow
                     $msg_type = "warning";
                 }
 
-                $detail_htm = "";
                 $detail_txt = "";
-                if ($msg_type != "success")
+                //u_writedbg("file transfer result: ".print_r($status['log'],true), __CLASS__, __FUNCTION__, __LINE__);
+                foreach ($status['log'] as $file)
                 {
-                    foreach ($status['log'] as $file)
-                    {
-                        $detail_htm.= "<p>$file</p>";
-                        $detail_txt.= "$file\n";
-                    }
+                    $detail_txt.= "$file\n";
                 }
 
                 sleep(1);
-                endProcess($step, $row_start[$step], $msg_type, $txt."<br><br>".$detail);
+                endProcess($step, $row_start[$step], $msg_type, "Transfer to website", "", $txt);
                 u_writelog("FILE TRANSFER - $txt\n$detail_txt", $eventid);
             }
             else
             {
                 sleep(1);
-                endProcess($step, $row_start[$step], "fail", "Problem creating list of files to transfer ");
+                endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "Unable to create list of files to transfer ");
                 u_writelog("FILE TRANSFER - results inventory NOT created", $eventid);
             }
         }
         else
         {
             sleep(1);
-            endProcess($step, $row_start[$step], "warning", "Transfer to website not requested ");
+            endProcess($step, $row_start[$step], "warning", "Transfer to website", "", "Transfer not requested ");
             u_writelog("FILE TRANSFER - NOT requested", $eventid);
         }
     }
@@ -376,6 +403,7 @@ elseif ($pagestate == "process")    // run through process workflow
     // -----------------------------------------------------------------------------------
     // step 5 report end status
     // -----------------------------------------------------------------------------------
+    $continue ? $_SESSION["e_$eventid"]['result_publish'] = true : $_SESSION["e_$eventid"]['result_publish'] = false;
     echo $tmpl_o->get_template("process_footer", array("top" => "{$row_start[5]}"), array("complete" => $success, "step" => $step));
     ob_flush();
     flush();
@@ -405,7 +433,7 @@ EOT;
 
     echo <<<EOT
         <div class="row" style='background-color= #ECF0F1; width: 90%; position: absolute; top: $pos%;'>
-            <div class="col-sm-5 col-sm-offset-1">
+            <div class="col-sm-5 col-sm-offset-1" style="padding-top: 15px; padding-bottom: 5px">
                <h4 style="color: steelblue">$text</h4>
             </div> 
             <div class="col-sm-5" style="padding-top: 15px; padding-bottom: 5px">
@@ -417,7 +445,7 @@ EOT;
     flush();
 }
 
-function endProcess($step, $pos, $status, $text, $link="", $link_text="")
+function endProcess($step, $pos, $status, $text, $link="", $end_text="")
 {
     if ($status == "success")
     {
@@ -431,24 +459,28 @@ function endProcess($step, $pos, $status, $text, $link="", $link_text="")
     }
     elseif ($status == "na")
     {
-        $glyph   = "glyphicon glyphicon-ok";
+        $glyph   = "glyphicon glyphicon-minus";
         $g_style = "color: green";
     }
     else // warning
     {
-        $glyph   = "glyphicon glyphicon-warning-sign";
+        $glyph   = "glyphicon glyphicon-alert";
         $g_style = "color: orange";
     }
 
-    $link_bufr = "<p>&nbsp;</p>";
+
     if ($link)
     {
-        $link_bufr = <<<EOT
-        <a href="$link" id="printrace" type="button" class="btn btn-info btn-md margin-top-10" target="_BLANK" >
+        $result_bufr = <<<EOT
+        <a href="$link" id="printrace" type="button" class="btn btn-info btn-md" target="_BLANK" >
            <span class="glyphicon glyphicon-search"></span>
-            $link_text
+            $end_text
         </a>
 EOT;
+    }
+    else
+    {
+        $result_bufr = "<h4>$end_text</h4>";
     }
 
     echo <<<EOT
@@ -460,7 +492,7 @@ EOT;
                <h4><span class="$glyph" style="$g_style; vertical-align: top;" aria-hidden="true"></span></h4>
             </div>
             <div class="col-sm-4 pull-right" style="vertical-align: top;">
-               $link_bufr
+               $result_bufr
             </div>
         </div>
 EOT;

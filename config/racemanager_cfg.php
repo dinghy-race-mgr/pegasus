@@ -8,6 +8,5 @@
 */
 
 $_SESSION['app_ini']       = "racemanager.ini";                                      // name of ini file for this app
-
 $_SESSION['app_name']      = "startup";                                              // name of application
 

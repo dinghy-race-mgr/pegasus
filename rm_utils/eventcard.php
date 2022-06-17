@@ -21,7 +21,6 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
         if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
 
         // start log
-        $_SESSION['syslog'] = "$loc/logs/adminlogs/".$_SESSION['syslog'];
         error_log(date('H:i:s')." -- EVENT CARD --------------------".PHP_EOL, 3, $_SESSION['syslog']);
 
         // set initialisation flag

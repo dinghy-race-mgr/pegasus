@@ -22,12 +22,12 @@ require_once ("{$loc}/common/classes/cruise_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 
 // check arguments
-$external = check_argument("state", "setbool", "init", true);
+$external = u_checkarg("state", "setbool", "init", true);
 $action = array(
-    "event" => check_argument("event", "set", "", 0),
-    "type" => check_argument("action", "set", ""),
-    "status" => check_argument("status", "set", ""),
-    "msg" => check_argument("msg", "set", "")
+    "event"  => u_checkarg("event", "set", "", 0),
+    "type"   => u_checkarg("action", "set", ""),
+    "status" => u_checkarg("status", "set", ""),
+    "msg"    => u_checkarg("msg", "set", "")
 );
 
 // connect to database to get event information

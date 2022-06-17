@@ -103,11 +103,11 @@ function timer($params=array())
        <div class="margin-top-10">
            {timer-btn}
        </div>
-       <div style="margin-top: 20px; ">
-           <div class="pull-right" data-toggle="tooltip" style="cursor:pointer; width: 50%" data-html="true"
+       <div style="margin-top: 60px; ">
+           <div class="pull-right" data-toggle="tooltip" style="cursor:pointer; width: 70%" data-html="true"
                 data-title="if you forgot to start the Timer at the first signal - click here" data-placement="bottom">
-               <a class="btn btn-primary lead" id="latetimer" data-toggle="modal" data-target="#latetimerModal">
-                    Forgot to start Timer?
+               <a class="btn btn-warning btn-md pull-right lead" id="latetimer" data-toggle="modal" data-target="#latetimerModal">
+                    <span class=""><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> &nbsp;Forgot to start TIMER?</span>
                </a>
            </div>
        </div>

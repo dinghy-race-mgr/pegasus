@@ -54,27 +54,6 @@ function race_detail_display($params=array())
         </div>
     </div>
 EOT;
-
-//    $html = <<<EOT
-//    <div class="margin-top-10 well">
-//        <div class="row">
-//            <div class="col-md-6">
-//                <h3 class="text-default" style="text-transform: uppercase;">{event-name}
-//                    <span class="text-$event_style"> - $event_status</span></h3>
-//            </div>
-//            <div class="col-md-5 margin-top-10">
-//                <h4 class="text-info">
-//                  <small>start:</small> <span class="lead"><b>{start-time}</b></span>
-//                  $tide_str
-//                  &nbsp;|&nbsp;<small>ood:</small> <span class="lead"><b>{ood-name}</b></span><br>
-//                  <small>format:</small> <span class="lead"><b>{race-format}</b></span>
-//                  &nbsp;|&nbsp;<small>starts:</small> <span class="lead"><b>{race-starts}</b></span>
-//                  &nbsp;|&nbsp;<small>series:</small> <span class="lead"><b>$series_str</b></span>
-//                </h4>
-//            </div>
-//        </div>
-//    </div>
-//EOT;
     return $html;
 }
 
@@ -309,13 +288,11 @@ EOT;
 function fm_cancel_ok($param=array())
 {
     $html = <<<EOT
-    <div class="margin-top-10">
-        <p class="lead">You should only CANCEL a race if you haven't started it yet &hellip;</p>
-        <p class="lead" style="text-indent: 50px"> - if it has already started use the ABANDON option instead</p>
-        <p class="text-info">If you are sure you want to CANCEL this race - click the button below to confirm</p>
-        <div class="alert alert-warning" role="alert">No results will be recorded!</div>
-    </div>
+        <h3 >To CANCEL the race click the button below to confirm ...</h3>
+        <br>
+        <h4>Warning - no results will be recorded for this race.</h4>
 EOT;
+
     return $html;
 }
 
@@ -323,11 +300,9 @@ EOT;
 function fm_cancel_notok($param=array())
 {
     $html = <<<EOT
-        <!-- instructions -->
-        <h4 class="text-danger"><b>Sorry - you can't CANCEL this race</b></h4>
-        <p>{reason}</p>
-        <p>{notes}</p>
-        <p>{action}</p>
+        <h3 >Sorry - you can't CANCEL this race because it has already started ...</h3>
+        <br>       
+        <h4><br><hr style="border-top: 1px solid green">If you want to stop this race use the ABANDON function</h4>
 EOT;
     return $html;
 }
@@ -337,7 +312,7 @@ function fm_uncancel_ok($param=array())
 {
     $html = <<<EOT
     <div class="margin-top-10">
-        <h4>This will undo the cancelling of the race</h4>
+        <h3>This will undo the cancelling of the race</h3>
         <p>If you are sure you want to UNCANCEL this race - click the button below to confirm</p>
     </div>
 EOT;
@@ -349,10 +324,9 @@ function fm_uncancel_notok($param=array())
 {
     $html = <<<EOT
         <!-- instructions -->
-        <h4 class="text-danger"><b>Sorry - you can't reset this CLOSED race</b></h4>
-        <p>{reason}</p>
-        <p>{notes}</p>
-        <p>{action}</p>
+        <h3 class="text-danger"><b>Sorry - you can't UNCANCEL this race</b></h3>
+        <br>       
+        <h4><br><hr style="border-top: 1px solid green">You can use the reset option to start the race from scratch - otherwise please check with your system administrator</h4>
 EOT;
     return $html;
 }
@@ -362,7 +336,7 @@ function fm_abandon_ok($param=array())
 {
     $html = <<<EOT
     <div class="margin-top-10">
-        <p class="lead">Are you sure you want to abandon this race ?</p>
+        <h3 class="lead">Are you sure you want to abandon this race ?</h3>
         <p class="text-danger lead" style="text-align: center;">no results will be recorded!</p>
         <div class="alert alert-info fade-in">
             <p class="lead">Tip: finish at an earlier lap</p>
@@ -383,10 +357,12 @@ function fm_abandon_notok($param=array())
 {
     $html = <<<EOT
         <!-- instructions -->
-        <h4 class="text-danger"><b>Sorry - you can't ABANDON this race</b></h4>
-        <p>{reason}</p>
-        <p>{notes}</p>
-        <p>{action}</p>
+        <h3>Sorry - you can't ABANDON this race</h3>
+        <div style="margin-left: 20px;">
+            <h4>{reason}</h4>
+            <p>{info}</p>
+        </div>       
+        <h4><br><hr style="border-top: 1px solid green">If you are not planning to run this race - use the CANCEL option instead</h4>
 EOT;
     return $html;
 }
@@ -396,8 +372,9 @@ function fm_unabandon_ok($param=array())
 {
     $html = <<<EOT
     <div class="margin-top-10">
-        <h4>This will undo the abandoning of the race</h4>
-        <p>If you sure you want to undo the abandonment of this race - click the button below to confirm</p>
+        <h3>This will remove the abandonment of the race and allow you to produce results</h3>
+        <br>
+        <h4><br><hr style="border-top: 1px solid green">If you sure you want to undo the abandonment of this race - click the button below to confirm</p>
     </div>
 EOT;
     return $html;
@@ -405,12 +382,13 @@ EOT;
 
 function fm_unabandon_notok($param=array())
 {
+    // currently there is no circumstance where this is option possible
+
     $html = <<<EOT
         <!-- instructions -->
-        <h4 class="text-danger"><b>Sorry - you can't reset this ABANDONED race</b></h4>
+        <h3>Sorry - you can't reset this ABANDONED race</h3>
         <p>{reason}</p>
-        <p>{notes}</p>
-        <p>{action}</p>
+        <p>{info}</p>
 EOT;
     return $html;
 }
@@ -444,10 +422,14 @@ function fm_close_notok($param=array())
 {
     $html = <<<EOT
         <!-- instructions -->
-        <h4 class="text-danger"><b>Sorry - you can't CLOSE this race</b></h4>
-        <p>{reason}</p>
-        <p>{notes}</p>
-        <p>{action}</p>
+        <h3 >Sorry - you can't CLOSE this race yet because ...</h3>
+        <div style="margin-left: 20px;">
+            <h4>{reason}</h4>
+            <p>{info}</p>
+        </div>
+        
+        <h4><br><hr style="border-top: 1px solid green">If you are not able to resolve the problems with the results
+        - publish them anyway and use the <b>Report Issue</b> button above to describe the problem</h4>
 EOT;
     return $html;
 }
@@ -478,12 +460,13 @@ EOT;
 
 function fm_reset_notok($param=array())
 {
+    // currently there is no circumstance where this is option possible
+
     $html = <<<EOT
         <!-- instructions -->
         <h4 class="text-danger"><b>Sorry - you can't RESET this race</b></h4>
         <p>{reason}</p>
-        <p>{notes}</p>
-        <p>{action}</p>
+        <p>{info}</p>
 EOT;
     return $html;
 }
@@ -631,29 +614,20 @@ function fm_race_setlaps($params = array())
 {
     global $tmpl_o;
 
+    $fields = array(
+        "instr_content" => "Set the number of laps for EACH fleet",
+        "footer_content" => "click the Set Laps button to make the changes",
+        "reminder" => ""
+    );
+
     $data = array(
         "mode"       => "setlaps",
         "instruction"=> true,
         "footer"     => true
     );
 
-    $fields = array(
-        "instr_content" => "Set the number of laps for EACH fleet",
-        "footer_content" => "click the Set laps button to submit changes"
-    );
-
     foreach ($params['fleet-data'] as $i=>$fleet)
     {
-        // debug
-//        if ($i == 1)
-//        {$fleet['status'] = "notstarted";}
-//        elseif ($i == 2)
-//        {$fleet['status'] = "inprogress";}
-//        elseif ($i == 3)
-//        {$fleet['status'] = "finishing";}
-//        elseif ($i == 4)
-//        {$fleet['status'] = "allfinished";}
-
         $data['fleets'][$i] = array(
             "fleetname"  => ucwords($fleet['name']),
             "fleetnum"   => $i,
@@ -663,51 +637,13 @@ function fm_race_setlaps($params = array())
 
         if ($fleet['status'] == "notstarted")
         {
-                $data['fleets'][$i]['minvallaps'] = array("val"=>1, "msg"=>"cannot be less than 1 lap");
+            $data['fleets'][$i]['minvallaps'] = array("val"=>1, "msg"=>"cannot be less than 1 lap");
         }
         elseif ($fleet['status'] == "inprogress")
         {
-            $minval = $fleet['currentlap'];
-            $data['fleets'][$i]['minvallaps'] = array("val"=>$minval, "msg"=>"cannot be less than $minval lap(s)");
-            $data['fleets'][$i]['maxvallaps'] = array("val"=>$fleet['maxlap'], "msg"=>"cannot be more than {$fleet['maxlap']} lap(s)");;
+            $data['fleets'][$i]['minvallaps'] = array("val"=>$fleet['currentlap'], "msg"=>"cannot be less than {$fleet['currentlap']} lap(s)");
         }
     }
 
     return $tmpl_o->get_template("fm_set_laps", $fields, $data);
 }
-
-//function fm_race_setlaps($params)
-//{
-//    $html = "";
-//    if ($params['lapstatus']==0)
-//    {
-//        $html.= <<<EOT
-//        <div class="alert alert-danger alert-dismissable" role="alert">
-//            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-//            <span aria-hidden="true">&times;</span></button>
-//            Please set the number of laps for ALL fleets.
-//        </div>
-//EOT;
-//    }
-//
-//    foreach($params['fleet-data'] as $fleet)
-//    {
-//        ( isset($fleet['maxlap']) AND $fleet['maxlap']>0 ) ? $laps = "{$fleet['maxlap']}" : $laps = "";
-//
-//        $html.= <<<EOT
-//        <div class="form-group" >
-//             <label class="col-xs-5 control-label">
-//                {$fleet['name']}
-//             </label>
-//             <div class="col-xs-3 inputfieldgroup">
-//                 <input type="number" class="form-control" style="padding-right:10px;" name="laps[{$fleet['fleetnum']}]"
-//                    value="$laps" placeholder="set laps" min="1"
-//                    data-fv-greaterthan-message="The no. of laps must be greater than 0"
-//                  />
-//             </div>
-//        </div>
-//EOT;
-//    }
-//
-//    return $html;
-//}

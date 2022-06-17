@@ -16,10 +16,10 @@ $page       = "help";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-$eventid = u_checkarg("eventid", "checkint","");                 // if zero - equested from pickrace_pg
+$eventid = u_checkarg("eventid", "checkint","");                 // if zero - requested from pickrace_pg
 $helppage = u_checkarg("page", "set", "", "help");
 
-u_initpagestart($_REQUEST['eventid'], $page, false);             // starts session and sets error reporting
+u_initpagestart($eventid, $page, false);                         // starts session and sets error reporting
 
 // classes
 require_once("{$loc}/common/classes/db_class.php");

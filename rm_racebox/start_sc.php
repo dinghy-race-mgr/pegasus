@@ -125,13 +125,14 @@ if ($eventid AND $pagestate)
     {
         $status = $event_o->event_updatestatus($eventid, "running");        // update event status
         $race_o->race_times_init();                                         // reset timings in t_race and t_lap
+        u_writelog("adjustung start time ...", $eventid);
         $timer_o->start(strtotime($_REQUEST['adjusttime']));                // set timer to adjusted time
         u_growlSet($eventid, $page, $g_start_timer_adjusted, array($_REQUEST['adjusttime']));
     }
     
     elseif ($pagestate == "generalrecall")
     {
-        u_writedbg("general recall - passed arguments: |{$_REQUEST['restarttime']}|{$_REQUEST['startnum']}|", __FILE__, __FUNCTION__,__LINE__);
+        //u_writedbg("general recall - passed arguments: |{$_REQUEST['restarttime']}|{$_REQUEST['startnum']}|", __FILE__, __FUNCTION__,__LINE__);
         
         // check if specified start time is later that originally scheduled start time
         if (strtotime($_REQUEST['restarttime']) <= $_SESSION["e_$eventid"]["st_{$_REQUEST['startnum']}"]['starttime']) 

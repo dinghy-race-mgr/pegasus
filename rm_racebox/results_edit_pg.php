@@ -15,12 +15,6 @@ $page       = "timer_editlaptimes";     //
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
-
-require_once ("{$loc}/common/classes/db_class.php");
-require_once ("{$loc}/common/classes/template_class.php");
-require_once ("{$loc}/common/classes/race_class.php");
-
 // FIXME - sort out arg processing + just display message
 if (empty($_REQUEST['pagestate']) OR empty($_REQUEST['eventid']) OR empty($_REQUEST['entryid']))
 {
@@ -32,7 +26,14 @@ else
     $pagestate = $_REQUEST['pagestate'];
     $eventid   = $_REQUEST['eventid'];
     $entryid   = $_REQUEST['entryid'];
+    u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
 }
+
+require_once ("{$loc}/common/classes/db_class.php");
+require_once ("{$loc}/common/classes/template_class.php");
+require_once ("{$loc}/common/classes/race_class.php");
+
+
 
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/results_tm.php"));
 
@@ -87,19 +88,22 @@ elseif ($pagestate == "submit")       // update t_race and t_lap records
     $edit['note']    = $_REQUEST['note'];
     if (ctype_digit($_REQUEST['pn']) )      { $edit['pn']      = (int)$_REQUEST['pn']; }
     if (ctype_digit($_REQUEST['lap']) )     { $edit['lap']     = (int)$_REQUEST['lap']; }
-    $edit['penalty'] = (int)$_REQUEST['penalty'];
+    $edit['penalty'] = $_REQUEST['penalty'];
 
     // check which fields have changed - remove unchanged fields and create audit string for log
-    foreach ($edit as $k => $v) {
-        if ($old[$k] === $edit[$k]) {
-            unset($edit[$k]);
-        } else {
-            $edit_str .= "$k:$v ";
-        }
+    foreach ($edit as $k => $v)
+    {
+        if ($old[$k] !== $edit[$k]) { $edit_str .= "$k:$v "; }
     }
 
+//    foreach ($edit as $k => $v)
+//    {
+//        if ($old[$k] === $edit[$k]) { unset($edit[$k]); }
+//        else { $edit_str .= "$k:$v "; }
+//    }
+
     // calculate new clicktime
-    $edit['clicktime'] = $old['clicktime'] + ($old['etime'] - $edit['etime']);
+    $edit['clicktime'] = $old['clicktime'] - ($old['etime'] - $edit['etime']);
 
     // calculate new corrected time
     $edit['ctime'] = $race_o->entry_calc_ct($edit['etime'], $edit['pn'], $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['scoring']);
@@ -131,22 +135,8 @@ elseif ($pagestate == "submit")       // update t_race and t_lap records
     $data = array(
         "maxlap" => $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['maxlap'],
     );
+
     $warnings = check_edit($edit, $data);
-
-    // debug stuff
-    /*
-    echo "<pre> REQUEST ARR : ".print_r($_REQUEST,true)."</pre>";
-    echo "<pre> EXISTING RECORD : ".print_r($old,true)."</pre>";
-    echo "<pre> EXISTING LAP TIMES : ".print_r($laptimes,true)."</pre>";
-    echo "<pre> EDIT INITIAL FIELDS: ".print_r($edit,true)."</pre>";
-    echo "<pre> EDIT FINAL FIELDS: ".print_r($edit,true)."</pre>";
-    echo "<pre> EDIT STRING: $edit_str</pre>";
-    echo "<pre> UPDATE T_RACE : $update</pre>";
-    echo "<pre> DEL LAP : $del</pre>";
-    echo "<pre> NEW LAP ARR : ".print_r($lap_arr,true)."</pre>";
-    echo "<pre> ADD LAP : $add_lap</pre>";
-    */
-
     if ($warnings)
     {
         $pagefields['body'] = $tmpl_o->get_template("result_edit_warnings", array(),
@@ -190,7 +180,7 @@ function check_edit($edit, $data)
         $warnings[] = $issues[1];
     }
 
-    if ($edit['penalty'] > 0 AND $edit['code'] != "BPI")
+    if ((float)$edit['penalty'] > "0" AND $edit['code'] != "DPI")
     {
         $warnings[] = $issues[2];
     }

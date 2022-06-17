@@ -387,7 +387,7 @@ function entry_tabs($params = array())
         $tabs.= <<<EOT
         <li role="presentation" class="lead text-center">
               <a class="text-primary" href="#fleet$i" aria-controls="$fleet_name" role="tab" data-toggle="pill" style="padding-top: 20px;">
-              <b>$fleet_name</b>             
+              <b>$fleet_name</b> <span class="badge">$fleet_count</span>             
               </a>
         </li>
 EOT;

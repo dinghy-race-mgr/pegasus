@@ -131,41 +131,25 @@ class RACE_RESULT
 
     public function add_result_file($fields)
     {
-
         $insert = $this->db->db_insert("t_resultfile", $fields);
-
         $insert ? $status = true : $status = false;
-
-//        $filespec['eventid'] = $this->eventid;
-//        $exists = $this->db->db_num_rows("SELECT * FROM t_resultfile
-//                                          WHERE `eventid` = {$this->eventid}
-//                                          AND folder = '{$filespec['folder']}'
-//                                          AND format = '{$filespec['format']}'
-//                                          AND filename = '{$filespec['filename']}'");
-//
-//        if ($exists > 0)
-//        {
-//            $update = $this->db->db_update("t_resultfile", $filespec,
-//                array("eventid" => $this->eventid, "folder" => $filespec['folder'], "format" => $filespec['format'], "filename" => $filespec['filename']));
-//            if ($update >= 0) { $status = true; }
-//        }
-//        else
-//        {
-//            $insert = $this->db->db_insert("t_resultfile", $filespec);
-//            if ($insert) { $status = true; }
-//        }
 
         return $status;
     }
 
-    public function del_obsolete_file($attr, $filename = "")
+    public function del_obsolete_file($attr)
     {
-        // checks for file matching attributes in t_resultfile - deletes if found
-        // optionally includes check on filename
-
+        // checks for file(s) matching attributes in t_resultfile - deletes if found
         $num_deleted = 0;
-        $sql = "DELETE FROM t_resultfile WHERE eventid = {$attr['eventid']} and folder = {$attr['folder']}";
-        if (!empty($filename)) { $sql.= " and filename = '$filename'"; }
+
+        $where = "";
+        foreach ($attr as $field => $constraint)
+        {
+            $where.= " $field = '$constraint' and ";
+        }
+        $where = rtrim($where, "and ");
+
+        $sql = "DELETE FROM t_resultfile WHERE $where";
 
         $del = $this->db->db_query($sql);
         if ($del) { $num_deleted = count($del); }
@@ -176,25 +160,34 @@ class RACE_RESULT
     public function set_upload_time($file_id)
     {
         // sets datetime file was uploaded to the website
-        // file_id is 0 for inventory file - so no update
+        // file_id is 0 for inventory file - so no update required
+        $upd = true;
         if ($file_id > 0)
         {
             $upd = $this->db->db_query("UPDATE t_resultfile SET upload = CURRENT_TIMESTAMP where id = $file_id");
-        }
-        else
-        {
-            $upd = false;
         }
 
         return $upd;
     }
 
-    public function get_result_files($type="")
+    public function get_result_files($constraints_1, $constraints_2 = array())
     {
-        $where = "eventid = ".$this->eventid;
-        if (!empty($type)) { $where.= "AND folder = '".strtolower($type)."' "; }
+        $where_1 = "";
+        $where_2 = "";
+        foreach ($constraints_1 as $field => $constraint) { $where_1.= " $field = '$constraint' and "; }
+        $where_1 = rtrim($where_1, "and ");
 
-        $files = $this->db->db_get_rows("SELECT * FROM t_resultfile WHERE $where");
+        if (!empty($constraints_2))
+        {
+            foreach ($constraints_2 as $field => $constraint) { $where_2.= " $field = '$constraint' and "; }
+            $where_2 = rtrim($where_1, "and ");
+        }
+
+        empty($where_2) ? $where = $where_1 : $where = "( ".$where_1.") OR ( ".$where_2." )";
+
+        $sql = "SELECT * FROM t_resultfile WHERE $where";
+        u_writedbg($sql, __CLASS__, __FUNCTION__, __LINE__);
+        $files = $this->db->db_get_rows($sql);
         return $files;
     }
 
@@ -253,33 +246,32 @@ EOT;
         $num_rows = $this->db->db_delete("a_lap", $constraint);
         $num_rows = $this->db->db_delete("a_finish", $constraint);
         $num_rows = $this->db->db_delete("a_race", $constraint);
+        $num_rows = $this->db->db_delete("a_entry", $constraint);
 
         return $num_rows;
     }
 
     public function race_copy_archive()
     {
-        $status = false;
+        $status = true;
 
         $this->clear_archives();         // first remove any previous archives of this event
 
-        // copy the race data to the archive
-        $t_race_query = "INSERT INTO a_race SELECT * FROM t_race WHERE eventid={$this->eventid}";
-        if ($this->db->db_query($t_race_query))
+        // copy the race data to the archive (t_race, t_lap, t_finish, t_entry)
+        // primary key not set on any of a_<table> so that duplicate id values are permitted
+
+        $t_race_query   = "INSERT INTO a_race SELECT * FROM t_race WHERE eventid={$this->eventid}";
+        $t_entry_query  = "INSERT INTO a_entry SELECT * FROM t_entry WHERE eventid={$this->eventid}";
+        $t_lap_query    = "INSERT INTO a_lap SELECT * FROM t_lap WHERE eventid={$this->eventid}";
+        $t_finish_query = "INSERT INTO a_finish SELECT * FROM t_finish WHERE eventid={$this->eventid}";
+
+
+        if (!$this->db->db_query($t_race_query)) { $status = false; }
+        if (!$this->db->db_query($t_entry_query)) { $status = false; }
+        if (!$this->db->db_query($t_lap_query)) { $status = false; }
+        if ($this->pursuit)
         {
-            $t_lap_query = "INSERT INTO a_lap SELECT * FROM t_lap WHERE eventid={$this->eventid}";
-            if ($this->db->db_query($t_lap_query))
-            {
-                if ($this->pursuit)
-                {
-                    $t_finish_query = "INSERT INTO a_finish SELECT * FROM t_finish WHERE eventid={$this->eventid}";
-                    if ($this->db->db_query($t_finish_query)) { $status = true; }
-                }
-                else
-                {
-                    $status = true;
-                }
-            }
+            if ($this->db->db_query($t_finish_query)) { $status = false; }
         }
 
         $status ? $msg = "copied results to archive tables" : $msg = "FAILED to copy results to archive tables" ;
@@ -388,6 +380,7 @@ EOT;
             "club_name"     => $club['clubname'],
             "event_name"    => $event['event_name'],
             "event_date"    => $event['event_date'],
+            "short_date"    => date("d M", strtotime($event['event_date'])),
             "event_start"   => $event['event_start'],
             "event_wind"    => u_getwind_str(array("wd_start" => $event['wd_start'], "wd_end" => $event['wd_end'],
                                                    "ws_start" => $event['ws_start'], "ws_end" => $event['ws_end'])),
@@ -441,8 +434,6 @@ EOT;
             "resultpath" => $system_info['result_path'],
             "resulturl"  => $system_info['result_url'],
         );
-        
-        //echo "<pre>".print_r($inventory["admin"],true)."</pre>";
 
         $event_o = new EVENT($this->db);
         $rota_o = new ROTA($this->db);
@@ -483,8 +474,9 @@ EOT;
 
             $inventory["events"][$event['id']]['duties'] = $dutyarray;
 
-            // get results files for this event
-            $files = $this->get_result_files();
+            // get results files for this event and any associated series file
+            empty($event['series_code']) ? $series_search = array() : $series_search = array("folder"=>"series", "filename"=>$event['series_code'].".htm");
+            $files = $this->get_result_files(array("eventid"=>$event['id']), $series_search);
 
             $resultsfiles = array();
             foreach ($files as $file) {
@@ -554,7 +546,6 @@ EOT;
                 $results[$key]['ctime']  = " - ";
                 $results[$key]['atime']  = " - ";
             }
-
 
             $results[$key]['result'] = u_conv_result($result['code'], $code_info['scoringtype'], $result['points']);
         }

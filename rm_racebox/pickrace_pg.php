@@ -161,7 +161,7 @@ $params = array(
 
 echo $tmpl_o->get_template("two_col_page", $fields, $params);
 
-echo "<pre>CURRENT SESSION: <br>".print_r($_SESSION,true)."</pre>";
+//echo "<pre>CURRENT SESSION: <br>".print_r($_SESSION,true)."</pre>";
 
 
 // ----- page specific functions ---------------------------------------------------------------
@@ -221,7 +221,7 @@ function configurestate($eventid, $status )
             { 
                 $rs['code']   = $state;
                 $rs['label']  = strtoupper($status);
-                $rs['style']  = "panel-success";
+                $rs['style']  = "panel-default";
                 $rs['text']   = "text-success";
                 $rs['link']   = true;
                 $rs['blabel'] = $lang['btn']['race_complete'];
@@ -233,8 +233,10 @@ function configurestate($eventid, $status )
                 {
                     $rs['blabel'] = "Changed your mind? &nbsp;<span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span>";
                     $rs['bstyle'] = "btn-warning";
-                    $rs['blink']  = "race_pg.php?eventid=$eventid";
-                    $rs['bpopup'] = "data-toggle=\"popover\" data-content=\"Changed your mind - click to run race\" data-placement=\"bottom\"";
+                    $rs['blink']  = "raceinit_sc.php?eventid=$eventid&mode=init&entryload=true";
+                    $rs['bpopup'] = "data-toggle=\"popover\" 
+                                     data-content=\"Click if you want to start again and run this previously abandoned or cancelled race\"
+                                     data-placement=\"bottom\"";
                 }
             }
             break;

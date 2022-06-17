@@ -28,11 +28,13 @@ require_once ("{$loc}/common/lib/util_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 
-u_initpagestart($_REQUEST['eventid'], $page, true);  // starts session and sets error reporting
-
 if (!$eventid) {
     u_exitnicely($scriptname, 0, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}]",
-        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array())); }
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
+}
+else{
+    u_initpagestart($_REQUEST['eventid'], $page, true);  // starts session and sets error reporting
+}
 
 // classes
 require_once("{$loc}/common/classes/db_class.php");

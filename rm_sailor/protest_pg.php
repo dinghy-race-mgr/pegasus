@@ -19,7 +19,7 @@ $db_o = new DB();
 $tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php", "./templates/protest_tm.php"));
 
 // check arguments
-$eventid = check_argument("event", "checkint", "");
+$eventid = u_checkarg("event", "checkint", "");
 
 if ($eventid) { // get protest information
     $_SESSION['pagefields']['header-center'] = $_SESSION['option_cfg'][$page]['pagename'];

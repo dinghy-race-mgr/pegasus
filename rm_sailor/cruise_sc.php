@@ -32,9 +32,9 @@ $_SESSION['events'] = get_cruise_details($_SESSION['sailor_cruiser_eventtypes'],
 $event_status = $_SESSION['events']['details'][$_REQUEST['event']]['event_status'];
 
 // arguments
-$opt = strtolower(check_argument("opt", "set", ""));
-$eventid = strtolower(check_argument("eventid", "set", ""));
-$cruise_type = strtolower(check_argument("cruise_type", "set", ""));
+$opt = strtolower(u_checkarg("opt", "set", ""));
+$eventid = strtolower(u_checkarg("eventid", "set", ""));
+$cruise_type = strtolower(u_checkarg("cruise_type", "set", ""));
 
 //empty($_REQUEST['opt'])         ? $opt = "" : $opt = strtolower($_REQUEST['opt']);
 //empty($_REQUEST['eventid'])     ? $eventid = "" : $eventid = strtolower($_REQUEST['eventid']);

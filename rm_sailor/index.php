@@ -26,17 +26,22 @@ require_once ("{$loc}/common/classes/template_class.php");
 
 $tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php"));
 
-// check arguments    FIXME - these need to be changed to utillib versions
-$demo = check_argument("demo", "checkset", "demo", "live");
-$mode = check_argument("mode", "set", "", "");
-$usage= check_argument("usage", "checkset", "single", "multi");
-$debug= check_argument("debug", "checkint", "", "0");
+// check arguments
+$demo   = u_checkarg("demo", "checkset", "demo", "live");
+$mode   = u_checkarg("mode", "set", "", "");
+$usage  = u_checkarg("usage", "checkset", "single", "multi");
+$event  = u_checkarg("event", "setnotnull","");
 $closed = u_checkarg("closed", "set", "", "");
-$event = $_REQUEST['event'];  // fixme this should check if $_REQUEST['event exists
 
-//fixme - don't put args not used in string (use form url php command
-$race_option = "rm_sailor.php?mode=race&demo=$demo&usage=$usage&event=$event&debug=$debug";
-$cruise_option = "rm_sailor.php?mode=cruise&demo=$demo&usage=$usage&event=$event&debug=$debug";
+//fixme - don't put args not used in string (use form url php command)
+$race_option = "rm_sailor.php?mode=race&demo=$demo&usage=$usage";
+$cruise_option = "rm_sailor.php?mode=cruise&demo=$demo&usage=$usage";
+
+if ($event)
+{
+    $race_option.= "&event=$event";
+    $cruise_option.= "&event=$event";
+}
 
 if (!$closed)
 {
@@ -52,32 +57,32 @@ if (!$closed)
         $params['items'][] = array(
             "color" => "background-color: #00a2b4 !important; color: #ffffff !important; ",
             "label" => "Leisure Sailing",
-            "text" => "Click here to record going afloat for an individual or organised cruise",
-            "link" => $cruise_option,
-            "icon" => "glyphicon glyphicon-sunglasses"
+            "text"  => "Click here to record going afloat for an individual or organised cruise",
+            "link"  => $cruise_option,
+            "icon"  => "glyphicon glyphicon-sunglasses"
         );
 
         $params['items'][] = array(
             "color" => "background-color: #B9107C !important;; color: #ffffff !important ;",
             "label" => "Racing",
-            "text" => "Click here to participate in the racing today",
-            "link" => $race_option,
-            "icon" => "glyphicon glyphicon-list-alt"
+            "text"  => "Click here to participate in the racing today",
+            "link"  => $race_option,
+            "icon"  => "glyphicon glyphicon-list-alt"
         );
 
         $pagefields = array(
-            "title" => "rm_sailor",
-            "theme" => "flatly_",
-            "background" => "bg-primary",
-            "loc" => $loc,
-            "stylesheet" => "$loc/style/rm_sailor.css",
-            "header-left" => "raceManager SAILOR",
+            "title"         => "rm_sailor",
+            "theme"         => "flatly_",
+            "background"    => "bg-primary",
+            "loc"           => $loc,
+            "stylesheet"    => "./style/rm_sailor.css",
+            "header-left"   => "raceManager SAILOR",
             "header-center" => "",
-            "header-right" => "",
-            "body" => $tmpl_o->get_template("start_menu", array(), $params),
-            "footer-left" => "",
+            "header-right"  => "",
+            "body"          => $tmpl_o->get_template("start_menu", array(), $params),
+            "footer-left"   => "",
             "footer-center" => "",
-            "footer-right" => ""
+            "footer-right"  => ""
         );
 
         echo $tmpl_o->get_template("basic_page", $pagefields);
@@ -100,7 +105,7 @@ else
         "theme" => "flatly_",
         "background" => "bg-primary",
         "loc" => $loc,
-        "stylesheet" => "$loc/style/rm_sailor.css",
+        "stylesheet" => "./style/rm_sailor.css",
         "header-left" => "raceManager SAILOR",
         "header-center" => "",
         "header-right" => "",

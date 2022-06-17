@@ -12,7 +12,19 @@ $page       = "start_infringement";     //
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-u_initpagestart($_REQUEST['eventid'],$page,"");   // starts session and sets error reporting
+// fixme - use checkarg
+$pagestate = $_REQUEST['pagestate'];
+$eventid   = $_REQUEST['eventid'];
+$startnum  = $_REQUEST['startnum'];
+
+if (!$eventid)
+{
+    u_exitnicely($scriptname, 0,"$page page - event id record [{$_REQUEST['eventid']}] not defined",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
+}
+else{
+    u_initpagestart($eventid, $page, false);   // starts session and sets error reporting
+}
 
 require_once ("{$loc}/common/classes/db_class.php"); 
 require_once ("{$loc}/common/classes/template_class.php");
@@ -80,39 +92,39 @@ elseif ($pagestate == "setcode")
 
     empty($_REQUEST['fleet']) ? $err = true : $fleet = $_REQUEST['fleet'];
 
-    if (!$err)
-    {
-        $setcode = set_code($eventid, $_REQUEST);
-
-        if ($setcode !== true)
-        {
-            u_growlSet($eventid, $page, $g_timer_setcodefailed, array($_REQUEST['boat'], $setcode));
-        }
-
-//        if ($setcode === true)
-//        {
-//            if ($race_o->fleet_race_stillracing($fleet)) { $update['status'] = "allfinished"; }
-//            if (!empty($update)) { $check = $race_o->racestate_update($update, array("eventid"=>"$eventid", "fleet"=>"$fleet")); }
-//        }
-//        else
+//    if (!$err)
+//    {
+//        $setcode = set_code($eventid, $_REQUEST);
+//
+//        if ($setcode !== true)
 //        {
 //            u_growlSet($eventid, $page, $g_timer_setcodefailed, array($_REQUEST['boat'], $setcode));
 //        }
-    }
-    else
-    {
-        error_log("start_infringements_pg.php/pagestate=setcode : fleet argument not set", 3, $_SESSION['syslog']);
-    }
-
-
 //
-//
-//    $setcode = set_code($eventid, $_REQUEST);
-//
-//    if($setcode !== true)
-//    {
-//        u_growlSet($eventid, $page, $g_timer_setcodefailed, array($_REQUEST['boat'], $setcode));
+////        if ($setcode === true)
+////        {
+////            if ($race_o->fleet_race_stillracing($fleet)) { $update['status'] = "allfinished"; }
+////            if (!empty($update)) { $check = $race_o->racestate_update($update, array("eventid"=>"$eventid", "fleet"=>"$fleet")); }
+////        }
+////        else
+////        {
+////            u_growlSet($eventid, $page, $g_timer_setcodefailed, array($_REQUEST['boat'], $setcode));
+////        }
 //    }
+//    else
+//    {
+//        error_log("start_infringements_pg.php/pagestate=setcode : fleet argument not set", 3, $_SESSION['syslog']);
+//    }
+//
+//
+////
+////
+////    $setcode = set_code($eventid, $_REQUEST);
+////
+////    if($setcode !== true)
+////    {
+////        u_growlSet($eventid, $page, $g_timer_setcodefailed, array($_REQUEST['boat'], $setcode));
+////    }
 
     header("Location: start_infringements_pg.php?eventid=$eventid&startnum=$startnum&pagestate=init");
 }

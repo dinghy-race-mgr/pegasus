@@ -71,7 +71,7 @@ class TIMER
 
     private function set_start_times($status, $time, $scheme, $start_interval)
     {
-        u_writedbg("|$status|$time|$scheme|$start_interval|", __FILE__, __FUNCTION__, __LINE__);
+        //u_writedbg("|$status|$time|$scheme|$start_interval|", __FILE__, __FUNCTION__, __LINE__);
 
         for ($j=1; $j<=$_SESSION["e_{$this->eventid}"]['rc_numstarts']; $j++)
         {
@@ -96,7 +96,7 @@ class TIMER
                 $_SESSION["e_{$this->eventid}"]["st_$j"]['starttime'] = 0;
             }
 
-            u_writedbg("<pre>".print_r($_SESSION["e_{$this->eventid}"]["st_$j"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+            //u_writedbg("<pre>".print_r($_SESSION["e_{$this->eventid}"]["st_$j"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
         }
     }
 
@@ -110,7 +110,7 @@ class TIMER
             $start_delay = $_SESSION["$event"]["st_{$_SESSION["$event"]["fl_$i"]['startnum']}"]['startdelay'];
             // set actual start time depending on timer status (started | stopped)
 
-            u_writedbg("fleet $i status: $status time: $time startdelay: $start_delay ", __FILE__, __FUNCTION__, __LINE__); // debug
+            //u_writedbg("fleet $i status: $status time: $time startdelay: $start_delay ", __FILE__, __FUNCTION__, __LINE__); // debug
             $status === "inprogress" ?  $fleet_start = $time + $start_delay : $fleet_start = 0;
 
                         

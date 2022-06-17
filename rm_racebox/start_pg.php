@@ -27,8 +27,9 @@ $eventid = u_checkarg("eventid", "checkintnotzero","");
 if (!$eventid) {
     u_exitnicely($scriptname, 0, "$page page - the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));}
-
-u_initpagestart($eventid, $page, true);  // starts session and sets error reporting
+else{
+    u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
+}
 
 // classes
 include ("{$loc}/common/classes/db_class.php");

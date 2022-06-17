@@ -26,19 +26,19 @@ function race_sheet($params = array())
     $layout = array(
         "level"    => array(
             "fields" => "class,sailnum,team,club,etime,result",
-            "widths" => "15,10,20,15,10,10",
+            "widths" => "15,10,25,15,10,10",
         ),
         "handicap" => array(
             "fields" => "class,sailnum,team,club,pn,etime,ctime,result",
-            "widths" => "10,5,20,10,5,10,10,10",
+            "widths" => "15,10,25,10,5,10,10,10",
         ),
         "average"  => array(
             "fields" => "class,sailnum,team,club,pn,lap,etime,atime,result",
-            "widths" => "10,5,20,10,5,5,8,8,10",
+            "widths" => "12,8,25,10,5,5,8,8,8",
         ),
         "pursuit"  => array(
             "fields" => "class,sailnum,team,club,pn,result",
-            "widths" => "15,10,20,15,5,10",
+            "widths" => "15,10,25,15,5,10",
         ),
     );
 
@@ -70,7 +70,7 @@ EOT;
     <div class="flex-container">
         <div class="flex-child">$club_logo</div> 
         <div class="flex-child" style="text-align: right">
-            <span class="event-hdr-right">{club_name} Results</span>
+            <span class="event-hdr-right">{club_name}</span>
         </div> 
     </div>
 EOT;
@@ -79,13 +79,13 @@ EOT;
     $event_bufr = <<<EOT
     <div class="flex-container">
         <div class="flex-child">
-            <span class="event-hdr-left" >{event_name}</span>
+            <span class="event-hdr-left" >{event_name} <span style="font-size: 0.7em;">[{short_date} &nbsp; {event_start}]</span></span>
             <div class="report-notes">{result_notes}</div>
             <div class="fleet-info"> date: <b>{event_date}</b> | start: <b>{event_start}</b> | wind: <b>{event_wind}</b> 
                                      | ood: <b>{event_ood}</b> | status: <b>{result_status}</b></div>
         </div> 
         <div class="flex-child" style="text-align: right">
-            <span class="print"><button class="noprint" onclick="window.print()" href="#" type="button">Print Results</button></span>
+            <span class="print"><a class="button-green noprint" onclick="window.print()" href="#" type="button">Print Results</a></span>
         </div> 
     </div>
 EOT;
@@ -146,7 +146,7 @@ EOT;
     if (!empty($params['sys_website']))
     {
         $system_txt = <<<EOT
-            <button class="noprint" onclick="location.href='{$params['sys_website']}'" type="button">{sys_name} </button> ({sys_release}) {sys_version}
+            <a href="{$params['sys_website']}">{sys_name} </a> ({sys_release}) {sys_version}
 EOT;
     }
     else
@@ -156,7 +156,7 @@ EOT;
 
     $print_date = date("j M Y \a\\t H:i");
     $footer_bufr =<<<EOT
-        <div class="spacer"></div>
+        <br><div class="spacer"></div>
         <div class="flex-container">
             <div class="flex-child"><span class="footer">$system_txt  - created $print_date<span></div> 
             <div class="flex-child" style="text-align: right"><span class="footer">Copyright: {sys_copyright}</span></div> 
@@ -227,7 +227,7 @@ function format_race_columns($scoring, $layout, $include_club)
     $cols = array(
         "class"   => "<th class='table-col' width='%s%%'>class</th>",
         "sailnum" => "<th class='table-col' width='%s%%'>no.</th>",
-        "team"    => "<th class='table-col' width='%s%%'>sailor</th>",
+        "team"    => "<th class='table-col' width='%s%%'>competitors</th>",
         "club"    => "<th class='table-col' width='%s%%'>club</th>",
         "pn"      => "<th class='table-col' width='%s%%'>PN</th>",
         "lap"     => "<th class='table-col' width='%s%%'>laps</th>",

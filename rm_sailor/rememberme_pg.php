@@ -22,8 +22,8 @@ $db_o = new DB();
 $tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php"));
 
 // check arguments
-$sailorid = check_argument("sailor", "checkint", "");
-$searchstr = check_argument("searchstr", "set", "", "");
+$sailorid = u_checkarg("sailor", "checkint", "");
+$searchstr = u_checkarg("searchstr", "set", "", "");
 
 if ($sailorid) { //
     $_SESSION['pagefields']['header-center'] = $_SESSION['option_cfg'][$page]['pagename'];

@@ -671,7 +671,7 @@ class EVENT
                     $_SESSION["e_$eventid"]['ev_status']     = $status; 
                     $msg = "event status changed:  {$_SESSION["e_$eventid"]['ev_prevstatus']} -> {$_SESSION["e_$eventid"]['ev_status']}";
                     u_writelog($msg, $eventid);
-                   // debug: u_writedbg($msg, __FILE__, __FUNCTION__,__LINE__); // debug:
+                   //u_writedbg($msg, __FILE__, __FUNCTION__,__LINE__); // debug:
                }               
            }
            else
@@ -681,7 +681,7 @@ class EVENT
        }
        else
        {
-           u_writedbg("status:s_status:s_p_status - $status|{$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}", __FILE__, __FUNCTION__,__LINE__); // debug:
+           //u_writedbg("status:s_status:s_p_status - $status|{$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}", __FILE__, __FUNCTION__,__LINE__); // debug:
        }
 
 
@@ -933,6 +933,17 @@ class EVENT
         if (empty($_SESSION["e_$eventid"]['ev_name']))
         {
             return false;   
+        }
+
+        // archive entry data to table a_entry
+        $num_del = $this->db->db_delete("a_lap", array("eventid" => $eventid));
+        $detail = $this->db->db_get_rows( "SELECT * FROM t_entry WHERE eventid = $eventid" );
+        if ($detail)
+        {
+            foreach ($detail as $row)
+            {
+                $insert = $this->db->db_insert("a_entry", $row );
+            }
         }
 
         // clear entry table

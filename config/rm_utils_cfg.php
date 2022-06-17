@@ -8,13 +8,14 @@
 */
 $_SESSION['app_name'] = "utils";        // name of application
 
+$_SESSION['syslog'] = "../logs/sys/sys_".date("Y-m-d").".log";                                 // sys log file
+$_SESSION['dbglog'] = "../logs/dbg/" . $_SESSION['app_name'] . "_" . date("Y-m-d") . ".log";   // debug log
+
 $_SESSION['app_db'] = false;            // no application specific database stored parameters
 
 $_SESSION['sql_debug'] = false;         // set true to turn on debugging of sql commands - otherwise false
 
 $_SESSION['background'] = "";           // display has white background
-
-$_SESSION['syslog'] = "utils_".date("Y-m-d").".log";    // log FIXME - not correct for all utils
 
 $_SESSION['daylight_saving']= array(
     "start_ref"   => "YYYY-04-01",

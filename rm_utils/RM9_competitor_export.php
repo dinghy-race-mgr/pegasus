@@ -30,7 +30,7 @@ $compid = u_checkarg("compid", "checkintnotzero", "");
 session_start();
 $_SESSION = parse_ini_file("common.ini", false);
 $_SESSION['sql_debug'] = false;
-$_SESSION['syslog'] = "sys_log".date("Y_m_d").".log";
+$_SESSION['syslog'] = "../logs/sys/sys_".date("Y-m-d").".log";
 
 $bufr = "";
 if (!$compid)   // report argument problem and stop

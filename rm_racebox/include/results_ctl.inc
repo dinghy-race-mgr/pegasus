@@ -118,7 +118,7 @@ $btn_changefinish = array(
     "fields"    => array(
         "id"         => "changefinish",
         "size"       => "lg",
-        "style"      => "primary",
+        "style"      => "info",
         "label"      => "Change Finish Lap",
         "glyph"      => "glyphicon-pencil",
         "popover"    => "change the lap used for calculating the finishing positions - very useful if you forgot to shorten course on the Timer page",
@@ -139,7 +139,7 @@ $mdl_changefinish = array(
     "fields"  => array(
         "id"         => "changefinish",
         "size"       => "lg",
-        "style"      => "success",
+        "style"      => "info",
         "title"      => "Change Finish Lap",
         "body"       => "",
         "script"     => "",
@@ -148,7 +148,7 @@ $mdl_changefinish = array(
         "target"     => "",
         "close-lbl"  => "changed my mind",
         "reset-lbl"  => "",
-        "submit-lbl" => "change finish laps",
+        "submit-lbl" => "Change Finish lap(s)",
         "footer"     => ""
     ),
 );
@@ -230,7 +230,7 @@ $mdl_publish = array(
         "size"       => "lg",
         "style"      => "info",
         "title"      => "<b>Publish Results - $eventname</b>",
-        "body"       => "<iframe src=\"results_publish_pg.php?eventid=$eventid&pagestate=init&warnings=$warning_count\" style=\"width: 100%; height: 550px; border:0px\" id=\"entryframe\"></iframe>",
+        "body"       => "<iframe src=\"results_publish_pg.php?eventid=$eventid&pagestate=init&warnings=$warning_count\" style=\"width: 100%; height: 650px; border:0px\" id=\"entryframe\"></iframe>",
         "script"     => "",
         "onsubmit"   => "",
         "action"     => "", //"results_sc.php?eventid=$eventid&pagestate=message",

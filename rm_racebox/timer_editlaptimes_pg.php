@@ -15,15 +15,6 @@ $page       = "timer_editlaptimes";     //
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
-
-// initialising language   
-//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
-
-require_once ("{$loc}/common/classes/db_class.php");
-require_once ("{$loc}/common/classes/template_class.php");
-require_once ("{$loc}/common/classes/race_class.php");
-
 if (empty($_REQUEST['pagestate']) OR empty($_REQUEST['eventid']) OR empty($_REQUEST['entryid']))
 {
     u_exitnicely($scriptname, 0, "$page page - the requested event has an missing/invalid record identifier [{$_REQUEST['eventid']}] or pagestate [{$_REQUEST['pagestate']}",
@@ -34,7 +25,12 @@ else
     $pagestate = $_REQUEST['pagestate'];
     $eventid   = $_REQUEST['eventid'];
     $entryid   = $_REQUEST['entryid'];
+    u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
 }
+
+require_once ("{$loc}/common/classes/db_class.php");
+require_once ("{$loc}/common/classes/template_class.php");
+require_once ("{$loc}/common/classes/race_class.php");
 
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/timer_tm.php"));
 
@@ -88,6 +84,8 @@ if ($pagestate == "init")             // display form with lap times for each la
 }
 elseif ($pagestate == "submit")       // correct modified lap times and return to display lap times
 {
+    //echo "<pre>".print_r($laps_rs,true)."</pre>";
+
     // check for issues with user input
     $newlaptimes = array();
     foreach($_REQUEST['etime'] as $lap=>$etime)
@@ -103,9 +101,34 @@ elseif ($pagestate == "submit")       // correct modified lap times and return t
         {
             if ($etime!= $laptimes[$lap])
             {
-                $upd  = $race_o->entry_lap_update($entryid, $boat_detail['fleet'], $lap, $boat_detail['pn'],
-                    array("etime"=>$etime));
+                //echo "processing lap $lap ($etime) - ({$laps_rs['lap']})<br>";
+                $upd  = $race_o->entry_lap_update($entryid, $boat_detail['fleet'], $lap, $boat_detail['pn'], array("etime"=>$etime));
                 $rs_msg.= $upd['msg'];
+
+                if ($upd['status'])       // check if data in t_race also needs to be updated
+                {
+                    if ($lap == $laps_rs['lap'])
+                    {
+                        // get etime for previous lap
+                        if ($lap == 1) {
+                            $prev_et = 0;
+                        } else {
+                            $lap_prev = $race_o->entry_lap_get($entryid, "lap", $lap - 1);
+                            $prev_et = $lap_prev['etime'];
+                        }
+
+                        // prepare update array
+                        $update = array(
+                            "etime"     => $etime,
+                            "ctime"     => $upd['ctime'],
+                            "ptime"     => $race_o->entry_calc_pt($etime, $prev_et, $lap) ,
+                            "clicktime" => $upd['clicktime'],
+                        );
+
+                        // update t_race record
+                        $race_upd = $race_o->entry_update($entryid, $update);
+                    }
+                }
             }
         }
 

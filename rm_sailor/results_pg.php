@@ -29,8 +29,8 @@ $db_o = new DB();
 $tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php", "./templates/results_tm.php"));
 
 // check arguments
-$eventid = check_argument("state", "checkint", "");
-$display = check_argument("mode", "set", "", "list");
+$eventid = u_checkarg("state", "checkint", "");
+$display = u_checkarg("mode", "set", "", "list");
 
 if ($eventid) {
     if ($_SESSION['events']['numevents'] <= 0) {

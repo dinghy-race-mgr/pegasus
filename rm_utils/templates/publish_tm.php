@@ -182,7 +182,7 @@ EOT;
     elseif (!$params['transfer'] and $params['state'] == 0)
     {
         $glyph = "glyphicon glyphicon-info-sign";
-        $msg   = "programme file transfer to website was NOT requested";
+        $msg   = "programme file transfer to website was NOT requested (or NOT required)";
     }
     else
     {

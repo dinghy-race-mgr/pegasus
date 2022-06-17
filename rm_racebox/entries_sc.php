@@ -148,12 +148,6 @@ if ($eventid and !empty($pagestate))
                 }
             }
 
-//            // update t_racestate for each fleet
-//            for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
-//            {
-//                $update = $race_o->racestate_update(array("entries"=>$_SESSION["e_$eventid"]["fl_$i"]['entries']), array("fleet"=>$i));
-//            }
-
             u_growlSet($eventid, $page, $g_entries_report, array($entries_found, $entered, $entries_replaced, $entries_deleted));
             $delta = $entries_found - ($entered + $entries_deleted + $entries_replaced);
             if ($delta != 0) {
@@ -190,14 +184,6 @@ if ($eventid and !empty($pagestate))
                 }
             }
 
-            // FIXME - shouldn't be necessary
-//            // update t_racestate for each fleet
-//            for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
-//            {
-//                $update = $race_o->racestate_update(array("entries"=>$_SESSION["e_$eventid"]["fl_$i"]['entries']), array("fleet"=>$i));
-//            }
-
-
             if ($entered != $entries_found) {
                 u_growlSet($eventid, $page, $g_entries_failed, array($entries_found - $entered));
             } else {
@@ -231,13 +217,6 @@ if ($eventid and !empty($pagestate))
                     $entries_replaced++;
                 }
             }
-
-            // FIXME shouldn't be necessary
-//            // update t_racestate for each fleet
-//            for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
-//            {
-//                $update = $race_o->racestate_update(array("entries"=>$_SESSION["e_$eventid"]["fl_$i"]['entries']), array("fleet"=>$i));
-//            }
 
             if ($entered != $entries_found) {
                 u_growlSet($eventid, $page, $g_entries_failed, array($entries_found - $entered));

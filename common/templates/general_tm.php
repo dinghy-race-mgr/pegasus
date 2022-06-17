@@ -281,7 +281,7 @@ EOT;
 
                 <div class="modal-header bg-{style}-modal">
                    <button type="button" class="close modal-close" data-dismiss="modal" aria-label="Close" >
-                      <span aria-hidden="true">close &times;</span>
+                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                    </button>
                    <h4 class="modal-title" id="{id}ModalLabel">{title}</h4>
                 </div>

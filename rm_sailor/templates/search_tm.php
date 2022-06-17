@@ -9,7 +9,7 @@ function boatsearch_fm($params = array())
     if ($params['add_btn'])
     {
         $add_btn_bufr = <<<EOT
-        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="padding-top: 15px !important">
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 pull-right" style="padding-top: 15px !important">
             <a href="addboat_pg.php" class="btn btn-info btn-sm rm-text-sm pull-right" role="button">
                 <strong><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> &nbsp;Add new boat ...</strong>                        
             </a> 
@@ -36,13 +36,14 @@ EOT;
                         </div>
                     </form>
                 </div>    
-                $add_btn_bufr                
+                                
             </div>
             <div class="row margin-top-30">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
                     {events_bufr}
                 </div>
-            </div>       
+            </div>
+            $add_btn_bufr       
                   
         </div> 
         <br>

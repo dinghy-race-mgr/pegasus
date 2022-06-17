@@ -486,8 +486,7 @@ function u_writelog($logmessage, $eventid)
         { error_log($log, 3, $_SESSION['syslog']); }
     else
         { error_log($log, 3, $_SESSION["e_$eventid"]['eventlog']); }
-    
-    //return $status;
+
 }
 
 /**
@@ -536,18 +535,13 @@ function u_requestdbg($arg_list, $file, $function, $line, $inline=false)
 
 function u_startsyslog($scriptname, $app)
 {
-//    global $loc;
-//    $_SESSION['syslog'] = "{$loc}/logs/syslogs/sys_".date("Y-m-d").".log";       // e.g  log/sys_2014-08-08.log
-//    //$_SESSION['dbglog'] = "{$loc}/logs/dbglogs/dbg_".date("Y-m-d_H-i").".log";  // e.g  log/debug_2014-08-08_14-50.log
-//    $_SESSION['dbglog'] = "{$loc}/logs/dbglogs/debug.log";  // FIXME - temp while developing
-
     u_writelog("$app START: $scriptname --------------------------", 0);
 }
 
 
 function u_starteventlogs($scriptname, $eventid, $mode)
 {
-    $_SESSION["e_$eventid"]['eventlog'] = "./logs/event_$eventid.log";     // setup event log e.g  event_907.log
+    $_SESSION["e_$eventid"]['eventlog'] = "../logs/event/event_$eventid.log";        // setup event log e.g  event_907.log
     u_writelog("initialising event: $scriptname --- [eventid: $eventid] ", 0);       // add system log entry
     u_writelog(date("Y-m-d")." EVENT START: $scriptname --- [eventid: $eventid mode: $mode] ", $eventid);
 }
@@ -717,16 +711,25 @@ function u_initsetparams($lang, $mode, $debug)
 }
 
 
-function u_initpagestart($eventid, $page, $menu)
+function u_initpagestart($eventid, $page, $change_page)
 {
-    session_start();                                    // start session
-    date_default_timezone_set($_SESSION['timezone']);   // set timezone
+    session_start();
+    date_default_timezone_set($_SESSION['timezone']);
     
     // error reporting - full for development
     $_SESSION['sys_type'] == "live" ? error_reporting(E_ERROR) : error_reporting(E_ALL);
     
-    // add line to indicate change of page
-    if ($menu) { u_writelog("**** $page page ", $eventid); }
+    // add line to indicate change of page (uses arg and check against session variable)
+    if (!empty($eventid))
+    {
+        if (!array_key_exists("current_page", $_SESSION["e_$eventid"])) { $_SESSION["e_$eventid"]['current_page'] = ""; }
+        $_SESSION["e_$eventid"]['current_page'] != $page ? $page_change = true : $page_change = false;
+        if ($change_page and $page_change)
+        {
+            u_writelog("**** $page page ", $eventid);
+            $_SESSION["e_$eventid"]['current_page'] = $page;
+        }
+    }
 }
 
 
@@ -1123,7 +1126,7 @@ function u_selectlist($list, $selected="", $top = array())
     // added top to allow for 'other' type options
 {
     $bufr = <<<EOT
-        <option value="" disabled selected hidden>Please select &hellip;</option>
+        <option value="" disabled selected hidden>&hellip; please select &hellip;</option>
 EOT;
 
     if (!empty($top))

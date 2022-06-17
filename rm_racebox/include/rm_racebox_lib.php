@@ -80,6 +80,7 @@ function set_code($eventid, $params)
     global $race_o;
 
     // get parameters
+    $boat = "";
     $result = true;
     $err = false;
     key_exists("entryid", $params)    ? $entryid = $params['entryid'] : $err = true;
@@ -89,13 +90,12 @@ function set_code($eventid, $params)
     key_exists("lap", $params)        ? $current_lap = $params['lap'] : $err = true;
     key_exists("finishlap", $params)  ? $finish_lap = $params['finishlap'] : $err = true;
     key_exists("code", $params)       ? $code = $params['code'] : $code = "";
-    u_writedbg("<pre> SETCODE PARAMS: ".print_r($params,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
+    //u_writedbg("<pre> SETCODE PARAMS: ".print_r($params,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
 
     if ($err)            // stop if params are invalid
     {
         $result = "required parameters were invalid (id: {$params['entryid']}; boat: {$params['boat']}; status: {$params['racestatus']};)";
         u_writelog("$boat - set code failed - $result", $eventid);
-        u_writedbg("$boat - set code failed - $result",__FILE__,__FUNCTION__,__LINE__);
     }
     else                // process code change
     {
@@ -107,52 +107,51 @@ function set_code($eventid, $params)
             $update = $race_o->entry_code_set($entryid, $code, $finish_check);
             if ($update)  // deal with response
             {
-                u_writelog("$boat - code set to $code", $eventid);
+                u_writelog("$boat - code set to $code ", $eventid);
             }
             elseif ($update == -1)
             {
                 $result = "boat id ($entryid) not found in t_race";
-                u_writelog("$boat - code not set - $result", $eventid);
-                u_writelog("dbg: codeset - entryid($entryid), code($code) fcheck($finish_check)", $eventid);
+                u_writelog("$boat - code ($code) not set - $result", $eventid);
             }
             elseif ($update == -2)
             {
                 $result = "code specified ($code) not recognised ";
-                u_writelog("$boat - code not set - $result", $eventid);
-                u_writelog("dbg: codeset - entryid($entryid), code($code) fcheck($finish_check)", $eventid);
+                u_writelog("$boat - code ($code) not set - $result", $eventid);
             }
             elseif ($update == -3)
             {
                 $result = "database update not completed ";
-                u_writelog("$boat - code not set - $result", $eventid);
-                u_writelog("dbg: codeset - entryid($entryid), code($code) fcheck($finish_check)", $eventid);
+                u_writelog("$boat - code ($code) not set - $result", $eventid);
             }
             else
             {
                 $result = "failed (reason unknown) ";
-                u_writelog("$boat - code set ($code) - $result", $eventid);
+                u_writelog("$boat - code ($code) not set - $result", $eventid);
             }
 
         }
         else  // clear scoring code
         {
+            // get current code
+            $entry = $race_o->entry_get($entryid);
+
+            // unset it
             $update = $race_o->entry_code_unset($entryid, $racestatus, $declaration, $finish_check);
 
             if ($update)
             {
-                u_writelog("$boat - code ($code) cleared", $eventid);
-                u_writelog("dbg: codeunset - entryid($entryid), code($code) fcheck($finish_check)", $eventid);
+                u_writelog("$boat - code ({$entry['code']}) cleared", $eventid);
             }
             elseif ($update == -3)
             {
                 $result = "database update not completed ";
-                u_writelog("$boat - code ($code) unset attempt - $result", $eventid);
-                u_writelog("dbg: codeset - entryid($entryid), code($code) fcheck($finish_check)", $eventid);
+                u_writelog("$boat - code ({$entry['code']}) unset attempt - $result", $eventid);
             }
             else
             {
                 $result = "failed (reason unknown) ";
-                u_writelog("$boat - code ($code) unset attempt - $result", $eventid);
+                u_writelog("$boat - code ({$entry['code']}) unset attempt - $result", $eventid);
             }
         }
     }

@@ -65,9 +65,11 @@ if ($eventid AND $pagestate)
         empty($_REQUEST['entryid']) ? $if_err = true : $entryid = $_REQUEST['entryid'];
         empty($_REQUEST['start'])   ? $if_err = true : $start = $_REQUEST['start'];
         empty($_REQUEST['boat'])    ? $if_err = true : $boat = $_REQUEST['boat'];
+        empty($_REQUEST['status'])  ? $if_err = true : $boatstatus = $_REQUEST['status'];
+
         if ($if_err)
         {
-            $reason = "missing information\"";
+            $reason = "missing information";
             u_writelog("$boat - lap timing failed - $reason", $eventid);
             u_growlSet($eventid, $page, $g_timer_timingfailed, array($boat, $reason));
         }
@@ -81,26 +83,21 @@ if ($eventid AND $pagestate)
             check_double_click($eventid, $entryid, $_SERVER['REQUEST_TIME']); # return to timer page if double click of same boat
             check_race_started($eventid, $start, $_SERVER['REQUEST_TIME']);   # return to time page if race not started
 
-            $status = $race_o->entry_time($entryid, $fleet, $lap, $pn, $_SERVER['REQUEST_TIME'], $last_et, false);  // log lap time
-            // return status can be time|finish|first_finish|force_finish
+            $status = $race_o->entry_time($entryid, $fleet, $lap, $pn, $_SERVER['REQUEST_TIME'], $boatstatus, $last_et, false);  // log lap time
 
-            if ($status == "time" OR $status == "finish" OR $status == "first_finish")
+            if ($status == "time" OR $status == "finish" OR $status == "first_finish" OR $status == "force_finish")   // valid status
             {
                 $newlap = $lap + 1;
 
                 $_SESSION["e_$eventid"]['result_valid']   = false;    // mark results as requiring update
                 $_SESSION["e_$eventid"]['result_publish'] = false;    // mark publishing as requiring refresh
-
                 $_SESSION["e_$eventid"]['lastclick'] = array("entryid" => $entryid, "clicktime" => $_SERVER['REQUEST_TIME'], "boat" => $boat);
-
-                // FIXME  - shouldn't be necesary as racestate catchall will get this
-                //update_racestate_lap($eventid, $fleet, $status, $newlap);  # update racestate and session
 
                 if ($status == "time")
                 {
                     $msg = "lap $newlap: $boat ";
                 }
-                elseif ($status == "finish")
+                elseif ($status == "finish" or $status == "force_finish")
                 {
                     $msg = "lap $newlap: $boat -- finished";
                     if ($_SESSION['timer_options']['growl_finish'] == "on")
@@ -113,6 +110,8 @@ if ($eventid AND $pagestate)
                     $msg = "lap $newlap: $boat -- first finished";
                     u_growlSet($eventid, $page, $g_timer_firstfinish, array($boat));
                 }
+                $msg.= "[ et: ". gmdate("H:i:s", $race_o->entry_calc_et($_SERVER['REQUEST_TIME'], $_SESSION["$event"]["fl_$fleet"]['starttime']))." ]";
+
                 u_writelog($msg, $eventid);
 
                 // remove entry from bunch if it exists
@@ -136,12 +135,14 @@ if ($eventid AND $pagestate)
         }
     }
     
-    elseif ($pagestate == "finish")
+    elseif ($pagestate == "finish")   // FIXME this code should be combined with timelap above
     {
         $if_err = false;
         empty($_REQUEST['entryid']) ? $if_err = true : $entryid = $_REQUEST['entryid'];
         empty($_REQUEST['start'])   ? $if_err = true : $start = $_REQUEST['start'];
         empty($_REQUEST['boat'])    ? $if_err = true : $boat = $_REQUEST['boat'];
+        empty($_REQUEST['status'])  ? $if_err = true : $status = $_REQUEST['status'];
+
         if ($if_err)
         {
             $reason = "missing information";
@@ -157,7 +158,7 @@ if ($eventid AND $pagestate)
             check_double_click($eventid, $entryid, $_SERVER['REQUEST_TIME']); // return to timer page if double click of same boat
             check_race_started($eventid, $start, $_SERVER['REQUEST_TIME']);   // return to timer page if race not started
 
-            $status = $race_o->entry_time($entryid, $fleet, $lap, $pn, $_SERVER['REQUEST_TIME'], $last_et, true);
+            $status = $race_o->entry_time($entryid, $fleet, $lap, $pn, $_SERVER['REQUEST_TIME'], $status, $last_et, true);
             if ($status == "force_finish")
             {
                 $newlap = $lap + 1;
@@ -169,8 +170,6 @@ if ($eventid AND $pagestate)
                     "boat"      => $boat
                 );
 
-                // FIXME - this shouldn't be necessary as it will be handled by catchall
-                //update_racestate_lap($eventid, $fleet, $status, $newlap);           // update racestate and session
 
                 u_writelog("lap $newlap: $boat finished ", $eventid);
 
@@ -301,97 +300,98 @@ if ($eventid AND $pagestate)
         u_writelog("shorten course for all fleets", $eventid);
     }
 
-    elseif ($pagestate == "setlaps")        // sets laps for all fleets
-        // FIXME this code should be the same as race_sc.php/setlaps
-    {
-//        $msg = array(
-//            "ok" => "&nbsp;&nbsp;- {} - set to {} lap(s) <br>",
-//            "pursuit_race" => "&nbsp;&nbsp;- {} is a pursuit race - laps cannot be set <br>",
-//            "less_than_current" => "&nbsp;&nbsp;- {} - laps not set, boats already on lap {} <br>",
-//            "finishing" => "&nbsp;&nbsp;- {} - laps not set, boats already finishing <br>",
-//            "already_set" => "&nbsp;&nbsp;- {} - no laps change requested <br>",
-//            "unknown" => "&nbsp;&nbsp;- {} - laps set failed for reasons unknown <br>"
-//        );
-//        $growlmsg = "Setting Laps &hellip;<br>";
+//    elseif ($pagestate == "resetlaps")        // sets laps for all fleets
+//        // FIXME this code should be the same as race_sc.php/setlaps
+//    {
+////        $msg = array(
+////            "ok" => "&nbsp;&nbsp;- {} - set to {} lap(s) <br>",
+////            "pursuit_race" => "&nbsp;&nbsp;- {} is a pursuit race - laps cannot be set <br>",
+////            "less_than_current" => "&nbsp;&nbsp;- {} - laps not set, boats already on lap {} <br>",
+////            "finishing" => "&nbsp;&nbsp;- {} - laps not set, boats already finishing <br>",
+////            "already_set" => "&nbsp;&nbsp;- {} - no laps change requested <br>",
+////            "unknown" => "&nbsp;&nbsp;- {} - laps set failed for reasons unknown <br>"
+////        );
+////        $growlmsg = "Setting Laps &hellip;<br>";
+////
+////        for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
+////        {
+////            $fleetname = $_SESSION["e_$eventid"]["fl_$i"]['name'];
+////            if ($_SESSION["e_$eventid"]["fl_$i"]['maxlap'] != $_REQUEST["laps$i"])    // here has been a change
+////            {
+////                $rs = $race_o->race_laps_set($i, $_REQUEST["laps$i"]);
+////                if ($rs)
+////                {
+////                    $growlmsg.= u_format($msg["{$rs['result']}"], array($fleetname, $_REQUEST["laps$i"]));
+////
+////                    if ($rs['result'] == "ok")
+////                    {
+////                        u_writelog("setlaps: $fleetname - {$_REQUEST["laps$i"]} laps", $eventid);
+////                    }
+////                }
+////                else
+////                {
+////                    $growlmsg.= u_format($msg["unknown"], array($fleetname, $_REQUEST["laps$i"]));
+////                    u_writelog("setlaps: $fleetname - failed [{$_REQUEST["laps$i"]}] laps", $eventid);
+////                }
+////            }
+////        }
+////        u_growlSet($eventid, $page, $g_timer_setlaps_report, array($growlmsg));
+//
+//        $lapsetfail = false;
+//        $growlmsg   = "Setting laps:<br>";
 //
 //        for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
 //        {
 //            $fleetname = $_SESSION["e_$eventid"]["fl_$i"]['name'];
-//            if ($_SESSION["e_$eventid"]["fl_$i"]['maxlap'] != $_REQUEST["laps$i"])    // here has been a change
-//            {
-//                $rs = $race_o->race_laps_set($i, $_REQUEST["laps$i"]);
-//                if ($rs)
-//                {
-//                    $growlmsg.= u_format($msg["{$rs['result']}"], array($fleetname, $_REQUEST["laps$i"]));
+//            $rs = $race_o->race_laps_set($i, $_REQUEST["maxlaps$i"]);
 //
-//                    if ($rs['result'] == "ok")
-//                    {
-//                        u_writelog("setlaps: $fleetname - {$_REQUEST["laps$i"]} laps", $eventid);
-//                    }
+//            $str = array(
+//                "pursuit_race" => "$fleetname is a pursuit race - laps cannot be set",
+//                "less_than_current" => "$fleetname - laps not changed, boats already on lap {$rs['currentlap']}",
+//                "finishing" => "$fleetname - laps not changed, boats already finishing",
+//                "already_set" => "$fleetname - laps already set to {$rs['finishlap']}",
+//            );
+//
+//            echo "<pre>$fleetname - ".print_r($rs,true)."</pre>";
+//            if (empty($rs['result']) or $rs['result'] == "failed")
+//            {
+//                u_writelog("setlaps: $fleetname - failed [{$_REQUEST["maxlaps$i"]} laps]", $eventid);
+//                $growlmsg.= "&nbsp;&nbsp;$fleetname - laps set FAILED <br>";
+//                $lapsetfail = true;
+//            }
+//            elseif($_REQUEST["maxlaps$i"] == $_SESSION["e_$eventid"]["fl_$i"]['maxlap'])  // no change requested
+//            {
+//                $growlmsg.= "&nbsp;&nbsp;$fleetname - no change <br>";
+//            }
+//            else
+//            {
+//                if ($rs['result'] == "ok")
+//                {
+//                    u_writelog("setlaps: $fleetname - {$_REQUEST["maxlaps$i"]} laps", $eventid);
+//                    $growlmsg.= "&nbsp;&nbsp;$fleetname - laps changed to {$rs['finishlap']} <br>";
 //                }
 //                else
 //                {
-//                    $growlmsg.= u_format($msg["unknown"], array($fleetname, $_REQUEST["laps$i"]));
-//                    u_writelog("setlaps: $fleetname - failed [{$_REQUEST["laps$i"]}] laps", $eventid);
+//                    $growlmsg.= "&nbsp;&nbsp; - ".$str["{$rs['result']}"]."<br>";
+//                    $lapsetfail = true;
 //                }
 //            }
 //        }
-//        u_growlSet($eventid, $page, $g_timer_setlaps_report, array($growlmsg));
-
-        $lapsetfail = false;
-        $growlmsg   = "Setting laps:<br>";
-
-        for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
-        {
-            $fleetname = $_SESSION["e_$eventid"]["fl_$i"]['name'];
-            $rs = $race_o->race_laps_set($i, $_REQUEST["maxlaps$i"]);
-
-            $str = array(
-                "pursuit_race" => "$fleetname is a pursuit race - laps cannot be set",
-                "less_than_current" => "$fleetname - laps not changed, boats already on lap {$rs['currentlap']}",
-                "finishing" => "$fleetname - laps not changed, boats already finishing",
-                "already_set" => "$fleetname - laps already set to {$rs['finishlap']}",
-            );
-
-            echo "<pre>$fleetname - ".print_r($rs,true)."</pre>";
-            if (empty($rs['result']) or $rs['result'] == "failed")
-            {
-                u_writelog("setlaps: $fleetname - failed [{$_REQUEST["maxlaps$i"]} laps]", $eventid);
-                $growlmsg.= "&nbsp;&nbsp;$fleetname - laps set FAILED <br>";
-                $lapsetfail = true;
-            }
-            elseif($_REQUEST["maxlaps$i"] == $_SESSION["e_$eventid"]["fl_$i"]['maxlap'])  // no change requested
-            {
-                $growlmsg.= "&nbsp;&nbsp;$fleetname - no change <br>";
-            }
-            else
-            {
-                if ($rs['result'] == "ok")
-                {
-                    u_writelog("setlaps: $fleetname - {$_REQUEST["maxlaps$i"]} laps", $eventid);
-                    $growlmsg.= "&nbsp;&nbsp;$fleetname - laps changed to {$rs['finishlap']} <br>";
-                }
-                else
-                {
-                    $growlmsg.= "&nbsp;&nbsp; - ".$str["{$rs['result']}"]."<br>";
-                    $lapsetfail = true;
-                }
-            }
-        }
-
-        if ($lapsetfail)
-        {
-            u_growlSet($eventid, $page, $g_race_lapset_fail, array($growlmsg));
-        }
-        else
-        {
-            u_growlSet($eventid, $page, $g_race_lapset_success, array($growlmsg));
-        }
-    }
+//
+//        if ($lapsetfail)
+//        {
+//            u_growlSet($eventid, $page, $g_race_lapset_fail, array($growlmsg));
+//        }
+//        else
+//        {
+//            u_growlSet($eventid, $page, $g_race_lapset_success, array($growlmsg));
+//        }
+//    }
 
     elseif ($pagestate == "bunch")
     {
 //        echo "<pre>".print_r($_SESSION["e_$eventid"]['bunch'],true)."</pre>";
+//        echo "<pre>".print_r($_REQUEST,true)."</pre>";
 
         if ($_REQUEST['action'] == "addnode")
         {
@@ -403,14 +403,14 @@ if ($eventid AND $pagestate)
                 "lap"     => $_REQUEST['lap'],
                 "pn"      => $_REQUEST['pn'],
                 "etime"   => $_REQUEST['etime'],
+                "status"  => $_REQUEST['status']
             );
-            //$link = urlencode("&".http_build_query($params));
 
             $_REQUEST['lastlap'] == "true" ? $lastlap = true : $lastlap = false;
             $node = array(
                 "entryid" => $_REQUEST['entryid'],
                 "lastlap" => $lastlap,
-                "label"   => $_REQUEST['boat'],
+                "label"   => $_REQUEST['bunchlbl'],
                 "link"    => "timer_sc.php?eventid=$eventid&pagestate=timelap&".http_build_query($params)
             );
 
@@ -448,6 +448,7 @@ if ($eventid AND $pagestate)
     }
 
     // check race state / update session
+    // FIXME - for a lot of functions this only needs to look at one fleet
     $race_o->racestate_updatestatus_all($_SESSION["e_$eventid"]['rc_numfleets'], $page);
 
     // return to timer page
@@ -467,13 +468,13 @@ function shorten_fleet($eventid, $fleetnum, $new_finish_lap = 0)
     $fleetname = $_SESSION["e_$eventid"]["fl_$fleetnum"]['name'];
 
     $str = array(
-        "ok" => "$fleetname - shortened to lap {}",
-        "pursuit_race" => "$fleetname is a pursuit race - cannot be shortened",
+        "ok"                => "$fleetname - shortened to lap {}",
+        "pursuit_race"      => "$fleetname is a pursuit race - cannot be shortened",
         "less_than_current" => "$fleetname - NOT shortened, boats already on lap {}",
-        "finishing" => "$fleetname - NOT shortened, boats already finishing ",
-        "already_set" => "$fleetname - NOT shortened, boats already on lap {} ",
-        "unknown" => "$fleetname - NOT shortened for reasons unknown ",
-        "no_laps_set" => "$fleetname - NOT shortened, no laps set for this fleet"
+        "finishing"         => "$fleetname - NOT shortened, boats already finishing ",
+        "already_set"       => "$fleetname - NOT shortened, boats already on lap {} ",
+        "unknown"           => "$fleetname - NOT shortened for reasons unknown ",
+        "no_laps_set"       => "$fleetname - NOT shortened, no laps set for this fleet"
     );
 
     if ($_SESSION["e_$eventid"]["fl_$fleetnum"]['maxlap'] != 0)
@@ -482,7 +483,7 @@ function shorten_fleet($eventid, $fleetnum, $new_finish_lap = 0)
         {
             $new_finish_lap = $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] + 1;
         }
-        $rs = $race_o->race_laps_set($fleetnum, $new_finish_lap);
+        $rs = $race_o->race_laps_set("shorten", $fleetnum, $_SESSION["e_$eventid"]["fl_$fleetnum"]['scoring'], $new_finish_lap);
 
         $msg['text'] = u_format("&nbsp;&nbsp;- ".$str["{$rs['result']}"]."<br>", array($rs['finishlap']));
         $rs['result'] == "ok" ? $msg['type'] = "info" : $msg['type'] = "invalid";
@@ -557,7 +558,6 @@ function check_race_started($eventid, $fleetnum, $server_time)
 
     if ($server_time < $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime'])
     {
-        u_writedbg("setting growl", __FILE__, __FUNCTION__, __LINE__);
         u_growlSet($eventid, $page, $g_timer_racenotstarted, array());
         header("Location: timer_pg.php?eventid=$eventid");
         exit(); 

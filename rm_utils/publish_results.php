@@ -40,11 +40,7 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
         if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
 
         // start log
-        $_SESSION['syslog'] = "$loc/logs/adminlogs/".$_SESSION['syslog'];
         error_log(date('H:i:s')." -- PUBLISH ALL --------------------".PHP_EOL, 3, $_SESSION['syslog']);
-
-        // debug log
-        $_SESSION['dbglog'] = "../logs/dbglogs/rm_utils_dbg.log";
 
         // set initialisation flag
         $_SESSION['util_app_init'] = true;
@@ -314,7 +310,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
                     if ($inventory)                         // if inventory created successfully then proceed
                     {
                         // inventory file into array
-                        $invdata = json_decode(file_get_contents($inventory['path'].DIRECTORY_SEPARATOR.$inventory['filename']), true);
+                        $invdata = json_decode(file_get_contents($inventory['path']."/".$inventory['filename']), true);
 
                         // create file list for transfer ( upload not done or out of date and not embargoed)
                         $files = array();
@@ -324,7 +320,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
                             {
                                 // check if file neeeds uploading
                                 $upload_time = strtotime($file['upload']);
-                                $update_time = strtotime($file['upddate']);
+                                $update_time = strtotime($file['update']);
                                 if ($file['status'] != "embargoed" and (empty($file['upload']) or $upload_time < $update_time))
                                 {
                                     $files[] = $file;

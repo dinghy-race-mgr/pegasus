@@ -417,15 +417,40 @@ EOT;
 }
 
 
-function not_change_laps($params = array())
+function readonly_laps($params = array())
 {
     $htm = <<<EOT
         <div class="form-group">
-            <div><label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{fleetname} </label></div>
-            <div class="col-xs-6 ">
-                <p class="text-info" style="padding-top: 11px">{reason}</p>
+            <div><label class="col-sm-offset-2 col-sm-3 control-label" style="text-align: left;">{fleetname} </label></div>
+            <div class="col-sm-2">                
                 <input type="hidden" id="laps{fleetnum}" name="laps[{fleetnum}]" value="{fleetlaps}">
+                <span style="font-weight: 700; padding-top: 22px;">{fleetlaps} lap(s)</span>               
             </div>
+            <div class="col-sm-5 text-warning"><span style="font-weight: 700; padding-top: 22px;">{reason}</span></div>
+                
+        </div>
+EOT;
+    return $htm;
+}
+
+
+
+function not_change_laps($params = array())
+{
+    // implements a readonly view of the laps when they can't be changed
+
+    $htm = <<<EOT
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-3 control-label" style="text-align: left; margin-bottom: 11px">
+                <label>{fleetname}</label>
+            </div>
+            <div class="col-sm-2 control-label" style="text-align: left; margin-bottom: 11px">
+                <label>{fleetlaps} lap(s)</label>    
+                <input type="hidden" id="laps{fleetnum}" name="laps[{fleetnum}]" value="{fleetlaps}">           
+            </div>
+            <div class="col-sm-5 text-warning control-label" style="text-align: left; margin-bottom: 11px">
+                 <label>{reason}</label>
+            </div>                          
         </div>
 EOT;
     return $htm;
@@ -433,9 +458,6 @@ EOT;
 
 function ok_change_laps($params = array())
 {
-    //echo "<pre>ok_change_laps ".print_r($params,true)."</pre>";
-
-
     $min_validation = "";
     $max_validation = "";
 
@@ -454,14 +476,14 @@ function ok_change_laps($params = array())
 
     $htm = <<<EOT
         <div class="form-group">
-            <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{fleetname} </label>
-            <div class="col-xs-3 inputfieldgroup">
+            <label class="col-sm-offset-2 col-sm-3 control-label" style="text-align: left;">{fleetname} </label>
+            <div class="col-sm-2 inputfieldgroup">
                 <input type="number" class="form-control" id="laps[{fleetnum}]" name="laps[{fleetnum}]" value="{fleetlaps}" placeholder="set laps"
                     required data-fv-notempty-message="the no. of laps must be set" 
                     $min_validation $max_validation
                 />
             </div> 
-            <div class="col-xs-3 control-label" style="text-align: left;"><label> laps </label></div>    
+            <div class="col-xs-5 control-label" style="text-align: left;"><label> laps </label></div>    
         </div>
 EOT;
     return $htm;
@@ -488,21 +510,36 @@ function fm_set_laps($params = array())
     */
     global $tmpl_o;
 
-    //echo "<pre>fm_set_laps ".print_r($params,true)."</pre>";
-
     $fields_bufr = "";
 
     foreach ($params['fleets'] as $i=>$fleet )
     {
         $fields = array(
             "fleetname" => $fleet['fleetname'],
-            "fleetnum"  => "$i",
-            "fleetlaps" => "{$fleet['fleetlaps']}",
+            "fleetnum"  => $i,
+            "fleetlaps" => $fleet['fleetlaps'],
         );
 
         if ($fleet['status'] == "notstarted" or $fleet['status'] == "inprogress")
         {
-            $fields_bufr.= $tmpl_o->get_template("ok_change_laps", $fields, $fleet);
+            if ($params['mode'] == "shortenall")
+            {
+                $fields['fleetlaps'] = $fleet['fleetlaps'] + 1;   // change laps shown to be currentlap + 1
+                if ($fleet['setlaps'] > $fleet['fleetlaps'] + 1)
+                {
+                    $fields['reason'] = 'will be shortened to lap shown ...';
+                    $_SESSION['shorten_possible'] = true;
+                }
+                else
+                {
+                    $fields['reason'] = 'boats on last lap - cannot be shortened ...';
+                }
+                $fields_bufr.= $tmpl_o->get_template("not_change_laps", $fields, $fleet);
+            }
+            else
+            {
+                $fields_bufr.= $tmpl_o->get_template("ok_change_laps", $fields, $fleet);
+            }
         }
 
         elseif ($fleet['status'] == "finishing")
@@ -513,7 +550,7 @@ function fm_set_laps($params = array())
             }
             else
             {
-                $fields['reason'] = "all boats finished - lap change not possible";
+                $fields['reason'] = "boats finishing - lap change not possible ...";
                 $fields_bufr.= $tmpl_o->get_template("not_change_laps", $fields, $fleet);
             }
         }
@@ -526,24 +563,17 @@ function fm_set_laps($params = array())
             }
             else
             {
-                $fields['reason'] = "all boats finished - lap change not possible";
+                $fields['reason'] = "all boats finished - lap change not possible ...";
                 $fields_bufr.= $tmpl_o->get_template("not_change_laps", $fields, $fleet);
             }
         }
 
-        else
+        else   // unknown
         {
-            if ($params['mode'] == "changefinish")
-            {
-                $fields_bufr.= $tmpl_o->get_template("ok_change_laps", $fields, $fleet);
-            }
-            else
-            {
-                $fields_bufr.= $tmpl_o->get_template("not_change_laps", $fields, $fleet);
-                $fields['reason'] = "fleet status unknown - lap change not possible";
-            }
-
+            $fields_bufr.= $tmpl_o->get_template("not_change_laps", $fields, $fleet);
+            $fields['reason'] = "fleet status unknown - lap change not possible";
         }
+
     }
 
     $instr_bufr = "";
@@ -554,7 +584,6 @@ function fm_set_laps($params = array())
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span style="padding-right: 20px" aria-hidden="true">&times;</span>
             </button>
-            <p><span class="lead">Instructions: </span></p>
             {instr_content}                      
         </div>       
 EOT;
@@ -578,7 +607,6 @@ EOT;
         $footer_bufr            
     </div>
 EOT;
-
 
     return $htm;
 }

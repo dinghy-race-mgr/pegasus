@@ -11,6 +11,8 @@ $page       = "race_format";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
+$eventid = $_REQUEST['eventid'];
+
 u_initpagestart("", $page, false);
 
 // libraries
@@ -26,14 +28,6 @@ $db_o = new DB;
 
 // initialising templates
 $tmpl_o  = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php"));
-
-// initialising language
-//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");
-
-// initialising controls
-//include ("./include/race_ctl.inc");
-
-$eventid = $_REQUEST['eventid'];
 
 // get event information for today
 $event_o  = new EVENT($db_o);

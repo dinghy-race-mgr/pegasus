@@ -166,25 +166,18 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
     for ($i = 1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
     {
         $fleet_data["$i"] = $_SESSION["e_$eventid"]["fl_$i"];
-//        $fleet_laps[$i] = array(
-//            "name"    => $_SESSION["e_$eventid"]["fl_$i"]["name"],
-//            "scoring" => $_SESSION["e_$eventid"]["fl_$i"]["scoring"],
-//            "shlaps"  => $_SESSION["e_$eventid"]["fl_$i"]['currentlap'],     // FIXME should this be +1
-//            "maxlaps" => $_SESSION["e_$eventid"]["fl_$i"]['maxlap'],
-//            "status"  => $_SESSION["e_$eventid"]["fl_$i"]['status'],
-//        );
-        //echo "<pre>".print_r($_SESSION["e_$eventid"]["fl_$i"],true)."</pre>";
     }
 
     // shorten all fleets button/modal
     $rbufr.= $tmpl_o->get_template("btn_modal", $btn_shorten['fields'], $btn_shorten);
     $mdl_shorten['fields']['body'] = $tmpl_o->get_template("fm_timer_shortenall", array(), array("fleet-data" => $fleet_data));
+    //if ($_SESSION['shorten_possible']) { $mdl_shorten['submit'] = false; }
     $rbufr.= $tmpl_o->get_template("modal", $mdl_shorten['fields'], $mdl_shorten);
 
-    // set laps button/modal
-//    $rbufr.= $tmpl_o->get_template("btn_modal", $btn_setlaps['fields'], $btn_setlaps);
-//    $mdl_setlaps['fields']['body'] = $tmpl_o->get_template("fm_timer_resetlaps", array(), array("fleet-data" => $fleet_data));
-//    $rbufr.= $tmpl_o->get_template("modal", $mdl_setlaps['fields'], $mdl_setlaps);
+    // reset laps button/modal
+//    $rbufr.= $tmpl_o->get_template("btn_modal", $btn_resetlaps['fields'], $btn_resetlaps);
+//    $mdl_resetlaps['fields']['body'] = $tmpl_o->get_template("fm_timer_resetlaps", array(), array("fleet-data" => $fleet_data));
+//    $rbufr.= $tmpl_o->get_template("modal", $mdl_resetlaps['fields'], $mdl_resetlaps);
 }
 
 $rbufr.= "<hr>";

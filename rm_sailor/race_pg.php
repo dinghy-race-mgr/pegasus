@@ -22,12 +22,12 @@ require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 
 // arguments
-$external = check_argument("state", "setbool", "init", true);
+$external = u_checkarg("state", "setbool", "init", true);
 $action = array(
-    "event" => check_argument("event", "set", "", 0),
-    "type" => check_argument("action", "set", ""),
-    "status" => check_argument("status", "set", ""),
-    "msg" => check_argument("msg", "set", "")
+    "event"  => u_checkarg("event", "set", "", 0),
+    "type"   => u_checkarg("action", "set", ""),
+    "status" => u_checkarg("status", "set", ""),
+    "msg"    => u_checkarg("msg", "set", "")
 );
 
 // connect to database to get event information
@@ -71,6 +71,9 @@ $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburg
 // add automated timed return to search page if usage and delay are configured
 $_SESSION['pagefields']['body'].= add_auto_continue($_SESSION['usage'], $_SESSION['sailor_race_sleep_delay'],
     $external, "search_pg.php");
+
+//echo "<pre>".print_r($_SESSION,true)."</pre>";
+//exit();
 
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();

@@ -21,6 +21,8 @@ $_SESSION['db_pass'] = "pegasus";
 $_SESSION['db_name'] = "pegasus";
 $_SESSION['db_port'] = "3306";
 
+$_SESSION['syslog'] = "../logs/sys/sys_".date("Y-m-d").".log";
+
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/lib/util_lib.php");
 

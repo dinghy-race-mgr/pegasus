@@ -30,7 +30,7 @@ $tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php", "./templates/search_
 if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
 if (date('Ymd', $_SESSION['app_start']) !== date('Ymd')) {
     $i++;
-    header("Location: rm_sailor.php?mode={$_SESSION['mode']}&demo={$_SESSION['demo']}&usage={$_SESSION['usage']}&debug={$_SESSION['debug']}");
+    header("Location: rm_sailor.php?mode={$_SESSION['mode']}&demo={$_SESSION['demo']}&usage={$_SESSION['usage']}");
 }
 
 // clear stored details
@@ -84,5 +84,6 @@ $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boatsearch_fm",
     array("events_bufr"=>$events_bufr), array("add_btn"=>$_SESSION['option_cfg']['addboat']['active']));
 
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields'] );
+//echo "<pre>".print_r($_SESSION,true)."</pre>";
 exit();
 

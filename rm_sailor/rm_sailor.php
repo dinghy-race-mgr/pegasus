@@ -52,17 +52,17 @@ if (!$init_status) {
     $_SESSION['sys_type'] == "live" ? error_reporting(E_ERROR) : error_reporting(E_ALL);
 
     // start log
-    $_SESSION['syslog'] = "$loc/logs/syslogs/" . $_SESSION['syslog'];
     error_log(date('H:i:s') . " -- RM_SAILOR --------------------" . PHP_EOL, 3, $_SESSION['syslog']);
-
-    // start debug log if required
-    if ($_SESSION['debug'] > 0) { u_writedbg("=== START DEBUG SESSION ".date("Y-m-d H:i:s")." =================", __FILE__, __FUNCTION__, __LINE__); }
 
     // set database initialisation (t_ini) into SESSION
     $db_o = new DB();
     foreach ($db_o->db_getinivalues(true, "club") as $k => $v) {
         $_SESSION[$k] = $v;
     }
+
+    $_SESSION['mode'] == "race" ? $brand_txt = "RACING app" : $brand_txt = "CRUISING app";
+    $app_brand = "<span style='color: white'><small>raceMgr:</small></span> $brand_txt";
+    $switch_bufr = $tmpl_o->get_template("restart_switch", array(), array("eventlist" => $_SESSION['event_arg']));
 }
 
 // initialise standard page layout
@@ -72,13 +72,13 @@ $_SESSION['pagefields'] = array(
     "background" => $_SESSION['background'],
     "loc" => $loc,
     "stylesheet" => "./style/rm_sailor.css",
-    "header-left" => "raceManager SAILOR",
+    "header-left" => "<span style='color: white'><small>raceMgr:</small></span> RACING app",
     "header-center" => "",
     "header-right" => "",
     "body" => "",
     "footer-left" => $_SESSION['clubname']."<br>".$_SESSION['sys_copyright'].": ".$_SESSION['sys_name'] ." ". $_SESSION['sys_version'],
     "footer-center" => "",
-    "footer-right" => ""
+    "footer-right" => $switch_bufr
 );
 
 // check which options are configured in the ini file
@@ -96,10 +96,6 @@ $_SESSION['numoptions'] = $count;
 if ($_SESSION['numoptions'] < 1) {
     error_stop("no_options");
 } else {
-    if ($_SESSION['debug']) {
-        u_requestdbg($_SESSION, __FILE__, __FUNCTION__, __LINE__, false);
-    }
-
     header("Location: search_pg.php?");  // redirect to first page
 }
 $db_o->db_disconnect();
@@ -138,14 +134,15 @@ function initialise_params($arg)
     }
 
     // do we want debug messages
-    $_SESSION['debug'] = 0;               //<-- no debug as default
-    if (!empty($arg['debug'])) {
-        if (is_numeric($arg['debug']) AND $arg['debug'] >= 0 AND $arg['debug'] <= 2) {
-            $_SESSION['debug'] = $arg['debug'];
-        }
-    }
+//    $_SESSION['debug'] = 0;               //<-- no debug as default
+//    if (!empty($arg['debug'])) {
+//        if (is_numeric($arg['debug']) AND $arg['debug'] >= 0 AND $arg['debug'] <= 2) {
+//            $_SESSION['debug'] = $arg['debug'];
+//        }
+//    }
 
     // are we going to use a fixed set of events
+    empty ($arg['event']) ? $_SESSION['event_arg'] = "" : $_SESSION['event_arg'] = $arg['event'] ;
     $_SESSION['event_passed'] = array();
     if ($_SESSION['mode'] == "race" and array_key_exists('event', $arg)) {
         if (!empty($arg['event'])) {

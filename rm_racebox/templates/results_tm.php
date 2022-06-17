@@ -433,11 +433,12 @@ function fm_result_edit($params)
 
     //echo "<pre>".print_r($params,true)."</pre>";
 
-    $resultcodes = array();
-    foreach ($params['resultcodes'] as $row) {
-        $resultcodes[] = array ("code" => $row['code'], "label" => "{$row['code']} : {$row['short']}");
-    }
-    $scoring_code_bufr = u_selectcodelist($resultcodes, $params['code']);
+//    $resultcodes = array();
+//    foreach ($params['resultcodes'] as $row) {
+//        $resultcodes[] = array ("code" => $row['code'], "label" => "{$row['code']} : {$row['short']}");
+//    }
+//    $scoring_code_bufr = u_selectcodelist($resultcodes, $params['code']);
+    $scoring_code_bufr = "";
 
     $helm_bufr = "";
     if ($params['points_allocation'] == "boat") {
@@ -450,6 +451,18 @@ function fm_result_edit($params)
                 />
                 <div class="$hlp_width help-block">e.g. Fred Flintstone</div>
             </div>
+        </div>
+EOT;
+    }
+    else
+    {
+        $helm_bufr = <<<EOT
+        <div class="form-group">
+            <label class="$lbl_width control-label">helm</label>
+            <div class="$fld_width inputfieldgroup">
+                <input type="text" class="form-control" style="text-transform: capitalize;" id="helm" name="helm" value="{helm}" readonly />               
+            </div>
+            <div class="$hlp_width help-block">cannot be changed</div>
         </div>
 EOT;
     }
@@ -534,6 +547,16 @@ EOT;
         <!-- boat panel -->
         <div role="tabpanel" class="tab-pane fade in" id="boatpanel">
         
+            <!-- class -->
+            <div class="form-group">
+                <label class="$lbl_width control-label">class</label>
+                <div class="$fld_width inputfieldgroup">
+                    <input type="text" class="form-control" style="text-transform: capitalize;" id="helm" name="helm" value="{class}" readonly />                    
+                </div>
+                <div class="$hlp_width help-block">cannot be changed</div>
+            </div>
+            
+            
             <!-- sailnumber -->  
             <div class="form-group">
                 <label class="$lbl_width control-label text-success" >sail no.</label>
@@ -567,8 +590,12 @@ EOT;
                     />
                 </div>
                 <div class="$hlp_width help-block">generally only required for open events</div>
-            </div>
-               
+            </div>                   
+        </div>
+        
+        <!-- result panel --> 
+        <div role="tabpanel" class="tab-pane fade in active" id="resultpanel">
+        
             <!-- PN -->  
             <div class="form-group">
                 <label class="$lbl_width control-label text-success">yardstick</label>
@@ -581,12 +608,7 @@ EOT;
                 </div>
                 <div class="$hlp_width help-block">handicap number for this race - if unsure use number for a similar class</div>
             </div>
-                   
-        </div>
-        
-        <!-- result panel --> 
-        <div role="tabpanel" class="tab-pane fade in active" id="resultpanel">
-        
+            
             <!-- Laps -->  
             <div class="form-group">
                 <label class="$lbl_width control-label text-success">laps completed</label>
@@ -612,27 +634,19 @@ EOT;
                     />
                 </div>
                 <div class="$hlp_width help-block">elapsed time at the finish (hh:mm:ss)</div>
-            </div>        
-            
-            <!-- code -->
-            <div class="form-group">
-                <label class="control-label $lbl_width text-success">result code</label>
-                <div class = "$fld_width">
-                    <select class="form-control $fld_width" name="code" id="idcode" >        
-                        $scoring_code_bufr
-                    </select>
-                </div>
-                <div class="$hlp_width help-block">e.g. OCS, NCS, DNF - otherwise leave blank</div>
-            </div>
+            </div>                    
             
             <!-- penalty score -->        
             <div class="form-group">
                 <label class="control-label $lbl_width text-success">penalty score</label>
                 <div class="$fld_width">
-                    <input name="penalty" type="number" class="form-control" id="idpenalty" value="{penalty}"
-                    placeholder="penalty points to be applied to score">
+                    <input name="penalty" type="text" class="form-control" id="idpenalty" value="{penalty}"
+                    placeholder="extra points to be applied (e.g. 2.5)"
+                    data-fv-regexp="true"
+                    data-fv-regexp-regexp="^(\d*)\.?(\d){0,1}$"
+                    data-fv-regexp-message="penalty must be in format like 2.3">
                 </div>
-                <div class="$hlp_width help-block">CARE - only use when using DPI scoring code. </div>
+                <div class="$hlp_width help-block">CARE - can ONLY be used when DPI code is set. </div>
             </div>
             
             <!-- notes -->
@@ -643,6 +657,18 @@ EOT;
                     >
                 </div>
                 <div class="$hlp_width help-block">useful to record why result was edited</div>
+            </div>
+            
+            <!-- code (this is a hidden field -->
+            <div class="form-group">
+                <!-- label class="control-label $lbl_width text-success">result code</label -->
+                <div class = "$fld_width">
+                    <input type="hidden" id="idcode" name="code" value="{$params['code']}">
+                    <!-- select class="form-control $fld_width" name="code" id="idcode">        
+                        $scoring_code_bufr
+                    </select -->
+                </div>
+                <!-- div class="$hlp_width help-block">e.g. OCS, NCS, DNF - otherwise leave blank</div -->
             </div>
           
         </div>
@@ -657,7 +683,11 @@ EOT;
     </div>  <!-- end panel-body -->
     
   </div> <!-- end panel -->
-
+  
+  <!-- disable penalty field unless code is set to DPI -->
+  <script type=text/javascript>
+      $(document).ready(function(){ $("#idpenalty").prop("disabled", $('#idcode').val() != "DPI"); });  
+  </script>
   
 
   </form>
@@ -668,7 +698,6 @@ EOT;
 
 function fm_change_finish($params = array())
 {
-
     global $tmpl_o;
 
     $data = array(
@@ -681,25 +710,17 @@ function fm_change_finish($params = array())
         "instr_content" => "<p>This can be useful in two situations ... if you have:<br>&nbsp;&nbsp;&nbsp;- forgotten to SHORTEN course and boats are showing as 'still racing' ... OR<br>
          &nbsp;&nbsp;&nbsp;- ABANDONED the race and want to take the results from a PREVIOUS completed lap</p>
         <p>Set the finish lap for each fleet to the lap you want the boats to finish on (i.e. the laps for the finish of the leading boat).</p>",
-        "footer_content" => "click the <span>Change Finish lap</span> button to set the finish lap for each fleet"
+        "footer_content" => "click the <span>Change Finish lap</span> button to set the finish lap for each fleet",
+        "reminder" => ""
     );
 
     foreach ($params['fleet-data'] as $i=>$fleet)
     {
-        // debug
-//        if ($i == 1)
-//        {$fleet['status'] = "notstarted";}
-//        elseif ($i == 2)
-//        {$fleet['status'] = "inprogress";}
-//        elseif ($i == 3)
-//        {$fleet['status'] = "finishing";}
-//        elseif ($i == 4)
-//        {$fleet['status'] = "allfinished";}
 
         $data['fleets'][$i] = array(
             "fleetname"  => ucwords($fleet['name']),
             "fleetnum"   => $i,
-            "fleetlaps"  => $fleet['maxlap'],  // FIXME is this correct or does it need to be +1
+            "fleetlaps"  => $fleet['maxlap'],
             "status"     => $fleet['status']
         );
 
@@ -710,73 +731,12 @@ function fm_change_finish($params = array())
         else
         {
             $data['fleets'][$i]['minvallaps'] = array("val"=>1, "msg"=>"cannot be less than 1 lap");
-            $data['fleets'][$i]['maxvallaps'] = array("val"=>$fleet['maxlap'], "msg"=>"cannot be more than {$fleet['maxlap']} lap(s)");;
+            //$data['fleets'][$i]['maxvallaps'] = array("val"=>$fleet['maxlap'], "msg"=>"cannot be more than {$fleet['maxlap']} lap(s)");;
         }
     }
 
     return $tmpl_o->get_template("fm_set_laps", $fields, $data);
-//    // instructions
-//    $html = <<<EOT
-//    <div class="alert well well-sm text-info" role="alert">
-//        <p>This can be useful if you...<br> - have forgotten to shorten course and boats are showing as 'still racing', OR<br>
-//         - you have abandoned the race and want to take the results from a previously completed lap</p>
-//        <p>Set the finish lap for each fleet to the lap you want the boats to finish on (leading boat if an 'average lap' race).</p>
-//    </div>
-//
-//    <div class="row text-info">
-//            <div class="col-xs-5" style="text-align:right;"><b>FLEET</b></div>
-//            <div class="col-xs-7" ><b>FINISH LAP</b></div>
-//    </div>
-//EOT;
-//
-//    // create input fields - one per fleet
-//    $fields_bufr = "";
-//    foreach ($params['fleets'] as $i=>$fleet)
-//    {
-//        if ($fleet['status'] == "notstarted")
-//        {
-//            $fields_bufr.=<<<EOT
-//                <div class="form-group">
-//                    <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
-//                    <div class="col-xs-6 ">
-//                        <p class="text-info">race not started - finishing lap cannot be changed</p>
-//                        <input type="hidden" id="finlap$i" name="finlap$i" value="{$fleet['maxlaps']}">
-//                    </div>
-//                </div >
-//EOT;
-//        }
-//        elseif ($fleet['scoring'] == "pursuit")
-//        {
-//            $fields_bufr.=<<<EOT
-//                <div class="form-group">
-//                    <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
-//                    <div class="col-xs-6 ">
-//                        <p class="text-info">pursuit race - finishing lap cannot be changed</p>
-//                        <input type="hidden" id="finlap$i" name="finlap$i" value="{$fleet['maxlaps']}">
-//                    </div>
-//                </div >
-//EOT;
-//        }
-//        else
-//        {
-//            $fields_bufr.=<<<EOT
-//            <div class="form-group">
-//                <label class="col-xs-offset-2 col-xs-3 control-label" style="text-align: left;">{$fleet['name']} </label>
-//                <div class="col-xs-3 inputfieldgroup">
-//                    <input type="number" class="form-control" id="laps$i" name="finlap$i" value="{$fleet['maxlaps']}"
-//                        required data-fv-notempty-message="you need to provide the required finishing lap" min="1" max="{$fleet['maxlaps']}"
-//                        data-fv-between-message="must be a value between 1 and {$fleet['maxlaps']}"
-//                    />
-//                </div>
-//                <div class="col-xs-3 control-label" style="text-align: left;">
-//                    <label> laps </label>
-//                </div>
-//            </div >
-//EOT;
-//        }
-//    }
-//
-//    return $html;
+
 }
 
 
@@ -803,7 +763,6 @@ function process_header($params=array())
 
     </head>
     <body>
-    <!-- h4 style="color: darkorange; margin-top: 5px !important; margin-bottom: 5px !important;">Results publishing ...</h4-->
 EOT;
     return $html;
 }
@@ -814,28 +773,23 @@ function process_footer($params=array())
     $lang = array(
         "0" => array(
             "step"   => "Adding wind details to event",
-            "error"  => "",
             "action" => "",
         ),
         "1" => array(
             "step"   => "Archiving results data",
-            "error"  => "",
-            "action" => "",
+            "action" => "Please send a message to the raceManage team - do not close the race",
         ),
         "2" => array(
             "step"   => "Creating race results file",
-            "error"  => "",
-            "action" => "",
+            "action" => "Please send a message to the raceManage team - do not close the race",
         ),
         "3" => array(
             "step"   => "Updating series results file",
-            "error"  => "",
-            "action" => "",
+            "action" => "Please send a message to the raceManage team before closing the race",
         ),
         "4" => array(
             "step"   => "Transferring files to club website",
-            "error"  => "",
-            "action" => "",
+            "action" => "Please send a message to the raceManage team before closing the race",
         ),
     );
 
@@ -845,24 +799,43 @@ function process_footer($params=array())
     {
         $style = "danger";
         $title = "Problem!";
-        $message = "The results publishing failed at <b>Step $problem - {$lang[$problem]["step"]}</b>";
+        $message = "The results publishing failed at <b>Step $problem - {$lang[$problem]['step']}</b>";
+        $action = "<p>{$lang["$problem"]['action']}</p>";
     }
     else
     {
         $style = "success";
-        $title = "Success!";
+        $title = "Success";
         $message = "The results publishing was completed successfully";
+        $action = "";
+    }
+
+    if ($style == "success")
+    {
+        $close_reminder = <<<EOT
+        <div class="alert alert-danger" role="alert">
+            <p><b>REMEMBER:</b> please close this race on the status page<p>
+        </div>
+EOT;
+    }
+    else
+    {
+        $close_reminder = "";
     }
 
     $html = <<<EOT
     <div style='padding-left:10%; width: 80%; position: absolute; top: {top}%;' >
-    <div class="alert alert-$style" role="alert">
-        <p style='font-size: 1.3em;'><b>$title</b></p>
-        <p>$message</p>
-        <p><i>You can republish the results at any time before you close the race</i><p>
-    </div>
+        <div class="alert alert-$style" role="alert">
+            <h4><b>$title</b></h4>
+            <p>$message</p>
+            $action
+            <p><i><b>You can republish the results at any time before you close the race</b></i><p>
+        </div>
+        $close_reminder
     </div>
 EOT;
+
+
     return $html;
 }
 

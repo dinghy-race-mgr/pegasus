@@ -32,7 +32,7 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
     // establish file attributes
     $file_attr = array(
         "eventid"   => $result_o->eventid,
-        "eventyear" => date("Y", $result_o->eventdate),
+        "eventyear" => date("Y", strtotime($result_o->eventdate)),
         "folder"    => "races",
         "format"    => "htm",
         "filename"  => $result_o->get_race_filename(),
@@ -40,19 +40,18 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
         "notes"     => $result_notes,
         "status"    => $result_status,
         "rank"      => "1",
-        "upload"    => false,
     );
 
     // FIXME - remove use of $_SESSION here
-    $race_path = $_SESSION['result_path'].DIRECTORY_SEPARATOR.$file_attr['eventyear'].DIRECTORY_SEPARATOR.$file_attr['folder'];
-    $file_path = $race_path.DIRECTORY_SEPARATOR.$file_attr['filename'];
+    $race_path = $_SESSION['result_path']."/".$file_attr['eventyear']."/".$file_attr['folder'];
+    $file_path = $race_path."/".$file_attr['filename'];
     $race_url  = $_SESSION['result_url']."/".$file_attr['eventyear']."/".$file_attr['folder']."/".$file_attr['filename'];
 
     // create results html
     $race_bufr = $result_o->render_race_result($loc, $result_status, $include_club, $result_notes, $fleet_msg);
 
     // check if we have a matching file in t_resultfile - if we do delete record
-    $num_deleted = $result_o->del_obsolete_file($file_attr);
+    $num_deleted = $result_o->del_obsolete_file(array("folder"=>$file_attr['folder'], "eventid"=>$file_attr['eventid']));
 
     // If master folder doesn’t exist - create it (year/type)
     $folder_exists = true;
@@ -69,7 +68,10 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
     }
 
     // create new file in master folder
-    $num_bytes = file_put_contents($file_path, $race_bufr);
+    if ($folder_exists and !$file_exists)
+    {
+        $num_bytes = file_put_contents($file_path, $race_bufr);
+    }
 
     // set up return to main process
     if (!$folder_exists)
@@ -112,14 +114,13 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
 {
     global $result_o;
     global $db_o;
-    //global $tmpl_o;
 
     $series_o = new SERIES_RESULT($db_o, $series_code, $opts, false);
 
     // establish file attributes
     $file_attr = array(
         "eventid"   => $result_o->eventid,
-        "eventyear" => date("Y", $result_o->eventdate),
+        "eventyear" => date("Y", strtotime($result_o->eventdate)),
         "folder"    => "series",
         "format"    => "htm",
         "filename"  => $series_o->get_series_filename(),
@@ -127,16 +128,17 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
         "notes"     => $series_notes,
         "status"    => $series_status,
         "rank"      => "1",
-        "upload"    => false,
     );
 
     // set data for series result
+    $err_detail = "";
     $err = $series_o->set_series_data();
+    u_writedbg("err after set series data: $err", __FILE__, __FUNCTION__, __LINE__);
     if (!$err)
     {
         // calculate series result
         $err = $series_o->calc_series_result();
-
+        u_writedbg("err after calc series result: $err", __FILE__, __FUNCTION__, __LINE__);
         if (!$err)
         {
             // render series result into html
@@ -148,7 +150,7 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
                 "sys_website"   => $_SESSION['sys_website'],
             );
 
-            $htm = $series_o->series_render_styled($sys_detail,  $series_status, file_get_contents($opts['styles']));
+            $series_bufr = $series_o->series_render_styled($sys_detail,  $series_status, file_get_contents($opts['styles']));
         }
         else
         {
@@ -160,19 +162,20 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
         $err_detail = $series_o->get_err();
     }
 
-    if (!$err and !empty($htm))
+    u_writedbg("before trying to create file: |$err|".strlen($series_bufr)."|", __FILE__, __FUNCTION__, __LINE__);
+    if (!$err and !empty($series_bufr)) // FIXME this is the bugg
     {
         // get file name, path and url for series file
         // FIXME - remove use of $_SESSION here
-        $series_path = $_SESSION['result_path'].DIRECTORY_SEPARATOR.$file_attr['eventyear'].DIRECTORY_SEPARATOR.$file_attr['folder'];
-        $file_path = $series_path.DIRECTORY_SEPARATOR.$file_attr['filename'];
+        $series_path = $_SESSION['result_path']."/".$file_attr['eventyear']."/".$file_attr['folder'];
+        $file_path = $series_path."/".$file_attr['filename'];
         $series_url  = $_SESSION['result_url']."/".$file_attr['eventyear']."/".$file_attr['folder']."/".$file_attr['filename'];
 
         // If master folder doesn’t exist - create it (year/type)
         $folder_exists = true;
         if (!file_exists($series_path))
         {
-            if(!mkdir($series_path, 0777, true)) { $folder_exists = false; } // fixme refine the permissions given
+            if (!mkdir($series_path, 0777, true)) { $folder_exists = false; } // fixme refine the permissions given
         }
 
         // if master file already exists - delete it
@@ -183,7 +186,10 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
         }
 
         // output htm to file
-        $num_bytes = file_put_contents($series_path, $htm);
+        if ($folder_exists and !$file_exists)
+        {
+            $num_bytes = file_put_contents($file_path, $series_bufr);
+        }
 
         if (!$folder_exists)
         {
@@ -206,6 +212,9 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
             $status = array('success' => true, 'err' => "series file created [$series_path]", 'url' => $series_url,
                 'path' => $series_path, 'file' => $file_attr['filename']);
 
+            // check if we have a matching file in t_resultfile - if we do delete record
+            $num_deleted = $result_o->del_obsolete_file(array("folder"=>$file_attr['folder'], "filename" => $file_attr['filename']));
+
             // add series result file entry to t_resultfile
             $listed = $result_o->add_result_file($file_attr);
             if (!$listed)
@@ -215,7 +224,7 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
     }
     else
     {
-        // return calculation error with
+        // return calculation error
         $status = array('success' => false, 'err' => "series calculation failed", "detail" => $err_detail);
     }
 
@@ -238,12 +247,12 @@ function process_inventory($result_year)
         "sys_name"    => $_SESSION['sys_name'],
         "sys_version" => $_SESSION['sys_version'],
         "clubname"    => $_SESSION['clubname'],
-        "result_path" => $_SESSION['result_path'],
-        "result_url"  => $_SESSION['result_url']
+        "result_path" => $_SESSION['result_public_path'],
+        "result_url"  => $_SESSION['result_public_url']
     );
 
     // create inventory
-    $status = $result_o->create_result_inventory($result_year, $inventory['path'].DIRECTORY_SEPARATOR.$inventory['filename'], $system_info);
+    $status = $result_o->create_result_inventory($result_year, $inventory['path']."/".$inventory['filename'], $system_info);
 
     // return inventory file details if created ok
     if ($status) {
@@ -262,57 +271,76 @@ function process_transfer_network($files, $results_path, $results_url )
 
     $num_files = count($files);
     $num_files_sent = 0;
+    //u_writedbg("<pre>files to transfer: ".print_r($files,true)."</pre>", __CLASS__, __FUNCTION__, __LINE__);
     foreach ($files as $k=>$file)
     {
-        // get target file name, path and url for file
-        $dir_path = $results_path.DIRECTORY_SEPARATOR.$file['year'].DIRECTORY_SEPARATOR.$file['type'];
-        $file_path = $dir_path.DIRECTORY_SEPARATOR.$file['file'];
-        $file_url  = $results_url."/".$file['year']."/".$file['type']."/".$file['file'];
+        empty($file['type']) ? $sub_dir = "/".$file['year']."/".$file['file'] : $sub_dir = "/".$file['year']."/".$file['type']."/".$file['file'] ;
+
+        // get source_file, target file name, path and url for file
+        $source_file = $_SESSION['result_path'].$sub_dir;
+        $target_file = $results_path.$sub_dir;
+        $target_dir = dirname($target_file);
+        $target_url  = $results_url.$sub_dir;
+
+        //u_writedbg("$source_file|$target_file|$target_dir|$target_url", __CLASS__, __FUNCTION__, __LINE__);
+
 
         // check target directory exists - create if necessary
         $folder_exists = true;
-        if (!file_exists($dir_path))
+        if (!file_exists($target_dir))
         {
-            if(!mkdir($dir_path, 0777, true)) { $folder_exists = false; } // fixme refine the permissions given
+            if(!mkdir($target_dir, 0777, true)) { $folder_exists = false; } // fixme refine the permissions given
         }
 
-        // check if file already exists - delete if necessary
+        // check if target file already exists - delete if necessary
         $file_exists = false;
-        if (file_exists($file_path))
+        if (file_exists($target_file))
         {
-            if (!unlink($file_path)) { $file_exists = true; }
+            if (!unlink($target_file)) { $file_exists = true; }
         }
 
-        // copy file and update t_resultfile
-        if ($folder_exists and  !$file_exists)
+        // check if source file exists
+        $source_exists = false;
+        if(file_exists($source_file))
         {
-            $source_file = $_SESSION['result_path'].DIRECTORY_SEPARATOR.$file['year'].DIRECTORY_SEPARATOR.$file['type'].DIRECTORY_SEPARATOR.$file['file'];
-            if (copy($source_file, $file_path))
+            $source_exists = true;
+        }
+
+        // copy file and update t_resultfile if target dir exists, target file doesn't exist and source file exists
+        if ($folder_exists and !$file_exists)
+        {
+            if ($source_exists)
             {
-                $upd = $result_o->set_upload_time($file['id']);
-                if ($upd !== false)
+                if (copy($source_file, $target_file))
                 {
-                    $num_files_sent++;
-                    $status['log'][] = $file['label']." : uploaded - ".$file['file'];
-                }
-                else
-                {
-                    if ($file['id'] > 0)            // don't report error if inventory file
+                    $upd = $result_o->set_upload_time($file['file_id']);
+                    if ($upd !== false)
                     {
-                        $status['log'][] = $file['label']." : upload FAILED - ".$file['file'];
+                        $num_files_sent++;
+                        $status['log'][] = $file['label']." : uploaded - [".$file['file']."]";
+                    }
+                    else
+                    {
+                        $status['log'][] = $file['label']." : upload FAILED - [".$file['file']."]";
                     }
                 }
+            }
+            else
+            {
+                $status['log'][] = $file['label']." : upload FAILED - source file doesn't exist [".$target_file."]";
             }
         }
         else
         {
-            $status['log'][] = $file['label']." : upload FAILED - bad location ".$file['file'];
+            $status['log'][] = $file['label']." : upload FAILED - target location does not exist or target file already exists [".$file['file']."]";
         }
+        //u_writedbg("file transfer result: ".print_r($status['log'],true), __CLASS__, __FUNCTION__, __LINE__);
     }
 
     if ($num_files_sent > 0) { $status['result'] = true; }
     if ($num_files_sent >= $num_files) { $status['complete'] = true; }
     $status['num_files'] = $num_files_sent;
+    //u_writedbg("file transfer summary: result=".$status['result']." | complete=".$status['complete']." | num=".$status['num_files'], __CLASS__, __FUNCTION__, __LINE__);
 
     return $status;
 }
@@ -327,89 +355,3 @@ function process_transfer_ftp($files, $ftp)
     return $status;
 
 }
-
-
-function process_transfer($result_year, $files, $protocol)
-    /*
-     * transfers results files to website using network, ftp or sftp
-     * [Note - it doesn't create the results inventory file]
-     *
-     * $inventory_year = date("Y", strtotime($_SESSION["e_$eventid"]['ev_date']));
-            $inventory_file = $result_o->get_inventory_filename($inventory_year);
-            $inventory_path = $_SESSION['result_path'].DIRECTORY_SEPARATOR.$inventory_file;
-            $inventory_url  = $_SESSION['result_url']."/".$inventory_file;
-
-            // create inventory
-            $inventory = $result_o->create_result_inventory($inventory_year, $inventory_path, $system_info);
-
-            if ($inventory['success'])                         // if inventory created successfully then proceed
-            {
-                // add inventory file to file to be transferred
-                $transfer_files[] = array("path" => $inventory_path, "url" => $inventory_url,
-                                          "file" => $inventory_file);
-
-
-    $source = "foo/fileA.txt";
-$destination = "bar/"; // note how the destination has no file.
-$newFile = "somefile.txt";
-touch($destination . $newFile);
-// then do the copy part
-copy($source, $destination.$newFile);
-     */
-//{
-//    global $loc;
-//
-//    if ($protocol == "local")   // transfer
-//    {
-//        $status = array("result" => true, "complete" => "all", "connect"=>true, "login" => true, "log"=>"", "transferred" => 0 ); // FIXME set connect to false if dir doesn't exist or create it??
-//
-//        foreach($files as $key=>$file)   // loop over all files
-//        {
-//            $source = "foo/fileA.txt";
-//            $destination = "bar/"; // note how the destination has no file.
-//            $newfile = "somefile.txt";
-//            touch($destination . $newfile);
-//// then do the copy part
-//
-//
-//
-//            if (copy($source, $destination.$newfile))   // transfer file
-//            {
-//                $status['transferred']++;
-//                $status['log'].= " - file transferred ({$file['source']})<br>";
-//            }
-//            else
-//            {
-//                $status['log'].= " - file transfer failed ({$file['source']})<br>";
-//            }
-//        }
-//    }
-//    else // use ftp/sftp
-//    {
-//        $status = u_ftpFiles($protocol, $_SESSION['ftp_protocol'], $files);
-//
-//        $num_files = count($files);
-//        $file_count = 0;
-//        foreach ($files as $key => $file)  // what is happening here
-//        {
-//            if ($status['file'][$key])
-//            {
-//                $file_count++;
-//            }
-//        }
-//
-//        $status['complete'] = "none";                         // no files transferred
-//
-//        if ($file_count == $num_files)
-//        {
-//            $status['complete'] = "all";                      // all files transfered
-//        }
-//        elseif($file_count > 0)
-//        {
-//            $status['complete'] = "some";                     // some files transferred
-//        }
-//    }
-//
-//
-//    return $status;
-//}

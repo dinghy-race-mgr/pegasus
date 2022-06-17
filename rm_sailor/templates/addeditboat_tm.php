@@ -43,7 +43,6 @@ EOT;
                         required data-fv-notempty-message="choose the class of boat" id="classid" >
                     {$params['class_list']}
                 </select>
-                <span class="text-success"><small>please select class</small></span>
             </div>
         </div>
 EOT;

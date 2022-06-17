@@ -34,8 +34,7 @@ else
         header("Location: $afterlink");
     }
 }
-
-u_initpagestart($_REQUEST['eventid'], $page, false);             // starts session and sets error reporting
+u_initpagestart($eventid, $page, false);             // starts session and sets error reporting
 
 // classes
 require_once("{$loc}/common/classes/db_class.php");

@@ -25,8 +25,9 @@ if (!$eventid)
     u_exitnicely($scriptname, 0,"$page page - event id record [{$_REQUEST['eventid']}] not defined",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
+else{
+    u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
+}
 
 // classes  (remove classes not required)
 require_once ("{$loc}/common/classes/db_class.php");
@@ -186,13 +187,6 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
     for ($i = 1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
     {
         $fleet_data["$i"] = $_SESSION["e_$eventid"]["fl_$i"];
-//        $fleet_laps[$i] = array(
-//            "name"    => $_SESSION["e_$eventid"]["fl_$i"]["name"],
-//            "scoring" => $_SESSION["e_$eventid"]["fl_$i"]["scoring"],
-//            "laps"  => $_SESSION["e_$eventid"]["fl_$i"]['currentlap'],
-//            "maxlaps" => $_SESSION["e_$eventid"]["fl_$i"]['maxlap'],
-//            "status"  => $_SESSION["e_$eventid"]["fl_$i"]['status']
-//        );
     }
     $mdl_changefinish['fields']['body'] = $tmpl_o->get_template("fm_change_finish", $mdl_changefinish['fields'], array("fleet-data" => $fleet_data));
     $rbufr.= $tmpl_o->get_template("modal", $mdl_changefinish['fields'], $mdl_changefinish);          // finish lap modal

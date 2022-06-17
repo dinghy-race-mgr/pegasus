@@ -26,10 +26,11 @@ require_once ("{$loc}/common/lib/util_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 
-u_initpagestart($_REQUEST['eventid'], $page, true);
-
 if (!$eventid) { u_exitnicely($scriptname, 0, "requested event has an invalid or missing record identifier [{$_REQUEST['eventid']}]",
     "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));  }
+else{
+    u_initpagestart($_REQUEST['eventid'], $page, true);
+}
 
 require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("{$loc}/common/lib/raceformat_lib.php");
@@ -169,23 +170,23 @@ $rbufr_mid ="<hr>";
 // cancel  - modal
 if ($_SESSION["e_$eventid"]['ev_status']!="cancelled")
 {
-    $cancel_ok = r_oktocancel($eventid, "cancel");
-    if ($cancel_ok['result'])   // results published
+    $cancel_ok = r_oktocancel($eventid, "cancel");      // only if race has not started
+    if ($cancel_ok['result'])
     {
         $mdl_cancel['fields']['body'] = $tmpl_o->get_template("fm_cancel_ok", $cancel_ok);
     }
     else
     {
         $mdl_cancel['fields']['body'] = $tmpl_o->get_template("fm_cancel_notok", $cancel_ok);
-        $mdl_cancel['fields']['submit-lbl'] = "";
+        $mdl_cancel['fields']['close-lbl'] = "back";
+        $mdl_cancel['submit'] = false;
     }
     $rbufr_mid.= $tmpl_o->get_template("btn_modal", $btn_cancel['fields'], $btn_cancel);
     $rbufr_mid.= $tmpl_o->get_template("modal", $mdl_cancel['fields'], $mdl_cancel);
-
 }
 else
 {
-    $cancel_ok = r_oktocancel($eventid, "uncancel");
+    $cancel_ok = r_oktocancel($eventid, "uncancel");   // only if cancelled
     if ($cancel_ok['result'])
     {
         $mdl_uncancel['fields']['body'] = $tmpl_o->get_template("fm_uncancel_ok", $cancel_ok);
@@ -193,17 +194,18 @@ else
     else
     {
         $mdl_uncancel['fields']['body'] = $tmpl_o->get_template("fm_uncancel_notok", $cancel_ok);
-        $mdl_uncancel['fields']['submit-lbl'] = "";
-        $mdl_uncancel['fields']['close-lbl'] = " close";
+        $mdl_cancel['fields']['close-lbl'] = "back";
+        $mdl_uncancel['submit'] = false;
     }
     $rbufr_mid.= $tmpl_o->get_template("btn_modal", $btn_uncancel['fields'], $btn_uncancel);
     $rbufr_mid.= $tmpl_o->get_template("modal", $mdl_uncancel['fields'], $mdl_uncancel);
 }
 
 // abandon - modal
+// FIXME ultimately needs to handle abandoning fleets individually
 if ($_SESSION["e_$eventid"]['ev_status']!="abandoned")
 {
-    $abandon_ok = r_oktoabandon($eventid, "abandon");
+    $abandon_ok = r_oktoabandon($eventid, "abandon");   // race must have started and have entries
     if ($abandon_ok['result'])
     {
         $abandon_ok['eventid'] = $eventid;
@@ -212,8 +214,7 @@ if ($_SESSION["e_$eventid"]['ev_status']!="abandoned")
     else
     {
         $mdl_abandon['fields']['body'] = $tmpl_o->get_template("fm_abandon_notok", $abandon_ok);
-        $mdl_abandon['fields']['submit-lbl'] = "";
-        $mdl_abandon['fields']['close-lbl'] = " close";
+        $mdl_abandon['submit'] = false;
     }
     $rbufr_mid.= $tmpl_o->get_template("btn_modal", $btn_abandon['fields'], $btn_abandon);
     $rbufr_mid.= $tmpl_o->get_template("modal", $mdl_abandon['fields'], $mdl_abandon);
@@ -221,16 +222,15 @@ if ($_SESSION["e_$eventid"]['ev_status']!="abandoned")
 }
 else
 {
-    $abandon_ok = r_oktoabandon($eventid, "unabandon");
+    $abandon_ok = r_oktoabandon($eventid, "unabandon");  // race must be abandoned
     if ($abandon_ok['result'])
     {
-        $mdl_unabandon['body'] = $tmpl_o->get_template("fm_unabandon_ok", $abandon_ok);
+        $mdl_unabandon['fields']['body'] = $tmpl_o->get_template("fm_unabandon_ok", $abandon_ok);
     }
     else
     {
         $mdl_unabandon['fields']['body'] = $tmpl_o->get_template("fm_unabandon_notok", $abandon_ok);
-        $mdl_unabandon['fields']['submit-lbl'] = "";
-        $mdl_unabandon['fields']['close-lbl'] = " close";
+        $mdl_unabandon['submit'] = false;
     }
     $rbufr_mid.= $tmpl_o->get_template("btn_modal", $btn_unabandon['fields'], $btn_unabandon);
     $rbufr_mid.= $tmpl_o->get_template("modal", $mdl_unabandon['fields'], $mdl_unabandon);
@@ -240,7 +240,8 @@ else
 
 $rbufr_bot ="";
 // close  - modal
-$close_ok = r_oktoclose($eventid);
+
+$close_ok = r_oktoclose($eventid);    // results must be published and all boats finished
 if ($close_ok['result'])
 {
     $mdl_close['fields']['body'] = $tmpl_o->get_template("fm_close_ok", $close_ok);
@@ -248,16 +249,15 @@ if ($close_ok['result'])
 else
 {
     $mdl_close['fields']['body'] = $tmpl_o->get_template("fm_close_notok", $close_ok);
-    $mdl_close['fields']['submit-lbl'] = "";
-    $mdl_close['fields']['close-lbl'] = " close";
+    $mdl_close['submit'] = false;
 }
 $rbufr_bot.= $tmpl_o->get_template("btn_modal", $btn_close['fields'], $btn_close);
 $rbufr_bot.= $tmpl_o->get_template("modal", $mdl_close['fields'], $mdl_close);
 
-
 $rbufr_bot.="<hr style='border-top: solid 1px steelblue !important'>";
+
 // reset  - modal
-$reset_ok = r_oktoreset($eventid);
+$reset_ok = r_oktoreset($eventid);   // currntly no restrictions on resetting race
 if ($reset_ok['result'])
 {
     $mdl_reset['fields']['body'] = $tmpl_o->get_template("fm_reset_ok", array());
@@ -265,8 +265,7 @@ if ($reset_ok['result'])
 else
 {
     $mdl_reset['fields']['body'] = $tmpl_o->get_template("fm_reset_notok", $reset_ok);
-    $mdl_reset['fields']['submit-lbl'] = "";
-    $mdl_reset['fields']['close-lbl'] = " close";
+    $mdl_reset['submit'] = false;
 }
 $rbufr_bot.= $tmpl_o->get_template("btn_modal", $btn_reset['fields'], $btn_reset);
 $rbufr_bot.= $tmpl_o->get_template("modal", $mdl_reset['fields'], $mdl_reset);

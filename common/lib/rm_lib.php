@@ -326,6 +326,8 @@ function r_initfleetdb($mode, $eventid, $fleetnum, $fleet, $start_scheme, $start
         // set initial laps according to whether a pursuit race or a fleet configuration
         $_SESSION["e_$eventid"]['pursuit'] ? $data['maxlap'] = 1000 : $data['maxlap'] = $fleet['defaultlaps'];
 
+        u_writelog("laps for fleet $fleetnum [{$fleet['fleet_name']}] initialised to {$fleet['defaultlaps']} laps", $eventid);
+
         // add initial data settings to t_racestate
         $status = $db_o->db_insert("t_racestate", $data);
     }
@@ -496,23 +498,46 @@ function r_pursuitstarttimes($db_o, $eventid, $length, $scratchid, $resolution, 
 
 function r_oktocancel($eventid, $mode)
 {
+    // can CANCEL if race has NOT started
+
     if ($mode == "cancel")
     {
-        $status = array (
-            "result"    => true,
-            "reason"    => "",
-            "action"    => "",
-            "notes"     => ""
-        );
+        // can CANCEL if race has NOT started
+
+        $started = false;
+        for ( $i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++ )
+        {
+            if ($_SESSION["e_$eventid"]["fl_$i"]['status'] != "notstarted")
+            {
+                $started = true;
+            }
+        }
+
+        if (!$started)
+        {
+            $status = array ( "result" => true );
+        }
+        else
+        {
+            $status = array ( "result" => false );
+        }
+
     }
-    else
+    else     // else uncancelling - only if race is cancelled
     {
-        $status = array (
-            "result"    => true,
-            "reason"    => "",
-            "action"    => "",
-            "notes"     => ""
-        );
+
+        if ($_SESSION["e_$eventid"]['ev_status'] == "cancelled")
+        {
+            $status = array ("result" => true);
+        }
+        else
+        {
+            $status = array (
+                "result"    => false,
+                "reason"    => "The race has not been cancelled - current status is {$_SESSION["e_$eventid"]['ev_status']}",
+                "info"      => "",
+            );
+        }
     }
 
     return $status;
@@ -521,23 +546,54 @@ function r_oktocancel($eventid, $mode)
 
 function r_oktoabandon($eventid, $mode)
 {
-    if ($mode == "abandon")
+    // FIXME this will need to be updated to deal with abandoning a single fleet
+
+    global $db_o;
+
+    if ($mode == "abandon")    // can ABANDON if race has started AND we have entries
     {
-        $status = array (
-            "result"    => true,
-            "reason"    => "",
-            "action"    => "",
-            "notes"     => ""
-        );
+        // check if race is started
+        $started = false;
+        for ( $i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++ )
+        {
+            if ($_SESSION["e_$eventid"]["fl_$i"]['status'] != "notstarted")
+            {
+                $started = true;
+            }
+        }
+
+        // check we have entries for this race
+        $query = "SELECT class, sailnum, fleet, lap, helm FROM t_race WHERE eventid = $eventid ORDER BY fleet, class, sailnum ASC";
+        $data = $db_o->db_get_rows ($query);
+        $entries = count($data);
+
+        if ($started and $entries > 0)
+        {
+            $status = array ("result" => true);
+        }
+        else
+        {
+            $status = array (
+                "result"    => false,
+                "reason"    => "Either the race has not started yet and/or there are no entries for this race.",
+                "info"      => "",
+            );
+        }
     }
-    else
+    else   // else unabandoning - can UNABANDON if race is in ABANDONED state
     {
-        $status = array (
-            "result"    => true,
-            "reason"    => "",
-            "action"    => "",
-            "notes"     => ""
-        );
+        if ($_SESSION["e_$eventid"]['ev_status'] == "abandoned")
+        {
+            $status = array ("result" => true);
+        }
+        else
+        {
+            $status = array (
+                "result"    => false,
+                "reason"    => "The race has not been abandoned - current status is {$_SESSION["e_$eventid"]['ev_status']}",
+                "info"      => "",
+            );
+        }
     }
 
     return $status;
@@ -546,33 +602,52 @@ function r_oktoabandon($eventid, $mode)
 
 function r_oktoclose($eventid)
 {
-    // FIXME - still needs to be implemented
-    
-    // check if there are any unfinished boats - if there are return the number of boats
-    
-    // check if the results have been published
+    global $db_o;
 
-    $status = array (
-        "result"    => true,
-        "missing"   => 0,
-        "published" => true,
-        "reason"    => "The race results have not been published",
-        "action"    => "Go to the results page and publish the results before closing the race",
-        "notes"     => "If you have a problem with the results that you cannot resolve -
-                        publish them anyway and leave a message describing the problem when you close the race"
-    );
+    $reason_txt = "";
+    $missing_txt = "";
+
+    // get entries that are still racing
+    $query = "SELECT class, sailnum, fleet, lap, helm FROM t_race WHERE eventid = $eventid and status = 'R'  ORDER BY fleet, class, sailnum ASC";
+    $data = $db_o->db_get_rows ($query);
+    $num_missing = count($data);
+
+    // can CLOSE if all boats have been finished AND results published OR the race status is cancelled or abandoned
+    if (($_SESSION["e_$eventid"]['result_publish'] AND $num_missing <= 0)
+        OR $_SESSION["e_$eventid"]['ev_status'] == "cancelled"
+        OR $_SESSION["e_$eventid"]['ev_status'] == "abandoned" )
+    {
+        $status = array ("result" => true);
+    }
+    else
+    {
+        if (!$_SESSION["e_$eventid"]['result_publish'])
+        {
+            $reason_txt.= " - the results have not been published <br><br> ";
+        }
+
+        if ( $num_missing > 0 )
+        {
+            $reason_txt.= " - $num_missing boats appear not to have finished or have not been given a scoring code (e.g. DNF).<br> ";
+
+            if ( $num_missing < 6 )
+            {
+                foreach ($data as $boat)
+                {
+                    $missing_txt.= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fleet {$boat['fleet']}: {$boat['class']} - {$boat['sailnum']}
+                                    &nbsp;&nbsp;&nbsp;[lap {$boat['lap']}]<br>";
+                }
+            }
+        }
+        $status = array ( "result" => false, "reason" => $reason_txt, "info" => $missing_txt );
+    }
     return $status;
 }
 
 function r_oktoreset($eventid)
 {
-    // FIXME - still needs to be implemented
-    $status = array (
-        "result" => true,
-        "reason" => "",
-        "action" => "",
-        "notes"  => "",
-    );
+    // can always reset
+    $status = array ( "result" => true, "reason" => "", "info" => "" );
     return $status;
 }
 
