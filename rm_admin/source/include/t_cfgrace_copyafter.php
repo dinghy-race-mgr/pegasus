@@ -9,7 +9,7 @@ $count = 0;
 while( $data = db_fetch_array($rs))
 {
     $count++;
-    error_log("fleet $count:\n",3,$_SESSION['dbg_file']);
+    error_log("fleet $count:\n",3,$_SESSION['dbglog']);
 
     unset($data['id']);
     $insert = "INSERT INTO t_cfgfleet ";
@@ -37,7 +37,7 @@ while( $data = db_fetch_array($rs))
     $value_str = '('. implode(', ', $values) .')';
 
     $insert .= $field_str .' VALUES '. $value_str;
-    error_log("$insert\n",3,$_SESSION['dbg_file']);
+    error_log("$insert\n",3,$_SESSION['dbglog']);
     $insert_rs  = db_query( $insert );
 }
 

@@ -1,4 +1,6 @@
 <?php
+error_log("<pre>".print_r($values,true)."</pre>\n", 3, $_SESSION['dbglog']);
+
 $msg = "";
 isset($oldvalues) ? $mode = "edit" : $mode = "add";
 //$values['event_date'] = date("Y-m-d", strtotime($values['event_date']));
@@ -32,18 +34,11 @@ if ($values['event_type'] == "racing") {
     // check entry type is set
     if (empty($values['event_entry'])){ $msg.= "- race entry method must be set<br>"; }
 }
-elseif ($values['event_type'] == "training")
+elseif ($values['event_type'] == "training" or $values['event_type'] == "social" or $values['event_type'] == "cruise")
 {
-    if (empty($values['event_start'])) { $msg .= "- the event start time must be defined<br>"; }
+    if (empty($values['event_start'])) { $msg .= "- the start time must be specified<br>"; }
 }
-elseif  ($values['event_type'] == "social")
-{
-    if (empty($values['event_start'])) { $msg .= "- the event start time must be defined<br>"; }
-}
-elseif  ($values['event_type'] == "cruise")
-{
-    if (empty($values['event_start'])) { $msg .= "- the event start time must be defined<br>"; }
-}
+
 
 empty($msg) ? $commit = true : $commit = false;
 
@@ -83,6 +78,7 @@ if ($commit)
         }
     }
 
+
     if ($values['event_type'] != "racing")
     {
         $values['series_code'] = "";
@@ -95,7 +91,7 @@ if ($commit)
 }
 else
 {
-    $message = "<span style=\"white-space: normal\">WARNINGS:<br>$msg </span>";
+    $message = "<span style=\"white-space: normal\">EVENT PROBLEMS:<br>$msg </span>";
 }
 
 

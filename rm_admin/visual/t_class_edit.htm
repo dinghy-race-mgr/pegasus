@@ -1,311 +1,230 @@
-<!DOCTYPE html>
-<HTML {$html_attrs}>
-  <HEAD>
-    <META http-equiv="X-UA-Compatible" content="IE=Edge">
-    <META name="viewport" content="width=device-width, initial-scale=1.0">
-    <TITLE>
-      {$pagetitle}
-    </TITLE>
-    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <LINK href="styles/default.css" rel="stylesheet" type="text/css">
-    {BEGIN rtlCSS}
-      <LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">
-    {END rtlCSS}
-    {BEGIN styleCSSFiles}
-      <LINK href="{$stylepath}" rel="stylesheet" type="text/css">
-    {END styleCSSFiles}
-    <META name="GENERATOR" content="MSHTML 11.00.10570.1001">
-  </HEAD>
-  <BODY class="{$stylename} function-edit" {$bodyattrs}>
-    {BEGIN body}
-      {$header}
-      <STYLE>
-        {$containerCss}
-      </STYLE>
-      <DIV class="bs-top">
-        {BEGIN container_editpage}
-          <DIV class="container" data-container="editpage" data-pageid="{$pageid}" {$editpage_chiddenattr}>
-            {BEGIN container_header}
-              <DIV class="col-md-9 col-md-offset-3" data-container="header" data-pageid="{$pageid}" {$header_chiddenattr}>
-                {BEGIN editheader}
-                  <H2 data-brick="editheader" data-pageid="{$pageid}" {$editheader_hiddenattr}>
-                    {$pagetitlelabel t_class edit}
-                  </H2>
-                  {BEGIN printtabheader}
-                    <H4>
-                      {$printtabheader_text}
-                    </H4>
-                  {END printtabheader}
-                {END editheader}
-              </DIV>
-            {END container_header}
-            {BEGIN container_message}
-              <DIV class="col-md-6 col-md-offset-3" data-container="message" data-pageid="{$pageid}" {$message_chiddenattr}>
-                {BEGIN message_block}
-                  <DIV class="alert {$message_class}" role="alert" data-brick="message" data-pageid="{$pageid}" {$message_hiddenattr}>
-                    <H5>
-                      {$message}
-                    </H5>
-                    <DIV>
-                      {BEGIN back_button}
-                        <BUTTON class="btn btn-sm btn-default" {$backbutton_attrs}>
-                          Back to list
-                        </BUTTON>
-                      {END back_button}
-                      {BEGIN view_page_button}
-                        <BUTTON class="btn btn-sm btn-default" {$view_page_button_attrs}>
-                          View
-                        </BUTTON>
-                      {END view_page_button}
-                    </DIV>
-                  </DIV>
-                {END message_block}
-              </DIV>
-            {END container_message}
-          </DIV>
-        {END container_editpage}
-        {BEGIN container_fields}
-          <DIV class="col-md-12" data-container="fields" data-pageid="{$pageid}" {$fields_chiddenattr}>
-            <DIV class="form-horizontal" role="form" data-brick="editfields" data-pageid="{$pageid}" {$editfields_hiddenattr}>
-              {BEGIN classname_fieldblock}
-                <DIV class="container">
-                  <DIV class="form-group {$fielddispclass_classname}" data-signal-error-for="classname{$id}" data-fieldname="classname">
-                    <LABEL class="col-md-3 control-label" for="{$labelfor_classname}">
-                      {BEGIN classname_label}
-                        {$label t_class classname}
-                      {END classname_label}
-                    </LABEL>
-                    <DIV class="col-md-5">
-                      {$classname_editcontrol}
-                    </DIV>
-                    <DIV class="col-md-4 help-block" data-helpfor="classname">
-                      <DIV class="text-muted">
-                        {$tooltip t_class classname}
-                      </DIV>
-                    </DIV>
-                  </DIV>
-                </DIV>
-              {END classname_fieldblock}
-              {BEGIN acronym_fieldblock}
-                <DIV class="container">
-                  <DIV class="form-group {$fielddispclass_acronym}" data-signal-error-for="acronym{$id}" data-fieldname="acronym">
-                    <LABEL class="col-md-3 control-label" for="{$labelfor_acronym}">
-                      {BEGIN acronym_label}
-                        {$label t_class acronym}
-                      {END acronym_label}
-                    </LABEL>
-                    <DIV class="col-md-5">
-                      {$acronym_editcontrol}
-                    </DIV>
-                    <DIV class="col-md-4 help-block" data-helpfor="acronym">
-                      <DIV class="text-muted">
-                        {$tooltip t_class acronym}
-                      </DIV>
-                    </DIV>
-                  </DIV>
-                </DIV>
-              {END acronym_fieldblock}
-              {BEGIN info_fieldblock}
-                <DIV class="container">
-                  <DIV class="form-group {$fielddispclass_info}" data-signal-error-for="info{$id}" data-fieldname="info">
-                    <LABEL class="col-md-3 control-label" for="{$labelfor_info}">
-                      {BEGIN info_label}
-                        {$label t_class info}
-                      {END info_label}
-                    </LABEL>
-                    <DIV class="col-md-5">
-                      {$info_editcontrol}
-                    </DIV>
-                    <DIV class="col-md-4 help-block" data-helpfor="info">
-                      <DIV class="text-muted">
-                        {$tooltip t_class info}
-                      </DIV>
-                    </DIV>
-                  </DIV>
-                </DIV>
-              {END info_fieldblock}
-              {BEGIN nat_py_fieldblock}
-                <DIV class="container">
-                  <DIV class="form-group {$fielddispclass_nat_py}" data-signal-error-for="nat_py{$id}" data-fieldname="nat_py">
-                    <LABEL class="col-md-3 control-label" for="{$labelfor_nat_py}">
-                      {BEGIN nat_py_label}
-                        {$label t_class nat_py}
-                      {END nat_py_label}
-                    </LABEL>
-                    <DIV class="col-md-5">
-                      {$nat_py_editcontrol}
-                    </DIV>
-                    <DIV class="col-md-4 help-block" data-helpfor="nat_py">
-                      <DIV class="text-muted">
-                        {$tooltip t_class nat_py}
-                      </DIV>
-                    </DIV>
-                  </DIV>
-                </DIV>
-              {END nat_py_fieldblock}
-              {BEGIN local_py_fieldblock}
-                <DIV class="container">
-                  <DIV class="form-group {$fielddispclass_local_py}" data-signal-error-for="local_py{$id}" data-fieldname="local_py">
-                    <LABEL class="col-md-3 control-label" for="{$labelfor_local_py}">
-                      {BEGIN local_py_label}
-                        {$label t_class local_py}
-                      {END local_py_label}
-                    </LABEL>
-                    <DIV class="col-md-5">
-                      {$local_py_editcontrol}
-                    </DIV>
-                    <DIV class="col-md-4 help-block" data-helpfor="local_py">
-                      <DIV class="text-muted">
-                        {$tooltip t_class local_py}
-                      </DIV>
-                    </DIV>
-                  </DIV>
-                </DIV>
-              {END local_py_fieldblock}
-              {BEGIN popular_fieldblock}
-                <DIV class="container">
-                  <DIV class="form-group {$fielddispclass_popular}" data-signal-error-for="popular{$id}" data-fieldname="popular">
-                    <LABEL class="col-md-3 control-label" for="{$labelfor_popular}">
-                      {BEGIN popular_label}
-                        {$label t_class popular}
-                      {END popular_label}
-                    </LABEL>
-                    <DIV class="col-md-5">
-                      {$popular_editcontrol}
-                    </DIV>
-                    <DIV class="col-md-4 help-block" data-helpfor="popular">
-                      <DIV class="text-muted">
-                        {$tooltip t_class popular}
-                      </DIV>
-                    </DIV>
-                  </DIV>
-                </DIV>
-              {END popular_fieldblock}
-              {BEGIN active_fieldblock}
-                <DIV class="container">
-                  <DIV class="form-group {$fielddispclass_active}" data-signal-error-for="active{$id}" data-fieldname="active">
-                    <LABEL class="col-md-3 control-label" for="{$labelfor_active}">
-                      {BEGIN active_label}
-                        {$label t_class active}
-                      {END active_label}
-                    </LABEL>
-                    <DIV class="col-md-5" style="14px 0 0 !important">
-                      {$active_editcontrol}
-                    </DIV>
-                    <DIV class="col-md-4 help-block" data-helpfor="active">
-                      <DIV class="text-muted">
-                        {$tooltip t_class active}
-                      </DIV>
-                    </DIV>
-                  </DIV>
-                </DIV>
-              {END active_fieldblock}
-              <DIV class="container">
-                <DIV class="panel panel-default form-section">
-                  <DIV class="panel-heading" role="tab" data-toggle="collapse" {$section_Classification_Details1_headattrs}>
-                    <!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
-                    <H4 class="panel-title">
-                      <A role="button">
-                        {$section_Classification_Details1_label}
-                      </A>
-                    </H4>
-                  </DIV>
-                  <DIV class="panel-collapse collapse {$section_Classification_Details1_xtrclass}" role="tabpanel" {$section_Classification_Details1_attrs}>
-                    <!-- id="collapseOne" aria-labelledby="headingOne" -->
-                    <DIV class="panel-body">
-                      {$Section Classification_Details1}
-                    </DIV>
-                  </DIV>
-                </DIV>
-              </DIV>
-            </DIV>
-          </DIV>
-        {END container_fields}
-        {BEGIN container_bottombuttons}
-          <DIV class="container" data-container="bottombuttons" data-pageid="{$pageid}" {$bottombuttons_chiddenattr}>
-            {BEGIN container_buttons}
-              <DIV class="form-group" data-container="buttons" data-pageid="{$pageid}" {$buttons_chiddenattr}>
-                {BEGIN container_leftbuttons}
-                  <DIV class="col-md-3 col-md-offset-3" data-container="leftbuttons" data-pageid="{$pageid}" {$leftbuttons_chiddenattr}>
-                    {BEGIN editbuttons}
-                      {BEGIN save_button}
-                        <BUTTON class="btn btn-primary" {$savebutton_attrs}>
-                          Save
-                        </BUTTON>
-                      {END save_button}
-                      {BEGIN back_button}
-                        <BUTTON class="btn btn-default" {$backbutton_attrs}>
-                          Back to list
-                        </BUTTON>
-                      {END back_button}
-                      {BEGIN close_button}
-                        <A class="btn btn-default" href="#" {$closebutton_attrs}>
-                          Cancel
-                        </A>
-                      {END close_button}
-                    {END editbuttons}
-                  </DIV>
-                {END container_leftbuttons}
-                {BEGIN container_leftbuttons_1}
-                  <DIV class="text-right col-md-3" data-container="leftbuttons_1" data-pageid="{$pageid}" {$leftbuttons_1_chiddenattr}>
-                    {BEGIN righteditbuttons}
-                      <DIV class="btn-group" role="group">
-                        {BEGIN prev_button}
-                          <BUTTON class="btn btn-default {$prevbutton_class}" {$prevbutton_attrs}>
-                            <SPAN class="glyphicon glyphicon-chevron-left">
-                            </SPAN>
-                          </BUTTON>
-                        {END prev_button}
-                        {BEGIN next_button}
-                          <BUTTON class="btn btn-default {$nextbutton_class}" {$nextbutton_attrs}>
-                            <SPAN class="glyphicon glyphicon-chevron-right">
-                            </SPAN>
-                          </BUTTON>
-                        {END next_button}
-                        <DIV class="btn-group dropup" role="group">
-                          <BUTTON class="btn btn-default dropdown-toggle" aria-expanded="false" aria-haspopup="true" data-toggle="dropdown">
-                            <SPAN class="glyphicon glyphicon-menu-hamburger">
-                            </SPAN>
-                          </BUTTON>
-                          <UL class="dropdown-menu dropdown-left">
-                            {BEGIN reset_button}
-                              <LI>
-                                <A href="#" {$resetbutton_attrs}>
-                                  Reset
-                                </A>
-                              </LI>
-                            {END reset_button}
-                            {BEGIN view_page_button}
-                              <LI>
-                                <A href="#" {$view_page_button_attrs}>
-                                  View
-                                </A>
-                              </LI>
-                            {END view_page_button}
-                          </UL>
-                        </DIV>
-                      </DIV>
-                    {END righteditbuttons}
-                  </DIV>
-                {END container_leftbuttons_1}
-              </DIV>
-            {END container_buttons}
-          </DIV>
-        {END container_bottombuttons}
-      </DIV>
-      <DIV class="bs-middle">
-        <DIV class="bs-topmiddle">
-        </DIV>
-        <DIV class="bs-left" {$blockattr_left}>
-        </DIV>
-        <DIV class="bs-center">
-        </DIV>
-        <DIV class="bs-right">
-        </DIV>
-      </DIV>
-      <DIV class="bs-bottom">
-      </DIV>
-      {$footer}
-    {END body}
-  </BODY>
-</HTML>
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+	</head>
+
+	<body class="{$stylename} function-edit" {$bodyattrs}>
+	{BEGIN body}{$header}
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
+
+{BEGIN container_editpage}<div {$editpage_chiddenattr} data-pageid="{$pageid}" data-container="editpage" class="container    "> 
+
+
+
+
+{BEGIN container_header}<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-9 col-md-offset-3"> 
+
+{BEGIN editheader}<h2 {$editheader_hiddenattr} data-pageid="{$pageid}" data-brick="editheader" >{$pagetitlelabel t_class edit}</h2>
+	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
+
+{END editheader}
+
+
+
+</div>
+{END container_header}
+
+
+
+
+
+
+
+
+{BEGIN container_message}<div {$message_chiddenattr} data-pageid="{$pageid}" data-container="message" class="   col-md-6 col-md-offset-3"> 
+
+{BEGIN message_block}<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">
+<h5>{$message}</h5>
+<div>
+{BEGIN back_button}<button class="btn btn-sm btn-default" {$backbutton_attrs}>Back to list</button>
+{END back_button}
+{BEGIN view_page_button}<button class="btn btn-sm btn-default" {$view_page_button_attrs}>View</button>
+{END view_page_button}
+</div>
+</div>
+
+{END message_block}
+
+
+
+</div>
+{END container_message}
+
+
+
+
+
+
+
+</div>
+{END container_editpage}
+
+
+
+{BEGIN container_fields}<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class="   col-md-12 "> 
+
+
+<div {$editfields_hiddenattr} data-pageid="{$pageid}" data-brick="editfields" class="form-horizontal" role="form">
+
+
+
+		<div class="container">
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Class_Details1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Class_Details1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Class_Details1_xtrclass}" role="tabpanel"  {$section_Class_Details1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Class_Details1}
+		  </div>
+		</div>
+	</div>
+
+	</div>
+		<div class="container">
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Classification_Details1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Classification_Details1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Classification_Details1_xtrclass}" role="tabpanel"  {$section_Classification_Details1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Classification_Details1}
+		  </div>
+		</div>
+	</div>
+
+	</div>
+
+</div>
+
+
+
+
+</div>
+{END container_fields}
+
+
+
+{BEGIN container_bottombuttons}<div {$bottombuttons_chiddenattr} data-pageid="{$pageid}" data-container="bottombuttons" class="container    "> 
+
+
+
+
+{BEGIN container_buttons}<div {$buttons_chiddenattr} data-pageid="{$pageid}" data-container="buttons" class=" form-group   "> 
+
+
+
+
+{BEGIN container_leftbuttons}<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
+
+{BEGIN editbuttons}{BEGIN save_button}<button class="btn btn-primary" {$savebutton_attrs}>Save</button>
+	{END save_button}
+	{BEGIN back_button}<button class="btn btn-default" {$backbutton_attrs}>Back to list</button>
+	{END back_button}
+	{BEGIN close_button}<a href="#" class="btn btn-default" {$closebutton_attrs}>Cancel</a>
+	{END close_button}
+
+{END editbuttons}
+
+
+
+</div>
+{END container_leftbuttons}
+
+
+
+
+
+
+
+
+{BEGIN container_leftbuttons_1}<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="  text-right col-md-3 "> 
+
+{BEGIN righteditbuttons}<div class="btn-group" role="group">
+
+	{BEGIN prev_button}<button class="btn btn-default {$prevbutton_class}" {$prevbutton_attrs}><span class="glyphicon glyphicon-chevron-left"></span></button>
+	{END prev_button}
+	{BEGIN next_button}<button class="btn btn-default  {$nextbutton_class}" {$nextbutton_attrs}><span class="glyphicon glyphicon-chevron-right"></span></button>
+	{END next_button}
+	<div class="btn-group dropup" role="group">
+		<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span class="glyphicon glyphicon-menu-hamburger"></span></button>
+		<ul class="dropdown-menu dropdown-left">
+			{BEGIN reset_button}<li><a href="#" {$resetbutton_attrs}>Reset</a></li>
+			{END reset_button}
+			{BEGIN view_page_button}<li><a href="#" {$view_page_button_attrs}>View</a></li>
+			{END view_page_button}
+		</ul>
+	</div>
+</div>
+{END righteditbuttons}
+
+
+
+</div>
+{END container_leftbuttons_1}
+
+
+
+
+
+
+</div>
+{END container_buttons}
+
+
+
+
+
+
+</div>
+{END container_bottombuttons}
+
+
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		<DIV class="bs-bottom">
+        
+		</div>
+		{$footer}
+	{END body}
+	</body>
+</html>

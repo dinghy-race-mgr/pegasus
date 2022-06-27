@@ -1,6 +1,6 @@
 <?php 
 /* ---------------------------------------------------------------------------------------------
-    rm_splash       standard start up page for racemanager applications
+    index.php       standard start up page for racemanager applications
         
    ---------------------------------------------------------------------------------------------
 */
@@ -12,7 +12,6 @@ $debug    = "0";
 // includes
 include ("./common/lib/util_lib.php");
 u_initconfigfile("config/common.ini");
-include ("./config/racemanager_cfg.php");
 
 // document header
 echo <<<EOT
@@ -35,13 +34,7 @@ echo <<<EOT
         <style>
             body { padding-top: 70px; font-family: Kalinga, Arial, sans-serif;}
             .brand-splash {font-weight: bold; font-size: 120%; color: orange;}
-        </style>
-        
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-          <script src="common/oss/jquery/html5shiv.js"></script>
-          <script src="common/oss/jquery/respond.min.js"></script>
-        <![endif]-->  
+        </style> 
   
       </head>      
       <body>
@@ -115,20 +108,6 @@ echo <<<EOT
       </a>
       <p style="margin-top: 1.0em;">Dynamic programme and results pages which can be incorporated in your club website</p>
     </div>
-        
-<!--    <div class="col-md-3">
-       <div class="dropdown" >
-          <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown">
-             <span style="font-size: 1.7em;">Club Website</span><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-                <li><a href="#" target="_blank">Events Calendar</a></li>
-                <li><a href="#" target="_blank">Results Page</a></li>
-                <li><a href="#" target="_blank">Local PY Analysis</a></li>
-          </ul>
-        </div>
-        <p style="margin-top: 1.0em;">Dynamic programme and results pages which can be incorporated in your club website</p>
-    </div> -->
         
   </div>
 </div>

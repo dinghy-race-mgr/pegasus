@@ -30,7 +30,7 @@ $tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","./templates/layout
 // initialise session if this is first call
 if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
 {
-    $init_status = u_initialisation("$loc/config/racemanager_cfg.php", "$loc/config/rm_utils_cfg.php", $loc, $scriptname);
+    $init_status = u_initialisation("$loc/config/rm_utils_cfg.php", $loc, $scriptname);
 
     if ($init_status)
     {

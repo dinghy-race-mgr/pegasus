@@ -79,7 +79,10 @@
 		<li class="massButton{$id} disabled"><a href="#" {$exportselectedlink_attrs} {$exportselectedlink_span} >Export selected</a></li>
 		{END exportselected_link}
 		
-				
+				{BEGIN deleteselected_link}
+		<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
+		{END deleteselected_link}
+		
 				<li role="separator" class="divider"></li>	
 
 				{BEGIN asearch_link}
@@ -291,7 +294,10 @@
 
 {BEGIN record_controls_block}
 <span {$recordcontrol_hiddenattr} data-pageid="{$pageid}" data-brick="recordcontrol">
-				{BEGIN saveall_link}
+		{BEGIN deleteselected_link}
+	<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
+	{END deleteselected_link}
+			{BEGIN saveall_link}
 		<button type="button" class="btn btn-primary" {$savealllink_attrs} {$savealllink_span}>Save all</button>
 	{END saveall_link}
 	{BEGIN cancelall_link}
@@ -409,16 +415,6 @@
 			<label>
 			  <input type="checkbox" id="hide_last_entry" checked="checked" value="1" data-field="last_entry">
 			  <span>{$label t_competitor last_entry}</span>
-			</label>
-		</div>
-		</a>
-		</li>
-		<li>
-		<a>
-		  <div class="checkbox">
-			<label>
-			  <input type="checkbox" id="hide_regular" checked="checked" value="1" data-field="regular">
-			  <span>{$label t_competitor regular}</span>
 			</label>
 		</div>
 		</a>
@@ -720,19 +716,6 @@
 									
 									
 									
-									{BEGIN regular_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$regular_class}" data-field=regular>
-									{BEGIN regular_fieldheader}
-																				<span {$regular_orderlinkattrs}>
-											{$label t_competitor regular}
-										</span>
-									{END regular_fieldheader}
-									</th>
-									{END regular_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN active_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
 									{BEGIN active_fieldheader}
@@ -869,13 +852,6 @@
 		{$last_entry_value}
 	</td>
 {END last_entry_fieldcolumn}
-
-
-	{BEGIN regular_fieldcolumn}
-	<td class="bs-gridcell {$regular_class}"  data-field=regular {$rowstyle} {$recordattrs}>
-		{$regular_value}
-	</td>
-{END regular_fieldcolumn}
 
 
 	{BEGIN active_fieldcolumn}

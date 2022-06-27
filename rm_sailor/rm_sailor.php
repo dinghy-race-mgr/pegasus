@@ -35,7 +35,7 @@ session_unset();
 initialise_params($_REQUEST);
 
 // initialisation for application
-$init_status = u_initialisation("$loc/config/racemanager_cfg.php", "$loc/config/rm_sailor_cfg.php", $loc, $scriptname);
+$init_status = u_initialisation("$loc/config/rm_sailor_cfg.php", $loc, $scriptname);
 
 if (!$init_status) {
     error_stop("initialisation");

@@ -31,7 +31,7 @@
 
 
 {BEGIN container_header}
-<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-12 "> 
+<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-9 col-md-offset-3"> 
 
 {BEGIN viewheader}
 	<h2 {$viewheader_hiddenattr} data-pageid="{$pageid}" data-brick="viewheader" >{$pagetitlelabel t_class view}</h2>
@@ -59,118 +59,43 @@
 
 
 <div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
+	<div class="container">	
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Boat_Details1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Boat_Details1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Boat_Details1_xtrclass}" role="tabpanel"  {$section_Boat_Details1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Boat_Details1}
+		  </div>
+		</div>
+	</div>
 
-	<div class="container">
-					{BEGIN classname_fieldblock}
-	<div class="{$fielddispclass_classname} col-md-4 bs-viewcontrolgroup" data-fieldname="classname">
-		<label class="control-label" for="{$labelfor_classname}">
-			{$label t_class classname}
-		</label>
-		<div class="" >
-			{$classname_value}&nbsp;
+	</div>
+	<div class="container">	
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Classification_Details1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Classification_Details1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Classification_Details1_xtrclass}" role="tabpanel"  {$section_Classification_Details1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Classification_Details1}
+		  </div>
 		</div>
 	</div>
-{END classname_fieldblock}
-					{BEGIN info_fieldblock}
-	<div class="{$fielddispclass_info} col-md-4 bs-viewcontrolgroup" data-fieldname="info">
-		<label class="control-label" for="{$labelfor_info}">
-			{$label t_class info}
-		</label>
-		<div class="" >
-			{$info_value}&nbsp;
-		</div>
-	</div>
-{END info_fieldblock}
-					{BEGIN nat_py_fieldblock}
-	<div class="{$fielddispclass_nat_py} col-md-4 bs-viewcontrolgroup" data-fieldname="nat_py">
-		<label class="control-label" for="{$labelfor_nat_py}">
-			{$label t_class nat_py}
-		</label>
-		<div class="" >
-			{$nat_py_value}&nbsp;
-		</div>
-	</div>
-{END nat_py_fieldblock}
-					{BEGIN local_py_fieldblock}
-	<div class="{$fielddispclass_local_py} col-md-4 bs-viewcontrolgroup" data-fieldname="local_py">
-		<label class="control-label" for="{$labelfor_local_py}">
-			{$label t_class local_py}
-		</label>
-		<div class="" >
-			{$local_py_value}&nbsp;
-		</div>
-	</div>
-{END local_py_fieldblock}
-					{BEGIN popular_fieldblock}
-	<div class="{$fielddispclass_popular} col-md-4 bs-viewcontrolgroup" data-fieldname="popular">
-		<label class="control-label" for="{$labelfor_popular}">
-			{$label t_class popular}
-		</label>
-		<div class="" >
-			{$popular_value}&nbsp;
-		</div>
-	</div>
-{END popular_fieldblock}
-					{BEGIN category_fieldblock}
-	<div class="{$fielddispclass_category} col-md-4 bs-viewcontrolgroup" data-fieldname="category">
-		<label class="control-label" for="{$labelfor_category}">
-			{$label t_class category}
-		</label>
-		<div class="" >
-			{$category_value}&nbsp;
-		</div>
-	</div>
-{END category_fieldblock}
-					{BEGIN crew_fieldblock}
-	<div class="{$fielddispclass_crew} col-md-4 bs-viewcontrolgroup" data-fieldname="crew">
-		<label class="control-label" for="{$labelfor_crew}">
-			{$label t_class crew}
-		</label>
-		<div class="" >
-			{$crew_value}&nbsp;
-		</div>
-	</div>
-{END crew_fieldblock}
-					{BEGIN spinnaker_fieldblock}
-	<div class="{$fielddispclass_spinnaker} col-md-4 bs-viewcontrolgroup" data-fieldname="spinnaker">
-		<label class="control-label" for="{$labelfor_spinnaker}">
-			{$label t_class spinnaker}
-		</label>
-		<div class="" >
-			{$spinnaker_value}&nbsp;
-		</div>
-	</div>
-{END spinnaker_fieldblock}
-					{BEGIN rig_fieldblock}
-	<div class="{$fielddispclass_rig} col-md-4 bs-viewcontrolgroup" data-fieldname="rig">
-		<label class="control-label" for="{$labelfor_rig}">
-			{$label t_class rig}
-		</label>
-		<div class="" >
-			{$rig_value}&nbsp;
-		</div>
-	</div>
-{END rig_fieldblock}
-					{BEGIN engine_fieldblock}
-	<div class="{$fielddispclass_engine} col-md-4 bs-viewcontrolgroup" data-fieldname="engine">
-		<label class="control-label" for="{$labelfor_engine}">
-			{$label t_class engine}
-		</label>
-		<div class="" >
-			{$engine_value}&nbsp;
-		</div>
-	</div>
-{END engine_fieldblock}
-					{BEGIN keel_fieldblock}
-	<div class="{$fielddispclass_keel} col-md-4 bs-viewcontrolgroup" data-fieldname="keel">
-		<label class="control-label" for="{$labelfor_keel}">
-			{$label t_class keel}
-		</label>
-		<div class="" >
-			{$keel_value}&nbsp;
-		</div>
-	</div>
-{END keel_fieldblock}
+
 	</div>
 </div>
 
@@ -195,7 +120,7 @@
 
 
 {BEGIN container_leftbuttons}
-<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-8 "> 
+<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
 
 {BEGIN viewbuttons}
 {BEGIN back_button}
@@ -219,7 +144,7 @@
 
 
 {BEGIN container_leftbuttons_1}
-<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="   col-md-4 "> 
+<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="  text-right col-md-3 "> 
 
 {BEGIN rightviewbuttons}
 <div class="btn-group" role="group">

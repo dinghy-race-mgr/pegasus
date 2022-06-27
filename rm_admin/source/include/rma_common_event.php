@@ -24,3 +24,15 @@ function get_series_root($series)
 
     return $series;
 }
+
+function u_getclubname($club_str)
+{
+    $club_str = ucwords(strtolower($club_str));
+    $club_str = str_replace(" Yacht Club", " YC", $club_str);
+    $club_str = str_replace(" Sailing Club", " SC", $club_str);
+    $club_str = str_replace(" Yc", " YC", $club_str);
+    $club_str = str_replace(" Sc", " SC", $club_str);
+
+    return $club_str;
+
+}

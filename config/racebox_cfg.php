@@ -8,6 +8,7 @@
 */
 
 $_SESSION['app_name'] = "racebox";
+$_SESSION['app_ini']  = "racemanager.ini";
 
 $_SESSION['syslog'] = "../logs/sys/sys_".date("Y-m-d").".log";                                 // sys log file
 $_SESSION['dbglog'] = "../logs/dbg/" . $_SESSION['app_name'] . "_" . date("Y-m-d") . ".log";   // debug log

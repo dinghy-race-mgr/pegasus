@@ -19,9 +19,6 @@ $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
 
 include ("{$loc}/common/lib/util_lib.php");
-//include ("{$loc}/common/lib/html_lib.php");
-//include ("{$loc}/common/lib/rm_lib.php");
-//include ("{$loc}/common/lib/results_lib.php");          // FIXME needs to use templates   reports_tm.php + reports.css
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 $format = u_checkarg("format", "set","");

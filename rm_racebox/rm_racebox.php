@@ -37,40 +37,17 @@ empty($_REQUEST['debug']) ? $debug = "" : $debug = $_REQUEST['debug'] ;
 u_initsetparams($language, $mode, $debug);
 
 // initialisation for application
-$init_status = u_initialisation("$loc/config/racemanager_cfg.php", "$loc/config/racebox_cfg.php", $loc, $scriptname);
+$init_status = u_initialisation("$loc/config/racebox_cfg.php", $loc, $scriptname);
 
-u_initpagestart(0,"rm_racebox",false);                           // starts session and sets error reporting
-//include ("$loc/config/lang/{$_SESSION['lang']}-racebox-lang.php");    // language file
-//echo "<pre>LANG".print_r($lang,true)."</pre>";
+u_initpagestart(0,"rm_racebox",false);                                 // starts session and sets error reporting
 
-// set up system log files
-u_startsyslog($scriptname, "RM_RACEBOX");
+u_startsyslog($scriptname, "RM_RACEBOX");                             // set up system log files
 
-//if (is_readable("$loc/config/racemanager_cfg.php"))               // set racemanager config file content into SESSION
-//{
-//    include ("$loc/config/racemanager_cfg.php");
-//}
-//else
-//{
-//    u_exitnicely($scriptname, 0, $lang['err']['sys003'],
-//        "racemanager configuration file (/config/racemanager_cfg.php) does not exist");
-//}
-//
-//if (is_readable("$loc/config/racebox_cfg.php"))                   // set application config file content into SESSION
-//{
-//    include ("$loc/config/racebox_cfg.php");
-//}
-//else
-//{
-//    u_exitnicely($scriptname, 0, $lang['err']['sys003'],
-//        "application configuration file (/config/racebox_cfg.php) does not exist");
-//}
+u_initconfigfile("$loc/config/{$_SESSION['app_ini']}");               // reads contents of ini file into session
 
-u_initconfigfile("$loc/config/{$_SESSION['app_ini']}");            // reads contents of ini file into session
+ini_set('session.gc_maxlifetime', $_SESSION['session_timeout']);      // set sessions length
 
-ini_set('session.gc_maxlifetime', $_SESSION['session_timeout']);   // set sessions length
-
-$db = new DB();                                                    // set database initialisation (t_ini) into SESSION
+$db = new DB();                                                       // set database initialisation (t_ini) into SESSION
 foreach ($db->db_getinivalues(false) as $data)
 {
     $_SESSION["{$data['parameter']}"] = $data['value'];

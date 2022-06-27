@@ -306,12 +306,8 @@ EOT;
     {
         global $tmpl_o;
 
-        // get system info in case not read from racemanager
-        if (is_readable("$loc/config/racemanager_cfg.php"))   // set racemanager config file content into SESSION
-        {
-            include("$loc/config/racemanager_cfg.php");  // this info is all in the ini file
-        }
-        else
+        // get default system info in case not in session
+        if (!isset($_SESSION['sys_name']))
         {
             $_SESSION['sys_name'] = "raceManager";                                   // name of system
             $_SESSION['sys_release'] = "";                                           // release name

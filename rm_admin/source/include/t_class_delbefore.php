@@ -1,4 +1,5 @@
 <?php
+// we do not want to remove the record  - just hidden
 $class = strtoupper($deleted_values['classname']);
 
 // don't allow deletion if existing active competitors still reference this class
@@ -12,4 +13,4 @@ else
 	$message = "the $class class has been marked as not active and will now not be available for use in raceManager";
 }
 
-$delete = false;  // we don' want the record removed - just hidden
+$delete = false;

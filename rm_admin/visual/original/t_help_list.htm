@@ -71,10 +71,7 @@
 		<span class="caret"></span>
 	</button>
 	<ul class="dropdown-menu">
-				{BEGIN editselected_link}
-		<li class="massButton{$id} disabled"><a href="#" {$editselectedlink_attrs} {$editselectedlink_span} >Edit selected</a></li>
-		{END editselected_link}
-
+		
 				
 				{BEGIN deleteselected_link}
 		<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
@@ -242,13 +239,7 @@
 		{BEGIN deleteselected_link}
 	<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
 	{END deleteselected_link}
-			{BEGIN saveall_link}
-		<button type="button" class="btn btn-primary" {$savealllink_attrs} {$savealllink_span}>Save all</button>
-	{END saveall_link}
-	{BEGIN cancelall_link}
-		<button type="button" class="btn btn-default" {$cancelalllink_attrs} {$cancelalllink_span}>Cancel</button>
-	{END cancelall_link}
-</span>
+		</span>
 
 {END record_controls_block}
 
@@ -288,26 +279,6 @@
 		<a>
 		  <div class="checkbox">
 			<label>
-			  <input type="checkbox" id="hide_upddate" checked="checked" value="1" data-field="upddate">
-			  <span>{$label t_help upddate}</span>
-			</label>
-		</div>
-		</a>
-		</li>
-		<li>
-		<a>
-		  <div class="checkbox">
-			<label>
-			  <input type="checkbox" id="hide_category" checked="checked" value="1" data-field="category">
-			  <span>{$label t_help category}</span>
-			</label>
-		</div>
-		</a>
-		</li>
-		<li>
-		<a>
-		  <div class="checkbox">
-			<label>
 			  <input type="checkbox" id="hide_question" checked="checked" value="1" data-field="question">
 			  <span>{$label t_help question}</span>
 			</label>
@@ -320,6 +291,26 @@
 			<label>
 			  <input type="checkbox" id="hide_author" checked="checked" value="1" data-field="author">
 			  <span>{$label t_help author}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_upddate" checked="checked" value="1" data-field="upddate">
+			  <span>{$label t_help upddate}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_category" checked="checked" value="1" data-field="category">
+			  <span>{$label t_help category}</span>
 			</label>
 		</div>
 		</a>
@@ -485,32 +476,6 @@
 									{END checkbox_column}
 
 																		
-									{BEGIN upddate_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$upddate_class}" data-field=upddate>
-									{BEGIN upddate_fieldheader}
-																				<span {$upddate_orderlinkattrs}>
-											{$label t_help upddate}
-										</span>
-									{END upddate_fieldheader}
-									</th>
-									{END upddate_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN category_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$category_class}" data-field=category>
-									{BEGIN category_fieldheader}
-																				<span {$category_orderlinkattrs}>
-											{$label t_help category}
-										</span>
-									{END category_fieldheader}
-									</th>
-									{END category_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN question_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$question_class}" data-field=question>
 									{BEGIN question_fieldheader}
@@ -533,6 +498,32 @@
 									{END author_fieldheader}
 									</th>
 									{END author_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN upddate_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$upddate_class}" data-field=upddate>
+									{BEGIN upddate_fieldheader}
+																				<span {$upddate_orderlinkattrs}>
+											{$label t_help upddate}
+										</span>
+									{END upddate_fieldheader}
+									</th>
+									{END upddate_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN category_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$category_class}" data-field=category>
+									{BEGIN category_fieldheader}
+																				<span {$category_orderlinkattrs}>
+											{$label t_help category}
+										</span>
+									{END category_fieldheader}
+									</th>
+									{END category_fieldheadercolumn}
 									
 									
 									
@@ -586,12 +577,7 @@
 	{END edit_link}
 	{END edit_column}
 
-		{BEGIN inlineedit_column}
-	{BEGIN inlineedit_link}
-			<a class="glyphicon glyphicon-edit" {$inlineeditlink_attrs} title="Inline Edit"></a>
-	{END inlineedit_link}
-	{END inlineedit_column}
-	
+		
 	<span data-hidden {$ieditbuttonsholder_attrs}></span>
 
 		{BEGIN copy_column}
@@ -618,20 +604,6 @@
 
 	
 
-	{BEGIN upddate_fieldcolumn}
-	<td class="bs-gridcell {$upddate_class}"  data-field=upddate {$rowstyle} {$recordattrs}>
-		{$upddate_value}
-	</td>
-{END upddate_fieldcolumn}
-
-
-	{BEGIN category_fieldcolumn}
-	<td class="bs-gridcell {$category_class}"  data-field=category {$rowstyle} {$recordattrs}>
-		{$category_value}
-	</td>
-{END category_fieldcolumn}
-
-
 	{BEGIN question_fieldcolumn}
 	<td class="bs-gridcell {$question_class}"  data-field=question {$rowstyle} {$recordattrs}>
 		{$question_value}
@@ -644,6 +616,20 @@
 		{$author_value}
 	</td>
 {END author_fieldcolumn}
+
+
+	{BEGIN upddate_fieldcolumn}
+	<td class="bs-gridcell {$upddate_class}"  data-field=upddate {$rowstyle} {$recordattrs}>
+		{$upddate_value}
+	</td>
+{END upddate_fieldcolumn}
+
+
+	{BEGIN category_fieldcolumn}
+	<td class="bs-gridcell {$category_class}"  data-field=category {$rowstyle} {$recordattrs}>
+		{$category_value}
+	</td>
+{END category_fieldcolumn}
 
 
 	{BEGIN rank_fieldcolumn}

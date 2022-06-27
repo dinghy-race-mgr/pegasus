@@ -2,6 +2,9 @@
 
 $msg = "";
 
+
+// field checks
+
 if (is_numeric($values['nat_py']))
 {
     if (intval($values['nat_py']) < 1 OR intval($values['nat_py']) > 2000)
@@ -39,6 +42,10 @@ if ($commit)
 
     // set active flag
     $values['active'] = 1;
+
+    // set audit fields
+    $values['updby']   = $_SESSION['UserID'];
+    $values['upddate'] = NOW();
 
     // check local PN is set - if not set to national value
     if ($values['local_py']=="") {$values['local_py'] = $values['nat_py'];}

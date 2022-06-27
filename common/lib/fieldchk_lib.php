@@ -129,4 +129,3 @@ function f_get_row($table, $fields, $where, $conn)
 }
 
 
-?>

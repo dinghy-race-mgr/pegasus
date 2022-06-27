@@ -1,45 +1,83 @@
 <div {$pageattrs}>
 
-{BEGIN container_1}
+{BEGIN container_tabfields}
+<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
 
 
-
-<table class="fieldGrid">
 {BEGIN helm_tabfieldblock}
-<tr class="{$fielddispclass_helm}" data-fieldname="helm">
-	<td class="style1 rnr-label">
-		{BEGIN helm_label}{$label t_competitor helm}{END helm_label}
-	</td>
-	<td class="rnr-control style3">
-		{$helm_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_helm}" data-fieldname="helm" data-signal-error-for="helm{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_helm}">
+			{BEGIN helm_label}{$label t_competitor helm}{END helm_label}
+		</label>
+		<div class="col-md-6 " >
+			{$helm_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="helm">
+			<div class="text-muted" >
+			{$tooltip t_competitor helm}
+			</div>
+		</div>
+	</div>
+</div>
 {END helm_tabfieldblock}
 {BEGIN helm_dob_tabfieldblock}
-<tr class="{$fielddispclass_helm_dob}" data-fieldname="helm_dob">
-	<td class="style1 rnr-label">
-		{BEGIN helm_dob_label}{$label t_competitor helm_dob}{END helm_dob_label}
-	</td>
-	<td class="rnr-control style3">
-		{$helm_dob_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_helm_dob}" data-fieldname="helm_dob" data-signal-error-for="helm_dob{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_helm_dob}">
+			{BEGIN helm_dob_label}{$label t_competitor helm_dob}{END helm_dob_label}
+		</label>
+		<div class="col-md-6 " >
+			{$helm_dob_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="helm_dob">
+			<div class="text-muted" >
+			{$tooltip t_competitor helm_dob}
+			</div>
+		</div>
+	</div>
+</div>
 {END helm_dob_tabfieldblock}
 {BEGIN helm_email_tabfieldblock}
-<tr class="{$fielddispclass_helm_email}" data-fieldname="helm_email">
-	<td class="style1 rnr-label">
-		{BEGIN helm_email_label}{$label t_competitor helm_email}{END helm_email_label}
-	</td>
-	<td class="rnr-control style3">
-		{$helm_email_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_helm_email}" data-fieldname="helm_email" data-signal-error-for="helm_email{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_helm_email}">
+			{BEGIN helm_email_label}{$label t_competitor helm_email}{END helm_email_label}
+		</label>
+		<div class="col-md-6 " >
+			{$helm_email_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="helm_email">
+			<div class="text-muted" >
+			{$tooltip t_competitor helm_email}
+			</div>
+		</div>
+	</div>
+</div>
 {END helm_email_tabfieldblock}
-</table>
+{BEGIN telephone_tabfieldblock}
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_telephone}" data-fieldname="telephone" data-signal-error-for="telephone{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_telephone}">
+			{BEGIN telephone_label}{$label t_competitor telephone}{END telephone_label}
+		</label>
+		<div class="col-md-6 " >
+			{$telephone_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="telephone">
+			<div class="text-muted" >
+			{$tooltip t_competitor telephone}
+			</div>
+		</div>
+	</div>
+</div>
+{END telephone_tabfieldblock}
 
 
 
 
-{END container_1}
+
+</div>
+{END container_tabfields}
 
 </div>

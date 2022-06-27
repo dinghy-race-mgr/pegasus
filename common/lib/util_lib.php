@@ -570,23 +570,10 @@ function u_sessionstate($scriptname, $reference, $eventid)
 
 // ------ INITIALISATION FUNCTIONS ----------------------------------------------------------------------------------
 
-function u_initialisation($rm_cfg_file, $app_cfg_file, $loc, $scriptname)
+function u_initialisation($app_cfg_file, $loc, $scriptname)
 {
     $status = true;
     $_SESSION['app_init'] = false;
-
-    // set raceManager config file content into SESSION
-    if (is_readable($rm_cfg_file))
-    {
-        include ("$rm_cfg_file");
-    }
-    else
-    {
-        $status = false;
-        u_exitnicely("util_lib.php", 0,"File error - raceManager configuration file ($rm_cfg_file) does not exist or is unreadable",
-            "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__,
-                "calledby" => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], "args" => func_get_args()));
-    }
 
     // set application config file content into SESSION
     if (is_readable($app_cfg_file))

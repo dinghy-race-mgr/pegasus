@@ -71,10 +71,17 @@
 		<span class="caret"></span>
 	</button>
 	<ul class="dropdown-menu">
-		
+				{BEGIN editselected_link}
+		<li class="massButton{$id} disabled"><a href="#" {$editselectedlink_attrs} {$editselectedlink_span} >Edit selected</a></li>
+		{END editselected_link}
+
 				
-				
+				{BEGIN deleteselected_link}
+		<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
+		{END deleteselected_link}
 		
+				<li role="separator" class="divider"></li>	
+
 				{BEGIN asearch_link}
 		<li><a href="t_code_type_search.php" {$advsearchlink_attrs}>Advanced search</a></li>
 		{END asearch_link}
@@ -239,17 +246,26 @@
 <div {$add_delete_chiddenattr} data-pageid="{$pageid}" data-container="add_delete" class=" bottom-margin  col-md-6 "> 
 
 {BEGIN newrecord_controls_block}
-		{BEGIN add_link}
-		<a {$add_hiddenattr} data-pageid="{$pageid}" data-brick="add" type="button" class="btn btn-primary" {$addlink_attrs}>Add new</a>
-	{END add_link}
-
 	
+		{BEGIN inlineadd_link}
+		<button {$add_hiddenattr} data-pageid="{$pageid}" data-brick="add" type="button" class="btn btn-primary" {$inlineaddlink_attrs}>Inline Add</button>
+	{END inlineadd_link}
+
 {END newrecord_controls_block}
 
 
 {BEGIN record_controls_block}
 <span {$recordcontrol_hiddenattr} data-pageid="{$pageid}" data-brick="recordcontrol">
-			</span>
+		{BEGIN deleteselected_link}
+	<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
+	{END deleteselected_link}
+			{BEGIN saveall_link}
+		<button type="button" class="btn btn-primary" {$savealllink_attrs} {$savealllink_span}>Save all</button>
+	{END saveall_link}
+	{BEGIN cancelall_link}
+		<button type="button" class="btn btn-default" {$cancelalllink_attrs} {$cancelalllink_span}>Cancel</button>
+	{END cancelall_link}
+</span>
 
 {END record_controls_block}
 
@@ -380,10 +396,41 @@
 									<th iEditCont="all">&nbsp;</th>
 									{END listIcons_column}	
 
-									
+																		{BEGIN checkbox_column}
+									<th class="">
+										<input type="checkbox" {$checkboxheader_attrs}>
+									</th>
+									{END checkbox_column}
+
 																		{BEGIN t_code_type_dtable_column}
 									<th >&nbsp;</th>
 									{END t_code_type_dtable_column}
+									
+									{BEGIN groupname_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$groupname_class}" data-field=groupname>
+									{BEGIN groupname_fieldheader}
+																				<span {$groupname_orderlinkattrs}>
+											{$label t_code_type groupname}
+										</span>
+									{END groupname_fieldheader}
+									</th>
+									{END groupname_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN type_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$type_class}" data-field=type>
+									{BEGIN type_fieldheader}
+																				<span {$type_orderlinkattrs}>
+											{$label t_code_type type}
+										</span>
+									{END type_fieldheader}
+									</th>
+									{END type_fieldheadercolumn}
+									
+									
+									
 									
 									{BEGIN label_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$label_class}" data-field=label>
@@ -411,6 +458,19 @@
 									
 									
 									
+									{BEGIN rank_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$rank_class}" data-field=rank>
+									{BEGIN rank_fieldheader}
+																				<span {$rank_orderlinkattrs}>
+											{$label t_code_type rank}
+										</span>
+									{END rank_fieldheader}
+									</th>
+									{END rank_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN endrecordheader_block}
 									<th class="rnr-cs">&nbsp;</th>
 									
@@ -428,21 +488,16 @@
 	{BEGIN grid_record}
 	{BEGIN listIcons_column}
 	<td class="bs-gridicons" iEditCont="all" {$rowstyle} {$recordattrs}>
-		{BEGIN edit_column}
-	{BEGIN edit_link}
-			<a class="glyphicon glyphicon-pencil" {$editlink_attrs} title="Edit"></a>
-	{END edit_link}
-	{END edit_column}
-
-		
+	
+		{BEGIN inlineedit_column}
+	{BEGIN inlineedit_link}
+			<a class="glyphicon glyphicon-edit" {$inlineeditlink_attrs} title="Inline Edit"></a>
+	{END inlineedit_link}
+	{END inlineedit_column}
+	
 	<span data-hidden {$ieditbuttonsholder_attrs}></span>
 
-		{BEGIN copy_column}
-	{BEGIN copy_link}
-			<a class="glyphicon glyphicon-duplicate" {$copylink_attrs} title="Copy"></a>
-	{END copy_link}
-	{END copy_column}
-
+	
 		{BEGIN view_column}
 	{BEGIN view_link}
 			<a class="glyphicon glyphicon-search" {$viewlink_attrs} title="View"></a>
@@ -451,7 +506,14 @@
 	</td>	
 	{END listIcons_column}	
 
-	
+		{BEGIN checkbox_column}
+	<td  iEditCont="checkBox" class="bs-gridcheckbox" {$rowstyle} {$recordattrs}>
+	{BEGIN checkbox}
+	<input type="checkbox" {$checkbox_attrs}>
+	{END checkbox}
+	</td>
+	{END checkbox_column}
+
 		{BEGIN t_code_type_dtable_column}
 	<td class="rnr-nowrap bs-griddetails" {$rowstyle} {$recordattrs}>
 	
@@ -473,6 +535,20 @@
 	{END t_code_type_dtable_column}
 
 
+	{BEGIN groupname_fieldcolumn}
+	<td class="bs-gridcell {$groupname_class}"  data-field=groupname {$rowstyle} {$recordattrs}>
+		{$groupname_value}
+	</td>
+{END groupname_fieldcolumn}
+
+
+	{BEGIN type_fieldcolumn}
+	<td class="bs-gridcell {$type_class}"  data-field=type {$rowstyle} {$recordattrs}>
+		{$type_value}
+	</td>
+{END type_fieldcolumn}
+
+
 	{BEGIN label_fieldcolumn}
 	<td class="bs-gridcell {$label_class}"  data-field=label {$rowstyle} {$recordattrs}>
 		{$label_value}
@@ -485,6 +561,13 @@
 		{$info_value}
 	</td>
 {END info_fieldcolumn}
+
+
+	{BEGIN rank_fieldcolumn}
+	<td class="bs-gridcell {$rank_class}"  data-field=rank {$rowstyle} {$recordattrs}>
+		{$rank_value}
+	</td>
+{END rank_fieldcolumn}
 
 	{BEGIN endrecord_block}
 	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>

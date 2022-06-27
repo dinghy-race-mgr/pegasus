@@ -24,7 +24,7 @@ session_unset();
 $_SESSION['mode'] = "race";
 
 // initialisation for application
-$init_status = u_initialisation("$loc/config/racemanager_cfg.php", "$loc/config/rm_sailor_cfg.php", $loc, $scriptname);
+$init_status = u_initialisation("$loc/config/rm_sailor_cfg.php", $loc, $scriptname);
 
 // timezone
 date_default_timezone_set($_SESSION['timezone']);   // set timezone
@@ -44,7 +44,6 @@ foreach ($db_o->db_getinivalues(true, "club") as $k => $v) {
 
 // find next event
 $event = $event_o->get_nextevent(date("Y-m-d"), $requiredtype = "racing");
-//echo "<pre>".print_r($event,true)."</pre>";
 $eventid = $event['id'];
 
 // get entries (sorted by competitor id and date)

@@ -93,114 +93,26 @@
 
 
 <div {$addfields_hiddenattr} data-pageid="{$pageid}" data-brick="addfields" class="form-horizontal" role="form">
-			{BEGIN question_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_question}" data-fieldname="question" data-signal-error-for="question{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_question}">
-		{BEGIN question_label}{$label t_help question}{END question_label}
-	</label>
-	<div class="col-md-5" >
-		{$question_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="question">
-		<div class="text-muted" >
-		{$tooltip t_help question}
-		</div>
-	</div>
-</div>
-</div>
-{END question_fieldblock}
+		<div class="container">	
+		
 
-			{BEGIN answer_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_answer}" data-fieldname="answer" data-signal-error-for="answer{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_answer}">
-		{BEGIN answer_label}{$label t_help answer}{END answer_label}
-	</label>
-	<div class="col-md-5" >
-		{$answer_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="answer">
-		<div class="text-muted" >
-		{$tooltip t_help answer}
-		</div>
-	</div>
-</div>
-</div>
-{END answer_fieldblock}
 
-			{BEGIN notes_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_notes}" data-fieldname="notes" data-signal-error-for="notes{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_notes}">
-		{BEGIN notes_label}{$label t_help notes}{END notes_label}
-	</label>
-	<div class="col-md-5" >
-		{$notes_editcontrol}
+	<div class="panel with-tabs panel-default form-tabs">
+	<div class="panel-heading">
+	{$tabgroup_Details1_header}
 	</div>
-	<div class="col-md-4 help-block" data-helpfor="notes">
-		<div class="text-muted" >
-		{$tooltip t_help notes}
-		</div>
+	<div class="panel-body">
+	{$TabGroup Details1}&nbsp;		
 	</div>
 </div>
-</div>
-{END notes_fieldblock}
+	
+	</div>
+		<div class="container">	
+		
 
-			{BEGIN category_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_category}" data-fieldname="category" data-signal-error-for="category{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_category}">
-		{BEGIN category_label}{$label t_help category}{END category_label}
-	</label>
-	<div class="col-md-5" >
-		{$category_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="category">
-		<div class="text-muted" >
-		{$tooltip t_help category}
-		</div>
-	</div>
-</div>
-</div>
-{END category_fieldblock}
 
-			{BEGIN author_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_author}" data-fieldname="author" data-signal-error-for="author{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_author}">
-		{BEGIN author_label}{$label t_help author}{END author_label}
-	</label>
-	<div class="col-md-5" >
-		{$author_editcontrol}
+		
 	</div>
-	<div class="col-md-4 help-block" data-helpfor="author">
-		<div class="text-muted" >
-		{$tooltip t_help author}
-		</div>
-	</div>
-</div>
-</div>
-{END author_fieldblock}
-
-			{BEGIN rank_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_rank}" data-fieldname="rank" data-signal-error-for="rank{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_rank}">
-		{BEGIN rank_label}{$label t_help rank}{END rank_label}
-	</label>
-	<div class="col-md-5" >
-		{$rank_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="rank">
-		<div class="text-muted" >
-		{$tooltip t_help rank}
-		</div>
-	</div>
-</div>
-</div>
-{END rank_fieldblock}
-
 
 </div>
 

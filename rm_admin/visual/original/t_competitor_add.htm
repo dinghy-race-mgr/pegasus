@@ -83,33 +83,6 @@
 
 
 
-
-{BEGIN container_steps}
-<div {$steps_chiddenattr} data-pageid="{$pageid}" data-container="steps" class="   col-md-12 "> 
-
-
-<ul {$multistep_nav_add_hiddenattr} data-pageid="{$pageid}" data-brick="multistep_nav_add" class="nav nav-pills nav-justified" {$stepnav_attrs} data-stepcontrol>
-	<li role="presentation"><a href="#">boat
-</a></li>
-	<li role="presentation"><a href="#">helm
-</a></li>
-	<li role="presentation"><a href="#">crew
-</a></li>
-	<li role="presentation"><a href="#">categories
-</a></li>
-</ul>
-
-
-
-
-</div>
-{END container_steps}
-
-
-
-
-
-
 </div>
 {END container_editpage}
 
@@ -120,13 +93,38 @@
 
 
 <div {$addfields_hiddenattr} data-pageid="{$pageid}" data-brick="addfields" class="form-horizontal" role="form">
-	<div>
-				
-		{$Step boat1}
-		{$Step helm1}
-		{$Step crew1}
-		{$Step categories1}
+		<div class="container">	
+		
+
+
+	<div class="panel with-tabs panel-default form-tabs">
+	<div class="panel-heading">
+	{$tabgroup_boat1_header}
+	</div>
+	<div class="panel-body">
+	{$TabGroup boat1}&nbsp;		
+	</div>
 </div>
+			
+	</div>
+		<div class="container">	
+		
+
+
+				
+	</div>
+		<div class="container">	
+		
+
+
+				
+	</div>
+		<div class="container">	
+		
+
+
+				
+	</div>
 
 </div>
 
@@ -154,9 +152,6 @@
 <div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
 
 {BEGIN addbuttons}
-	{BEGIN nextStepButton}
-	<button class="btn btn-primary" {$nextstep_button_attrs}>Next</button>
-	{END nextStepButton}
 	{BEGIN save_button}
 	<button class="btn btn-primary" {$savebutton_attrs}>Save</button>
 	{END save_button}

@@ -1,45 +1,66 @@
 <div {$pageattrs}>
 
-{BEGIN container_1}
+{BEGIN container_tabfields}
+<div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
 
 
-
-<table class="fieldGrid">
 {BEGIN crew_tabfieldblock}
-<tr class="{$fielddispclass_crew}" data-fieldname="crew">
-	<td class="style1 rnr-label">
-		{BEGIN crew_label}{$label t_competitor crew}{END crew_label}
-	</td>
-	<td class="rnr-control style3">
-		{$crew_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_crew}" data-fieldname="crew" data-signal-error-for="crew{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_crew}">
+			{BEGIN crew_label}{$label t_competitor crew}{END crew_label}
+		</label>
+		<div class="col-md-6 " >
+			{$crew_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="crew">
+			<div class="text-muted" >
+			{$tooltip t_competitor crew}
+			</div>
+		</div>
+	</div>
+</div>
 {END crew_tabfieldblock}
 {BEGIN crew_dob_tabfieldblock}
-<tr class="{$fielddispclass_crew_dob}" data-fieldname="crew_dob">
-	<td class="style1 rnr-label">
-		{BEGIN crew_dob_label}{$label t_competitor crew_dob}{END crew_dob_label}
-	</td>
-	<td class="rnr-control style3">
-		{$crew_dob_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_crew_dob}" data-fieldname="crew_dob" data-signal-error-for="crew_dob{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_crew_dob}">
+			{BEGIN crew_dob_label}{$label t_competitor crew_dob}{END crew_dob_label}
+		</label>
+		<div class="col-md-6 " >
+			{$crew_dob_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="crew_dob">
+			<div class="text-muted" >
+			{$tooltip t_competitor crew_dob}
+			</div>
+		</div>
+	</div>
+</div>
 {END crew_dob_tabfieldblock}
 {BEGIN crew_email_tabfieldblock}
-<tr class="{$fielddispclass_crew_email}" data-fieldname="crew_email">
-	<td class="style1 rnr-label">
-		{BEGIN crew_email_label}{$label t_competitor crew_email}{END crew_email_label}
-	</td>
-	<td class="rnr-control style3">
-		{$crew_email_editcontrol}&nbsp;
-	</td>
-</tr>
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_crew_email}" data-fieldname="crew_email" data-signal-error-for="crew_email{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_crew_email}">
+			{BEGIN crew_email_label}{$label t_competitor crew_email}{END crew_email_label}
+		</label>
+		<div class="col-md-6 " >
+			{$crew_email_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="crew_email">
+			<div class="text-muted" >
+			{$tooltip t_competitor crew_email}
+			</div>
+		</div>
+	</div>
+</div>
 {END crew_email_tabfieldblock}
-</table>
 
 
 
 
-{END container_1}
+
+</div>
+{END container_tabfields}
 
 </div>

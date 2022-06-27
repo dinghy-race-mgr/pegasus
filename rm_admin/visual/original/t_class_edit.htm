@@ -93,132 +93,25 @@
 
 
 
-			{BEGIN classname_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_classname}" data-fieldname="classname" data-signal-error-for="classname{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_classname}">
-		{BEGIN classname_label}{$label t_class classname}{END classname_label}
-	</label>
-	<div class="col-md-5" >
-		{$classname_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="classname">
-		<div class="text-muted" >
-		{$tooltip t_class classname}
+		<div class="container">
+			<div class="panel panel-default form-section">
+		<div class="panel-heading" role="tab" {$section_Class_Details1_headattrs} data-toggle="collapse"   >
+		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
+		  <h4 class="panel-title">
+			<a role="button" >
+				{$section_Class_Details1_label}
+			</a>
+		  </h4>
+		</div>
+		<div  class="panel-collapse collapse {$section_Class_Details1_xtrclass}" role="tabpanel"  {$section_Class_Details1_attrs} >
+		<!-- id="collapseOne" aria-labelledby="headingOne" -->
+		  <div class="panel-body">
+			{$Section Class_Details1}
+		  </div>
 		</div>
 	</div>
-</div>
-</div>
-{END classname_fieldblock}
 
-			{BEGIN acronym_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_acronym}" data-fieldname="acronym" data-signal-error-for="acronym{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_acronym}">
-		{BEGIN acronym_label}{$label t_class acronym}{END acronym_label}
-	</label>
-	<div class="col-md-5" >
-		{$acronym_editcontrol}
 	</div>
-	<div class="col-md-4 help-block" data-helpfor="acronym">
-		<div class="text-muted" >
-		{$tooltip t_class acronym}
-		</div>
-	</div>
-</div>
-</div>
-{END acronym_fieldblock}
-
-			{BEGIN info_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_info}" data-fieldname="info" data-signal-error-for="info{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_info}">
-		{BEGIN info_label}{$label t_class info}{END info_label}
-	</label>
-	<div class="col-md-5" >
-		{$info_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="info">
-		<div class="text-muted" >
-		{$tooltip t_class info}
-		</div>
-	</div>
-</div>
-</div>
-{END info_fieldblock}
-
-			{BEGIN nat_py_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_nat_py}" data-fieldname="nat_py" data-signal-error-for="nat_py{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_nat_py}">
-		{BEGIN nat_py_label}{$label t_class nat_py}{END nat_py_label}
-	</label>
-	<div class="col-md-5" >
-		{$nat_py_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="nat_py">
-		<div class="text-muted" >
-		{$tooltip t_class nat_py}
-		</div>
-	</div>
-</div>
-</div>
-{END nat_py_fieldblock}
-
-			{BEGIN local_py_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_local_py}" data-fieldname="local_py" data-signal-error-for="local_py{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_local_py}">
-		{BEGIN local_py_label}{$label t_class local_py}{END local_py_label}
-	</label>
-	<div class="col-md-5" >
-		{$local_py_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="local_py">
-		<div class="text-muted" >
-		{$tooltip t_class local_py}
-		</div>
-	</div>
-</div>
-</div>
-{END local_py_fieldblock}
-
-			{BEGIN popular_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_popular}" data-fieldname="popular" data-signal-error-for="popular{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_popular}">
-		{BEGIN popular_label}{$label t_class popular}{END popular_label}
-	</label>
-	<div class="col-md-5" >
-		{$popular_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="popular">
-		<div class="text-muted" >
-		{$tooltip t_class popular}
-		</div>
-	</div>
-</div>
-</div>
-{END popular_fieldblock}
-
-			{BEGIN active_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_active}" data-fieldname="active" data-signal-error-for="active{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_active}">
-		{BEGIN active_label}{$label t_class active}{END active_label}
-	</label>
-	<div class="col-md-5" >
-		{$active_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="active">
-		<div class="text-muted" >
-		{$tooltip t_class active}
-		</div>
-	</div>
-</div>
-</div>
-{END active_fieldblock}
-
 		<div class="container">
 			<div class="panel panel-default form-section">
 		<div class="panel-heading" role="tab" {$section_Classification_Details1_headattrs} data-toggle="collapse"   >
