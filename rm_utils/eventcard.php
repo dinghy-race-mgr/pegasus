@@ -5,9 +5,9 @@ $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
 $styletheme = "flatly_";
 $stylesheet = "./style/rm_utils.css";
-
 require_once ("{$loc}/common/lib/util_lib.php");
 
+session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
 session_start();
 
 // initialise session if this is first call
@@ -21,7 +21,7 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
         if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
 
         // start log
-        error_log(date('H:i:s')." -- EVENT CARD --------------------".PHP_EOL, 3, $_SESSION['syslog']);
+        error_log(date('H:i:s')." -- rm_util EVENT CARD --------------------[session: ".session_id()."]".PHP_EOL, 3, $_SESSION['syslog']);
 
         // set initialisation flag
         $_SESSION['util_app_init'] = true;

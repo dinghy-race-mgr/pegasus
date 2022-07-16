@@ -16,18 +16,24 @@ $loc        = "..";       // <--- relative path from script to top level folder
 $page       = "publish";     //
 $scriptname = basename(__FILE__);
 require_once ("$loc/common/lib/util_lib.php");
+require_once ("$loc/common/lib/results_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
-if (!$eventid)
+$pagestate = u_checkarg("pagestate", "set", "", "");
+if (empty($pagestate) OR !$eventid)
 {
-    u_exitnicely($scriptname, 0,"$page page - event id record [{$_REQUEST['eventid']}] not defined",
+    u_exitnicely($scriptname, 0,"$page page - event id record [{$_REQUEST['eventid']}] or pagestate [{$_REQUEST['pagestate']}] are not defined",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-else{
-    u_initpagestart($eventid, $page, false);   // starts session and sets error reporting
-}
 
+// start session
+session_id('sess-rmracebox');
+session_start();
 
+// page initialisation
+u_initpagestart($eventid, $page, false);
+
+// classes
 require_once ("$loc/common/classes/db_class.php");
 require_once ("$loc/common/classes/template_class.php");
 require_once ("$loc/common/classes/race_class.php");
@@ -36,17 +42,10 @@ require_once ("$loc/common/classes/event_class.php");
 require_once ("$loc/common/classes/raceresult_class.php");
 require_once ("$loc/common/classes/seriesresult_class.php");
 
-require_once ("$loc/common/lib/results_lib.php");
-
 // templates
 $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php",
     "./templates/results_tm.php", "$loc/common/templates/race_results_tm.php", "$loc/common/templates/series_results_tm.php"));
 
-//echo "<pre>".print_r($_REQUEST,true)."</pre>";
-
-// get arguments
-$eventid   = u_checkarg("eventid", "checkintnotzero","");
-$pagestate = u_checkarg("pagestate", "set", "", "");
 
 $system_info = array(
     "sys_name"    => $_SESSION['sys_name'],

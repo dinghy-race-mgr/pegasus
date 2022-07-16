@@ -16,7 +16,7 @@ $_SESSION['dbglog'] = "../logs/dbg/" . $_SESSION['app_name'] . "_" . date("Y-m-d
 $_SESSION['background']    = "bg-primary";               // page background colour
 $_SESSION['sql_debug']     = false;                      // set to true to turn on debugging of sql commands - otherwise false
 
-$_SESSION['sailor_race_sleep_delay'] = 5;                // in multi use mode will return to search page after specified seconds
+$_SESSION['sailor_race_sleep_delay'] = 10;                // in multi use mode will return to search page after specified seconds
 $_SESSION['sailor_cruise_sleep_delay'] = 0;              // 0 does not auto-return
 
 // options configuration

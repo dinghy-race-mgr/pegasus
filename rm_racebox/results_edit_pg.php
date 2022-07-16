@@ -15,26 +15,29 @@ $page       = "timer_editlaptimes";     //
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-// FIXME - sort out arg processing + just display message
-if (empty($_REQUEST['pagestate']) OR empty($_REQUEST['eventid']) OR empty($_REQUEST['entryid']))
+// parameters  [eventid (required), pagestate(required), entryid(required))
+$eventid   = u_checkarg("eventid", "checkintnotzero","", false);
+$pagestate = u_checkarg("pagestate", "set", "", false);
+$entryid   = u_checkarg("entryid", "set", "", "");
+if (empty($eventid) OR empty($pagestate) OR empty($entryid))
 {
     u_exitnicely($scriptname, $_REQUEST['eventid'],"$page page - input parameters eventid [{$_REQUEST['eventid']}], pagestate [{$_REQUEST['pagestate']}] or entryid [{$_REQUEST['entryid']}] is missing",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-else
-{
-    $pagestate = $_REQUEST['pagestate'];
-    $eventid   = $_REQUEST['eventid'];
-    $entryid   = $_REQUEST['entryid'];
-    u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
-}
 
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
+
+// classes
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 
-
-
+// templates
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/results_tm.php"));
 
 $pagefields = array(

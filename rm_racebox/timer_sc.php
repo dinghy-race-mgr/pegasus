@@ -23,9 +23,19 @@ $scriptname = basename(__FILE__);
 
 require_once ("{$loc}/common/lib/util_lib.php"); 
 require_once ("{$loc}/common/lib/rm_lib.php");
+require_once ("./include/rm_racebox_lib.php");
 
-u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and sets error reporting
+// process standard parameters  (eventid, pagestate, fleet)
+$eventid   = u_checkarg("eventid", "checkintnotzero","");
+$pagestate = u_checkarg("pagestate", "set", "", "");
+$fleet     = u_checkarg("fleet", "set", "", "");
 
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, false);
 
 // app classes
 require_once ("{$loc}/common/classes/db_class.php"); 
@@ -33,18 +43,9 @@ require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 require_once ("{$loc}/common/classes/bunch_class.php");
 
-// app includes
-require_once ("./include/rm_racebox_lib.php");
-
+// page controls
 include("./templates/growls.php");
 
-// process standard parameters  (eventid, pagestate, fleet)
-$eventid   = u_checkarg("eventid", "checkintnotzero","");
-$pagestate = u_checkarg("pagestate", "set", "", "");
-$fleet     = u_checkarg("fleet", "set", "", "");
-
-//echo "<pre>".print_r($_REQUEST,true)."</pre>";
-//exit();
 
 if ($eventid AND $pagestate)
 {
@@ -60,7 +61,6 @@ if ($eventid AND $pagestate)
 
     if ($pagestate == "timelap")
     {
-
         $if_err = false;
         empty($_REQUEST['entryid']) ? $if_err = true : $entryid = $_REQUEST['entryid'];
         empty($_REQUEST['start'])   ? $if_err = true : $start = $_REQUEST['start'];

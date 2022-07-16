@@ -13,7 +13,12 @@ require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("./include/rm_sailor_lib.php");
 
-u_initpagestart(0,"race_sc",false);   // starts session and sets error reporting
+// start session
+session_id('sess-rmsailor');
+session_start();
+
+// initialise page
+u_initpagestart(0,$page,false);
 
 // libraries
 require_once ("{$loc}/common/classes/db_class.php");

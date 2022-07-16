@@ -11,11 +11,26 @@
  * 
  * 
  */
-$loc        = "..";                                                 // relative path from script to raceManager
+$loc        = "..";
 $page       = "entries";
 $scriptname = basename(__FILE__);
 $stop_here  = false;
-require_once ("{$loc}/common/lib/util_lib.php"); 
+
+require_once ("{$loc}/common/lib/util_lib.php");
+
+// process parameters  (eventid, pagestate, entryid)
+$eventid   = u_checkarg("eventid", "checkintnotzero","");
+$pagestate = u_checkarg("pagestate", "set", "", "");
+$entryid   = u_checkarg("entryid", "checkint", "", "");
+
+// start session
+session_id('sess-rmracebox');   // creates separate session for this application
+session_start();
+
+// initialise page
+u_initpagestart($eventid, $page, false);
+
+// classes / libraries
 require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
@@ -24,13 +39,7 @@ require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/comp_class.php");
 require_once("{$loc}/common/classes/race_class.php");
 
-// process parameters  (eventid, pagestate, entryid)
-$eventid   = u_checkarg("eventid", "checkintnotzero","");
-$pagestate = u_checkarg("pagestate", "set", "", "");
-$entryid   = u_checkarg("entryid", "checkint", "", "");
-
-u_initpagestart($eventid, $page, false);                                // gets session and sets error reporting
-
+// page controls
 include ("./templates/growls.php");
 
 if ($eventid and !empty($pagestate))

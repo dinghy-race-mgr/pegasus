@@ -4,11 +4,13 @@
 
 */
 
+// start session
+session_id('sess-rmweb');
 session_start();
 
 // includes
-include ("./include/pages.php");
-include ("./include/programme.php");
+request_once ("./include/pages.php");
+request_once ("./include/programme.php");
 
 $cfg = parse_ini_file("./config/rm_web.ini", true);
 

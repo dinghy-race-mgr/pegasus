@@ -22,45 +22,53 @@
  */
 
 $loc        = "..";                                             // path to root directory
-$scriptname = basename(__FILE__);      
+$scriptname = basename(__FILE__);
+$page       = "rm_racebox";
+
 require_once ("{$loc}/common/lib/util_lib.php"); 
 require_once ("{$loc}/common/classes/db_class.php");
 
-// initialisation
+// start session
+session_id('sess-rmracebox');
 session_start();
 session_unset();
 
 // initialise parameters
-empty($_REQUEST['lang']) ? $language = "" : $language  = $_REQUEST['lang'] ;
-empty($_REQUEST['mode']) ? $mode = "" : $mode  = $_REQUEST['mode'] ;
-empty($_REQUEST['debug']) ? $debug = "" : $debug = $_REQUEST['debug'] ;
+empty($_REQUEST['lang']) ?  $language = "" : $language  = $_REQUEST['lang'] ;
+empty($_REQUEST['mode']) ?  $mode = ""     : $mode  = $_REQUEST['mode'] ;
+empty($_REQUEST['debug']) ? $debug = ""    : $debug = $_REQUEST['debug'] ;
 u_initsetparams($language, $mode, $debug);
 
 // initialisation for application
 $init_status = u_initialisation("$loc/config/racebox_cfg.php", $loc, $scriptname);
 
-u_initpagestart(0,"rm_racebox",false);                                 // starts session and sets error reporting
+// page initialisation
+u_initpagestart(0,$page,false);
 
-u_startsyslog($scriptname, "RM_RACEBOX");                             // set up system log files
+// initial message to syslog
+u_startsyslog($scriptname, strtoupper($page), session_id('sess-rmracebox'));
 
-u_initconfigfile("$loc/config/{$_SESSION['app_ini']}");               // reads contents of ini file into session
+// reads contents of application ini file into session
+u_initconfigfile("$loc/config/{$_SESSION['app_ini']}");
 
-ini_set('session.gc_maxlifetime', $_SESSION['session_timeout']);      // set sessions length
+// set session length
+ini_set('session.gc_maxlifetime', $_SESSION['session_timeout']);
 
-$db = new DB();                                                       // set database initialisation (t_ini) into SESSION
+// set database initialisation parameters (t_ini) into session
+$db = new DB();
 foreach ($db->db_getinivalues(false) as $data)
 {
     $_SESSION["{$data['parameter']}"] = $data['value'];
 }
 
-$_SESSION['clublink'] = $db->db_getlinks("");                         // database link information from t_link
+// club specific external link information from t_link
+$_SESSION['clublink'] = $db->db_getlinks("");
 $db->db_disconnect();
 
-if ($_SESSION['debug']==2) { u_sessionstate($scriptname, $page, 0); } // if debug send session to file
+// if debug send session to file
+if ($_SESSION['debug']==2) { u_sessionstate($scriptname, $page, $loc."/tmp", 0); }
 
-//echo "<pre>".print_r($_SESSION,true)."</pre>";
-//exit();
-
-header("Location: pickrace_pg.php");                                  // go to next script
+// go to select race page
+header("Location: pickrace_pg.php");
 exit();
 

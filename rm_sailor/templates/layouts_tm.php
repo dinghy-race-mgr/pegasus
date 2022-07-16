@@ -53,7 +53,7 @@
                 </div>
             
                 <!-- Body -->
-                <div class="container-fluid" style="margin-bottom: 20px; min-height: 400px;">
+                <div class="container-fluid margin-bot-60" style="min-height: 400px;">
                 {body}
                 </div>
                 
@@ -345,9 +345,8 @@ EOT;
         $start = "[ {$_SESSION['events']['nextevent']['event_start']} ]";
 
         $bufr .= <<<EOT
-            <div class="rm-text-space margin-left-40">
-                <span class="rm-text-md">next race is </span><br>                
-                <span class="rm-text-md rm-text-highlight"> $name - $date  $start </span>
+            <div class="rm-text-md rm-text-space margin-left-40">
+                next race is &nbsp;&nbsp;&mdash;&nbsp;&nbsp; <span class="rm-text-highlight">$name - $date  $start</span> 
             </div>
 EOT;
     }
@@ -357,6 +356,7 @@ EOT;
 
 function list_events($params = array())
 {
+    //echo "<pre>".print_r($params,true)."</pre>";
     $bufr = "";
 
     // display for date
@@ -382,26 +382,16 @@ function list_events($params = array())
     $event_table = "";
     foreach ($params['details'] as $k => $row) {
 
-        if ($row['event_status'] != "cancelled")
-        {
             $params['numdays'] <= 1 ? $event_date = "" : $event_date = " - ".date("jS M", strtotime($row['event_date'])) ;
 
             $event_table .= <<<EOT
             <tr>
-                <td class="rm-text-md rm-text-trunc" width="50%">{$row['event_name']}$event_date</td>
-                <td class="rm-text-md" width="20%">{$row['event_start']}</td>
-                <td class="rm-text-md" width="40%">{$row['race_name']}</td>
+                <td class="rm-text-md rm-text-trunc" style="width: 30%">{$row['event_name']} $event_date</td>
+                <td class="rm-text-md" >{$row['event_start']}</td>
+                <td class="rm-text-md" >{$row['race_name']}</td>
+                <td class="rm-text-md rm-text-highlight" style="width: 30%" >{$row['status_label']}</td>
             </tr>
 EOT;
-        } else
-        {
-            $event_table .= <<<EOT
-            <tr>
-                <td class="rm-text-md rm-text-trunc" width="50%">{$row['event_name']}</td>
-                <td class="rm-text-md text-warning" colspan="2">*** race is CANCELLED ***</td>
-            </tr>
-EOT;
-        }
     }
 
 

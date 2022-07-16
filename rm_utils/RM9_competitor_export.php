@@ -1,6 +1,6 @@
 <?php
 /**
- * RM9_entries_export.php
+ * RM9_competitor_export.php
  *
  * script to export entries from a racemanager9 database and import them into a racemanager10+ database.
  *
@@ -16,6 +16,9 @@ define('BASE', dirname(__FILE__) . '/');
 require_once("util_lib.php");
 require_once("db_class.php");
 
+session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
+session_start();
+
 // source rm9 database connection
 $source['db_host'] = "127.0.0.1";
 $source['db_user'] = "rmood";
@@ -27,7 +30,6 @@ $source['db_name'] = "rm_v9race";
 $compid = u_checkarg("compid", "checkintnotzero", "");
 
 // initialisation
-session_start();
 $_SESSION = parse_ini_file("common.ini", false);
 $_SESSION['sql_debug'] = false;
 $_SESSION['syslog'] = "../logs/sys/sys_".date("Y-m-d").".log";
@@ -47,7 +49,6 @@ else {
     $_SESSION['db_port'] = $source['db_port'];
     $_SESSION['db_name'] = $source['db_name'];
     $db_o = new DB();        // connect to source database
-
 
     $comp = $db_o->db_get_row("SELECT * FROM tblcompetitors WHERE id = $compid");
 

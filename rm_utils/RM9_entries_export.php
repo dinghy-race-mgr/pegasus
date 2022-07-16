@@ -10,11 +10,14 @@
  */
 
 $loc  = "..";
-$page = "rm9 entries export";
+$page = "rm9_entries_export";
 define('BASE', dirname(__FILE__) . '/');
 
 require_once("util_lib.php");
 require_once("db_class.php");
+
+session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
+session_start();
 
 // source rm9 database connection
 $source['db_host'] = "127.0.0.1";
@@ -27,7 +30,6 @@ $source['db_name'] = "rm_v9race";
 $eventid = u_checkarg("eventid", "checkintnotzero", "");
 
 // initialisation
-session_start();
 $_SESSION = parse_ini_file("common.ini", false);
 $_SESSION['sql_debug'] = false;
 $_SESSION['syslog'] = "../logs/sys/sys_".date("Y-m-d").".log";

@@ -15,19 +15,25 @@ $page       = "timer_editlaptimes";     //
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
+// process standard parameters  (eventid, pagestate, entryid)
+$eventid   = u_checkarg("eventid", "checkintnotzero","");
+$pagestate = u_checkarg("pagestate", "set", "", "");
+$entryid   = $_REQUEST['entryid'];
+
 if (empty($_REQUEST['pagestate']) OR empty($_REQUEST['eventid']) OR empty($_REQUEST['entryid']))
 {
     u_exitnicely($scriptname, 0, "$page page - the requested event has an missing/invalid record identifier [{$_REQUEST['eventid']}] or pagestate [{$_REQUEST['pagestate']}",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-else
-{
-    $pagestate = $_REQUEST['pagestate'];
-    $eventid   = $_REQUEST['eventid'];
-    $entryid   = $_REQUEST['entryid'];
-    u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
-}
 
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, true);
+
+// classes
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
@@ -52,20 +58,6 @@ $race_o = new RACE($db_o, $eventid);    // create race object
 // get entry details - including existing lap times
 $laps_rs = $race_o->entry_get_timings($entryid);
 $laptimes = $race_o->entry_laptimes_get($entryid);
-//$laptimes = $race_o->lapstr_toarray($laps_rs['laptimes']);  // convert laps list to array
-
-// convert lap times string to an array with an index starting at 1
-//if (empty($laps_rs['laptimes']))
-//{
-//    $laptimes = false;
-//}
-//else
-//{
-//    $laptimes = explode(",", $laps_rs['laptimes']);
-//    array_unshift($laptimes, null);
-//    unset($laptimes[0]);
-//}
-//echo "<pre>".print_r($laptimes,true)."</pre>";
 
 // set key parameters
 $boat_detail = array(

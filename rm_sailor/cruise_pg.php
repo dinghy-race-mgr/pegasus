@@ -12,8 +12,12 @@ $date       = date("Y-m-d");
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("./include/rm_sailor_lib.php");
+// start session
+session_id('sess-rmsailor');
+session_start();
 
-u_initpagestart(0,"cruise_pg",false);   // starts session and sets error reporting
+// initialise page
+u_initpagestart(0,$page,false);   // starts session and sets error reporting
 
 // libraries
 require_once ("{$loc}/common/classes/db_class.php");

@@ -20,6 +20,7 @@ $today = date("Y-m-d");
 
 include ("{$loc}/common/lib/util_lib.php");
 
+// script parameters
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 $format = u_checkarg("format", "set","");
 
@@ -28,16 +29,20 @@ if (!$eventid or empty($format))
     u_exitnicely($scriptname, 0, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}] or the output report format has not been specified [{$_REQUEST['format']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-else
-{
-    u_initpagestart($_REQUEST['eventid'], $page, false);
-}
+
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($_REQUEST['eventid'], $page, false);
 
 // classes
 include ("{$loc}/common/classes/template_class.php");
 include ("{$loc}/common/classes/db_class.php");
 include ("{$loc}/common/classes/race_class.php");
 
+// templates
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php"));
 
 $db_o = new DB;

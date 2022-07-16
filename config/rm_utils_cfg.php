@@ -26,7 +26,7 @@ $_SESSION['daylight_saving']= array(
 );
 
 $_SESSION['webcollect']= array(
-    "access_token"            => "986T9N5ZDSQFDBWAR4DCKOKEZS35YDFEP49KBBWMKJKXMKEHBPZOWUFC6HPZG6CS",
+    "access_token"            => "986T9N5ZDSQFDBWAR4DCKOKEZS35YDFEP49KBBWMKJKXMKEHBPZOWUFC6HPZG6CS",  // FIXME this needs more security
     "organisation_short_name" => "STARCROSSYC",
     "firstname_fld"           => "firstname",
     "familyname_fld"          => "lastname",

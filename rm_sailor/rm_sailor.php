@@ -27,43 +27,43 @@ require_once ("./include/rm_sailor_lib.php");
 // create template object
 $tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php"));
 
-// initialisation
+// start session
+session_id('sess-rmsailor');   // creates separate session for this application
 session_start();
+
 session_unset();
 
 // initialise standard parameters based on passed arguments
 initialise_params($_REQUEST);
 
-// initialisation for application
+// initialisation for application - stop if error
 $init_status = u_initialisation("$loc/config/rm_sailor_cfg.php", $loc, $scriptname);
+if (!$init_status) { error_stop("initialisation"); }
 
-if (!$init_status) {
-    error_stop("initialisation");
-} else {
-    // set timezone
-    if (array_key_exists("timezone", $_SESSION)) {
-        date_default_timezone_set($_SESSION['timezone']);
-    }
-
-    // log start time
-    $_SESSION['app_start'] = $_SERVER['REQUEST_TIME'];
-
-    // error reporting - full for development
-    $_SESSION['sys_type'] == "live" ? error_reporting(E_ERROR) : error_reporting(E_ALL);
-
-    // start log
-    error_log(date('H:i:s') . " -- RM_SAILOR --------------------" . PHP_EOL, 3, $_SESSION['syslog']);
-
-    // set database initialisation (t_ini) into SESSION
-    $db_o = new DB();
-    foreach ($db_o->db_getinivalues(true, "club") as $k => $v) {
-        $_SESSION[$k] = $v;
-    }
-
-    $_SESSION['mode'] == "race" ? $brand_txt = "RACING app" : $brand_txt = "CRUISING app";
-    $app_brand = "<span style='color: white'><small>raceMgr:</small></span> $brand_txt";
-    $switch_bufr = $tmpl_o->get_template("restart_switch", array(), array("eventlist" => $_SESSION['event_arg']));
+// set timezone
+if (array_key_exists("timezone", $_SESSION)) {
+    date_default_timezone_set($_SESSION['timezone']);
 }
+
+// log start time
+$_SESSION['app_start'] = $_SERVER['REQUEST_TIME'];
+
+// error reporting - full for development
+$_SESSION['sys_type'] == "live" ? error_reporting(E_ERROR) : error_reporting(E_ALL);
+
+// start log
+error_log(date('H:i:s')." -- RM_SAILOR -------------------- [session: ".session_id()."]". PHP_EOL, 3, $_SESSION['syslog']);
+
+// set database initialisation (t_ini) into SESSION
+$db_o = new DB();
+foreach ($db_o->db_getinivalues(true, "club") as $k => $v) {
+    $_SESSION[$k] = $v;
+}
+
+$_SESSION['mode'] == "race" ? $brand_txt = "RACING app" : $brand_txt = "CRUISING app";
+$app_brand = "<span style='color: white'><small>raceMgr:</small></span> $brand_txt";
+$switch_bufr = $tmpl_o->get_template("restart_switch", array(), array("eventlist" => $_SESSION['event_arg']));
+
 
 // initialise standard page layout
 $_SESSION['pagefields'] = array(

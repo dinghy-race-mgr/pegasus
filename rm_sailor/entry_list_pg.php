@@ -1,11 +1,8 @@
 <?php
 /* ----------------------------------------------------------------------------------------------
-   signon_mapping.php
+   FIXME  - this function doesn't appear to be used anywhere
+   FIXME  - appears to be getting a race entry list from the t_entry table for next event
 
-   script to take signon data generated in rm_sailor application and produce an import file for adding entries to
-   the raceManager9 application.
-
-   most parameters hardcoded
 */
 
 $loc  = "..";
@@ -18,8 +15,11 @@ require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 
-// initialisation
+// start session
+session_id('sess-rmsailor');
 session_start();
+
+// initialise page
 session_unset();
 $_SESSION['mode'] = "race";
 

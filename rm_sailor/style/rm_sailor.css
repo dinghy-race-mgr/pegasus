@@ -41,7 +41,7 @@ body {
 .rm-text-highlight {color: yellow; }
 .rm-text-bold {font-weight: bold;}
 .rm-text-capitalise {text-transform: capitalize;}
-.rm-text-trunc {white-space: nowrap !important; text-overflow: ellipsis  !important; overflow: hidden !important}
+.rm-text-trunc {white-space: nowrap !important; text-overflow: ellipsis !important; overflow: hidden !important}
 
 
 .rm-table-col-title {font-weight:bold; font-size: 1.2em; color: yellow; text-transform: capitalize;}
@@ -58,6 +58,7 @@ body {
 .margin-top-20 { margin-top: 2.0em; }
 .margin-top-30 { margin-top: 3.0em; }
 .margin-bot-40 { margin-bottom: 4.0em; }
+.margin-bot-60 { margin-bottom: 6.0em; }
 .margin-left-40 { margin-left: 40px; }
 
 .fixed-button { min-width: 150px; max-width: 150px; margin-top: 10px; }

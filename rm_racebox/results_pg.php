@@ -18,6 +18,7 @@ $loc        = "..";
 $page       = "results";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("./include/rm_racebox_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 if (!$eventid)
@@ -25,27 +26,25 @@ if (!$eventid)
     u_exitnicely($scriptname, 0,"$page page - event id record [{$_REQUEST['eventid']}] not defined",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-else{
-    u_initpagestart($_REQUEST['eventid'], $page, true);   // starts session and sets error reporting
-}
 
-// classes  (remove classes not required)
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, true);
+
+// classes
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 
-// app includes
-require_once ("./include/rm_racebox_lib.php");
-
 // templates
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/results_tm.php"));
 
-// ---- set script data
-$numfleets = $_SESSION["e_$eventid"]['rc_numfleets'];
-
-
+// page controls
 include ("./templates/growls.php");
 
 // database connection
@@ -55,13 +54,15 @@ $race_o = new RACE($db_o, $eventid);
 // set event name
 $eventname = u_conv_eventname($_SESSION["e_$eventid"]['ev_name']);
 
+// set number of fleets
+$numfleets = $_SESSION["e_$eventid"]['rc_numfleets'];
+
 // get results into 2D array - covering all fleets
 $rs_data = array();
 foreach ($race_o->race_getresults() as $result)
 {
-    $rs_data[$result['fleet']][] = $result;                    // raw results data
+    $rs_data[$result['fleet']][] = $result;
 }
-
 
 // ---- Recalculate results if required ----------------------------------
 $results = array("eventid" => $eventid, "num-fleets" => $numfleets);

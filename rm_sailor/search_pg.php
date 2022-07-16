@@ -22,7 +22,12 @@ require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("./include/rm_sailor_lib.php");
 
-u_initpagestart(0,"search_pg",false);   // starts session and sets error reporting
+// start session
+session_id('sess-rmsailor');
+session_start();
+
+// initialise page
+u_initpagestart(0,$page,false);
 
 $tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php", "./templates/search_tm.php", "./templates/cruise_tm.php"));
 
@@ -42,14 +47,22 @@ unset($_SESSION['competitors']);
 $db_o = new DB();
 $event_o = new EVENT($db_o);
 
-if ($_SESSION['mode'] == 'race') {
+if ($_SESSION['mode'] == 'race')
+{
     $_SESSION['events'] = get_event_details($_SESSION['sailor_event_window'], $_SESSION['event_passed']);
-} else {
+
+    foreach($_SESSION['events']['details'] as $k => $event)
+    {
+        //echo "<pre>status: {$event['event_status']}</pre>";
+        $_SESSION['events']['details'][$k]['status_label'] = get_event_status_txt($event['event_status'], "search");
+    }
+}
+else
+{
     $_SESSION['events'] = get_cruise_details($_SESSION['sailor_cruiser_eventtypes'], true);
 }
-
-//echo "<pre>".print_r($_SESSION['events'],true)."</pre>";
-//exit();//
+//echo "<pre>".print_r($_SESSION['events'],true)."</pre>"; exit();
+//echo "<pre>".print_r($_SESSION['events'],true)."</pre>"; exit();//
 
 // get tide details
 require_once("{$loc}/common/classes/tide_class.php");

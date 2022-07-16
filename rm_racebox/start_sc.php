@@ -27,8 +27,14 @@ require_once ("{$loc}/common/lib/rm_lib.php");
 $eventid   = u_checkarg("eventid", "checkintnotzero","");
 $pagestate = u_checkarg("pagestate", "set", "", "");
 
-u_initpagestart($eventid, $page, false);   // starts session and sets error reporting
+// start session
+session_id('sess-rmracebox');
+session_start();
 
+// page initialisation
+u_initpagestart($eventid, $page, false);
+
+// classes
 require_once ("{$loc}/common/classes/db_class.php"); 
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/race_class.php"); 
@@ -36,9 +42,8 @@ require_once ("{$loc}/common/classes/timer_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/boat_class.php");
 
+// page controls
 include("./templates/growls.php");
-
-
 
 if ($eventid AND $pagestate)
 {

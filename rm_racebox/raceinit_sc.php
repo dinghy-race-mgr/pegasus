@@ -17,20 +17,33 @@
 
 $loc        = "..";
 $scriptname = basename(__FILE__);
-$page = "raceinit";
+$page       = "raceinit";
+
 require_once ("{$loc}/common/lib/util_lib.php");
+
+// check we have a valid numeric eventid and mode
+$eventid = u_checkarg("eventid", "checkintnotzero","");
+$mode = u_checkarg("mode", "set", "", "init");
+
+if (!$eventid)
+{
+    u_exitnicely($scriptname, 0, "requested event has an invalid or missing record identifier [{$_REQUEST['eventid']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
+}
+
+// start session
+session_id('sess-rmracebox');   // creates separate session for this application
+session_start();
+
+// starts session and sets error reporting
+u_initpagestart($eventid, $page, false);
+
+// classes / libraries
 require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/rota_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
-
-// starts session and sets error reporting
-u_initpagestart($_REQUEST['eventid'], $page, false);
-
-// check we have a valid numeric eventid and mode
-$eventid = u_checkarg("eventid", "checkintnotzero","");
-$mode = u_checkarg("mode", "set", "", "init");
 
 $db_o = new DB();
 $event_o = new EVENT($db_o);

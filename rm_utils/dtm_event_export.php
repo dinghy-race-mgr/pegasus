@@ -21,13 +21,21 @@ $loc  = "..";
 $page = "dutyman event export";
 define('BASE', dirname(__FILE__) . '/');
 
+session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
+session_start();
+
 require_once ("$loc/config/rm_utils_cfg.php");
+
+// set timezone
+if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
+
+// start log
+error_log(date('H:i:s')." -- rm_util DUTYMANAGER EVENT EXPORT --------------------[session: ".session_id()."]".PHP_EOL, 3, $_SESSION['syslog']);
+
 $target_dir = $_SESSION['dutyman']['loc']."/";
 $filename = str_replace("date", date("YmdHi"), $_SESSION['dutyman']['event_file']);
 $filepath = $target_dir.$filename;
 
-/******************************************************/
-session_start();
 $_SESSION = parse_ini_file("../config/common.ini", false);
 $_SESSION['sql_debug'] = false;
 include("../common/classes/db_class.php");

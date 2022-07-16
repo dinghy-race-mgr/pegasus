@@ -22,8 +22,9 @@
  */
 
 $loc        = "..";
-$page       = "entries";     // 
+$page       = "entries";
 $scriptname = basename(__FILE__);
+
 require_once ("{$loc}/common/lib/util_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
@@ -32,9 +33,13 @@ if (!$eventid) {
     u_exitnicely($scriptname, 0, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-else{
-    u_initpagestart($_REQUEST['eventid'], $page, true);  // starts session and sets error reporting
-}
+
+// start session
+session_id('sess-rmracebox');   // creates separate session for this application
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, true);
 
 // classes
 require_once("{$loc}/common/classes/db_class.php");
@@ -44,9 +49,6 @@ require_once("{$loc}/common/classes/entry_class.php");
 
 // templates
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/entries_tm.php"));
-
-//echo "<pre>".print_r($_SESSION,true)."</pre>";
-//exit();
 
 // database connection
 $db_o = new DB;
@@ -99,7 +101,6 @@ if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
         $rbufr_top .= $tmpl_o->get_template("btn_link", $btn_loadentry['fields'], $btn_loadentry);
         $rbufr_top .= "<hr>";
     }
-
 }
 else
 {

@@ -25,9 +25,13 @@ if (!$eventid) {
     u_exitnicely($scriptname, 0, "$page page - the requested event has an missing/invalid record identifier [{$_REQUEST['eventid']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-else {
-    u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
-}
+
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, true);
 
 // check if display mode has changed - reset session variable if necessary
 $display_mode = u_checkarg("mode", "setnotnull", "");
@@ -65,11 +69,11 @@ $_SESSION['timer_options']['laptime']       = "button";    // options "row|butto
 $_SESSION['timer_options']['notify_length'] = "on ";       // options "on|off"
 $_SESSION['timer_options']['notify_undo']   = "on";        // options "on|off"
 
+// get fleet data
 $fleet_data = array();
 for ($fleetnum=1; $fleetnum<=$_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum++)
 {
     $fleet_data["$fleetnum"] = $_SESSION["e_$eventid"]["fl_$fleetnum"];
-    //u_writedbg("FLEET:<pre>".print_r( $fleet_data["$fleetnum"],true)."</pre>", __FILE__, __FUNCTION__, __LINE__); // debug:)
 }
 
 // ----- navbar -----------------------------------------------------------------------------
@@ -91,9 +95,6 @@ if (in_array(true, $problems, true))
 }
 else
 {
-//    // default to tabbed display mode if not set
-//    if (empty($_SESSION['timer_options']['mode'])) { $_SESSION['timer_options']['mode'] = "tabbed"; }
-
     // display boats as defined by display mode
     if ($_SESSION['timer_options']['mode'] == "tabbed")
     {

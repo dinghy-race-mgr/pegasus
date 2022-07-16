@@ -27,9 +27,13 @@ $eventid = u_checkarg("eventid", "checkintnotzero","");
 if (!$eventid) {
     u_exitnicely($scriptname, 0, "$page page - the requested event has an invalid record identifier [{$_REQUEST['eventid']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));}
-else{
-    u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
-}
+
+// start session
+session_id('sess-rmracebox');   // creates separate session for this application
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
 
 // classes
 include ("{$loc}/common/classes/db_class.php");

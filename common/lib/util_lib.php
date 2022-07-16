@@ -533,9 +533,11 @@ function u_requestdbg($arg_list, $file, $function, $line, $inline=false)
     }
 }
 
-function u_startsyslog($scriptname, $app)
+function u_startsyslog($scriptname, $app, $sessionid = "")
 {
-    u_writelog("$app START: $scriptname --------------------------", 0);
+    $msg = "$app START: $scriptname --------------------------";
+    if (!empty($sessionid)) { $msg.= " [session: $sessionid]"; }
+    u_writelog($msg, 0);
 }
 
 
@@ -547,9 +549,9 @@ function u_starteventlogs($scriptname, $eventid, $mode)
 }
 
 
-function u_sessionstate($scriptname, $reference, $eventid)
+function u_sessionstate($scriptname, $reference, $file_dir, $eventid)
 {
-    $filename = "session_{$reference}_{$eventid}.htm";
+    $filename = $file_dir."/"."session_{$reference}_{$eventid}.htm";
     $eventid==0 ? $title = "$scriptname: $reference " : $title = "$scriptname: $reference event: $eventid";
     
     $file = fopen($filename,"w");
@@ -668,31 +670,15 @@ function u_initconfigfile($inifile)
 
 function u_initsetparams($lang, $mode, $debug)
 {
-    global $loc;
+    $_SESSION['lang'] = "en";    //<-- english as default
 
-    $_SESSION['lang'] = "en";
-//    if (!empty($lang))
-//    {
-//        if (file_exists("$loc/config/lang/$lang-racebox-lang.php"))
-//        {
-//            $_SESSION['lang'] = $lang;
-//        }
-//    }
-//    else
-//    {
-//        $_SESSION['lang'] = "en";
-//        u_writelog("ERROR: requested language file does not exist - using english default", 0);
-//    }
-    
     $_SESSION['mode'] = "live";  //<-- live as default
-    if (!empty($mode))
-    {
+    if (!empty($mode)) {
         if ($mode=="demo") { $_SESSION['mode']="demo"; }
     }
     
-    $_SESSION['debug'] = 0;  //<-- no debug as default
-    if (!empty($debug))
-    {
+    $_SESSION['debug'] = 0;     //<-- no debug as default
+    if (!empty($debug)) {
         if (is_numeric($debug) AND $debug>=0 AND $debug<=2) { $_SESSION['debug'] = $debug; }
     }
 }
@@ -700,8 +686,10 @@ function u_initsetparams($lang, $mode, $debug)
 
 function u_initpagestart($eventid, $page, $change_page)
 {
-    session_start();
+
     date_default_timezone_set($_SESSION['timezone']);
+    // FIXME probably remove following line
+    error_log(date('H:i:s')." -- {$_SESSION['app_name']} $page ------------ [session: ".session_id()."]". PHP_EOL, 3, "../logs/sys/sys_".date("Y-m-d").".log");
     
     // error reporting - full for development
     $_SESSION['sys_type'] == "live" ? error_reporting(E_ERROR) : error_reporting(E_ALL);
@@ -713,7 +701,7 @@ function u_initpagestart($eventid, $page, $change_page)
         $_SESSION["e_$eventid"]['current_page'] != $page ? $page_change = true : $page_change = false;
         if ($change_page and $page_change)
         {
-            u_writelog("**** $page page ", $eventid);
+            u_writelog("**** $page page --- [session: ".session_id()."]", $eventid);
             $_SESSION["e_$eventid"]['current_page'] = $page;
         }
     }

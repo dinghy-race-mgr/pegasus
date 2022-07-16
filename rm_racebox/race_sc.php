@@ -23,11 +23,13 @@ require_once ("{$loc}/common/lib/rm_lib.php");
 
 $eventid   = u_checkarg("eventid", "checkintnotzero","");
 $pagestate = u_checkarg("pagestate", "set", "", "");
-//$eventid   = (!empty($_REQUEST['eventid']))? $_REQUEST['eventid']: "";
-//$pagestate = (!empty($_REQUEST['pagestate']))? $_REQUEST['pagestate']: "";
 
-u_initpagestart($eventid, $page, false);                               // starts session and sets error reporting
-//include ("{$loc}/config/lang/{$_SESSION['lang']}-racebox-lang.php");     // language file
+// start session
+session_id('sess-rmracebox');   // creates separate session for this application
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, false);
 
 if ($eventid AND $pagestate)
 {
@@ -37,7 +39,7 @@ if ($eventid AND $pagestate)
     require_once ("{$loc}/common/classes/race_class.php");
     require_once ("{$loc}/common/classes/rota_class.php");
 
-    include("./templates/growls.php");                           // confirmation message definitions
+    require_once("./templates/growls.php");                           // confirmation message definitions
 
     $db_o = new DB;
     $event_o = new EVENT($db_o);

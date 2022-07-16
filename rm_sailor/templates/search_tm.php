@@ -18,7 +18,7 @@ EOT;
     }
 
     $bufr = <<<EOT
-        <div class="margin-top-20">            
+        <div class="margin-top-20 margin-bot-60">            
             <div class="row">
                 <div class="col-xs-10 col-sm-10 col-md-10 col-lg-9 col-lg-offset-1">
                     <form id="sailnumform" class="form-inline" action="search_sc.php" method="post" role="search" autocomplete="off">

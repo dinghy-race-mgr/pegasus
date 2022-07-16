@@ -13,6 +13,10 @@ $page = "programmeMaker";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
 
+session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
+session_start();
+unset($_SESSION);
+
 include ("$loc/config/rm_utils_cfg.php");
 
 

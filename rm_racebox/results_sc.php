@@ -21,13 +21,25 @@ $debug      = false;
 $stop_here  = false;
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("./include/rm_racebox_lib.php");
 
 // parameters  [eventid (required), pagestate(required), entryid)
 $eventid   = u_checkarg("eventid", "checkintnotzero","", false);
 $pagestate = u_checkarg("pagestate", "set", "", false);
 $entryid   = u_checkarg("entryid", "set", "", "");
 
-u_initpagestart($_REQUEST['eventid'], $page, false);   // starts session and sets error reporting
+if (!$eventid)
+{
+    u_exitnicely($scriptname, 0,"$page page - event id record [{$_REQUEST['eventid']}] not defined",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
+}
+
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, false);
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
@@ -35,14 +47,8 @@ require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/entry_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 
-// app includes
-require_once ("./include/rm_racebox_lib.php");
-
-// growl responses
+// page controls
 include("./templates/growls.php");
-
-//echo "<pre>input arguments: ".print_r($_REQUEST,true)."</pre>";
-//exit();
 
 
 if ($eventid AND $pagestate)

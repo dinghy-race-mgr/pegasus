@@ -21,18 +21,21 @@ $scriptname = basename(__FILE__);
 
 // required libraries
 require_once ("{$loc}/common/lib/util_lib.php");
-//require_once ("{$loc}/common/lib/rm_lib.php");
 
 // get script parameters
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 if (!$eventid) {
     u_exitnicely($scriptname, 0, "$page page - requested event has an invalid or missing record identifier [{$_REQUEST['eventid']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));  }
-else {
-    u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
-}
 
-// app classes for this page
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, true);
+
+// classes
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/event_class.php");

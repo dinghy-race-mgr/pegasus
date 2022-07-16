@@ -19,7 +19,12 @@ require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 
-u_initpagestart("", $page, false);                               // starts session and sets error reporting
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart("", $page, false);
 
 if (!empty($_REQUEST['pagestate']))
 {

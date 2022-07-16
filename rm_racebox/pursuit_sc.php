@@ -27,7 +27,17 @@ require_once ("{$loc}/common/lib/util_lib.php");
 $eventid   = u_checkarg("eventid", "checkintnotzero","");
 $pagestate = u_checkarg("pagestate", "set", "", "");
 
-u_initpagestart($eventid, $page, false);   // starts session and sets error reporting
+if (!$eventid or !$pagestate) {
+    u_exitnicely($scriptname, 0, "$page page - requested event has an invalid or missing record identifier [{$_REQUEST['eventid']}] or pagestate [{$_REQUEST['pagestate']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));  }
+
+
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, false);
 
 
 if ($eventid AND $pagestate)

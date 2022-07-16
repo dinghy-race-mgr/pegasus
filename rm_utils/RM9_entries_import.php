@@ -8,10 +8,14 @@
    most parameters hardcoded
 */
 
+// FIXME - this should only be needed as part of a transfer process at SYC and should not be part of the release package
+
 $loc  = "..";
-$page = "signon_mapping";     //
+$page = "rm9_entries_to_rm10";
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
+
+session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
 session_start();
 
 // configuration - rm_sailor database

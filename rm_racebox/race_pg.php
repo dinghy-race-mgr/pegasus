@@ -26,18 +26,26 @@ require_once ("{$loc}/common/lib/util_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 
-if (!$eventid) { u_exitnicely($scriptname, 0, "requested event has an invalid or missing record identifier [{$_REQUEST['eventid']}]",
-    "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));  }
-else{
-    u_initpagestart($_REQUEST['eventid'], $page, true);
+if (!$eventid)
+{
+    u_exitnicely($scriptname, 0, "requested event has an invalid or missing record identifier [{$_REQUEST['eventid']}]",
+    "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
+// start session
+session_id('sess-rmracebox');   // creates separate session for this application
+session_start();
+
+// page initialisation
+u_initpagestart($_REQUEST['eventid'], $page, true);
+
+// classes/libraries
 require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("{$loc}/common/lib/raceformat_lib.php");
-include ("{$loc}/common/classes/db_class.php");
-include ("{$loc}/common/classes/template_class.php");
-include ("{$loc}/common/classes/event_class.php");
-include ("{$loc}/common/classes/rota_class.php");
+require_once ("{$loc}/common/classes/db_class.php");
+require_once ("{$loc}/common/classes/template_class.php");
+require_once ("{$loc}/common/classes/event_class.php");
+require_once ("{$loc}/common/classes/rota_class.php");
 
 $eventname = u_conv_eventname($_SESSION["e_$eventid"]['ev_name']);
 
@@ -48,8 +56,8 @@ $event_o = new EVENT($db_o);
 $rota_o = new ROTA($db_o);
 $event = $event_o->get_event_byid($eventid);
 
-include ("./include/race_ctl.inc");
-include("./templates/growls.php");                      // FIXME why is this here - this is not a template as such - should be in include
+require_once ("./include/race_ctl.inc");
+require_once("./templates/growls.php");
 
 $fleet_data = array();
 $flag_data = array();

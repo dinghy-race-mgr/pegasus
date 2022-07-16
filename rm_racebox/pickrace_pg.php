@@ -22,7 +22,11 @@ require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/rota_class.php");
 require_once ("{$loc}/common/lib/raceformat_lib.php");
 
-// starts session and sets error reporting
+// start session
+session_id('sess-rmracebox');   // creates separate session for this application
+session_start();
+
+// page initialisation
 u_initpagestart("", $page, false);
 
 // required templates

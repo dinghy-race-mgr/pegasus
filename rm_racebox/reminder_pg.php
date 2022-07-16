@@ -17,12 +17,12 @@ $page       = "reminder";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-// check arguments
+// check arguments (eventid(required), afterlink)
 $afterlink = u_checkarg("afterlink", "set", "", "");             // link to proceed after reminders - or no reminders
 $eventid   = u_checkarg("eventid", "checkintnotzero","");        // current event id
 
 // check arguments to see if we can show reminders
-if (!$afterlink)
+if (empty($afterlink))
 {
     u_exitnicely($scriptname, $eventid,"$page page - has been requested with invalid arguments [eventid: $eventid, link: $afterlink]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
@@ -34,7 +34,13 @@ else
         header("Location: $afterlink");
     }
 }
-u_initpagestart($eventid, $page, false);             // starts session and sets error reporting
+
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, false);
 
 // classes
 require_once("{$loc}/common/classes/db_class.php");
@@ -45,7 +51,7 @@ require_once("{$loc}/common/classes/template_class.php");
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php",
                              "./templates/help_tm.php"));
 
-// buttons/modals
+// page controls
 include("./include/help_ctl.inc");
 
 // database connection

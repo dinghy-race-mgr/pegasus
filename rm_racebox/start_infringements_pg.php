@@ -11,31 +11,30 @@ $loc        = "..";       // <--- relative path from script to top level folder
 $page       = "start_infringement";     // 
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("./include/rm_racebox_lib.php");
 
-// fixme - use checkarg
-$pagestate = $_REQUEST['pagestate'];
-$eventid   = $_REQUEST['eventid'];
-$startnum  = $_REQUEST['startnum'];
+// process standard parameters  (eventid, pagestate, startnum)
+$eventid   = u_checkarg("eventid", "checkintnotzero","");
+$pagestate = u_checkarg("pagestate", "set", "", "");
+$startnum  = u_checkarg("startnum", "checkintnotzero","");
 
 if (!$eventid)
 {
     u_exitnicely($scriptname, 0,"$page page - event id record [{$_REQUEST['eventid']}] not defined",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-else{
-    u_initpagestart($eventid, $page, false);   // starts session and sets error reporting
-}
 
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, false);
+
+// classes
 require_once ("{$loc}/common/classes/db_class.php"); 
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
-
-// app includes
-require_once ("./include/rm_racebox_lib.php");
-
-$pagestate = $_REQUEST['pagestate'];
-$eventid   = $_REQUEST['eventid'];
-$startnum  = $_REQUEST['startnum'];
 
 if (empty($pagestate) OR empty($eventid))
 {

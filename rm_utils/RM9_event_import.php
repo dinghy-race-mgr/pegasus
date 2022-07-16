@@ -3,7 +3,7 @@
 /**
  * RM9_event_import.php
  *
- * script to export race events from racemanager and create a CSV file for import directly into - it maps
+ * script to export race events from racemanager10 and create a CSV file for import directly into racemanager9 - it maps
  * the race formats and entry scheme information.
  *
  * It attempts to assign series race numbers to each record where appropriate but this will not work if the
@@ -19,12 +19,14 @@ $loc  = "..";
 $page = "rm9 event import";
 define('BASE', dirname(__FILE__) . '/');
 
+session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
+session_start();
+
 $target_dir = "../data/programme/";
 $filename = str_replace("date", date("YmdHi"), "rm9_import_date.csv");
 $filepath = $target_dir.$filename;
 
-/******************************************************/
-session_start();
+
 $_SESSION = parse_ini_file("../config/common.ini", false);
 $_SESSION['sql_debug'] = false;
 $_SESSION['syslog'] = "../logs/sys/sys_".date("Y-m-d").".log";

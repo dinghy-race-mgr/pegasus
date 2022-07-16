@@ -14,17 +14,8 @@ $today = date("Y-m-d");
 $styletheme = "flatly_";
 $stylesheet = "./style/rm_utils.css";
 
+session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
 session_start();
-
-define('BASE', dirname(__FILE__) . '/');
-require BASE . 'lib/WebCollectRestapiClient.php';
-
-require_once("$loc/common/lib/util_lib.php");
-require_once("$loc/common/classes/db_class.php");
-require_once("{$loc}/common/classes/template_class.php");
-
-// set templates
-$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/webcollect_tm.php"));
 
 // initialise session if this is first call
 if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
@@ -37,7 +28,7 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
         if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
 
         // start log
-        error_log(date('H:i:s')." -- ROTA SYNCH --------------------".PHP_EOL, 3, $_SESSION['syslog']);
+        error_log(date('H:i:s')." -- rm_util IMPORT WEBCOLLECT ROTAS ------- [session: ".session_id()."]".PHP_EOL, 3, $_SESSION['syslog']);
 
         // set initialisation flag
         $_SESSION['util_app_init'] = true;
@@ -48,6 +39,17 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
             "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
 }
+
+define('BASE', dirname(__FILE__) . '/');
+require BASE . 'lib/WebCollectRestapiClient.php';
+
+// classes
+require_once("$loc/common/lib/util_lib.php");
+require_once("$loc/common/classes/db_class.php");
+require_once("{$loc}/common/classes/template_class.php");
+
+// set templates
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/webcollect_tm.php"));
 
 // arguments
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }

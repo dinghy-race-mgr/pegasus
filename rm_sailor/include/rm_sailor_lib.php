@@ -233,9 +233,14 @@ function get_dated_event($future_window)
     }
 
     if ($rs) {
-        // get event configurations
+
+        // add fleet status labels
+
+
+        // get event configurations and add event status labels
         foreach ($rs as $k => $event) {
             $data['details'][$event['id']] = $event;
+
             $cfg = map_fleet_cfg($event['event_format']);   // get fleet configurations for this event
             if ($cfg) {
                 $data['details'][$event['id']]['fleetcfg'] = $cfg;
@@ -343,11 +348,49 @@ function get_race_entry_data($sailorid, $events)
     return $data;
 }
 
+function get_event_status_sequence($event_status)
+{
+
+    $evstatuscode = array(
+        "scheduled" => 1,
+        "selected" => 2,
+        "running" => 3,
+        "sailed" => 4,
+        "completed" => 5,
+        "abandoned" => 6,
+        "cancelled" => 7,
+        );
+
+    key_exists($event_status,  $evstatuscode) ? $sequence = $evstatuscode[$event_status] : $sequence = 0 ;
+
+    return $sequence;
+}
+
+
+function get_event_status_txt($event_status, $type)
+{
+    $status_map = array(
+        "scheduled" => array("search"=> "", "race"=> "not started" ),
+        "selected"  => array("search"=> "", "race"=> "not started" ),
+        "running"   => array("search"=> "race has started", "race"=> "in progress" ),
+        "sailed"    => array("search"=> "race is finishing", "race"=> "finishing" ),
+        "completed" => array("search"=> "race has finished", "race"=> "complete" ),
+        "abandoned" => array("search"=> "race has been abandoned", "race"=> "abandoned" ),
+        "cancelled" => array("search"=> "race has been cancelled", "race"=> "cancelled" ),
+    );
+
+    if (key_exists($event_status, $status_map)) {
+        $txt = $status_map[$event_status][$type];
+    } else {
+        $txt = "unknown";
+    }
+
+    return $txt;
+}
+
 function set_event_status_list($events, $entries, $action = array())
     // set race status for each event (for current sailor)
 {
-    $evstatuscode = array("scheduled" => 1, "selected" => 2,"running" => 3,
-        "sailed" => 4, "complete" => 5,"abandoned" => 6, "cancelled" => 7,);
 
     $event_arr = array();
 
@@ -380,22 +423,6 @@ function set_event_status_list($events, $entries, $action = array())
             }
         }
 
-        $status_map = array(
-            "scheduled" => "not started",
-            "selected" => "not started",
-            "running" => "in progress",
-            "sailed" => "finishing",
-            "complete" => "complete",
-            "abandoned" => "abandoned",
-            "cancelled" => "cancelled",
-        );
-
-        if (key_exists($event['event_status'], $status_map)) {
-            $txt = $status_map[$event['event_status']];
-        } else {
-            $txt = "unknown";
-        }
-
         $event_arr[$eventid] = array(
             "name" => $event['event_name'],
             "date" => $event['event_date'],
@@ -406,8 +433,8 @@ function set_event_status_list($events, $entries, $action = array())
             "entry-updated" => $entries[$eventid]['updated'],
             "entry-alert" => $entry_alert,
             "event-status" => $event['event_status'],
-            "event-status-txt" => $txt,
-            "event-status-code" => $evstatuscode[$event['event_status']]
+            "event-status-txt" => get_event_status_txt($event['event_status'], "race"),
+            "event-status-code" => get_event_status_sequence($event['event_status'])
         );
 
         key_exists("update_num", $entries[$eventid]) ? $event_arr[$eventid]['update-num'] = $entries[$eventid]['update_num']

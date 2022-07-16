@@ -11,7 +11,12 @@ require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/comp_class.php");
 
-u_initpagestart(0,"hideboat_sc",false);   // starts session and sets error reporting
+// start session
+session_id('sess-rmsailor');
+session_start();
+
+// initialise page
+u_initpagestart(0,$page,false);
 
 $db_o = new DB();
 $comp_o = new COMPETITOR($db_o);

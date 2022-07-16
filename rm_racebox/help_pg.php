@@ -16,10 +16,16 @@ $page       = "help";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
+// script parameters
 $eventid = u_checkarg("eventid", "checkint","");                 // if zero - requested from pickrace_pg
 $helppage = u_checkarg("page", "set", "", "help");
 
-u_initpagestart($eventid, $page, false);                         // starts session and sets error reporting
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, false);
 
 // classes
 require_once("{$loc}/common/classes/db_class.php");
@@ -30,7 +36,7 @@ require_once("{$loc}/common/classes/template_class.php");
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php",
                              "./templates/help_tm.php"));
 
-// buttons/modals
+// page controls
 include("./include/help_ctl.inc");
 
 // ----- navbar -----------------------------------------------------------------------------

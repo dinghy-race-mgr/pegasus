@@ -18,6 +18,7 @@ $page       = "addentry";     //
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
+// script parameters
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 $pagestate = u_checkarg("pagestate", "set","");
 
@@ -25,9 +26,13 @@ if (!$eventid or empty($pagestate)) {
     u_exitnicely($scriptname, 0, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}] or page state [{$_REQUEST['pagestate']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-else{
-    u_initpagestart($_REQUEST['eventid'], $page, false);
-}
+
+// start session
+session_id('sess-rmracebox');
+session_start();
+
+// page initialisation
+u_initpagestart($eventid, $page, false);
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
@@ -35,6 +40,8 @@ require_once ("{$loc}/common/classes/template_class.php");
 
 // templates
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/entries_tm.php"));
+
+// page controls
 include("./include/entries_ctl.inc");
 
 // create database object
