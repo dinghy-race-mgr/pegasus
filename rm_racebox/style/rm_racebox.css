@@ -53,6 +53,9 @@ body > .container { padding: 10px 0px 0px 0px; }
 /* text styles */
 .lead { line-height: 1.1 !important;}
 .bunch-text { line-height: 1.2 !important; font-size: 18px !important; padding: 6px 6px !important;}
+.help-title-text {color: var(--white); font-size: 1.5em;}
+.help-answer-text {color: var(--darkblue); font-size: 1em;}
+.help-notes-text {color: var(--darkred); font-size: 1em;}
 
 /* growls */
 .growl-container { font-size: 1.2em; line-height: 1.2; }
@@ -60,8 +63,8 @@ body > .container { padding: 10px 0px 0px 0px; }
 .growl-right { display:inline-block; width:90%; text-wrap:none;
 }
 
-/* alerts bootstrap default (not _flatly colors) */
-.alert-primary { background-color: #2c3e50 !important; color: #ffffff !important; border-color: #121a21 !important;}
+/* alerts bootstrap default (NOT _flatly colors) */
+.alert-primary { background-color: var(--primary) !important; color: var(--white) !important; border-color: #121a21 !important;}
 .alert-warning { background-color: #f8edba !important; color: #8a6d3b !important; border-color: #8a6d3b !important;}
 .alert-success { background-color: #dff0d8 !important; color: #3c763d !important; border-color: #3c763d !important;}
 .alert-info    { background-color: #d9edf7 !important; color: #31708f !important; border-color: #31708f !important;}
@@ -92,10 +95,10 @@ body > .container { padding: 10px 0px 0px 0px; }
 #rhcol .btn {text-align: left !important;}
 
 /* modals (using _flatly colors)*/
-.bg-danger-modal  {background-color: #E74C3C; color: var(--white);}
-.bg-warning-modal {background-color: #F39C12; color: var(--white);}
-.bg-primary-modal {background-color: #2C3E50; color: var(--white);}
-.bg-success-modal {background-color: #18BC9C; color: var(--white);}
+.bg-danger-modal  {background-color: var(--lightred); color: var(--white);}
+.bg-warning-modal {background-color: var(--lightorange); color: var(--white);}
+.bg-primary-modal {background-color: var(--primary); color: var(--white);}
+.bg-success-modal {background-color: var(--green); color: var(--white);}
 .bg-info-modal    {background-color: #3498DB; color: var(--white);}
 .bg-default-modal {background-color: #95A5A6; color: var(--black);}
 .bg-shade-modal   {background-color: #ECF0F1; color: var(--black);}
@@ -112,7 +115,7 @@ body > .container { padding: 10px 0px 0px 0px; }
 .pill-fleet li a {border: 3px solid var(--lightgrey) !important; }
 
 /* drop down menu */
-.dropdown-menu {background-color: #e2e8e9; color: var(--black); font-size: 1.2em;} /* #ECF0F1 */
+.dropdown-menu {background-color: var(--lightgrey); color: var(--black); font-size: 1.2em;}
 .dropdown-menu > li > a { padding:1px 10px !important;}
 
 /* race page classes*/
@@ -128,8 +131,8 @@ body > .container { padding: 10px 0px 0px 0px; }
 .truncate        { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .inline-button   { padding: 0px 5px 0px 5px; text-align: center; }
 
-.laptime-racing  { background-color: #18BC9C; color: var(--white); }   /* flatly: success */
-.laptime-lastlap { background-color: #F39C12; color: var(--black); }   /* flatly: warning */
+.laptime-racing  { background-color: var(--green); color: var(--white); }   /* flatly: success */
+.laptime-lastlap { background-color: var(--lightorange); color: var(--black); }   /* flatly: warning */
 .laptime-finish  { background-color: var(--grey); color: var(--white); }
 
 /* styles for navbar */

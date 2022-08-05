@@ -362,6 +362,7 @@ EOT;
         $result_codes = $this->get_result_codes_used(array_unique($codes_used));
         $codes_info = u_get_result_codes_info($result_codes, $codes_used);
 
+        // FIXME these should be user configurable
         $opts = array(
             "inc-pagebreak" => false,                                                // page break after each fleet
             "inc-codes"     => true,                                                 // include key of codes used
@@ -436,6 +437,9 @@ EOT;
 
         // get all events from startdate
         $events = $event_o->get_events("racing", "active", array("start"=>$startdate));
+
+        // put the events in reverse order (most recent first)
+        $events = array_reverse($events);
 
         $inventory["events"] = array();
         foreach ($events as $event) {

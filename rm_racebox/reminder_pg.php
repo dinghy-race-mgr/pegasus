@@ -18,21 +18,18 @@ $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
 // check arguments (eventid(required), afterlink)
-$afterlink = u_checkarg("afterlink", "set", "", "");             // link to proceed after reminders - or no reminders
+$source = u_checkarg("source", "set", "", "");                   // link to proceed after reminders - or no reminders
 $eventid   = u_checkarg("eventid", "checkintnotzero","");        // current event id
 
-// check arguments to see if we can show reminders
-if (empty($afterlink))
+// establish target for back button
+if (empty($eventid))  // repor error
 {
-    u_exitnicely($scriptname, $eventid,"$page page - has been requested with invalid arguments [eventid: $eventid, link: $afterlink]",
+    u_exitnicely($scriptname, $eventid,"$page page - has been requested with no event specified [eventid: $eventid, source: $source]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 else
 {
-    if (empty($eventid))
-    {
-        header("Location: $afterlink");
-    }
+    $source == "init" ? $sourcelink = "race_pg.php?eventid=$eventid": $sourcelink = $source."_pg.php?eventid=$eventid";
 }
 
 // start session
@@ -62,18 +59,18 @@ $help_o = new HELP($db_o, $page, array("pursuit"=>$_SESSION["e_$eventid"]['pursu
     "name"=>$_SESSION["e_$eventid"]['ev_name'], "format"=>$_SESSION["e_$eventid"]['ev_format'], "date"=>$_SESSION["e_$eventid"]['ev_date']));
 
 $topics = $help_o->get_help();
-
+// no reminders to display - move on
 if (empty($topics))
 {
     // no reminders to display - move on
-    header("Location: $afterlink");
+    header("Location: $sourcelink");
 }
 else
 {
     // ----- navbar -----------------------------------------------------------------------------
 // FIXME do I need options display
     $nav_fields = array("eventid" => $eventid, "brand" => "raceBox: REMINDER", "club" => $_SESSION['clubcode']);
-    $nav_params = array("page" => $page, "baseurl"=>$_SESSION['baseurl'], "links" => $_SESSION['clublink'], "pursuit"=>$_SESSION["e_$eventid"]['pursuit']);
+    $nav_params = array("page" => $page, "links" => $_SESSION['clublink'], "pursuit"=>$_SESSION["e_$eventid"]['pursuit'], "num_reminders" => $_SESSION["e_$eventid"]['num_reminders']);
     $nbufr = $tmpl_o->get_template("racebox_navbar", $nav_fields, $nav_params);
 
 // ----- left hand panel --------------------------------------------------------------------
@@ -83,8 +80,9 @@ else
 // ----- right hand panel --------------------------------------------------------------------
 
     $rbufr = "";
-    $rbufr.= "<a class='btn btn-lg btn-success' href='$afterlink'><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span> 
-                 &nbsp;Close Reminders</a>";
+    $rbufr.= "<a class='btn btn-lg btn-success' href='$sourcelink'>
+                <span class='glyphicon glyphicon-new-window' aria-hidden='true'></span> 
+                &nbsp;Close Reminders</a>";
 
 // disconnect database
     $db_o->db_disconnect();

@@ -4,10 +4,12 @@ class PAGES
    
    public function __construct($cfg)
    {
-       include ("./templates/web_tm.php");
-       include ("./include/util.php");
+       //include ("../templates/web_tm.php");
+       //include ("../include/rm_web_lib.php");
        $this->tmpl_o = new WEB_TEMPLATE();
        $this->cfg = $cfg;
+       
+       //echo "<pre>".print_r($this->cfg,true)."</pre>";
    }
    
    public function pg_menu()
@@ -201,19 +203,77 @@ class PAGES
  
    public function pg_results()
    {
-       $this->cfg['menubar'] ? $top = "50px" : $top = "0px" ;
-       $this->cfg['menubar'] ? $bstyle = "" : $bstyle = "margin-top:0px !important" ;
+       /*
+        *   Produces a list of events in reverse order for the selected year (defaults to current year).
+        *
+        *   User can switch to a different year and/or search on event name
+        *
+        *   Can be accessed wither from the raceManager club website page or integrated into a website via an iframe
+        *   with an URL like <server>/<raceManager directory>/rm_web.php?page=results
+        */
+
+       // set script parameters
+       $year = checkarg("year", "checkint","",date("Y"));           // results year - defaults to this year
+       $searchstr = checkarg("searchstr", "set", "", "");           // specific search str for event name - defaults to empty
+       u_writelog("results: year: $year | searchstr: $searchstr\n");
+
+       $rst_o = new RESULTS($year, $searchstr);
+
+       // set inventory file to display
+       $inv_file = $rst_o->setinventoryfile($this->cfg['results']['resultsurl']);
+
+       // load inventory data into array
+       $status = $rst_o->importinventorydata();
+
+       if ($status) {
+           // select events that match search string and sort array to put events in descending date order
+           $rst_o->filter_result_data($searchstr);
+
+           // create results table
+           $fields = array(
+               "data" => $rst_o->render_results_table($this->cfg['loc']),
+               "page-title" => "$year Race Results",
+           );
+           $params = array(
+               "year" => $year,
+               "start_year" => $this->cfg['results']['start_year'],
+               "end_year" => date("Y"),
+               "searchstr" => $searchstr
+           );
+           $body_htm = $this->get_template("results_content", $fields, $params);
+       }
+       else  //problem with inventory file
+       {
+           $fields = array(
+               "page-title" => "$year Race Results",
+               "year" => $year,
+               "inv-file" => $inv_file,
+           );
+           $params = array(
+               "year" => $year,
+               "start_year" => $this->cfg['results']['start_year'],
+               "end_year" => date("Y"),
+               "searchstr" => $searchstr
+           );
+           $body_htm = $this->get_template("no_results_content", $fields, $params);
+       }
+
+       // create and display full results page
+       $this->cfg['menubar'] ? $top = "50px" : $top = "0px";
+       $this->cfg['menubar'] ? $bstyle = "" : $bstyle = "margin-top:0px !important";
        $fields = array(
-           "loc"    => $this->cfg['loc'],
+           "loc" => $this->cfg['loc'],
            "ossloc" => "..",
            "window" => "raceManager",
            "header" => $this->get_header("RACE RESULTS", "menu"),
            "body_style" => $bstyle,
-           "margin-top"=> $top,
-           "body"   => $this->under_construction(array("ossloc" => "..", "title" => "Race Results Page:",
-                                                       "info" => "We are still working on the results page")),
+           "margin-top" => $top,
+           "body" => $body_htm,
            "footer" => $this->get_footer(),
        );
+
+
+
        echo $this->get_template("layout_master", $fields, array());
    }
    
@@ -263,35 +323,20 @@ class PAGES
    
    private function get_header($page="", $back="")
    {
-      if (empty($page)) 
-      {
-         $suffix = "onLine";
-      }
-      else
-      {         
-         $suffix = $page;
-      }
-      
-      if (empty($back)) 
-      {
-         $link = "";
-      }
-      else
-      {
-         $link = $_SERVER['PHP_SELF']."?page=$back";
-      }
-      
-      $header = "";
-      if ($this->cfg['menubar'])
-      {
-         $fields = array(
-         "link"      => $link,
-         "name"      => "raceManager",
-         "suffix"    => $suffix,
-         );
-         $header = $this->get_template("header", $fields);
-      }
-      return $header;
+        empty($page) ? $suffix = "onLine" : $suffix = $page;
+        empty($back) ? $link = "" : $link = $_SERVER['PHP_SELF']."?page=$back";
+
+        $header = "";
+        if ($this->cfg['menubar'])
+        {
+             $fields = array(
+                 "link"      => $link,
+                 "name"      => "raceManager",
+                 "suffix"    => $suffix,
+             );
+             $header = $this->get_template("header", $fields);
+        }
+        return $header;
    }
    
    private function get_footer()
@@ -315,7 +360,6 @@ class PAGES
        foreach ($fields as $field=>$value)
        {
           $html = str_replace("{".$field."}", $value, $html);
-          // might be able to speed this up with str_replace(array_keys($fields), array_values($fields), $html)
        }
        return $html;
    }

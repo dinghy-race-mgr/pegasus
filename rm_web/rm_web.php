@@ -7,13 +7,19 @@
 // start session
 session_id('sess-rmweb');
 session_start();
+error_reporting(E_ERROR);  // turn of warnings
 
 // includes
-request_once ("./include/pages.php");
-request_once ("./include/programme.php");
+require_once ("./include/pages.php");
+include ("./templates/web_tm.php");
+include ("./include/rm_web_lib.php");
+require_once ("./include/programme.php");
+require_once ("./include/results.php");
 
-$cfg = parse_ini_file("./config/rm_web.ini", true);
+// initialise application
+$cfg = parse_ini_file("./rm_web.ini", true);
 
+// set opening page to the rm_web menu page unless page is defined as parameter
 $page = "menu";
 if (!empty($_REQUEST['page'])) { $page = $_REQUEST['page']; }
 
@@ -37,7 +43,13 @@ elseif ($page == "pyanalysis"  AND $cfg['pages']['pyanalysis'])
 }
 elseif ($page == "error")
 {
-    $if_o->pg_none($problem, $symptom, $where, $fix);   // FIXME (probably should be $_SESSION['error']['problem'] etc
+    $error = array(
+        "problem" => "Page is set to error",
+        "symptom" => "",
+        "where"   => "",
+        "fix"     => "Please contact your system administrator",
+    );
+    $if_o->pg_none($error);   // FIXME (probably should be $_SESSION['error']['problem'] etc
 }
 else    // not recognised - go to menu page
 {

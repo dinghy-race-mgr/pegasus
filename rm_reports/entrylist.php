@@ -64,8 +64,8 @@ foreach ($rpData['fleets'] as $key=>$fleet )
 $fields = array(
     "title"    => $rpData['admin']['title'],
     "info"     => "total <b>{$rpData['admin']['total']}</b> entries",
-    "sys-name" =>$rpData['admin']['sys-name'],
-    "sys-url"  =>$rpData['admin']['sys-url'],
+    "sys-name" => $rpData['admin']['sys-name'],
+    "sys-url"  => $rpData['admin']['sys-url'],
 );
 $bufr.= $tmpl_o->get_template("footer", $fields);
 

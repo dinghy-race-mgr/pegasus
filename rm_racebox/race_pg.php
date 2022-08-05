@@ -36,6 +36,8 @@ if (!$eventid)
 session_id('sess-rmracebox');   // creates separate session for this application
 session_start();
 
+echo "<pre>".print_r($_SESSION,true)."</pre>";
+
 // page initialisation
 u_initpagestart($_REQUEST['eventid'], $page, true);
 
@@ -73,7 +75,7 @@ if (in_array(false, $laps_set, true)) { u_growlSet($eventid, $page, $g_race_laps
 
 // ----- navbar -----------------------------------------------------------------------------
 $nav_fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
-$nav_params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
+$nav_params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink'], "num_reminders" => $_SESSION["e_$eventid"]['num_reminders']);
 $nbufr = $tmpl_o->get_template("racebox_navbar", $nav_fields, $nav_params);
 
 // ----- left hand panel --------------------------------------------------------------------
@@ -88,13 +90,18 @@ if ($_SESSION["e_$eventid"]['exit'])
 }
 else
 {
+    //tide
     empty($_SESSION["e_$eventid"]['ev_tidetime']) ? $tidestr = "" :
         $tidestr = r_tideformat($_SESSION["e_$eventid"]['ev_tidetime'], $_SESSION["e_$eventid"]['ev_tideheight']);
+
+    // ood
+    $ood  = $rota_o->get_duty_person($eventid, "ood_p");
+    if (empty($ood)) { $ood = $_SESSION["e_$eventid"]['ev_ood'] ; }
 
     $fields = array(
         "start-time"   => $_SESSION["e_$eventid"]['ev_starttime'],
         "tide-detail"  => $tidestr,
-        "ood-name"     => $_SESSION["e_$eventid"]['ev_ood'],
+        "ood-name"     => $ood,
         "event-name"   => $_SESSION["e_$eventid"]['ev_name'],
         "event-status" => $_SESSION["e_$eventid"]['ev_status'],
         "race-format"  => $_SESSION["e_$eventid"]['rc_name'],
@@ -148,7 +155,7 @@ $rbufr_top.= $tmpl_o->get_template("btn_modal", $btn_format['fields'], $btn_form
 $racecfg  = $event_o->event_getracecfg($event['event_format'], $eventid);
 $fleetcfg = $event_o->event_getfleetcfg($event['event_format']);
 $duties   = $rota_o->get_event_duties($eventid);
-$viewbufr = createdutypanel($duties, $eventid, "");
+$viewbufr = createdutypanel($duties, $eventid, "in");
 $viewbufr.= createfleetpanel ($event_o->event_getfleetcfg($event['event_format']), $eventid, "");
 $viewbufr.= createsignalpanel(getsignaldetail($racecfg, $fleetcfg, $event), $eventid, "");
 

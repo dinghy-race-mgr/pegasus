@@ -210,7 +210,6 @@ class SERIES_RESULT
 
 
 // --------- SET DATA METHODS ---------------------------------
-
     public function set_series_data($event_list="")
     {
         /*
@@ -1365,6 +1364,17 @@ class SERIES_RESULT
             "rst"           => $this->rst,
             "codes_used"    => $this->codes_used,
             "merge_classes" => $this->merge_classes,
+        );
+
+        return $data;
+    }
+
+    public function get_race_counts()
+    {
+        $data = array(
+            "series_code"    => $this->series_code,         // code for series
+            "races_num"      => $this->races_num,           // num races that have been attempted in series so far
+            "races_complete" => $this->races_complete,      // races for which results exist
         );
 
         return $data;

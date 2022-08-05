@@ -406,6 +406,107 @@ EOT;
 EOT;
         return $html;    
     }
+
+
+    private function year_switch($start, $end, $searchstr)
+    {
+        $year_list_htm = "";
+        for ($i=$end; $i >= $start; $i = $i-1)
+        {
+            $year_list_htm.= <<<EOT
+                <li><a href="rm_web.php?page=results&year=$i&searchstr=$searchstr">$i</a></li>
+EOT;
+        }
+
+        $htm = <<<EOT
+            <div class="btn-group" style="margin-top: 20px;">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" 
+                aria-expanded="false" style="font-size: 1.2em">
+                    Change Year &hellip; <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    $year_list_htm
+                </ul>
+            </div>
+EOT;
+        return $htm;
+
+    }
+
+    private function search_event($year, $searchstr)
+    {
+        $htm = <<<EOT
+            <form class="form" action="rm_web.php?page=results&year=$year"
+            method="post" role="search" autocomplete="off">
+                <input type="hidden" value="$year">
+                <div class="input-group" style="margin-top: 20px;">
+                    <input type="text" class="form-control" placeholder="search for event&hellip;" name="searchstr" id="searchstr" value="$searchstr">
+                    <div class="input-group-btn">
+                    <button class="btn btn-default btn-md" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>               
+                </div>
+            </form>
+EOT;
+        return $htm;
+    }
+
+
+    public function results_content($params=array())
+    {
+        $year_control = $this->year_switch($params['start_year'], $params['end_year'], $params['searchstr']);
+        $search_control = $this->search_event($params['year'], $params['searchstr']);
+
+        $html = <<<EOT
+        <div class="container-fluid">
+            <div class="row no-print">                   
+                <div class="col-sm-6 col-md-6"><h1 class="text-primary">{page-title}</h1></div>
+    
+                <div class="col-sm-3 col-md-3">$year_control</div>
+                
+                <div class="col-sm-3 col-md-3">$search_control</div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <table class="table table-hover table-striped" width="100%">
+                    {data}
+                </table> 
+            </div>              
+        </div>
+EOT;
+        return $html;
+    }
+
+
+    public function no_results_content($params=array())
+    {
+        $year_control = $this->year_switch($params['start_year'], $params['end_year'], $params['searchstr']);
+        $search_control = $this->search_event($params['year'], $params['searchstr']);
+
+        $html = <<<EOT
+        <div class="container-fluid">
+            <div class="row no-print">                   
+                <div class="col-sm-6 col-md-6"><h1 class="text-primary">{page-title}</h1></div>
+    
+                <div class="col-sm-3 col-md-3">$year_control</div>
+                
+                <div class="col-sm-3 col-md-3">$search_control</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+                <div class="jumbotron">
+                    <h1>Sorry!</h1>
+                    <p class="lead">We can't find the results for {year}</p>
+                    <p>Please let your raceManager support team know about this</p>
+                    <p class="pull-right"><small>[ Problem file: {inv-file} ]</small></p>
+                </div>              
+            </div>
+        </div>
+EOT;
+        return $html;
+    }
     
 }
 

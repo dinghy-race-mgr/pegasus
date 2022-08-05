@@ -44,6 +44,7 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/rota_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
+require_once("{$loc}/common/classes/help_class.php");
 
 $db_o = new DB();
 $event_o = new EVENT($db_o);
@@ -80,6 +81,13 @@ if ($eventid and ($mode == "init" or $mode == "reset" or $mode == "rejoin"))
         u_exitnicely($scriptname, $eventid,"race initialisation - the race format requested for the selected event cannot be found in the raceManager database, or is not currently used",
             "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
+
+    // check if we have reminders for this event
+    $help_o = new HELP($db_o, "reminder", array("pursuit"=>$_SESSION["e_$eventid"]['pursuit'], "numrace"=>$_SESSION['events_today'],
+        "name"=>$_SESSION["e_$eventid"]['ev_name'], "format"=>$_SESSION["e_$eventid"]['ev_format'], "date"=>$_SESSION["e_$eventid"]['ev_date']));
+    $topics = $help_o->get_help();
+
+    $_SESSION["e_$eventid"]['num_reminders'] = count($topics);
 }
 else
 {
@@ -87,15 +95,17 @@ else
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
+
+
 if ($mode == "init")
 {
     // first time accessing this event - show relevant reminders
-    header("Location: reminder_pg.php?eventid=$eventid&afterlink=race_pg.php?eventid=$eventid");
+    header("Location: reminder_pg.php?eventid=$eventid&source=init");
 }
 else
 {
     // not first time accessing this event - go straight to race page
-    header("Location: race_pg.php?eventid=$eventid");
+    header("Location: race_pg.php?eventid=$eventid&source=race");
 }
 
 

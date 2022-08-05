@@ -139,6 +139,7 @@ EOT;
     }
 
     $html = <<<EOT
+    <div style='break-inside: avoid'>
     <div class="panel-group" style="padding-top: 0px" id="accordion{$eventid}1">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -150,7 +151,7 @@ EOT;
             </div>
             <div id="collapse{$eventid}1" class="panel-collapse collapse $panel_state">
                 <div class="panel-body">
-                    <table class="table" style="margin-bottom: 0px; font-size:1.0em">
+                    <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th width="5%" >start</th>
@@ -170,6 +171,7 @@ EOT;
                 </div>
             </div>
         </div>
+    </div>
     </div>
 EOT;
     return $html;
@@ -309,7 +311,6 @@ function createsignalpanel($sequence, $eventid, $panel_state)
         $ctime = "&nbsp;";
         if ($signal['time']!=$thistime)
         {
-            if ($key != 0) $content.= "<br>";
             $rtime = $signal['time']." mins";        // signal sequence time
             $ctime = $signal['clocktime'];           // clock time
         }
@@ -330,26 +331,28 @@ function createsignalpanel($sequence, $eventid, $panel_state)
         {
             $text = <<<EOT
                <div class="alert alert-danger" role="alert" style="padding: 5px !important; margin-bottom: 5px !important">
-               <strong>$start</strong> - {$signal['name']}
+                    <strong>$start</strong> - {$signal['name']}
                </div>
 EOT;
         }
 
         $content.= <<<EOT
-           <div class="row" style="padding-bottom:5px">
-              <div class="col-md-2 col-md-offset-1"><b>$rtime</b> &nbsp;&nbsp;<small>$ctime</small></div>
-              <div class="col-md-6">$text</div>
-              <div class="col-md-2">
+           <tr style="padding-bottom:5px">
+              <td><b>$rtime</b></td>
+              <td>$ctime</td>
+              <td>$text</td>
+              <td>
                     <img src="{$loc}/common/images/signal_flags/{$signal['flag']}" height="30" width="40">&nbsp;
-                    <span class="text-primary glyphicon glyphicon-arrow-{$signal['dir']}" style="font-size: 120%"></span>
-              </div>
-           </div>
+                    <span class="text-primary glyphicon glyphicon-arrow-{$signal['dir']}" ></span>
+              </td>
+           </tr>
 EOT;
 
         $thistime = $signal['time'];
     }
 
     $html= <<<EOT
+    <div style='break-inside: avoid'>
         <div class="panel-group" style="padding-top: 0px id="accordion{$eventid}2">
          <div class="panel panel-default">
             <div class="panel-heading">
@@ -361,11 +364,24 @@ EOT;
             </div>
             <div id="collapse{$eventid}2" class="panel-collapse collapse $panel_state">
                <div class="panel-body">
-                   $content
+                   <table class="table table-bordered table-hover" >
+                        <thead>
+                            <tr>
+                                <th width="10%">sequence time</th>
+                                <th width="10%">clock time</th>
+                                <th width="40%">signal</th>
+                                <th width="30%">lights/flags</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            $content
+                        </tbody>
+                   </table>
                </div>
             </div>
          </div>
        </div>
+    </div>
 EOT;
 
     return $html;

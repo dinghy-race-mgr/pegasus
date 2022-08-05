@@ -833,8 +833,7 @@ function u_gettimelimit_str($abs,$rel)
 
 
 function u_getclasses_str($db, $fleetcfg)
-{    
-    global $lang;
+{
     
     $str = "";
     if ($fleetcfg['onlyinc'])
@@ -890,7 +889,7 @@ function u_getclasses_str($db, $fleetcfg)
         }
         if (!empty($fleetcfg['classexc']))
         {
-            $str.= strtoupper(" {$lang['app']['not']}")." [ ".str_replace(",", ", ", str_replace(", ", ",", $fleetcfg['classexc']))." ] "; 
+            $str.= " but excluding [ ".str_replace(",", ", ", str_replace(", ", ",", $fleetcfg['classexc']))." ] ";
         }
     }    
     return $str;
@@ -898,8 +897,7 @@ function u_getclasses_str($db, $fleetcfg)
 
 
 function u_getcompetitors_str($db, $fleetcfg)
-{    
-    global $lang;
+{
     
     $str = "";
      
@@ -908,46 +906,46 @@ function u_getcompetitors_str($db, $fleetcfg)
         // competitor groups
         if (!empty($fleetcfg['groupinc']))
         {
-            $str.= " {$lang['app']['groups']} - ".$fleetcfg['groupinc']."<br>";
+            $str.= " groups [ ".str_replace(",", ", ", str_replace(", ", ",", $fleetcfg['groupinc']))."]<br>";
         }
         
         // ages
         if (!empty($fleetcfg['min_helmage']) OR !empty($fleetcfg['max_helmage']))
         {
-            $str.= "{$lang['app']['age']}: ";
+            $str.= "age limits [ ";
             if (!empty($fleetcfg['max_helmage']) and empty($fleetcfg['min_helmage']))
             {
-                $str.= " {$lang['app']['up_to']} {$fleetcfg['max_helmage']}<br>";
+                $str.= " up to {$fleetcfg['max_helmage']} ]<br>";
             }
             elseif(!empty($fleetcfg['min_helmage']) and empty($fleetcfg['max_helmage']))
             {
-                $str.= "{$fleetcfg['min_helmage']} {$lang['app']['and']} {$lang['app']['above']}<br>";
+                $str.= " {$fleetcfg['min_helmage']} and above ]<br>";
             }
             else
             {
-                $str.= " {$fleetcfg['min_helmage']} - {$fleetcfg['max_helmage']}<br>";
+                $str.= " between {$fleetcfg['min_helmage']} and {$fleetcfg['max_helmage']} ]<br>";
             }
         }
         
         // skill
         if (!empty($fleetcfg['min_skill']) OR !empty($fleetcfg['max_skill']))
         {
-            $str.= "skill: ";
+            $str.= "skill level [ ";
             if (!empty($fleetcfg['max_skill']) and empty($fleetcfg['min_skill']))
             {
-                $str.= " {$lang['app']['up_to']} {$lang['app']['level']} {$fleetcfg['max_skill']}<br>";
+                $str.= " up to level {$fleetcfg['max_skill']} ]<br>";
             }
             elseif(!empty($fleetcfg['min_skill']) and empty($fleetcfg['max_skill']))
             {
-                $str.= "{$lang['app']['level']} {$fleetcfg['min_skill']} {$lang['app']['and']} {$lang['app']['above']}<br>";
+                $str.= "level {$fleetcfg['min_skill']} and above ]<br>";
             }
             else
             {
-                $str.= " {$lang['app']['level']} {$fleetcfg['min_skill']} - {$fleetcfg['max_skill']}<br>";
+                $str.= " between {$fleetcfg['min_skill']} and {$fleetcfg['max_skill']} ]<br>";
             }
         }
     } 
-    if (empty($str)) { $str = "{$lang['app']['any']}"; }   
+    if (empty($str)) { $str = "no restrictions"; }
     return $str;
 }
 

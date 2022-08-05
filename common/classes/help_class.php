@@ -42,6 +42,7 @@ class HELP
         $this->page = strtolower($page);
         $this->constraints = $constraints;
         $this->topics = array();
+        $this->page == "race" ? $this->pagelabel = "STATUS" : $this->pagelabel = strtoupper($this->page);  // FIXME ugly
 
         /* constraints are (* only relevent to reminder page)
         pursuit - true if a pursuit race
@@ -55,7 +56,8 @@ class HELP
 
     public function get_help()
     {
-        $where = " category LIKE '%".$this->page."%' and active = 1 ";
+        //$where = " category LIKE '%".$this->page."%' and active = 1 ";
+        $where = " FIND_IN_SET('".$this->page."',category) > 0  AND active = 1";
         $topics = $this->db->db_get_rows("SELECT * FROM t_help WHERE $where ORDER by rank ASC");
 
         foreach ($topics as $k=>$topic)
@@ -136,28 +138,39 @@ EOT;
         else
         {
             $panel_bufr = "";
+            $i = 0;
             foreach ($this->topics as $k=>$topic)
             {
+                $i++;
                 $panel_bufr.= <<<EOT
-                <div class="row">
-                <div class="col-md-8 col-md-offset-2">                   
-                    <div class="alert alert-warning" role="alert"><p class="lead">{$topic['question']}</p></div>
-                    <div>
-                        <blockquote>                        
-                            <p>{$topic['answer']}</p>
-                            <p><small>{$topic['notes']}</small></p>
-                        </blockquote>                
+                <div class="panel panel-success">
+                     <div class="panel-heading" role="tab" id="heading$i">
+                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$i" aria-expanded="true" aria-controls="collapse$i" style="text-decoration: none">
+                        <p class="panel-title help-title-text" >{$topic['question']}</p>
+                     </a>
+                    </div>
+                    
+                    <div id="collapse$i" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading$i">
+                        <div class="panel-body">
+                            <div class="help-answer-text">{$topic['answer']}</div>
+                            <hr style="border: 1px solid darkblue">
+                            <div class="help-notes-text">{$topic['notes']}</div>
+                        </div>
                     </div>
                 </div>
-                </div>
+
 EOT;
             }
 
             // add outer div
             $htm = <<<EOT
-            <h2 style="margin-top:60px; margin-bottom:20px;">Reminders for Today ... </h2>
-            <div>
-                $panel_bufr  
+            <h3 style="margin-top:60px; margin-bottom:20px;">Reminders for this race &hellip; <small> click for more detail</small></h3>
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        $panel_bufr  
+                    </div>
+                </div>
             </div>
 EOT;
         }
@@ -170,7 +183,7 @@ EOT;
     public function render_help()
     {
         // title
-        $this->page == "reminders" ? $title = "Reminders &hellip" : $title = "Help for ".strtoupper($this->page)." page" ;
+        $this->page == "reminders" ? $title = "Reminders &hellip" : $title = "Help for ".$this->pagelabel." page" ;
 
         if (count($this->topics) <= 0)
         {
@@ -183,7 +196,7 @@ EOT;
         }
         else
         {
-            // develop accordian panel for each topic
+            // develop accordion panel for each topic
             $panel_bufr = "";
             $i = 0;
 
@@ -191,21 +204,19 @@ EOT;
             {
                 $i++;
                 $panel_bufr.= <<<EOT
-                
                 <div class="panel panel-info">
-                     <div class="panel-heading" role="tab" id="heading$i">
-                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$i" 
-                        aria-expanded="true" aria-controls="collapse$i" style="text-decoration: none;">
-                        <h2 class="panel-title" style="color: white; font-size: 24px;">                           
-                              {$topic['question']}                             
-                        </h2>
-                        </a>
+                     <div class="panel-heading" role="tab" id="heading$i">                    
+                     <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$i"  aria-expanded="true" aria-controls="collapse$i" style="text-decoration: none">                       
+                       <p class="panel-title help-title-text">{$topic['question']} </p>
+                     </a>                                              
+                     
                     </div>
                     
                     <div id="collapse$i" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading$i">
                         <div class="panel-body">
-                            <div class="">{$topic['answer']}</div>
-                            <div class="">{$topic['notes']}</div>
+                            <div class="help-answer-text">{$topic['answer']}</div>
+                            <hr style="border: 1px solid darkblue">
+                            <div class="help-notes-text">{$topic['notes']}</div>
                         </div>
                     </div>
                 </div>
@@ -216,9 +227,9 @@ EOT;
 
             // add outer div
             $htm = <<<EOT
-            <h2 style="margin-top:60px; margin-bottom:20px;">$title&hellip; <small>click for information</small></h2>
+            <h3 style="margin-top:60px; margin-bottom:20px;">Help for the {$this->pagelabel} page &hellip; <small> click for details on each topic</small></h3>
             <div class="row">
-                <div class="col-md-8 col-md-offset-2">
+                <div class="col-md-10 col-md-offset-1">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                         $panel_bufr  
                     </div>

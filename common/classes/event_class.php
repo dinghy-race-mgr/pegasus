@@ -946,35 +946,19 @@ class EVENT
             }
         }
 
-        // clear entry table
-        $del = $this->db->db_delete("t_entry", array("eventid"=>$eventid));
-        
-        // clear race table
-        $del = $this->db->db_delete("t_race", array("eventid"=>$eventid));
-        
-        // clear laps table
-        $del = $this->db->db_delete("t_lap", array("eventid"=>$eventid));
-        
-        // clear finish table
-        $del = $this->db->db_delete("t_finish", array("eventid"=>$eventid));
-        
-        // clear racestate table
-        $del = $this->db->db_delete("t_racestate", array("eventid"=>$eventid));
+        // clear tables
+        $del = $this->db->db_delete("t_entry", array("eventid"=>$eventid));        // entries
+        $del = $this->db->db_delete("t_race", array("eventid"=>$eventid));         // race details
+        $del = $this->db->db_delete("t_lap", array("eventid"=>$eventid));          // lap times
+        $del = $this->db->db_delete("t_finish", array("eventid"=>$eventid));       // pursuit finishing positions
+        $del = $this->db->db_delete("t_racestate", array("eventid"=>$eventid));    // race state
         
         
-        // set event status - if event is demo reset to scheduled
+        // set event status
         if ($_SESSION["e_$eventid"]['ev_status']!="cancelled" AND $_SESSION["e_$eventid"]['ev_status']!="abandoned" )
         {
             $setstate = $this->event_updatestatus($eventid, "completed");
         }
-//        if ($_SESSION['mode'] == "demo")
-//        {
-//            $setstate = $this->event_updatestatus($eventid, "scheduled");
-//        }
-//        else
-//        {
-//            $setstate = $this->event_updatestatus($eventid, "completed");
-//        }
                 
         // write to log
         u_writelog("event CLOSED - tables cleared", $eventid);
@@ -1005,27 +989,12 @@ class EVENT
             // clear database tables if an 'init' or 'reset'
             if ($mode == "init" or $mode == "reset")
             {
-                // clear race table
-                $del = $this->db->db_delete("t_race", array("eventid"=>$eventid));
-
-                // clear laps table
-                $del = $this->db->db_delete("t_lap", array("eventid"=>$eventid));
-
-                // clear finish table
-                $del = $this->db->db_delete("t_finish", array("eventid"=>$eventid));
-
-                // clear racestate table
-                $del = $this->db->db_delete("t_racestate", array("eventid"=>$eventid));
+                // clear tables
+                $del = $this->db->db_delete("t_race", array("eventid"=>$eventid));          // race details
+                $del = $this->db->db_delete("t_lap", array("eventid"=>$eventid));           // lap times
+                $del = $this->db->db_delete("t_finish", array("eventid"=>$eventid));        // pursuit finish positions
+                $del = $this->db->db_delete("t_racestate", array("eventid"=>$eventid));     // racestate
             }
-
-            // update event record
-//            if ($mode == "init" or $mode == "reset")
-//            {
-//                $_SESSION["e_$eventid"]['ev_status'] = "selected";                                   // status
-//                $setstate = $this->event_updatestatus($eventid, "selected");
-//
-//                $upd = $this->db->db_query("UPDATE t_event SET timerstart = 0 WHERE id = $eventid"); // timer start
-//            }
 
             // now reinitialise event
             $status = r_initialiseevent($mode, $eventid);

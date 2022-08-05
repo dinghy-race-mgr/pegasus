@@ -238,6 +238,7 @@ function racebox_navbar($params=array())
      *      pursuit:      flag if pursuit race (int:  1 | 0 )
      *      baseurl:      url to racemanager startup page (str) - only required on pickrace page
      *      links:        local links for custom menu (array) - can be empty array
+     *      num_reminders no. of remiders for this event
      *      current_view: current view on timer page (str: tabbed | list ) - only required on timer page
      */
 
@@ -288,8 +289,8 @@ EOT;
         $params["current_view"] == "tabbed" ? $display_mode = "list" : $display_mode = "tabbed";
         $view_bufr = <<<EOT
         <a href="timer_pg.php?eventid={eventid}&mode=$display_mode" title="switch to $display_mode view" role="button" >
-            <span class="rm-navmenu-right rm-navmenu-icon text-muted">
-                <span class="glyphicon glyphicon-transfer" aria-hidden="true" ></span>
+            <span class="rm-navmenu-right rm-navmenu-icon text-muted"><small>CHANGE VIEW</small>
+                <!--span class="glyphicon glyphicon-transfer" aria-hidden="true" ></span -->
             </span>
         </a>
 EOT;
@@ -297,12 +298,20 @@ EOT;
 
     // setup club local links menu
     $club_bufr = "";
+
     if (!empty($params['links']))
     {
         $club_links = "";
+        if ($params['page'] != "pickrace" and $params['num_reminders'] > 0 )  // if not pickrace and we have some reminders - include access to today's reminders
+        {
+            $club_links.= <<<EOT
+            <li ><a href="reminder_pg.php?eventid={eventid}&source={$params['page']}">Todays Reminders</a></li>
+EOT;
+        }
+
         foreach ($params['links'] as $link)
         {
-            $club_links .= <<<EOT
+            $club_links.= <<<EOT
             <li ><a href="{$link['url']}" target="_blank">{$link['label']}</a></li>
 EOT;
         }
@@ -316,7 +325,7 @@ EOT;
                 </span>
             </a>
             <ul class="dropdown-menu" role="menu">
-                <li ><b>{club} links</b></li>
+                <li >&nbsp;<b>{club} links</b></li>
                 <li class="divider"></li>
                 $club_links
             </ul>
@@ -344,9 +353,7 @@ EOT;
                     
                     <li>
                         <a href="help_pg.php?eventid={eventid}&page={$params['page']}" title="HELP!">
-                            <span class="rm-navmenu-right rm-navmenu-icon text-muted">
-                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-                            </span>
+                            <span class="rm-navmenu-right rm-navmenu-icon text-muted"><small>HELP</small></span>
                         </a>
                     </li>
                     $club_bufr

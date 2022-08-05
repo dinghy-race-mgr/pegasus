@@ -53,11 +53,22 @@ $viewbufr = createdutypanel($duties, $eventid, "in");
 $viewbufr.= createfleetpanel ($fleetcfg, $eventid, "in");
 $viewbufr.= createsignalpanel(getsignaldetail($racecfg, $fleetcfg, $event), $eventid, "in");
 
-$title = ucwords($racecfg['race_name'])." Format";
+$title = ucwords($racecfg['race_name']);
 
 $body = <<<EOT
     <div class="container-fluid" role="main">
-        <h1>$title</h1>
+    
+        <div class="flex-container">
+            <div class="flex-child">
+                <h2>Race Format: <span style="font-size: 1.1em;"><b>$title</b></span></h2>
+            </div>
+            <div class="flex-child ">
+                <span class="print" >
+                    <button type="button" class="btn btn-md btn-success noprint pull-right" style="margin-top: 10px;" onclick="window.print()">Print Format</button>
+                </span>
+            </div>
+        </div>
+
         $viewbufr
     </div>
 EOT;
@@ -66,7 +77,7 @@ $fields = array(
     "title"      => $title,
     "loc"        => $loc,
     "theme"      => $_SESSION['racebox_theme'],
-    "stylesheet" => "",
+    "stylesheet" => "./style/rm_format.css",
     "navbar"     => "",
     "body"       => $body,
     "footer"     => "",

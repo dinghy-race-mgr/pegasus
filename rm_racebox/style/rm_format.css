@@ -1,0 +1,102 @@
+/* custom styles for rm reports application
+-------------------------------------------------- */
+
+/* theme colours
+    danger = #B92C28
+    primary = #2B669A
+
+*/
+/*:root {*/
+/*   --blue: steelblue;*/
+/*   --darkblue: rgb(44, 76, 124);*/
+/*   --red: rgb(194, 0, 0);*/
+/*   --darkred: darkred;*/
+/*   --white: white;*/
+/*   --green: #4CAF50;*/
+/*   --font: Kalinga, Verdana, sans-serif;*/
+/*}*/
+
+
+/**            {box-sizing: border-box;}*/
+/*body         {font-family: var(--font); font-size: 12pt;}*/
+/*h1           {font-family: var(--font); font-size: 200%; letter-spacing: -1px; color: var(--darkblue);}*/
+/*h2           {font-family: var(--font); font-size: 150%; color: var(--darkblue);}*/
+/*h3           {font-family: var(--font); font-size: 125%; color: var(--red);}*/
+/*p            {font-weight: normal; color: rgb(0, 0, 0); font-size: 1.0em; line-height: 1.2em; padding-bottom: 0.2em;}*/
+
+/*!*td           {display: table-cell; vertical-align: inherit;}*!*/
+/*!*th           {font-size: 0.8em !important; font-weight: normal !important;}*!*/
+/*a:link       {color: var(--darkblue); text-decoration: none;}*/
+
+/*.title       {font-family: var(--font); font-weight: bold; font-size: 200%; letter-spacing: -1px; color: var(--darkblue);}*/
+/*.title2      {font-family: var(--font); font-weight: bold; font-size: 150%; color: var(--darkblue); padding-top: 40px}*/
+
+/*.divider     {border-top: 1px solid slategrey; margin-top: 15px; margin-bottom: 5px;}*/
+/*.clearfix    {display: block;}*/
+
+/*.text-center {text-align: center;}*/
+/*.text-right  {text-align: right; padding-right: 15px; }*/
+/*.text-left   {text-align: left; padding-left: 15px; }*/
+/*.text-grey   {color: slategrey;}*/
+/*.text-alert  {color: var(--darkred);}*/
+/*.text-info   {color: var(--blue);}*/
+/*.small-note  {color: var(--blue); font-weight: normal; line-height: 1.0em; font-size: 0.8em;}*/
+/*.note        {font-weight: normal; color: rgb(0, 0, 0); line-height: 1.2em; margin: 0px; }*/
+
+/*.pull-right  {text-align: right;}*/
+/*.pull-left   {text-align: left;}*/
+/*.pull-center {text-align: center;}*/
+/*.pull-top    {vertical-align: top;}*/
+
+/*.noshade     {background: none repeat scroll 0% 0% rgb(255, 255, 255);}*/
+/*.lightshade  {background: none repeat scroll 0% 0% rgb(238, 238, 238);}*/
+/*.darkshade   {background: none repeat scroll 0% 0% rgb(153, 153, 153);}*/
+
+/*!* --------------------------------------------------------------------------------------------------------------------*!*/
+
+/*.report-hdr  {font-family: var(--font); font-weight: bold; font-size: 150%; color: var(--darkblue); padding-top: 40px; text-align: right;}*/
+/*.club-logo   {border: 1px solid #ddd; border-radius: 4px; padding: 5px; width: 330px;}*/
+/*.event-hdr-left  {font-family: var(--font); font-weight: bold; font-size: 200%; letter-spacing: -1px; color: var(--darkblue); text-align: left; width: 50%; display: inline-block;}*/
+/*.event-hdr-right {width: 45%; display: inline-block; text-align: right; color: var(--darkred);}*/
+/*.series-notes {text-align: left; color: var(--darkred);}*/
+/*.fleet-hdr   {font-family: var(--font); font-weight: bold; font-size: 150%; color: var(--darkblue); padding-top: 40px}*/
+/*.fleet-info  {font-family: var(--font); font-size: 1.0em; text-align: left;}*/
+/*.spacer      {border-top: 1px solid slategrey; margin-top: 15px; margin-bottom: 5px; display: block;}*/
+/*.codes-info  {color: var(--blue); font-weight: normal; line-height: 1.0em; font-size: 0.8em; margin-top: 25px;}*/
+/*.footer      {color: var(--blue); font-weight: normal; line-height: 1.0em; font-size: 0.8em; margin-top: 25px;}*/
+
+/*.table       {display: table; width: 100%; min-width: 70%}*/
+/*.table-col   {font-size: 0.8em !important; font-weight: normal !important; background: none repeat scroll 0% 0% rgb(153, 153, 153);}*/
+/*.table-row   {display: table-row;}*/
+/*.table-cell  {display: table-cell; vertical-align: inherit;}*/
+/*.truncate    {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}*/
+
+/*.button-green    {background-color: var(--green); border: none; color: white; padding: 15px 32px; text-align: center; display: inline-block; font-size: 16px; }*/
+
+.flex-container {
+   display: flex;
+}
+
+.flex-child {
+   flex: 1;
+}
+
+.flex-child:first-child {
+   margin-right: 20px;
+}
+
+@media all   {.page-break	{ display: none; }  }
+
+/* print styles */
+@media print {
+   @page         { size: A4 portrait; }
+   @page :left   { margin-left: 2cm; }
+   @page :right  { margin-left: 2cm; }
+
+   table, figure { page-break-inside: avoid; }
+   body          { font-size: 12pt; }
+
+   .noprint      { display: none; }
+   .page-break	 { display: block; page-break-before: always; }
+}
+         

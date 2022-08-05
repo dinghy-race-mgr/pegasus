@@ -41,7 +41,7 @@ include("./include/help_ctl.inc");
 
 // ----- navbar -----------------------------------------------------------------------------
 $nav_fields = array("eventid" => $eventid, "brand" => "raceBox: HELP", "club" => $_SESSION['clubcode']);
-$nav_params = array("page" => $helppage, "baseurl"=>$_SESSION['baseurl'], "links" => $_SESSION['clublink']);
+$nav_params = array("page" => $helppage, "current_view" => "", "baseurl"=>$_SESSION['baseurl'], "links" => $_SESSION['clublink']);
 if ($eventid != 0) { $nav_params['pursuit'] = $_SESSION["e_$eventid"]['pursuit']; }
 
 $nbufr = $tmpl_o->get_template("racebox_navbar", $nav_fields, $nav_params);
@@ -71,7 +71,7 @@ $lbufr =  $help_o->render_help();
 // ----- right hand panel --------------------------------------------------------------------
 $rbufr = "";
 $go_back = htmlspecialchars($_SERVER['HTTP_REFERER']);
-$rbufr.= "<a class='btn btn-lg btn-success' href='$go_back'><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span> &nbsp;Close Help</a>";
+$rbufr.= "<a class='btn btn-lg btn-info' href='$go_back'><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span> &nbsp;Close Help</a>";
 
 // disconnect database
 $db_o->db_disconnect();
@@ -80,7 +80,7 @@ $db_o->db_disconnect();
 
 $eventid != 0 ? $title = $_SESSION["e_$eventid"]['ev_label'] : $title = "racebox" ;
 $fields = array(
-    "title"      => $_SESSION["e_$eventid"]['ev_label'],
+    "title"      => $title,
     "theme"      => $_SESSION['racebox_theme'],
     "loc"        => $loc,
     "stylesheet" => "./style/rm_racebox.css",

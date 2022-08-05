@@ -133,12 +133,12 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
     // set data for series result
     $err_detail = "";
     $err = $series_o->set_series_data();
-    u_writedbg("err after set series data: $err", __FILE__, __FUNCTION__, __LINE__);
+    //u_writedbg("err after set series data: $err", __FILE__, __FUNCTION__, __LINE__);
     if (!$err)
     {
         // calculate series result
         $err = $series_o->calc_series_result();
-        u_writedbg("err after calc series result: $err", __FILE__, __FUNCTION__, __LINE__);
+        //u_writedbg("err after calc series result: $err", __FILE__, __FUNCTION__, __LINE__);
         if (!$err)
         {
             // render series result into html
@@ -151,6 +151,13 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
             );
 
             $series_bufr = $series_o->series_render_styled($sys_detail,  $series_status, file_get_contents($opts['styles']));
+
+            // if series has more than 6 completed - set page format to landscape
+            $counts = $series_o->get_race_counts();
+            if ($counts['race_num'] > 6)
+            {
+                $series_bufr = str_replace("A4 portrait", "A4 landscape", $series_bufr);
+            }
         }
         else
         {
@@ -162,7 +169,7 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
         $err_detail = $series_o->get_err();
     }
 
-    u_writedbg("before trying to create file: |$err|".strlen($series_bufr)."|", __FILE__, __FUNCTION__, __LINE__);
+    //u_writedbg("before trying to create file: |$err|".strlen($series_bufr)."|", __FILE__, __FUNCTION__, __LINE__);
     if (!$err and !empty($series_bufr)) // FIXME this is the bugg
     {
         // get file name, path and url for series file
