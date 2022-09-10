@@ -126,6 +126,10 @@ if ($eventid AND $pagestate)
             $result = $event_o->event_updatestatus($eventid, "cancelled");
             if ($result)
             {
+                // reset any entries to not loaded
+                $entry_o = NEW ENTRY ($db_o, $eventid);
+                $entryrows = $entry_o->reset_signons($eventid);
+
                 u_writelog("race CANCELLED", $eventid);
                 u_growlSet($eventid, $page, $g_race_cancel_success);
                 u_growlset($eventid, $page, $g_race_close_reminder);
@@ -159,6 +163,10 @@ if ($eventid AND $pagestate)
             $result = $event_o->event_updatestatus($eventid, "abandoned");
             if ($result)
             {
+                // reset any entries to not loaded
+                $entry_o = NEW ENTRY ($db_o, $eventid);
+                $entryrows = $entry_o->reset_signons($eventid);
+
                 u_writelog("race ABANDONED", $eventid);
                 u_growlSet($eventid, $page, $g_race_abandon_success);
                 u_growlset($eventid, $page, $g_race_close_reminder);

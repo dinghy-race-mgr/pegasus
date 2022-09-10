@@ -158,7 +158,7 @@ EOT;
     $footer_bufr =<<<EOT
         <br><div class="spacer"></div>
         <div class="flex-container">
-            <div class="flex-child"><span class="footer">$system_txt  - created $print_date<span></div> 
+            <div class="flex-child"><span class="footer">$system_txt  - created $print_date</span></div> 
             <div class="flex-child" style="text-align: right"><span class="footer">Copyright: {sys_copyright}</span></div> 
         </div>
 EOT;
@@ -166,12 +166,13 @@ EOT;
 // report layout
     if ($opts['inc-pagebreak'])
     {
-        $body = "";
+        $body = "<body>";
         foreach ($fleet_block as $fleet_bufr)
         {
             $body.= $header_bufr.$event_bufr.$fleet_bufr.$info_bufr.$footer_bufr;
             $body.= "<div class='page-break'>&nbsp;</div>";
         }
+        $body.= "</body></html>";
     }
     else
     {
@@ -180,7 +181,7 @@ EOT;
         {
             $htm.=$fleet_bufr;
         }
-        $body = $header_bufr.$event_bufr.$htm.$info_bufr.$footer_bufr;
+        $body = "<body>".$header_bufr.$event_bufr.$htm.$info_bufr.$footer_bufr."</body></html>";
     }
 
     return $htm_head_bufr.$body;

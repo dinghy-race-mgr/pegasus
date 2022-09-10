@@ -108,6 +108,9 @@ if ($eventid AND $pagestate)
 
         $race_o->race_times_init();                                        // reset timings in t_race, delete relevant t_lap and t_finish
 
+        // set finished boats back to racing
+        $db_o->db_query("UPDATE t_race SET status = 'R' WHERE eventid = $eventid AND status != 'X'");
+
         $timer_o->start($_SERVER['REQUEST_TIME']);                         // start timer - updating t_event, t_racestate and session
 
     }

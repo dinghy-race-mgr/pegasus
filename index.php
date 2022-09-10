@@ -24,7 +24,7 @@ echo <<<EOT
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-        <link rel="shortcut icon" href="../common/images/favicon.ico">
+        <link rel="icon" href="./common/images/logos/favicon.png">
     
         <!-- Bootstrap core CSS -->
         <link   rel="stylesheet"       href="common/oss/bootstrap341/css/flatly_bootstrap.min.css" >

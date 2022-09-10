@@ -133,7 +133,7 @@ function fm_addrace($params=array())
     $event_format_select = u_selectlist($event_formats);
 
     $entry_types = $db_o->db_getsystemcodes("entry_type");
-    $entry_type_select = u_selectcodelist($entry_types, "");
+    $entry_type_select = u_selectcodelist($entry_types, "", false);
 
     $series_list = $event_o->event_getseriescodes();
     $series_select = u_selectlist($series_list);
@@ -182,7 +182,6 @@ function fm_addrace($params=array())
         <div class="$fieldwidth selectfieldgroup">
             <select class="form-control" name="eventformat" aria-describedby="helpBlock1"
                 required data-fv-notempty-message="choose one of these options">
-                <option value="">&hellip; pick one </option>
                 $event_format_select
             </select>
             <span id="helpBlock1" class="help-block">This is the format of the race you are creating.</span>
@@ -195,7 +194,6 @@ function fm_addrace($params=array())
         <div class="$fieldwidth selectfieldgroup">
             <select class="form-control" name="evententry" aria-describedby="helpBlock2"
                     required data-fv-notempty-message="choose one of these options">
-                    <option value="" selected>&hellip; pick one </option>
             $entry_type_select
             </select>
             <span id="helpBlock2" class="help-block">
@@ -209,7 +207,6 @@ function fm_addrace($params=array())
         <label class="$labelwidth control-label">series name</label>
         <div class="$fieldwidth selectfieldgroup">
             <select class="form-control" name="seriesname" aria-describedby="helpBlock3" >
-                <option value="">&hellip; pick one </option>
                 $series_select
             </select>
             <span id="helpBlock3" class="help-block">

@@ -36,10 +36,10 @@ if (!$eventid)
 session_id('sess-rmracebox');   // creates separate session for this application
 session_start();
 
-echo "<pre>".print_r($_SESSION,true)."</pre>";
-
 // page initialisation
 u_initpagestart($_REQUEST['eventid'], $page, true);
+
+//echo "<pre>".print_r($_SESSION,true)."</pre>";
 
 // classes/libraries
 require_once ("{$loc}/common/lib/rm_lib.php");

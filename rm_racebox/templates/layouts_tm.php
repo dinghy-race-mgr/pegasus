@@ -87,7 +87,7 @@ EOT;
             <meta name="description" content="">
             <meta name="author" content="">
 
-            <link   rel="shortcut icon"    href="{loc}/common/images/favicon.ico">
+            <link   rel="icon"             href="{loc}/common/images/logos/favicon.png">
             <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap341/css/{theme}bootstrap.min.css" >
             <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
@@ -227,6 +227,8 @@ EOT;
 
 function racebox_navbar($params=array())
 {
+    //echo "<pre>".print_r($params,true)."</pre>";
+    
     /*
      *   fields:
      *      eventid:      id for event (int) - not required on pickrace page
@@ -296,6 +298,17 @@ EOT;
 EOT;
     }
 
+    $help_bufr = "";
+    if ($params['page'] != "help")
+    {
+        $help_bufr.= <<<EOT
+            <a href="help_pg.php?eventid={eventid}&page={$params['page']}" title="HELP!">
+                <span class="rm-navmenu-right rm-navmenu-icon text-muted"><small>HELP</small></span>
+            </a>
+EOT;
+
+    }
+
     // setup club local links menu
     $club_bufr = "";
 
@@ -347,16 +360,9 @@ EOT;
                 <ul class="nav navbar-nav">$option_bufr</ul>
                 
                 <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        $view_bufr
-                    </li>
-                    
-                    <li>
-                        <a href="help_pg.php?eventid={eventid}&page={$params['page']}" title="HELP!">
-                            <span class="rm-navmenu-right rm-navmenu-icon text-muted"><small>HELP</small></span>
-                        </a>
-                    </li>
-                    $club_bufr
+                    <li>$view_bufr</li>                    
+                    <li>$help_bufr</li>
+                    <li class="dropdown">$club_bufr</li>                   
                 </ul>
             </div>
         </div>

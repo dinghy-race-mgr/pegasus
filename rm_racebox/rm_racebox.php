@@ -62,7 +62,7 @@ foreach ($db->db_getinivalues(false) as $data)
 }
 
 // club specific external link information from t_link
-$_SESSION['clublink'] = $db->db_getlinks("");
+$_SESSION['clublink'] = $db->db_getlinks("racebox_main");
 $db->db_disconnect();
 
 // if debug send session to file

@@ -66,48 +66,7 @@
 */
 
 // -----------------------------------------------------------------------------------
-//$btn_resetlaps = array(
-//    "label"     => true,
-//    "glyph"     => true,
-//    "g-pos"     => "left",
-//    "popover"   => true,
-//    "fields"    => array(
-//        "id"          => "resetlaps",
-//        "style"       => "primary",
-//        "size"        => "lg",
-//        "label"       => "Reset Laps",
-//        "link"        => "",
-//        "glyph"       => "glyphicon-flag",
-//        "popover"     => "click here to change laps for each fleet (e.g after mistakenly shortening the race)",
-//        "pop-pos"     => "left",
-//        "block"       => "btn-block",
-//        "disabled"    => "",
-//        "top-margin"  => "margin-top-10"
-//    ),
-//);
-//$mdl_resetlaps = array(
-//    "form"    => true,
-//    "footer"  => true,
-//    "reload"  => false,
-//    "close"   => true,
-//    "reset"   => false,
-//    "submit"  => true,
-//    "fields"  => array(
-//        "id"          => "resetlaps",
-//        "size"        => "lg",
-//        "style"       => "primary",
-//        "title"       => "Reset Laps",
-//        "body"        => "",
-//        "script"      => "",
-//        "action"      => "timer_sc.php?eventid=$eventid&pagestate=resetlaps",
-//        "target"      => "",
-//        "onsubmit"    => "",
-//        "close-lbl"   => "changed my mind",
-//        "reset-lbl"   => "",
-//        "submit-lbl"  => "Reset Laps",
-//        "footer"      => ""
-//    ),
-//);
+
 
 // -------- shorten all----------------------------------------------------------------
 $btn_shorten = array(
@@ -154,95 +113,6 @@ $mdl_shorten = array(
     ),
 );
 
-// -------- quicktime ----------------------------------------------------------------
-//$btn_quicktime = array(
-//    "label"     => true,
-//    "glyph"     => true,
-//    "g-pos"     => "left",
-//    "popover"   => true,
-//    "fields"    => array(
-//        "id"          => "quicktime",
-//        "style"       => "warning",
-//        "size"        => "lg",
-//        "label"       => "Quick Find",
-//        "link"        => "",
-//        "glyph"       => "glyphicon-search",
-//        "popover"     => "find boat quickly",
-//        "pop-pos"     => "left",
-//        "block"       => "btn-block",
-//        "disabled"    => "",
-//        "top-margin"  => "margin-top-10"
-//    ),
-//);
-//
-//$mdl_quicktime = array(
-//    "form"    => false,
-//    "footer"  => false,
-//    "reload"  => true,
-//    "close"   => false,
-//    "reset"   => false,
-//    "submit"  => false,
-//    "fields"  => array(
-//        "id"          => "quicktime",
-//        "size"        => "lg",
-//        "style"       => "warning",
-//        "title"       => "Quick Find",
-//        "body"        => "<iframe src=\"timer_quicktime_pg.php?eventid=$eventid&pagestate=init\" frameborder=\"0\" style=\"width: 100%; height: 400px;\" id=\"entryframe\"></iframe>",
-//        "script"      => "",
-//        "onsubmit"    => "",
-//        "action"      => "",
-//        "target"      => "",
-//        "close-lbl"   => "",
-//        "reset-lbl"   => "",
-//        "submit-lbl"  => "",
-//        "footer"      => ""
-//    ),
-//);
-
-// -------- bunch ----------------------------------------------------------------
-//$btn_bunch = array(
-//    "label"     => true,
-//    "glyph"     => true,
-//    "g-pos"     => "left",
-//    "popover"   => true,
-//    "fields"    => array(
-//        "id"          => "bunch",
-//        "style"       => "warning",
-//        "size"        => "lg",
-//        "label"       => "Time Bunch",
-//        "link"        => "",
-//        "glyph"       => "glyphicon-option-horizontal",
-//        "popover"     => "allows you to preset a group of boats ready for timing in a group",
-//        "pop-pos"     => "left",
-//        "block"       => "btn-block",
-//        "disabled"    => "",
-//        "top-margin"  => "margin-top-10"
-//    ),
-//);
-
-//$mdl_bunch = array(
-//    "form"    => false,
-//    "footer"  => false,
-//    "reload"  => true,
-//    "close"   => false,
-//    "reset"   => false,
-//    "submit"  => false,
-//    "fields"  => array(
-//        "id"          => "bunch",
-//        "size"        => "lg",
-//        "style"       => "warning",
-//        "title"       => "Preset Approaching Boats",
-//        "body"        => "<iframe src=\"timer_bunch_pg.php?eventid=$eventid&pagestate=init\" frameborder=\"0\" style=\"width: 100%; height: 400px;\" id=\"entryframe\"></iframe>",
-//        "script"      => "",
-//        "onsubmit"    => "",
-//        "action"      => "",
-//        "target"      => "",
-//        "close-lbl"   => "",
-//        "reset-lbl"   => "",
-//        "submit-lbl"  => "",
-//        "footer"      => ""
-//    ),
-//);
 
 // -------- undo ----------------------------------------------------------------
 $btn_undo = array(
@@ -264,77 +134,6 @@ $btn_undo = array(
         "top-margin"     => "margin-top-10"
     ),
 );
-
-
-// -------- shorten fleet ----------------------------------------------------------------
-//$btn_shortenfleet = array(
-//    "label"     => true,
-//    "glyph"     => true,
-//    "g-pos"     => "left",
-//    "popover"   => true,
-//    "fields"    => array(
-//        "id"          => "shortenfleet",
-//        "style"       => "info",
-//        "size"        => "sm",
-//        "link"        => "",
-//        "label"       => " LAPS - click to shorten course",
-//        "glyph"       => "",
-//        "popover"     => "click here to shorten this fleet at the end of the next lap",
-//        "pop-pos"     => "top",
-//        "block"       => "",
-//        "disabled"    => "",
-//        "top-margin"  => "margin-top-0"
-//    )
-//);
-
-
-//// -------- results check ----------------------------------------------------------------
-//$btn_resultcheck = array(
-//    "label"     => true,
-//    "glyph"     => false,
-//    "g-pos"     => "",
-//    "popover"   => true,
-//    "fields"    => array(
-//        "id"          => "resultcheck",
-//        "style"       => "info",
-//        "size"        => "md",
-//        "label"       => "Check Results",
-//        "link"        => "",
-//        "glyph"       => "",
-//        "g-pos"       => "",
-//        "popover"     => "check the results for this fleet",
-//        "pop-pos"     => "top",
-//        "block"       => "",
-//        "disabled"    => "",
-//        "top-margin"  => "margin-top-0"
-//    ),
-//);
-
-//$mdl_resultcheck = array(
-//    "form"    => false,
-//    "footer"  => false,
-//    "reload"  => true,
-//    "close"   => false,
-//    "reset"   => false,
-//    "submit"  => false,
-//    "fields"  => array(
-//        "id"          => "resultcheck",
-//        "size"        => "lg",
-//        "style"       => "primary",
-//        "title"       => "Check Results",
-//        "body"        => "<iframe id=\"resultcheckFrame\" src=\"timer_resultcheck_pg.php?eventid=$eventid&pagestate=init&fleet=0\" frameborder=\"0\" style=\"width: 100%; height: 400px;\" id=\"entryframe\"></iframe>",
-//        "script"      => "  $( '#resultcheckModalLabel' ).text( 'Current results for ' + button.data('fleet') + ' fleet')
-//                            $( '#resultcheckFrame' ).attr('src', button.data('iframe'))
-//                         ",
-//        "onsubmit"    => "",
-//        "action"      => "",
-//        "target"      => "",
-//        "close-lbl"   => "",
-//        "reset-lbl"   => "",
-//        "submit-lbl"  => "",
-//        "footer"      => ""
-//    ),
-//);
 
 
 // -------- laptime ----------------------------------------------------------------
@@ -427,12 +226,59 @@ $mdl_editlap = array(
         "onsubmit"    => "",
         "action"      => "",
         "target"      => "",
-        "close-lbl"   => "changed my mind",
+        "close-lbl"   => "finished - close window",
         "reset-lbl"   => "",
         "submit-lbl"  => "",
         "footer"      => ""
     ),
 );
+
+
+// ---- shorten fleet button -------------------------------------------- WIP ------------
+
+$btn_shortenfleet = array(
+    "label"     => true,
+    "glyph"     => true,
+    "g-pos"     => "left",
+    "popover"   => true,
+    "fields"    => array(
+        "id"        => "shortenfleet",    // fleet number is appended when used
+        "style"     => "info",
+        "size"      => "md",
+        "label"     => "",
+        "glyph"     => "glyphicon-flag",
+        "popover"   => "click here to shorten this fleet at the end of the next lap",
+        "pop-pos"   => "top",
+        "block"     => "",
+        "disabled"  => "",
+        "top-margin"=> ""
+    ),
+);
+
+$mdl_shortenfleet = array(
+    "form"    => true,
+    "footer"  => true,
+    "reload"  => true,
+    "close"   => true,
+    "reset"   => false,
+    "submit"  => true,
+    "fields"  => array(
+        "id"          => "shortenfleet",   // fleet number is appended when used
+        "style"       => "info",
+        "size"        => "sm",
+        "title"       => "",
+        "body"        => "",
+        "script"      => "",
+        "action"      => "",
+        "target"      => "",
+        "onsubmit"    => "",
+        "close-lbl"   => "changed my mind",
+        "reset-lbl"   => "",
+        "submit-lbl"  => "shorten fleet",
+        "footer"      => ""
+    ),
+);
+
 
 
 

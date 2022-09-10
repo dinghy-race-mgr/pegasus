@@ -40,8 +40,9 @@ $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/
 include("./include/help_ctl.inc");
 
 // ----- navbar -----------------------------------------------------------------------------
+$eventid == 0 ? $num_reminders = 0 : $num_reminders = $_SESSION["e_$eventid"]['num_reminders'];
 $nav_fields = array("eventid" => $eventid, "brand" => "raceBox: HELP", "club" => $_SESSION['clubcode']);
-$nav_params = array("page" => $helppage, "current_view" => "", "baseurl"=>$_SESSION['baseurl'], "links" => $_SESSION['clublink']);
+$nav_params = array("page" => $helppage, "current_view" => "", "baseurl"=>$_SESSION['baseurl'], "links" => $_SESSION['clublink'], "num_reminders" => $num_reminders);
 if ($eventid != 0) { $nav_params['pursuit'] = $_SESSION["e_$eventid"]['pursuit']; }
 
 $nbufr = $tmpl_o->get_template("racebox_navbar", $nav_fields, $nav_params);
@@ -57,9 +58,9 @@ if ($eventid == 0)  // event called from pickrace page
 else
 {
     $constraints = array(
-        "name" => $_SESSION["e_$eventid"]['ev_dname'],
-        "format" => $_SESSION["e_$eventid"]['ev_format'],
-        "date" => $_SESSION["e_$eventid"]['ev_date'],
+        "name"    => $_SESSION["e_$eventid"]['ev_dname'],
+        "format"  => $_SESSION["e_$eventid"]['ev_format'],
+        "date"    => $_SESSION["e_$eventid"]['ev_date'],
         "numrace" => $_SESSION["events_today"],
         "pursuit" => $_SESSION["e_$eventid"]['pursuit']
     );

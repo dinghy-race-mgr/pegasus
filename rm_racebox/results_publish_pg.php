@@ -70,29 +70,37 @@ $event = $event_o->get_event_byid($eventid);
 
 if ($pagestate == "init")    // display information collection form
 {
-    $warning_count = u_checkarg("warnings", "checkint","");
-    $overide = u_checkarg("overide", "setbool","1");
-
-    if ($warning_count == 0 or $overide)
+    if ($_SESSION['mode'] == "demo")
     {
-        echo display_options_form($loc, $eventid);
+        echo display_demo_page($loc, $eventid);
+        $_SESSION["e_$eventid"]['result_publish'] = true;
     }
     else
     {
-        echo display_warnings_page($loc, $eventid);
+        $warning_count = u_checkarg("warnings", "checkint", "");
+        $overide = u_checkarg("overide", "setbool", "1");
+
+        if ($warning_count == 0 or $overide)
+        {
+            echo display_options_form($loc, $eventid);
+        }
+        else
+        {
+            echo display_warnings_page($loc, $eventid);
+        }
     }
 
     ob_flush();
     flush();      
 }
-// FIXME need to provide more information if there is a problem - probably a publishing log that can be accessed
+
 elseif ($pagestate == "process")    // run through process workflow
 {
     $continue = true;
     $success = array(1=>true, 2=>true, 3=>true, 4=>true );
     u_writelog("Results processing started: ", $eventid);
 
-    $row_start = array ("1" => 5, "2" => 20, "3" => 35, "4" => 50, "5" => 65 );  // % of page height for process display
+    $row_start = array ("1" => 10, "2" => 100, "3" => 200, "4" => 300, "5" => 400 );  // px of page height for process display
     $transfer_files = array(); // contains files to be transferred
 
     // deal with parameters from form
@@ -101,7 +109,7 @@ elseif ($pagestate == "process")    // run through process workflow
         "wd_start"      => u_checkarg("wd_start", "set", "", ""),
         "ws_end"        => u_checkarg("ws_end", "set", "", ""),
         "wd_end"        => u_checkarg("wd_end", "set", "", ""),
-        "result_status" => strtoupper(u_checkarg("result_status", "set", "", "final")),
+        "result_status" => u_checkarg("result_status", "set", "", "final"),
         "include_club"  => u_checkarg("include_club", "setbool", "on"),
         "result_notes"  => u_checkarg("result_notes", "set", "", ""),
     );
@@ -171,7 +179,7 @@ elseif ($pagestate == "process")    // run through process workflow
 
         // create race result
         $fleet_msg = array(); // TODO this is a future use feature - displays individual notes for each fleet - currently not collected anywhere
-        $status = process_result_file($loc, $args['result_status'], $args['include_club'], $args['result_notes'], $fleet_msg);
+        $status = process_result_file($loc, strtoupper($args['result_status']), $args['include_club'], $args['result_notes'], $fleet_msg);
         sleep(2);
 
         if ($status['success'])
@@ -216,10 +224,10 @@ elseif ($pagestate == "process")    // run through process workflow
 
             $series_notes = "";   // fixme - curently not used
             //u_writedbg("<pre>BEFORE process_series_file: ".print_r($opts,true)."|".$_SESSION["e_$eventid"]["ev_seriescode"]."|".print_r($args,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
-            $status = process_series_file($opts, $_SESSION["e_$eventid"]["ev_seriescode"], $args['result_status'], $series_notes);
+            $status = process_series_file($opts, $_SESSION["e_$eventid"]["ev_seriescode"], strtoupper($args['result_status']), $series_notes);
             sleep(2);
 
-            u_writedbg("<pre>STATUS: ".print_r($status,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+            //u_writedbg("<pre>STATUS: ".print_r($status,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
 
             if ($status['success'])
             {
@@ -263,12 +271,22 @@ elseif ($pagestate == "process")    // run through process workflow
     // -----------------------------------------------------------------------------------
     if ($continue) // continue if previous processsing hasn't causes a problem
     {
+//        u_writedbg("Transfer Data: result_upload: {$_SESSION['result_upload']} | opt_upload: {$series['opt_upload']}
+//                   | result_status: {$args['result_status']} | result_transfer_protocol: {$_SESSION['result_transfer_protocol']}",
+//                   __FILE__,__FUNCTION__,__LINE__);
+
         $step = 4;
         $result_year = date("Y", strtotime($event['event_date']));
 
-        // if results from this race have been embargoed - we shouldn't transfer anything or update the inventory
-        // also check if upload is turned on in config
-        if ($args['result_status'] != "embargoed" and $_SESSION['result_upload'] != "none")
+        // results files will be transferred if a) individual race has not been embargoed, b) the series upload flag is
+        // not set in t_series, c) the result_upload parameter is not set to 'none'
+        if ($args['result_status'] == "embargoed" OR !$series['opt_upload'] OR $_SESSION['result_upload'] == "none")
+        {
+            sleep(1);
+            endProcess($step, $row_start[$step], "warning", "Transfer to website", "", "Transfer not requested ");
+            u_writelog("FILE TRANSFER - NOT requested", $eventid);
+        }
+        else
         {
             startProcess($step, $row_start[$step], "Transferring files to website ... ", "warning");
 
@@ -319,7 +337,7 @@ elseif ($pagestate == "process")    // run through process workflow
                 if ($num_for_transfer > 0) {
 
                     // use appropriate protocol for upload
-                    if ($_SESSION['result_upload'] == "network")
+                    if ($_SESSION['result_transfer_protocol'] == "network")
                     {
                         empty($_SESSION["result_public_path"]) ? $target_path = "" : $target_path = $_SESSION["result_public_path"];
                         empty($_SESSION["result_public_url"]) ? $target_url = "" : $target_url = $_SESSION["result_public_url"];
@@ -336,27 +354,38 @@ elseif ($pagestate == "process")    // run through process workflow
                         }
 
                     }
-                    elseif ($_SESSION['result_upload'] == "ftp")
+                    elseif ($_SESSION['result_transfer_protocol'] == "ftp")
                     {
-                        $ftp = array("protocol"=>$_SESSION["ftp_protocol"], "server"=> $_SESSION["ftp_server"],
-                                     "user"=> $_SESSION["ftp_user"], "pwd"=> $_SESSION["ftp_pwd"]);
-
-                        if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
-                        {
-                            sleep(1);
-                            endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "Transfer software not configured correctly");
-                            u_writelog("FILE TRANSFER - ftp connection details for website not configured correctly [{$ftp['protocol']}|{$ftp['server']}|{$ftp['user']}|{$ftp['pwd']}]", $eventid);
-                        }
-                        else
-                        {
-                            $status = process_transfer_ftp($files, $ftp);  // FIXME implement function
-                        }
+                        // FIXME
+                        sleep(1);
+                        endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "ftp transfer not implemented yet");
+                        u_writelog("FILE TRANSFER - transfer protocol option not implemented [{$_SESSION['result_transfer_protocol']}]", $eventid);
+                    }
+                    elseif ($_SESSION['result_transfer_protocol'] == "sftp")
+                    {
+                        // FIXME
+                        sleep(1);
+                        endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "sftp transfer not implemented yet");
+                        u_writelog("FILE TRANSFER - transfer protocol option not implemented [{$_SESSION['result_transfer_protocol']}]", $eventid);
+//                        $ftp = array("protocol"=>$_SESSION["ftp_protocol"], "server"=> $_SESSION["ftp_server"],
+//                                     "user"=> $_SESSION["ftp_user"], "pwd"=> $_SESSION["ftp_pwd"]);
+//
+//                        if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
+//                        {
+//                            sleep(1);
+//                            endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "Transfer software not configured correctly");
+//                            u_writelog("FILE TRANSFER - ftp connection details for website not configured correctly [{$ftp['protocol']}|{$ftp['server']}|{$ftp['user']}|{$ftp['pwd']}]", $eventid);
+//                        }
+//                        else
+//                        {
+//                            $status = process_transfer_ftp($files, $ftp);  // FIXME implement function
+//                        }
                     }
                     else
                     {
                         sleep(1);
                         endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "Transfer software not configured correctly");
-                        u_writelog("FILE TRANSFER - transfer protocol (ftp|sftp) option not recognised [{$_SESSION['result_upload']}]", $eventid);
+                        u_writelog("FILE TRANSFER - transfer protocol option not recognised [{$_SESSION['result_transfer_protocol']}]", $eventid);
                     }
                 }
 
@@ -389,12 +418,6 @@ elseif ($pagestate == "process")    // run through process workflow
                 endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "Unable to create list of files to transfer ");
                 u_writelog("FILE TRANSFER - results inventory NOT created", $eventid);
             }
-        }
-        else
-        {
-            sleep(1);
-            endProcess($step, $row_start[$step], "warning", "Transfer to website", "", "Transfer not requested ");
-            u_writelog("FILE TRANSFER - NOT requested", $eventid);
         }
     }
 
@@ -431,7 +454,7 @@ EOT;
     }
 
     echo <<<EOT
-        <div class="row" style='background-color= #ECF0F1; width: 90%; position: absolute; top: $pos%;'>
+        <div class="row" style='background-color= #ECF0F1; width: 90%; position: absolute; top: {$pos}px;'>
             <div class="col-sm-5 col-sm-offset-1" style="padding-top: 15px; padding-bottom: 5px">
                <h4 style="color: steelblue">$text</h4>
             </div> 
@@ -483,7 +506,7 @@ EOT;
     }
 
     echo <<<EOT
-        <div class="row" style='background-color: white; width: 90%; position: absolute; top: $pos%; padding-bottom: 10px; border-bottom: solid 1pt slategrey;'>
+        <div class="row" style='background-color: white; width: 90%; position: absolute; top: {$pos}px; padding-bottom: 10px; border-bottom: solid 1pt slategrey;'>
             <div class="col-sm-5 col-sm-offset-1">
                <h4 style="color: steelblue; vertical-align: top;">$text</h4>
             </div> 
@@ -499,9 +522,30 @@ EOT;
     flush();
 }
 
+function display_demo_page($loc, $eventid)
+{
+    global $tmpl_o;
+    // display demo message - results not published
+
+
+    // generate page
+    $fields = array(
+        "title"      => "publish [demo] results",
+        "loc"        => $loc,
+        "theme"      => $_SESSION['racebox_theme'],
+        "stylesheet" => "./style/rm_racebox.css",
+        "navbar"     => "",
+        "footer"     => "",
+    );
+
+    $fields['body'] = $tmpl_o->get_template("fm_publish_demo", array(), array());
+
+    return $tmpl_o->get_template("basic_page", $fields);
+}
+
 function display_warnings_page($loc, $eventid)
 {
-    global $event_o, $db_o, $tmpl_o;
+    global $event_o, $tmpl_o;
     // get current wind/notes settings in case this is not the first publish
     $event = $event_o->get_event_byid($eventid);
 
@@ -532,10 +576,10 @@ function display_options_form($loc, $eventid)
     $form_params = array(
         "eventid"  => $eventid,
         "notes"    => $event['result_notes'],
-        "wd_start" => u_selectcodelist($dirn_codes, $event['wd_start']),
-        "wd_end"   => u_selectcodelist($dirn_codes, $event['wd_end']),
-        "ws_start" => u_selectcodelist($speed_codes, $event['ws_start']),
-        "ws_end"   => u_selectcodelist($speed_codes, $event['ws_end'])
+        "wd_start" => u_selectcodelist($dirn_codes, $event['wd_start'], false),
+        "wd_end"   => u_selectcodelist($dirn_codes, $event['wd_end'], false),
+        "ws_start" => u_selectcodelist($speed_codes, $event['ws_start'], false),
+        "ws_end"   => u_selectcodelist($speed_codes, $event['ws_end'], false)
     );
     $fields = array(
         "title"      => "publish results",

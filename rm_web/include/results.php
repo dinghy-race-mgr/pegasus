@@ -51,14 +51,14 @@ class RESULTS
         if (!empty($searchstr))
         {
             foreach ($this->inv_data as $eventid => $event) {
-                if (strpos(strtolower($event['eventname']), trim($searchstr)) === false) {
+                if (strpos(strtolower($event['eventname']), strtolower(trim($searchstr))) === false) {
                     unset ($this->inv_data[$eventid]);
                 }
             }
         }
 
         // reverse array to get latest events first
-        $this->inv_data = array_reverse($this->inv_data, true);
+        //$this->inv_data = array_reverse($this->inv_data, true);   // inventory is already in reverse order
     }
 
     public function render_results_table($loc)

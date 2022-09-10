@@ -230,7 +230,7 @@ $mdl_publish = array(
         "size"       => "lg",
         "style"      => "info",
         "title"      => "<b>Publish Results - $eventname</b>",
-        "body"       => "<iframe src=\"results_publish_pg.php?eventid=$eventid&pagestate=init&warnings=$warning_count\" style=\"width: 100%; height: 650px; border:0px\" id=\"entryframe\"></iframe>",
+        "body"       => "<iframe src=\"results_publish_pg.php?eventid=$eventid&pagestate=init&warnings=$warning_count\" style=\"width: 100%; height: 750px; border:0px\" id=\"entryframe\"></iframe>",
         "script"     => "",
         "onsubmit"   => "",
         "action"     => "", //"results_sc.php?eventid=$eventid&pagestate=message",

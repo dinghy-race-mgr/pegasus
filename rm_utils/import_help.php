@@ -16,7 +16,7 @@ $rst = $db_o->db_truncate(array("t_help"));
 
 // truncate table
 // xml import file
-$file = "../rm_racebox/help_text.xml";
+$file = "../config/help_text.xml";
 $xmldata = simplexml_load_file($file) or die("Failed to load file");
 $i = 0;
 $values = "";
@@ -32,7 +32,7 @@ foreach($xmldata->children() as $topic) {
 
 $first_part = "INSERT INTO t_help(`category`, `question`, `answer`, `notes`, `author`, `rank`, `active`) VALUES ";
 $sql = $first_part.rtrim($values, ',').";";
-//echo "<pre>$sql</pre>";
+echo "<pre>$sql</pre>";
 $insert = $db_o->db_query($sql);
-echo "$i topics inserted into t_help";
+echo "$i topics inserted into t_help<br>";
 exit("done");

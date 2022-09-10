@@ -200,8 +200,8 @@ function fm_changerace($params=array())
     $labelwidth = "col-xs-4";
     $fieldwidth = "col-xs-7";
 
-    $entry_select = u_selectcodelist($db_o->db_getsystemcodes("entry_type"), $params['entry-option']);
-    $start_select = u_selectcodelist($db_o->db_getsystemcodes("start_scheme"), $params['start-option']);
+    $entry_select = u_selectcodelist($db_o->db_getsystemcodes("entry_type"), $params['entry-option'], false);
+    $start_select = u_selectcodelist($db_o->db_getsystemcodes("start_scheme"), $params['start-option'], false);
 
     $html = <<<EOT
         <!-- instructions -->

@@ -187,12 +187,12 @@ elseif ($_REQUEST['pagestate'] == "submit")
             if ($continue)
             {
                 // FIXME deal with report parameters - add as suboptions
-                empty($_REQUEST['result_status']) ? $result_status = "FINAL" : $result_status = strtoupper($_REQUEST['result_status']);
+                empty($_REQUEST['result_status']) ? $result_status = "final" : $result_status = $_REQUEST['result_status'];
                 isset($_REQUEST['include_club']) ? $include_club = true : $include_club = false;
                 empty($_REQUEST['result_notes']) ? $result_notes = "" : $result_notes = $_REQUEST['result_notes'];
 
                 $fleet_msg = array();  // FIXME - future use
-                $status = process_result_file($loc, $result_status, $include_club, $result_notes, $fleet_msg);
+                $status = process_result_file($loc, strtoupper($result_status), $include_club, $result_notes, $fleet_msg);
 
                 if ($status['success'])
                 {
@@ -236,15 +236,16 @@ elseif ($_REQUEST['pagestate'] == "submit")
                     // FIXME some of these should be set as form options
                     $opts = array(
                         "inc-pagebreak" => $series['opt_pagebreak'],                                          // page break after each fleet
-                        "inc-codes"     => $series['opt_scorecode'],                                            // include key of codes used
-                        "inc-club"      => $series['opt_clubnames'],                                           // include club name for each competitor
+                        "inc-codes"     => $series['opt_scorecode'],                                           // include key of codes used
+                        "inc-club"      => $series['opt_clubnames'],                                          // include club name for each competitor
                         "inc-turnout"   => $series['opt_turnout'],                                            // include turnout statistics
                         "race-label"    => $series['opt_racelabel'],                                          // use race number or date for labelling races
                         "club-logo"     => $_SESSION['baseurl']."/config/images/club_logo.jpg",               // if set include club logo
                         "styles" => $_SESSION['baseurl']."/config/style/result_{$series['opt_style']}.css"    // styles to be used
                     );
 
-                    $status = process_series_file($opts, $event['series_code'], $result_status);
+                    $series_notes = "";   // fixme - curently not used
+                    $status = process_series_file($opts, $event['series_code'], strtoupper($result_status), $series_notes);
 
                     if ($status['success'])
                     {
@@ -298,9 +299,21 @@ elseif ($_REQUEST['pagestate'] == "submit")
         {
             if ($continue)     // continue if previous processsing hasn't causes a problem
             {
-                // if results from this race have been embargoed - we shouldn't transfer anything or update the inventory
-                // also check if upload is turned on in config
-                if ($result_status != "embargoed" and $_SESSION['result_upload'] != "none")
+
+                // results files will be transferred if a) individual race has not been embargoed, b) the series upload flag is
+                // not set in t_series, c) the result_upload parameter is not set to 'none'
+                if ($result_status == "embargoed" OR !$series['opt_upload'] OR $_SESSION['result_upload'] == "none")
+                {
+                    $txt = "";
+                    if ($_SESSION['result_upload'] == "none") { $txt.= "System level config not set for file transfer. "; }
+                    if (!$series['opt_upload']) { $txt.= "Series level config not set for file transfer. "; }
+                    if ($result_status == "embargoed") { $txt.= "Race level config not set for file transfer. "; }
+
+                    $continue = true;
+                    $report_arr['result'] = "info";
+                    $report_arr['msg'] = "results transfer not requested<br>$txt";
+                }
+                else  //process transfer
                 {
                     // create inventory
                     $result_year = date("Y", strtotime($event['event_date']));
@@ -347,7 +360,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
                         if ($num_for_transfer > 0) {
 
                             // use appropriate protocol for upload
-                            if ($_SESSION['result_upload'] == "network")
+                            if ($_SESSION['result_transfer_protocol'] == "network")
                             {
                                 empty($_SESSION['result_public_path']) ? $target_path = "" : $target_path = $_SESSION['result_public_path'];
                                 empty($_SESSION['result_public_url']) ? $target_url = "" : $target_url = $_SESSION['result_public_url'];
@@ -385,21 +398,43 @@ elseif ($_REQUEST['pagestate'] == "submit")
                                 }
 
                             }
-                            elseif ($_SESSION['result_upload'] == "ftp")
+                            elseif ($_SESSION['result_transfer_protocol'] == "ftp")
                             {
-                                $ftp = array("protocol"=>$_SESSION["ftp_protocol"], "server"=> $_SESSION["ftp_server"],
-                                    "user"=> $_SESSION["ftp_user"], "pwd"=> $_SESSION["ftp_pwd"]);
-
-                                if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
-                                {
-                                    $continue = true;
-                                    $report_arr['result'] = "stopped";
-                                    $report_arr['msg'] = "ftp protocol for website not configured correctly<br>result files update processing stopped ..";
-                                }
-                                else
-                                {
-                                    $status = process_transfer_ftp($files, $ftp); // FIXME implement function
-                                }
+                                $continue = true;
+                                $report_arr['result'] = "stopped";
+                                $report_arr['msg'] = "transfer protocol option not implemented [{$_SESSION['result_transfer_protocol']}]<br>result files update processing stopped ..";
+//                                $ftp = array("protocol"=>$_SESSION["ftp_protocol"], "server"=> $_SESSION["ftp_server"],
+//                                    "user"=> $_SESSION["ftp_user"], "pwd"=> $_SESSION["ftp_pwd"]);
+//
+//                                if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
+//                                {
+//                                    $continue = true;
+//                                    $report_arr['result'] = "stopped";
+//                                    $report_arr['msg'] = "ftp protocol for website not configured correctly<br>result files update processing stopped ..";
+//                                }
+//                                else
+//                                {
+//                                    $status = process_transfer_ftp($files, $ftp); // FIXME implement function
+//                                }
+                            }
+                            elseif ($_SESSION['result_transfer_protocol'] == "sftp")
+                            {
+                                $continue = true;
+                                $report_arr['result'] = "stopped";
+                                $report_arr['msg'] = "transfer protocol option not implemented [{$_SESSION['result_transfer_protocol']}]<br>result files update processing stopped ..";
+//                                $ftp = array("protocol"=>$_SESSION["ftp_protocol"], "server"=> $_SESSION["ftp_server"],
+//                                    "user"=> $_SESSION["ftp_user"], "pwd"=> $_SESSION["ftp_pwd"]);
+//
+//                                if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
+//                                {
+//                                    $continue = true;
+//                                    $report_arr['result'] = "stopped";
+//                                    $report_arr['msg'] = "ftp protocol for website not configured correctly<br>result files update processing stopped ..";
+//                                }
+//                                else
+//                                {
+//                                    $status = process_transfer_ftp($files, $ftp); // FIXME implement function
+//                                }
                             }
                             else
                             {

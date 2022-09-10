@@ -396,7 +396,7 @@ class RACE
             ),
             "fleet-list"    => array(
                 "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
-                "order"  => "fleet, CAST(sailnum AS unsigned)",
+                "order"  => "fleet, class, CAST(sailnum AS unsigned)",
             ),
             "position" => array(
                 "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
@@ -656,22 +656,19 @@ class RACE
     public function race_times_init($fleetnum=0)
     {
         $constraint = array("eventid"=>$this->eventid);
-        if ($fleetnum != 0) { $constraint[] = array("fleet"=>$fleetnum); }
+        if ($fleetnum != 0)
+        {
+            $constraint[] = array("fleet"=>$fleetnum);
+        }
         
-        $update = array(
-           "lap"     => 0,
-           "etime"   => 0,
-           "ctime"   => 0,
-           "atime"   => 0,
-           "ptime"   => 0,
-           "penalty" => 0,
-           "points"  => 0
+        $time_update = array( "clicktime" => "null", "lap" => 0, "etime" => 0,
+                              "ctime" => 0, "atime" => 0, "ptime" => 0, "penalty" => 0, "points"  => 0
         );
-        
-        $numrows = $this->db->db_update("t_race", $update, $constraint);  // update entries
-        $this->race_laps_delete($fleetnum);                               // remove all lap times
-        $this->race_finish_delete();                                      // remove all finish line data for pursuit race
-        
+
+        $numrows = $this->db->db_update("t_race", $time_update, $constraint);             // update timing info for all entries
+        $this->race_laps_delete($fleetnum);                                               // remove all lap times
+        $this->race_finish_delete();                                                      // remove all finish line data for pursuit race
+
         return $numrows;
     }
 
@@ -1440,7 +1437,6 @@ class RACE
 
         // set array for t_race update
         $update_race = array( "lap" => $lap, "clicktime" => $clicktime, "etime" => $et, "ctime" => $ct, "atime" => "", "ptime" => $pt);
-
 
 
         if ($force_finish)                                                                 // force finish by OOD

@@ -209,7 +209,7 @@ class EVENT
     public function get_events($type, $status, $period = array(), $constraints = array())
         /*
          * returns an array of event records
-         *    type - 'all' or 'not_noevent' or specified 'event_type'
+         *    type   - 'all' or 'not_noevent' or specified 'event_type'
          *    status - 'active', 'not_active', 'demo', 'all'
          *    period - array with start and end keys for inclusive date period - if empty not applied - if end not specified with do events from
          *    constraints - array with field specific constraints
@@ -684,8 +684,7 @@ class EVENT
            //u_writedbg("status:s_status:s_p_status - $status|{$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}", __FILE__, __FUNCTION__,__LINE__); // debug:
        }
 
-
-        return $success;
+       return $success;
     }
     
     

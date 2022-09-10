@@ -45,6 +45,36 @@ $rota_o = new ROTA($db_o);
 $_SESSION['mode'] == "demo"? $status = "demo" : $status = "active";
 $events = $event_o->get_events("racing", $status, array("start" => $today, "end" => $today), array() );
 
+// if in demo mode - check to see if any events need to be reset
+if ($_SESSION['mode'] == "demo")
+{
+    foreach ($events as $event)
+    {
+        if ($event['event_status'] != "scheduled")
+        {
+            $current_event = $event['id'];
+
+            // get data from t_race - if no updates in last hour - reset
+            $rs = $db_o->db_get_row("SELECT COUNT(*) AS numrows FROM t_race WHERE eventid = $current_event AND upddate >= DATE_SUB(NOW(), INTERVAL 1 HOUR)");
+            if ($rs['numrows'] == 0)
+            {
+                // clear tables
+                $del = $db_o->db_delete("t_entry", array("eventid"=>$current_event));         // entries
+                $del = $db_o->db_delete("t_race", array("eventid"=>$current_event));          // race details
+                $del = $db_o->db_delete("t_lap", array("eventid"=>$current_event));           // lap times
+                $del = $db_o->db_delete("t_finish", array("eventid"=>$current_event));        // pursuit finish positions
+                $del = $db_o->db_delete("t_racestate", array("eventid"=>$current_event));     // racestate
+
+                // reset event status
+                $upd = $db_o->db_update( 't_event', array("event_status"=>"scheduled"), array("id"=>$current_event) );
+            }
+        }
+    }
+
+    // reset events
+    $events = $event_o->get_events("racing", $status, array("start" => $today, "end" => $today), array() );
+}
+
 // ----- navbar -----------------------------------------------------------------------------
 $nav_fields = array("page" => $page, "eventid" => 0, "brand" => "raceBox Programme", "club" => $_SESSION['clubcode']);
 $nav_params = array("page"=> $page, "baseurl"=>$_SESSION['baseurl'], "links"=>$_SESSION['clublink']);

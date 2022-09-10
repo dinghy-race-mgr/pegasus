@@ -154,7 +154,7 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
 
             // if series has more than 6 completed - set page format to landscape
             $counts = $series_o->get_race_counts();
-            if ($counts['race_num'] > 6)
+            if ($counts['races_num'] > 6)
             {
                 $series_bufr = str_replace("A4 portrait", "A4 landscape", $series_bufr);
             }

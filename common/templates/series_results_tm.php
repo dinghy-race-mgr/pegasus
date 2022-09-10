@@ -258,7 +258,7 @@ EOT;
     $footer_bufr =<<<EOT
         <br><div class="spacer"></div>
         <div class="flex-container">
-            <div class="flex-child"><span class="footer">$system_txt  - created $print_date<span></div> 
+            <div class="flex-child"><span class="footer">$system_txt  - created $print_date</span></div> 
             <div class="flex-child" style="text-align: right"><span class="footer">Copyright: {$sys['sys_copyright']}</span></div> 
         </div>
 EOT;
@@ -267,12 +267,13 @@ EOT;
     // report layout
     if ($opts['inc-pagebreak'])
     {
-        $body = "";
+        $body = "<body>";
         foreach ($fleet_block as $fleet_bufr)
         {
             $body.= $header_bufr.$event_bufr.$fleet_bufr.$info_bufr.$footer_bufr;
             $body.= "<div class='page-break'>&nbsp;</div>";
         }
+        $body.= "</body></html>";
     }
     else
     {
@@ -281,7 +282,7 @@ EOT;
         {
             $htm.= "<div style='break-inside: avoid'>".$fleet_bufr."</div>";
         }
-        $body = $header_bufr.$event_bufr.$htm.$info_bufr.$footer_bufr;
+        $body = "<body>".$header_bufr.$event_bufr.$htm.$info_bufr.$footer_bufr."</body></html>";
     }
 
     return $doc_head_bufr.$body;
@@ -320,7 +321,17 @@ function format_series_codes($codes)
 
 function format_series_columns($races, $inc_club, $race_label)
 {
-    $inc_club ? $club_col = "<th class='table-col' style='width: 100px'>club</th>" : $club_col = "" ;
+    if ($inc_club)
+    {
+        $colwidth = array("pos"=>"3","class"=>"12","sailnum"=>"7","comp"=>"20","club"=>"10","total"=>"7","net"=>"7");
+        $club_col = "<th class='table-col' style='width: {$colwidth['club']}%'>club</th>";
+    }
+    else
+    {
+        $colwidth = array("pos"=>"3","class"=>"12","sailnum"=>"7","comp"=>"25","club"=>"0","total"=>"7","net"=>"7");
+        $club_col = "" ;
+    }
+
 
     $race_cols_hdr = "";
     foreach ($races as $i=>$race)
@@ -341,17 +352,19 @@ EOT;
         }
     }
 
+
+
     $htm = <<<EOT
     <thead>
         <tr>
-            <th class='table-col' style='width: 5%'>pos</th>
-            <th class='table-col' style='width: 10%'>class</th>
-            <th class='table-col' style='width: 7%'>no.</th>
-            <th class='table-col' style='width: 25%' >competitors</th>
+            <th class='table-col' style='width: {$colwidth['pos']}%'>pos</th>
+            <th class='table-col' style='width: {$colwidth['class']}%'>class</th>
+            <th class='table-col' style='width: {$colwidth['sailnum']}%'>no.</th>
+            <th class='table-col' style='width: {$colwidth['comp']}%' >competitors</th>
             $club_col
             $race_cols_hdr
-            <th class='table-col' style='width: 7%'>total</th>
-            <th class='table-col' style='width: 7%'>net</th>
+            <th class='table-col' style='width: {$colwidth['total']}%'>total</th>
+            <th class='table-col' style='width: {$colwidth['net']}%'>net</th>
         </tr>
     </thead>
 EOT;

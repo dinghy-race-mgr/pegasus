@@ -56,7 +56,7 @@ class TIMER
         $_SESSION["$event"]['timerstart'] = 0;
 
         // initialise timerstart in t_event
-        $this->db->db_update( 't_event', array("timerstart"=>0), array("id"=>$this->eventid) );
+        $this->db->db_update( 't_event', array("timerstart"=>0), array("id"=>$this->eventid) );  // fixme also clear timerstart to 0
 
         // initialise start times in session
         $this->set_start_times("stop", 0, $_SESSION["e_{$this->eventid}"]['rc_startscheme'], $_SESSION["e_{$this->eventid}"]['rc_startint']);
@@ -75,23 +75,12 @@ class TIMER
 
         for ($j=1; $j<=$_SESSION["e_{$this->eventid}"]['rc_numstarts']; $j++)
         {
-
-            // set start delay in seconds
-            if ($_SESSION['mode'] == "demo")
-            {
-                $_SESSION["e_{$this->eventid}"]["st_$j"]['startdelay'] = 0;
-            }
-            else
-            {
-                $_SESSION["e_{$this->eventid}"]["st_$j"]['startdelay'] = r_getstartdelay($j, $scheme, $start_interval);
-            }
-
             // set start clock time in hh:mm:ss  // FIXME BEING SET TO 00:00:00
             if ($status === "start")   // timer started
             {
                 $_SESSION["e_{$this->eventid}"]["st_$j"]['starttime'] = gmdate("H:i:s", $time + $_SESSION["e_{$this->eventid}"]["st_$j"]['startdelay']);
             }
-            else                            // timer stopped
+            else                       // timer stopped
             {
                 $_SESSION["e_{$this->eventid}"]["st_$j"]['starttime'] = 0;
             }

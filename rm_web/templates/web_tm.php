@@ -16,7 +16,7 @@ class WEB_TEMPLATE
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <link rel="shortcut icon" href="{ossloc}/common/images/favicon.ico">
+        <link   rel="icon"    href="{ossloc}/common/images/logos/favicon.png">
         <link rel="stylesheet" href="{ossloc}/common/oss/bootstrap341/css/bootstrap.min.css" >
         <link rel="stylesheet" href="{ossloc}/common/oss/bootstrap341/css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="{ossloc}/common/oss/bs-validator/dist/css/formValidation.min.css">

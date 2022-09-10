@@ -72,24 +72,28 @@ TIDY CODE
 /**
  * Class SERIES
  */
+
 /*
-// for test purposes
+// for test and results debugging purposes
 $loc        = "..";       // <--- relative path from script to top level folder
 $page       = "seriesresult";     //
 $scriptname = basename(__FILE__);
-require_once ("$loc/lib/util_lib.php");                          // FIXME location different from when calling from app and self-calling
-require_once ("$loc/classes/db_class.php");                      // FIXME location different from when calling from app and self-calling
+require_once ("$loc/lib/util_lib.php");
+require_once ("$loc/classes/db_class.php");
 require_once ("$loc/classes/template_class.php");
-require_once ("$loc/classes/event_class.php");                   // FIXME location different from when calling from app and self-calling
-require_once ("$loc/classes/result_class.php");
+require_once ("$loc/classes/event_class.php");
+require_once ("$loc/classes/raceresult_class.php");
 
 session_start();
 
 if (!array_key_exists('db_host', $_SESSION))
 {
-    u_initconfigfile("../../config/common.ini");                // FIXME location different from when calling from app and self-calling
+    u_initconfigfile("../../config/common.ini");
 }
 $_SESSION['sql_debug'] = false;
+$_SESSION['app_name'] = "racebox";
+$_SESSION['dbglog'] = "../../logs/dbg/" . $_SESSION['app_name'] . "_" . date("Y-m-d") . ".log";
+$_SESSION['result_public_url'] = "http://localhost/results_archive";
 
 //echo "<pre>".print_r($_SESSION, true)."</pre>";
 //exit();
@@ -97,17 +101,18 @@ $_SESSION['sql_debug'] = false;
 $db_o = new DB;
 
 // establish object with data held in test file
-$series_code = "SPRING-21";
+$series_code = "SUMMER-22";
 $opts = array(
     "inc-pagebreak" => false,                                                // page break after each fleet
     "inc-codes"     => true,                                                 // include key of codes used
-    "inc-club"      => true,                                                 // include club name for each competitor
+    "inc-club"      => false,                                                // include club name for each competitor
     "inc-turnout"   => true,                                                 // include turnout statistics
     "race-label"    => "number",                                             // use race number or date for labelling races
     "club-logo"     => $_SESSION['baseurl']."/config/images/club_logo.jpg",  // if set include club logo
     "styles" => $_SESSION['baseurl']."/config/style/result_std.css"          // styles to be used
 );
-$rs_o = new SERIES_RESULT($db_o, $series_code, $opts, false, "../../testing/results/testseriesresults_1.json");
+//$rs_o = new SERIES_RESULT($db_o, $series_code, $opts, false, "../../testing/results/testseriesresults_1.json");
+$rs_o = new SERIES_RESULT($db_o, $series_code, $opts, false);
 
 echo "Set data ...<br>";
 $err = $rs_o->set_series_data();
@@ -125,6 +130,8 @@ EOT;
     echo "</table>";
     exit("exiting on set data");
 }
+
+//debug echo "<pre>".print_r($rs_o->rst[29], true)."</pre>";
 
 echo "Calc data ...<br>";
 $err = $rs_o->calc_series_result();
@@ -153,7 +160,7 @@ else  // results ok
         "sys_website" => "http://dinghyracemanager.wordpress.com/"
     );
     $series_status = "final";                                                 // draft|provisional|final
-    $styles = file_get_contents($_SESSION['baseurl']."/config/style/result_std.css");
+    $styles = file_get_contents($_SESSION['baseurl']."/config/style/result_classic.css");
     // website
     //$htm = $rs_o->series_render_basic();
     $tmpl_o = new TEMPLATE(array("../templates/general_tm.php", "../templates/series_results_tm.php"));
@@ -174,7 +181,7 @@ class SERIES_RESULT
         $this->db = $db;                        // database connection
         $this->testfile = $testfile;            // file containing series data in RM format
         $this->report = $report;                // option to report to terminal (for debugging)
-        $this->report = true;
+        //$this->report = true;
         $this->series_code = $series_code;      // series code e.g. SPRING-21
 
         $this->opts = $opts;                    // results display options
@@ -917,6 +924,8 @@ class SERIES_RESULT
 
             foreach ($this->rst[$s_id] as $k=>$result)
             {
+                //debug if ($s_id == 29) { echo "<pre>BEFORE ".print_r($this->rst[$s_id],true)."</pre>"; }
+
                 if ($this->series['avgscheme'] == "all_races")
                 {
                     if ( $result['code'] != "AVG" AND $result['pts'] != 999 )
@@ -932,7 +941,6 @@ class SERIES_RESULT
                         $score_sum = $score_sum + $result['pts'];
                     }
                 }
-
                 elseif  ($this->series['avgscheme'] == "all_counting")
                 {
                     if (!$result['discard'] AND $result['pts'] != 999 )
@@ -969,8 +977,12 @@ class SERIES_RESULT
                     {
                         $this->rst[$s_id][$k]['pts'] = $this->fleets[$this->sailor[$s_id]['fleet']]['dnc_score'];
                     }
+
+                    // undo discard flag if set
+                    $this->rst[$s_id][$k]['discard'] = 0;
                 }
             }
+            //debug if ($s_id == 29) { echo "<pre> AFTER".print_r($this->rst[$s_id],true)."</pre>"; }
         }
     }
 
@@ -1528,6 +1540,8 @@ EOT;
          * classes within the group in the same fleet.  The results are merged into the first class in the group
          */
     {
+        //FIXME - still to be implemented
+
         foreach ($merge_classes as $merge_group)
         {
             $sailors = array();

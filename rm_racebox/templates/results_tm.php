@@ -89,39 +89,6 @@ EOT;
 }
 
 
-//function codes_html($code, $url)    // FIXME same code in both timer_tm and results_tm
-//    /*
-//     * displays codes dropdown on timer page
-//     */
-//{
-//    if (empty($code))
-//    {
-//        //$label = "<span>code &nbsp;</span>";
-//        $label = "<span class='glyphicon glyphicon-cog'>&nbsp;</span>";
-//        $style = "btn-info";
-//    }
-//    else
-//    {
-//        $label = "<span>$code&nbsp;</span>";
-//        $style = "btn-danger";
-//    }
-//
-//    $codebufr = u_dropdown_resultcodes($_SESSION['timercodes'], "short", $url);
-//
-//    $bufr = <<<EOT
-//    <div class="dropdown">
-//        <button type="button" class="btn $style btn-xs dropdown-toggle" data-toggle="dropdown" >
-//            <span class="default"><b>$label&nbsp;</b></span><span class="caret" ></span>
-//        </button>
-//        <ul class="dropdown-menu">
-//            $codebufr
-//        </ul>
-//    </div>
-//EOT;
-//
-//    return $bufr;
-//}
-
 function format_columns($racetype)
 {
     if ($racetype == "level")  // pn and corrected time not required
@@ -236,6 +203,16 @@ EOT;
         </div>
 EOT;
 
+    }
+    else
+    {
+        $bufr.= <<<EOT
+        <div class="col-md-8 alert alert-success">
+            <span class="lead">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;Results for this fleet are complete&hellip;
+            </span>
+        </div>
+EOT;
     }
 
     return $bufr;
@@ -813,8 +790,9 @@ function process_footer($params=array())
     if ($style == "success")
     {
         $close_reminder = <<<EOT
-        <div class="alert alert-danger" role="alert">
-            <p><b>REMEMBER:</b> please close this race on the status page<p>
+        <div class="alert alert-info" role="alert">
+            <p class="lead text-center">if you are happy that the results are complete ...<p>
+            <h2 class="text-center">Please CLOSE the race on the STATUS page</h2>
         </div>
 EOT;
     }
@@ -824,7 +802,7 @@ EOT;
     }
 
     $html = <<<EOT
-    <div style='padding-left:10%; width: 80%; position: absolute; top: {top}%;' >
+    <div style='padding-left:10%; width: 80%; position: absolute; top: {top}px;' >
         <div class="alert alert-$style" role="alert">
             <h4><b>$title</b></h4>
             <p>$message</p>
@@ -886,32 +864,20 @@ function fm_publish($params)
                 <div class="row">
                     <label class="col-xs-3 col-xs-offset-1 control-label">Wind Direction</label>
                     <div class="col-xs-3 selectfieldgroup">
-                        <select class="form-control" name="wd_start" style="width: 150px">
-                            <option value="">&hellip; pick one </option>
-                            {wd_start}
-                        </select>
+                        <select class="form-control" name="wd_start" style="width: 200px"> {wd_start} </select>
                     </div>
                     <div class="col-xs-3 selectfieldgroup">
-                        <select class="form-control" name="wd_end" style="width: 150px">
-                            <option value="">&hellip; pick one </option>
-                            {wd_end}
-                        </select>
+                        <select class="form-control" name="wd_end" style="width: 200px"> {wd_end} </select>
                     </div>
                 </div>
                 <br>
                 <div class = "row">
                     <label class="col-xs-3 col-xs-offset-1 control-label">Wind Speed</label>
                     <div class="col-xs-3 selectfieldgroup">
-                        <select class="form-control" name="ws_start" style="width: 150px">
-                            <option value="">&hellip; pick one </option>
-                            {ws_start}
-                         </select>
+                        <select class="form-control" name="ws_start" style="width: 200px"> {ws_start} </select>
                     </div>
                     <div class="col-xs-3 selectfieldgroup">
-                        <select class="form-control" name="ws_end" style="width: 150px">
-                            <option value="">&hellip; pick one </option>
-                            {ws_end}
-                       </select>
+                        <select class="form-control" name="ws_end" style="width: 200px"> {ws_end} </select>
                     </div>
                 </div>
                 <br>
@@ -978,7 +944,51 @@ EOT;
 }
 
 
-function fm_publish_warning($params)
+
+function fm_publish_demo($params = array())
+{
+    $html = <<<EOT
+    <div class="container" style="margin-top: -40px;">
+              
+        <div class="alert alert-danger" role="alert">
+            <h4>Results Publish [ DEMO SYSTEM ]</h4>
+        </div>
+        <div class="margin-top-05">
+            <p>The DEMO version of raceManager does not publish results</p>
+            <p>The LIVE version does the following for you: </p>
+            <ul>
+                <li>allows you to select various options for the results </li>
+                <li>archives all the race data</li>
+                <li>produces the race results</li>
+                <li>updates any series results the race is associated with </li>
+                <li>posts the results (race and series) to the club website</li>
+            </ul>
+            
+            <p>If you try and publish the results with boats not finished or given a scoring code (e.g. DNF), 
+            the system will warn you but will let you continue to publish the results - with the exception that 
+            it will not post any results files to the club website</p>
+            
+            <p><b>IMPORTANT:</b>If you are running a race and have problems with the results that you are unable to resolve
+             <b>ALWAYS publish the results</b> as this archives all the race data so that your raceManager support team can 
+             investigate the problem</p>
+        </div>
+        <div class="row">
+            <br>
+            <div class="col-md-offset-10 col-md-2">
+                 <!-- go back to results page -->
+                 <button type="button" id="closeBtn" class="btn btn-success btn-md pull-right" onclick="window.parent.closeModal();">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>&nbsp;&nbsp;Close&nbsp;&nbsp;
+                 </button>
+            </div>
+        </div>
+    </div>
+EOT;
+
+    return $html;
+}
+
+
+function fm_publish_warning($params = array())
 {
     /**
      * This form reports.

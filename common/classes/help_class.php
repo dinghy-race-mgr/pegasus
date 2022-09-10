@@ -51,6 +51,8 @@ class HELP
         format* - race format id
         date* - event date (yyyy-mm-dd)
         */
+
+        //echo "<pre>".print_r($this->constraints,true)."</pre>";
     }
 
 
@@ -62,6 +64,7 @@ class HELP
 
         foreach ($topics as $k=>$topic)
         {
+            
             // if not a pursuit race and this topic is only for pursuit races - remove
             if (!$this->constraints['pursuit'])
             {
@@ -71,7 +74,7 @@ class HELP
                 }
             }
 
-            // multiple races
+            // if not a multi-race day and this topic is only for multiple races - remove
             if ($this->constraints['numrace'] <= 1)
             {
                 if ($topic['multirace'])
@@ -83,22 +86,22 @@ class HELP
             // check other constraints if a reminder page
             if ($this->page == "reminder") {
 
-                //  does it match event name
+                //  if topic has an event name constraint - if current event name doesn't contain constraint string - remove
                 if (!empty($topic['eventname'])) {
                     if (strpos(strtolower($this->constraints['name']), strtolower($topic['eventname'])) === false) {
                         unset($topics[$k]);
                     }
                 }
 
-                // event format
+                // if topic has an event format constraint - if it is not matched by the current event format - remove
                 if (!empty($topic['format'])) {
                     if ($this->constraints['format'] != $topic['format']) {
                         unset($topics[$k]);
                     }
                 }
 
-                // dates
-                //echo "dates: {$topic['startdate']} | {$topic['enddate']} | {$this->constraints['date']}<br>";
+                // if topic has event constraints (start and/or end) - if not mayched by current event date - remove
+                // if ;
                 if (!empty($topic['startdate']) or !empty($topic['enddate'])) {
                     if (!empty($topic['startdate']) and !empty($topic['enddate'])) {
                         if (strtotime($this->constraints['date']) < strtotime($topic['startdate']) or
@@ -143,7 +146,7 @@ EOT;
             {
                 $i++;
                 $panel_bufr.= <<<EOT
-                <div class="panel panel-success">
+                <div class="panel panel-success margin-top-20" style="margin-bottom: 20px">
                      <div class="panel-heading" role="tab" id="heading$i">
                      <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$i" aria-expanded="true" aria-controls="collapse$i" style="text-decoration: none">
                         <p class="panel-title help-title-text" >{$topic['question']}</p>
@@ -167,7 +170,7 @@ EOT;
             <h3 style="margin-top:60px; margin-bottom:20px;">Reminders for this race &hellip; <small> click for more detail</small></h3>
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" >
                         $panel_bufr  
                     </div>
                 </div>
@@ -204,7 +207,7 @@ EOT;
             {
                 $i++;
                 $panel_bufr.= <<<EOT
-                <div class="panel panel-info">
+                <div class="panel panel-info margin-top-20" style="margin-bottom: 20px">
                      <div class="panel-heading" role="tab" id="heading$i">                    
                      <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$i"  aria-expanded="true" aria-controls="collapse$i" style="text-decoration: none">                       
                        <p class="panel-title help-title-text">{$topic['question']} </p>

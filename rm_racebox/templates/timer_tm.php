@@ -401,9 +401,11 @@ EOT;
 
 function timer_tabs($params = array())
 {
+    global $tmpl_o;
+    global $btn_shortenfleet;
+    global $mdl_shortenfleet;
 
     // display for tabbed view
-
     $eventid = $params['eventid'];
 
     $tabs = "";
@@ -502,19 +504,38 @@ EOT;
                         }
                         else      // clickable shorten button
                         {
-                            $laps_btn = <<<EOT
-                            <div class="row margin-top-0">
-                                <div class="col-sm-12 text-left" >
-                                    <div data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true"
-                                         data-title="click here to shorten this fleet at the end of the next lap" data-placement="top" class="btn-group ">
-                                        <a id="shorten$i" href="timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=$i" class="btn btn-info btn-md margin-top-0" style="color: white;" aria-expanded="false" role="button" >
-                                            <span class="glyphicon glyphicon-flag"></span>&nbsp;
-                                            {$fleet['maxlap']} LAPS - click to <b>SHORTEN COURSE</b> for this fleet&nbsp;
-                                        </a>
-                                    </div>
+                            $btn_shortenfleet['fields']['id'] = "shortenfleet$i";
+                            $btn_shortenfleet['fields']['label'] = "{$fleet['maxlap']} LAPS - click to SHORTEN COURSE for this fleet";
+                            $mdl_shortenfleet['fields']['id'] = "shortenfleet$i";
+                            $mdl_shortenfleet['fields']['title'] = "Shorten Course - ".strtoupper($fleet['name'])." fleet";
+                            $mdl_shortenfleet['fields']['body'] = <<<EOT
+                                <h3>Are you sure?</h3>
+                                <div style = "font-size: 1.2em; margin-left: 40px;">
+                                <p> This will shorten this fleet so that the leaders will finish on their CURRENT lap</p>
+                                <p>Please click the blue button to confirm this change</p>
                                 </div>
-                            </div>
+                                <p><i>[Note: to undo this change - use the Change Finish Laps option]</i></p>
 EOT;
+                            $mdl_shortenfleet['fields']['action'] = "timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=$i";
+
+                            $laps_btn.= $tmpl_o->get_template("btn_modal", $btn_shortenfleet['fields'], $btn_shortenfleet);
+                            $laps_btn.= $tmpl_o->get_template("modal", $mdl_shortenfleet['fields'], $mdl_shortenfleet);
+
+
+
+//                            $laps_btn = <<<EOT
+//                            <div class="row margin-top-0">
+//                                <div class="col-sm-12 text-left" >
+//                                    <div data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true"
+//                                         data-title="click here to shorten this fleet at the end of the next lap" data-placement="top" class="btn-group ">
+//                                        <a id="shorten$i" href="timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=$i" class="btn btn-info btn-md margin-top-0" style="color: white;" aria-expanded="false" role="button" >
+//                                            <span class="glyphicon glyphicon-flag"></span>&nbsp;
+//                                            {$fleet['maxlap']} LAPS - click to <b>SHORTEN COURSE</b> for this fleet&nbsp;
+//                                        </a>
+//                                    </div>
+//                                </div>
+//                            </div>
+//EOT;
                         }
 
 
@@ -950,14 +971,14 @@ EOT;
     $bufr.= <<<EOT
     <div class="row"></div>
     <div class="pull-right margin-top-20">
-        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span>&nbsp;Update Lap Times</button>
+        <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-ok"></span>&nbsp;UPDATE Lap Times</button>
     </div>
     </div>
 EOT;
 
     $html = <<<EOT
     <div class="alert well well-sm" role="alert">
-        <p class="text-info"><b>edit the lap times and click the update button to save them</b></br> use hh:mm:ss for elapsed time (e.g. 00:46:32)</p>
+        <p class="text-info"><b>edit the lap times and click the UPDATE button to save them</b></br> use hh:mm:ss for elapsed time (e.g. 00:46:32)</p>
     </div>
     <form id="editlapForm" class="form-inline" action="timer_editlaptimes_pg.php?pagestate=submit" method="post"
         data-fv-framework="bootstrap"
@@ -977,17 +998,30 @@ EOT;
 
 function edit_laps_success($params=array())
 {
+    if ($params['changes'])
+    {
+        $msg = <<<EOT
+            <b>Successful changes</b> were made to the lap times for {boat}.<br><span style="text-indent: 30px;">{msg}</span>
+EOT;
+    }
+    else
+    {
+        $msg = <<<EOT
+            <b>No changes</b> were made to the lap times for {boat}.
+EOT;
+    }
+
     $html = <<<EOT
     <div class="alert alert-success" role="alert" style="margin-top: 30px">
-        <p style="font-size: 100%;"><b>Successful changes</b> were made to the lap times for {boat}.<br></p>
-        <span style="text-indent: 30px;">{msg}</span>
-        <p>Use the <b>BACK</b> button to make more changes or the <b>Close</b> button at the top of the page to return to the Timer page</p>
+        <p style="font-size: 100%;">$msg</span></p>
+        <br>
+        <p>Use the <b>More Changes</b> button to make more changes or the <b>Finished</b> button to return to the Lap Timing page</p>
     </div>
 
     <div class="row pull-right">
-        <a href="timer_editlaptimes_pg.php?eventid={eventid}&entryid={entryid}&pagestate=init" class="btn btn-primary btn-md active" role="button">
+        <a href="timer_editlaptimes_pg.php?eventid={eventid}&entryid={entryid}&pagestate=init" class="btn btn-default btn-md active" style="width:200px" role="button">
         <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span>
-         Back </a>
+         More Changes &hellip; </a>
     </div>
 
 EOT;
@@ -1002,8 +1036,7 @@ function edit_laps_error($params=array())
     <p style="font-size: 100%;"><b>No changes</b> were made to the lap times for {boat}<br></p>
     <p>The following problems were found with the times you entered .</p>
     <span style="text-indent: 30px;">{msg}</span>
-    <p>Use the <b>BACK</b> button to try again or the <b>Close</b> button
-    at the top of the page to return to the Timer page</p>
+    <p>Use the <b>More Changes</b> button to make more changes or the <b>Finished</b> button to return to the Lap Timing page</p>
     </div>
     <div class="row pull-right">
         <a href="timer_editlaptimes_pg.php?eventid={eventid}&entryid={entryid}&pagestate=init" class="btn btn-primary btn-md active" role="button">

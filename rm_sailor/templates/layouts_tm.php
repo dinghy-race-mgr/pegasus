@@ -21,7 +21,7 @@
             <meta name="author" content="">
 
             
-            <link rel="shortcut icon" href="{loc}/common/images/favicon.ico">             
+            <link   rel="icon"    href="{loc}/common/images/logos/favicon.png">             
             <link rel="stylesheet"    href="{loc}/common/oss/bootstrap341/css/{theme}bootstrap.min.css" >      
             <link rel="stylesheet"    href="{loc}/common/oss/bs-dialog/css/bootstrap-dialog.min.css">
                     

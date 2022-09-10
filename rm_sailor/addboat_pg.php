@@ -65,7 +65,7 @@ $addboatfields = array(
 $class_o = new BOAT($db_o);
 $class_list = $class_o->boat_getclasslist(true);
 $class_lut  = u_selectlist($class_list, "");
-$skill_lut = u_selectcodelist($db_o->db_getsystemcodes("competitor_skill"), "");
+$skill_lut  = u_selectcodelist($db_o->db_getsystemcodes("competitor_skill"), "default", false);
 
 // assemble and render page
 $_SESSION['pagefields']['header-center'] = $_SESSION['option_cfg'][$page]['pagename'];

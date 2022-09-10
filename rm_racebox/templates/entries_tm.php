@@ -80,12 +80,12 @@ function fm_addclass($params = array())
 
 // get codes required for select fields
     $codes = $boat_o->boat_getclasscodes();
-    $category_list  = u_selectcodelist($codes['category'], "default");
-    $crew_list      = u_selectcodelist($codes['crew'], "default");
-    $rig_list       = u_selectcodelist($codes['rig'], "default");
-    $spinnaker_list = u_selectcodelist($codes['spinnaker'], "default");
-    $engine_list    = u_selectcodelist($codes['engine'], "default");
-    $keel_list      = u_selectcodelist($codes['keel'], "default");
+    $category_list  = u_selectcodelist($codes['category'], "default", false);
+    $crew_list      = u_selectcodelist($codes['crew'], "default", false);
+    $rig_list       = u_selectcodelist($codes['rig'], "default", false);
+    $spinnaker_list = u_selectcodelist($codes['spinnaker'], "default", false);
+    $engine_list    = u_selectcodelist($codes['engine'], "default", false);
+    $keel_list      = u_selectcodelist($codes['keel'], "default", false);
 
 // form instructions
     $html = <<<EOT
@@ -406,6 +406,17 @@ EOT;
             $rows = "";
             foreach($entries[$i] as $entry)
             {
+                if($entry['code'] == "DUT")
+                {
+                    $duty_btn_style = "btn-danger";
+                    $duty_btn_title = "duty points set - to unset use timer page";
+                }
+                else
+                {
+                    $duty_btn_style = "btn-success";
+                    $duty_btn_title = "give duty points";
+                }
+
                 $entryname = "{$entry['class']}  -  {$entry['sailnum']}";
                 $rows.= <<<EOT
                 <tr class="table-data">
@@ -431,8 +442,8 @@ EOT;
                        </span>
                     </td>
                     <td style="" >
-                       <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="give duty points" data-placement="top">
-                       <a type="button" class="btn btn-success btn-xs" data-toggle="modal"
+                       <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="$duty_btn_title" data-placement="top">
+                       <a type="button" class="btn $duty_btn_style btn-xs" data-toggle="modal"
                                rel="tooltip" data-original-title="give duty points" data-placement="bottom" data-target="#dutyModal"
                                data-entryid="{$entry['id']}"
                                data-entryname="$entryname" >

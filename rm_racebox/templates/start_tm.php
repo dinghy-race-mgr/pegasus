@@ -63,7 +63,7 @@ function fm_stoptimer_ok($param=array())
 {
     $html = <<<EOT
         <!-- instructions -->
-        <h4 class="text-danger"><b>Are you REALLY REALLY sure?</b></h4>
+        <h4 class="text-danger"><b>Are you REALLY &nbsp;<span style="font-size: 1.3em">REALLY</span>  &nbsp;<span style="font-size: 1.6em">REALLY</span> sure?</b></h4>
         <p><b>If you reset the timer you will lose any lap timings you have made.</b></p>
         <p>This should only be necessary if you have abandoned the start and are starting the entire sequence again
         - if you started the timer at the wrong time  - use the "forgot to start timer" to reset the correct start time,

@@ -1,0 +1,568 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pages>
+
+    <page>
+        <category>reminder</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>5</rank>
+        <active>1</active>
+        <question>Using the SYC Course Guide</question>
+        <answer><![CDATA[
+            <p>The Sailing Committee has published suggested courses for each of the cardinal wind directions. The
+                courses also include options for light winds and low tide conditions. Each course is shown exactly as it
+                should be displayed on the course board and has some tips on how to position the inflatable buoys.
+            </p>
+
+            <p>A paper copy of the course guide should be on the OOD desk in the race box -
+                <a href="https://www.starcrossyc.org.uk/racing/apps/course-guide" target="_blank">there is an online
+                    version here
+                </a>
+            </p>
+            <p>An online copy of the buoy locations <a
+                    href="https://www.starcrossyc.org.uk/racing/essentials/buoy-chart" target="_blank">can be found here
+            </a>
+            </p>
+        ]]></answer>
+        <notes><![CDATA[
+        <p>As OOD you are of course free to come up with your own race course - but in this case please try to check
+            with a regular sailor from each fleet that the proposed course is OK</p>
+        ]]></notes>
+    </page>
+
+    <page>
+        <category>reminder</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>5</rank>
+        <active>1</active>
+        <question>Some reminders on running a pursuit race</question>
+        <answer>TO BE COMPLETED</answer>
+        <notes></notes>
+    </page>
+
+    <page>
+        <category>reminder</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>6</rank>
+        <active>1</active>
+        <question>Managing Multiple Races</question>
+        <answer><![CDATA[
+            <p>Some suggestions if you are scheduled to run more than one race in a day at Starcross YC.
+            <p>
+            <p>First of all when setting the course for the first race - consider what changes you will make to the
+                course for subsequent races to keep it interesting for the competitors. It is generally relatively easy
+                to adjust the amount of running / broad reaching /and close reaching by simply changing a single buoy or
+                alternatively moving the inflatable buoys. Making these small changes will make it fairer for all types
+                of boat racing.
+            </p>
+            <p>Organise a briefing for competitors before the first race. Explain the following:</p>
+            <ul>
+                <li>you will try to turn around the races quickly - the aim will be that the warning signal for the
+                    second race will be made within 5 minutes of the last boat finishing the first race. If this is not
+                    possible a postponement will be signalled - the postponement will be cancelled no less than 3
+                    minutes before the warning signal for the first start.
+                </li>
+                <li>you will likely change the course between races - watch for Flag C and a sound signal</li>
+            </ul>
+            <p>
+                <b>FIRST RACE</b> - run this as usual - selecting the relevant race on the raceManager racebox PROGRAMME page. Do not let
+                this race overrun and be ready to shorten course as necessary. While the final few boats are finishing -
+                ask the safety boats to adjust the course for the second race.
+            </p>
+            <p>
+            Once all the boats have finished, PUBLISH the results (on the results page) even if there are still some
+                issues to resolve (this has the effect of taking a backup ciopy of all the results for safety). Take
+                note of any outstanding issues - but leave them until all the races are complete. Do NOT close the race
+                at this stage.
+            </p>
+            <p>
+                <b>SECOND RACE</b> - go back to the PROGRAMME page and select the second race and run it as normal. To restart the lights
+                box turn the power off for 30 seconds and then power on. You can now start the race as usual. Once all
+                the boats have finished this race, PUBLISH the results but do NOT close the race
+            </p>
+            <p>Now return to the racebox PROGRAMME page and select the first race again. Resolve any outstanding
+                issues with the results for this race and republish if necessary. You can now CLOSE this race. Repeat
+                the process for race 2.
+            </p>
+        ]]></answer>
+        <notes><![CDATA[
+            <p>Note: leaving outstanding results issues until all races have bee compleed takes the pressure off the OOD
+                team trying to sort out the result for Race 1 while starting Race 2. Publishing the interim results
+                immediately after each race is complete - before correcting any issues - has the effect of creating a
+                safety backup of the data. It is a good idea to select "no upload to the website" when you select the
+                interim publishing option.
+            </p>
+        ]]></notes>
+    </page>
+
+    <page>
+        <category>pickrace</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>0</rank>
+        <active>1</active>
+        <question>what is the PROGRAMME page for?</question>
+        <answer><![CDATA[
+            <p>This page presents the race(s) to be run today and allows you to pick the race you want to deal with. To
+                access the race just click the <b>RUN RACE</b> button and it will be presented in the browser window.
+            </p>
+            <p>To switch to another race from within raceManager - you can go back to this page by clicking the green <b>
+                racebox: “racename”
+            </b> link at the top left of each page. To go back to the race click the <b>BACK TO RACE</b> button.
+            </p>
+            <p>To check the format of any race on today’s programme - click the black ‘list’ icon within the relevant
+                race display.
+            </p>
+            <p>If the race you want to run is not shown then you can use the <b>ADD NEW RACE</b> button to add the race
+                to the raceManager system.
+            </p>
+        ]]></answer>
+        <notes><![CDATA[
+            <p>Note:<p></p>At Starcross YC it will be <u>very unusual</u> if you need to add a new race to the programme
+                - probably worth checking with a member of the Sailing Committee before you do this
+            </p>
+            ]]></notes>
+    </page>
+
+    <page>
+        <category>pickrace</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>5</rank>
+        <active>1</active>
+        <question>Where can I find the Sailing Instructions?</question>
+        <answer><![CDATA[
+            <p>The Starcross YC Sailing Instructions for club racing can be found on the club website <a
+                href="https://www.starcrossyc.org.uk/racing/essentials/sailing-instructions-v3" target="_BLANK">on this
+            page
+        </a>
+        ]]></answer>
+        <notes><![CDATA[
+            <p>If you are running an event open to non-club members then it may have specific sailing instructions which
+            may be found on the SYC events page <a href="https://www.starcrossyc.org.uk/open-events" target="_BLANK">on
+            this page
+        </a>
+        ]]></notes>
+    </page>
+
+    <page>
+        <category>pickrace</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>10</rank>
+        <active>1</active>
+        <question>What course should I use for each fleet</question>
+        <answer><![CDATA[
+            <p>The SYC Course Guide gives suggestions for courses to use for dinghies and multihulls. There should be a
+                copy of the course guide on the OOD desk.
+            </p>
+            <p>In general you should try and avoid the dinghies using the same marks - especially in any breeze. If you
+                want to lay marks for the dinghy fleets and the multihulls in the same area - the multihull mark should
+                have a black band.
+            </p>
+            <p>The multihulls prefer a larger course and a windward/leeward configuration if the wind direction allows
+                it. Typically the dinghy courses will be 'inside' the multihull course.
+            </p>
+        ]]></answer>
+        <notes></notes>
+    </page>
+
+
+    <page>
+        <category>race</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>0</rank>
+        <active>1</active>
+        <question>what is the STATUS page for?</question>
+        <answer><![CDATA[
+            <p>This page gives you information on the race you are about to run - specifically the race format (start
+                sequence, signals etc.). It also allows you to change some details (e.g. name of race officer)
+            </p>
+            <p>It also allows you to:</p>
+            <ul>
+                <li>Set the number of laps for each fleet</li>
+                <li>Send an email to the team responsible for managing your raceManager system</li>
+                <li>Mark the race as ABANDONED or CANCELLED</li>
+                <li>CLOSE the race when you have accounted for all competitors</li>
+                <li>RESET the entire race if you want to start again</li>
+            </ul>
+            <p>You will normally use this page at the beginning of your race officer duty to check the race format and
+                set laps - and at the end of the race to indicate if it was abandoned / cancelled or to close a
+                successfully completed race. You might also wish to send a message to the raceManager team to explain
+                any problems you had with the software or issues with the results.</p>
+            ]]></answer>
+        <notes></notes>
+    </page>
+
+    <page>
+        <category>race</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>5</rank>
+        <active>1</active>
+        <question>how do I reset a race?</question>
+        <answer><![CDATA[
+            <p>If you really want to start the entire race again in raceManager there is a reset option on the STATUS
+                page. Click the
+                RESET button and then enter the confirmation word and click the submit button to activate the reset
+            </p>
+            <p>You will lose all the entries and laptimes that you have entered. However if you are using the SAILOR
+                application for collecting entries these will still be available for you to reenter in the normal
+                way.
+            </p>
+
+        ]]></answer>
+        <notes><![CDATA[
+            <p>
+                <b>DO NOT USE THIS APPROACH if you have already started a fleet</b>
+                - if you still want to start the entire race again do the following, signal abandonment (instruct the
+                Safety Boats to
+                inform the competitors) and
+            </p>
+            <ul>
+                <li>stop the start sequence on the lights box (power off the lights box and then on again)</li>
+                <li>signal abandonment - red and orange beacons (instruct the Safety Boats to inform the competitors)
+                </li>
+                <li>use the raceManager RESET button as described above - then reload entries</li>
+                <li>change the course if necessary - use Flag C + two sound signals</li>
+                <li>restart the start sequence on the lights system and on raceManager - and run the rest of the race as
+                    normal
+                </li>
+            </ul>
+        ]]></notes>
+    </page>
+
+    <page>
+        <category>race,timer,results</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>10</rank>
+        <active>1</active>
+        <question>how do I ABANDON a race?</question>
+        <answer><![CDATA[
+            <p>You can abandon a race at any time from the STATUS page - just click the Abandon button. You can also change
+                your mind and unabandon the race as long as you haven't missed recording lap times
+            </p>
+            <p>Once the race is abandoned you can then CLOSE the race - do NOT publish the partial results.</p>
+        </answer>
+        <p>
+            <b>IMPORTANT ... at Starcross YC our Sailing Instructions allow us to CURTAIL a club race rather than
+                abandon it.
+            </b>
+        </p>
+        <p>You SHOULD use this approach if all the boats still racing in a fleet have finished at least one lap as
+            this allows us to salvage a race result from a race that would otherwise be lost. It is most often used
+            if the wind dies to nothing towards the end of a race. To CURTAIL a race go to the results page and
+            use the Change Finish Lap option - this will have the following effect:
+        </p>
+        <ul>
+            <li>average lap racing: set the finish lap to the last one that the leading boat in the fleet
+                completed
+            </li>
+            <li>handicap/class racing: set the finish lap to the one that all boats in the fleet have completed</li>
+        </ul>
+        ]]></answer>
+        <notes><![CDATA[
+        <p>Note: This function can also be useful if you have forgotten to shorten the race in raceManager, but have
+            signalled a finish to competitors. Simply set the finish lap to the shortened number of laps.</p>
+            ]]></notes>
+    </page>
+
+    <page>
+        <category>entries</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>0</rank>
+        <active>1</active>
+        <question>what is the ENTRIES page for?</question>
+        <answer><![CDATA[
+            <p>This page allows you to enter boats into the race and manage the entries.</p>
+            <p>If you are using the sailor signon system in raceManager then you can use the LOAD ENTRIES button to load
+                everybody who signs on. When the button flashes red it means that there are some entries waiting to be
+                loaded.
+            </p>
+            <p>Alternatively you can use the ENTER BOATS button to search the database for boats to enter. You can
+                search for the sail number, class name, or helm’s surname. The system will find all matches in the
+                database and then you can select the boats to enter.
+            </p>
+            <p>The entries will be shown for each fleet as a separate tab - click the tab to see a fleet entries. You
+                can edit an entry - changing the crew, sail number, or handicap for this race only. You can also mark a
+                competitor for doing a club duty - they will be allocated points for the race according to the way your
+                raceManager system is configured.
+            </p>
+            <p>If you have new boats (i.e not in the database), or a new class of boat you should use the REGISTER NEW
+                CLASS and/or REGISTER NEW BOAT buttons to add the details to the database. Once in the database you can
+                enter them in the normal way.
+            </p>
+            <p>Finally you can use the PRINT ENTRIES button to get a list of entries in a variety of formats.</p>
+        ]]></answer>
+        <notes><![CDATA[
+            <p>Note:<p></p>When you press the timer start button on the START page it will collect any late entries from
+                the sailor signon system automatically.
+            </p>
+        ]]></notes>
+    </page>
+
+    <page>
+        <category>entries</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>5</rank>
+        <active>1</active>
+        <question>I can't find the boat I want to enter</question>
+        <answer><![CDATA[
+            <p>This generally only occurs if your club does not use the raceManager SAILOR application to allow the
+                competitor to create their own entry or if you hae a new competitor that isn't familiar with the SAILOR application.
+            </p>
+
+            <p>The Enter Boat button on the ENTRIES page allows you to search using sail number, class name, or helm
+                surname. If you cannot find the boat you are looking for it is probably because it is not in the
+                raceManager database. In this case you will need to add the new boat using the Register New Boat button
+                - just fill in the form.
+            </p>
+            <p>Important - after registering the new boat you will still need to use the Enter Boat button to enter it in the normal
+                way.
+            </p>
+        ]]></answer>
+        <notes><![CDATA[
+            <p>In very rare cases you may have a new boat which belongs to a class that isn't recognised by raceManager.
+                In this case use the Register Class button first to create the new class. Then use he Register New Boat
+                button to create the new boat in the new class, and finally use the Enter Boat button to ener it into
+                the race.
+            </p>
+            ]]></notes>
+    </page>
+
+    <page>
+        <category>start</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>0</rank>
+        <active>1</active>
+        <question>what is the START page for?</question>
+        <answer><![CDATA[
+            <p>This page is used to start the race timer and manage the start sequence.</p>
+            <p>Use the START TIMER button to start the raceManager clock at the same time as you make the first WARNING
+                signal (e.g. 6 minute gun) for the first fleet in the start sequence. This will start the master
+                countdown clock - and the individual fleet start countdowns. Once the countdowns to each start is
+                complete the clocks will show the elapsed time for each fleet.
+            </p>
+            <p>If you want to stop the clock and reset the start sequence (e.g if you decide to change the course) -
+                click the Timer button again (it will ask you to confirm the action by typing “stop”).
+            </p>
+            <p>30 seconds before each fleet starts the “Start Infringements” and “General Recall” buttons will be
+                enabled. Use the START INFRINGEMENTS button to record start line infringements such as OCS, DNS, DNC
+                etc.. If you decide to have a general recall use the GENERAL RECALL button to enter the wall clock time
+                for the actual start time of the fleet in question</p>
+        ]]></answer>
+        <notes><![CDATA[
+            <p>Note:</p>
+            <ul>
+                <li>If you forget to start the Timer when you begin the flags/lights start sequence - use the “Forgot to
+                    start the timer” button. This will allow you to enter the wall clock time that you actually began
+                    the start sequence.
+                </li>
+                <li>The timer displays for each fleet will flash 30 seconds before each start to alert you to an
+                    upcoming start .
+                </li>
+            </ul>
+            ]]></notes>
+    </page>
+
+    <page>
+        <category>start</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>5</rank>
+        <active>1</active>
+        <question>I forgot to start the Timer</question>
+        <answer><![CDATA[
+            <p>This is a relatively common mistake.</p>
+            <p>use the "Forgot to Start Timer" button on the TIMER page. This will allow you to enter the clock time
+                (hh:mm:ss) for the time you should have started the timer - i.e. the time you made the first signal in
+                the start sequence.
+            </p>
+        ]]></answer>
+        <notes><![CDATA[
+            <p>Obviously you should try to input an accurate time for the first signal - but it does not need to be
+                accurate to within a few seconds - small errors are unlikely to have a significant impact on the results.
+            </p>
+        ]]></notes>
+    </page>
+
+    <page>
+        <category>start</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>10</rank>
+        <active>1</active>
+        <question>How do I handle a general recall?</question>
+        <answer><![CDATA[
+            <p>If you signal a general recall for a fleet - that fleet must restart after remaining fleets have
+                started.   Use the following procedure:
+            </p>
+            <ul>
+                <li>restart the lights system (power off / power on) - set the number of starts to 1 (or however many fleets you have recalled)</li>
+                <li>start the recalled start sequence on the light box (take a note of the time of the warning signal</li>
+                <li>if you want to use the black flag - hoist at the 3 minute sound signal</li>
+                <li>on the START page in raceManager click the General Recall option for the fleet(s) in question - enter the clocktime (hh:mm:ss) of the start gun for the recalled fleet (i.e. the time you notes + 6 minutes)</li>
+                <li>. . . continue to run the race as normal</li>
+            </ul>
+        ]]></answer>
+        <notes></notes>
+    </page>
+
+    <page>
+        <category>timer</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>0</rank>
+        <active>1</active>
+        <question>what is the TIMER page for?</question>
+        <answer><![CDATA[
+            <p>This is the page where you record lap times for each boat - and you will spend most of the race on this
+                page.
+            </p>
+            <p>The default display uses the Tabbed fleet organisation - click the relevant tab to view a fleet. To time
+                a lap - just click the watch next to the relevant boat and the lap time will appear. Colour shading is
+                used to indicate which boats are no longer racing, or on their last lap, or finished.
+            </p>
+            <p>You can also do the following for each boat:</p>
+            <ul>
+                <li>Delete (UNDO) the last lap time recorded</li>
+                <li>Set a scoring code (e.g. DNF, NSC etc.)</li>
+                <li>Edit the lap times</li>
+                <li>Add the boat to the ‘bunch’ list to help manage</li>
+                <li>Finish the boat at a lap other than the finish lap - average lap racing only.</li>
+            </ul>
+            <p>To shorten the course for one fleet - click the blue button above the list of boats - the race will then
+                finish on the next lap. Alternatively you can click the SHORTEN ALL FLEETS button on the right of the
+                page. This will shorten all fleets at their next lap.
+            </p>
+            <p>If you have many fleets and many competitors you may benefit from using one of the alternative TIMER
+                views - click the CHANGE VIEW option on the black menu bar. This will then give you the option of
+                condensed views which will allow you to see all boats racing without having to scroll or change tabs.
+                The three condensed views are organised by:
+            </p>
+            <ul>
+                <li>
+                    <b>Sail Number</b>
+                    - best option for lots of boats (50+)
+                </li>
+                <li>
+                    <b>Class</b>
+                    - best option if you have relatively few classes
+                </li>
+                <li>
+                    <b>Fleet</b>
+                    - best option if fleets tend not to be mixed up on the race course
+                </li>
+            </ul>
+            <p>Most of the functions of the tabbed display are available. Time laps by clicking the relevant boat button
+                - or use the gear wheel menu to get the other functions. You can switch between the different views at
+                any time. If you have relatively few classes the class view is probably the best option.</p>
+            ]]></answer>
+        <notes><![CDATA[
+            <p>Note:</p>
+            <ul>
+                <li>The BUNCH facility is very useful to deal with groups of boats crossing the line in a bunch -
+                    further details are available in the separate help topic
+                    <b>“how do I use the BUNCH facility?”</b>
+                </li>
+            </ul>
+        ]]></notes>
+    </page>
+
+    <page>
+        <category>timer</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>5</rank>
+        <active>1</active>
+        <question>I forgot to Shorten the course?</question>
+        <answer><![CDATA[
+            <p>It is a common mistake to signal a shortened course but forget to shorten the course in raceManager. You
+                signal the boats finish with the hooter, but they are not finished by raceManager
+            </p>
+            <p>This can easily be corrected after the race. On the RESULTS page find the "Change Finish Lap" function on
+                the right hand side of the screen. Click this and it will show the finish lap set for each fleet. Simply
+                set the actual finish lap for the fleet(s) you forgot to shorten and raceManager will automatically set
+                the boats to finished.
+            </p>
+            <p>For example if you had originally set the finish lap for fleet 1 to lap 4, but actually finished the
+                boats on lap 3 - just change the finish lap to 3.
+            </p>
+        ]]></answer>
+        <notes></notes>
+    </page>
+
+    <page>
+        <category>timer</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>10</rank>
+        <active>1</active>
+        <question>How do I correct a lap time?</question>
+        <answer><![CDATA[
+            <p>On the TIMER page - using the 'tabbed' view find the boat for which you want to make the correction.
+                Click the edit icon (pencil) and the lap times recorded for that boat will be shown. Edit the incorrect
+                lap times by entering the correct elapsed time in hh:mm:ss format.
+            </p>
+            <p>When you have completed the corrections - click the Update Lap Times button to apply them.</p>
+            <p>If you want to add a missed lap - just click the boat record to get a new lap - then use the edit button
+                again to make the relevant corrections to each lap.
+            </p>
+        ]]></answer>
+        <notes><![CDATA[
+            <p>If the error you want to correct is the boat's finishing time (i.e. the last lap) - the edit function on the
+                RESULTS page provides a more comprehensive mechanism to correct this time and make other changes (e.g. no. of laps, apply
+                penalty points, change PY number, add crew name etc.)
+            </p>
+        ]]></notes>
+    </page>
+
+    <page>
+        <category>pursuit</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>0</rank>
+        <active>1</active>
+        <question>what is the PURSUIT page for?</question>
+        <answer>TO BE COMPLETED</answer>
+        <notes><![CDATA[]]></notes>
+    </page>
+
+    <page>
+        <category>results</category>
+        <author>Mark Elkington - SYC</author>
+        <rank>0</rank>
+        <active>1</active>
+        <question>what is the RESULTS page for?</question>
+        <answer><![CDATA[
+            <p>This page allows you to check the race results and correct any mistakes, before publishing them . Once
+                published you can print the race results (and updated series results where relevant). The results will
+                also be made available on the club website.
+            </p>
+            <p>The results for each fleet are accessed in the normal way using the relevant tab at the top of the page.
+                The tabs include an indication of whether the results are complete or have problems that need resolving
+                (normally one or more boats who haven’t been finished or given a scoring code such as DNF). When you
+                click a fleet tab the system, when relevant, will present a list of possible problems with the results.
+            </p>
+            <p>You can correct the results - setting scoring codes and using the edit option to update details about the
+                competitor and their finishing time and no. of laps completed.
+            </p>
+            <p>Once you are happy the results are complete and correct - use the PUBLISH button to produce the results
+                files that you can print and will be automatically posted to the club website. As part of this process
+                you will need to add information on the wind conditions during the race and select some options for the
+                results process.</p>
+            ]]></answer>
+        <notes><![CDATA[
+            <p>Note:</p>
+            <ul>
+                <li>You can correct and publish the results multiple times as necessary until the race is CLOSED on the
+                    status page.
+                </li>
+                <li>You can publish the results even if there are still outstanding warnings - but the results files
+                    will not be posted to the website - use the REPORT ISSUE button to send a message to your
+                    raceManager team.
+                </li>
+                <li>If you want to correct any of the lap times other than the finishing lap go to the TIMER page and
+                    use the edit option for the competitor in question.
+                </li>
+                <li>The results page gives you an option to change the lap used to finish each fleet - this can be
+                    useful if you signalled a shortened course and finished the boats, but forgot to record that
+                    shortened course in raceManager. Further details are provided in the separate help topic “I forgot
+                    to shorten the course”.
+                </li>
+            </ul>
+            ]]></notes>
+    </page>
+
+</pages>
+
+

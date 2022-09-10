@@ -1021,6 +1021,8 @@ function u_growlProcess($eventid, $page)
 {
     //echo "<pre>Current Growls: ".print_r($_SESSION["e_$eventid"]['growl'],true)."</pre>";
 
+    key_exists("racebox_growl_display_time", $_SESSION) ? $growl_delay = $_SESSION['racebox_growl_display_time'] : $growl_delay = 4000;
+
     $att_default = array(
        "msg"             => "oops no message!",
        "glyph"           => true,
@@ -1030,7 +1032,7 @@ function u_growlProcess($eventid, $page)
        "offset_amount"   => "20",
        "align"           => "left",
        "width"           => "800",
-       "delay"           => "4000",
+       "delay"           => $growl_delay,
        "allow_dismiss"   => "true",
        "stackup_spacing" => "20",
     );
@@ -1082,9 +1084,17 @@ EOT;
 }
 
 
-function u_selectcodelist($codelist, $selected="")
+function u_selectcodelist($codelist, $selected = "", $nocode = true)
 {
-    $bufr = "<option value=\"\">-- no code --</option>";
+    $bufr = <<<EOT
+        <option value="" disabled selected hidden>&hellip; please select &hellip;</option>
+EOT;
+
+    if ($nocode)
+    {
+        $bufr.= "<option value=\"\">-- no code --</option>";
+    }
+
     foreach ($codelist as $opt)
     {
         $selectstr = "";

@@ -66,7 +66,7 @@ unset($_SESSION["e_$eventid"]['enter_err']);
 
 // ----- navbar -----------------------------------------------------------------------------
 $nav_fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
-$nav_params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
+$nav_params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink'], "num_reminders" => $_SESSION["e_$eventid"]['num_reminders']);
 $nbufr = $tmpl_o->get_template("racebox_navbar", $nav_fields, $nav_params);
 
 // ----- left hand panel --------------------------------------------------------------------

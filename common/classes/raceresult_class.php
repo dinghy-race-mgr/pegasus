@@ -186,7 +186,7 @@ class RACE_RESULT
         empty($where_2) ? $where = $where_1 : $where = "( ".$where_1.") OR ( ".$where_2." )";
 
         $sql = "SELECT * FROM t_resultfile WHERE $where";
-        u_writedbg($sql, __CLASS__, __FUNCTION__, __LINE__);
+        //u_writedbg($sql, __CLASS__, __FUNCTION__, __LINE__);
         $files = $this->db->db_get_rows($sql);
         return $files;
     }

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <HTML {$html_attrs}><HEAD> 
+
 <META http-equiv="X-UA-Compatible" content="IE=Edge"> 
 <META name="viewport" content="width=device-width, initial-scale=1.0"> <TITLE>
 {$pagetitle} </TITLE> 
 <META http-equiv="Content-Type" content="text/html; charset=utf-8"> 
-<LINK href="styles/default.css" rel="stylesheet" type="text/css"> {BEGIN rtlCSS}<LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">{END rtlCSS} {BEGIN styleCSSFiles}<LINK href="{$stylepath}" rel="stylesheet" type="text/css">{END styleCSSFiles} 
-<META name="GENERATOR" content="MSHTML 11.00.10570.1001">      
+<LINK href="../../common/images/logos/favicon.png" rel="icon"> <LINK href="styles/default.css" rel="stylesheet" type="text/css"> {BEGIN rtlCSS}<LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">{END rtlCSS} {BEGIN styleCSSFiles}<LINK href="{$stylepath}" rel="stylesheet" type="text/css">{END styleCSSFiles} 
+<META name="GENERATOR" content="MSHTML 11.00.10570.1001">     
 </HEAD> 
 <BODY class="{$stylename} function-list" {$bodyattrs}>{BEGIN body}
 
@@ -14,48 +15,45 @@
         {$containerCss}
       </STYLE>
  {BEGIN container_menu}<NAV class="navbar navbar-default" data-container="menu" data-pageid="{$pageid}" {$menu_chiddenattr}>
-{BEGIN container_hdr}<DIV class="navbar-header" data-container="hdr" data-pageid="{$pageid}" {$hdr_chiddenattr}>{BEGIN logo_block}<A class="navbar-brand" href="{$home_link}" data-brick="logo" data-pageid="{$pageid}" {$logo_hiddenattr}>{$logo} </A> {END logo_block}{BEGIN collapse_block}<BUTTON class="navbar-toggle collapsed" type="button" data-brick="bsnavbarcollapse" data-pageid="{$pageid}" data-target=".bs-navcontrolled" data-runner-toggle="collapse" {$bsnavbarcollapse_hiddenattr}><SPAN class="sr-only"> Toggle navigation </SPAN> 
-<SPAN class="icon-bar"></SPAN></BUTTON> {END collapse_block}</DIV>
+{BEGIN container_hdr}<DIV class="navbar-header" data-container="hdr" data-pageid="{$pageid}" {$hdr_chiddenattr}>{BEGIN logo_block}<A class="navbar-brand" href="{$home_link}" data-brick="logo" data-pageid="{$pageid}" {$logo_hiddenattr}>{$logo}</A> {END logo_block}{BEGIN collapse_block}<BUTTON class="navbar-toggle collapsed" type="button" data-brick="bsnavbarcollapse" data-pageid="{$pageid}" data-target=".bs-navcontrolled" data-runner-toggle="collapse" {$bsnavbarcollapse_hiddenattr}><SPAN class="sr-only">Toggle 
+ navigation</SPAN>	<SPAN class="icon-bar"></SPAN></BUTTON>	{END collapse_block}</DIV>
 {END container_hdr}{BEGIN container_menu_1}<DIV class="bs-navform navbar-collapse bs-navcontrolled bs-hidden-xs" aria-expanded="false" data-container="menu_1" data-pageid="{$pageid}" {$menu_1_chiddenattr}>
 {BEGIN menu_block}{$menu main horizontal}{END menu_block}{BEGIN container_more}<DIV class="navbar-right navbar-form" data-container="more" data-pageid="{$pageid}" {$more_chiddenattr}>
-{BEGIN more_list}<DIV class="btn-group bs-navsection" data-brick="morebutton" data-pageid="{$pageid}" {$morebutton_hiddenattr}><BUTTON class="btn btn-default dropdown-toggle" aria-expanded="false" aria-haspopup="true" type="button" data-toggle="dropdown"><SPAN class="glyphicon glyphicon-cog"> 
-</SPAN> <SPAN class="caret"></SPAN> </BUTTON> 
+{BEGIN more_list}<DIV class="btn-group bs-navsection" data-brick="morebutton" data-pageid="{$pageid}" {$morebutton_hiddenattr}><BUTTON class="btn btn-default dropdown-toggle" aria-expanded="false" aria-haspopup="true" type="button" data-toggle="dropdown"><SPAN class="glyphicon glyphicon-cog"></SPAN> <SPAN class="caret"></SPAN> </BUTTON> 
 <UL class="dropdown-menu">
-  {BEGIN editselected_link}<LI class="massButton{$id} disabled"><A href="#" {$editselectedlink_attrs} {$editselectedlink_span}> 
-  Edit selected </A></LI>
-  {END editselected_link}{BEGIN deleteselected_link}<LI class="massButton{$id} disabled"><A href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}> 
-  Delete selected </A></LI>
+  {BEGIN editselected_link}<LI class="massButton{$id} disabled"><A href="#" {$editselectedlink_attrs} {$editselectedlink_span}>Edit 
+    selected</A></LI>
+  {END editselected_link}{BEGIN deleteselected_link}<LI class="massButton{$id} disabled"><A href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete 
+    selected</A></LI>
   {END deleteselected_link}<LI class="divider" role="separator"></LI>
-  {BEGIN searchPanelTopButtons}<LI><A id="showOptPanel{$id}" href="#"> Show search panel </A></LI>
+  {BEGIN searchPanelTopButtons}<LI><A id="showOptPanel{$id}" href="#">Show search panel</A></LI>
   {END searchPanelTopButtons}<LI class="divider" role="separator"></LI>
-  {BEGIN saveSeachButton}<LI><A id="saveSearch{$id}" href="#"> Save search </A></LI>
-  {END saveSeachButton}{BEGIN savedSeachesButton}<LI><A id="savedSearches{$id}" {$saveSearchButtonAttrs}> Saved searches: 
-  </A></LI>{END savedSeachesButton}</UL></DIV> {END more_list}{BEGIN security_block}<SPAN class="bs-navsection" id="login_block{$id}" data-brick="loggedas" data-pageid="{$pageid}" {$loggedas_hiddenattr}>{BEGIN guestloginbutton}<BUTTON class="btn btn-info" type="button" {$guestloginlink_attrs}> Login 
-</BUTTON> {END guestloginbutton}{BEGIN loggedas_message}<SPAN class="dropdown"><BUTTON class="btn btn-info dropdown-toggle" aria-expanded="false" aria-haspopup="true" type="button" data-toggle="dropdown"><SPAN class="glyphicon glyphicon-user"> 
-</SPAN> 
-{$username} </BUTTON> 
+  {BEGIN saveSeachButton}<LI><A id="saveSearch{$id}" href="#">Save search</A></LI>
+  {END saveSeachButton}{BEGIN savedSeachesButton}<LI><A id="savedSearches{$id}" {$saveSearchButtonAttrs}>Saved   
+  searches:</A></LI>{END savedSeachesButton}</UL></DIV> {END more_list}{BEGIN security_block}<SPAN class="bs-navsection" id="login_block{$id}" data-brick="loggedas" data-pageid="{$pageid}" {$loggedas_hiddenattr}>{BEGIN guestloginbutton}<BUTTON class="btn btn-info" type="button" {$guestloginlink_attrs}>Login</BUTTON> {END guestloginbutton}{BEGIN loggedas_message}<SPAN class="dropdown"><BUTTON class="btn btn-info dropdown-toggle" aria-expanded="false" aria-haspopup="true" type="button" data-toggle="dropdown"><SPAN class="glyphicon glyphicon-user"></SPAN>	
+{$username}</BUTTON> 
 <UL class="dropdown-menu">
-  {BEGIN logoutbutton}<LI><A href="#" {$logoutlink_attrs}> Log out </A></LI>
-  {END logoutbutton}{BEGIN adminarea_link}<LI><A href="admin_rights_list.php" {$adminarealink_attrs}> Admin Area </A></LI>
-  {END adminarea_link}{BEGIN changepwd_link}<LI><A href="#" {$changepwdlink_attrs}> Change password </A></LI>{END changepwd_link}</UL></SPAN> {END loggedas_message}</SPAN> 
+  {BEGIN logoutbutton}<LI><A href="#" {$logoutlink_attrs}>Log out</A></LI>
+  {END logoutbutton}{BEGIN adminarea_link}<LI><A href="admin_rights_list.php" {$adminarealink_attrs}>Admin Area</A></LI>
+  {END adminarea_link}{BEGIN changepwd_link}<LI><A href="#" {$changepwdlink_attrs}>Change password</A></LI>{END changepwd_link}</UL></SPAN> {END loggedas_message}</SPAN> 
 {END security_block}</DIV>
 {END container_more}{BEGIN container_more_1}<DIV class="navbar-right navbar-form" data-container="more_1" data-pageid="{$pageid}" {$more_1_chiddenattr}>{BEGIN searchform_block}<SPAN class="form-group" data-brick="search" data-pageid="{$pageid}" {$search_hiddenattr}>
 {$simpleSearchFieldCombo} 
 {$simpleSearchTypeCombo} 
 <DIV class="input-group">{BEGIN searchform_text}<INPUT class="form-control" type="search" size="25" {$searchfor_attrs}>{END searchform_text} 
-<SPAN class="input-group-btn">{BEGIN searchform_showall}<BUTTON title="Show all" class="btn btn-default" {$showAllCont_attrs} {$showallbutton_attrs}><SPAN class="glyphicon glyphicon-remove"> 
-</SPAN> </BUTTON> {END searchform_showall}{BEGIN searchform_search}<BUTTON class="btn btn-primary" {$searchbutton_attrs}><SPAN class="glyphicon glyphicon-search"> 
-</SPAN> </BUTTON> {END searchform_search}</SPAN> </DIV> </SPAN> {END searchform_block}</DIV>{END container_more_1}</DIV>{END container_menu_1}</NAV>
-{END container_menu}<DIV class="bs-middle">
+<SPAN class="input-group-btn">{BEGIN searchform_showall}<BUTTON title="Show all" class="btn btn-default" {$showAllCont_attrs} {$showallbutton_attrs}><SPAN class="glyphicon glyphicon-remove"></SPAN> </BUTTON> {END searchform_showall}{BEGIN searchform_search}<BUTTON class="btn btn-primary" {$searchbutton_attrs}><SPAN class="glyphicon glyphicon-search"></SPAN> 
+</BUTTON> {END searchform_search}</SPAN> </DIV> </SPAN> 
+{END searchform_block}</DIV>{END container_more_1}</DIV>{END container_menu_1}</NAV>{END container_menu}
+<DIV class="bs-middle"> 
 <DIV class="bs-topmiddle">
 {BEGIN container_breadcrumbs}<DIV class=" " data-container="breadcrumbs" data-pageid="{$pageid}" {$breadcrumbs_chiddenattr}>
 {BEGIN container_bc}<DIV class=" " data-container="bc" data-pageid="{$pageid}" {$bc_chiddenattr}>
 {BEGIN breadcrumbs}<OL class="breadcrumb">
-  <LI><A href="{$home_link}"><SPAN class="glyphicon glyphicon-home"> </SPAN> </A> 
-  {$crumb_dropdown} </LI> 
+  <LI><A href="{$home_link}"><SPAN class="glyphicon glyphicon-home"></SPAN></A> 
+  {$crumb_dropdown}</LI> 
   {BEGIN crumb}<LI class="{$crumb_item_class}"> {BEGIN crumb_title_link}<A {$crumb_attrs}>
-  {$crumb_title} </A> {END crumb_title_link}{BEGIN crumb_title_span}<SPAN {$crumb_attrs}>
-  {$crumb_title} </SPAN> 
+  {$crumb_title}</A> {END crumb_title_link}{BEGIN crumb_title_span}<SPAN {$crumb_attrs}>
+  {$crumb_title}</SPAN>	
   {END crumb_title_span}{$crumb_dropdown} </LI> {END crumb}</OL>{END breadcrumbs}</DIV>{END container_bc}</DIV>
 {END container_breadcrumbs}{BEGIN container_masterinfo}<DIV class=" " data-container="masterinfo" data-pageid="{$pageid}" {$masterinfo_chiddenattr}>{BEGIN mastertable_block}
 <DIV class="panel panel-default table-panel">
@@ -64,12 +62,12 @@
 <DIV class="panel-body">
 {$showmasterfile} </DIV></DIV><BR>{END mastertable_block}</DIV>{END container_masterinfo}</DIV>
 <DIV class="bs-left" {$blockattr_left}></DIV> 
-<DIV class="bs-center bs-screenwidth bs-minwidth">
+<DIV class="bs-center bs-screenwidth bs-minwidth" style="width: 1328px; height: 282px;">
 {BEGIN container_gridcontrols}<DIV class="row rnr-rowcontainer bs-navcontrolled bs-hidden-xs" data-container="gridcontrols" data-pageid="{$pageid}" {$gridcontrols_chiddenattr}>
-{BEGIN container_add_delete}<DIV class="bottom-margin col-md-6" data-container="add_delete" data-pageid="{$pageid}" {$add_delete_chiddenattr}>{BEGIN record_controls_block}<SPAN data-brick="recordcontrol" data-pageid="{$pageid}" {$recordcontrol_hiddenattr}>{BEGIN deleteselected_link}<BUTTON disabled class="btn btn-default" type="button" {$deleteselectedlink_attrs} {$deleteselectedlink_span}> 
-Delete </BUTTON> {END deleteselected_link}{BEGIN saveall_link}<BUTTON class="btn btn-primary" type="button" {$savealllink_attrs} {$savealllink_span}> 
-Save all </BUTTON> {END saveall_link}{BEGIN cancelall_link}<BUTTON class="btn btn-default" type="button" {$cancelalllink_attrs} {$cancelalllink_span}> 
-Cancel </BUTTON> {END cancelall_link}</SPAN> {END record_controls_block}</DIV>
+{BEGIN container_add_delete}<DIV class="bottom-margin col-md-6" data-container="add_delete" data-pageid="{$pageid}" {$add_delete_chiddenattr}>{BEGIN record_controls_block}<SPAN data-brick="recordcontrol" data-pageid="{$pageid}" {$recordcontrol_hiddenattr}>{BEGIN deleteselected_link}<BUTTON disabled class="btn btn-default" type="button" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete</BUTTON> 
+{END deleteselected_link}{BEGIN saveall_link}<BUTTON class="btn btn-primary" type="button" {$savealllink_attrs} {$savealllink_span}>Save all</BUTTON> 
+{END saveall_link}{BEGIN cancelall_link}<BUTTON class="btn btn-default" type="button" {$cancelalllink_attrs} {$cancelalllink_span}>Cancel</BUTTON> 
+{END cancelall_link}</SPAN> {END record_controls_block}</DIV>
 {END container_add_delete}{BEGIN container_gridinfo}<DIV class="bottom-margin pull-right text-right col-md-6" data-container="gridinfo" data-pageid="{$pageid}" {$gridinfo_chiddenattr}>{BEGIN details_found}<SPAN class="form-inline form-inline-always" data-brick="details_found" data-pageid="{$pageid}" {$details_found_hiddenattr}>
 {$records_indicator} <SPAN>{BEGIN recordspp_block}
 {$recsPerPage}{END recordspp_block} </SPAN> </SPAN> {END details_found}</DIV>{END container_gridinfo}</DIV>
@@ -80,91 +78,90 @@ Cancel </BUTTON> {END cancelall_link}</SPAN> {END record_controls_block}</DIV>
 {END container_tabs}{BEGIN container_messagerow}<DIV class="row rnr-rowcontainer" data-container="messagerow" data-pageid="{$pageid}" {$messagerow_chiddenattr}>
 {BEGIN container_message}<DIV class="col-md-12" data-container="message" data-pageid="{$pageid}" {$message_chiddenattr}>
 {BEGIN message_block}<DIV class="alert {$message_class}" role="alert" data-brick="message" data-pageid="{$pageid}" {$message_hiddenattr}>
-{$message} </DIV>{END message_block}</DIV>{END container_message}</DIV>
+{$message}</DIV>{END message_block}</DIV>{END container_message}</DIV>
 {END container_messagerow}{BEGIN container_center}<DIV class=" " data-container="center" data-pageid="{$pageid}" {$center_chiddenattr}>
-{BEGIN container_grid}<DIV class="bs-grid" data-container="grid" data-pageid="{$pageid}" {$grid_chiddenattr}>{BEGIN grid_block}
+{BEGIN container_grid}<DIV class="bs-grid" style="width: 132.3%; height: 102px;" data-container="grid" data-pageid="{$pageid}" {$grid_chiddenattr}>{BEGIN grid_block}
 <STYLE>
-                      .bs-gridcell[data-field=id]:before {
-                      content: "{$label t_message id}";
-                      }
-                      .bs-gridcell[data-field=eventid]:before {
-                      content: "{$label t_message eventid}";
-                      }
-                      .bs-gridcell[data-field=name]:before {
-                      content: "{$label t_message name}";
-                      }
-                      .bs-gridcell[data-field=subject]:before {
-                      content: "{$label t_message subject}";
-                      }
-                      .bs-gridcell[data-field=message]:before {
-                      content: "{$label t_message message}";
-                      }
-                      .bs-gridcell[data-field=email]:before {
-                      content: "{$label t_message email}";
-                      }
-                      .bs-gridcell[data-field=response]:before {
-                      content: "{$label t_message response}";
-                      }
-                      .bs-gridcell[data-field=status]:before {
-                      content: "{$label t_message status}";
-                      }
-                      .bs-gridcell[data-field=upddate]:before {
-                      content: "{$label t_message upddate}";
-                      }
-                      .bs-gridcell[data-field=updby]:before {
-                      content: "{$label t_message updby}";
-                      }
-                      .bs-gridcell[data-field=createdate]:before {
-                      content: "{$label t_message createdate}";
-                      }
-                    </STYLE>
+	.bs-gridcell[data-field=id]:before {
+		content: "{$label t_message id}";
+	}
+	.bs-gridcell[data-field=eventid]:before {
+		content: "{$label t_message eventid}";
+	}
+	.bs-gridcell[data-field=name]:before {
+		content: "{$label t_message name}";
+	}
+	.bs-gridcell[data-field=subject]:before {
+		content: "{$label t_message subject}";
+	}
+	.bs-gridcell[data-field=message]:before {
+		content: "{$label t_message message}";
+	}
+	.bs-gridcell[data-field=email]:before {
+		content: "{$label t_message email}";
+	}
+	.bs-gridcell[data-field=response]:before {
+		content: "{$label t_message response}";
+	}
+	.bs-gridcell[data-field=status]:before {
+		content: "{$label t_message status}";
+	}
+	.bs-gridcell[data-field=upddate]:before {
+		content: "{$label t_message upddate}";
+	}
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_message updby}";
+	}
+	.bs-gridcell[data-field=createdate]:before {
+		content: "{$label t_message createdate}";
+	}
+</STYLE>
  
-<TABLE class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" data-brick="grid" data-pageid="{$pageid}" {$grid_hiddenattr}>
+<TABLE class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" style="width: 100%;" cellpadding="0" data-brick="grid" data-pageid="{$pageid}" {$grid_hiddenattr}>
   <THEAD>{BEGIN grid_header}
   <TR class="rnr-toprow {$gridHeader_class}">{BEGIN record_header}
-    {BEGIN listIcons_column}<TH rowspan="1" colspan="1" ieditcont="all"> &nbsp;</TH>
-    {END listIcons_column}{BEGIN checkbox_column}<TH rowspan="1" colspan="1"><INPUT type="checkbox" {$checkboxheader_attrs}> </TH>
-    {END checkbox_column}{BEGIN name_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$name_class}" rowspan="1" colspan="1" data-field="name">{BEGIN name_fieldheader}<SPAN {$name_orderlinkattrs}>
+    {BEGIN listIcons_column}<TH style="width: 50px;" ieditcont="all">&nbsp;</TH>
+    {END listIcons_column}{BEGIN checkbox_column}<TH style="width: 30px;"><INPUT type="checkbox" {$checkboxheader_attrs}> </TH>
+    {END checkbox_column}{BEGIN name_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$name_class}" style="width: 111px; white-space: nowrap;" data-field="name">{BEGIN name_fieldheader}<SPAN {$name_orderlinkattrs}>
       {$label t_message name} 
       </SPAN> {END name_fieldheader}</TH>
-    {END name_fieldheadercolumn}{BEGIN subject_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$subject_class}" style="width: 30%; white-space: nowrap;" rowspan="1" colspan="1" data-field="subject">{BEGIN subject_fieldheader}<SPAN {$subject_orderlinkattrs}>
+    {END name_fieldheadercolumn}{BEGIN subject_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$subject_class}" style="width: 204px; white-space: nowrap;" data-field="subject">{BEGIN subject_fieldheader}<SPAN {$subject_orderlinkattrs}>
       {$label t_message subject} </SPAN> {END subject_fieldheader}</TH>
-    {END subject_fieldheadercolumn}{BEGIN email_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$email_class}" rowspan="1" colspan="1" data-field="email">{BEGIN email_fieldheader}<SPAN {$email_orderlinkattrs}>
+    {END subject_fieldheadercolumn}{BEGIN message_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$message_class}" style="width: 323px; white-space: nowrap;" data-field="message">{BEGIN message_fieldheader}<SPAN {$message_orderlinkattrs}>
+      {$label t_message message} </SPAN> {END message_fieldheader}</TH>
+    {END message_fieldheadercolumn}{BEGIN email_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$email_class}" style="width: 153px;" data-field="email">{BEGIN email_fieldheader}<SPAN {$email_orderlinkattrs}>
       {$label t_message email} </SPAN> {END email_fieldheader}</TH>
-    {END email_fieldheadercolumn}{BEGIN createdate_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$createdate_class}" rowspan="1" colspan="1" data-field="createdate">{BEGIN createdate_fieldheader}<SPAN {$createdate_orderlinkattrs}>
+    {END email_fieldheadercolumn}{BEGIN createdate_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$createdate_class}" style="width: 121px;" data-field="createdate">{BEGIN createdate_fieldheader}<SPAN {$createdate_orderlinkattrs}>
       {$label t_message createdate} </SPAN> {END createdate_fieldheader}</TH>
-    {END createdate_fieldheadercolumn}{BEGIN status_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$status_class}" rowspan="1" colspan="1" data-field="status">{BEGIN status_fieldheader}<SPAN {$status_orderlinkattrs}>
-      {$label t_message status} </SPAN> 
-    {END status_fieldheader}</TH>{END status_fieldheadercolumn}
-    {BEGIN response_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$response_class}" style="width: 20%; white-space: nowrap;" rowspan="1" colspan="1" data-field="response"> {BEGIN response_fieldheader}<SPAN {$response_orderlinkattrs}>
-      {$label t_message response} </SPAN> 
-    {END response_fieldheader}</TH>{END response_fieldheadercolumn} 
-    {BEGIN endrecordheader_block}<TH class="rnr-cs" rowspan="1" colspan="1"> &nbsp;
-  </TH>{END endrecordheader_block}{END record_header}</TR>{END grid_header}</THEAD>
+    {END createdate_fieldheadercolumn}{BEGIN status_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$status_class}" style="width: 86px;" data-field="status">{BEGIN status_fieldheader}<SPAN {$status_orderlinkattrs}>
+      {$label t_message status} </SPAN> {END status_fieldheader}</TH>
+    {END status_fieldheadercolumn}{BEGIN response_fieldheadercolumn}<TH class="rnr-gridfieldlabel {$response_class}" style="width: 106px;" data-field="response">{BEGIN response_fieldheader}<SPAN {$response_orderlinkattrs}>
+      {$label t_message response} </SPAN> {END response_fieldheader}</TH>
+    {END response_fieldheadercolumn}{BEGIN endrecordheader_block}<TH class="rnr-cs" style="width: 106px;">&nbsp;</TH>{END endrecordheader_block}{END record_header}</TR>{END grid_header}</THEAD>
   <TBODY>
   {BEGIN grid_row}<TR class="{$rowclass} bs-gridrow" {$rowattrs} {$rowstyle}>{BEGIN grid_record}
-    {BEGIN listIcons_column}<TD class="bs-gridicons" rowspan="1" colspan="1" ieditcont="all" {$rowstyle} {$recordattrs}>{BEGIN inlineedit_column}{BEGIN inlineedit_link}<A title="Inline Edit" class="glyphicon glyphicon-edit" {$inlineeditlink_attrs}> 
-      </A> {END inlineedit_link}{END inlineedit_column}<SPAN data-hidden {$ieditbuttonsholder_attrs}></SPAN> {BEGIN view_column}{BEGIN view_link}<A title="View" class="glyphicon glyphicon-search" {$viewlink_attrs}> 
-      </A> {END view_link}{END view_column}</TD>
-    {END listIcons_column}{BEGIN checkbox_column}<TD class="bs-gridcheckbox" rowspan="1" colspan="1" ieditcont="checkBox" {$rowstyle} {$recordattrs}>{BEGIN checkbox}<INPUT type="checkbox" {$checkbox_attrs}>{END checkbox} </TD>
-    {END checkbox_column}{BEGIN name_fieldcolumn}<TD class="bs-gridcell {$name_class}" rowspan="1" colspan="1" data-field="name" {$rowstyle} {$recordattrs}>
+    {BEGIN listIcons_column}<TD class="bs-gridicons" style="width: 50px;" ieditcont="all" {$rowstyle} {$recordattrs}>{BEGIN inlineedit_column}{BEGIN inlineedit_link}<A title="Inline Edit" class="glyphicon glyphicon-edit" {$inlineeditlink_attrs}></A> 
+      {END inlineedit_link}{END inlineedit_column}<SPAN data-hidden {$ieditbuttonsholder_attrs}></SPAN> {BEGIN view_column}{BEGIN view_link}<A title="View" class="glyphicon glyphicon-search" {$viewlink_attrs}></A> 
+    {END view_link}{END view_column}</TD>
+    {END listIcons_column}{BEGIN checkbox_column}<TD class="bs-gridcheckbox" style="width: 30px;" ieditcont="checkBox" {$rowstyle} {$recordattrs}>{BEGIN checkbox}<INPUT type="checkbox" {$checkbox_attrs}>{END checkbox} </TD>
+    {END checkbox_column}{BEGIN name_fieldcolumn}<TD class="bs-gridcell {$name_class}" style="width: 111px;" data-field="name" {$rowstyle} {$recordattrs}>
       {$name_value} </TD>
-    {END name_fieldcolumn}{BEGIN subject_fieldcolumn}<TD class="bs-gridcell {$subject_class}" rowspan="1" colspan="1" data-field="subject" {$rowstyle} {$recordattrs}><STRONG>
-      {$subject_value}</STRONG><BR>
-      {$message_value}&nbsp;</TD>
-    {END subject_fieldcolumn}{BEGIN email_fieldcolumn}<TD class="bs-gridcell {$email_class}" rowspan="1" colspan="1" data-field="email" {$rowstyle} {$recordattrs}>
+    {END name_fieldcolumn}{BEGIN subject_fieldcolumn}<TD class="bs-gridcell {$subject_class}" style="width: 204px;" data-field="subject" {$rowstyle} {$recordattrs}>
+      {$subject_value} </TD>
+    {END subject_fieldcolumn}{BEGIN message_fieldcolumn}<TD class="bs-gridcell {$message_class}" style="width: 323px;" data-field="message" {$rowstyle} {$recordattrs}>
+      {$message_value} </TD>
+    {END message_fieldcolumn}{BEGIN email_fieldcolumn}<TD class="bs-gridcell {$email_class}" style="width: 153px;" data-field="email" {$rowstyle} {$recordattrs}>
       {$email_value} </TD>
-    {END email_fieldcolumn}{BEGIN createdate_fieldcolumn}<TD class="bs-gridcell {$createdate_class}" rowspan="1" colspan="1" data-field="createdate" {$rowstyle} {$recordattrs}>
+    {END email_fieldcolumn}{BEGIN createdate_fieldcolumn}<TD class="bs-gridcell {$createdate_class}" style="width: 121px;" data-field="createdate" {$rowstyle} {$recordattrs}>
       {$createdate_value} </TD>
-    {END createdate_fieldcolumn}{BEGIN status_fieldcolumn}<TD class="bs-gridcell {$status_class}" rowspan="1" colspan="1" data-field="status" {$rowstyle} {$recordattrs}>
+    {END createdate_fieldcolumn}{BEGIN status_fieldcolumn}<TD class="bs-gridcell {$status_class}" style="width: 86px;" data-field="status" {$rowstyle} {$recordattrs}>
       {$status_value} </TD>
-    {END status_fieldcolumn}{BEGIN response_fieldcolumn}<TD class="bs-gridcell {$response_class}" rowspan="1" colspan="1" data-field="response" {$rowstyle} {$recordattrs}>
+    {END status_fieldcolumn}{BEGIN response_fieldcolumn}<TD class="bs-gridcell {$response_class}" style="width: 106px;" data-field="response" {$rowstyle} {$recordattrs}>
       {$response_value} </TD>
-    {END response_fieldcolumn}{BEGIN endrecord_block}<TD class="rnr-cs" rowspan="1" colspan="1" {$endrecordblock_attrs}> 
-      &nbsp;</TD>{END endrecord_block}{END grid_record}</TR>{END grid_row}</TBODY>
+    {END response_fieldcolumn}{BEGIN endrecord_block}<TD class="rnr-cs" style="width: 106px;" {$endrecordblock_attrs}>&nbsp;</TD>{END endrecord_block}{END grid_record}</TR>{END grid_row}</TBODY>
   <TFOOT></TFOOT></TABLE>{END grid_block}</DIV>{END container_grid}</DIV>
 {END container_center}{BEGIN container_pagination}<DIV class="text-center col-md-12" data-container="pagination" data-pageid="{$pageid}" {$pagination_chiddenattr}>
 {BEGIN pagination_block}<DIV data-brick="pagination" data-pageid="{$pageid}" {$pagination_hiddenattr}>
 {$pagination} </DIV>{END pagination_block}</DIV>{END container_pagination}</DIV> 
-<DIV class="bs-right"></DIV></DIV>
+<DIV class="bs-right"></DIV></DIV> 
 {$footer}{END body} </BODY></HTML>

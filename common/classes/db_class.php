@@ -279,7 +279,7 @@ class DB
 
     public function db_update( $table, $variables = array(), $where = array(), $limit = '' )
     {
-        $calling_function = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
+        // echo "<pre>".debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function']."</pre>"
 
         // returns -1 if update failed, 0 if successful but no rows changed, >1 no. rows changed
         if( empty( $variables ) ) { return -1; }
@@ -290,7 +290,16 @@ class DB
         foreach( $variables as $field => $value )
         {
             $dbg_txt.= "<pre>field: $field | value: $value | type: ".gettype($value)."<br></pre>";
-            $updates[] = "`$field` = '".addslashes($value)."'";
+
+            if (strtolower($value) == "null")
+            {
+                $updates[] = "`$field` = null";
+            }
+            else
+            {
+                $updates[] = "`$field` = '".addslashes($value)."'";
+            }
+
         }
         $query .= implode(', ', $updates);
 
@@ -303,7 +312,6 @@ class DB
             foreach( $where as $field => $value )
             {
                 $clause[] = "`$field` = '$value'";
-                //echo "<pre>field = $field</pre>";
             }
             $query .= ' WHERE '. implode(' AND ', $clause);   
         }

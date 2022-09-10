@@ -42,8 +42,6 @@
  *
  **/
 
-// FIXME - test add_signon
-// FIXME - test chk_signon
 // FIXME - doesn't deal with entry having a different helm
 // FIXME - fleet allocation doesn't deal with all options
 

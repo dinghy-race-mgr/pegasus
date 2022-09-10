@@ -54,41 +54,45 @@ include("./include/help_ctl.inc");
 // database connection
 $db_o = new DB;
 
-// get reminder topics
-$help_o = new HELP($db_o, $page, array("pursuit"=>$_SESSION["e_$eventid"]['pursuit'], "numrace"=>$_SESSION['events_today'],
-    "name"=>$_SESSION["e_$eventid"]['ev_name'], "format"=>$_SESSION["e_$eventid"]['ev_format'], "date"=>$_SESSION["e_$eventid"]['ev_date']));
+// get reminders
+$constraints = array(
+    "name"    => $_SESSION["e_$eventid"]['ev_name'],
+    "format"  => $_SESSION["e_$eventid"]['ev_format'],
+    "date"    => $_SESSION["e_$eventid"]['ev_date'],
+    "numrace" => $_SESSION["events_today"],
+    "pursuit" => $_SESSION["e_$eventid"]['pursuit']
+);
+$help_o = new HELP($db_o, "reminder", $constraints);
 
+// get relevant reminders
 $topics = $help_o->get_help();
+
 // no reminders to display - move on
 if (empty($topics))
 {
-    // no reminders to display - move on
-    header("Location: $sourcelink");
+    $db_o->db_disconnect();             // disconnect database
+    header("Location: $sourcelink");    // no reminders to display - move on
 }
 else
 {
-    // ----- navbar -----------------------------------------------------------------------------
-// FIXME do I need options display
+    // ----- navbar ----------------------------------------------------------------------------- FIXME do I need options display
     $nav_fields = array("eventid" => $eventid, "brand" => "raceBox: REMINDER", "club" => $_SESSION['clubcode']);
     $nav_params = array("page" => $page, "links" => $_SESSION['clublink'], "pursuit"=>$_SESSION["e_$eventid"]['pursuit'], "num_reminders" => $_SESSION["e_$eventid"]['num_reminders']);
     $nbufr = $tmpl_o->get_template("racebox_navbar", $nav_fields, $nav_params);
 
-// ----- left hand panel --------------------------------------------------------------------
-
+    // ----- left hand panel --------------------------------------------------------------------
     $lbufr =  $help_o->render_reminders();
 
-// ----- right hand panel --------------------------------------------------------------------
-
+    // ----- right hand panel --------------------------------------------------------------------
     $rbufr = "";
     $rbufr.= "<a class='btn btn-lg btn-success' href='$sourcelink'>
-                <span class='glyphicon glyphicon-new-window' aria-hidden='true'></span> 
-                &nbsp;Close Reminders</a>";
+            <span class='glyphicon glyphicon-new-window' aria-hidden='true'></span> 
+            &nbsp;Close Reminders</a>";
 
-// disconnect database
+    // disconnect database
     $db_o->db_disconnect();
 
-// ----- render page -------------------------------------------------------------------------
-
+    // ----- render page -------------------------------------------------------------------------
     $eventid != 0 ? $title = $_SESSION["e_$eventid"]['ev_label'] : $title = "racebox" ;
     $fields = array(
         "title"      => $_SESSION["e_$eventid"]['ev_label'],
@@ -114,6 +118,13 @@ else
     );
     echo $tmpl_o->get_template("two_col_page", $fields, $params);
 }
+
+
+
+
+
+
+
 
 
 

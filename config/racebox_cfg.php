@@ -15,14 +15,17 @@ $_SESSION['dbglog'] = "../logs/dbg/" . $_SESSION['app_name'] . "_" . date("Y-m-d
 
 $_SESSION['race_states']    = array("scheduled", "selected", "running", "sailed", "completed", "cancelled", "abandoned");
 
+
+// FIXME - some of these values are also set in timer_pg   [also mode, view not initialisde]
 $_SESSION['timer_options'] = array( 
-      "listorder"         => "class",                                     // other options "pn|position|ptime""
-      "laptime"           => "button",                                    // other options "row"
-      "quicktime"         => "class",                                     // other options "sailnum|ajax|tree"
-      "bunch"             => "class",                                     // other options "sailnum|ajax|tree" 
-      "growl_racelength"  => "on",                                        // other option "off"   
-      "growl_undo"        => "on",                                        // other option "off"
-      "growl_finish"      => "off",                                        // other option "off"
+      "listorder"         => "class",                                     // other options "pn|position|ptime""     THIS IS NOT USED THIS WAY
+      "laptime"           => "button",                                    // other options "row"                    NOT CURRENTLY USED
+      "quicktime"         => "class",                                     // other options "sailnum|ajax|tree"      NOT CURRENTLY USED
+      "bunch"             => "class",                                     // other options "sailnum|ajax|tree"      NOT CURRENTLY USED
+      "growl_racelength"  => "on",                                        // other option "off"                     NOT CURRENTLY USED
+      "growl_undo"        => "on",                                        // other option "off"                     NOT CURRENTLY USED
+      "growl_finish"      => "off",                                        // other option "off"                    NOT CURRENTLY USED
    );
+
 
 $_SESSION['sql_debug']    = false;                                        // set to true to turn on debugging of sql commands - otherwise false

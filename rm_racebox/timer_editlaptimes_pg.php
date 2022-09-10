@@ -124,8 +124,10 @@ elseif ($pagestate == "submit")       // correct modified lap times and return t
             }
         }
 
+        empty($rs_msg) ? $changes = false : $changes = true;
+
         $pagefields['body'] = $tmpl_o->get_template("edit_laps_success",
-            array("boat"=>$boat_detail['boat'], "msg"=>$rs_msg, "eventid"=>$eventid, "entryid"=>$entryid));
+            array("boat"=>$boat_detail['boat'], "msg"=>$rs_msg, "eventid"=>$eventid, "entryid"=>$entryid), array("changes"=>$changes));
         echo $tmpl_o->get_template("basic_page", $pagefields);
     }
     else   // produce error page

@@ -49,7 +49,7 @@ body             {font-family: Kalinga, Verdana, sans-serif; font-size: 1.0em;}
 .lightshade      {background: none repeat scroll 0% 0% var(--verylightgrey);}
 .darkshade       {background: none repeat scroll 0% 0% var(--lightgrey);}
 
-.button-green    {var(--green); border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none;
+.button-green    {background-color: var(--green); border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none;
                   display: inline-block; font-size: 16px; }
 
 @media all       {.page-break	{ display: none; }  }
@@ -68,7 +68,7 @@ body             {font-family: Kalinga, Verdana, sans-serif; font-size: 1.0em;}
       print-color-adjust: exact;
    }
 
-   .noprint      { display: none; }
+   .noprint      { display: none; !important}
    .page-break	 { display: block; page-break-before: always; }
 }
          
