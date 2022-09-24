@@ -32,6 +32,7 @@ session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, true);
+//echo "<pre><br><br><br><br>".print_r($_SESSION["e_$eventid"],true)."</pre>";
 
 // check if display mode has changed - reset session variable if necessary
 $display_mode = u_checkarg("mode", "setnotnull", "");
@@ -70,8 +71,9 @@ $_SESSION['timer_options']['notify_length'] = "on ";       // options "on|off"
 $_SESSION['timer_options']['notify_undo']   = "on";        // options "on|off"
 
 // get fleet data
+$numfleets = $_SESSION["e_$eventid"]['rc_numfleets'];
 $fleet_data = array();
-for ($fleetnum=1; $fleetnum<=$_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum++)
+for ($fleetnum=1; $fleetnum<=$numfleets; $fleetnum++)
 {
     $fleet_data["$fleetnum"] = $_SESSION["e_$eventid"]["fl_$fleetnum"];
 }
@@ -150,7 +152,6 @@ else
         // add modals
     }
 
-
 }
 
 // ----- right hand panel --------------------------------------------------------------------
@@ -175,10 +176,17 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
     //if ($_SESSION['shorten_possible']) { $mdl_shorten['submit'] = false; }
     $rbufr.= $tmpl_o->get_template("modal", $mdl_shorten['fields'], $mdl_shorten);
 
-    // reset laps button/modal
-//    $rbufr.= $tmpl_o->get_template("btn_modal", $btn_resetlaps['fields'], $btn_resetlaps);
-//    $mdl_resetlaps['fields']['body'] = $tmpl_o->get_template("fm_timer_resetlaps", array(), array("fleet-data" => $fleet_data));
-//    $rbufr.= $tmpl_o->get_template("modal", $mdl_resetlaps['fields'], $mdl_resetlaps);
+    // Undo Shorten button/modal
+    $rbufr .= $tmpl_o->get_template("btn_modal", $btn_undoshorten['fields'], $btn_undoshorten);
+
+    $fleet_data = array();
+    for ($i = 1; $i <= $numfleets; $i++)
+    {
+        $fleet_data["$i"] = $_SESSION["e_$eventid"]["fl_$i"];
+    }
+    $mdl_undoshorten['fields']['body'] = $tmpl_o->get_template("fm_timer_undoshorten", $mdl_undoshorten['fields'], array("fleet-data" => $fleet_data));
+    $rbufr.= $tmpl_o->get_template("modal", $mdl_undoshorten['fields'], $mdl_undoshorten);
+
 }
 
 $rbufr.= "<hr>";

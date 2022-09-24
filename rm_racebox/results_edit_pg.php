@@ -91,19 +91,13 @@ elseif ($pagestate == "submit")       // update t_race and t_lap records
     $edit['note']    = $_REQUEST['note'];
     if (ctype_digit($_REQUEST['pn']) )      { $edit['pn']      = (int)$_REQUEST['pn']; }
     if (ctype_digit($_REQUEST['lap']) )     { $edit['lap']     = (int)$_REQUEST['lap']; }
-    $edit['penalty'] = $_REQUEST['penalty'];
+    empty($_REQUEST['penalty']) ? $edit['penalty'] = 0 : $edit['penalty'] = $_REQUEST['penalty'];
 
     // check which fields have changed - remove unchanged fields and create audit string for log
     foreach ($edit as $k => $v)
     {
         if ($old[$k] !== $edit[$k]) { $edit_str .= "$k:$v "; }
     }
-
-//    foreach ($edit as $k => $v)
-//    {
-//        if ($old[$k] === $edit[$k]) { unset($edit[$k]); }
-//        else { $edit_str .= "$k:$v "; }
-//    }
 
     // calculate new clicktime
     $edit['clicktime'] = $old['clicktime'] - ($old['etime'] - $edit['etime']);
@@ -133,7 +127,7 @@ elseif ($pagestate == "submit")       // update t_race and t_lap records
     $_SESSION["e_$eventid"]['result_valid'] = false;
 
     // log change
-    u_writelog("Result Update - {$old['class']} {$old['sailnum']} : edit_str", $eventid);
+    u_writelog("Result Update - {$old['class']} {$old['sailnum']} : changed to [ $edit_str ]", $eventid);
 
     $data = array(
         "maxlap" => $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['maxlap'],

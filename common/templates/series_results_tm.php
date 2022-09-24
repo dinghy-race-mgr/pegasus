@@ -382,7 +382,7 @@ function format_series_data($fleet, $races, $inc_club)
         $race_cells = "";
         foreach ($races as $j => $race)
         {
-            if ($race['race-status'] == "completed" or $race['race-status'] == "sailed")
+            if ($race['race-status'] == "completed"  or $race['race-status'] == "sailed" or $race['race-status'] == "running")
             {
                 if (array_key_exists("r$j", $sailor['rst'])) {
 

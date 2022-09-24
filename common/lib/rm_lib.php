@@ -23,10 +23,11 @@
  
 /* ---------------------  EVENT functions ----------------------------------------------------------*/
 
-function r_initialiseevent($mode, $eventid)
+function r_initialiseevent($mode, $eventid, $current_event_status = "")
     /*
      *    mode        reset mode [init|reset|rejoin]
      *    eventid     id for event being initialised
+     *    current_event_status     event status before initialisation (only required for rejoin mode)
      *
      *    assumes t_race, t_lap, t_finish, t_racestate have had all event related records
      *    deleted if the mode is 'init' or 'reset'
@@ -43,14 +44,6 @@ function r_initialiseevent($mode, $eventid)
     $_SESSION['startcodes']  = $db_o->db_getresultcodes("start");
     $_SESSION['timercodes']  = $db_o->db_getresultcodes("timer");
     $_SESSION['resultcodes'] = $db_o->db_getresultcodes("result");
-
-//    // setup where list of codes to continue timing
-//    // FIXME not sure this is used
-//    $codelist = $db_o->db_getresultcodes("timing");
-//    $_SESSION['timercodelist'] = "";
-//    foreach ($codelist as $row) {
-//        $_SESSION['timercodelist'] .= "'{$row['code']}',";
-//    }
 
     // get event details
     $event_rs = $event_o->get_event_byid($eventid);
@@ -71,7 +64,7 @@ function r_initialiseevent($mode, $eventid)
             // get OOD information
             $ood_rs = $rota_o->get_event_duties($eventid, "ood_p");
 
-            r_seteventinsession($mode, $eventid, $event_rs, $series_rs, $ood_rs);      // add event and ood information to session
+            r_seteventinsession($mode, $eventid, $current_event_status, $event_rs, $series_rs, $ood_rs);      // add event and ood information to session
         }
         else
         {
@@ -167,7 +160,7 @@ function r_initialiseevent($mode, $eventid)
 }
 
 
-function r_seteventinsession($mode, $eventid, $event, $series_rs, $ood_rs = array())
+function r_seteventinsession($mode, $eventid, $current_event_status, $event, $series_rs, $ood_rs = array())
 {    
     // set database record  into session
     $_SESSION["e_$eventid"]['ev_date']        = $event['event_date'];   
@@ -197,12 +190,17 @@ function r_seteventinsession($mode, $eventid, $event, $series_rs, $ood_rs = arra
     // initialised variables
     if ($mode == "init" or $mode == "reset")
     {
-        $_SESSION["e_$eventid"]['timerstart'] = 0;                        // actual start time as timestamp (not reset if rejoin)
+        $_SESSION["e_$eventid"]['timerstart'] = 0;                      // actual start time as timestamp (not reset if rejoin)
+        $_SESSION["e_$eventid"]['ev_prevstatus']  = "";                 // status before current status for this event}
+    }
+    else
+    {
+        $_SESSION["e_$eventid"]['ev_prevstatus'] = $current_event_status;
     }
 
-    $_SESSION["e_$eventid"]['ev_prevstatus']  = "";                       // status before current status for this event
-    $_SESSION["e_$eventid"]['exit']           = false;                    // flag set if race is closed
-    
+    $_SESSION["e_$eventid"]['exit'] = false;                            // flag set if race is closed
+
+
     // derived variables
     empty($event['event_order']) ? $label = $event['event_start'] : $label = $event['event_order'];
     $_SESSION["e_$eventid"]['ev_label'] = "Race $label";
@@ -320,7 +318,7 @@ function r_initfleetdb($mode, $eventid, $fleetnum, $fleet, $start_scheme, $start
     if ($mode == "init" or $mode == "reset")
     {
         $data = array(
-            "fleet"       => $fleetnum,
+            "fleet"      => $fleetnum,
             "racename"   => $fleet['fleet_name'],
             "start"      => $fleet['start_num'],
             "eventid"    => $eventid,
@@ -572,7 +570,7 @@ function r_oktoabandon($eventid, $mode)
         else
         {
             $status = array ("result" => false, "reason" => "Either the race has not started yet and/or there are no entries for this race",
-                "info" => "if the race is not going to be run - use CANCEL instead" );
+                "info" => "" );
         }
     }
     else   // else unabandoning - can UNABANDON if race is in ABANDONED state

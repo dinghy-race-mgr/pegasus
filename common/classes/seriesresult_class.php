@@ -306,7 +306,7 @@ class SERIES_RESULT
         foreach ($this->races as $race)
         {
             $this->races_num++;
-            if ($race['status'] == "sailed" or $race['status'] == "completed")
+            if ($race['status'] == "sailed" or $race['status'] == "completed" or $race['status'] == "running")
             {
                 $this->races_complete++;
             }
@@ -622,10 +622,13 @@ class SERIES_RESULT
             {
                 $i++;
                 $racekey = "r$i";
+                //u_writedbg("<pre>RACE : $racekey|{$race['status']}</pre>", __FILE__, __FUNCTION__, __LINE__);
 
                 // check event has been sailed
-                if ($race['status']  == "completed" OR $race['status']  == "sailed")
+                if ($race['status']  == "completed" OR $race['status'] == "sailed" OR $race['status'] == "running")
                 {
+                    //u_writedbg("<pre>race included</pre>", __FILE__, __FUNCTION__, __LINE__);
+
                     // get data for this result
                     $col = array_column($results, 'eventid');
                     $eventkey = array_search($race['eventid'], array_column($results, 'eventid'));
@@ -647,7 +650,7 @@ class SERIES_RESULT
                         "sort" => "",
                         "exclude" => false
                     );
-
+                    //u_writedbg("<pre>{$data[$sailorkey][$racekey]}</pre>", __FILE__, __FUNCTION__, __LINE__);
                 }
             }
         }
@@ -847,7 +850,7 @@ class SERIES_RESULT
             // loop through races for this sailor
             foreach ($this->races as $r => $race)
             {
-                if ($race['status'] == "completed" or $race['status'] == "sailed")
+                if ($race['status'] == "sailed" or $race['status'] == "completed" or $race['status'] == "running")
                 {
                     if (array_key_exists("r$r", $this->rst[$s_id]))
                     {

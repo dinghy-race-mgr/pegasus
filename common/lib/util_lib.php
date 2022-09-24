@@ -1092,7 +1092,9 @@ EOT;
 
     if ($nocode)
     {
-        $bufr.= "<option value=\"\">-- no code --</option>";
+        $bufr.= <<<EOT
+        <option value="">&nbsp;</option>
+EOT;
     }
 
     foreach ($codelist as $opt)

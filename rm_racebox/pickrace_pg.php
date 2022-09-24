@@ -42,8 +42,8 @@ $today_display = date("jS F");
 $db_o = new DB;
 $event_o  = new EVENT($db_o);
 $rota_o = new ROTA($db_o);
-$_SESSION['mode'] == "demo"? $status = "demo" : $status = "active";
-$events = $event_o->get_events("racing", $status, array("start" => $today, "end" => $today), array() );
+$_SESSION['mode'] == "demo"? $event_type = "demo" : $event_type = "active";
+$events = $event_o->get_events("racing", $event_type, array("start" => $today, "end" => $today), array() );
 
 // if in demo mode - check to see if any events need to be reset
 if ($_SESSION['mode'] == "demo")
@@ -67,12 +67,24 @@ if ($_SESSION['mode'] == "demo")
 
                 // reset event status
                 $upd = $db_o->db_update( 't_event', array("event_status"=>"scheduled"), array("id"=>$current_event) );
+
+                // reset other fields that need initialising in t_event
+                $fields = array(
+                    "timerstart" => "",
+                    "ws_start" => "",
+                    "ws_end" => "",
+                    "wd_start" => "",
+                    "wd_end" => "",
+                    "result_valid" => 0,
+                    "result_publish" => 0
+                );
+                $upd = $event_o->event_changedetail($current_event, $fields);
             }
         }
     }
 
     // reset events
-    $events = $event_o->get_events("racing", $status, array("start" => $today, "end" => $today), array() );
+    $events = $event_o->get_events("racing", $event_type, array("start" => $today, "end" => $today), array() );
 }
 
 // ----- navbar -----------------------------------------------------------------------------
@@ -152,13 +164,6 @@ $toggle_fields = array(
 );
 $_SESSION['mode'] == "live" ? $toggle_fields['on'] = "left" : $toggle_fields['on'] = "right";
 
-//$copyright = <<<EOT
-//    <span class="text-success">
-//        <span class='glyphicon glyphicon-copyright-mark' aria-hidden='true'></span> {$_SESSION['sys_copyright']}
-//    </span>
-//EOT;
-
-
 $fields = array(
     "l_foot" => $_SESSION['sys_name']." (".$_SESSION['sys_release'].") ".$_SESSION['sys_version'],
     "m_foot" => $tmpl_o->get_template("toggle_button", array(), $toggle_fields),
@@ -195,12 +200,8 @@ $params = array(
 
 echo $tmpl_o->get_template("two_col_page", $fields, $params);
 
-//echo "<pre>CURRENT SESSION: <br>".print_r($_SESSION,true)."</pre>";
-
 
 // ----- page specific functions ---------------------------------------------------------------
-
-
 
 function configurestate($eventid, $status )
 {
@@ -258,16 +259,16 @@ function configurestate($eventid, $status )
                 $rs['style']  = "panel-default";
                 $rs['text']   = "text-success";
                 $rs['link']   = true;
-                $rs['blabel'] = $lang['btn']['race_complete'];
+                $rs['blabel'] = "Race ".ucwords($status);
                 $rs['bstyle'] = "btn-default disabled";
                 $rs['blink']  = "";
                 $rs['bpopup'] = "data-toggle=\"popover\" data-content=\"{$lang['msg']['race_not_available']}\" data-placement=\"bottom\"";
 
-                if ($status != "completed")  // i.e. abandoned or cancelled
+                if ($status != "completed" and !$_SESSION["e_$eventid"]['exit'])  // i.e. abandoned or cancelled (but not closed)
                 {
                     $rs['blabel'] = "Changed your mind? &nbsp;<span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span>";
                     $rs['bstyle'] = "btn-warning";
-                    $rs['blink']  = "raceinit_sc.php?eventid=$eventid&mode=init&entryload=true";
+                    $rs['blink']  = "raceinit_sc.php?eventid=$eventid&mode=rejoin&entryload=true";
                     $rs['bpopup'] = "data-toggle=\"popover\" 
                                      data-content=\"Click if you want to start again and run this previously abandoned or cancelled race\"
                                      data-placement=\"bottom\"";

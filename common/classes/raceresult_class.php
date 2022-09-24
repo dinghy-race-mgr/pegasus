@@ -326,8 +326,16 @@ EOT;
         //u_writedbg("<pre>".print_r($event,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
         //echo "<pre>".print_r($event,true)."</pre>";
 
-        // get OOD information
+        // get OOD information (use duty detail if set otherwise ood in event record
         $ood = $this->db->db_get_row("SELECT * FROM t_eventduty WHERE eventid = $this->eventid and dutycode = 'ood_p' ");
+        if ($ood)
+        {
+            $ood_name = $ood['person'];
+        }
+        else
+        {
+            $ood_name = $event['event_ood'];
+        }
         //u_writedbg("<pre>".print_r($ood,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
         //echo "<pre>".print_r($ood,true)."</pre>";
 
@@ -381,7 +389,7 @@ EOT;
             "event_start"   => $event['event_start'],
             "event_wind"    => u_getwind_str(array("wd_start" => $event['wd_start'], "wd_end" => $event['wd_end'],
                                                    "ws_start" => $event['ws_start'], "ws_end" => $event['ws_end'])),
-            "event_ood"     => $ood['person'],
+            "event_ood"     => $ood_name,
             "result_notes"  => $result_notes,
             "result_status" => $result_status,
             "sys_name"      => $_SESSION['sys_name'],

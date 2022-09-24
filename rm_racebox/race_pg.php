@@ -38,8 +38,7 @@ session_start();
 
 // page initialisation
 u_initpagestart($_REQUEST['eventid'], $page, true);
-
-//echo "<pre>".print_r($_SESSION,true)."</pre>";
+//echo "<pre><br><br><br><br>".print_r($_SESSION["e_$eventid"],true)."</pre>";
 
 // classes/libraries
 require_once ("{$loc}/common/lib/rm_lib.php");
@@ -86,7 +85,7 @@ $lbufr_bot = "";
 if ($_SESSION["e_$eventid"]['exit'])
 {
     $lbufr_top.= $tmpl_o->get_template("race_exit", array());
-    unset($_SESSION["e_$eventid"]['exit']);
+    //unset($_SESSION["e_$eventid"]['exit']);                     // FIXME why is his unset
 }
 else
 {
@@ -253,7 +252,10 @@ else
 }
 
 
+//$rbufr_bot ="status|prevstatus|timerstart<br> {$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}|{$_SESSION["e_$eventid"]['timerstart']}";
+
 $rbufr_bot ="";
+
 // close  - modal
 
 $close_ok = r_oktoclose($eventid);    // results must be published and all boats finished

@@ -34,6 +34,7 @@ session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, true);   // starts session and sets error reporting
+//echo "<pre><br><br><br><br>".print_r($_SESSION["e_$eventid"],true)."</pre>";
 
 // classes
 include ("{$loc}/common/classes/db_class.php");
@@ -62,17 +63,24 @@ for ($fleetnum = 1; $fleetnum <= $_SESSION["e_$eventid"]['rc_numfleets']; $fleet
 }
 
 // set master timer
-$now = time(); // debug
 $timer_start = $_SESSION["e_$eventid"]['timerstart'];
 $first_prep_delay = r_getstartdelay(1, $_SESSION["e_$eventid"]['rc_startscheme'], $_SESSION["e_$eventid"]['rc_startint']);
-$event_state == "in progress" ? $start_master = $timer_start + $first_prep_delay - time() : $start_master = $first_prep_delay;
+
+if ($event_state == "in progress" or $_SESSION["e_$eventid"]['ev_status'] == "abandoned")
+{
+    $start_master = $timer_start + $first_prep_delay - time();
+}
+else
+{
+    $start_master = $first_prep_delay;
+}
 
 // set race timers
 $start = array();
 for ($j=1; $j<=$_SESSION["e_$eventid"]['rc_numstarts']; $j++)
 {
     $start[$j] = $_SESSION["e_$eventid"]["st_$j"]['startdelay'];
-    if ($event_state == "in progress" )
+    if ($event_state == "in progress" or $_SESSION["e_$eventid"]['ev_status'] == "abandoned")
     {
         $start[$j] = $timer_start + $_SESSION["e_$eventid"]["st_$j"]['startdelay'] - time();
     }
@@ -109,7 +117,7 @@ for ($startnum=1; $startnum<=$_SESSION["e_$eventid"]['rc_numstarts']; $startnum+
     $btn_infringestart['fields']['id'] = "infringestart$startnum";
     $btn_infringestart['data'] = "data-start=\"$startnum\"";
     // change button colour with 30 seconds to go
-    $start[$startnum] > constant('START_WARN_SECS') ? $btn_infringestart['fields']["style"] = "default": $btn_infringestart['fields']["style"] = "success";
+    $start[$startnum] > constant('START_WARN_SECS') ? $btn_infringestart['fields']["style"] = "default": $btn_infringestart['fields']["style"] = "info";
     $infringebufr = $tmpl_o->get_template("btn_modal", $btn_infringestart['fields'], $btn_infringestart);
 
     $mdl_infringestart['fields']['id'] = "infringestart$startnum";
@@ -138,7 +146,7 @@ EOT;
         $btn_generalrecall['fields']['id'] = "generalrecall$startnum";
         $btn_generalrecall['data'] = "data-start=\"$startnum\"  data-starttime=\"$startdisplay\" ";
         // change button colour with 30 seconds to go
-        $start[$startnum] > constant('START_WARN_SECS') ? $btn_generalrecall['fields']["style"] = "default" : $btn_generalrecall['fields']["style"] = "success";
+        $start[$startnum] > constant('START_WARN_SECS') ? $btn_generalrecall['fields']["style"] = "default" : $btn_generalrecall['fields']["style"] = "info";
         $recallbufr.= $tmpl_o->get_template("btn_modal", $btn_generalrecall['fields'], $btn_generalrecall);
 
         $mdl_generalrecall['fields']['id'] = "generalrecall$startnum";
@@ -170,6 +178,13 @@ EOT;
 
 // ----- right hand panel -----------------------------------------------------------------------------
 $rbufr = "";
+
+//-- debug info ---
+//$rbufr.= "timerstart: {$_SESSION["e_$eventid"]['timerstart']} | $start_master<br>";
+//for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
+//{
+//    $rbufr.= "$i - start: ".$_SESSION["e_$eventid"]["st_$i"]['starttime']." - fleet: ".$_SESSION["e_$eventid"]["fl_$i"]['starttime']."<br>";
+//}
 
 if ( $event_state == "not started")
 {

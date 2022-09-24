@@ -138,7 +138,7 @@ $btn_addentry = array(
     "popover"   => true,
     "fields"    => array(
         "id"          => "addentry",
-        "style"       => "primary",
+        "style"       => "info",
         "size"        => "lg",
         "label"       => "Enter Boat(s)",
         "glyph"       => "glyphicon-list-alt",
@@ -160,7 +160,7 @@ $mdl_addentry = array(
     "fields"  => array(
         "id"          => "addentry",
         "size"        => "lg",
-        "style"       => "success",
+        "style"       => "info",
         "title"       => "Pick Boats to Enter",
         "body"        => "<iframe src='entries_add_pg.php?eventid=$eventid&pagestate=init'
                            frameborder='0' style='width: 100%; height: 600px;' id='entryframe'></iframe>",

@@ -33,6 +33,7 @@ session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, true);
+//echo "<pre><br><br><br><br>".print_r($_SESSION["e_$eventid"],true)."</pre>";
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
@@ -43,8 +44,6 @@ require_once ("{$loc}/common/classes/event_class.php");
 
 // templates
 $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/results_tm.php"));
-
-//echo "<pre>".print_r($_SESSION,true)."</pre>";
 
 // page controls
 include ("./templates/growls.php");
@@ -66,42 +65,52 @@ foreach ($race_o->race_getresults() as $result)
     $rs_data[$result['fleet']][] = $result;
 }
 
+// check if race is running or has been run
+$total_entries = 0;
+$event_run = false;
+if ($_SESSION["e_$eventid"]['ev_status'] == "running" OR $_SESSION["e_$eventid"]['ev_status'] == "sailed" OR
+    $_SESSION["e_$eventid"]['ev_status'] == "completed") { $event_run = true; }
+
 // ---- Recalculate results if required ----------------------------------
 $results = array("eventid" => $eventid, "num-fleets" => $numfleets);
-
 if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need recalculating
 {
     $warning_count = 0;
     $event_still_running = false;
     for ($i = 1; $i <= $numfleets; $i++)
     {
-        $fleet_rs['warning'] = array();
-        $fleet_rs['data'] = array();
-        if (!empty($rs_data[$i]))
+            $total_entries = $total_entries + $_SESSION["e_$eventid"]["fl_$i"]['entries'];
+
+            $fleet_rs['warning'] = array();
+            $fleet_rs['data'] = array();
+            if (!empty($rs_data[$i]))
+            {
+                $fleet_rs = $race_o->race_score($eventid, $i, $_SESSION["e_$eventid"]["fl_$i"]['scoring'], $rs_data[$i] );
+            }
+
+            if (!empty($fleet_rs['warning'])) { $warning_count++; }
+            $results['warning'][$i] = $fleet_rs['warning'];
+            $results['entries'][$i] = $_SESSION["e_$eventid"]["fl_$i"]['entries'];
+            $results['data'][$i]    = $fleet_rs['data'];
+
+            $fleet_still_racing = $race_o->fleet_race_stillracing($i);
+            if ($fleet_still_racing) { $event_still_running = true; }
+    }
+
+    if ($event_run AND $total_entries > 0)
+    {
+        $event_o = new EVENT($db_o);
+        if ($event_still_running)
         {
-            $fleet_rs = $race_o->race_score($eventid, $i, $_SESSION["e_$eventid"]["fl_$i"]['scoring'], $rs_data[$i] );
+            // set event status to running
+            $upd = $event_o->event_updatestatus($eventid, "running");
         }
-        //echo "<pre><br><br><br>AFTER SCORE".print_r($fleet_rs,true)."</pre>";
-        if (!empty($fleet_rs['warning'])) { $warning_count++; }
-        $results['warning'][$i] = $fleet_rs['warning'];
-        $results['data'][$i]    = $fleet_rs['data'];
-
-        $fleet_still_racing = $race_o->fleet_race_stillracing($i);
-        if ($fleet_still_racing) { $event_still_running = true; }
+        else
+        {
+            // set event status to sailed
+            $upd = $event_o->event_updatestatus($eventid, "sailed");
+        }
     }
-
-    $event_o = new EVENT($db_o);
-    if ($event_still_running)
-    {
-        // set event status to running
-        $upd = $event_o->event_updatestatus($eventid, "running");
-    }
-    else
-    {
-        // set event status to sailed
-        $upd = $event_o->event_updatestatus($eventid, "sailed");
-    }
-
 }
 
 include ("./include/results_ctl.inc");
@@ -124,6 +133,12 @@ $lbufr.= $tmpl_o->get_template("modal", $mdl_remove['fields'], $mdl_remove);
 
 // ----- right hand panel ------------------------------------------------------------
 $rbufr = "";
+
+// Results Publish button (only if a) we have entries, and b) the race has started)
+if ($event_run AND $total_entries > 0)
+{
+    $rbufr.= $tmpl_o->get_template("btn_modal", $btn_publish['fields'], $btn_publish)."<hr>";
+}
 
 // retirements button
 if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
@@ -152,42 +167,27 @@ if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
 EOT;
         $rbufr.= $tmpl_o->get_template("$template", $btn_loadret['fields'], $btn_loadret)."<hr>";
     }
-
-    /*  FIXME - I don't think I need declarations (not in RRS) - has impact on rm_sailor
-    elseif ($_SESSION["e_$eventid"]['ev_entry'] == "signon-declare")
-    {
-        $num_declarations = $entry_o->count_signons("declarations");
-        if ($num_declarations > 0)
-        {
-            $btn_loaddec['fields']['style'] = "warning";
-            $btn_loaddec['fields']['label'] = "Declarations - ";
-            $rbufr.= $tmpl_o->get_template("btn_link_blink", $btn_loaddec['fields'], $btn_loaddec);
-            $rbufr.= "<hr>";
-        }
-        else
-        {
-            $rbufr.= $tmpl_o->get_template("btn_link", $btn_loaddec['fields'], $btn_loaddec);
-            $rbufr.= "<hr>";
-        }
-
-    }
-    */
 }
 
-// function buttons
+
+// Change Finish Lap buton
 if (!$_SESSION["e_$eventid"]['pursuit'])
 {
-    $rbufr .= $tmpl_o->get_template("btn_modal", $btn_changefinish['fields'], $btn_changefinish);  // change finish lap button
+    $rbufr.= $tmpl_o->get_template("btn_modal", $btn_changefinish['fields'], $btn_changefinish);
 }
-$rbufr.= $tmpl_o->get_template("btn_modal", $btn_message['fields'], $btn_message);                // send message button
-$rbufr.= $tmpl_o->get_template("btn_modal", $btn_publish['fields'], $btn_publish);                // publish results button
+
+// Send Message button
+$rbufr.= $tmpl_o->get_template("btn_modal", $btn_message['fields'], $btn_message);
+
+
+
 
 // modal code
 if (!$_SESSION["e_$eventid"]['pursuit'])
 {
     // change finish lap modal
     $fleet_data = array();
-    for ($i = 1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
+    for ($i = 1; $i <= $numfleets; $i++)
     {
         $fleet_data["$i"] = $_SESSION["e_$eventid"]["fl_$i"];
     }
@@ -199,9 +199,9 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
 $mdl_message['fields']['body'] = $tmpl_o->get_template("fm_race_message", array());
 $rbufr.= $tmpl_o->get_template("modal", $mdl_message['fields'], $mdl_message);                    // send message modal
 
-// results publish modal
-
+// results modal
 $rbufr.= $tmpl_o->get_template("modal", $mdl_publish['fields'], $mdl_publish);                    // publish results modal
+
 
 // disconnect database
 $db_o->db_disconnect();
@@ -234,57 +234,6 @@ echo $tmpl_o->get_template("two_col_page", $fields, $params);
 
 
 /* ---- functions ------- */
-/*function get_result_row($result)
-{
-    global $race_o, $tmpl_o;
-    global $btn_edit, $btn_detail, $btn_remove;
-
-    $boat = $result['class']." ".$result['sailnum'];
-    $competitor = u_truncatestring(rtrim($result['helm'] . "/" . $result['crew'], "/"), 25);
-    $status_bufr = $race_o->entry_resultstatus($result['status'], $result['declaration']);
-
-    $button_bufr = "";
-    // edit button
-    $formatted_time = gmdate("H:i:s", $result["etime"]);
-    $btn_edit['fields']['data'] = " data-boat=\"$boat\"
-                          data-entryid=\"{$result['id']}\"
-                          data-helm=\"{$result["helm"]}\"
-                          data-crew=\"{$result["crew"]}\"
-                          data-sailnum=\"{$result["sailnum"]}\"
-                          data-pn=\"{$result["pn"]}\"
-                          data-lap=\"{$result["lap"]}\"
-                          data-etime=\"$formatted_time\"
-                          data-code=\"{$result["code"]}\"
-                          data-penalty=\"{$result["penalty"]}\"
-                          data-note=\"{$result["note"]}\"
-                        ";
-    $button_bufr.= $tmpl_o->get_template("badge_modal", $btn_edit['fields'], $btn_edit);
-
-    // lap details button
-    $lapbufr = get_lap_details($result['laptimes']);
-    $btn_detail['fields']['data'] = " data-entryname=\"$competitor\" data-table=\"$lapbufr\" ";
-    $button_bufr.= $tmpl_o->get_template("badge_modal", $btn_detail['fields'], $btn_edit);
-
-    // remove button
-    $btn_remove['fields']['data'] = " data-entryid=\"{$result['id']}\" data-entryname=\"$competitor\" ";
-    $button_bufr.= $tmpl_o->get_template("badge_modal", $btn_remove['fields'], $btn_edit);
-
-    $fields = array(
-        "class"      => $result['class'],
-        "sailnum"    => $result['sailnum'],
-        "competitor" => $competitor,
-        "pn"         => $result['pn'],
-        "lap"        => $result['lap'],
-        "et"         => u_conv_secstotime($result['etime']),
-        "ct"         => u_conv_secstotime($result['atime']),
-        "code"       => $result['code'],
-        "points"     => $result['points'],
-        "status"     => $status_bufr
-//        "button" => $button_bufr,
-    );
-    return $fields;
-}*/
-
 
 function get_lap_details($laptimes)
 {

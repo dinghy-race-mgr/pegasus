@@ -58,7 +58,7 @@ if ($eventid AND $pagestate)
         $bunch_o  = new BUNCH($eventid, "timer_sc.php", $_SESSION["e_$eventid"]['bunch']);
     }
 
-
+/* ------- TIME LAP FOR BOAT ------------------------------------------------------------------------------- */
     if ($pagestate == "timelap")
     {
         $if_err = false;
@@ -134,7 +134,8 @@ if ($eventid AND $pagestate)
 
         }
     }
-    
+
+/* ------- FINISH A BOAT ------------------------------------------------------------------------------- */
     elseif ($pagestate == "finish")   // FIXME this code should be combined with timelap above
     {
         $if_err = false;
@@ -186,7 +187,8 @@ if ($eventid AND $pagestate)
             }
         }
     }
-    
+
+/* ------- SET SCORING CODE FOR BOAT ----------------------------------------------------------------------- */
     elseif  ($pagestate == "setcode")
     {
         if (!empty($_REQUEST['fleet']))
@@ -200,7 +202,8 @@ if ($eventid AND $pagestate)
             error_log("timer_sc.php/pagestate=setcode : fleet argument not set", 3, $_SESSION['syslog']);
         }
     }
-    
+
+/* ------- REMOVE LAST LAP TIMING  ------------------------------------------------------------------- */
     elseif  ($pagestate == "undo")
     {
         $entry = $race_o->entry_time_undo();
@@ -226,6 +229,7 @@ if ($eventid AND $pagestate)
         }
     }
 
+/* ------- REMOVE LAST LAP TIMING FOR SPECIFIC BOAT ---------------------------------------------------- */
     elseif  ($pagestate == "undoboat")
     {
         $entry = $race_o->entry_time_undo($_REQUEST['entryid']);
@@ -247,6 +251,7 @@ if ($eventid AND $pagestate)
         }
     }
 
+/* ------- SHORTEN FLEET ------------------------------------------------------------------------------- */
     elseif  ($pagestate == "shorten")
     {
         // shortens one fleet to finish
@@ -272,7 +277,8 @@ if ($eventid AND $pagestate)
             u_writelog("shorten course FAILED - fleet not recognised [$fleet]", $eventid);
         }
     }
-       
+
+/* ------- SHORTEN ALL FLEETS ------------------------------------------------------------------------------- */
     elseif  ($pagestate == "shortenall") {
 
         $msg = "";
@@ -300,94 +306,98 @@ if ($eventid AND $pagestate)
         u_writelog("shorten course for all fleets", $eventid);
     }
 
-//    elseif ($pagestate == "resetlaps")        // sets laps for all fleets
-//        // FIXME this code should be the same as race_sc.php/setlaps
-//    {
-////        $msg = array(
-////            "ok" => "&nbsp;&nbsp;- {} - set to {} lap(s) <br>",
-////            "pursuit_race" => "&nbsp;&nbsp;- {} is a pursuit race - laps cannot be set <br>",
-////            "less_than_current" => "&nbsp;&nbsp;- {} - laps not set, boats already on lap {} <br>",
-////            "finishing" => "&nbsp;&nbsp;- {} - laps not set, boats already finishing <br>",
-////            "already_set" => "&nbsp;&nbsp;- {} - no laps change requested <br>",
-////            "unknown" => "&nbsp;&nbsp;- {} - laps set failed for reasons unknown <br>"
-////        );
-////        $growlmsg = "Setting Laps &hellip;<br>";
-////
-////        for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
-////        {
-////            $fleetname = $_SESSION["e_$eventid"]["fl_$i"]['name'];
-////            if ($_SESSION["e_$eventid"]["fl_$i"]['maxlap'] != $_REQUEST["laps$i"])    // here has been a change
-////            {
-////                $rs = $race_o->race_laps_set($i, $_REQUEST["laps$i"]);
-////                if ($rs)
-////                {
-////                    $growlmsg.= u_format($msg["{$rs['result']}"], array($fleetname, $_REQUEST["laps$i"]));
-////
-////                    if ($rs['result'] == "ok")
-////                    {
-////                        u_writelog("setlaps: $fleetname - {$_REQUEST["laps$i"]} laps", $eventid);
-////                    }
-////                }
-////                else
-////                {
-////                    $growlmsg.= u_format($msg["unknown"], array($fleetname, $_REQUEST["laps$i"]));
-////                    u_writelog("setlaps: $fleetname - failed [{$_REQUEST["laps$i"]}] laps", $eventid);
-////                }
-////            }
-////        }
-////        u_growlSet($eventid, $page, $g_timer_setlaps_report, array($growlmsg));
-//
-//        $lapsetfail = false;
-//        $growlmsg   = "Setting laps:<br>";
-//
-//        for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
-//        {
-//            $fleetname = $_SESSION["e_$eventid"]["fl_$i"]['name'];
-//            $rs = $race_o->race_laps_set($i, $_REQUEST["maxlaps$i"]);
-//
-//            $str = array(
-//                "pursuit_race" => "$fleetname is a pursuit race - laps cannot be set",
-//                "less_than_current" => "$fleetname - laps not changed, boats already on lap {$rs['currentlap']}",
-//                "finishing" => "$fleetname - laps not changed, boats already finishing",
-//                "already_set" => "$fleetname - laps already set to {$rs['finishlap']}",
-//            );
-//
-//            echo "<pre>$fleetname - ".print_r($rs,true)."</pre>";
-//            if (empty($rs['result']) or $rs['result'] == "failed")
-//            {
-//                u_writelog("setlaps: $fleetname - failed [{$_REQUEST["maxlaps$i"]} laps]", $eventid);
-//                $growlmsg.= "&nbsp;&nbsp;$fleetname - laps set FAILED <br>";
-//                $lapsetfail = true;
-//            }
-//            elseif($_REQUEST["maxlaps$i"] == $_SESSION["e_$eventid"]["fl_$i"]['maxlap'])  // no change requested
-//            {
-//                $growlmsg.= "&nbsp;&nbsp;$fleetname - no change <br>";
-//            }
-//            else
-//            {
-//                if ($rs['result'] == "ok")
-//                {
-//                    u_writelog("setlaps: $fleetname - {$_REQUEST["maxlaps$i"]} laps", $eventid);
-//                    $growlmsg.= "&nbsp;&nbsp;$fleetname - laps changed to {$rs['finishlap']} <br>";
-//                }
-//                else
-//                {
-//                    $growlmsg.= "&nbsp;&nbsp; - ".$str["{$rs['result']}"]."<br>";
-//                    $lapsetfail = true;
-//                }
-//            }
-//        }
-//
-//        if ($lapsetfail)
-//        {
-//            u_growlSet($eventid, $page, $g_race_lapset_fail, array($growlmsg));
-//        }
-//        else
-//        {
-//            u_growlSet($eventid, $page, $g_race_lapset_success, array($growlmsg));
-//        }
-//    }
+/* ------- CHANGEFINISH ------------------------------------------------------------------------------- */
+    elseif ($pagestate == "changefinish")
+    {
+        $growl_txt = "";
+        $racestate = $race_o->racestate_get();   // get racestate for all fleets
 
+        // loop over fleets
+        foreach ($racestate as $i=>$fleet)
+        {
+            $fleetnum = $fleet['fleet'];
+            $new_maxlap = $_REQUEST['laps'][$i];
+            if ($fleet['maxlap'] != $new_maxlap)  // laps have been changed - process change
+            {
+                $success = fleet_changefinishlap($fleetnum, $fleet, $new_maxlap, $_SESSION["e_$eventid"]["fl_$i"]['currentlap']);
+                if ($success)
+                {
+                    $log_txt = "{$fleet['racename']} finish changed to lap $new_maxlap ";
+                }
+                else
+                {
+                    $log_txt = "attempt to change finish lap in {$fleet['racename']} to lap $new_maxlap - FAILED ";
+                }
+                u_writelog($log_txt, $eventid);
+                $growl_txt.= $log_txt."<br>";
+            }
+        }
+        u_growlSet($eventid, $page, $g_results_changefinish, array($growl_txt));
+
+        $_SESSION["e_$eventid"]['result_valid'] = false;     // reset rescore flag
+
+    }
+
+    elseif ($pagestate == "undoshorten")   // FIXME - this code is the same as set all laps on race_sc - refactor accordingly
+    {
+        $lapsetfail = false;
+        $growlmsg   = "";
+
+        //u_writedbg("laps change requested: ".print_r($_REQUEST['laps'],true), __CLASS__, __FUNCTION__, __LINE__);
+
+        for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
+        {
+            $fleetname = $_SESSION["e_$eventid"]["fl_$i"]['name'];
+            $current_maxlap = $_SESSION["e_$eventid"]["fl_$i"]['maxlap'];
+            $rs = $race_o->race_laps_set("set", $i, $_SESSION["e_$eventid"]["fl_$i"]['scoring'], $_REQUEST['laps'][$i]);
+
+            $str = array(
+                "pursuit_race"      => "&nbsp;&nbsp;$fleetname is a pursuit race - laps cannot be set <br>",
+                "less_than_current" => "&nbsp;&nbsp;$fleetname - laps not changed, boats already on lap {$rs['currentlap']} <br>",
+                "finishing"         => "&nbsp;&nbsp;$fleetname - laps not changed, boats already finishing <br>",
+                "already_set"       => "&nbsp;&nbsp;$fleetname - laps already set to {$rs['finishlap']} <br>",
+            );
+
+            //echo "<pre>$fleetname - ".print_r($rs,true)."</pre>";
+            if (empty($rs['result']) or $rs['result'] == "failed")          // lap change failed
+            {
+                u_writelog("setlaps: $fleetname - failed [{$_REQUEST['laps'][$i]} laps]", $eventid);
+                $growlmsg.= "&nbsp;&nbsp;$fleetname - laps set FAILED <br>";
+                $lapsetfail = true;
+            }
+            elseif($_REQUEST['laps'][$i] == $current_maxlap)                // no change to lap for this fleet
+            {
+                $growlmsg.= "";
+            }
+            else
+            {
+                if ($rs['result'] == "ok")                                  // laps changed
+                {
+                    u_writelog("setlaps: $fleetname - {$_REQUEST['laps'][$i]} laps", $eventid);
+                    $growlmsg.= "&nbsp;&nbsp;$fleetname - laps changed to {$_REQUEST['laps'][$i]} <br>";
+                }
+                else
+                {
+                    $growlmsg.= $str["{$rs['result']}"];
+                    $lapsetfail = true;
+                }
+            }
+        }
+
+        if ($lapsetfail)
+        {
+            $growlmsg  = "Setting laps:<br>".$growlmsg;
+            u_growlSet($eventid, $page, $g_race_lapset_fail, array($growlmsg));
+        }
+        else
+        {
+            empty($growlmsg) ?  $growlmsg = "Setting laps - no changes made" : $growlmsg = "Setting laps:<br>".$growlmsg;
+            u_growlSet($eventid, $page, $g_race_lapset_success, array($growlmsg));
+        }
+    }
+
+
+/* ------- BUNCH PROCESSING ------------------------------------------------------------------------------- */
     elseif ($pagestate == "bunch")
     {
 //        echo "<pre>".print_r($_SESSION["e_$eventid"]['bunch'],true)."</pre>";
@@ -563,4 +573,97 @@ function check_race_started($eventid, $fleetnum, $server_time)
         exit(); 
     }
 }
+
+// FIXME - this is also used on timer page
+//function fleet_changefinishlap($fleetnum, $fleet, $new_maxlap, $current_lap)
+//{
+//    global  $race_o;
+//    $status = true;
+//
+//    $race = $race_o->race_getresults($fleetnum);  // get race data for this fleet
+//    //u_writedbg("<pre>BEFORE: ".print_r($race,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+//
+//    foreach($race as $boat)
+//    {
+//        $update = array();
+//
+//        // set data for change in finish lap
+//        if ($fleet['racetype'] == "average")    // average lap race: set each boat to an individual finish lap
+//        {
+//            /*
+//             *  All boats that have completed a lap get a finish based on the new finish lap specified
+//             *  or the last lap that they completed.  Boats that haven't finished a lap will not be finished - OOD
+//             *  needs to do that with a DNF.  If specified finish lap is > than the current leaders lap then it
+//             *  will still finish everyone BUT will aggregate the ET to the specified finish lap
+//             */
+//
+//            if ($boat['lap'] >= 1)              // boat has completed at least one lap - can be scored
+//            {
+//                $boat['status'] == "X" ? $set_status = "X" : $set_status = "F" ;   // set status to finished unless it is excluded
+//
+//                // find last completed lap for this boat that is <= finishlap
+//                //$boat['lap'] > $new_maxlap ? $new_lap = $new_maxlap : $new_lap = $boat['lap'];
+//
+//                // get lap time data for that new finish (0 if lap not completed)
+//                $lapdata = $race_o->race_getlap_etime($boat, $new_maxlap);
+//
+//                if ($lapdata['etime'] > 0)      // boat did complete new_lap so update all time details for that lap
+//                {
+//                    $ptime = $race_o->entry_calc_pt($lapdata['etime'], 0, $new_maxlap);
+//                    $update = array("status" => $set_status, "finishlap" => $new_maxlap, "lap" => $new_maxlap,
+//                        "etime" => $lapdata['etime'], "ctime" => $lapdata['ctime'], "ptime" => $ptime,
+//                        "clicktime" => $lapdata['clicktime']);
+//                }
+//                else                            // just use the last lap they did (time details will already be ok
+//                {
+//                    $update = array("status" => $set_status, "finishlap" => $new_maxlap);
+//                }
+//            }
+//            else                                // boat hasn't completed a lap - can't be scored - just reset finish lap
+//            {
+//                $update = array("finishlap" => $new_maxlap);
+//            }
+//        }
+//        else                                        // handicap or fleet race: set all boats to same finish lap
+//        {
+//            /*
+//             *  Finishes all boats that have completed the specified finish lap (new_maxlap).  Boats who haven't
+//             *  completed the specified lap will need to be marked DNF by the OOD if not already done.
+//             */
+//
+//            if ($new_maxlap > $current_lap)         // boat will not have finished
+//            {
+//                $boat['status'] == "F" ?  $set_status = "R" : $set_status = $boat['status'];
+//                $update = array("status" => $set_status, "finishlap" => $new_maxlap);
+//            }
+//
+//            else
+//            {
+//                // get lap time data for that new finish (0 if lap not completed)
+//                $lapdata = $race_o->race_getlap_etime($boat, $new_maxlap);
+//                if ($lapdata['etime'] > 0)      // boat did complete new_lap so change all time details to that lap
+//                {
+//                    $ptime = $race_o->entry_calc_pt($lapdata['etime'], 0, $new_maxlap);
+//                    $update = array("status" => "F", "finishlap" => $new_maxlap, "lap" => $new_maxlap,
+//                        "etime" => $lapdata['etime'], "ctime" => $lapdata['ctime'], "ptime" => $ptime,
+//                        "clicktime" => $lapdata['clicktime']);
+//                }
+//                else                            // just set new finish lap
+//                {
+//                    $boat['status'] == "X" ? $set_status = "X" : $set_status = "R" ;   // set status to racing unless it is excluded
+//                    $update = array("status" => $set_status, "finishlap" => $new_maxlap);
+//                }
+//            }
+//        }
+//
+//        // update boat details
+//        //u_writedbg("<pre>{$boat['class']} - {$boat['sailnum']}: ".print_r($update,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+//        $race_o->entry_update($boat['id'], $update);
+//    }
+//
+//    $race = $race_o->race_getresults($fleetnum);  // get race data for this fleet
+//    //u_writedbg("<pre>AFTER: ".print_r($race,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+//
+//    return $status;
+//}
 

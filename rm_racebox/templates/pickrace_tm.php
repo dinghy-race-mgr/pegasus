@@ -43,9 +43,9 @@ EOT;
         <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1">
             <div class="panel {style} ">
                 <div class="panel-heading">
-                    <h3 ><b>{eventname}</b><span class="pull-right" style="font-size: smaller">&hellip; {label}</span></h3>
+                    <h4 ><b>{eventname}</b><span class="pull-right" style="font-size: smaller">&hellip; {label}</span></h4>
                 </div>
-                <div class="panel-body" >
+                <div class="panel-body" style="padding: 10px !important" >
                     <div class="row">
 
                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">

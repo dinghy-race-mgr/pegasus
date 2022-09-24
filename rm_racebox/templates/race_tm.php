@@ -337,14 +337,16 @@ function fm_abandon_ok($param=array())
     $html = <<<EOT
     <div class="margin-top-10">
         <h3 class="lead">Are you sure you want to abandon this race ?</h3>
-        <p class="text-danger lead" style="text-align: center;">no results will be recorded!</p>
-        <div class="alert alert-info fade-in">
+        <h2 style="text-align: center;">no results will be recorded!</h2><br>
+        <div style="padding-left: 50px; padding-right: 50px;">
+        <div class="alert alert-warning fade-in" >
             <p class="lead">Tip: finish at an earlier lap</p>
             <p>If the boats have completed at least one lap and your sailing
             instructions allow finishing at an earlier lap - use the <b>"Change Finish Lap"</b> option on the
             Results Page instead of abandoning the race.</p>
-            <p class="pull-right"><a class="btn btn-default btn-sm" href="results_pg.php?eventid={eventid}" role="button">
+            <p class="pull-right"><a class="btn btn-warning btn-sm" href="results_pg.php?eventid={eventid}" role="button">
                 go to Result Page <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a></p>
+        </div>
         </div>
         <br>
     </div>

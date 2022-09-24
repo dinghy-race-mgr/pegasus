@@ -54,7 +54,7 @@ $btn_change = array(
     "popover"   => true,
     "fields"    => array(
         "id"        => "change",
-        "style"     => "success",
+        "style"     => "info",
         "size"      => "lg",
         "label"     => "Change Details",
         "glyph"     => "glyphicon-pencil",
@@ -76,7 +76,7 @@ $mdl_change = array(
     "fields"  => array(
         "id"          => "change",
         "size"        => "lg",
-        "style"       => "success",
+        "style"       => "info",
         "title"       => "<b>Change Race Details - $eventname</b>",
         "body"        => "",
         "script"      => "",
@@ -89,7 +89,6 @@ $mdl_change = array(
         "footer"      => "",
     ),
 );
-
 
 
 // ---- view format button ---------------------------------------------------------------
@@ -146,7 +145,7 @@ $btn_message = array(
     "fields"    => array(
         "id"        => "sendmessage",
         "size"      => "lg",
-        "style"     => "success",
+        "style"     => "info",
         "label"     => "Report Issue",
         "glyph"     => "glyphicon-send",
         "popover"   => "click to send email message to support team",
@@ -166,7 +165,7 @@ $mdl_message = array(
     "submit"  => true,
     "fields"  => array(
         "id"          => "sendmessage",
-        "style"       => "success",
+        "style"       => "info",
         "size"        => "lg",
         "title"       => "<b>Send Message</b>",
         "body"        => "",

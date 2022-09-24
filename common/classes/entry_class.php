@@ -278,14 +278,13 @@ class ENTRY
 
         $where_options  = array(
             "entries"      => " AND action = 'enter' ",
-            //"entries"      => " AND action IN ('enter', 'delete', 'update', 'replace') ",
             "retirements"  => " AND action = 'retire' ",
             "declarations" => " AND action IN ('retire', 'declare') ",
         );
         $type ? $where = $where_options["$type"] : $where = "";
         $query = "SELECT * FROM t_entry WHERE status IN ('N','F') AND eventid = {$this->eventid} $where";
         $num_signons = $this->db->db_num_rows($query);
-        //echo "<pre><br><br>query: $query | num: $num_signons</pre>";
+
         return $num_signons;
     }
 

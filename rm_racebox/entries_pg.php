@@ -40,6 +40,7 @@ session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, true);
+//echo "<pre><br><br><br><br>".print_r($_SESSION["e_$eventid"],true)."</pre>";
 
 // classes
 require_once("{$loc}/common/classes/db_class.php");
@@ -92,15 +93,30 @@ $rbufr_top = "";
 if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
 {
     $num_entries_waiting = $entry_o->count_signons("entries");
-    if ($num_entries_waiting > 0) {
-        $btn_loadentry['fields']['style'] = "danger";
-        $btn_loadentry['fields']['label'] .= "($num_entries_waiting)";
-        $rbufr_top .= $tmpl_o->get_template("btn_link_blink", $btn_loadentry['fields'], $btn_loadentry);
-        $rbufr_top .= "<hr>";
-    } else {
+
+    if ($_SESSION["e_$eventid"]['ev_status'] != "cancelled" AND $_SESSION["e_$eventid"]['ev_status'] != "abandoned")
+    {
+        if ($num_entries_waiting > 0)
+        {
+            $btn_loadentry['fields']['style'] = "danger";
+            $btn_loadentry['fields']['label'] .= "($num_entries_waiting)";
+            $rbufr_top .= $tmpl_o->get_template("btn_link_blink", $btn_loadentry['fields'], $btn_loadentry);
+            $rbufr_top .= "<hr>";
+        }
+        else
+        {
+            $rbufr_top .= $tmpl_o->get_template("btn_link", $btn_loadentry['fields'], $btn_loadentry);
+            $rbufr_top .= "<hr>";
+        }
+    }
+    else
+    {
+        $btn_loadentry['fields']['disabled'] = "disabled";
+        $btn_loadentry['fields']['popover'] = "Entries not available - race is {$_SESSION["e_$eventid"]['ev_status']}";
         $rbufr_top .= $tmpl_o->get_template("btn_link", $btn_loadentry['fields'], $btn_loadentry);
         $rbufr_top .= "<hr>";
     }
+
 }
 else
 {
@@ -116,17 +132,6 @@ else
 $rbufr_top .= $tmpl_o->get_template("btn_modal", $btn_addentry['fields'], $btn_addentry);
 $rbufr_top .= $tmpl_o->get_template("modal", $mdl_addentry['fields'], $mdl_addentry);
 
-// add new competitor button - modal form
-$rbufr_mid = "<hr>";
-$rbufr_mid .= $tmpl_o->get_template("btn_modal", $btn_addcompetitor['fields'], $btn_addcompetitor);
-$mdl_addcompetitor['fields']['body'] = $tmpl_o->get_template("fm_addcompetitor", array());
-$rbufr_mid .= $tmpl_o->get_template("modal", $mdl_addcompetitor['fields'], $mdl_addcompetitor);
-
-// add new class button
-$rbufr_mid .= $tmpl_o->get_template("btn_modal", $btn_addclass['fields'], $btn_addclass);
-$mdl_addclass['fields']['body'] = $tmpl_o->get_template("fm_addclass", array());
-$rbufr_mid .= $tmpl_o->get_template("modal", $mdl_addclass['fields'], $mdl_addclass);
-
 // print entries button - drop down options
 $btn_printentries['data'] = array(
     "entry list"        => "entries_print_pg.php?eventid=$eventid&format=entrylist",
@@ -134,8 +139,19 @@ $btn_printentries['data'] = array(
     "declaration sheet" => "entries_print_pg.php?eventid=$eventid&format=declarationsheet",
     "timing sheet"      => "entries_print_pg.php?eventid=$eventid&format=timingsheet"
     );
+$rbufr_mid = "";
+$rbufr_mid.= $tmpl_o->get_template("btn_multilink", $btn_printentries['fields'], $btn_printentries);
+
+// add new competitor button - modal form
 $rbufr_bot = "<hr>";
-$rbufr_bot.= $tmpl_o->get_template("btn_multilink", $btn_printentries['fields'], $btn_printentries);
+$rbufr_bot.= $tmpl_o->get_template("btn_modal", $btn_addcompetitor['fields'], $btn_addcompetitor);
+$mdl_addcompetitor['fields']['body'] = $tmpl_o->get_template("fm_addcompetitor", array());
+$rbufr_bot.= $tmpl_o->get_template("modal", $mdl_addcompetitor['fields'], $mdl_addcompetitor);
+
+// add new class button
+$rbufr_bot .= $tmpl_o->get_template("btn_modal", $btn_addclass['fields'], $btn_addclass);
+$mdl_addclass['fields']['body'] = $tmpl_o->get_template("fm_addclass", array());
+$rbufr_bot .= $tmpl_o->get_template("modal", $mdl_addclass['fields'], $mdl_addclass);
 
 // disconnect database
 $db_o->db_disconnect();

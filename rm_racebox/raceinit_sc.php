@@ -49,9 +49,13 @@ require_once("{$loc}/common/classes/help_class.php");
 $db_o = new DB();
 $event_o = new EVENT($db_o);
 
+// store current event status before reinitialising event session
+$prev_event_status = $_SESSION["e_$eventid"]['ev_prevstatus'];
+
 //echo "<pre>event:$eventid mode:$mode</pre>";
 if ($eventid and ($mode == "init" or $mode == "reset" or $mode == "rejoin"))
 {
+
     // clear event session
     unset($_SESSION["e_$eventid"]);
 
@@ -59,7 +63,7 @@ if ($eventid and ($mode == "init" or $mode == "reset" or $mode == "rejoin"))
     u_starteventlogs($scriptname, $eventid, $mode);
 
     // reset event
-    $status = $event_o->event_reset($eventid, $mode);
+    $status = $event_o->event_reset($eventid, $mode, $prev_event_status);
 
     if ($status == "event_error")
     {

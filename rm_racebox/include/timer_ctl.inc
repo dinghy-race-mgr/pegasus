@@ -124,7 +124,7 @@ $btn_undo = array(
         "id"             => "undo",
         "style"          => "warning",
         "size"           => "lg",
-        "label"          => "Undo Timing",
+        "label"          => "Undo Last Timing",
         "link"           => "",
         "glyph"          => "glyphicon-step-backward",
         "popover"        => "click here to undo last lap/finish timing",
@@ -192,7 +192,7 @@ $btn_editlap = array(
     "popover"   => true,
     "fields"    => array(
         "id"          => "editlap",
-        "style"       => "progress-bar-default",
+        "style"       => "success",
         "size"        => "",
         "label"       => "",
         "glyph"       => "glyphicon-pencil",
@@ -217,7 +217,7 @@ $mdl_editlap = array(
     "fields"  => array(
         "id"          => "editlap",
         "size"        => "lg",
-        "style"       => "primary",
+        "style"       => "success",
         "title"       => "Edit Lap Times",
         "body"        => "<iframe id=\"editlapFrame\" src=\"\" frameborder=\"0\" style=\"width: 100%; height: 400px;\"></iframe>",
         "script"      => "  $( '#editlapModalLabel' ).text( 'Edit lap times for ' + button.data('boat'))
@@ -274,8 +274,52 @@ $mdl_shortenfleet = array(
         "onsubmit"    => "",
         "close-lbl"   => "changed my mind",
         "reset-lbl"   => "",
-        "submit-lbl"  => "shorten fleet",
+        "submit-lbl"  => "Shorten this Fleet",
         "footer"      => ""
+    ),
+);
+
+// ---- change finish lap ----------------------------------------------------------------
+$btn_undoshorten = array(
+    "label"     => true,
+    "glyph"     => true,
+    "g-pos"     => "left",
+    "popover"   => true,
+    "fields"    => array(
+        "id"         => "undoshorten",
+        "size"       => "lg",
+        "style"      => "info",
+        "label"      => "Undo Shorten Course",
+        "glyph"      => "glyphicon-pencil",
+        "popover"    => "change the finishing lap - very useful if you shortened course incorrectly",
+        "pop-pos"    => "left",
+        "block"      => "btn-block",
+        "disabled"   => "",
+        "top-margin" => "margin-top-10"
+    ),
+);
+
+$mdl_undoshorten = array(
+    "form"    => true,
+    "footer"  => false,
+    "reload"  => true,
+    "close"   => true,
+    "reset"   => false,
+    "submit"  => true,
+    "fields"  => array(
+        "id"         => "undoshorten",
+        "size"       => "lg",
+        "style"      => "info",
+        "title"      => "Change Finish Lap",
+        "body"       => "",
+        "script"     => "",
+        "onsubmit"   => "",
+        "action"     => "timer_sc.php?eventid=$eventid&pagestate=undoshorten",
+        "target"     => "",
+        "close-lbl"  => "changed my mind",
+        "reset-lbl"  => "",
+        "submit-lbl" => "Change Finish lap(s)",
+        "footer"     => ""
     ),
 );
 

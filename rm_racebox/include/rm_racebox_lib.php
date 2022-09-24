@@ -51,6 +51,8 @@ function get_code($code, $link, $domain, $dirn = "", $set = "danger", $unset= "p
             $style = "btn-$set";
         }
 
+        $domain == "resultcodes" ? $textsize = "font-size: 0.9em ! important" : $textsize = "";
+
         $codebufr = u_dropdown_resultcodes($_SESSION[$domain], "short", $link);
 
         $bufr = <<<EOT
@@ -58,7 +60,7 @@ function get_code($code, $link, $domain, $dirn = "", $set = "danger", $unset= "p
             <button type="button" style="width: 80px;" class="btn $style btn-xs dropdown-toggle" data-toggle="dropdown" >
                 <span class="default">$label&nbsp;</span>&nbsp;&nbsp;&nbsp;<span class="caret" ></span>
             </button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu" style="$textsize">
                 $codebufr
             </ul>
         </div>

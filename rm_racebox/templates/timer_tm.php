@@ -512,7 +512,7 @@ EOT;
                                 <h3>Are you sure?</h3>
                                 <div style = "font-size: 1.2em; margin-left: 40px;">
                                 <p> This will shorten this fleet so that the leaders will finish on their CURRENT lap</p>
-                                <p>Please click the blue button to confirm this change</p>
+                                <p>Please click the <b>Shorten this Fleet</b> button to confirm this change</p>
                                 </div>
                                 <p><i>[Note: to undo this change - use the Change Finish Laps option]</i></p>
 EOT;
@@ -521,21 +521,6 @@ EOT;
                             $laps_btn.= $tmpl_o->get_template("btn_modal", $btn_shortenfleet['fields'], $btn_shortenfleet);
                             $laps_btn.= $tmpl_o->get_template("modal", $mdl_shortenfleet['fields'], $mdl_shortenfleet);
 
-
-
-//                            $laps_btn = <<<EOT
-//                            <div class="row margin-top-0">
-//                                <div class="col-sm-12 text-left" >
-//                                    <div data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true"
-//                                         data-title="click here to shorten this fleet at the end of the next lap" data-placement="top" class="btn-group ">
-//                                        <a id="shorten$i" href="timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=$i" class="btn btn-info btn-md margin-top-0" style="color: white;" aria-expanded="false" role="button" >
-//                                            <span class="glyphicon glyphicon-flag"></span>&nbsp;
-//                                            {$fleet['maxlap']} LAPS - click to <b>SHORTEN COURSE</b> for this fleet&nbsp;
-//                                        </a>
-//                                    </div>
-//                                </div>
-//                            </div>
-//EOT;
                         }
 
 
@@ -553,9 +538,10 @@ EOT;
                 </span>
 EOT;
             //echo "<pre>".print_r($params['timings'],true)."</pre>";
-
+            $row_num = 0;
             foreach ($params['timings'][$i] as $j=>$r)   // loop over each boat in this fleet
             {
+                $row_num++;
                 $boat = "{$r['class']} - {$r['sailnum']}";
                 $finish_link = vsprintf($finish_link_tmpl, array($r['fleet'], $r['start'], $r['id'], $boat, $r['lap'], $r['pn'], $r['etime'], $r['status'] ));
 
@@ -620,7 +606,8 @@ timer_sc.php?eventid=$eventid&pagestate=setcode&fleet={$r['fleet']}&entryid={$r[
 &racestatus={$r['status']}&declaration={$r['declaration']}&lap={$r['lap']}&finishlap={$r['finishlap']}
 EOT;
 
-                $code_link = get_code($r['code'], $link, "timercodes");
+                $row_num >= 10 ? $dirn = "dropup" : $dirn = "" ;
+                $code_link = get_code($r['code'], $link, "timercodes", $dirn);
 
                 $edit_link = editlaps_html($eventid, $r['id'], $boat, $r['laptimes']);
 
@@ -793,7 +780,7 @@ function editlaps_html($eventid, $entryid, $boat, $laptimes_str)
         $bufr = <<<EOT
         <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true"
               data-title="edit lap times for this boat" data-placement="top">
-            <a type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#editlapModal" data-boat="$boat"
+            <a type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#editlapModal" data-boat="$boat"
                     data-iframe="timer_editlaptimes_pg.php?eventid=$eventid&pagestate=init&entryid=$entryid" >
                     <span class="glyphicon glyphicon-pencil"></span>
             </a>
@@ -953,7 +940,6 @@ EOT;
     $i = 1;
     foreach ($params as $laptime)
     {
-
         $formatted_time = gmdate("H:i:s", $laptime);
         $bufr.= <<<EOT
         <div class="form-group margin-top-10" style="min-width: 30%">
@@ -964,28 +950,38 @@ EOT;
                 data-fv-regexp-regexp="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
                 data-fv-regexp-message="lap time must be in HH:MM:SS format" />
         </div>
+        <br>
 EOT;
         $i++;
     }
 
-    $bufr.= <<<EOT
-    <div class="row"></div>
-    <div class="pull-right margin-top-20">
-        <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-ok"></span>&nbsp;UPDATE Lap Times</button>
-    </div>
-    </div>
-EOT;
+//    $bufr.= <<<EOT
+//    <div class="row"></div>
+//    <div class="pull-right margin-top-20">
+//        <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span>&nbsp;UPDATE Lap Times</button>
+//    </div>
+//    </div>
+//EOT;
 
     $html = <<<EOT
-    <div class="alert well well-sm" role="alert">
-        <p class="text-info"><b>edit the lap times and click the UPDATE button to save them</b></br> use hh:mm:ss for elapsed time (e.g. 00:46:32)</p>
-    </div>
+    
     <form id="editlapForm" class="form-inline" action="timer_editlaptimes_pg.php?pagestate=submit" method="post"
         data-fv-framework="bootstrap"
         data-fv-icon-valid="glyphicon glyphicon-ok"
         data-fv-icon-invalid="glyphicon glyphicon-remove"
         data-fv-icon-validating="glyphicon glyphicon-refresh"
     >
+    <div class="alert well well-sm" role="alert">
+        <div class="row">
+            <div class="col-md-8">
+            <p class="text-info"><b>edit the lap times and click the <b>UPDATE</b> button to save them</b></br> 
+                                    use hh:mm:ss for elapsed time (e.g. 00:46:32)</p>
+            </div>
+            <div class="col-md-4 pull-right">
+            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span>&nbsp;UPDATE Lap Times</button>
+            </div>
+        </div>                            
+    </div>
     $bufr
        
     </form>
@@ -1048,10 +1044,6 @@ EOT;
     return $html;
 }
 
-//function fm_timer_resetlaps($params=array())
-//{
-//    return "fm_timer_resetlaps";
-//}
 
 function fm_timer_shortenall($params=array())
 {
@@ -1060,8 +1052,8 @@ function fm_timer_shortenall($params=array())
     $fields = array(
         "instr_content" => "<p class='lead'>Each fleet will be shortened to the lap shown below.</p>
                             <p>To shorten one fleet click the button above the fleet table in the tabbed view</p>",
-        "footer_content" => "<p>click <b>Change Finish Laps</b> button to make the laps change(s)<br>",
-        "reminder"       => "<div class='alert alert-info'><b>REMEMBER</b> - signal any shortened course to the competitors affected</div>"
+        "footer_content" => "<p>click <b>Confirm Changes</b> button to make the laps change(s)<br>",
+        "reminder"       => "<div class='alert alert-warning'><b>REMEMBER</b> - signal any shortened course to the competitors affected</div>"
     );
 
     $data = array(
@@ -1095,39 +1087,77 @@ function fm_timer_shortenall($params=array())
     return $tmpl_o->get_template("fm_set_laps", $fields, $data);
 }
 
-
-function fm_timer_resetlaps($params = array())
+function fm_timer_undoshorten($params = array())
 {
-    $html = "";
-    if ($params['lapstatus']==0)
+    global $tmpl_o;
+
+    $fields = array(
+        "instr_content" => "Set the finish lap you want for EACH fleet",
+        "footer_content" => "click the Set Laps button to make the changes",
+        "reminder" => ""
+    );
+
+    $data = array(
+        "mode"       => "setlaps",
+        "instruction"=> true,
+        "footer"     => true
+    );
+
+    foreach ($params['fleet-data'] as $i=>$fleet)
     {
-        $html.= <<<EOT
-        <div class="alert alert-danger alert-dismissable" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
-            Please set the number of laps for ALL fleets.
-        </div>
-EOT;
+        $data['fleets'][$i] = array(
+            "fleetname"  => ucwords($fleet['name']),
+            "fleetnum"   => $i,
+            "fleetlaps"  => $fleet['maxlap'],
+            "status"     => $fleet['status']
+        );
+
+        if ($fleet['status'] == "notstarted")
+        {
+            $data['fleets'][$i]['minvallaps'] = array("val"=>1, "msg"=>"cannot be less than 1 lap");
+        }
+        elseif ($fleet['status'] == "inprogress")
+        {
+            $data['fleets'][$i]['minvallaps'] = array("val"=>$fleet['currentlap'], "msg"=>"cannot be less than {$fleet['currentlap']} lap(s)");
+        }
     }
 
-    foreach($params['fleet-data'] as $fleet)
-    {
-        ( isset($fleet['maxlap']) AND $fleet['maxlap']>0 ) ? $laps = "{$fleet['maxlap']}" : $laps = "";
-
-        $html.= <<<EOT
-        <div class="form-group" >
-             <label class="col-xs-5 control-label">
-                {$fleet['name']}
-             </label>
-             <div class="col-xs-3 inputfieldgroup">
-                 <input type="number" class="form-control" style="padding-right:10px;" name="laps[{$fleet['fleetnum']}]"
-                    value="$laps" placeholder="set laps" min="1"
-                    data-fv-greaterthan-message="The no. of laps must be greater than 0"
-                  />
-             </div>
-        </div>
-EOT;
-    }
-
-    return $html;
+    return $tmpl_o->get_template("fm_set_laps", $fields, $data);
 }
+
+
+//function fm_timer_resetlaps($params = array())
+//{
+//    $html = "";
+//    if ($params['lapstatus']==0)
+//    {
+//        $html.= <<<EOT
+//        <div class="alert alert-danger alert-dismissable" role="alert">
+//            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+//            <span aria-hidden="true">&times;</span></button>
+//            Please set the number of laps for ALL fleets.
+//        </div>
+//EOT;
+//    }
+//
+//    foreach($params['fleet-data'] as $fleet)
+//    {
+//        ( isset($fleet['maxlap']) AND $fleet['maxlap']>0 ) ? $laps = "{$fleet['maxlap']}" : $laps = "";
+//
+//        $html.= <<<EOT
+//        <div class="form-group" >
+//             <label class="col-xs-5 control-label">
+//                {$fleet['name']}
+//             </label>
+//             <div class="col-xs-3 inputfieldgroup">
+//                 <input type="number" class="form-control" style="padding-right:10px;" name="laps[{$fleet['fleetnum']}]"
+//                    value="$laps" placeholder="set laps" min="1"
+//                    data-fv-greaterthan-message="The no. of laps must be greater than 0"
+//                  />
+//             </div>
+//        </div>
+//EOT;
+//    }
+//
+//    return $html;
+//}

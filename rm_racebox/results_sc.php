@@ -287,7 +287,6 @@ if ($eventid AND $pagestate)
 
     // check status / update session
     $race_o->racestate_updatestatus_all($_SESSION["e_$eventid"]['rc_numfleets'], $page);
-    
     if (!$stop_here) { header("Location: results_pg.php?eventid=$eventid"); exit(); }  // back to results page
        
 }
@@ -326,6 +325,7 @@ function creategrowl($eventid, $page, $pagestate, $counts, $rpt_bufr)
     return ;
 }
 
+// FIXME - this is also used on timer page
 function fleet_changefinishlap($fleetnum, $fleet, $new_maxlap, $current_lap)
 {
     global  $race_o;

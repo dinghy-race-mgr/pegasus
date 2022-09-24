@@ -117,13 +117,14 @@ elseif ($pagestate == "process")    // run through process workflow
     $detail_set = false;
     foreach ($args as $arg)
     {
-        if (!empty($arg) or $arg == "FINAL")
+        if (!empty($arg) or $arg == "final")
         {
             $detail_set = true;
             break;
         }
     }
 
+    //u_writedbg("<pre>Collecting Wind Info: ".print_r($args,true)."<br>".$_SESSION["e_$eventid"]['ev_wind']."</pre>", __FILE__, __FUNCTION__, __LINE__);
 
     // update event with form details
     $update = $event_o->event_changedetail($eventid, $args);
@@ -279,12 +280,35 @@ elseif ($pagestate == "process")    // run through process workflow
         $result_year = date("Y", strtotime($event['event_date']));
 
         // results files will be transferred if a) individual race has not been embargoed, b) the series upload flag is
-        // not set in t_series, c) the result_upload parameter is not set to 'none'
-        if ($args['result_status'] == "embargoed" OR !$series['opt_upload'] OR $_SESSION['result_upload'] == "none")
+        // not set in t_series, c) the result_upload parameter is not set to 'none', d) the results are not complete
+        if ($args['result_status'] == "embargoed" OR !$series['opt_upload']
+            OR $_SESSION['result_upload'] == "none" OR $event['event_status'] == "running" OR $event['event_status'] == "selected")
         {
+
+            // get relevant error message
+            $txt = "Transfer not requested ";
+            do {
+                if ($args['result_status'] == "embargoed") {
+                    $txt = "Not transferred - race result is embargoed";
+                    break;
+                }
+                if (!$series['opt_upload']) {
+                    $txt = "Not transferred - series is configured not to upload results";
+                    break;
+                }
+                if ($_SESSION['result_upload'] == "none") {
+                    $txt = "Not transferred - system is configured not to upload results";
+                    break;
+                }
+                if ($event['event_status'] == "running" OR $event['event_status'] == "selected") {
+                    $txt = "Not transferred - race is not complete";
+                    break;
+                }
+            } while (0);
+
             sleep(1);
-            endProcess($step, $row_start[$step], "warning", "Transfer to website", "", "Transfer not requested ");
-            u_writelog("FILE TRANSFER - NOT requested", $eventid);
+            endProcess($step, $row_start[$step], "warning", "Transfer to website", "", $txt);
+            u_writelog("FILE TRANSFER - $txt", $eventid);
         }
         else
         {
@@ -546,6 +570,7 @@ function display_demo_page($loc, $eventid)
 function display_warnings_page($loc, $eventid)
 {
     global $event_o, $tmpl_o;
+
     // get current wind/notes settings in case this is not the first publish
     $event = $event_o->get_event_byid($eventid);
 
@@ -573,6 +598,7 @@ function display_options_form($loc, $eventid)
     // generate form
     $speed_codes = $db_o->db_getsystemcodes("wind_speed");
     $dirn_codes  = $db_o->db_getsystemcodes("wind_dir");
+
     $form_params = array(
         "eventid"  => $eventid,
         "notes"    => $event['result_notes'],

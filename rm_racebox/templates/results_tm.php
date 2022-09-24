@@ -19,22 +19,30 @@ function result_tabs($params = array())
         $racetype = $_SESSION["e_$eventid"]["fl_$i"]['scoring'];    // FIXME - not great to use session variables in templates
 
         // create TABS
-        if (count($params['warning'][$i]) > 0)
+        if ($params['entries'][$i] == 0)
         {
-            $tab_label = <<<EOT
+            $tab_label = "";
+        }
+        else
+        {
+            if (count($params['warning'][$i]) > 0)
+            {
+                $tab_label = <<<EOT
             <span class="label label-danger label-sm pull-right" style="font-weight: normal; width: 120px">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Warnings
             </span>
 EOT;
-        }
-        else
-        {
-            $tab_label = <<<EOT
+            }
+            else
+            {
+                $tab_label = <<<EOT
             <span class="label label-success label-sm pull-right" style="font-weight: normal; width: 120px">
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> &nbsp;&nbsp;OK
             </span>           
 EOT;
+            }
         }
+
 
         $tabs.= <<<EOT
         <li role="presentation" class="lead text-center">
@@ -221,8 +229,10 @@ EOT;
 function format_rows($eventid, $racetype, $race_results)
 {
     $rows = "";
+    $row_num = 0;
     foreach($race_results as $k => $result)
     {
+        $row_num++;
 
         $result['editbtn'] = editresult_html($eventid, $result['entryid'], $result['boat']);
         $result['deletebtn'] = <<<EOT
@@ -248,7 +258,9 @@ EOT;
 &entryid={$result['entryid']}&boat={$result['boat']}&racestatus={$result['status']}
 &declaration={$result['declaration']}&lap={$result['lap']}&finishlap={$result['finishlap']}
 EOT;
-        $code_link = get_code($result['code'], $link, "resultcodes");
+        $row_num >= 8 ? $dirn = "dropup" : $dirn = "" ;
+
+        $code_link = get_code($result['code'], $link, "resultcodes", $dirn);
 
         $result['stillracing'] == "Y" ? $row_style = "lastlap" : $row_style = "";
 
@@ -410,12 +422,12 @@ function fm_result_edit($params)
 
     //echo "<pre>".print_r($params,true)."</pre>";
 
-//    $resultcodes = array();
-//    foreach ($params['resultcodes'] as $row) {
-//        $resultcodes[] = array ("code" => $row['code'], "label" => "{$row['code']} : {$row['short']}");
-//    }
-//    $scoring_code_bufr = u_selectcodelist($resultcodes, $params['code']);
     $scoring_code_bufr = "";
+    $resultcodes = array();
+    foreach ($params['resultcodes'] as $row) {
+        $resultcodes[] = array ("code" => $row['code'], "label" => "{$row['code']} : {$row['short']}");
+    }
+    $scoring_code_bufr = u_selectcodelist($resultcodes, $params['code']);
 
     $helm_bufr = "";
     if ($params['points_allocation'] == "boat") {
@@ -444,34 +456,8 @@ EOT;
 EOT;
     }
 
-/*
-    // loop over lap times - field names are laptime[lap]
-    $i = 1;
-    $bufr = "";
-    if (!empty($laptimes))
-    {
-        $laptimes = explode(",", $params['laptimes']);
-        foreach ($laptimes as $laptime) {
-            $formatted_time = gmdate("H:i:s", $laptime);
-            $bufr .= <<<EOT
-            <div class="form-group margin-top-10" style="min-width: 30%">
-                <label for="lap$i">lap $i &nbsp;</label>
-                <input type="text" class="form-control" id="lap$i" name="etime[$i]" value="$formatted_time"
-                    required data-fv-notempty-message="a time [hh:mm:ss] must be entered"
-                    data-fv-regexp="true"
-                    data-fv-regexp-regexp="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
-                    data-fv-regexp-message="lap time must be in HH:MM:SS format" />
-            </div>
-EOT;
-            $i++;
-        }
-    }
-*/
-//    $etime = "";
-//    if (!empty($params['etime']))
-//    {
-        $etime = gmdate("H:i:s", $params['etime']);
-/*    }*/
+    $etime = gmdate("H:i:s", $params['etime']);
+
 
     $html = <<<EOT
 
@@ -500,7 +486,7 @@ EOT;
         
         <li role="presentation" class="active">
           <a href="#resultpanel" aria-controls="resultpanel" role="tab" data-toggle="tab">
-          <span class="glyphicon glyphicon-flag"> </span> Race Details</a>
+          <span class="glyphicon glyphicon-flag"> </span> Result Details</a>
         </li>
         
         <!-- li role="presentation" >
@@ -572,7 +558,7 @@ EOT;
         
         <!-- result panel --> 
         <div role="tabpanel" class="tab-pane fade in active" id="resultpanel">
-        
+                 
             <!-- PN -->  
             <div class="form-group">
                 <label class="$lbl_width control-label text-success">yardstick</label>
@@ -588,7 +574,7 @@ EOT;
             
             <!-- Laps -->  
             <div class="form-group">
-                <label class="$lbl_width control-label text-success">laps completed</label>
+                <label class="$lbl_width control-label text-success">finish lap</label>
                 <div class="$fld_width inputfieldgroup">
                     <input type="number" class="form-control" id="idlap" name="lap" value="{lap}"
                     required data-fv-notempty-message="the number of laps completed is required"
@@ -596,6 +582,7 @@ EOT;
                     min="0" 
                     />
                 </div>
+                <div class="$hlp_width help-block">finishing lap for this boat</div>
             </div>       
             
             <!-- elapsed time -->
@@ -610,14 +597,25 @@ EOT;
                            data-fv-regexp-message="lap time must be in HH:MM:SS format"
                     />
                 </div>
-                <div class="$hlp_width help-block">elapsed time at the finish (hh:mm:ss)</div>
-            </div>                    
+                <div class="$hlp_width help-block">elapsed time for boat at the finish (hh:mm:ss)</div>
+            </div> 
+            
+            <!-- scoring code -->
+            <div class="form-group">
+                <label class="control-label $lbl_width text-success">scoring code</label>
+                <div class = "$fld_width">
+                    <select class="form-control $fld_width" name="code" id="idcode">
+                        $scoring_code_bufr
+                    </select >
+                </div>
+                <div class="$hlp_width help-block">e.g. OCS, DNF - otherwise leave blank</div >
+            </div>                   
             
             <!-- penalty score -->        
             <div class="form-group">
                 <label class="control-label $lbl_width text-success">penalty score</label>
                 <div class="$fld_width">
-                    <input name="penalty" type="text" class="form-control" id="idpenalty" value="{penalty}"
+                    <input name="penalty" type="text" class="form-control" id="idpenalty" value="{penalty}" 
                     placeholder="extra points to be applied (e.g. 2.5)"
                     data-fv-regexp="true"
                     data-fv-regexp-regexp="^(\d*)\.?(\d){0,1}$"
@@ -636,17 +634,7 @@ EOT;
                 <div class="$hlp_width help-block">useful to record why result was edited</div>
             </div>
             
-            <!-- code (this is a hidden field -->
-            <div class="form-group">
-                <!-- label class="control-label $lbl_width text-success">result code</label -->
-                <div class = "$fld_width">
-                    <input type="hidden" id="idcode" name="code" value="{$params['code']}">
-                    <!-- select class="form-control $fld_width" name="code" id="idcode">        
-                        $scoring_code_bufr
-                    </select -->
-                </div>
-                <!-- div class="$hlp_width help-block">e.g. OCS, NCS, DNF - otherwise leave blank</div -->
-            </div>
+
           
         </div>
         
@@ -661,10 +649,21 @@ EOT;
     
   </div> <!-- end panel -->
   
-  <!-- disable penalty field unless code is set to DPI -->
-  <script type=text/javascript>
+  <!-- disable penalty field unless code is set to DPI (first script seems to work-->
+  <!--script type=text/javascript>
       $(document).ready(function(){ $("#idpenalty").prop("disabled", $('#idcode').val() != "DPI"); });  
-  </script>
+  </script -->
+  <!--script type=text/javascript>
+    document.getElementById('idcode').onchange = function () {
+    if(this.value != "DPI") {
+        document.getElementById("idpenalty").disabled = true;
+        }
+
+    else {
+        document.getElementById("idpenalty").disabled = false;
+        }
+    }
+  </script -->
   
 
   </form>
@@ -673,48 +672,50 @@ EOT;
     return $html;
 }
 
-function fm_change_finish($params = array())
-{
-    global $tmpl_o;
-
-    $data = array(
-        "mode"       => "changefinish",
-        "instruction"=> true,
-        "footer"     => true
-    );
-
-    $fields = array(
-        "instr_content" => "<p>This can be useful in two situations ... if you have:<br>&nbsp;&nbsp;&nbsp;- forgotten to SHORTEN course and boats are showing as 'still racing' ... OR<br>
-         &nbsp;&nbsp;&nbsp;- ABANDONED the race and want to take the results from a PREVIOUS completed lap</p>
-        <p>Set the finish lap for each fleet to the lap you want the boats to finish on (i.e. the laps for the finish of the leading boat).</p>",
-        "footer_content" => "click the <span>Change Finish lap</span> button to set the finish lap for each fleet",
-        "reminder" => ""
-    );
-
-    foreach ($params['fleet-data'] as $i=>$fleet)
-    {
-
-        $data['fleets'][$i] = array(
-            "fleetname"  => ucwords($fleet['name']),
-            "fleetnum"   => $i,
-            "fleetlaps"  => $fleet['maxlap'],
-            "status"     => $fleet['status']
-        );
-
-        if ($fleet['status'] == "notstarted")
-        {
-            $data['fleets'][$i]['minvallaps'] = array("val"=>1, "msg"=>"cannot be less than 1 lap");;
-        }
-        else
-        {
-            $data['fleets'][$i]['minvallaps'] = array("val"=>1, "msg"=>"cannot be less than 1 lap");
-            //$data['fleets'][$i]['maxvallaps'] = array("val"=>$fleet['maxlap'], "msg"=>"cannot be more than {$fleet['maxlap']} lap(s)");;
-        }
-    }
-
-    return $tmpl_o->get_template("fm_set_laps", $fields, $data);
-
-}
+//function fm_change_finish($params = array())
+//{
+//    global $tmpl_o;
+//
+//    $data = array(
+//        "mode"       => "changefinish",
+//        "instruction"=> true,
+//        "footer"     => true
+//    );
+//
+//    $fields = array(
+//        "instr_content" => "<p>This can be useful in three situations ... if you have:<br>
+//                            &nbsp;&nbsp;&nbsp;- forgotten to SHORTEN course and boats are showing as 'still racing' ... or<br>
+//                            &nbsp;&nbsp;&nbsp;- SHORTENED course by mistake and want to reset the original finish lap ... or<br>
+//                            &nbsp;&nbsp;&nbsp;- ABANDONED the race and want to take the results from a PREVIOUS completed lap ... or</p>
+//        <p>Set the finish lap for each fleet to the lap you want the boats to finish on (i.e. the laps for the finish of the leading boat).</p>",
+//        "footer_content" => "click the <span>Change Finish lap</span> button to set the finish lap for each fleet",
+//        "reminder" => ""
+//    );
+//
+//    foreach ($params['fleet-data'] as $i=>$fleet)
+//    {
+//
+//        $data['fleets'][$i] = array(
+//            "fleetname"  => ucwords($fleet['name']),
+//            "fleetnum"   => $i,
+//            "fleetlaps"  => $fleet['maxlap'],
+//            "status"     => $fleet['status']
+//        );
+//
+//        if ($fleet['status'] == "notstarted")
+//        {
+//            $data['fleets'][$i]['minvallaps'] = array("val"=>1, "msg"=>"cannot be less than 1 lap");;
+//        }
+//        else
+//        {
+//            $data['fleets'][$i]['minvallaps'] = array("val"=>1, "msg"=>"cannot be less than 1 lap");
+//            //$data['fleets'][$i]['maxvallaps'] = array("val"=>$fleet['maxlap'], "msg"=>"cannot be more than {$fleet['maxlap']} lap(s)");;
+//        }
+//    }
+//
+//    return $tmpl_o->get_template("fm_set_laps", $fields, $data);
+//
+//}
 
 
 function process_header($params=array())
@@ -818,7 +819,7 @@ EOT;
 }
 
 
-function fm_publish($params)
+function fm_publish($params = array())
 {
     /**
      * This form collects information from OOD prior to publishing results.
@@ -927,7 +928,7 @@ function fm_publish($params)
                       $('#windForm').formValidation({
                             excluded: [':disabled'],
                       })
-
+                      
                       $('#resetBtn').click(function() {
                          $('#').data('bootstrapValidator').resetForm(true);
                       });

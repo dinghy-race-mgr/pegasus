@@ -349,34 +349,21 @@ class RACE
         $fields = "id, fleet, class, sailnum, helm, crew, club, pn, lap, finishlap, etime, ctime, atime, 
                    penalty, points, code, declaration, protest, status, note";
 
-        $where = "  ";
+        $where = " ";
         if ($fleetnum > 0) { $where.= " AND fleet = $fleetnum "; }
         
         if  ($this->pursuit)
         {
-            $order  = "fleet ASC, points ASC, pn DESC, class, sailnum * 1";
+            $order  = "fleet ASC, field(status, 'F','R','X'), points ASC, pn DESC, class, sailnum * 1";
         }
         else
         {
-            $order  = "fleet ASC, points ASC, pn ASC, class, sailnum * 1";
+            $order  = "fleet ASC, field(status, 'F','R','X'), points ASC, pn ASC, class, sailnum * 1";
         }
         $results = $this->race_entry_get($fields, $where, $order, true);
         
         return $results;
     }
-
-//    public function race_getresultsdata($fleetnum=0)
-//    {
-//        $fields = "id, pn, lap, etime, code, declaration, status";
-//
-//        $where = " AND code != 'DNC' ";
-//        if ($fleetnum > 0) { $where.= " AND fleet = $fleetnum "; }
-//        echo "$fleetnum - $where<br>";
-//        //u_writedbg("$fields<br>$where",__FILE__, __FUNCTION__, __LINE__);
-//        $results = $this->race_entry_get($fields, $where, "lap DESC", true);
-//
-//        return $results;
-//    }
     
     
     public function race_gettimings($listorder = "", $fleetnum = 0)
@@ -932,16 +919,21 @@ class RACE
                         }
                     }
                     //error_log("points for $k: {$rs_data[$k]['points']} \n",3, $_SESSION['dbglog']);
-                    $points_arr[] = $rs_data[$k]['points'];  // sort array
+//                    $points_arr[] = $rs_data[$k]['points'];  // sort array for points
+//                    $status_arr[] = $rs_data[$k]['status'];  // sort array for status
                 }
                 else
                 {
-                    $points_arr[] = $rs_data[$k]['points'];  // sort array
+//                    $points_arr[] = $rs_data[$k]['points'];  // sort array for points
+//                    $status_arr[] = $rs_data[$k]['status'];  // sort array for status
                 }
-
+                $points_arr[] = $rs_data[$k]['points'];  // sort array for points
+                $status_arr[] = $rs_data[$k]['status'];  // sort array for status
+                $pn_arr[] = $rs_data[$k]['pn']; // sort array for PN
+                $sailnum_arr[] = $rs_data[$k]['sailnum']; // sort array for sailnumber
             }
 
-            array_multisort($points_arr, SORT_ASC, $rs_data);
+            array_multisort($status_arr, SORT_ASC, $points_arr, SORT_ASC, $pn_arr, SORT_ASC, $sailnum_arr, SORT_NUMERIC, $rs_data);
         }
 
         // end dbg chk

@@ -653,7 +653,7 @@ class EVENT
     // Method: update event status
     public function event_updatestatus($eventid, $status)
     {
-       // u_writedbg("status:s_status:s_p_status - $status|{$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}", __FILE__, __FUNCTION__,__LINE__); // debug:
+       //u_writedbg("status:s_status:s_p_status - $status|{$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}", __FILE__, __FUNCTION__,__LINE__); // debug:
 
        $success  = false;
        $status_ok = (in_array($status, $_SESSION['race_states']))? true : false;  // status is known
@@ -671,7 +671,7 @@ class EVENT
                     $_SESSION["e_$eventid"]['ev_status']     = $status; 
                     $msg = "event status changed:  {$_SESSION["e_$eventid"]['ev_prevstatus']} -> {$_SESSION["e_$eventid"]['ev_status']}";
                     u_writelog($msg, $eventid);
-                   //u_writedbg($msg, __FILE__, __FUNCTION__,__LINE__); // debug:
+//                    u_writedbg($msg, __FILE__, __FUNCTION__,__LINE__); // debug:
                }               
            }
            else
@@ -969,7 +969,7 @@ class EVENT
     }
     
    
-    public function event_reset($eventid, $mode)
+    public function event_reset($eventid, $mode, $prev_event_status="")
     {
         // method used to either initialise a new event, reset a running or rejoin a running event
 
@@ -980,23 +980,38 @@ class EVENT
         {
             $entry_o = NEW ENTRY ($this->db, $eventid);
             $entryrows = $entry_o->reset_signons($eventid);
-            if ($entryrows < 0) { $status = false; }
+            if ($entryrows < 0) { $status = false; }   // FIXME - should this be an exitnicely
         }
 
         if ($status)
         {
-            // clear database tables if an 'init' or 'reset'
-            if ($mode == "init" or $mode == "reset")
+
+            if ($mode == "init" or $mode == "reset")    // if we are not rejoining do a full initialisation
             {
                 // clear tables
-                $del = $this->db->db_delete("t_race", array("eventid"=>$eventid));          // race details
-                $del = $this->db->db_delete("t_lap", array("eventid"=>$eventid));           // lap times
-                $del = $this->db->db_delete("t_finish", array("eventid"=>$eventid));        // pursuit finish positions
-                $del = $this->db->db_delete("t_racestate", array("eventid"=>$eventid));     // racestate
+                $del = $this->db->db_delete("t_race", array("eventid" => $eventid));          // race details
+                $del = $this->db->db_delete("t_lap", array("eventid" => $eventid));           // lap times
+                $del = $this->db->db_delete("t_finish", array("eventid" => $eventid));        // pursuit finish positions
+                $del = $this->db->db_delete("t_racestate", array("eventid" => $eventid));     // racestate
+
+                // set status
+                $upd = $this->event_updatestatus($eventid, "selected");
+
+                // reset other fields that need initialising in t_event
+                $fields = array(
+                    "timerstart" => "",
+                    "ws_start" => "",
+                    "ws_end" => "",
+                    "wd_start" => "",
+                    "wd_end" => "",
+                    "result_valid" => 0,
+                    "result_publish" => 0
+                );
+                $upd = $this->event_changedetail($eventid, $fields);
             }
 
             // now reinitialise event
-            $status = r_initialiseevent($mode, $eventid);
+            $status = r_initialiseevent($mode, $eventid, $prev_event_status);
         }
 
         return  $status;

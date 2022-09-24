@@ -130,6 +130,11 @@ if ($eventid AND $pagestate)
                 $entry_o = NEW ENTRY ($db_o, $eventid);
                 $entryrows = $entry_o->reset_signons($eventid);
 
+                // delete entries in t_race, t_lap, t_finish
+                $del = $db_o->db_delete("t_race", array("eventid" => $eventid));          // race details
+                $del = $db_o->db_delete("t_lap", array("eventid" => $eventid));           // lap times
+                $del = $db_o->db_delete("t_finish", array("eventid" => $eventid));        // pursuit finish positions
+
                 u_writelog("race CANCELLED", $eventid);
                 u_growlSet($eventid, $page, $g_race_cancel_success);
                 u_growlset($eventid, $page, $g_race_close_reminder);
@@ -144,7 +149,7 @@ if ($eventid AND $pagestate)
         // ------- UN-CANCEL --------------------------------------------------------------------------
         elseif ($pagestate == "uncancel")
         {
-            $result = $event_o->event_updatestatus($eventid, $_SESSION["e_$eventid"]['ev_prevstatus']);
+            $result = $event_o->event_updatestatus($eventid, "selected");
             if ($result)
             {
                 u_writelog("cancelled race reset", $eventid);
@@ -160,12 +165,15 @@ if ($eventid AND $pagestate)
         // ------- ABANDON --------------------------------------------------------------------------
         elseif ($pagestate == "abandon")
         {
+            require_once ("$loc/common/classes/raceresult_class.php");
+
             $result = $event_o->event_updatestatus($eventid, "abandoned");
             if ($result)
             {
-                // reset any entries to not loaded
-                $entry_o = NEW ENTRY ($db_o, $eventid);
-                $entryrows = $entry_o->reset_signons($eventid);
+                // archive data
+                $result_o = new RACE_RESULT($db_o, $eventid);
+                $status['copy']    = $result_o->race_copy_results();      // copy data from t_race to t_results
+                $status['archive'] = $result_o->race_copy_archive();      // copy data from t_race/t_lap/t_finish to a_<tables>
 
                 u_writelog("race ABANDONED", $eventid);
                 u_growlSet($eventid, $page, $g_race_abandon_success);
@@ -257,7 +265,7 @@ if ($eventid AND $pagestate)
 
         // ------- SETALLLAPS --------------------------------------------------------------------------
 
-        elseif ($pagestate == "setalllaps")        // sets laps for all fleets
+        elseif ($pagestate == "setalllaps")        /// FIXME - this code is the same as set all laps on timer_sc - refactor accordingly
         {
             $lapsetfail = false;
             $growlmsg   = "";
