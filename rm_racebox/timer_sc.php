@@ -545,14 +545,14 @@ function shorten_fleet($eventid, $fleetnum, $new_finish_lap = 0)
 //}
 
 function check_double_click($eventid, $entryid, $server_time)       
-// return to timer page if double click of same boat within 5 seconds
+// return to timer page if double click of same boat within 3 seconds
 {
     global $page;
     global $boat;
     global $g_timer_doubleclick;
     
     if ($entryid == $_SESSION["e_$eventid"]['lastclick']['entryid'] AND 
-            ABS($server_time - $_SESSION["e_$eventid"]['lastclick']['clicktime']) <= 5 )
+            ABS($server_time - $_SESSION["e_$eventid"]['lastclick']['clicktime']) <= 3 )
     {
         u_growlSet($eventid, $page, $g_timer_doubleclick, array($boat));
         header("Location: timer_pg.php?eventid=$eventid");

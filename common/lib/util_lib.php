@@ -481,6 +481,8 @@ EOT;
  */
 function u_writelog($logmessage, $eventid)
 {
+    //echo "u_writelog: $logmessage|$eventid<br>";
+
     $log = date('H:i:s')." -- ".$logmessage.PHP_EOL;
     if (empty($eventid))
         { error_log($log, 3, $_SESSION['syslog']); }
@@ -614,11 +616,6 @@ function u_initialisation($app_cfg_file, $loc, $scriptname)
                 "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__,
                     "calledby" => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], "args" => func_get_args()));
         }
-    }
-    // deal with php ini setting changes
-    if (!empty($_SESSION['session_timeout']))
-    {
-        ini_set('session.gc_maxlifetime', $_SESSION['session_timeout']);   // set sessions length
     }
 
     if ($status)
@@ -1087,7 +1084,7 @@ EOT;
 function u_selectcodelist($codelist, $selected = "", $nocode = true)
 {
     $bufr = <<<EOT
-        <option value="" disabled selected hidden>&hellip; please select &hellip;</option>
+        <option value="" disabled hidden>&hellip; please select &hellip;</option>
 EOT;
 
     if ($nocode)
@@ -1154,113 +1151,202 @@ function u_sendJsonPost($url, $data)
     return $result;
 }
 
-function u_ftpFiles($protocol, $ftp_env, $files)
+
+//function u_ftpFiles($ftp_env, $files)
+//{
+//    error_reporting(0);  //error_reporting(E_ERROR | E_WARNING | E_PARSE);
+//    error_reporting(E_ERROR | E_WARNING | E_PARSE);
+//
+//    $status = array();
+//    $files_transferred = 0;
+//
+//    $status['log'] = "Transferring results files using FTP protocol<br>";
+//    $conn_id = ftp_connect($ftp_env['server']);   // set up basic connection
+//    if ($conn_id)
+//    {
+//        $status['connect'] = true;
+//        $status['log'].= " - connected to ftp server ({$ftp_env['server']})<br>";
+//        $login = ftp_login($conn_id, $ftp_env['user'], $ftp_env['pwd']); // login with username and password
+//        if ($login)
+//        {
+//            $status['login'] = true;
+//            $status['log'].= " - logged in to ftp server<br>";
+//
+//            foreach($files as $key=>$file)   // loop over all files
+//            {
+//                if (ftp_put($conn_id, $file['dest'], $file['source'], FTP_BINARY))   // transfer file
+//                {
+//                    $files_transferred++;
+//                    $status['log'].= " - file transferred ({$file['source']})<br>";
+//                }
+//                else
+//                {
+//                    $status['log'].= " - file transfer failed ({$file['source']})<br>";
+//                }
+//            }
+//        }
+//        else
+//        {
+//            $status['login'] = false;
+//            $status['log'].= " - failed to login to ftp server ({$ftp_env['user']}/{$ftp_env['pwd']})<br>";
+//        }
+//        ftp_close($conn_id);  // close the FTP stream
+//    }
+//    else
+//    {
+//        $status['connect'] = false;
+//        $status['log'].= " - failed to connect to ftp server ({$ftp_env['server']})<br>";
+//    }
+//
+//    $status['transferred'] = $files_transferred;
+//
+//    error_reporting(E_ERROR);
+//    return $status;
+//}
+
+
+
+function u_sendfile_sftp($ftp_env, $source_file, $target_file)
 {
-    //echo "<pre>".print_r($ftp_env,true)."</pre>";
+/*
+ * Sends file to server using sftp protocol with un/pwd authentication (no key)
+ *
+ * $ftp_env - array with sftp account details (server/user/pwd)
+ * $source_file - full pathname for file to be sent - must include filename
+ * $target_file - full pathname for file on target server - must include filename
+ */
 
-    error_reporting(0);  //error_reporting(E_ERROR | E_WARNING | E_PARSE);
-    error_reporting(E_ERROR | E_WARNING | E_PARSE);
-    
-    $status = array();
-    if ($protocol == 'ftp')
+    error_reporting(E_ERROR);
+
+    set_include_path(get_include_path() . PATH_SEPARATOR . $_SESSION['basepath']."/common/oss/phpseclib");
+
+    include ("Net/SFTP.php");
+    define('NET_SFTP_LOGGING', NET_SFTP_LOG_COMPLEX);
+
+    $sftp = new Net_SFTP($ftp_env['server']);
+
+    $continue = false;
+    $status = array("login" => false, "source_exists" => false, "target_exists" => false, "file_transferred" => false, "log"=>"u_sendfile_sftp: ");
+
+    // check if source file exists
+    if (file_exists($source_file))
     {
-        $status['log'] = "Transferring results files using ftp protocol<br>";
-        $conn_id = ftp_connect($ftp_env['server']);   // set up basic connection
-        if ($conn_id)
-        {
-            $status['connect'] = true;
-            $status['log'].= " - connected to ftp server ({$ftp_env['server']})<br>";
-            $login = ftp_login($conn_id, $ftp_env['user'], $ftp_env['pwd']); // login with username and password
-            if ($login)
-            {
-                $status['login'] = true;
-                $status['log'].= " - logged in to ftp server<br>";
+        $status['source_exists'] = true;
+        $continue = true;
+    }
 
-                $files_transferred = 0;
-                foreach($files as $key=>$file)   // loop over all files
-                {
-                    if (ftp_put($conn_id, $file['dest'], $file['source'], FTP_BINARY))   // transfer file
-                    {
-                        $files_transferred++;
-                        $status['log'].= " - file transferred ({$file['source']})<br>";
-                    }
-                    else
-                    {
-                        $status['log'].= " - file transfer failed ({$file['source']})<br>";
-                    }
-                }
+    // login to server
+    if ($continue)
+    {
+        $continue = false;
+
+        if ($sftp->login($ftp_env['user'], $ftp_env['pwd']))
+        {
+            $status['login'] = true;
+            $status['log'].= "logged in to sftp server | ";
+            $continue = true;
+        }
+        else
+        {
+            $status['log'].= "failed to login to sftp server ({$ftp_env['server']}/{$ftp_env['user']}) | ";
+        }
+    }
+
+    // check if directory exists - if not create it recursively
+    if ($continue)
+    {
+        $continue = false;
+
+        $target_dir = dirname($target_file);
+        if ($sftp->chdir($target_dir))
+        {
+            $status['target_exists'] = true;
+            $status['log'].= "target directory exists | ";
+        }
+        else
+        {
+            $create_dir = $sftp->mkdir($target_dir, 0777, true);
+            if ($create_dir)
+            {
+                $status['target_exists'] = true;
+                $status['log'].= "target directory created | ";
+                $continue = true;
             }
             else
             {
-                $status['login'] = false;
-                $status['log'].= " - failed to login to ftp server ({$ftp_env['user']}/{$ftp_env['pwd']})<br>";
-            }
-            ftp_close($conn_id);  // close the FTP stream
-        }
-        else
-        {
-            $status['connect'] = false;
-            $status['log'].= " - failed to connect to ftp server ({$ftp_env['server']})<br>";
-        }
-    }
-    elseif ($protocol == 'sftp')
-    {
-        set_include_path(get_include_path() . PATH_SEPARATOR . "{$_SESSION['basepath']}/common/oss/phpseclib");
-        include('Net/SFTP.php');
-        define('NET_SFTP_LOGGING', NET_SFTP_LOG_COMPLEX);
-        echo "<pre># 1</pre>";
-
-        $status['log'] = "Transferring results files using sftp protocol<br>";
-
-        define('NET_SFTP_LOGGING', NET_SFTP_LOG_COMPLEX);
-        echo "<pre># 2</pre>";
-        $sftp = new Net_SFTP($ftp_env['server']);
-        if ($sftp)                                                    // fixme do I need this block
-        {
-            $status['connect'] = true;
-            echo "<pre>connected....</pre>";
-        }
-        echo "<pre># 3</pre>";
-        if ($sftp->login($ftp_env['user'], $ftp_env['pwd']))
-        {
-            echo "<pre># 4</pre>";
-            $status['login'] = true;
-            $status['log'].= " - logged in to sftp server<br>";
-
-            $files_transferred = 0;
-            foreach ($files as $key => $file)   // loop over all files
-            {
-                echo "<pre># 5</pre>";
-                if ($sftp->put($file['dest'], $file['source'], NET_SFTP_LOCAL_FILE))   // transfer file
-                {
-                    $files_transferred++;
-                    $status['log'].= " - file transferred ({$file['source']})<br>";
-                }
-                else
-                {
-                    $status['log'].= " - file transfer failed ({$file['source']})<br>";
-                }
+                $status['log'].= "failed to create target directory | ";
             }
         }
-        else
+    }
+
+    // transfer file
+    if ($continue)
+    {
+        $upload = $sftp->put($target_file, $source_file, NET_SFTP_LOCAL_FILE);
+        if ($upload)
         {
-            echo "<pre># 6</pre>";
-            $status['login'] = false;
-            $status['log'].= " - failed to login to sftp server ({$ftp_env['user']}/{$ftp_env['pwd']})<br>";
+            $status['file_transferred'] = true;
+            $status['log'].= "file transferred ( ".basename($target_file)." ) | ";
         }
     }
-    else
-    {
-        echo "<pre># 7</pre>";
-        $status['login'] = false;
-        $status['log'].= "File transfer not possible - protocol [$protocol] not supported<br>";
-    }
 
-    $status['transferred'] = $files_transferred;
+    $status['log'] .= "end";
 
-    error_reporting(E_ERROR);
+    error_reporting(E_ERROR | E_WARNING | E_PARSE);
     return $status;
 }
+
+
+//// FIXME change this to transfering a single file create a directory if required
+//function u_sftpFiles($ftp_env, $files)
+//{
+//
+//    u_writedbg("<pre>SFTP->".print_r($ftp_env,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+//
+//    // FIXME turn off error reporting because of parse errors in phpseclib
+////    error_reporting(0);  //error_reporting(E_ERROR | E_WARNING | E_PARSE);
+////    error_reporting(E_ERROR | E_WARNING | E_PARSE);
+//
+//    $status = array();
+//    $files_transferred = 0;
+//
+//    set_include_path(get_include_path() . PATH_SEPARATOR . "{$_SESSION['basepath']}/common/oss/phpseclib");
+//    include('Net/SFTP.php');
+//    define('NET_SFTP_LOGGING', NET_SFTP_LOG_COMPLEX);
+//
+//    $status['log'] = "Transferring results files using SFTP protocol<br>";
+//
+//    $sftp = new Net_SFTP($ftp_env['server']);
+//
+//    if ($sftp->login($ftp_env['user'], $ftp_env['pwd']))
+//    {
+//        $status['login'] = true;
+//        $status['log'].= " - logged in to sftp server<br>";
+//
+//        foreach ($files as $key => $file)   // loop over all files
+//        {
+//            if ($sftp->put($file['dest'], $file['source'], NET_SFTP_LOCAL_FILE))   // transfer file
+//            {
+//                $files_transferred++;
+//                $status['log'].= " - file transferred ({$file['source']})<br>";
+//            }
+//            else
+//            {
+//                $status['log'].= " - file transfer failed ({$file['source']})<br>";
+//            }
+//        }
+//    }
+//    else
+//    {
+//        $status['login'] = false;
+//        $status['log'].= " - failed to login to sftp server ({$ftp_env['user']}/{$ftp_env['pwd']})<br>";
+//    }
+//
+//    $status['transferred'] = $files_transferred;
+//
+//    error_reporting(E_ERROR);
+//    return $status;
+//}
 
 
 function u_get_result_codes_info($result_codes, $codes_used = array())

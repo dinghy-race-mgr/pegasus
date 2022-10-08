@@ -10,8 +10,9 @@
    ------------------------------------------------------------
 */
 
-$loc        = "..";       // <--- relative path from script to top level folder
-$page       = "timer_editlaptimes";     //
+$loc        = "..";                                    // <--- relative path from script to top level folder
+$page       = "results_edit";
+$stop_here  = false;
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
@@ -57,19 +58,20 @@ $race_o = new RACE($db_o, $eventid);    // create race object
 
 if ($pagestate == "init")               // display form with lap times for each lap
 {
-    $resultedit_fields = $race_o->entry_get_timings($entryid);
-    $resultedit_fields["eventid"] = $eventid;
+    $old = $race_o->entry_get_timings($entryid);
+    $old["eventid"] = $eventid;
 
-    $resultedit_params = array("eventid" => $eventid,
+    $params = array("eventid" => $eventid,
                                "entryid" => $entryid,
+                               "scoring" => $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['scoring'],
                                "resultcodes" => $_SESSION['resultcodes'],
                                "points_allocation" => $_SESSION['points_allocation'],
-                               "laptimes" => $resultedit_fields["laptimes"],
-                               "code" => $resultedit_fields['code'],
-                               "etime" => $resultedit_fields['etime'],
+                               "laptimes" => $old["laptimes"],
+                               "code" => $old['code'],
+                               "etime" => $old['etime'],
         );
 
-    $pagefields['body'] = $tmpl_o->get_template("fm_result_edit", $resultedit_fields, $resultedit_params);  // create edit form
+    $pagefields['body'] = $tmpl_o->get_template("fm_result_edit", $old, $params);  // create edit form
     echo $tmpl_o->get_template("basic_page", $pagefields, array("form_validation"=>true));                  // create page with form
 
 }
@@ -78,84 +80,106 @@ elseif ($pagestate == "submit")       // update t_race and t_lap records
     // get existing record and change lap times to array
     $old = $race_o->entry_get_timings($entryid);
     $laptimes = $race_o->entry_laptimes_get($entryid);
+    u_writedbg("<pre>RESULT REQUEST ARR:".print_r($_REQUEST,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+    u_writedbg("<pre>RESULT OLD ARR:".print_r($old,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+    u_writedbg("<pre>RESULT LAPTIMES ARR:".print_r($laptimes,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
 
-    // convert returned field values
-    $edit_str = "";
-    $edit = array();
-    if (!empty($_REQUEST['helm']))    { ucwords($edit['helm'] = $_REQUEST['helm']); }
-    $edit['crew']    = ucwords($_REQUEST['crew']);
-    $edit['club']    = u_getclubname($_REQUEST['club']);
-    $edit['sailnum'] = $_REQUEST['sailnum'];
-    $edit['etime']   = u_conv_timetosecs($_REQUEST['etime']);
-    $edit['code']    = $_REQUEST['code'];
-    $edit['note']    = $_REQUEST['note'];
-    if (ctype_digit($_REQUEST['pn']) )      { $edit['pn']      = (int)$_REQUEST['pn']; }
-    if (ctype_digit($_REQUEST['lap']) )     { $edit['lap']     = (int)$_REQUEST['lap']; }
-    empty($_REQUEST['penalty']) ? $edit['penalty'] = 0 : $edit['penalty'] = $_REQUEST['penalty'];
+    // get returned field values
+    $edit = get_edit_data($_REQUEST);
 
-    // check which fields have changed - remove unchanged fields and create audit string for log
-    foreach ($edit as $k => $v)
-    {
-        if ($old[$k] !== $edit[$k]) { $edit_str .= "$k:$v "; }
-    }
-
-    // calculate new clicktime
-    $edit['clicktime'] = $old['clicktime'] - ($old['etime'] - $edit['etime']);
-
-    // calculate new corrected time
-    $edit['ctime'] = $race_o->entry_calc_ct($edit['etime'], $edit['pn'], $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['scoring']);
-
-    // update race result in t_race
-    $update = $race_o->entry_update($entryid, $edit);
-
-    // delete and add finish lap time to t_lap
-    $del = $race_o->entry_lap_delete($entryid, $edit['lap']);
-    $lap_arr = array("lap" => $edit['lap'], "clicktime" => $edit['clicktime'], "etime" => $edit['etime'], "ctime" => $edit['ctime']);
-    $add_lap = $race_o->entry_lap_add($old['fleet'], $entryid, $lap_arr);
-
-    // check for missing laps in t_lap - and add placeholders if necessary
-    for ($x = 1; $x < $edit['lap']; $x++)  // loop through laps
-    {
-        // check if lap is missing - if so create null lap (times set to 0)
-        if (!key_exists($x, $laptimes))
-        {
-            $add_new_lap = $race_o->entry_lap_add($old['fleet'], $entryid, array("lap" => $x, "clicktime" => 0, "etime" => 0, "ctime" => 0));
-        }
-    }
-
-    // update results status - needs recalculating
-    $_SESSION["e_$eventid"]['result_valid'] = false;
-
-    // log change
-    u_writelog("Result Update - {$old['class']} {$old['sailnum']} : changed to [ $edit_str ]", $eventid);
-
-    $data = array(
-        "maxlap" => $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['maxlap'],
-    );
-
-    $warnings = check_edit($edit, $data);
+    // do checks on edits
+    $warnings = check_edit($edit, array("maxlap" => $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['maxlap']));
     if ($warnings)
     {
         $pagefields['body'] = $tmpl_o->get_template("result_edit_warnings", array(),
             array("warnings" => $warnings, "eventid" => $eventid, "entryid" => $entryid));  // warnings layout
         echo $tmpl_o->get_template("basic_page", $pagefields, array());
     }
-    else
+    else // process changes
     {
+
+        // check which fields have changed - remove unchanged fields and create audit string for log
+        $lap_changed = false;
+        $etime_changed = false;
+        $edit_str = "";
+        $txt = "";
+        foreach ($edit as $k => $v)
+        {
+
+            if ($k == "lap")   {$lap = $v; }
+            if ($k == "etime") {$etime = $v; }
+            if ($k == "pn")    {$pn = $v; }
+
+            //$old[$k] != $edit[$k] ? $change = true : $change = false;
+            //$changetxt = var_export($change, true);
+            //$changetxt.= var_export($old[$k], true);
+            //$changetxt.= var_export($edit[$k], true);
+            //u_writedbg("<pre>COMPARE $k : $changetxt </pre>", __FILE__, __FUNCTION__, __LINE__);
+
+            if ($old[$k] != $edit[$k]) {
+                $edit_str .= "| $k:$v ";
+                if ($k == "lap") { $lap_changed = true; }
+                if ($k == "etime") { $etime_changed = true; }
+            } else {
+                unset($edit[$k]);
+            }
+        }
+        u_writedbg("<pre>RESULT EDIT CHANGES:   $edit_str </pre>", __FILE__, __FUNCTION__, __LINE__);
+
+
+        if ($etime_changed or $lap_changed) // assume just changing the time recorded for the finish lap
+        {
+            $race_scoring = $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['scoring'];
+
+            if ($etime_changed and !$lap_changed)   // simple updating finish time
+            {
+                $time = update_times($lap, $etime, $pn, $old, $laptimes, $race_scoring);   //*
+                $result_upd_arr = array_merge($edit, $time);
+                $upd = update_lap($entryid, $old['fleet'], $lap, $time);
+            }
+            elseif ($lap_changed)
+            {
+                $row = $race_o->entry_lap_get($entryid, "lap", $lap);
+                if (empty($row))                         // lap doesn't exist create it
+                {
+                    $time = update_times($lap, $etime, $pn, $old, $laptimes, $race_scoring);
+                    $result_upd_arr = array_merge($edit, $time);
+                    $upd = update_lap($entryid, $old['fleet'], $lap, $time);
+                }
+                else                                     // lap does exist - get time from existing lap
+                {
+                    $time = update_times($lap, $row['etime'], $pn, $old, $laptimes, $race_scoring);
+                    $result_upd_arr = array_merge($edit, $time);
+                    $upd = update_lap($entryid, $old['fleet'], $lap, $time);
+                }
+            }
+        }
+
+        // update race result in t_race
+        u_writedbg("<pre>ENTRY UPDATE ARR: <br>".print_r($result_upd_arr,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+        $update = $race_o->entry_update($entryid, $result_upd_arr);
+
+        // update results status - needs recalculating
+        $_SESSION["e_$eventid"]['result_valid'] = false;
+
+        // log change
+        u_writelog("Result Update - {$old['class']} {$old['sailnum']} : changes [ $edit_str ]", $eventid);
+
         // return to main results page - closing modal
-        $stop_here = false;
         if (!$stop_here)
         {
             echo <<<EOT
-            <script "text/javascript">
-            window.top.location.href = 'results_pg.php?eventid=$eventid';
-            </script>
+            <script "text/javascript"> window.top.location.href = 'results_pg.php?eventid=$eventid';</script>
 EOT;
             exit();
         }
     }
-}
 
+//    // update race result in t_race
+//    u_writedbg("<pre>ENTRY UPDATE ARR: |et: $etime_changed|lap: $lap_changed| <br>".print_r($result_upd_arr,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+//    $update = $race_o->entry_update($entryid, $result_upd_arr);
+
+}
 else  // pagestate not recognised
 {
     u_exitnicely($scriptname, $_REQUEST['eventid'],"$page page - pagestate value [{$_REQUEST['pagestate']}] not recognised",
@@ -167,8 +191,9 @@ function check_edit($edit, $data)
 {
     $issues = array(
         1 => array( "type" => "error", "title" => "Finish Lap", "msg" => "Finish lap cannot be greater than the no. of laps set"),
-        2 => array( "type" => "warning", "title" => "Penalty Points", "msg" => "Penalty points should only be used with a code of BPI"),
-        3 => array( "type" => "warning", "title" => "Scoring Codes", "msg" => "The DSQ and RDG scoring codes should only be used following a protest/redress meeting ")
+        2 => array( "type" => "error", "title" => "Finish Time", "msg" => "Finish time is zero or not set"),
+        3 => array( "type" => "warning", "title" => "Penalty Points", "msg" => "Penalty points should only be used with a code of BPI"),
+        4 => array( "type" => "warning", "title" => "Scoring Codes", "msg" => "The DSQ and RDG scoring codes should only be used following a protest/redress meeting ")
     );
 
     $warnings = array();
@@ -177,48 +202,120 @@ function check_edit($edit, $data)
         $warnings[] = $issues[1];
     }
 
+     if ($edit['etime'] <= 0)
+     {
+         $warnings[] = $issues[2];
+     }
+
     if ((float)$edit['penalty'] > "0" AND $edit['code'] != "DPI")
     {
-        $warnings[] = $issues[2];
+        $warnings[] = $issues[3];
     }
 
     if ($edit['code'] == 'DSQ' OR $edit['code'] == "RDG")
     {
-        $warnings[] = $issues[3];
+        $warnings[] = $issues[4];
     }
 
     return $warnings;
 }
 
-function check_lap_problems($laptimes_str)     // this function is also on the timer page
-/*
-checks for problems with the lap time sequence presented
-*/
-{
-    $rs = array(
-        "times" => array(),
-        "err"   => false,
-        "msg"   => "",
-    );
+//function check_lap_problems($laptimes_str)     // this function is also on the timer page
+///*
+//checks for problems with the lap time sequence presented
+//*/
+//{
+//    $rs = array(
+//        "times" => array(),
+//        "err"   => false,
+//        "msg"   => "",
+//    );
+//
+//    $prev = 0;
+//    foreach($laptimes_str as $lap=>$time)
+//    {
+//        $rs['times'][$lap] = strtotime("1970-01-01 $time UTC");;
+//        if ($rs['times'][$lap] == 0)
+//        {
+//            $rs['msg'].= "<p><b>lap $lap</b> has an elapsed time of 0 secs</p>";
+//            $rs['err'] = true;
+//        }
+//        if ($lap > 1 and $prev >= $rs['times'][$lap])
+//        {
+//            $rs['msg'].= "<p><b>lap $lap</b> must have an elapsed greater than the previous lap</p>";
+//            $rs['err'] = true;
+//        }
+//        $prev = $rs['times'][$lap];
+//    }
+//    return $rs;
+//}
 
-    $prev = 0;
-    foreach($laptimes_str as $lap=>$time)
+function get_edit_data($args)
+{
+    $edit = array();
+
+
+    if (!empty($args['helm']))    { $edit['helm'] = ucwords($args['helm']); }
+
+    $edit['crew']    = ucwords($args['crew']);
+    $edit['club']    = u_getclubname($args['club']);
+    $edit['sailnum'] = $args['sailnum'];
+    
+    $edit['etime']   = u_conv_timetosecs($args['etime']);
+    $edit['code']    = $args['code'];                                  //*
+    $edit['note']    = $args['note'];
+
+    if (!array_key_exists("code", $args) or empty($args['code']))
     {
-        $rs['times'][$lap] = strtotime("1970-01-01 $time UTC");;
-        if ($rs['times'][$lap] == 0)
-        {
-            $rs['msg'].= "<p><b>lap $lap</b> has an elapsed time of 0 secs</p>";
-            $rs['err'] = true;
-        }
-        if ($lap > 1 and $prev >= $rs['times'][$lap])
-        {
-            $rs['msg'].= "<p><b>lap $lap</b> must have an elapsed greater than the previous lap</p>";
-            $rs['err'] = true;
-        }
-        $prev = $rs['times'][$lap];
+        $edit['code'] = "";
     }
-    return $rs;
+    else
+    {
+        $edit['code'] = $args['code'];
+    }
+
+    if (ctype_digit($args['pn']) )      { $edit['pn'] = (int)$args['pn']; }
+    
+    if (ctype_digit($args['lap']) )     { $edit['lap'] = (int)$args['lap']; }
+
+    empty($args['penalty']) ? $edit['penalty'] = 0 : $edit['penalty'] = $args['penalty'];
+
+    return $edit;
 }
 
+function update_times($lap, $etime, $pn, $old, $laptimes, $race_scoring)
+{
+    global $race_o;
+    $time = array();
+    $time['clicktime'] = $old['clicktime'] - ($old['etime'] - $etime);                             // clicktime
+    $time['etime'] = $etime;
+    $time['ctime'] = $race_o->entry_calc_ct($etime, $pn, $race_scoring);                           // corrected
+    $time['atime'] = $race_o->entry_calc_at($etime, $pn, $race_scoring, $lap, $old['finishlap']);  // aggregate
 
+    if ($lap == 1)                                                                                 // predicted
+    {
+        $time['ptime'] = 2 * $etime;
+    }
+    else
+    {
+        $time['ptime'] = $race_o->entry_calc_pt($etime, $laptimes[$lap - 1], $lap);
+    }
+
+    return $time;
+}
+
+function update_lap($entryid, $fleetnum, $lap, $times)
+{
+    global $race_o;
+
+    u_writedbg("<pre>UPDATE LAP: |$entryid|$fleetnum|$lap|".print_r($times,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+
+    // update t_lap with new times  (clicktime, etime, ctime)
+    $del = $race_o->entry_lap_delete($entryid, $lap);
+    $lap_edit = array("lap" => $lap, "clicktime" => $times['clicktime'], "etime" => $times['etime'], "ctime" => $times['ctime']);
+    $add_lap = $race_o->entry_lap_add($fleetnum, $entryid, $lap_edit);
+    u_writedbg("<pre>LAP UPDATE ARR: <br>".print_r($lap_edit,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+
+    return $add_lap;
+}
 

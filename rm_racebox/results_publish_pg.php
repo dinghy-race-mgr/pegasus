@@ -391,19 +391,19 @@ elseif ($pagestate == "process")    // run through process workflow
                         sleep(1);
                         endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "sftp transfer not implemented yet");
                         u_writelog("FILE TRANSFER - transfer protocol option not implemented [{$_SESSION['result_transfer_protocol']}]", $eventid);
-//                        $ftp = array("protocol"=>$_SESSION["ftp_protocol"], "server"=> $_SESSION["ftp_server"],
-//                                     "user"=> $_SESSION["ftp_user"], "pwd"=> $_SESSION["ftp_pwd"]);
-//
-//                        if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
-//                        {
-//                            sleep(1);
-//                            endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "Transfer software not configured correctly");
-//                            u_writelog("FILE TRANSFER - ftp connection details for website not configured correctly [{$ftp['protocol']}|{$ftp['server']}|{$ftp['user']}|{$ftp['pwd']}]", $eventid);
-//                        }
-//                        else
-//                        {
-//                            $status = process_transfer_ftp($files, $ftp);  // FIXME implement function
-//                        }
+                        $ftp = array("protocol"=>$_SESSION["ftp_protocol"], "server"=> $_SESSION["ftp_server"],
+                                     "user"=> $_SESSION["ftp_user"], "pwd"=> $_SESSION["ftp_pwd"]);
+
+                        if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
+                        {
+                            sleep(1);
+                            endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "Transfer software not configured correctly");
+                            u_writelog("FILE TRANSFER - ftp connection details for website not configured correctly [{$ftp['protocol']}|{$ftp['server']}|{$ftp['user']}|{$ftp['pwd']}]", $eventid);
+                        }
+                        else
+                        {
+                            $status = process_transfer_ftp($files, $ftp);  // FIXME implement function
+                        }
                     }
                     else
                     {

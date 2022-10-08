@@ -234,7 +234,8 @@ function format_rows($eventid, $racetype, $race_results)
     {
         $row_num++;
 
-        $result['editbtn'] = editresult_html($eventid, $result['entryid'], $result['boat']);
+        $result['editbtn'] = editresult_html($eventid, $result['entryid'], $result['boat'], $result['status']);
+
         $result['deletebtn'] = <<<EOT
             <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="remove boat from race" data-placement="top">
                 <a type="button" class="btn btn-danger btn-xs" data-toggle="modal"
@@ -249,7 +250,6 @@ EOT;
         // conversions
         $result['et'] = u_conv_secstotime($result['et']);
         $result['ct'] = u_conv_secstotime($result['ct']);
-        //$boat = $boat = "{$result['class']} - {$result['sailnum']}";
         if ($result['lap'] == 0 and empty($result['code'])) { $result['points'] = ""; }
 
         // code
@@ -347,12 +347,26 @@ EOT;
     return $rows;
 }
 
-function editresult_html($eventid, $entryid, $boat)
+function editresult_html($eventid, $entryid, $boat, $status)
 {
-        $bufr = <<<EOT
+    if ($status == "R")
+    {
+        $disable = "disabled";
+        $data_title = "not finished - can't edit";
+        $btn_style = "btn-default";
+    }
+    else
+    {
+        $disable = "";
+        $data_title = "edit result for this boat";
+        $btn_style = "btn-success";
+    }
+
+
+    $bufr = <<<EOT
         <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true"
-              data-title="edit result details for this boat" data-placement="top">
-            <a type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#editresultModal" data-boat="$boat"
+              data-title="$data_title" data-placement="top">
+            <a type="button" class="btn $btn_style btn-xs $disable" data-toggle="modal" data-target="#editresultModal" data-boat="$boat"
                     data-iframe="results_edit_pg.php?eventid=$eventid&pagestate=init&entryid=$entryid" >
                     <span class="glyphicon glyphicon-pencil"></span>
             </a>
@@ -422,6 +436,8 @@ function fm_result_edit($params)
 
     //echo "<pre>".print_r($params,true)."</pre>";
 
+
+    // set up scoring and result code data
     $scoring_code_bufr = "";
     $resultcodes = array();
     foreach ($params['resultcodes'] as $row) {
@@ -429,6 +445,10 @@ function fm_result_edit($params)
     }
     $scoring_code_bufr = u_selectcodelist($resultcodes, $params['code']);
 
+    // handle lap number editing - only allowed for average lap
+    $params['scoring'] == "average" ? $lap_readonly = "" : $lap_readonly = "readonly";
+
+    // set up helm field options
     $helm_bufr = "";
     if ($params['points_allocation'] == "boat") {
         $helm_bufr = <<<EOT
@@ -576,7 +596,7 @@ EOT;
             <div class="form-group">
                 <label class="$lbl_width control-label text-success">finish lap</label>
                 <div class="$fld_width inputfieldgroup">
-                    <input type="number" class="form-control" id="idlap" name="lap" value="{lap}"
+                    <input type="number" class="form-control" id="idlap" name="lap" value="{lap}" $lap_readonly
                     required data-fv-notempty-message="the number of laps completed is required"
                     placeholder=""
                     min="0" 
@@ -587,7 +607,7 @@ EOT;
             
             <!-- elapsed time -->
             <div class="form-group">
-                <label class="$lbl_width control-label text-success">elapsed time</label>
+                <label class="$lbl_width control-label text-success">finish elapsed time</label>
                 <div class="$fld_width inputfieldgroup">
                     <input type="text" class="form-control" id="idetime" name="etime" value="$etime"
                            placeholder="hh:mm:ss"

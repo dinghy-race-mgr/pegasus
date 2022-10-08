@@ -16,7 +16,7 @@ $_SESSION['dbglog'] = "../logs/dbg/" . $_SESSION['app_name'] . "_" . date("Y-m-d
 $_SESSION['background']    = "bg-primary";               // page background colour
 $_SESSION['sql_debug']     = false;                      // set to true to turn on debugging of sql commands - otherwise false
 
-$_SESSION['sailor_race_sleep_delay'] = 10;                // in multi use mode will return to search page after specified seconds
+$_SESSION['sailor_race_sleep_delay'] = 10;               // in multi use mode will return to search page after specified seconds
 $_SESSION['sailor_cruise_sleep_delay'] = 0;              // 0 does not auto-return
 
 // options configuration
@@ -36,7 +36,7 @@ $_SESSION['option_cfg'] = array(
         "editboat" => array("label" => "Edit Boat Details", "pagename" => "CHANGE BOAT DETAILS", "url" => "editboat_pg.php",
             "tip" => "", "active" => true),
         "results" => array("label" => "Get Results", "pagename" => "RACE RESULTSs", "url" => "results_pg.php",
-            "tip" => "Results for this race", "active" => true),
+            "tip" => "Results for this race", "active" => false),
         "protest" => array("label" => "Submit Protest", "pagename" => "SUBMIT PROTEST", "url" => "protest_pg.php",
             "tip" => "Submit a protest for this race", "active" => false),
         "hideboat" => array("label" => "Hide Boat", "pagename" => "HIDE THIS BOAT", "url" => "hideboat_sc.php", "active" => false,

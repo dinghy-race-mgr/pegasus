@@ -52,7 +52,7 @@ u_startsyslog($scriptname, strtoupper($page), session_id('sess-rmracebox'));
 u_initconfigfile("$loc/config/{$_SESSION['app_ini']}");
 
 // set session length
-ini_set('session.gc_maxlifetime', $_SESSION['session_timeout']);
+//ini_set('session.gc_maxlifetime', $_SESSION['session_timeout']);   FIXME this needs to combe before start of session + session_set_cookie_params(3600);
 
 // set database initialisation parameters (t_ini) into session
 $db = new DB();

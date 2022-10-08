@@ -603,33 +603,20 @@ class RACE
         return $update;
     }
 
-    public function race_getlap_etime($data, $switch_lap)
-    {
-
-//        $etime = 0;
-//
-//        if ($data['lap'] > $switch_lap)
+//    public function race_getlap_etime($data, $switch_lap)
+//    {
+//        $lap = $this->entry_lap_get($data['id'], "lap", $switch_lap);
+//        if ($lap)
 //        {
-//            $laptimes = explode(",", $data['laptimes']);          // get lap elapsed time for switch lap
-//            //echo "<pre>" . print_r($laptimes, true) . "</pre>";
-//
-//            if (array_key_exists($switch_lap - 1, $laptimes))     // if we have the relevant lap time
-//            {
-//                $etime = $laptimes[$switch_lap - 1];
-//            }
+//            $lapdata = array("etime" => $lap['etime'], "ctime" => $lap['ctime'], "clicktime" => $lap['clicktime']);
 //        }
-        $lap = $this->entry_lap_get($data['id'], "lap", $switch_lap);
-        if ($lap)
-        {
-            $lapdata = array("etime" => $lap['etime'], "ctime" => $lap['ctime'], "clicktime" => $lap['clicktime']);
-        }
-        else
-        {
-            $lapdata = array("etime" => 0, "ctime" => 0, "clicktime" => 0);
-        }
-
-        return $lapdata;
-    }
+//        else
+//        {
+//            $lapdata = array("etime" => 0, "ctime" => 0, "clicktime" => 0);
+//        }
+//
+//        return $lapdata;
+//    }
     
     public function race_laps_current($fleetnum)
     {
@@ -1561,6 +1548,12 @@ class RACE
             $sql = "SELECT * FROM t_lap WHERE eventid = $this->eventid AND entryid = $entryid ORDER BY lap ASC";
             $rows = $this->db->db_get_rows($sql);
             return $rows;
+        }
+        elseif ($mode == "last")
+        {
+            $sql = "SELECT * FROM t_lap WHERE eventid = $this->eventid AND entryid = $entryid ORDER BY lap DESC LIMIT 1";
+            $row = $this->db->db_get_row($sql);
+            return $row;
         }
         else
         {

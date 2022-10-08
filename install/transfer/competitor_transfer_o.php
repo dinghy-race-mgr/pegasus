@@ -82,7 +82,7 @@ foreach ($rs as $k=>$row)
       $new['updby']      = "transfer_".date("Y-m-d");
 
       // add to database
-      $db_o->db_insert( "t_competitor", $new )
+      $db_o->db_insert( "t_competitor", $new );
       
       // log to screen
       $count++;

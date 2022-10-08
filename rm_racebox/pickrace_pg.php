@@ -25,6 +25,7 @@ require_once ("{$loc}/common/lib/raceformat_lib.php");
 // start session
 session_id('sess-rmracebox');   // creates separate session for this application
 session_start();
+//echo "<pre><br><br><br><br>".print_r($_SESSION,true)."</pre>";
 
 // page initialisation
 u_initpagestart("", $page, false);
@@ -66,19 +67,17 @@ if ($_SESSION['mode'] == "demo")
                 $del = $db_o->db_delete("t_racestate", array("eventid"=>$current_event));     // racestate
 
                 // reset event status
-                $upd = $db_o->db_update( 't_event', array("event_status"=>"scheduled"), array("id"=>$current_event) );
-
-                // reset other fields that need initialising in t_event
                 $fields = array(
-                    "timerstart" => "",
-                    "ws_start" => "",
-                    "ws_end" => "",
-                    "wd_start" => "",
-                    "wd_end" => "",
-                    "result_valid" => 0,
+                    "id"             =>$current_event,
+                    "timerstart"     => "",
+                    "ws_start"       => "",
+                    "ws_end"         => "",
+                    "wd_start"       => "",
+                    "wd_end"         => "",
+                    "result_valid"   => 0,
                     "result_publish" => 0
                 );
-                $upd = $event_o->event_changedetail($current_event, $fields);
+                $upd = $db_o->db_update( 't_event', array("event_status"=>"scheduled"), array("id"=>$current_event) );
             }
         }
     }
@@ -220,7 +219,7 @@ function configurestate($eventid, $status )
                 $rs['blabel'] = "Run Race &nbsp;<span class=\"glyphicon glyphicon-forward\" aria-hidden=\"true\"></span>";
                 $rs['bstyle'] = "btn-success";
                 $rs['blink']  = "raceinit_sc.php?eventid=$eventid&mode=init";
-                $rs['bpopup'] = "data-toggle=\"popover\" data-content=\"{$lang['msg']['goto_race']}\" data-placement=\"bottom\"";
+                $rs['bpopup'] = "data-toggle=\"popover\" data-content=\"Click to run this race\" data-placement=\"bottom\"";
             }
             break;
 

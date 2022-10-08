@@ -139,22 +139,30 @@ class RACE_RESULT
 
     public function del_obsolete_file($attr)
     {
-        // checks for file(s) matching attributes in t_resultfile - deletes if found
-        $num_deleted = 0;
+        // fixme - why do I need a function here just use db_delete in code
 
-        $where = "";
-        foreach ($attr as $field => $constraint)
-        {
-            $where.= " $field = '$constraint' and ";
-        }
-        $where = rtrim($where, "and ");
+        // deletes file(s) matching attributes in t_resultfile - deletes if found
 
-        $sql = "DELETE FROM t_resultfile WHERE $where";
+        //$num_deleted = 0;
 
-        $del = $this->db->db_query($sql);
-        if ($del) { $num_deleted = count($del); }
+        //$where = "";
+        //foreach ($attr as $field => $constraint)
+        //{
+            //$where.= " $field = '$constraint' and ";
+        //}
+        //$where = rtrim($where, "and ");
 
-        return $num_deleted;
+        //$sql = "DELETE FROM t_resultfile WHERE $where";
+
+        //$del = $this->db->db_query($sql);
+        //$num_deleted = $this->db->affected_rows;
+
+        //$del = $this->db->db_delete("t_resultfile", $attr);
+        //if ($del !== false) { $num_deleted = $del}
+
+        //if ($del) { $num_deleted = count($del); }
+
+        return $this->db->db_delete("t_resultfile", $attr);
     }
 
     public function set_upload_time($file_id)

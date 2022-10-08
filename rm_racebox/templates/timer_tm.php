@@ -101,6 +101,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "fleet"   => $entry['fleet'],
                         "start"   => $entry['start'],
                         "lap"     => $entry['lap'],
+                        "flap"    => $entry['finishlap'],
                         "code"    => $entry['code'],
                         "pn"      => $entry['pn'],
                         "etime"   => $entry['etime'],
@@ -157,6 +158,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                                 "fleet"   => $entry['fleet'],
                                 "start"   => $entry['start'],
                                 "lap"     => $entry['lap'],
+                                "flap"    => $entry['finishlap'],
                                 "code"    => $entry['code'],
                                 "pn"      => $entry['pn'],
                                 "etime"   => $entry['etime'],
@@ -180,6 +182,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                             "fleet"   => $entry['fleet'],
                             "start"   => $entry['start'],
                             "lap"     => $entry['lap'],
+                            "flap"    => $entry['finishlap'],
                             "code"    => $entry['code'],
                             "pn"      => $entry['pn'],
                             "etime"   => $entry['etime'],
@@ -211,6 +214,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "fleet"   => $entry['fleet'],
                         "start"   => $entry['start'],
                         "lap"     => $entry['lap'],
+                        "flap"    => $entry['finishlap'],
                         "code"    => $entry['code'],
                         "pn"      => $entry['pn'],
                         "etime"   => $entry['etime'],
@@ -264,7 +268,10 @@ EOT;
 
                 if ($scoring == "average")
                 {
-                    if ( $entry['status'] == "X" ) { $state = $boat_states['notracing']; }
+                    if ( $entry['status'] == "X" )
+                    {
+                        $state = $boat_states['notracing'];
+                    }
                     elseif ($entry['lap'] > 0)
                     {
                         if ( $entry['status'] == "F" )
@@ -273,9 +280,9 @@ EOT;
                         }
                         else
                         {
-                            if ( $entry['lap'] < $laps - 1 )      { $state = $boat_states['racing']; }
-                            elseif ( $entry['lap'] >= $laps )     { $state = $boat_states['finished']; }
-                            elseif ( $entry['lap'] == $laps - 1 ) { $state = $boat_states['lastlap']; }
+                            if ( $entry['lap'] < $entry['flap'] - 1 )      { $state = $boat_states['racing']; }
+                            elseif ( $entry['lap'] >= $entry['flap'] )     { $state = $boat_states['finished']; }
+                            elseif ( $entry['lap'] == $entry['flap'] - 1 ) { $state = $boat_states['lastlap']; }
                         }
                     }
                     else
@@ -285,7 +292,10 @@ EOT;
                 }
                 else
                 {
-                    if ( $entry['status'] == "X" ) { $state = $boat_states['notracing']; }
+                    if ( $entry['status'] == "X" )
+                    {
+                        $state = $boat_states['notracing'];
+                    }
                     elseif ($entry['lap'] > 0)
                     {
                         if ( $entry['lap'] < $laps - 1 ) { $bcolor = "btn-info"; $state = "racing";}
@@ -512,9 +522,10 @@ EOT;
                                 <h3>Are you sure?</h3>
                                 <div style = "font-size: 1.2em; margin-left: 40px;">
                                 <p> This will shorten this fleet so that the leaders will finish on their CURRENT lap</p>
-                                <p>Please click the <b>Shorten this Fleet</b> button to confirm this change</p>
+                                <p>Click the <b>Shorten this Fleet</b> button below to confirm this change</p>
+                                <p class="text-danger"><i>[Note: to undo this change - use the Undo Shorten Course option]</i></p>
                                 </div>
-                                <p><i>[Note: to undo this change - use the Change Finish Laps option]</i></p>
+                                
 EOT;
                             $mdl_shortenfleet['fields']['action'] = "timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=$i";
 
