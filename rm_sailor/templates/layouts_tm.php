@@ -102,6 +102,8 @@ EOT;
 
 function restart_switch($params = array())
 {
+    $params['mode'] == "race" ? $switch_txt = "switch to Cruising App" : $switch_txt = "switch to Racing App";
+
 
     if (empty($params['eventlist']))
     {
@@ -114,7 +116,7 @@ function restart_switch($params = array())
             </a>
             &nbsp;&nbsp;&nbsp;&nbsp;
             <a href="index.php" class="rm-text-sm" style="color: white" >
-               <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> &nbsp;switch to Cruising App&nbsp;&nbsp;&nbsp;&nbsp;                        
+               <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> &nbsp;$switch_txt&nbsp;&nbsp;&nbsp;&nbsp;                        
             </a>            
         </div>
 EOT;

@@ -62,7 +62,7 @@ foreach ($db_o->db_getinivalues(true, "club") as $k => $v) {
 
 $_SESSION['mode'] == "race" ? $brand_txt = "RACING app" : $brand_txt = "CRUISING app";
 $app_brand = "<span style='color: white'><small>raceMgr:</small></span> $brand_txt";
-$switch_bufr = $tmpl_o->get_template("restart_switch", array(), array("eventlist" => $_SESSION['event_arg']));
+$switch_bufr = $tmpl_o->get_template("restart_switch", array(), array("eventlist" => $_SESSION['event_arg'], "mode" => $_SESSION['mode']));
 
 
 // initialise standard page layout
@@ -72,7 +72,7 @@ $_SESSION['pagefields'] = array(
     "background" => $_SESSION['background'],
     "loc" => $loc,
     "stylesheet" => "./style/rm_sailor.css",
-    "header-left" => "<span style='color: white'><small>raceMgr:</small></span> RACING app",
+    "header-left" => $app_brand,
     "header-center" => "",
     "header-right" => "",
     "body" => "",
@@ -103,6 +103,8 @@ exit();
 
 function initialise_params($arg)
 {
+    //echo "<pre>".print_r($arg,true)."</pre>";
+    
     // does the application work for multiple users (multi) or a single user (single)
     $_SESSION['usage'] = "multi";
     $_SESSION['sailor']['id'] = 0;

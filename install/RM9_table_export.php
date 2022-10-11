@@ -172,12 +172,12 @@ function verify_row($table, $row)
     $report = "";
     if ($table == "competitors")
     {
+        if ($row['boatNumber'] != $row['sailNumber'])
         {
-            if ($row['boatNumber'] != $row['sailNumber'])
-            {
-                $txt.= "boatnum [{$row['boatNumber']}] different from sailnum [{$row['sailNumber']}]<br>";
-            }
+            $txt.= "boatnum [{$row['boatNumber']}] different from sailnum [{$row['sailNumber']}]<br>";
         }
+
+
 
     }
     if (!empty($txt))
