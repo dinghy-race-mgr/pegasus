@@ -4,3 +4,6 @@ raceManager - pegasus
 Version 0.1.0 - Initial Build  -   started 20 March 2014
 	Bootstrap 3.1.1
     Jquery 1.11.0
+
+Version 1.0.0 - First Operational Release - 16 October 2022
+    Bootstrap 3.4.1
