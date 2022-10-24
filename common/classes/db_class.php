@@ -215,6 +215,7 @@ class DB
 
         //$_SESSION['sql_debug'] = true;
         if ($_SESSION['sql_debug']) { u_writedbg("db_insert: query: $query",__FILE__,__FUNCTION__,__LINE__); }
+        //echo "<pre>INSERT: $query</pre>";
         $insert  = $this->link->query( $query );
         $numrows = $this->link->affected_rows;
         if ($_SESSION['sql_debug']) { u_writedbg("db_update: rows inserted: $numrows ",__FILE__,__FUNCTION__,__LINE__); }
@@ -260,6 +261,7 @@ class DB
         }
 
         if ($_SESSION['sql_debug']) { u_writedbg("db_delete: query: $query",__FILE__,__FUNCTION__,__LINE__); }
+        //echo "<pre>DELETE: $query</pre>";
         $delete = $this->link->query( $query );
         $numrows = $this->link->affected_rows;
         if ($_SESSION['sql_debug']) { u_writedbg("db_update: rows deleted: $numrows ",__FILE__,__FUNCTION__,__LINE__); }
@@ -318,6 +320,7 @@ class DB
         
         if( !empty( $limit ) ) { $query .= ' LIMIT '. $limit; }
 
+        //echo "<pre>UPDATE: $query</pre>";
         $update = $this->link->query( $query );
         $numrows = $this->link->affected_rows;         // might be zero if no records changed
         //u_writedbg("db_update: $query | rows affected: $numrows | result: $update ",__FILE__,__FUNCTION__,__LINE__);

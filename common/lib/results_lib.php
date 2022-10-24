@@ -92,7 +92,7 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
     }
     else  // file created successfully
     {
-        $status = array('success' => true, 'err' => "file created [$race_path]", 'url' => $race_url,
+        $status = array('success' => true, 'err' => "race result file created ", 'url' => $race_url,
             'path' => $race_path, 'file' => $file_attr['filename']);
 
         // add result file entry to t_resultfile
@@ -216,7 +216,7 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
         }
         else
         {
-            $status = array('success' => true, 'err' => "series file created [$series_path]", 'url' => $series_url,
+            $status = array('success' => true, 'err' => "series file created ", 'url' => $series_url,
                 'path' => $series_path, 'file' => $file_attr['filename']);
 
             // check if we have a matching file in t_resultfile - if we do delete record
@@ -269,6 +269,145 @@ function process_inventory($result_year)
     }
 }
 
+function get_files_from_inventory($inventory_path, $inventory_file, $result_year)
+{
+    // inventory file into array
+    $invdata = json_decode(file_get_contents($inventory_path."/".$inventory_file), true);
+
+    // create file list for transfer ( upload not done or out of date and not embargoed)
+    $files = array();
+    foreach($invdata['events'] as $id=>$invevent)
+    {
+        foreach($invevent['resultsfiles'] as $k=>$file)
+        {
+            // check if file neeeds uploading
+            $upload_time = strtotime($file['upload']);
+            $update_time = strtotime($file['update']);
+            if ($file['status'] != "embargoed" and (empty($file['upload']) or $upload_time < $update_time))
+            {
+                $files[] = $file;
+            }
+        }
+    }
+
+    // add inventory file
+    $files[] = array(
+        "file_id" =>"",
+        "year"   => $result_year,
+        "type"   => "",
+        "format" => "json",
+        "file"   => $inventory_file,
+        "label"  => "inventory file",
+        "notes"  => "",
+        "status" => "final",
+        "rank"   => 0,
+        "upload" => "",
+        "update" => date("Y-m-d H:i:s")
+    );
+
+    return $files;
+}
+
+function transfer_files($files, $protocol)
+{
+    $num_for_transfer = count($files);
+
+    if ($num_for_transfer > 0)       // we have files to transfer
+    {
+
+        // setup protocol connection attributes if required
+        if ($protocol == "sftp" or $protocol == "ftp")
+        {
+            $ftp = array("protocol" => $_SESSION["ftp_protocol"], "server" => $_SESSION["ftp_server"],
+                "user" => $_SESSION["ftp_user"], "pwd" => $_SESSION["ftp_pwd"]);
+        }
+
+        // setup target path and url
+        empty($_SESSION['result_public_path']) ? $target_path = "" : $target_path = $_SESSION['result_public_path'];
+        empty($_SESSION['result_public_url']) ? $target_url = "" : $target_url = $_SESSION['result_public_url'];
+
+        // if not target information
+        if (empty($target_path) or empty($target_url))
+        {
+            $report_arr['result'] = "stopped";
+            $report_arr['msg'] = "result files update processing stopped";
+            $report_arr['detail'] = "results location for website not configured [{$_SESSION['result_public_path']}";
+        }
+
+        // if we need ftp details but are missing an element
+        elseif (($protocol == "sftp" or $protocol == "ftp") and (empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd'])))
+        {
+            $report_arr['result'] = "stopped";
+            $report_arr['msg'] = "result files update processing stopped";
+            $report_arr['detail'] = "sftp/ftp protocol for website not configured correctly";
+        }
+
+        // do the transfer
+        else
+        {
+
+            if ($protocol == "network")
+            {
+                $status = process_transfer_network($files);
+            }
+            elseif ($protocol == "ftp")   // not implemented yet (may just work using the sftp code
+            {
+                $report_arr['result'] = "stopped";
+                $report_arr['msg'] = "result files update processing stopped";
+                $report_arr['detail'] = "sftp protocol for website not configured correctly";
+            }
+            elseif ($protocol == "sftp")
+            {
+                $status = process_transfer_sftp($files, $ftp);
+            }
+            else    // transfer protocol not recognised
+            {
+                $report_arr['result'] = "stopped";
+                $report_arr['msg'] = "result files update processing stopped";
+                $report_arr['detail'] = "transfer protocol option not recognised [$protocol]";
+            }
+
+            // format detail information
+            $detailtxt = "";
+            foreach ($status['files'] as $file)
+            {
+                //$detailtxt.= $file['file_type']." file - ";
+                $detailtxt .= "<br>" . $file['label'] . " - ";
+                if ($protocol == "sftp" or $protocol == "ftp")
+                {
+                    $status['login'] ? $detailtxt .= "server connection ok " : $detailtxt .= "server connection failed  ";
+                }
+                $file['source_exists'] ? $detailtxt .= "source file exists " : $detailtxt .= "source file does not exist ";
+                $file['target_exists'] ? $detailtxt .= "| target file exists " : $detailtxt .= "| target file does not exist ";
+                $file['file_transferred'] ? $detailtxt .= "| file transferred<br>" : $detailtxt .= "| file not transferred<br>";
+            }
+            $detailtxt .= "<pre>FILES " . print_r($files, true) . "</pre>";
+
+            if ($status['result'] and $status['complete'])
+            {
+                $report_arr['result'] = "success";
+                $report_arr['msg'] = "All $num_for_transfer file(s) uploaded";
+                $report_arr['detail'] = $detailtxt;
+            }
+            else
+            {
+                $report_arr['result'] = "fail";
+                $report_arr['msg'] = $status['num_files'] . " of $num_for_transfer file(s)uploaded";
+                $report_arr['detail'] = $detailtxt;
+            }
+        }
+
+    }
+    else
+    {
+        $report_arr['result'] = "stopped";
+        $report_arr['msg'] = "result files update processing not required";
+        $report_arr['detail'] = "no files to transfer";
+    }
+
+    return $report_arr;
+
+}
 
 function process_transfer_network($files)
 {
@@ -284,6 +423,7 @@ function process_transfer_network($files)
     foreach ($files as $k=>$file)
     {
         $continue = false;
+        $status['files'][$k]['label'] = $file['label'];
         $status['files'][$k]['log'] = "network transfer {$file['file']}: ";
 
         empty($file['type']) ? $sub_dir = "/".$file['year']."/".$file['file'] : $sub_dir = "/".$file['year']."/".$file['type']."/".$file['file'] ;
@@ -406,6 +546,7 @@ function process_transfer_sftp($files, $ftp_env)
         foreach ($files as $k => $file)
         {
             $continue = false;
+            $status['files'][$k]['label'] = $file['label'];
             $status['files'][$k]['log'] .= "sftp transfer {$file['file']}: ";
 
             empty($file['type']) ? $sub_dir = "/".$file['year']."/".$file['file'] : $sub_dir = "/".$file['year']."/".$file['type']."/".$file['file'];

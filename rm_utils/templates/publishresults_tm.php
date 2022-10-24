@@ -111,10 +111,112 @@ EOT;
 
 }
 
+function process_header($params=array())
+{
+    $html = <<<EOT
+    <!DOCTYPE html><html lang="en">
+    <head>
+            <title>{title}</title>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="description" content="">
+            <meta name="author" content="">
+
+            <link   rel="shortcut icon"    href="{loc}/common/images/favicon.ico">
+            <link   rel="stylesheet"       href="{loc}/common/oss/bootstrap341/css/{theme}bootstrap.min.css" >
+            <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>
+            <script type="text/javascript" src="{loc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
+            <script type="text/javascript" src="{loc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
+
+            <!-- Custom styles for this template -->
+            <link href="{stylesheet}" rel="stylesheet">
+
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <h2 class="text-success">{header-left}<span class="pull-right">{header-right}</span></h2>
+            </div>
+        </nav>
+          
+        <h1>Result File Refresh &hellip; <small>click title for detail info</small></h1>
+        <div class="row">
+        <div class="col-md-offset-2 col-md-6"
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+EOT;
+    return $html;
+}
+
+function publishfooter($params = array())
+{
+    $bufr = <<<EOT
+                </div>        <!-- end of accordian -->
+            </div>        <!-- end of cols -->
+        </div>        <!-- end of row -->
+EOT;
+
+}
+
 
 function publishresults_item_rpt($params = array())
 {
-    $bufr = "<pre>ITEM REPORT<br>".print_r($params, true)."</pre>";
+    $tabval = array( "race" => "One", "series" => "Two", "transfer" => "Three" );
+    $tab = $tabval[$params['action']];
+    $action = array( "race" => "Race Results", "series" => "Series Results", "transfer" => "File Transfers" );
+    $actiontxt = $action[$params['action']];
+
+    $righttxt = ucfirst($params['msg'])."&nbsp;&nbsp;&nbsp;&nbsp;";
+
+    if ($params['result'] == "success")
+    {
+        $panelstyle = "panel-success";
+        if ($params['action'] == "race" or $params['action'] == "series")
+        {
+            $link = $params['file']['url'];
+            $righttxt.= <<<EOT
+            <a href="$link" id="printrace" type="button" class="btn btn-warning btn-md" target="_BLANK" style="width: 200px; font-size:1.2em;">
+               <span class="glyphicon glyphicon-open-file"></span>&nbsp;&nbsp;{$params['action']} results
+            </a>
+EOT;
+        }
+    }
+    elseif ($params['result'] == "fail")
+    {
+        $panelstyle = "panel-danger";
+    }
+    elseif ($params['result'] == "info")
+    {
+        $panelstyle = "panel-info";
+    }
+    elseif ($params['result'] == "stopped")
+    {
+        $panelstyle = "panel-warning";
+    }
+    elseif ($params['result'] == "notrequested")
+    {
+        $panelstyle = "panel-info";
+    }
+
+    $panel_content = "<pre>DETAIL: <br>".print_r($params, true)."</pre>";
+
+    $bufr = <<<EOT
+    <div class="panel $panelstyle margin-top-40">
+        <div class="panel-heading" role="tab" id="heading$tab" >
+          <h1 class="panel-title ">
+                <a class="pull left" style="font-size: 3em" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$tab" aria-expanded="true" aria-controls="collapse$tab">
+                  $actiontxt
+                </a>
+                <span class="pull-right" style="font-size: 1em">$righttxt</span>
+          </h1>
+          
+        </div>
+        <div id="collapse$tab" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading$tab">
+            <div class="panel-body"> $panel_content </div>
+        </div>
+    </div>
+EOT;
+
     return $bufr;
 }
 

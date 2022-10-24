@@ -330,7 +330,7 @@ elseif ($pagestate == "process")    // run through process workflow
                 {
                     foreach($invevent['resultsfiles'] as $k=>$file)
                     {
-                        // check if file neeeds uploading
+                        // check if file needs uploading
                         $upload_time = strtotime($file['upload']);
                         $update_time = strtotime($file['update']);
                         if ($file['status'] != "embargoed" and (empty($file['upload']) or $upload_time < $update_time))
@@ -374,7 +374,7 @@ elseif ($pagestate == "process")    // run through process workflow
                         }
                         else
                         {
-                            $status = process_transfer_network($files, $target_path, $target_url);
+                            $status = process_transfer_network($files);
                         }
 
                     }
@@ -387,14 +387,10 @@ elseif ($pagestate == "process")    // run through process workflow
                     }
                     elseif ($_SESSION['result_transfer_protocol'] == "sftp")
                     {
-                        // FIXME
-                        sleep(1);
-                        endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "sftp transfer not implemented yet");
-                        u_writelog("FILE TRANSFER - transfer protocol option not implemented [{$_SESSION['result_transfer_protocol']}]", $eventid);
                         $ftp = array("protocol"=>$_SESSION["ftp_protocol"], "server"=> $_SESSION["ftp_server"],
                                      "user"=> $_SESSION["ftp_user"], "pwd"=> $_SESSION["ftp_pwd"]);
 
-                        if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
+                        if (empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
                         {
                             sleep(1);
                             endProcess($step, $row_start[$step], "fail", "Transfer to website", "", "Transfer software not configured correctly");
@@ -402,7 +398,7 @@ elseif ($pagestate == "process")    // run through process workflow
                         }
                         else
                         {
-                            $status = process_transfer_ftp($files, $ftp);  // FIXME implement function
+                            $status = process_transfer_sftp($files, $ftp);
                         }
                     }
                     else

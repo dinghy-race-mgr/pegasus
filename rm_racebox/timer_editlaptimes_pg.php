@@ -19,6 +19,7 @@ require_once ("{$loc}/common/lib/util_lib.php");
 $eventid   = u_checkarg("eventid", "checkintnotzero","");
 $pagestate = u_checkarg("pagestate", "set", "", "");
 $entryid   = $_REQUEST['entryid'];
+$clear = u_checkarg("clear", "setbool", 1, 0);
 
 if (empty($_REQUEST['pagestate']) OR empty($_REQUEST['eventid']) OR empty($_REQUEST['entryid']))
 {
@@ -68,10 +69,148 @@ $boat_detail = array(
     "pn"      => $laps_rs['pn'],
 );
 
-if ($pagestate == "init")             // display form with lap times for each lap
+// if call from timer page - initialise lap edit session array
+if ($clear)
 {
-    $pagefields['body'] = $tmpl_o->get_template("fm_editlaptimes", $boat_detail, $laptimes);  // create edit form
-    echo $tmpl_o->get_template("basic_page", $pagefields, array("form_validation"=>true));                                   // create page with form
+    $_SESSION["e_$eventid"]['lapeditmsg'] = array("type"=>"", "msg"=>"");
+}
+
+if ($pagestate == "init")             // display form with lap times for each lap and msg from previous action is set
+{
+    $params = array("eventid"=>$eventid, "laps"=>$laptimes);
+
+    $pagefields['body'] = $tmpl_o->get_template("fm_editlaptimes", $boat_detail, $params);  // create edit form
+    echo $tmpl_o->get_template("basic_page", $pagefields, array("form_validation"=>true));  // create page with form
+
+    // initialise response variable
+    $_SESSION["e_$eventid"]['lapeditmsg'] = array("type"=>"", "msg"=>"");
+
+}
+elseif ($pagestate == "addlap")
+{
+    $action = "remove";
+    $lap = u_checkarg("lap", "checkintnotzero", "");
+    if ($eventid and $entryid and $lap)
+    {
+        // get all lap data for this entry
+        $lapdata = $race_o->entry_lap_get($entryid, "all");
+        $lapdata_reverse = array_reverse($lapdata,true);           // reorder so laps can be processed in reverse order
+
+        // find lap to use as donor data for the new lap
+        if ($lap >= count($lapdata))       // a new lap at the end - use last lap
+        {
+            $key = array_search(count($lapdata), array_column($lapdata, 'lap'));
+        }
+        else                               // use next lap
+        {
+            $key = array_search($lap, array_column($lapdata, 'lap'));
+        }
+        $detail = $lapdata[$key];
+        unset($detail['id']);
+        $detail['lap'] = $lap;
+
+        // loop through laps in reverse order resetting the lap numbers
+        foreach ($lapdata_reverse as $row)
+        {
+            if ($row['lap'] >= $lap)
+            {
+                $newlap = $row['lap'] + 1;
+                $upd = $race_o->entry_lap_update($entryid, $boat_detail['fleet'], $row['lap'], $boat_detail['pn'], array("lap"=>$newlap) );
+            }
+        }
+
+        // get all lap data for this entry
+        $lapdata = $race_o->entry_lap_get($entryid, "all");
+
+        // insert lap
+        $ins = $race_o->entry_lap_add($boat_detail['fleet'], $entryid, $detail);
+
+        // get all lap data for this entry after insert
+        $lapdata = $race_o->entry_lap_get($entryid, "all");
+        $num_laps = count($lapdata);
+
+        // update t_race record (lap + status)
+        $record = $race_o->entry_get($entryid);
+        $change = array("lap"=>$num_laps);
+        if ($record['status'] == "R" and $num_laps >= $record['finishlap'])  // now nfinished
+        {
+            $change['status'] = "F";
+        }
+        $upd = $race_o->entry_update($entryid, $change);
+
+        if ($ins)
+        {
+            $_SESSION["e_$eventid"]['lapeditmsg']['type'] = "success";
+            $_SESSION["e_$eventid"]['lapeditmsg']['msg'] = "A new lap $lap has been created for {$boat_detail['boat']} and the following laps renumbered
+             - now you can add the correct elapsed time for that lap.";
+        }
+        else
+        {
+            $_SESSION["e_$eventid"]['lapeditmsg']['type'] = "danger";
+            $_SESSION["e_$eventid"]['lapeditmsg']['msg'] = "The attempt to add a new lap $lap for {$boat_detail['boat']} has failed.";
+        }
+    }
+    else
+    {
+        $_SESSION["e_$eventid"]['lapeditmsg']['type'] = "danger";
+        $_SESSION["e_$eventid"]['lapeditmsg']['msg'] = "The attempt to add a new lap for {$boat_detail['boat']} failed due to invalid data.";
+    }
+    header("Location: timer_editlaptimes_pg.php?eventid=$eventid&entryid=$entryid&pagestate=init");
+    exit();
+}
+elseif ($pagestate == "removelap")
+{
+    $action = "remove";
+    $lap = u_checkarg("lap", "checkintnotzero", "");
+    if ($eventid and $entryid and $lap)
+    {
+        // get lap data
+        $lapdata = $race_o->entry_lap_get($entryid, "all");
+
+        // delete requested lap
+        $del  = $race_o->entry_lap_delete($entryid, $lap);
+
+        if ($del)
+        {
+            // get all lap data after delete
+            $lapdata = $race_o->entry_lap_get($entryid, "all");
+            $num_laps = count($lapdata);
+
+            // renumber laps as required
+            foreach ($lapdata as $row)
+            {
+                if ($row['lap'] > $lap)
+                {
+                    $newlap = $row['lap'] - 1;
+                    $upd = $race_o->entry_lap_update($entryid, $boat_detail['fleet'], $row['lap'], $boat_detail['pn'], array("lap"=>$newlap) );
+                }
+            }
+
+            // update t_race record (lap + status)
+            $record = $race_o->entry_get($entryid);
+            $change = array("lap"=>$num_laps);
+            if ($record['status'] == "F" and $num_laps < $record['finishlap'])  // now unfinished
+            {
+                $change['status'] = "R";
+            }
+            $upd = $race_o->entry_update($entryid, $change);
+
+            $_SESSION["e_$eventid"]['lapeditmsg']['type'] = "success";
+            $_SESSION["e_$eventid"]['lapeditmsg']['msg'] = "Lap $lap has been removed for {$boat_detail['boat']} and the remaining laps renumbered.";
+        }
+        else
+        {
+            $_SESSION["e_$eventid"]['lapeditmsg']['type'] = "danger";
+            $_SESSION["e_$eventid"]['lapeditmsg']['msg'] = "The attempt to remove lap $lap for {$boat_detail['boat']} has failed.";
+        }
+    }
+    else
+    {
+        echo "lap not set"; exit();
+
+    }
+    header("Location: timer_editlaptimes_pg.php?eventid=$eventid&entryid=$entryid&pagestate=init");
+    exit();
 
 }
 elseif ($pagestate == "submit")       // correct modified lap times and return to display lap times
@@ -126,52 +265,30 @@ elseif ($pagestate == "submit")       // correct modified lap times and return t
 
         empty($rs_msg) ? $changes = false : $changes = true;
 
-        $pagefields['body'] = $tmpl_o->get_template("edit_laps_success",
-            array("boat"=>$boat_detail['boat'], "msg"=>$rs_msg, "eventid"=>$eventid, "entryid"=>$entryid), array("changes"=>$changes));
-        echo $tmpl_o->get_template("basic_page", $pagefields);
+        if (!empty($rs_msg))
+        {
+            $_SESSION["e_$eventid"]['lapeditmsg']['type'] = "success";
+            $_SESSION["e_$eventid"]['lapeditmsg']['msg'] = "changes were made to the lap times for {$boat_detail['boat']}:- <br> $rs_msg";
+        }
+        else
+        {
+            $_SESSION["e_$eventid"]['lapeditmsg']['type'] = "info";
+            $_SESSION["e_$eventid"]['lapeditmsg']['msg'] = "no changes were made to the lap times for {$boat_detail['boat']}";
+        }
+
     }
     else   // produce error page
     {
-        $pagefields['body'] = $tmpl_o->get_template("edit_laps_error",
-            array("boat"=>$boat_detail['boat'], "msg"=>$rs['msg'], "eventid"=>$eventid, "entryid"=>$entryid));
-        echo $tmpl_o->get_template("basic_page", $pagefields);
+        $_SESSION["e_$eventid"]['lapeditmsg']['type'] = "danger";
+        $_SESSION["e_$eventid"]['lapeditmsg']['msg'] = "No changes were made to the lap times for {$boat_detail['boat']} - the following problems were identified:- <br> {$rs['msg']}";
+
     }
+    header("Location: timer_editlaptimes_pg.php?eventid=$eventid&entryid=$entryid&pagestate=init");
+    exit();
 }
 else  // pagestate not recognised
 {
     u_exitnicely($scriptname, 0, "$page page - the pagestate value [{$_REQUEST['pagestate']} is not recognised",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-
-function check_lap_problems($laptimes_str)
-/*
-checks for problems with the lap time sequence presented
-*/
-{
-    $rs = array(
-        "times" => array(),
-        "err"   => false,
-        "msg"   => "",
-    );
-
-    $prev = 0;
-    foreach($laptimes_str as $lap=>$time)
-    {
-        $rs['times'][$lap] = strtotime("1970-01-01 $time UTC");;
-        if ($rs['times'][$lap] == 0)
-        {
-            $rs['msg'].= "<p><b>lap $lap</b> has an elapsed time of 0 secs</p>";
-            $rs['err'] = true;
-        }
-        if ($lap > 1 and $prev >= $rs['times'][$lap])
-        {
-            $rs['msg'].= "<p><b>lap $lap</b> must have an elapsed greater than the previous lap</p>";
-            $rs['err'] = true;
-        }
-        $prev = $rs['times'][$lap];
-    }
-    return $rs;
-}
-
 

@@ -77,8 +77,23 @@ echo <<<EOT
 </div>
 EOT;
 
-// applications block
-echo <<<EOT
+
+if (file_exists('maintenance_on.txt'))
+{
+    // undergoing maintenance message
+    echo <<<EOT
+    <div>
+        <h1 style="color: darkslateblue; text-align: center; margin-bottom:20px">Sorry! - raceManager is currently ...</h1></div>
+        <div style="text-align: center;">
+            <img src="common/images/web_graphics/maintenance.jpg" alt="under maintenance" class="img-responsive img-rounded center-block" style="width: 500px;"></img><br>
+		    <a href="https://www.freepik.com/free-vector/maintenance-background-design_1000106.htm#page=2&query=under%20maintenance&position=5&from_view=keyword">Image by lexamer</a> on Freepik
+    </div>
+EOT;
+}
+else
+{
+    // applications block
+    echo <<<EOT
 <div class="container">
   <div class="row">
     <div class="col-md-3">
@@ -112,6 +127,9 @@ echo <<<EOT
   </div>
 </div>
 EOT;
+}
+
+
 
 
 // end of page

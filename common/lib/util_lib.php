@@ -1262,6 +1262,7 @@ function u_sendfile_sftp($ftp_env, $source_file, $target_file)
         {
             $status['target_exists'] = true;
             $status['log'].= "target directory exists | ";
+            $continue = true;
         }
         else
         {
@@ -1282,7 +1283,11 @@ function u_sendfile_sftp($ftp_env, $source_file, $target_file)
     // transfer file
     if ($continue)
     {
+        $sftp->chdir("$target_dir");
         $upload = $sftp->put($target_file, $source_file, NET_SFTP_LOCAL_FILE);
+        //$errors = $sftp->getSFTPErrors();
+        //echo "<pre>".print_r($errors,true)."</pre>";
+
         if ($upload)
         {
             $status['file_transferred'] = true;

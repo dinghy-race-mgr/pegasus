@@ -135,29 +135,28 @@ function publish_file_report($params = array())
 {
     $bufr = "";
     $table_bufr = "";
+    $row_bufr = "";
+    $created = true;
+    $transferred = true;
+
     if ($params['display'])
     {
         if (!empty($params['data']))
         {
+            foreach ($params['data'] as $k=>$row)
+            {
+                $row_bufr.= "<tr><td>{$row['date']}</td><td>{$row['time']}</td><td>{$row['name']}</td></tr>";
+            }
             $table_bufr.= <<<EOT
                 <p><b>Events Included&hellip;</b></p>
                 <table class="table table-striped table-condensed">
-                    <tbody>
-EOT;
-            foreach ($params['data'] as $k=>$row)
-            {
-                $table_bufr.= <<<EOT
-                <tr><td>{$row['date']}</td><td>{$row['time']}</td><td>{$row['name']}</td></tr>
-EOT;
-            }
-            $table_bufr.= <<<EOT
-                    <tbody>
+                    <tbody>$row_bufr</tbody>
                 </table>
 EOT;
         }
     }
 
-    $txt = "{$params['count']} events included for selected period <br><br>";
+    $report = "{$params['count']} events included for selected period <br><br>";
 
     if ($params['file'])
     {
@@ -168,36 +167,56 @@ EOT;
     {
         $glyph = "glyphicon glyphicon-remove";
         $msg   = "programme file creation FAILED";
+        $created = false;
     }
-    $txt .= <<<EOT
-    <div style="text-indent: 20px; margin-bottom: 10px"><span class="$glyph" aria-hidden="true"></span> $msg</div>
+    $report.= <<<EOT
+    <div style="text-indent: 20px; margin-bottom: 15px"><span class="$glyph" aria-hidden="true"></span> $msg</div>
 EOT;
 
+    // echo "<pre>template transfer: {$params['transfer']}  state: {$params['state']}</pre>";
 
-    if ($params['transfer'] and $params['state'] == 0)
+    $text_style = "";
+    if ($params['transfer'] == 1 and $params['state'] == 0)
     {
-        $glyph = "glyphicon glyphicon-ok-sign";
+        $glyph = "glyphicon glyphicon-ok";
         $msg   = "programme file transferred to website";
     }
-    elseif (!$params['transfer'] and $params['state'] == 0)
+    elseif ( $params['transfer'] == 0 and $params['state'] == 0)
     {
-        $glyph = "glyphicon glyphicon-info-sign";
+        $glyph = "glyphicon glyphicon-ok";
         $msg   = "programme file transfer to website was NOT requested (or NOT required)";
     }
-    else
+    elseif ($params['transfer'] > 1 and $params['state'] == 0)
     {
-        $glyph = "glyphicon glyphicon-remove-sign";
-        $msg   = "programme file transfer to website FAILED";
+        $reason = array(
+            "2" => "transfer session not established",
+            "3" => "source file does not exist",
+            "4" => "target directory does not exist",
+            "5" => "unknown reason",
+        );
+
+        $glyph = "glyphicon glyphicon-remove";
+        $msg   = "programme file transfer to website FAILED - ".$reason[$params['transfer']];
+        $text_style = "text-danger";
+        $transferred = false;
     }
-    $txt .= <<<EOT
-    <div style="text-indent: 20px; margin-bottom: 10px"><span class="$glyph" aria-hidden="true"></span> $msg</div>
+    $report.= <<<EOT
+    <div class="$text_style" style="text-indent: 20px; margin-bottom: 10px"><span class="$glyph" aria-hidden="true"></span> $msg</div>
 EOT;
 
+    $alert = "";
+    if (!$created or !$transferred)
+    {
+        $alert = <<<EOT
+        <p><span class="label label-danger">WARNING:  The programme has not been updated</span></p>
+EOT;
+    }
 
     $bufr.= <<<EOT
-    <div class="alert alert-success" role="alert">
+    <div class="jumbotron" >
         <h3>Programme Transfer Report&hellip;</h3> 
-        <h4>$txt</h4>
+        <h4>$report</h4>
+        $alert
         <div class="row margin-top-20">
             <div class="col-sm-12">
                 <div class="pull-right">
@@ -205,29 +224,9 @@ EOT;
                     <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a>
                 </div>
             </div>
-        </div>
-    
-    </div> <! end of alert>
+        </div>   
+    </div> 
 EOT;
-
-    if ($params['state'] == 4)
-    {
-        $bufr.= <<<EOT
-        <div class="alert alert-danger" role="alert">
-            <h3>Problem!</h3> 
-            <h4> failed to CREATE event programme file for website - please contact the System Administrator</h4>
-        </div>
-EOT;
-    }
-    elseif ($params['state'] == 5)
-    {
-        $bufr.= <<<EOT
-        <div class="alert alert-danger" role="alert">
-        <h3>Problem!</h3> 
-        <h4> failed to TRANSFER event programme file for website - please contact the System Administrator</h4>
-        </div>
-EOT;
-    }
 
     $bufr.=<<<EOT
     $table_bufr

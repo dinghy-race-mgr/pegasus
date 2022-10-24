@@ -78,7 +78,7 @@ $_SESSION['dutycheck'] = array(
 $_SESSION['publish'] = array(
      "loc" => "../data/programme",
      "file"=> "programme_date.json",
-     "transfer_loc"  => "",
+     "transfer_loc"  => "/syc_programme",
 );
 
 $_SESSION['berth'] = array(

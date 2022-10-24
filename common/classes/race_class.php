@@ -1597,9 +1597,11 @@ class RACE
             "lap" => $lap
         );
 
+        $lap_rec = $this->entry_lap_get($entryid, "lap", $lap);             // get existing lap details
+
         if (array_key_exists("etime", $update))                             // potentially updating lap time
         {
-            $lap_rec = $this->entry_lap_get($entryid, "lap", $lap);         // get existing lap details
+
             if ($update['etime'] != $lap_rec['etime'])                      // lap time has changed - update ctime and clicktime
             {
                 $update['ctime'] = $this->entry_calc_ct($update['etime'], $pn, $this->scoring["$fleetnum"]);
@@ -1610,10 +1612,21 @@ class RACE
         $upd = $this->db->db_update("t_lap", $update, $where);
         if ($upd == 1)
         {
-            $rst['status'] = true;
-            $rst['msg'] = "updated lap $lap with elapsed time of ".gmdate("H:i:s", $update['etime'])."<br>";
-            $rst['clicktime'] = $update['clicktime'];
-            $rst['ctime'] = $update['ctime'];
+            if (array_key_exists("etime", $update))
+            {
+                $rst['status'] = true;
+                $rst['msg'] = "updated lap $lap with elapsed time of ".gmdate("H:i:s", $update['etime'])."<br>";
+                $rst['clicktime'] = $update['clicktime'];
+                $rst['ctime'] = $update['ctime'];
+            }
+            else
+            {
+                $rst['status'] = true;
+                $rst['msg'] = "updated lap $lap with no time change ".gmdate("H:i:s", $lap_rec['etime'])."<br>";
+                $rst['clicktime'] = $lap_rec['clicktime'];
+                $rst['ctime'] = $lap_rec['ctime'];
+            }
+
         }
         else
         {

@@ -1,9 +1,15 @@
 raceManager - pegasus
 
 
-Version 0.1.0 - Initial Build  -   started 20 March 2014
+Version 10.0.0 - Initial Build  -   started 20 March 2014
 	Bootstrap 3.1.1
     Jquery 1.11.0
 
-Version 1.0.0 - First Operational Release - 16 October 2022
-    Bootstrap 3.4.1
+Version 10.1.0 - First Operational Release - 16 October 2022
+    Bootstrap 3.4.1 PHP 7.2.34
+
+Version 10.1.2 - Second Operational Release - 24 October 2022
+    Bootstrap 3.4.1  PHP 7.2.34
+    - improved laps edit function on timer (tabbed) page
+    - results processing (including sftp transfer) added to rm_admin
+    - programme transfer added to rm_admin

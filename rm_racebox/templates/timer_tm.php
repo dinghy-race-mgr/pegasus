@@ -792,7 +792,7 @@ function editlaps_html($eventid, $entryid, $boat, $laptimes_str)
         <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true"
               data-title="edit lap times for this boat" data-placement="top">
             <a type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#editlapModal" data-boat="$boat"
-                    data-iframe="timer_editlaptimes_pg.php?eventid=$eventid&pagestate=init&entryid=$entryid" >
+                    data-iframe="timer_editlaptimes_pg.php?eventid=$eventid&pagestate=init&entryid=$entryid&clear=1" >
                     <span class="glyphicon glyphicon-pencil"></span>
             </a>
         </span>
@@ -936,10 +936,12 @@ EOT;
 
 function fm_editlaptimes($params=array())
 {
-    $bufr = "";
+    $lapbufr = "";
+    $msgbufr = "";
+    $eventid = $params['eventid'];
 
     // hidden fields
-    $bufr.= <<<EOT
+    $lapbufr.= <<<EOT
     <input type="hidden" name="eventid" value="{eventid}">
     <input type="hidden" name="entryid" value="{entryid}">
     <input type="hidden" name="fleet" value="{fleet}">
@@ -947,32 +949,91 @@ function fm_editlaptimes($params=array())
     <input type="hidden" name="pn" value="{pn}">
 EOT;
 
+//    // initial add lap button
+//    $bufr.= <<<EOT
+//        <div class="row">
+//            <div class="col-md-offset-1 col-md-4 text-center">
+//                <a id="xxx" href="timer_editlaptimes_pg.php?pagestate=addlap&eventid={eventid}&entryid={entryid}&lap=1"
+//                   role="button" class="btn btn-default btn-xs" target="_self">
+//                    <span class="glyphicon glyphicon-plus"></span>&nbsp;add new lap 1
+//                </a>
+//            </div>
+//            <div class="col-md-offset-3 col-md-4">
+//                &nbsp;
+//            </div>
+//        </div>
+//EOT;
+
     // loop over lap times - field names are laptime[lap]
     $i = 1;
-    foreach ($params as $laptime)
+    foreach ($params['laps'] as $laptime)
     {
         $formatted_time = gmdate("H:i:s", $laptime);
-        $bufr.= <<<EOT
-        <div class="form-group margin-top-10" style="min-width: 30%">
-            <label for="lap$i">lap $i &nbsp;</label>
-            <input type="text" class="form-control" id="lap$i" name="etime[$i]" value="$formatted_time"
-                required data-fv-notempty-message="a time [hh:mm:ss] must be entered"
-                data-fv-regexp="true"
-                data-fv-regexp-regexp="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
-                data-fv-regexp-message="lap time must be in HH:MM:SS format" />
+        $lapbufr.= <<<EOT
+        <div class="row margin-top-10">
+            <div class="col-md-offset-1 col-md-7 text-center">
+                <a id="xxx" href="timer_editlaptimes_pg.php?pagestate=addlap&eventid={eventid}&entryid={entryid}&lap=$i"
+                   role="button" class="btn btn-default btn-xs" target="_self" style="min-width: 150px;">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;add new lap $i
+                </a>
+            </div>
+            <div class="col-md-4">
+                &nbsp;
+            </div>
         </div>
-        <br>
+        <div class="row margin-top-10">
+            <div class="col-md-offset-1 col-md-7">
+                <div class="form-group" style="min-width: 30%">
+                    <label for="lap$i">lap $i &nbsp;</label>
+                    <input type="text" class="form-control" id="lap$i" name="etime[$i]" value="$formatted_time"
+                        required data-fv-notempty-message="a time [hh:mm:ss] must be entered"
+                        data-fv-regexp="true"
+                        data-fv-regexp-regexp="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
+                        data-fv-regexp-message="lap time must be in HH:MM:SS format" />
+                </div>
+            </div>
+            <div class="col-md-4 text-center" style="margin-top: 7px;">
+                <a id="xxx" href="timer_editlaptimes_pg.php?pagestate=removelap&eventid={eventid}&entryid={entryid}&lap=$i"
+                   role="button" class="btn btn-warning btn-xs" target="_self" style="min-width: 150px;">
+                    <span class="glyphicon glyphicon-minus "></span>&nbsp;remove this lap $i
+                </a>
+            </div>
+        </div>
+
+        
 EOT;
         $i++;
     }
 
-//    $bufr.= <<<EOT
-//    <div class="row"></div>
-//    <div class="pull-right margin-top-20">
-//        <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span>&nbsp;UPDATE Lap Times</button>
-//    </div>
-//    </div>
-//EOT;
+    // final add lap
+    $lapbufr.= <<<EOT
+        <div class="row margin-top-10">
+            <div class="col-md-offset-1 col-md-7 text-center">
+                <a id="xxx" href="timer_editlaptimes_pg.php?pagestate=addlap&eventid={eventid}&entryid={entryid}&lap=$i"
+                   role="button" class="btn btn-default btn-xs" target="_self" style="min-width: 150px;">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;add new lap $i
+                </a>
+            </div>
+            <div class="col-md-4">
+                &nbsp;
+            </div>
+        </div>
+EOT;
+
+    //echo "<pre>MSG: ".print_r($_SESSION["e_$eventid"]['lapeditmsg'],true)."</pre>";
+    // create msg_bufr
+    if (empty($_SESSION["e_$eventid"]['lapeditmsg']['type']))
+    {
+        $msgbufr = "";
+    }
+    else
+    {
+        $msgbufr = <<<EOT
+        <div class="alert alert-{$_SESSION["e_$eventid"]['lapeditmsg']['type']}" role="alert">
+            {$_SESSION["e_$eventid"]['lapeditmsg']['msg']}
+        </div>
+EOT;
+    }
 
     $html = <<<EOT
     
@@ -982,18 +1043,33 @@ EOT;
         data-fv-icon-invalid="glyphicon glyphicon-remove"
         data-fv-icon-validating="glyphicon glyphicon-refresh"
     >
-    <div class="alert well well-sm" role="alert">
         <div class="row">
-            <div class="col-md-8">
-            <p class="text-info"><b>edit the lap times and click the <b>UPDATE</b> button to save them</b></br> 
-                                    use hh:mm:ss for elapsed time (e.g. 00:46:32)</p>
+            <div class="col-md-7">
+                $lapbufr
             </div>
-            <div class="col-md-4 pull-right">
-            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span>&nbsp;UPDATE Lap Times</button>
+            
+            <div class="col-md-offset-1 col-md-4 margin-top-40">
+                $msgbufr
+                <div class="well well-md">
+                    <p>When you have completed the edits - click the exit button to return to the timer page</p>    
+                </div>
             </div>
-        </div>                            
-    </div>
-    $bufr
+        </div>
+        
+        
+        <div class="well well-lg" style="position:absolute; bottom:0;width: 95%" role="alert">
+            <div class="row">
+                <div class="col-md-8 text-info" style="font-size: 1.2em">
+                    <p>Edit the lap times and click the UPDATE button to save them</p> 
+                    <p>If you add or remove a lap the system will renumber them for you</p>
+                </div>
+                <div class="col-md-4 text-right">
+                    <button type="submit" class="btn btn-success">
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;UPDATE Lap Times
+                    </button>
+                </div>
+            </div>                         
+        </div>
        
     </form>
 
@@ -1003,57 +1079,57 @@ EOT;
 }
 
 
-function edit_laps_success($params=array())
-{
-    if ($params['changes'])
-    {
-        $msg = <<<EOT
-            <b>Successful changes</b> were made to the lap times for {boat}.<br><span style="text-indent: 30px;">{msg}</span>
-EOT;
-    }
-    else
-    {
-        $msg = <<<EOT
-            <b>No changes</b> were made to the lap times for {boat}.
-EOT;
-    }
+//function edit_laps_success($params=array())
+//{
+//    if ($params['changes'])
+//    {
+//        $msg = <<<EOT
+//            <b>Successful changes</b> were made to the lap times for {boat}.<br><span style="text-indent: 30px;">{msg}</span>
+//EOT;
+//    }
+//    else
+//    {
+//        $msg = <<<EOT
+//            <b>No changes</b> were made to the lap times for {boat}.
+//EOT;
+//    }
+//
+//    $html = <<<EOT
+//    <div class="alert alert-success" role="alert" style="margin-top: 30px">
+//        <p style="font-size: 100%;">$msg</span></p>
+//        <br>
+//        <p>Use the <b>More Changes</b> button to make more changes or the <b>Finished</b> button to return to the Lap Timing page</p>
+//    </div>
+//
+//    <div class="row pull-right">
+//        <a href="timer_editlaptimes_pg.php?eventid={eventid}&entryid={entryid}&pagestate=init" class="btn btn-default btn-md active" style="width:200px" role="button">
+//        <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span>
+//         More Changes &hellip; </a>
+//    </div>
+//
+//EOT;
+//    return $html;
+//}
 
-    $html = <<<EOT
-    <div class="alert alert-success" role="alert" style="margin-top: 30px">
-        <p style="font-size: 100%;">$msg</span></p>
-        <br>
-        <p>Use the <b>More Changes</b> button to make more changes or the <b>Finished</b> button to return to the Lap Timing page</p>
-    </div>
 
-    <div class="row pull-right">
-        <a href="timer_editlaptimes_pg.php?eventid={eventid}&entryid={entryid}&pagestate=init" class="btn btn-default btn-md active" style="width:200px" role="button">
-        <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span>
-         More Changes &hellip; </a>
-    </div>
-
-EOT;
-    return $html;
-}
-
-
-function edit_laps_error($params=array())
-{
-    $html = <<<EOT
-    <div class="alert alert-danger" role="alert"  style="margin-top: 30px">
-    <p style="font-size: 100%;"><b>No changes</b> were made to the lap times for {boat}<br></p>
-    <p>The following problems were found with the times you entered .</p>
-    <span style="text-indent: 30px;">{msg}</span>
-    <p>Use the <b>More Changes</b> button to make more changes or the <b>Finished</b> button to return to the Lap Timing page</p>
-    </div>
-    <div class="row pull-right">
-        <a href="timer_editlaptimes_pg.php?eventid={eventid}&entryid={entryid}&pagestate=init" class="btn btn-primary btn-md active" role="button">
-        <span class="glyphicon glyphicon-step-backward" aria-hidden="true">Back</span>
-        </a>
-    </div>
-
-EOT;
-    return $html;
-}
+//function edit_laps_error($params=array())
+//{
+//    $html = <<<EOT
+//    <div class="alert alert-danger" role="alert"  style="margin-top: 30px">
+//    <p style="font-size: 100%;"><b>No changes</b> were made to the lap times for {boat}<br></p>
+//    <p>The following problems were found with the times you entered .</p>
+//    <span style="text-indent: 30px;">{msg}</span>
+//    <p>Use the <b>More Changes</b> button to make more changes or the <b>Finished</b> button to return to the Lap Timing page</p>
+//    </div>
+//    <div class="row pull-right">
+//        <a href="timer_editlaptimes_pg.php?eventid={eventid}&entryid={entryid}&pagestate=init" class="btn btn-primary btn-md active" role="button">
+//        <span class="glyphicon glyphicon-step-backward" aria-hidden="true">Back</span>
+//        </a>
+//    </div>
+//
+//EOT;
+//    return $html;
+//}
 
 
 function fm_timer_shortenall($params=array())

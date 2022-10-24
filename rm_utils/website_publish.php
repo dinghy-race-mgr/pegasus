@@ -15,8 +15,8 @@ session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
 session_start();
 
 // initialise session if this is first call
-if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
-{
+//if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
+//{
     $init_status = u_initialisation("$loc/config/rm_utils_cfg.php", $loc, $scriptname);
 
     if ($init_status)
@@ -35,7 +35,7 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
         u_exitnicely($scriptname, 0, "one or more problems with script initialisation",
             "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
-}
+//}
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
@@ -118,11 +118,22 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
     $file_status = create_programme_file($first, $last);
     if ($file_status === false) { $state = 4; }
 
-    $transfer_status = false;
-    if (!empty($_SESSION['publish']['transfer_loc']) AND $file_status !== false)
+    //echo "<pre>DBG $file_status|$state|{$_SESSION['publish']['transfer_loc']}|$sourcefile|$targetfile|</pre>";
+
+    if (empty($_SESSION['publish']['transfer_loc']))
     {
-        $transfer_status = transfer_programme();
-        if ($transfer_status === false) { $state = 5; }
+        $transfer_status = 0;      // transfer not required
+    }
+    else
+    {
+        if ($file_status !== false)   // we have a file that should be transferred
+        {
+            $sourcefile = $_SESSION['publish']['loc']."/programme_latest.json";
+            $targetfile = $_SESSION['publish']['transfer_loc']."/"."programme_latest.json";
+
+            $transfer_status = transfer_programme($sourcefile, $targetfile);
+            $transfer_status = 3;
+        }
     }
 
     $params = array(
@@ -208,7 +219,6 @@ function create_programme_file($start_date, $end_date)
                 $state = "trophy";
             }
 
-
             $out['events']["evt_{$event['id']}"] = array(
                 "id"             => $event['id'],
                 "name"           => $event['event_name'],
@@ -246,10 +256,13 @@ function create_programme_file($start_date, $end_date)
     $path = $_SESSION['publish']['loc'];
     $json_file = $path."/".str_replace("date", date("YmdHi"), $file);
     $latest_file = $path."/programme_latest.json";
-    $status = file_put_contents($json_file, json_encode($out));
 
-    if ($status)
+    $bytes = file_put_contents($json_file, json_encode($out));
+
+    if (!$bytes == false and $bytes > 0)
     {
+        $status = true;
+
         // delete/create 'latest' file
         foreach (GLOB($latest_file) AS $file) { unlink($file); }
         if (!copy($json_file, $latest_file))
@@ -261,15 +274,32 @@ function create_programme_file($start_date, $end_date)
     return $status;
 }
 
-function transfer_programme($target_dir)
+function transfer_programme($sourcefile, $targetfile)
 {
-    if ($target_dir == "../data/programme")    // local - no need to transfer
-    {
-        return true;
-    }
-    // TODO - need to add code to do transfer when required
+    $ftp_env = array(
+        "server" => "178.79.169.125",  //$_SESSION['ftp_server'],
+        "user"   => $_SESSION['ftp_user'],
+        "pwd"    => $_SESSION['ftp_pwd'],
+    );
 
-    return false;
+    //echo "<pre>ftp env:<br>".print_r($ftp_env,true)."</pre>";
+
+    $status = u_sendfile_sftp($ftp_env, $sourcefile, $targetfile);
+    //echo "<pre>send status:<br>".print_r($status,true)."</pre>";
+
+    if ($status['file_transferred'] === true) {
+        $transfer_status = 1;
+    } elseif ($status['login'] !== true) {
+        $transfer_status = 2;
+    } elseif ($status['source exists'] !== true) {
+        $transfer_status = 3;
+    } elseif ($status['target_exists'] !== true) {
+        $transfer_status = 4;
+    } else {
+        $transfer_status = 5;
+    }
+
+    return $transfer_status;
 }
 
 

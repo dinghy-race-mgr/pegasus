@@ -106,9 +106,8 @@ else
         "race-format"  => $_SESSION["e_$eventid"]['rc_name'],
         "race-starts"  => $_SESSION["e_$eventid"]['rc_numstarts'],
         "series-name"  => $_SESSION["e_$eventid"]['ev_seriesname'],
+        "event-notes"  => $_SESSION["e_$eventid"]['ev_notes'],
     );
-//echo "<pre>session".print_r($_SESSION,true)."</pre>";
-//echo "<pre>session".print_r($fields,true)."</pre>";
     $lbufr_top .= $tmpl_o->get_template("race_detail_display", $fields, $fields);
 
     // get current fleet status

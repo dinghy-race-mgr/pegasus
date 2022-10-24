@@ -25,6 +25,7 @@ function race_detail_display($params=array())
 {
     empty($params['tide-detail']) ? $tide_str = "": $tide_str = "&nbsp;|&nbsp;<small>tide:</small> <span class=\"lead\"><b>{tide-detail}</b></span>";
     empty($params['series-name']) ? $series_str = "none" : $series_str = $params['series-name'];
+    empty($params['event-notes']) ? $notes_str = "" : $notes_str = "<h4 class='text-info'><small>notes:</small> <span class='lead'>{event-notes}</span></h4>";
 
     // event statue
     $event_status = r_decoderacestatus($params['event-status']);
@@ -43,13 +44,14 @@ function race_detail_display($params=array())
             </div>
             <div class="margin-top-10">
                 <h3 class="text-info">
-                  <small>start:</small> <b>{start-time}</b>
+                  <small>start:</small> <span class="lead"><b>{start-time}</b></span>
                   $tide_str
                   &nbsp;|&nbsp;<small>ood:</small> <span class="lead"><b>{ood-name}</b></span>
                   &nbsp;|&nbsp;<small>format:</small> <span class="lead"><b>{race-format}</b></span>
                   &nbsp;|&nbsp;<small>starts:</small> <span class="lead"><b>{race-starts}</b></span>
                   &nbsp;|&nbsp;<small>series:</small> <span class="lead"><b>$series_str</b></span>
                 </h3>
+                $notes_str
             </div>
         </div>
     </div>
@@ -201,7 +203,6 @@ function fm_changerace($params=array())
     $fieldwidth = "col-xs-7";
 
     $entry_select = u_selectcodelist($db_o->db_getsystemcodes("entry_type"), $params['entry-option'], false);
-    $start_select = u_selectcodelist($db_o->db_getsystemcodes("start_scheme"), $params['start-option'], false);
 
     $html = <<<EOT
         <!-- instructions -->
@@ -245,14 +246,14 @@ function fm_changerace($params=array())
                 </select>
             </div>
         </div>
-
+        
         <!-- field #3 - start scheme -->
         <div class="form-group">
             <label class="$labelwidth control-label">Signal Sequence (mins)</label>
-            <div class="$fieldwidth selectfieldgroup">
-                <select class="form-control" name="start_scheme">#
-                    $start_select
-                </select>
+            <div class="$fieldwidth inputfieldgroup">
+                <input type="number" class="form-control" id="start_interval" name="start_interval" value=""
+                    placeholder="sequence (e.g 6-3-0 or 5-4-1-0) - blank if no change "
+                />
             </div>
         </div>
 
@@ -260,8 +261,8 @@ function fm_changerace($params=array())
         <div class="form-group">
             <label class="$labelwidth control-label">Time Between Starts (mins)</label>
             <div class="$fieldwidth inputfieldgroup">
-                <input type="number" class="form-control" id="start_interval" name="start_interval" value="{start-interval}"
-                    placeholder="interval between starts in minutes"
+                <input type="number" class="form-control" id="start_interval" name="start_interval" value=""
+                    placeholder="interval between starts (mins) - blank if no change "
                     data-fv-integer="true"
                     data-fv-integer-message="must be number of minutes"
                 />

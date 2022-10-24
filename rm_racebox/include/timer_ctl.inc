@@ -219,14 +219,14 @@ $mdl_editlap = array(
         "size"        => "lg",
         "style"       => "success",
         "title"       => "Edit Lap Times",
-        "body"        => "<iframe id=\"editlapFrame\" src=\"\" frameborder=\"0\" style=\"width: 100%; height: 400px;\"></iframe>",
+        "body"        => "<iframe id=\"editlapFrame\" src=\"\" frameborder=\"0\" style=\"width: 100%; height: 750px;\"></iframe>",
         "script"      => "  $( '#editlapModalLabel' ).text( 'Edit lap times for ' + button.data('boat'))
                             $( '#editlapFrame' ).attr('src', button.data('iframe'))
                          ",
         "onsubmit"    => "",
         "action"      => "",
         "target"      => "",
-        "close-lbl"   => "finished - close window",
+        "close-lbl"   => "exit laps editing",
         "reset-lbl"   => "",
         "submit-lbl"  => "",
         "footer"      => ""

@@ -80,9 +80,9 @@ elseif ($pagestate == "submit")       // update t_race and t_lap records
     // get existing record and change lap times to array
     $old = $race_o->entry_get_timings($entryid);
     $laptimes = $race_o->entry_laptimes_get($entryid);
-    u_writedbg("<pre>RESULT REQUEST ARR:".print_r($_REQUEST,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
-    u_writedbg("<pre>RESULT OLD ARR:".print_r($old,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
-    u_writedbg("<pre>RESULT LAPTIMES ARR:".print_r($laptimes,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+//    u_writedbg("<pre>RESULT REQUEST ARR:".print_r($_REQUEST,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+//    u_writedbg("<pre>RESULT OLD ARR:".print_r($old,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+//    u_writedbg("<pre>RESULT LAPTIMES ARR:".print_r($laptimes,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
 
     // get returned field values
     $edit = get_edit_data($_REQUEST);
@@ -131,28 +131,32 @@ elseif ($pagestate == "submit")       // update t_race and t_lap records
         {
             $race_scoring = $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['scoring'];
 
-            if ($etime_changed and !$lap_changed)   // simple updating finish time
-            {
-                $time = update_times($lap, $etime, $pn, $old, $laptimes, $race_scoring);   //*
-                $result_upd_arr = array_merge($edit, $time);
-                $upd = update_lap($entryid, $old['fleet'], $lap, $time);
-            }
-            elseif ($lap_changed)
-            {
-                $row = $race_o->entry_lap_get($entryid, "lap", $lap);
-                if (empty($row))                         // lap doesn't exist create it
-                {
-                    $time = update_times($lap, $etime, $pn, $old, $laptimes, $race_scoring);
-                    $result_upd_arr = array_merge($edit, $time);
-                    $upd = update_lap($entryid, $old['fleet'], $lap, $time);
-                }
-                else                                     // lap does exist - get time from existing lap
-                {
-                    $time = update_times($lap, $row['etime'], $pn, $old, $laptimes, $race_scoring);
-                    $result_upd_arr = array_merge($edit, $time);
-                    $upd = update_lap($entryid, $old['fleet'], $lap, $time);
-                }
-            }
+            $time = update_times($lap, $etime, $pn, $old, $laptimes, $race_scoring);   //*
+            $result_upd_arr = array_merge($edit, $time);
+            $upd = update_lap($entryid, $old['fleet'], $lap, $time);
+
+//            if ($etime_changed and !$lap_changed)   // simple updating finish time
+//            {
+//                $time = update_times($lap, $etime, $pn, $old, $laptimes, $race_scoring);   //*
+//                $result_upd_arr = array_merge($edit, $time);
+//                $upd = update_lap($entryid, $old['fleet'], $lap, $time);
+//            }
+//            elseif ($lap_changed)
+//            {
+//                $row = $race_o->entry_lap_get($entryid, "lap", $lap);
+//                if (empty($row))                         // lap doesn't exist create it
+//                {
+//                    $time = update_times($lap, $etime, $pn, $old, $laptimes, $race_scoring);
+//                    $result_upd_arr = array_merge($edit, $time);
+//                    $upd = update_lap($entryid, $old['fleet'], $lap, $time);
+//                }
+//                else                                     // lap does exist - change time
+//                {
+//                    $time = update_times($lap, $row['etime'], $pn, $old, $laptimes, $race_scoring);
+//                    $result_upd_arr = array_merge($edit, $time);
+//                    $upd = update_lap($entryid, $old['fleet'], $lap, $time);
+//                }
+//            }
         }
 
         // update race result in t_race

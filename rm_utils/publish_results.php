@@ -30,8 +30,8 @@ session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
 session_start();
 
 // initialise session if this is first call
-if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
-{
+//if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
+//{
     $init_status = u_initialisation("$loc/config/rm_utils_cfg.php", $loc, $scriptname);
 
     if ($init_status)
@@ -50,7 +50,7 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
         u_exitnicely($scriptname, 0, "one or more problems with script initialisation",
             "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
-}
+//}
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
@@ -68,12 +68,6 @@ foreach ($db_o->db_getinivalues(false) as $data)
     $_SESSION["{$data['parameter']}"] = $data['value'];
 }
 
-$ftp_info = array(
-    "server" => $_SESSION['ftp_server'],
-    "user"   => $_SESSION['ftp_user'],
-    "pwd"    => $_SESSION['ftp_pwd'],
-);
-
 // set templates
 $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "$loc/common/templates/race_results_tm.php",
                              "./templates/layouts_tm.php", "./templates/publishresults_tm.php", "$loc/common/templates/series_results_tm.php"));
@@ -82,18 +76,7 @@ $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "$loc/commo
 
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
 
-$pagefields = array(
-    "loc" => $loc,
-    "theme" => $styletheme,
-    "stylesheet" => $stylesheet,
-    "title" => "Publish Results",
-    "header-left" => $_SESSION['sys_name'],
-    "header-right" => "",
-    "body" => "",
-    "footer-left" => "",
-    "footer-center" => "",
-    "footer-right" => "",
-);
+
 
 // setup debug
 array_key_exists("debug", $_REQUEST) ? $params['debug'] = $_REQUEST['debug'] : $params['debug'] = "off" ;
@@ -102,6 +85,20 @@ array_key_exists("debug", $_REQUEST) ? $params['debug'] = $_REQUEST['debug'] : $
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 $event_o = new EVENT($db_o);
 $event = $event_o->get_event_byid($eventid);
+$series = $event_o->event_in_series($eventid);  // check if event is part of series
+
+$pagefields = array(
+    "loc" => $loc,
+    "theme" => $styletheme,
+    "stylesheet" => $stylesheet,
+    "title" => "Publish Results",
+    "header-left" => $_SESSION['sys_name'],
+    "header-right" => "{$event['event_name']} - {$event['event_date']}  (". substr($event['event_start'], 0, 5) . ")",
+    "body" => "",
+    "footer-left" => "",
+    "footer-center" => "",
+    "footer-right" => "",
+);
 
 /* ------------ file selection page ---------------------------------------------*/
 $state = 0;
@@ -160,7 +157,12 @@ elseif ($_REQUEST['pagestate'] == "submit")
     $series_results = u_checkarg("series_results", "setbool","1");
     $post_results   = u_checkarg("post_results", "setbool","1");
 
-    //echo "<pre>eventid: $eventid|race: $race_results|series: $series_results|post: $post_results|</pre>";
+    // FIXME deal with report parameters - add as suboptions
+    empty($_REQUEST['result_status']) ? $result_status = "final" : $result_status = $_REQUEST['result_status'];
+    isset($_REQUEST['include_club']) ? $include_club = true : $include_club = false;
+    empty($_REQUEST['result_notes']) ? $result_notes = "" : $result_notes = $_REQUEST['result_notes'];
+
+    //echo "<pre>SUBMIT - eventid: $eventid|race: $race_results|series: $series_results|post: $post_results|result_status: $result_status|inc_club: $include_club|notes: $result_notes|</pre>";
 
     // if event exists do requested processing
     if ($event)
@@ -173,51 +175,58 @@ elseif ($_REQUEST['pagestate'] == "submit")
         $continue = true;
 
         // display header for report page
-        $pagefields['header-right'] = "{$event['event_name']} - {$event['event_date']}  (". substr($event['event_start'], 0, 5) . ")";
-        $pagefields['body'] = "<h1>Result File Refresh</h1>";
-        echo $tmpl_o->get_template("basic_page", $pagefields, array());
+        echo $tmpl_o->get_template("process_header", $pagefields, array());
         ob_flush();
         flush();
 
         // ----------- race result -------------------------------------------------------------------------------------
 
-        $report_arr = array("action"=>"race");
+        $report_arr = array("action"=>"race", "detail"=> "", "file" => array());
         if ($race_results)
         {
             if ($continue)
             {
-                // FIXME deal with report parameters - add as suboptions
-                empty($_REQUEST['result_status']) ? $result_status = "final" : $result_status = $_REQUEST['result_status'];
-                isset($_REQUEST['include_club']) ? $include_club = true : $include_club = false;
-                empty($_REQUEST['result_notes']) ? $result_notes = "" : $result_notes = $_REQUEST['result_notes'];
 
                 $fleet_msg = array();  // FIXME - future use
                 $status = process_result_file($loc, strtoupper($result_status), $include_club, $result_notes, $fleet_msg);
 
                 if ($status['success'])
                 {
-                    $continue = true;
-                    $transfer_file[] = array("path" => $status['path'], "url" => $status['url'], "file" => $status['file']);
                     $report_arr['result'] = "success";
                     $report_arr['msg'] = $status['err'];
+                    $report_arr['file'] = array("path" => $status['path'], "url" => $status['url'], "file" => $status['file']);
+
+                    //$transfer_file[] = $report_arr['file'];
+                    $continue = true;
                 }
                 else
                 {
-                    // deal with failure
-                    $continue = false;
+                    // we have an error - process any detail information
+                    $err_detail_txt = "";
+                    foreach ($status['detail'] as $detail)
+                    {
+                        $err_detail_txt.= " | {$detail['type']} {$detail['code']}:  {$detail['msg']}";
+                    }
+
                     $report_arr['result'] = "fail";
-                    $report_arr['msg'] = $status['err'];
+                    $report_arr['msg'] = $status['err']."|". $err_detail_txt;
+                    $report_arr['detail'] = $err_detail_txt;
+                    $continue = false;
                 }
             }
             else
             {
                 $report_arr['result'] = "stopped";
-                $report_arr['msg'] = "result files update processing stopped ..";
+                $report_arr['msg'] = "result files update processing stopped";
+                $continue = false;
             }
         }
         else  // not requested
         {
             $report_arr['result'] = "notrequested";
+            $report_arr['msg'] = "race result processing not requested";
+            $report_arr['detail'] = "";
+            $continue = true;
         }
         echo $tmpl_o->get_template("publishresults_item_rpt", array(), $report_arr);
         ob_flush();
@@ -225,18 +234,18 @@ elseif ($_REQUEST['pagestate'] == "submit")
 
         // ----------- series result -------------------------------------------------------------------------------------
 
-        $report_arr = array("action"=>"series");
+        $report_arr = array("action"=>"series", "detail"=> "", "file" => array());
         if ($series_results)
         {
             if ($continue)
             {
-                $series = $event_o->event_in_series($eventid);  // check if event is part of series
+                // $series = $event_o->event_in_series($eventid);  // check if event is part of series
                 if ($series)
                 {
                     // FIXME some of these should be set as form options
                     $opts = array(
                         "inc-pagebreak" => $series['opt_pagebreak'],                                          // page break after each fleet
-                        "inc-codes"     => $series['opt_scorecode'],                                           // include key of codes used
+                        "inc-codes"     => $series['opt_scorecode'],                                          // include key of codes used
                         "inc-club"      => $series['opt_clubnames'],                                          // include club name for each competitor
                         "inc-turnout"   => $series['opt_turnout'],                                            // include turnout statistics
                         "race-label"    => $series['opt_racelabel'],                                          // use race number or date for labelling races
@@ -249,10 +258,13 @@ elseif ($_REQUEST['pagestate'] == "submit")
 
                     if ($status['success'])
                     {
-                        $transfer_file[] = array("path" => $status['path'], "url" => $status['url'], "file" => $status['file']);
-                        $continue = true;
+                        // file OK
                         $report_arr['result'] = "success";
                         $report_arr['msg'] = $status['err'];
+                        $report_arr['file'] = array("path" => $status['path'], "url" => $status['url'], "file" => $status['file']);
+
+                        //$transfer_file[] = $report_arr['file'];
+                        $continue = true;
                     }
                     else
                     {
@@ -263,30 +275,35 @@ elseif ($_REQUEST['pagestate'] == "submit")
                             $err_detail_txt.= " | {$detail['type']} {$detail['code']}:  {$detail['msg']}";
                         }
 
-                        $continue = false;
                         $report_arr['result'] = "fail";
                         $report_arr['msg'] = $status['err']."|". $err_detail_txt;
+                        $report_arr['detail'] = $err_detail_txt;
+                        $continue = false;
                     }
                 }
                 else // not part of a series
                 {
-                    $continue = true;
                     $report_arr['result'] = "info";
-                    $report_arr['msg'] = "not part of a series - no series result file to update ..";
+                    $report_arr['msg'] = "not part of a series - no series result file to update";
+                    $continue = true;
                 }
             }
             else  // processing has stopped
             {
-                $continue = true;
                 $report_arr['result'] = "stopped";
-                $report_arr['msg'] = "result files update processing stopped ..";
+                $report_arr['msg'] = "result files update processing stopped";
+                $continue = false;
             }
 
         }
         else  // not requested
         {
             $report_arr['result'] = "notrequested";
+            $report_arr['msg'] = "series result processing not requested";
+            $continue = true;
         }
+
+
         echo $tmpl_o->get_template("publishresults_item_rpt", array(), $report_arr);
         ob_flush();
         flush();
@@ -294,7 +311,6 @@ elseif ($_REQUEST['pagestate'] == "submit")
 
         // ----------- transfer results files -------------------------------------------------------------------------------------
 
-        $report_arr = array("action"=>"transfer");
         if ($post_results)
         {
             if ($continue)     // continue if previous processsing hasn't causes a problem
@@ -302,16 +318,26 @@ elseif ($_REQUEST['pagestate'] == "submit")
 
                 // results files will be transferred if a) individual race has not been embargoed, b) the series upload flag is
                 // not set in t_series, c) the result_upload parameter is not set to 'none'
+
                 if ($result_status == "embargoed" OR !$series['opt_upload'] OR $_SESSION['result_upload'] == "none")
                 {
                     $txt = "";
-                    if ($_SESSION['result_upload'] == "none") { $txt.= "System level config not set for file transfer. "; }
-                    if (!$series['opt_upload']) { $txt.= "Series level config not set for file transfer. "; }
-                    if ($result_status == "embargoed") { $txt.= "Race level config not set for file transfer. "; }
+                    if ($_SESSION['result_upload'] == "none") { $txt.= "System is not configured to allow file transfer [parameter: result_upload]"; }
+
+                    if ($series_results)
+                    {
+                        if (!$series['opt_upload']) { $txt.= "This series is not configured to allow file transfer. "; }
+                    }
+
+                    if ($race_results)
+                    {
+                        if ($result_status == "embargoed") { $txt.= "These race results are embargoed and cannot be transferred. "; }
+                    }
 
                     $continue = true;
                     $report_arr['result'] = "info";
-                    $report_arr['msg'] = "results transfer not requested<br>$txt";
+                    $report_arr['msg'] = "results transfer not requested";
+                    $report_arr['detail'] = $txt;
                 }
                 else  //process transfer
                 {
@@ -321,158 +347,17 @@ elseif ($_REQUEST['pagestate'] == "submit")
 
                     if ($inventory)                         // if inventory created successfully then proceed
                     {
-                        // inventory file into array
-                        $invdata = json_decode(file_get_contents($inventory['path']."/".$inventory['filename']), true);
+                        // get files to be transferred
+                        $files = get_files_from_inventory($inventory['path'], $inventory['filename'], $result_year);
 
-                        // create file list for transfer ( upload not done or out of date and not embargoed)
-                        $files = array();
-                        foreach($invdata['events'] as $id=>$invevent)
-                        {
-                            foreach($invevent['resultsfiles'] as $k=>$file)
-                            {
-                                // check if file neeeds uploading
-                                $upload_time = strtotime($file['upload']);
-                                $update_time = strtotime($file['update']);
-                                if ($file['status'] != "embargoed" and (empty($file['upload']) or $upload_time < $update_time))
-                                {
-                                    $files[] = $file;
-                                }
-                            }
-                        }
-
-                        // add inventory file
-                        $files[] = array(
-                            "file_id" =>"",
-                            "year"   => $result_year,
-                            "type"   => "",
-                            "format" => "json",
-                            "file"   => $result_o->get_inventory_filename($result_year),
-                            "label"  => "inventory file",
-                            "notes"  => "",
-                            "status" => "final",
-                            "rank"   => 0,
-                            "upload" => "",
-                            "update" => date("Y-m-d H:i:s")
-                        );
-
-                        // transfer files
-                        $num_for_transfer = count($files);
-                        if ($num_for_transfer > 0) {
-
-                            // use appropriate protocol for upload
-                            if ($_SESSION['result_transfer_protocol'] == "network")
-                            {
-                                empty($_SESSION['result_public_path']) ? $target_path = "" : $target_path = $_SESSION['result_public_path'];
-                                empty($_SESSION['result_public_url']) ? $target_url = "" : $target_url = $_SESSION['result_public_url'];
-
-                                if (empty($target_path) or empty($target_url))
-                                {
-                                    $continue = true;
-                                    $report_arr['result'] = "stopped";
-                                    $report_arr['msg'] = "results location for website not configure [{$_SESSION['result_public_path']}<br>result files update processing stopped ..";
-                                }
-                                else
-                                {
-                                    $status = process_transfer_network($files, $target_path, $target_url);
-                                    $msg_type = "fail";
-                                    $txt = $status['num_files']." of $num_for_transfer uploaded";
-                                    if ($status['result'] and $status['complete'] )
-                                    {
-                                        $msg_type = "success";
-                                    }
-                                    elseif ($status['result'])
-                                    {
-                                        $msg_type = "warning";
-                                    }
-
-                                    $detail_htm = "";
-                                    $detail_txt = "";
-                                    if ($msg_type != "success")
-                                    {
-                                        foreach ($status['log'] as $file)
-                                        {
-                                            $detail_htm.= "<p>$file</p>";
-                                            $detail_txt.= "$file\n";
-                                        }
-                                    }
-                                }
-
-                            }
-                            elseif ($_SESSION['result_transfer_protocol'] == "ftp")
-                            {
-                                $continue = true;
-                                $report_arr['result'] = "stopped";
-                                $report_arr['msg'] = "transfer protocol option not implemented [{$_SESSION['result_transfer_protocol']}]<br>result files update processing stopped ..";
-//                                $ftp = array("protocol"=>$_SESSION["ftp_protocol"], "server"=> $_SESSION["ftp_server"],
-//                                    "user"=> $_SESSION["ftp_user"], "pwd"=> $_SESSION["ftp_pwd"]);
-//
-//                                if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
-//                                {
-//                                    $continue = true;
-//                                    $report_arr['result'] = "stopped";
-//                                    $report_arr['msg'] = "ftp protocol for website not configured correctly<br>result files update processing stopped ..";
-//                                }
-//                                else
-//                                {
-//                                    $status = process_transfer_ftp($files, $ftp); // FIXME implement function
-//                                }
-                            }
-                            elseif ($_SESSION['result_transfer_protocol'] == "sftp")
-                            {
-                                $continue = true;
-                                $report_arr['result'] = "stopped";
-                                $report_arr['msg'] = "transfer protocol option not implemented [{$_SESSION['result_transfer_protocol']}]<br>result files update processing stopped ..";
-//                                $ftp = array("protocol"=>$_SESSION["ftp_protocol"], "server"=> $_SESSION["ftp_server"],
-//                                    "user"=> $_SESSION["ftp_user"], "pwd"=> $_SESSION["ftp_pwd"]);
-//
-//                                if (empty($ftp['protocol']) or empty($ftp['server']) or empty($ftp['user']) or empty($ftp['pwd']))
-//                                {
-//                                    $continue = true;
-//                                    $report_arr['result'] = "stopped";
-//                                    $report_arr['msg'] = "ftp protocol for website not configured correctly<br>result files update processing stopped ..";
-//                                }
-//                                else
-//                                {
-//                                    $status = process_transfer_ftp($files, $ftp); // FIXME implement function
-//                                }
-                            }
-                            else
-                            {
-                                $continue = true;
-                                $report_arr['result'] = "stopped";
-                                $report_arr['msg'] = "transfer protocol option not configured correctly [{$_SESSION['result_upload']}]<br>result files update processing stopped ..";
-                            }
-                        }
-
-
-                        // report on transfer process - FIXME
-                        $detail_htm = "";
-                        foreach ($status['log'] as $file) { $detail_htm.= "<p>$file</p>"; }
-
-                        $txt = $status['num_files']." of $num_for_transfer uploaded";
-                        if ($status['result'] and $status['complete'] )
-                        {
-                            $report_arr['result'] = "success";
-                            $report_arr['msg'] = "SUCCESS - $txt";
-                        }
-                        elseif ($status['result'])
-                        {
-                            $report_arr['result'] = "success";
-                            $report_arr['msg'] = "PARTIAL SUCCESS - $txt";
-                            $report_arr['detail'] = $detail_htm;
-                        }
-                        else
-                        {
-                            $report_arr['result'] = "fail";
-                            $report_arr['msg'] = "FAILED - no files uploaded";
-                            $report_arr['detail'] = $detail_htm;
-                        }
+                        // transfer them
+                        $report_arr = transfer_files($files, $_SESSION['result_transfer_protocol']);
+                        $report_arr['action'] = "transfer";
                     }
                 }
             }
             else  // processing has stopped
             {
-                $continue = true;
                 $report_arr['result'] = "stopped";
                 $report_arr['msg'] = "result files update processing stopped ..";
             }
@@ -485,6 +370,8 @@ elseif ($_REQUEST['pagestate'] == "submit")
         }
 
         echo $tmpl_o->get_template("publishresults_item_rpt", array(), $report_arr);
+        echo $tmpl_o->get_template("publishfooter", array(), $report_arr);
+
         ob_flush();
         flush();
     }
@@ -492,6 +379,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
     {
         $state = 3;  // report missing event
     }
+
 
     if ($state != 0 )  // deal with error conditions
     {
