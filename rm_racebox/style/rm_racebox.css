@@ -54,8 +54,8 @@ body > .container { padding: 10px 0px 0px 0px; }
 .lead { line-height: 1.1 !important;}
 .bunch-text { line-height: 1.2 !important; font-size: 18px !important; padding: 6px 6px !important;}
 .help-title-text {color: var(--white); font-size: 1.5em;}
-.help-answer-text {color: var(--darkblue); font-size: 1em;}
-.help-notes-text {color: var(--darkred); font-size: 1em;}
+.help-answer-text {color: var(--darkblue); font-size: 1.2em;}
+.help-notes-text {color: var(--darkred); font-size: 1.2em;}
 
 /* growls */
 .growl-container { font-size: 1.2em; line-height: 1.2; }

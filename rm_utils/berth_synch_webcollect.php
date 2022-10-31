@@ -28,11 +28,11 @@ require_once("$loc/common/classes/db_class.php");
 require_once("{$loc}/common/classes/template_class.php");
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/templates/general_tm.php","./templates/layouts_tm.php", "./templates/webcollect_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/webcollect_tm.php"));
 
 // initialise session if this is first call
-if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
-{
+//if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
+//{
     $init_status = u_initialisation("$loc/config/rm_utils_cfg.php", $loc, $scriptname);
 
     if ($init_status)
@@ -51,7 +51,7 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
         u_exitnicely($scriptname, 0, "one or more problems with script initialisation",
             "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
-}
+//}
 
 // arguments
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
@@ -99,15 +99,12 @@ if ($_REQUEST['pagestate'] == "init")
 
 elseif (trim(strtolower($_REQUEST['pagestate'])) == "submit")
 {
+    // get webcollect API parameters
+    define("ORGANISATION_SHORT_NAME", $_SESSION['ORGANISATION_SHORT_NAME']);
+    define("ACCESS_TOKEN", $_SESSION['ACCESS_TOKEN']);
+
     // connect to database
     $db_o = new DB();
-
-    // get webcollect API parameters
-    $wc = $db_o->db_getinivalues(true, "webcollect");
-    foreach ($wc as $param=>$val)
-    {
-        define("$param" , $val);
-    }
 
     $output = array();      // used to collect data for sql insert
     $used_group = array();  // used to stop duplicate berth records being included

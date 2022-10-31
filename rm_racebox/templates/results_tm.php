@@ -797,7 +797,7 @@ function process_footer($params=array())
     {
         $style = "danger";
         $title = "Problem!";
-        $message = "The results publishing failed at <b>Step $problem - {$lang[$problem]['step']}</b>";
+        $message = "Saving results failed at <b>Step $problem - {$lang[$problem]['step']}</b>";
         $action = "<p>{$lang["$problem"]['action']}</p>";
     }
     else
@@ -828,7 +828,7 @@ EOT;
             <h4><b>$title</b></h4>
             <p>$message</p>
             $action
-            <p><i><b>You can republish the results at any time before you close the race</b></i><p>
+            <p><i><b>You can save the results as many times as you need before you close the race</b></i><p>
         </div>
         $close_reminder
     </div>
@@ -971,11 +971,11 @@ function fm_publish_demo($params = array())
     $html = <<<EOT
     <div class="container" style="margin-top: -40px;">
               
-        <div class="alert alert-danger" role="alert">
-            <h4>Results Publish [ DEMO SYSTEM ]</h4>
-        </div>
-        <div class="margin-top-05">
-            <p>The DEMO version of raceManager does not publish results</p>
+        <!-- div class="alert alert-danger" role="alert">
+            <h4>Saving Results [ DEMO SYSTEM ]</h4>
+        </div -->
+        <div class="margin-top-05" style="font-size: 1.2em">
+            <p>The DEMO version of raceManager does not let you Save Results</p>
             <p>The LIVE version does the following for you: </p>
             <ul>
                 <li>allows you to select various options for the results </li>
@@ -985,19 +985,19 @@ function fm_publish_demo($params = array())
                 <li>posts the results (race and series) to the club website</li>
             </ul>
             
-            <p>If you try and publish the results with boats not finished or given a scoring code (e.g. DNF), 
-            the system will warn you but will let you continue to publish the results - with the exception that 
+            <p>If you try and save the results with boats not finished or given a scoring code (e.g. DNF), 
+            the system will warn you but will let you continue - with the exception that 
             it will not post any results files to the club website</p>
             
-            <p><b>IMPORTANT:</b>If you are running a race and have problems with the results that you are unable to resolve
-             <b>ALWAYS publish the results</b> as this archives all the race data so that your raceManager support team can 
+            <p class="text-info"><b>IMPORTANT:</b>If you are running a race and have problems with the results that you are unable to resolve
+             <b>ALWAYS save the results</b> as this archives all the race data so that your raceManager support team can 
              investigate the problem</p>
         </div>
         <div class="row">
             <br>
             <div class="col-md-offset-10 col-md-2">
                  <!-- go back to results page -->
-                 <button type="button" id="closeBtn" class="btn btn-success btn-md pull-right" onclick="window.parent.closeModal();">
+                 <button type="button" id="closeBtn" class="btn btn-primary btn-md pull-right" onclick="window.parent.closeModal();">
                     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>&nbsp;&nbsp;Close&nbsp;&nbsp;
                  </button>
             </div>
@@ -1031,7 +1031,7 @@ function fm_publish_warning($params = array())
             <p>You can go back and correct these issues on the RESULTS page - more information on resolving the warnings can be found on the Help page - <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></p>
             <br>
             <hr>
-            <p style="text-indent: 50px"><b>Alternatively you can publish the results without fixing the warnings</b></p>
+            <p style="text-indent: 50px"><b>Alternatively you can save the results without fixing the warnings</b></p>
             <p style="text-indent: 80px"> - the results will <b>not</b> be accessible from the website</p>
             <p style="text-indent: 80px"> - you will be able to view and print the results</p>
         </div>

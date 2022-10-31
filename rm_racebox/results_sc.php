@@ -396,7 +396,9 @@ function fleet_changefinishlap($fleetnum, $fleet, $new_maxlap, $current_lap)
                 {
                     $boat['status'] == "F" ? $set_status = "R" : $set_status = $boat['status'];
                     $update = array("status" => $set_status, "finishlap" => $new_maxlap);
-                } else {
+                }
+                else
+                {
                     $boat['status'] == "X" ? $set_status = "X" : $set_status = "R";
                     $update = get_newlap_data($boat['id'], $new_maxlap);
                     $update['finishlap'] = $new_maxlap;
@@ -427,18 +429,29 @@ function get_newlap_data($entryid, $new_maxlap)
 {
     global $race_o;
 
-    $lapdata = $race_o->entry_lap_get($entryid, "last");
-    $lastlap = $lapdata['lap'];
-    $lapdata = $race_o->entry_lap_get($entryid, "lap", $lastlap);
 
-    $lastlap >= $new_maxlap ? $switchlap = $new_maxlap : $switchlap = $lastlap;
+    $finlapdata = $race_o->entry_lap_get($entryid, "lap", $new_maxlap);   // get lap data for new finish lap
+
+    if ($finlapdata)                                                      // if boat has lap data - use that
+    {
+        $lapdata = $finlapdata;
+        $lastlap = $new_maxlap;
+    }
+    else                                                                  // else get last lap completed
+    {
+        $lapdata = $race_o->entry_lap_get($entryid, "last");
+        $lastlap = $lapdata['lap'];
+    }
+
     $data = array(
-        "lap" => $switchlap,
+        "lap" => $lapdata['lap'],
         "etime" => $lapdata['etime'],
         "ctime" => $lapdata['ctime'],
-        "ptime" => $race_o->entry_calc_pt($lapdata['etime'], 0, $switchlap),
+        "ptime" => $race_o->entry_calc_pt($lapdata['etime'], 0, $lapdata['lap']),
         "clicktime" => $lapdata['clicktime']
     );
+
+    //u_writedbg("NEWLAP DATA: ".print_r($data, true) ,__FILE__, __FUNCTION__, __LINE__);
 
     return $data;
 }

@@ -448,7 +448,7 @@ function u_timeresolution($resolution, $time)
             <div>
                 <div class="alert alert-info" style="margin-top: 60px;">
                   <h3>You could try ...</h3> 
-                  <p class="lead">$action<br>
+                  <p class="lead" style="padding-left: 30px;">$action<br>
                   - if this doesn't work contact your raceManager administrator</p>
                 </div>
             </div>

@@ -142,8 +142,11 @@ function fleet_panel($params)
                         <span class="lead">
                          <div class="row">
                             <div class="col-md-2">Start {startnum}</div>
-                            <div class="col-md-7">                                
+                            <div class="col-md-4">                                
                                 {fleet-list}
+                            </div>
+                            <div class="col-md-3">                                
+                                {start-boats} boats
                             </div>
                             <div class="col-md-3">
                                 <span class="pull-right">$startdisplay</span>

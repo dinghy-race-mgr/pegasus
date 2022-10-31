@@ -74,40 +74,27 @@ class RACE
 
 
 /**
- *   ---- RACESTATE methods ---------------------------------------- 
- * 
- *     racestate_delete        - deletes racestate record(s) for all or one fleet in an event
- *     racestate_get           - gets racestate record(s) for all or one fleet in an event
- *     racestate_update        - updates one or more records in racestate for this event
- *     racestate_updateentries - updates entry count for a fleet in racestate
+ *   ---- RACESTATE methods ----------------------------------------
 
 */
-
-//    public function racestate_delete($fleetnum=0)
-//    {
-//        $constraint = array("eventid"=>$this->eventid);
-//        if ($fleetnum != 0)
-//        {
-//            //$constraint[] = array("race"=>$fleetnum);
-//            $constraint[] = array("fleet"=>$fleetnum);
-//        }
-//
-//        $numrows = $this->db->db_delete("t_racestate", $constraint);
-//
-//        return $numrows;
-//    }
-
+    /**
+     * @param $fleetnum
+     * @param $fleetstarttime
+     * @param $racetype
+     * @return array
+     */
     public function racestate_analyse($fleetnum, $fleetstarttime, $racetype)
+
     {
+        $dbg_on = false;
+
         $result = array(
-            "starttime"  => $fleetstarttime,
-            "maxlap"     => 0,
+            "starttime"  => gmdate("H:i:s",$fleetstarttime),
+            "maxlap"     => $_SESSION["e_{$this->eventid}"]["fl_$fleetnum"]['maxlap'],
             "currentlap" => 0,
             "entries"    => 0,
             "status"     => "unknown"
         );
-
-        $current_et = $this->entry_calc_et(time(), $fleetstarttime);
 
         // initialise counts (R = racing, F = finished after sailing all laps, X = excluded (e.g. NCS),
         // FF = force finished in a average lap race before the leader has finished)
@@ -141,45 +128,46 @@ class RACE
             if ($entry['lap'] > $currentlap)   { $currentlap = $entry['lap']; }
         }
 
-
-        if ($race)
+        if ($_SESSION["e_{$this->eventid}"]['timerstart'] > 0)   // race has started
         {
-            //u_writedbg("$fleetnum|$fleetstarttime|$current_et|$racetype", __CLASS__, __FUNCTION__, __LINE__);
-//            u_writedbg("<pre>".print_r($status_counts,true)."</pre>", __CLASS__, __FUNCTION__, __LINE__);
-            if ($current_et <= 0)          // race not started yet
+            if ($race)  // we have entries - check status
             {
-                $result['status'] = "notstarted";
-//                u_writedbg("<pre>step1: {$result['status']}</pre>", __CLASS__, __FUNCTION__, __LINE__);
-            }
+                if ($status_counts['R'] == 0)                                    // nobody still racing (all finished or excluded)
+                {
+                    $result['status'] = "allfinished";
+                }
 
-            elseif ($status_counts['R'] == 0)                                                // nobody racing (all finished or excluded)
-            {
-                $result['status'] = "allfinished";
-//                u_writedbg("<pre>step2: {$result['status']}</pre>", __CLASS__, __FUNCTION__, __LINE__);
-            }
+                elseif ($status_counts['R'] > 0 and $status_counts['F'] > 0)     // some people finished
+                {
+                    if ($status_counts['F'] == $status_counts['FF'])                   // only forced finishes so far
+                    {
+                        $result['status'] = "inprogress";
+                    }
 
-            elseif ($status_counts['R'] > 0 and $status_counts['F'] > 0)                      // some people finished
-            {
-                if ($status_counts['F'] == $status_counts['FF'])                              // only forced finishes so far
+                    else                                                               // race is finishing
+                    {
+                        $result['status'] = "finishing";
+                    }
+                }
+
+                else                                                              // race must be in progress (no finishers)
                 {
                     $result['status'] = "inprogress";
                 }
-                else                                                                          // race is finishing
-                {
-                    $result['status'] = "finishing";
-                }
+                $result['maxlap'] = $maxlap;                                      // updates the set laps and current lap
+                $result['currentlap'] = $currentlap;                              // only if we have entries
             }
-
-            else                                                                             // race must be in progress (no finishers)
-            {
-                $result['status'] = "inprogress";
-//                u_writedbg("<pre>step5: {$result['status']}</pre>", __CLASS__, __FUNCTION__, __LINE__);
-            }
-            $result['maxlap'] = $maxlap;
-            $result['currentlap'] = $currentlap;
         }
-//        u_writedbg("<pre>step6: {$result['status']}</pre>", __CLASS__, __FUNCTION__, __LINE__);
-//        u_writedbg("<pre>RESULT: ".print_r($result,true)."</pre>", __CLASS__, __FUNCTION__, __LINE__);
+        else
+        {
+            $result['status'] = "notstarted";
+            if ($race)
+            {
+                $result['maxlap'] = $maxlap;                                      // updates the set laps and current lap
+                $result['currentlap'] = $currentlap;                              // only if we have entries
+            }
+        }
+        if($dbg_on) { u_writedbg("<pre>RESULT - ".print_r($result,true)."</pre>", __CLASS__, __FUNCTION__, __LINE__); }
 
         return $result;
     }
@@ -199,7 +187,6 @@ class RACE
         { 
            foreach ($result as $row)
            {
-               //$racestates[$row['race']] = $row;
                $racestates[$row['fleet']] = $row;
            }
         }
@@ -210,42 +197,32 @@ class RACE
     public function racestate_update($update, $constraint)
     {
         $constraint['eventid'] = $this->eventid;
-        //u_writedbg("<pre>".print_r($update,true)."<br>".print_r($constraint,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
         $result = $this->db->db_update("t_racestate", $update, $constraint);  
                
         return $result;
     }
-    
-    
-//    public function racestate_updateentries($fleetnum, $change)
-//    {
-//        $result = $this->db->db_query("UPDATE t_racestate SET entries = entries $change
-//                                       WHERE eventid = {$this->eventid} and fleet = $fleetnum");
-//        $_SESSION["e_{$this->eventid}"]['result_status'] = "invalid";
-//
-//        return $result;
-//    }
+
 
     public function racestate_updatestatus_all($numfleets, $page)
     {
-        $dbgmsg = "";
+        $dbg_on = true;
 
         for ($i = 1; $i <= $numfleets; $i++)
         {
             $status_change = false;
-            $racestatus = $this->racestate_analyse($i,
-                $_SESSION["e_{$this->eventid}"]["fl_$i"]['starttime'], $_SESSION["e_{$this->eventid}"]["fl_$i"]['scoring']);
+            $racestatus = $this->racestate_analyse($i, $_SESSION["e_{$this->eventid}"]["fl_$i"]['starttime'],
+                                                   $_SESSION["e_{$this->eventid}"]["fl_$i"]['scoring']);
 
-            $dbgmsg.= $_SESSION["e_{$this->eventid}"]["fl_$i"]['code']." - ".$racestatus['status']." | ";
+            if ($dbg_on) { u_writedbg("<pre> racestate analysis fleet $i<br>".print_r($racestatus, true), __FILE__, __FUNCTION__, __LINE__); }
 
             if ($racestatus['status'] == "unknown")
             {
-                // send message to eventlog
-                u_writelog("$page - fleet $i - UNKNOWN status [".__CLASS__." : ".__FUNCTION__." : ".__LINE__, $this->eventid);
+                u_writelog("$page - ".$_SESSION["e_{$this->eventid}"]["fl_$i"]['code'].
+                           "fleet - UNKNOWN status [".__FILE__." : ".__FUNCTION__." : ".__LINE__, $this->eventid); // send message to eventlog
             }
             else
             {
-                if ($racestatus['status'] != $_SESSION["e_{$this->eventid}"]["fl_$i"]['status'])
+                if ($racestatus['status'] != $_SESSION["e_{$this->eventid}"]["fl_$i"]['status'])    // if status changed - set previous status
                 {
                     $status_change = true;
                     $racestatus['prevstatus'] = $_SESSION["e_{$this->eventid}"]["fl_$i"]['status'];
@@ -254,11 +231,10 @@ class RACE
                 $upd = $this->racestate_update($racestatus, array("fleet"=>$i));
                 if ($upd >= 0)
                 {
-                    $_SESSION["e_{$this->eventid}"]["fl_$i"]['starttime'] = $racestatus['starttime'];
-                    $_SESSION["e_{$this->eventid}"]["fl_$i"]['maxlap'] = $racestatus['maxlap'];
+                    $_SESSION["e_{$this->eventid}"]["fl_$i"]['maxlap']     = $racestatus['maxlap'];
                     $_SESSION["e_{$this->eventid}"]["fl_$i"]['currentlap'] = $racestatus['currentlap'];
-                    $_SESSION["e_{$this->eventid}"]["fl_$i"]['entries'] = $racestatus['entries'];
-                    $_SESSION["e_{$this->eventid}"]["fl_$i"]['status'] = $racestatus['status'];
+                    $_SESSION["e_{$this->eventid}"]["fl_$i"]['entries']    = $racestatus['entries'];
+                    $_SESSION["e_{$this->eventid}"]["fl_$i"]['status']     = $racestatus['status'];
                 }
 
                 if ($status_change)
@@ -267,7 +243,6 @@ class RACE
                 }
             }
         }
-        //u_writedbg($dbgmsg, __CLASS__, __FUNCTION__, __LINE__);
     }
     
     
@@ -506,10 +481,14 @@ class RACE
         //   - race has started and requested lap is less than current leaders lap
         //   - requested lap is already set
 
+        $dbg_on = true;
+
         $change_lap = false;  // default is for laps not to be changed
         $update = array("result" =>"", "finishlap" => 0, "currentlap" => 0 );
         $fleet_data = $_SESSION["e_{$this->eventid}"]["fl_$fleetnum"];
         $current_lap = $this->race_laps_current($fleetnum);  // current leader lap for this fleet
+
+        if ($dbg_on) { u_writedbg("entering race_laps_setc |$mode|$fleetnum|$scoring|$laps|$current_lap|", __FILE__, __FUNCTION__, __LINE__); }
 
         if ($fleet_data['scoring'] == "pursuit")  // pursuit race
         {
@@ -525,15 +504,14 @@ class RACE
         {
             if ($fleet_data['status'] == "notstarted")   // race not started - so laps can be changed
             {
-                //u_writedbg("fleet not started", __CLASS__, __FUNCTION__, __LINE__);
-
+                if ($dbg_on) { u_writedbg("fleet not started", __FILE__, __FUNCTION__, __LINE__); }
                 $change_lap = true;
             }
             else  // race sequence started - check if laps can be changed
             {
                 if ($fleet_data['status'] == "finishing" or $fleet_data['status'] == "allfinished")      // some boats aleady fininshed - laps cannot change
                 {
-                    //u_writedbg("fleet finishing", __CLASS__, __FUNCTION__, __LINE__);
+                    if ($dbg_on) { u_writedbg("fleet finishing", __FILE__, __FUNCTION__, __LINE__); }
                     // lap can't be changed - boats are already finishing in this fleet
                     $update = array("result" =>"finishing", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap );
                 }
@@ -541,19 +519,19 @@ class RACE
                 {
                     if ($laps < $current_lap)
                     {
-                        //u_writedbg("laps requested less than current", __CLASS__, __FUNCTION__, __LINE__);
+                        if ($dbg_on) { u_writedbg("laps requested less than current", __FILE__, __FUNCTION__, __LINE__); }
                         // lap can't be changed - lap requested is less than current leaders lap
                         $update = array("result" =>"less_than_current", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap );
                     }
                     elseif ($laps == $fleet_data['maxlap'])
                     {
-                        //u_writedbg("laps requested is same as current", __CLASS__, __FUNCTION__, __LINE__);
+                        if ($dbg_on) { u_writedbg("laps requested is same as current", __FILE__, __FUNCTION__, __LINE__); }
                         // no change requested
                         $update = array("result" =>"already_set", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap );
                     }
                     else
                     {
-                        //u_writedbg("lap change is permitted", __CLASS__, __FUNCTION__, __LINE__);
+                        if ($dbg_on) { u_writedbg("lap change is permitted", __FILE__, __FUNCTION__, __LINE__); }
                         // lap change is permitted
                         $change_lap = true;
                     }
@@ -561,13 +539,14 @@ class RACE
             }
         }
 
-        //u_writedbg("changing to $change_lap", __CLASS__, __FUNCTION__, __LINE__);
+
         if ($change_lap)
         {
+            u_writedbg("changing finish lap to $laps", __CLASS__, __FUNCTION__, __LINE__);
             if ($mode == "set")
             {
                 $upd_race = $this->race_update(array("finishlap"=>$laps), $fleetnum);
-                //u_writedbg("updating t_race for fleet $fleetnum: |laps: $laps |result: $upd_race|", __CLASS__, __FUNCTION__, __LINE__);
+                u_writedbg("updating t_race for fleet $fleetnum: |laps: $laps |result: $upd_race|", __CLASS__, __FUNCTION__, __LINE__);
             }
             else      // mode must be shorten
             {
@@ -585,7 +564,7 @@ class RACE
                 else                             // fleet or normal hanicap race - can set the same finish lap for everyone
                 {
                     $upd_race = $this->race_update(array("finishlap"=>$laps), $fleetnum);
-                    //u_writedbg("updating t_race for fleet $fleetnum: |laps: $laps |result: $upd_race|", __CLASS__, __FUNCTION__, __LINE__);
+                    u_writedbg("updating t_race for fleet $fleetnum: |laps: $laps |result: $upd_race|", __CLASS__, __FUNCTION__, __LINE__);
                 }
             }
 
@@ -597,7 +576,7 @@ class RACE
             {
                 $update = array("result" => "failed", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap);
             }
-            //u_writedbg("fleet $fleetnum: |result: {$update['result']} |flap: {$update['finishlap']}|clap: {$update['currentlap']}", __CLASS__, __FUNCTION__, __LINE__);
+            u_writedbg("fleet $fleetnum: |result: {$update['result']} |flap: {$update['finishlap']}|clap: {$update['currentlap']}", __FILE__, __FUNCTION__, __LINE__);
         }
 
         return $update;
@@ -620,8 +599,11 @@ class RACE
     
     public function race_laps_current($fleetnum)
     {
+        $dbg_on = true;
+
         $sql = "SELECT MAX(lap) AS maxlaps FROM `t_race` WHERE eventid= {$this->eventid} and fleet=$fleetnum GROUP BY fleet";
-        //u_writedbg("db_update: query: $sql ",__FILE__,__FUNCTION__,__LINE__);
+
+        if ($dbg_on) { u_writedbg("db_update: query: $sql ",__FILE__,__FUNCTION__,__LINE__); }
         $result = $this->db->db_get_row($sql);
         return $result['maxlaps'];        
     }
@@ -1395,13 +1377,12 @@ class RACE
     }
 
    
-    public function entry_time($entryid, $fleetnum, $currentlap, $pn, $clicktime, $status, $prev_et = 0, $force_finish = false)
+    public function entry_time($entryid, $fleetnum, $currentlap, $finishlap, $pn, $clicktime, $status, $prev_et = 0, $force_finish = false)
     {
                             
-        $event      = "e_".$this->eventid;                                                        // set fleet number
+        $event      = "e_".$this->eventid;  // set fleet number
         $lap        = $currentlap + 1;                                                            // increment lap
         $racestatus = $_SESSION["$event"]["fl_$fleetnum"]['status'];
-        $maxlap     = $_SESSION["$event"]["fl_$fleetnum"]['maxlap'];
 
         $et = $this->entry_calc_et($clicktime, $_SESSION["$event"]["fl_$fleetnum"]['starttime']);  // elapsed time
         $pt = $this->entry_calc_pt($et, $prev_et, $lap);                                           // predicted time for next lap
@@ -1415,7 +1396,7 @@ class RACE
         }
 
         // set array for t_race update
-        $update_race = array( "lap" => $lap, "clicktime" => $clicktime, "etime" => $et, "ctime" => $ct, "atime" => "", "ptime" => $pt);
+        $update_race = array( "lap" => $lap, "clicktime" => $clicktime, "etime" => $et, "ctime" => $ct, "atime" => "0", "ptime" => $pt);
 
 
         if ($force_finish)                                                                 // force finish by OOD
@@ -1430,7 +1411,7 @@ class RACE
             $return = "finish";
             //u_writedbg("- avg lap race but not first finisher - so finish anyway", __FILE__, __FUNCTION__, __LINE__);
         }
-        elseif ($lap >= $maxlap)                                                           //  finish because boat has reached required number of laps
+        elseif ($lap >= $finishlap)                                                        //  finish because boat has reached required number of laps
         {
             if ($status == "R") { $update_race['status'] = "F"; }
             if ($this->scoring["$fleetnum"] == 'average' AND $racestatus != "finishing" AND $update_race['status'] == "F")   // this is first finisher in average lap race
@@ -1454,6 +1435,7 @@ class RACE
 //        $update_race = array( "lap" => $lap, "clicktime" => $clicktime, "etime" => $et, "ctime" => $ct,
 //                              "atime" => "", "ptime" => $pt, "status" => $status );
         //u_writedbg("<pre> update_race: ".print_r($update_race, true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:
+
         $numrows = $this->entry_update($entryid, $update_race);
         
         // add record to t_lap
@@ -1684,7 +1666,7 @@ class RACE
     public function entry_calc_et($time_click, $time_start)
     // calculates elapsed time
     {
-        //u_writedbg("ARGS ***  time_click:$time_click|time_start:$time_start<br>", __FILE__, __FUNCTION__, __LINE__);
+        u_writedbg("ARGS ***  time_click:$time_click|time_start:$time_start<br>", __FILE__, __FUNCTION__, __LINE__);
         return $et = $time_click - $time_start;
     }
 
@@ -1752,12 +1734,19 @@ class RACE
     public function entry_calc_pt($et, $prev_et, $lap)
     {
         // calculates predicted time for next lap
-        if ($et == 0) {
+
+        if ($et == 0)                             // no elapesed time no predicted next lap time
+        {
             $pt = 0;
-        } else {
-            if (!empty($prev_et)) {
+        }
+        else
+        {
+            if (!empty($prev_et))                 // if we have the previous ET - calculate PT using that
+            {
                 $pt = $et + ($et - $prev_et);
-            } else {
+            }
+            else                                  // if we don't have previous ET - calculate by getting average lap time
+            {
                 $pt = $et + round($et / $lap);
             }
         }

@@ -999,7 +999,7 @@ class EVENT
 
                 // reset other fields that need initialising in t_event
                 $fields = array(
-                    "timerstart" => "",
+                    "timerstart" => 0,
                     "ws_start" => "",
                     "ws_end" => "",
                     "wd_start" => "",

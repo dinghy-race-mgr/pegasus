@@ -61,11 +61,14 @@ if ($eventid AND $pagestate)
 /* ------- TIME LAP FOR BOAT ------------------------------------------------------------------------------- */
     if ($pagestate == "timelap")
     {
+        u_writedbg("<pre>passed to timelap: ".print_r($_REQUEST,true)."</pre>", __CLASS__,__FUNCTION__,__LINE__);
+
         $if_err = false;
         empty($_REQUEST['entryid']) ? $if_err = true : $entryid = $_REQUEST['entryid'];
         empty($_REQUEST['start'])   ? $if_err = true : $start = $_REQUEST['start'];
         empty($_REQUEST['boat'])    ? $if_err = true : $boat = $_REQUEST['boat'];
         empty($_REQUEST['status'])  ? $if_err = true : $boatstatus = $_REQUEST['status'];
+        empty($_REQUEST['finishlap']) ? $if_err = true : $finishlap = $_REQUEST['finishlap'];
 
         if ($if_err)
         {
@@ -83,7 +86,7 @@ if ($eventid AND $pagestate)
             check_double_click($eventid, $entryid, $_SERVER['REQUEST_TIME']); # return to timer page if double click of same boat
             check_race_started($eventid, $start, $_SERVER['REQUEST_TIME']);   # return to time page if race not started
 
-            $status = $race_o->entry_time($entryid, $fleet, $lap, $pn, $_SERVER['REQUEST_TIME'], $boatstatus, $last_et, false);  // log lap time
+            $status = $race_o->entry_time($entryid, $fleet, $lap, $finishlap, $pn, $_SERVER['REQUEST_TIME'], $boatstatus, $last_et, false);  // log lap time
 
             if ($status == "time" OR $status == "finish" OR $status == "first_finish" OR $status == "force_finish")   // valid status
             {
@@ -110,7 +113,8 @@ if ($eventid AND $pagestate)
                     $msg = "lap $newlap: $boat -- first finished";
                     u_growlSet($eventid, $page, $g_timer_firstfinish, array($boat));
                 }
-                $msg.= "[ et: ". gmdate("H:i:s", $race_o->entry_calc_et($_SERVER['REQUEST_TIME'], $_SESSION["$event"]["fl_$fleet"]['starttime']))." ]";
+                $etime_secs = $race_o->entry_calc_et($_SERVER['REQUEST_TIME'], $_SESSION["e_$eventid"]["fl_$fleet"]['starttime']);
+                $msg.= "[ et: ". gmdate("H:i:s", $etime_secs)." ($etime_secs secs) ]";
 
                 u_writelog($msg, $eventid);
 
@@ -138,11 +142,14 @@ if ($eventid AND $pagestate)
 /* ------- FINISH A BOAT ------------------------------------------------------------------------------- */
     elseif ($pagestate == "finish")   // FIXME this code should be combined with timelap above
     {
+        u_writedbg("<pre>passed to finish: ".print_r($_REQUEST,true)."</pre>", __CLASS__,__FUNCTION__,__LINE__);
+
         $if_err = false;
         empty($_REQUEST['entryid']) ? $if_err = true : $entryid = $_REQUEST['entryid'];
         empty($_REQUEST['start'])   ? $if_err = true : $start = $_REQUEST['start'];
         empty($_REQUEST['boat'])    ? $if_err = true : $boat = $_REQUEST['boat'];
         empty($_REQUEST['status'])  ? $if_err = true : $status = $_REQUEST['status'];
+        empty($_REQUEST['finishlap'])    ? $if_err = true : $finishlap = $_REQUEST['finishlap'];
 
         if ($if_err)
         {
@@ -159,7 +166,7 @@ if ($eventid AND $pagestate)
             check_double_click($eventid, $entryid, $_SERVER['REQUEST_TIME']); // return to timer page if double click of same boat
             check_race_started($eventid, $start, $_SERVER['REQUEST_TIME']);   // return to timer page if race not started
 
-            $status = $race_o->entry_time($entryid, $fleet, $lap, $pn, $_SERVER['REQUEST_TIME'], $status, $last_et, true);
+            $status = $race_o->entry_time($entryid, $fleet, $lap, $finishlap, $pn, $_SERVER['REQUEST_TIME'], $status, $last_et, true);
             if ($status == "force_finish")
             {
                 $newlap = $lap + 1;
@@ -191,6 +198,8 @@ if ($eventid AND $pagestate)
 /* ------- SET SCORING CODE FOR BOAT ----------------------------------------------------------------------- */
     elseif  ($pagestate == "setcode")
     {
+        u_writedbg("<pre>passed to setcode: ".print_r($_REQUEST,true)."</pre>", __CLASS__,__FUNCTION__,__LINE__);
+
         if (!empty($_REQUEST['fleet']))
         {
             $setcode = set_code($eventid, $_REQUEST);
@@ -411,6 +420,7 @@ if ($eventid AND $pagestate)
                 "fleet"   => $_REQUEST['fleet'],
                 "start"   => $_REQUEST['start'],
                 "lap"     => $_REQUEST['lap'],
+                "finishlap" => $_REQUEST['finishlap'],
                 "pn"      => $_REQUEST['pn'],
                 "etime"   => $_REQUEST['etime'],
                 "status"  => $_REQUEST['status']
@@ -495,17 +505,19 @@ function shorten_fleet($eventid, $fleetnum, $new_finish_lap = 0)
         }
         $rs = $race_o->race_laps_set("shorten", $fleetnum, $_SESSION["e_$eventid"]["fl_$fleetnum"]['scoring'], $new_finish_lap);
 
-        $msg['text'] = u_format("&nbsp;&nbsp;- ".$str["{$rs['result']}"]."<br>", array($rs['finishlap']));
+        $msg['text'] = u_format($str["{$rs['result']}"], array($rs['finishlap']));
         $rs['result'] == "ok" ? $msg['type'] = "info" : $msg['type'] = "invalid";
     }
     else
     {
         $rs['result'] = $str["no_laps_set"];
-        $msg['text'] = "&nbsp;&nbsp;{$rs['result']}<br>";
+        $msg['text'] = $rs['result'];
         $msg['type'] = "invalid";
 
     }
-    u_writelog($str["{$rs['result']}"], $eventid);
+    u_writelog($msg['text'], $eventid);
+
+    $msg['text'] = "&nbsp;&nbsp;- ".$msg['text']."<br>";
 
     return $msg;
 }

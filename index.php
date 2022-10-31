@@ -6,7 +6,7 @@
 */
 
 // these might change on the page
-$mode     = "live";
+file_exists('demo_on.txt') ? $mode = "demo" : $mode = "live";
 $debug    = "0";
 
 // includes
@@ -97,7 +97,7 @@ else
 <div class="container">
   <div class="row">
     <div class="col-md-3">
-      <a class="btn btn-primary btn-block" href="./rm_sailor/index.php" target="_blank" role="button">
+      <a class="btn btn-primary btn-block" href="./rm_sailor/index.php?mode=$mode" target="_blank" role="button">
          <span style="font-size: 1.7em;">Sailor</span>
       </a>
       <p style="margin-top: 1.0em;">Member entry and declaration interface for today&rsquo;s races</p>

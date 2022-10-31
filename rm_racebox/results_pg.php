@@ -180,8 +180,6 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
 $rbufr.= $tmpl_o->get_template("btn_modal", $btn_message['fields'], $btn_message);
 
 
-
-
 // modal code
 if (!$_SESSION["e_$eventid"]['pursuit'])
 {

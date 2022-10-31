@@ -17,9 +17,11 @@ $stylesheet = "./style/rm_utils.css";
 session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
 session_start();
 
+require_once("$loc/common/lib/util_lib.php");
+
 // initialise session if this is first call
-if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
-{
+//if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false))
+//{
     $init_status = u_initialisation("$loc/config/rm_utils_cfg.php", $loc, $scriptname);
 
     if ($init_status)
@@ -38,13 +40,12 @@ if (!isset($_SESSION['util_app_init']) OR ($_SESSION['util_app_init'] === false)
         u_exitnicely($scriptname, 0, "one or more problems with script initialisation",
             "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
-}
+//}
 
 define('BASE', dirname(__FILE__) . '/');
 require BASE . 'lib/WebCollectRestapiClient.php';
 
 // classes
-require_once("$loc/common/lib/util_lib.php");
 require_once("$loc/common/classes/db_class.php");
 require_once("{$loc}/common/classes/template_class.php");
 
@@ -97,15 +98,12 @@ if ($_REQUEST['pagestate'] == "init")
 
 elseif (trim(strtolower($_REQUEST['pagestate'])) == "submit")
 {
+    // set webcollect API parameters
+    define("ORGANISATION_SHORT_NAME", $_SESSION['ORGANISATION_SHORT_NAME']);
+    define("ACCESS_TOKEN", $_SESSION['ACCESS_TOKEN']);
+
     // connect to database
     $db_o = new DB();
-
-    // get webcollect API parameters
-    $wc = $db_o->db_getinivalues(true, "webcollect");
-    foreach ($wc as $param=>$val)
-    {
-        define("$param" , $val);
-    }
 
     // empty database table with rotamembers
     if (trim($_REQUEST['dryrun']) == "true")

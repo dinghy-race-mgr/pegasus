@@ -33,8 +33,7 @@ class TIMER
     
     public function start($starttime)
     {
-        $event = "e_$this->eventid";
-        $_SESSION["$event"]['timerstart'] = $starttime;
+        $_SESSION["e_$this->eventid"]['timerstart'] = $starttime;
 
         // set timerstart in event
         $this->db->db_update( 't_event', array("timerstart"=>$starttime), array("id"=>$this->eventid) );

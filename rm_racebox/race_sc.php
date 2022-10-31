@@ -16,6 +16,7 @@
 $loc        = "..";                                                 // relative path from script to top level folder
 $page       = "race";     // 
 $scriptname = basename(__FILE__);
+$dbg_on     = true;
 $stop_here  = false;
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
@@ -285,7 +286,8 @@ if ($eventid AND $pagestate)
                     "already_set"       => "&nbsp;&nbsp;$fleetname - laps already set to {$rs['finishlap']} <br>",
                 );
 
-                //echo "<pre>$fleetname - ".print_r($rs,true)."</pre>";
+                if ($dbg_on) { u_writedbg("<pre>$fleetname - ".print_r($rs,true)."</pre>", __FILE__,__FUNCTION__,__LINE__); }
+
                 if (empty($rs['result']) or $rs['result'] == "failed")          // lap change failed
                 {
                     u_writelog("setlaps: $fleetname - failed [{$_REQUEST['laps'][$i]} laps]", $eventid);
@@ -330,9 +332,7 @@ if ($eventid AND $pagestate)
         }
 
         // check race state / update session
-        //u_writedbg("before status update: ".dbg_lapsstatus($eventid), __CLASS__, __FUNCTION__, __LINE__);
         $race_o->racestate_updatestatus_all($_SESSION["e_$eventid"]['rc_numfleets'], $page);
-        //u_writedbg("after status update: ".dbg_lapsstatus($eventid), __CLASS__, __FUNCTION__, __LINE__);
 
         // return to race page
         if (!$stop_here) { header("Location: race_pg.php?eventid=$eventid&pagestate=race"); exit();}  // back to race status page

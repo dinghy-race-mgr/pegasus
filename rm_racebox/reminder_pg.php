@@ -85,7 +85,7 @@ else
 
     // ----- right hand panel --------------------------------------------------------------------
     $rbufr = "";
-    $rbufr.= "<a class='btn btn-lg btn-success' href='$sourcelink'>
+    $rbufr.= "<a class='btn btn-lg btn-info' href='$sourcelink'>
             <span class='glyphicon glyphicon-new-window' aria-hidden='true'></span> 
             &nbsp;Close Reminders</a>";
 

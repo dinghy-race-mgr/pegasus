@@ -132,7 +132,7 @@ class HELP
         if (count($this->topics) <= 0)
         {
             $htm = <<<EOT
-                <h2>Reminders ...</h2>
+                <h2>Race Officer Reminders ...</h2>
                 <blockquote>
                     <p class="lead">No reminders for today </p>
                 </blockquote>
@@ -146,10 +146,10 @@ EOT;
             {
                 $i++;
                 $panel_bufr.= <<<EOT
-                <div class="panel panel-success margin-top-20" style="margin-bottom: 20px">
+                <div class="panel panel-primary margin-top-20" style="margin-bottom: 20px">
                      <div class="panel-heading" role="tab" id="heading$i">
                      <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$i" aria-expanded="true" aria-controls="collapse$i" style="text-decoration: none">
-                        <p class="panel-title help-title-text" >{$topic['question']}</p>
+                        <p class="panel-title help-title-text" ><small>topic: </small>&nbsp; {$topic['question']}</p>
                      </a>
                     </div>
                     
@@ -167,7 +167,10 @@ EOT;
 
             // add outer div
             $htm = <<<EOT
-            <h3 style="margin-top:60px; margin-bottom:20px;">Reminders for this race &hellip; <small> click for more detail</small></h3>
+            <h2 style="margin-top:60px; margin-bottom:20px;">Race Officer Reminders &hellip;&nbsp;&nbsp;&nbsp;<small> click topics to view</small></h2>
+            <h4>The club suggests checking these topics as they may be relevant to today's races</h4>
+            <h4 class="text-info">You can return to this page at any time by selecting "Today's Reminders" option from the 
+                                  <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> menu</h4>
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" >
@@ -186,12 +189,11 @@ EOT;
     public function render_help()
     {
         // title
-        $this->page == "reminders" ? $title = "Reminders &hellip" : $title = "Help for ".$this->pagelabel." page" ;
 
         if (count($this->topics) <= 0)
         {
             $htm = <<<EOT
-                <h2 style="margin-top:60px; margin-bottom:20px;">$title&hellip;</h2>
+                <h2 style="margin-top:60px; margin-bottom:20px;">Help for the {$this->pagelabel} page &hellip;</h2>
                 <blockquote style="margin-left: 100px;">
                     <p class="lead">Sorry - no help information for this page</p>
                 </blockquote>
@@ -207,10 +209,10 @@ EOT;
             {
                 $i++;
                 $panel_bufr.= <<<EOT
-                <div class="panel panel-info margin-top-20" style="margin-bottom: 20px">
+                <div class="panel panel-info">
                      <div class="panel-heading" role="tab" id="heading$i">                    
                      <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$i"  aria-expanded="true" aria-controls="collapse$i" style="text-decoration: none">                       
-                       <p class="panel-title help-title-text">{$topic['question']} </p>
+                       <p class="panel-title help-title-text"><small>topic: </small>&nbsp; {$topic['question']} </p>
                      </a>                                              
                      
                     </div>
@@ -230,7 +232,7 @@ EOT;
 
             // add outer div
             $htm = <<<EOT
-            <h3 style="margin-top:60px; margin-bottom:20px;">Help for the {$this->pagelabel} page &hellip; <small> click for details on each topic</small></h3>
+            <h2 style="margin-top:60px; margin-bottom:20px;">Help for the {$this->pagelabel} page &hellip; <small> click topics to view</small></h2>
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">

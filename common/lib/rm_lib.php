@@ -288,8 +288,8 @@ function r_initfleetsession($eventid, $fleetnum, $fleet)
         $status = true;
 
         // set fleet details
+        $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime'] = $_SESSION["e_$eventid"]['timerstart'] + $fleetdata['startdelay'];
         $_SESSION["e_$eventid"]["fl_$fleetnum"]['startdelay'] = $fleetdata['startdelay'];
-        $_SESSION["e_$eventid"]["fl_$fleetnum"]['starttime']  = strtotime($fleetdata['starttime']);
         $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxlap']     = $fleetdata['maxlap'];
         $_SESSION["e_$eventid"]["fl_$fleetnum"]['currentlap'] = $fleetdata['currentlap'];
         $_SESSION["e_$eventid"]["fl_$fleetnum"]['entries']    = $fleetdata['entries'];

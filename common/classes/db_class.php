@@ -70,9 +70,10 @@ class DB
         {
             $this->db_log_errors( "Connect failed", $this->link->connect_error );
             u_exitnicely("db_class.php",0,"database connection error - host: {$_SESSION['db_host']}, user: {$_SESSION['db_user']}, dbase: {$_SESSION['db_name']}",
-                "check configuration setup - either fix configuration or set database user to match configuration",
+                "Likely reason - the browser session has timed out - close the browser and restar the application<br>
+                 Possible reason - database configuration is wrong",
                 array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__,
-                    "calledby" => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], "args" => func_get_args()));
+                    "calledby" => print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], true), "args" => func_get_args()));
         }
 	}
     
@@ -281,18 +282,17 @@ class DB
 
     public function db_update( $table, $variables = array(), $where = array(), $limit = '' )
     {
-        // echo "<pre>".debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function']."</pre>"
+        $dbg_on = true;
+        //$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
+        //if ($dbg_on) { u_writedbg("<pre>".print_r($trace, true)."</pre>",__FILE__,__FUNCTION__,__LINE__); }
 
         // returns -1 if update failed, 0 if successful but no rows changed, >1 no. rows changed
         if( empty( $variables ) ) { return -1; }
 
         $query = "UPDATE ". $table ." SET ";
         $updates = array();
-        $dbg_txt = "UPDATE $table: <br>";
         foreach( $variables as $field => $value )
         {
-            $dbg_txt.= "<pre>field: $field | value: $value | type: ".gettype($value)."<br></pre>";
-
             if (strtolower($value) == "null")
             {
                 $updates[] = "`$field` = null";
@@ -304,8 +304,6 @@ class DB
 
         }
         $query .= implode(', ', $updates);
-
-        if ($_SESSION['sql_debug']) { u_writedbg("db_update: fields: $dbg_txt ",__FILE__,__FUNCTION__,__LINE__); }
         
         //Add the $where clauses as needed
         if( !empty( $where ) )
@@ -320,10 +318,10 @@ class DB
         
         if( !empty( $limit ) ) { $query .= ' LIMIT '. $limit; }
 
-        //echo "<pre>UPDATE: $query</pre>";
+
         $update = $this->link->query( $query );
         $numrows = $this->link->affected_rows;         // might be zero if no records changed
-        //u_writedbg("db_update: $query | rows affected: $numrows | result: $update ",__FILE__,__FUNCTION__,__LINE__);
+        if ($dbg_on) { u_writedbg("db_update: $query | rows affected: $numrows | result: $update ",__FILE__,__FUNCTION__,__LINE__); }
 
         if( $this->link->error )
         {

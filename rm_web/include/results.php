@@ -29,7 +29,7 @@ class RESULTS
 
         if (!$string)
         {
-            u_writelog("results: inventory file not found or not readable or empty [{$this->inv_file}]\n");
+            u_writelog("results: inventory file not found or not readable or empty [{$this->inv_file}]");
             $status = false;
         }
         else
@@ -76,6 +76,12 @@ class RESULTS
 EOT;
         foreach ($this->inv_data as $eventid=>$event)
         {
+            // check if want to include this event (i.e. all events up to and including tomorrow)
+            if (strtotime($event['eventdate']) > strtotime(date("Y-m-d", strtotime("+1 day"))))
+            {
+                continue;
+            }
+
             $datetime = date("d M y", strtotime($event['eventdate']));
             if (!empty($event['eventtime']))
             {

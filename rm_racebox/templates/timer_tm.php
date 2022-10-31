@@ -101,7 +101,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "fleet"   => $entry['fleet'],
                         "start"   => $entry['start'],
                         "lap"     => $entry['lap'],
-                        "flap"    => $entry['finishlap'],
+                        "finishlap" => $entry['finishlap'],
                         "code"    => $entry['code'],
                         "pn"      => $entry['pn'],
                         "etime"   => $entry['etime'],
@@ -147,50 +147,37 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
 
             foreach ($data as $class => $group) {
                 foreach ($group as $entry) {
+                    $arr = array(
+                        "entryid" => $entry['id'],
+                        "class"   => $entry['class'],
+                        "sailnum" => $entry['sailnum'],
+                        "boat"    => "{$entry['class']} - {$entry['sailnum']}",
+                        "fleet"   => $entry['fleet'],
+                        "start"   => $entry['start'],
+                        "lap"     => $entry['lap'],
+                        "finishlap" => $entry['finishlap'],
+                        "code"    => $entry['code'],
+                        "pn"      => $entry['pn'],
+                        "etime"   => $entry['etime'],
+                        "status"  => $entry['status'],
+                        "declaration" => $entry['declaration'],
+                        "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
+                    );
+
                     $set = false;
                     for ($i = 1; $i < count($category); $i++) {
-                        if (strpos(strtolower($entry['class']), strtolower($category[$i])) !== false) {
-                            $dbufr[$i][] = array(
-                                "entryid" => $entry['id'],
-                                "class"   => $entry['class'],
-                                "sailnum" => $entry['sailnum'],
-                                "boat"    => "{$entry['class']} - {$entry['sailnum']}",
-                                "fleet"   => $entry['fleet'],
-                                "start"   => $entry['start'],
-                                "lap"     => $entry['lap'],
-                                "flap"    => $entry['finishlap'],
-                                "code"    => $entry['code'],
-                                "pn"      => $entry['pn'],
-                                "etime"   => $entry['etime'],
-                                "status"  => $entry['status'],
-                                "declaration" => $entry['declaration'],
-                                "label"   => $entry['sailnum'],
-                                "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
 
-                            );
+                        if (strpos(strtolower($entry['class']), strtolower($category[$i])) !== false) {
+                            $arr['label'] = $entry['sailnum']; // only need sailnum for label
+                            $dbufr[$i][] = $arr;
                             $set = true;
                             break;
                         }
                     }
 
                     if (!$set) {                                    // add to misc group
-                        $dbufr[count($category)][] = array(
-                            "entryid" => $entry['id'],
-                            "class"   => $entry['class'],
-                            "sailnum" => $entry['sailnum'],
-                            "boat"    => "{$entry['class']} - {$entry['sailnum']}",
-                            "fleet"   => $entry['fleet'],
-                            "start"   => $entry['start'],
-                            "lap"     => $entry['lap'],
-                            "flap"    => $entry['finishlap'],
-                            "code"    => $entry['code'],
-                            "pn"      => $entry['pn'],
-                            "etime"   => $entry['etime'],
-                            "status"  => $entry['status'],
-                            "declaration" => $entry['declaration'],
-                            "label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'],    // FIXME - should use stored class acronym if available
-                            "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
-                        );
+                        $arr['label'] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum']; // FIXME - should use stored class acronym if available
+                        $dbufr[count($category)][] = $arr;
                     }
                 }
             }
@@ -214,7 +201,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "fleet"   => $entry['fleet'],
                         "start"   => $entry['start'],
                         "lap"     => $entry['lap'],
-                        "flap"    => $entry['finishlap'],
+                        "finishlap" => $entry['finishlap'],
                         "code"    => $entry['code'],
                         "pn"      => $entry['pn'],
                         "etime"   => $entry['etime'],
@@ -252,8 +239,8 @@ EOT;
                 $label_bufr = "</div><br><br><div class='row'>";
                 $data_bufr  = "</div><div class='row' style='margin-left: 10px; margin-bottom: 10px'>";
             }
-            // category labels
 
+            // category labels
             $view == "fleet" ? $laps_txt = " <small> {$_SESSION["e_$eventid"]["fl_$i"]['maxlap']} lap(s)</small>" : $laps_txt = "" ;
             $label_bufr .= <<<EOT
             <div class="col-md-2 text-center"><h4 style="margin-bottom: 4px;"><b>$label</b></h4> $laps_txt</div>
@@ -263,6 +250,7 @@ EOT;
             $data_bufr .= "<div class='col-md-2' style='padding: 0px 0px 0px 0px;'>";
             foreach ($dbufr[$i] as $entry) {
 
+                $boat = "{$entry['class']} - {$entry['sailnum']}";
                 $laps = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['maxlap'];
                 $scoring = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['scoring'];
 
@@ -280,9 +268,9 @@ EOT;
                         }
                         else
                         {
-                            if ( $entry['lap'] < $entry['flap'] - 1 )      { $state = $boat_states['racing']; }
-                            elseif ( $entry['lap'] >= $entry['flap'] )     { $state = $boat_states['finished']; }
-                            elseif ( $entry['lap'] == $entry['flap'] - 1 ) { $state = $boat_states['lastlap']; }
+                            if ( $entry['lap'] < $entry['finishlap'] - 1 )      { $state = $boat_states['racing']; }
+                            elseif ( $entry['lap'] >= $entry['finishlap'] )     { $state = $boat_states['finished']; }
+                            elseif ( $entry['lap'] == $entry['finishlap'] - 1 ) { $state = $boat_states['lastlap']; }
                         }
                     }
                     else
@@ -309,7 +297,6 @@ EOT;
                 }
 
                 empty($entry['code']) ? $cog_style = "primary" : $cog_style = "danger";
-                $state['index'] == "lastlap" ? $bunch_link .= "&lastlap=true" : $bunch_link .= "&lastlap=false";
 
                 // competitor identity and lap count
                 $title = $entry['label'];
@@ -366,14 +353,13 @@ EOT;
                 $entry['status'] == "F" ? $disabled = "disabled" : $disabled = "";  // turn of lap timing for boats that have finished
 
                 $data_bufr .= <<<EOT
-                <div class="btn-group btn-block" role="group" aria-label="...">
-                    <a type="button" href="$timelap_link$params_list" class="btn {$state['color']} btn-xs $disabled" style="width:70%" 
-                        data-toggle="popover" data-placement="top"  title="$ptitle" data-content="$pcontent">
-                        <div class="pull-left">$title</div>
-                        <div class="pull-right">$lapcount</div>
-                        
-                    </a>
-                    <div class="btn-group" role="group">
+                <div class="btn-group btn-block" role="group" aria-label="..." >
+                    <div data-toggle="popover" data-placement="top"  title="$ptitle" data-content="$pcontent">
+                        <a type="button" href="$timelap_link$params_list" class="btn {$state['color']} btn-xs $disabled" style="width:70%" 
+                            >
+                            <div class="pull-left">$title</div>
+                            <div class="pull-right">$lapcount</div>     
+                        </a>                 
                         <button type="button" class="btn btn-$cog_style btn-xs dropdown-toggle" 
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
@@ -382,6 +368,24 @@ EOT;
                     </div>
                 </div>
 EOT;
+
+//                $data_bufr .= <<<EOT
+//                <div class="btn-group btn-block" role="group" aria-label="...">
+//                    <a type="button" href="$timelap_link$params_list" class="btn {$state['color']} btn-xs $disabled" style="width:70%"
+//                        data-toggle="popover" data-placement="top"  title="$ptitle" data-content="$pcontent">
+//                        <div class="pull-left">$title</div>
+//                        <div class="pull-right">$lapcount</div>
+//
+//                    </a>
+//                    <div class="btn-group" role="group">
+//                        <button type="button" class="btn btn-$cog_style btn-xs dropdown-toggle"
+//                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+//                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+//                        </button>
+//                        $options_bufr
+//                    </div>
+//                </div>
+//EOT;
             }
             $data_bufr .= "</div>";
 
@@ -430,8 +434,8 @@ function timer_tabs($params = array())
     );
 
     $url_base         = "timer_sc.php?eventid=$eventid";
-    $timelap_link     = $url_base."&pagestate=timelap&fleet=%s&start=%s&entryid=%s&boat=%s&lap=%s&pn=%s&etime=%s&status=%s";
-    $finish_link_tmpl = $url_base."&pagestate=finish&fleet=%s&start=%s&entryid=%s&boat=%s&lap=%s&pn=%s&etime=%s&status=%s";
+    $timelap_link     = $url_base."&pagestate=timelap&fleet=%s&start=%s&entryid=%s&boat=%s&lap=%s&finishlap=%s&pn=%s&etime=%s&status=%s";
+    $finish_link_tmpl = $url_base."&pagestate=finish&fleet=%s&start=%s&entryid=%s&boat=%s&lap=%s&finishlap=%s&pn=%s&etime=%s&status=%s";
     $undoboat_link    = $url_base."&pagestate=undoboat&entryid=%s";
 //  $setcode_link  = $url_base."&pagestate=setcode&fleet=%s&entryid=%s&boat=%s&racestatus=%s";
 
@@ -533,8 +537,6 @@ EOT;
                             $laps_btn.= $tmpl_o->get_template("modal", $mdl_shortenfleet['fields'], $mdl_shortenfleet);
 
                         }
-
-
                     }
                 }
             }
@@ -554,7 +556,8 @@ EOT;
             {
                 $row_num++;
                 $boat = "{$r['class']} - {$r['sailnum']}";
-                $finish_link = vsprintf($finish_link_tmpl, array($r['fleet'], $r['start'], $r['id'], $boat, $r['lap'], $r['pn'], $r['etime'], $r['status'] ));
+                $finish_link = vsprintf($finish_link_tmpl,
+                    array($r['fleet'], $r['start'], $r['id'], $boat, $r['lap'], $r['finishlap'], $r['pn'], $r['etime'], $r['status'] ));
 
                 $current_lap = $r['lap'] + 1;
                 $cfg = $state_cfg['default'];
@@ -610,8 +613,9 @@ EOT;
                 $laptimes_bufr = laptimes_html($r['laptimes'], $cfg);
 
                 $row_link = vsprintf($timelap_link,
-                    array($r['fleet'], $r['start'], $r['id'], $boat, $r['lap'], $r['pn'], $r['etime'], $r['status'] ));
+                    array($r['fleet'], $r['start'], $r['id'], $boat, $r['lap'], $r['finishlap'], $r['pn'], $r['etime'], $r['status'] ));
 
+                // FIXME  - ugly - hide this in get_code
                 $link = <<<EOT
 timer_sc.php?eventid=$eventid&pagestate=setcode&fleet={$r['fleet']}&entryid={$r['id']}&boat=$boat
 &racestatus={$r['status']}&declaration={$r['declaration']}&lap={$r['lap']}&finishlap={$r['finishlap']}
@@ -625,14 +629,16 @@ EOT;
 
                 if ($_SESSION['racebox_timer_bunch'])
                 {
-                    $bunch_label = "<th width='5%' style='text-align: center'>bunch</th>";
-                    $bunch_link = "<td class='rowlink-skip inline-button'></td>";
-                    if ($r['status'] != "F")
-                    {
-                        $cfg['row_style'] == "lastlap" ? $lastlap = "true" : $lastlap = "false";
-                        $bunch_link = bunch_html($eventid, $r['id'], $boat, $r, $lastlap);
-                    }
+                    $bunch_label = "bunch";
+                    $bunch_link = "&nbsp;";
+                    if ($r['status'] != "F") { $bunch_link = bunch_html($eventid, $r['id'], $boat, $r); }
                 }
+                else
+                {
+                    $bunch_label = "&nbsp;";
+                    $bunch_link = "&nbsp;";
+                }
+
 
                 $undo_link = undoboat_html($undoboat_link, $eventid, $r['id'], $boat, $r['laptimes']);
 
@@ -644,7 +650,7 @@ EOT;
                         <td class="$skip truncate" style="padding-left:10px;">{$r['helm']}</td>
                         <td class="$skip" style="padding-left:15px;" >$laptimes_bufr</td>
                         <td class="rowlink-skip inline-button">$code_link</td>
-                        $bunch_link
+                        <td class="rowlink-skip inline-button">$bunch_link</td>
                         <td class="rowlink-skip inline-button">$finish_btn</td>
                         <td class="rowlink-skip inline-button">$edit_link</td>
                         <td class="rowlink-skip inline-button">$undo_link</td>
@@ -662,11 +668,11 @@ EOT;
                         <tr >
                             <th width="1%"></th>
                             <th width="10%" style="text-align: center">class</th>
-                            <th width="5%" style="text-align: center">sail no.</th> 
+                            <th width="5%"  style="text-align: center">sail no.</th> 
                             <th width="10%" style="text-align: center">helm</th>                           
                             <th style="text-align: center">lap times</th>
                             <th width="7%" style="text-align: center">code</th>
-                            $bunch_label
+                            <th width='5%' style='text-align: center'>$bunch_label</th>                           
                             <th width="5%" style="text-align: center">finish</th>                           
                             <th width="5%" style="text-align: center">edit</th>
                             <th width="5%" style="text-align: center">undo</th>
@@ -829,33 +835,33 @@ EOT;
 }
 
 
-function bunch_html($eventid, $entryid, $boat, $r, $lastlap)
+function bunch_html($eventid, $entryid, $boat, $r)
     // creates button to add a boat to the bunch list
 {
+    //u_writedbg("<pre>bunch_hmtl".print_r($r,true)."</pre>",__CLASS__,__FUNCTION__,__LINE__);
+
     // array to pass data to bunch process
     $params = array(
+        "entryid" => $entryid,
+        "boat"    => $boat,
         "fleet"   => $r['fleet'],
         "start"   => $r['start'],
-        "entryid" => $r['id'],
-        "boat"    => $boat,
         "lap"     => $r['lap'],
+        "finishlap" => $r['finishlap'],
         "pn"      => $r['pn'],
         "etime"   => $r['etime'],
         "status"  => $r['status'],
-        "lastlap" => $lastlap,
         "bunchlbl"=> explode(' ',trim($r['class']))[0]." - ".$r['sailnum']
     );
 
     $link_txt = "timer_sc.php?eventid=$eventid&pagestate=bunch&action=addnode&".http_build_query($params);
 
     $bufr = <<<EOT
-    <td class="rowlink-skip" style="text-align: center">
-        <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="save for bunch" data-placement="top">
-            <a id="bunchboat" type="button" href="$link_txt" role="button" class="btn btn-info btn-xs" >
-                <span class="glyphicon glyphicon-pushpin"></span>
-            </a>
-        </span>
-    </td>
+    <span data-toggle="tooltip" data-delay='{"show":"1000", "hide":"100"}' data-html="true" data-title="save for bunch" data-placement="top">
+        <a id="bunchboat" type="button" href="$link_txt" role="button" class="btn btn-info btn-xs" >
+            <span class="glyphicon glyphicon-pushpin"></span>
+        </a>
+    </span>
 EOT;
 
     return $bufr;

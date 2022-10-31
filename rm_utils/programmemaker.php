@@ -1007,8 +1007,6 @@ function pg_create_csv($out_file)
     }
     fclose($file);
 
-
-
     return $status;
 }
 

@@ -547,10 +547,9 @@ function display_demo_page($loc, $eventid)
     global $tmpl_o;
     // display demo message - results not published
 
-
     // generate page
     $fields = array(
-        "title"      => "publish [demo] results",
+        "title"      => "save [demo] results",
         "loc"        => $loc,
         "theme"      => $_SESSION['racebox_theme'],
         "stylesheet" => "./style/rm_racebox.css",

@@ -77,12 +77,22 @@ else
 
 // set race timers
 $start = array();
+$numboats = array();
 for ($j=1; $j<=$_SESSION["e_$eventid"]['rc_numstarts']; $j++)
 {
     $start[$j] = $_SESSION["e_$eventid"]["st_$j"]['startdelay'];
     if ($event_state == "in progress" or $_SESSION["e_$eventid"]['ev_status'] == "abandoned")
     {
         $start[$j] = $timer_start + $_SESSION["e_$eventid"]["st_$j"]['startdelay'] - time();
+    }
+
+    $numboats[$j] = 0;
+    for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
+    {
+        if ( $_SESSION["e_$eventid"]["fl_$i"]['startnum'] == $j )
+        {
+            $numboats[$j] = $numboats[$j] + $_SESSION["e_$eventid"]["fl_$i"]['entries'];
+        }
     }
 }
 //debugTimer($eventid, $start_master, $start, $_SESSION["e_$eventid"]['ev_timerstart']);
@@ -164,6 +174,7 @@ EOT;
         "fleet-list"    => $fleetlist,
         "start-delta"   => gmdate("H:i:s", $start[$startnum]),
         "start-secs"    => strval($start[$startnum]),
+        "start-boats"   => $numboats[$startnum],
         "infringe"      => $infringebufr,
         "recall"        => $recallbufr,
     );
