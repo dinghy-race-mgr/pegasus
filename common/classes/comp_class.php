@@ -119,7 +119,7 @@ class COMPETITOR
 
            if (ctype_digit($word))       // its an integer - could be sailnumber or class
            {
-               $result = $this->db->db_get_rows("SELECT id FROM t_class WHERE classname LIKE '$word%'");
+               $result = $this->db->db_get_rows("SELECT id FROM t_class WHERE classname LIKE '$word'");  // has to be exact match to be a class
                if ($result)               // number string is a known class name
                {
                    $class = $word;

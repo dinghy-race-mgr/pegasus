@@ -219,10 +219,10 @@ $btn_publish = array(
 );
 
 $mdl_publish = array(
-    "form"    => false,
+    "form"    => true,
     "footer"  => false,
     "reload"  => true,
-    "close"   => false,
+    "close"   => true,
     "reset"   => false,
     "submit"  => false,
     "fields"  => array(
@@ -233,9 +233,9 @@ $mdl_publish = array(
         "body"       => "<iframe src=\"results_publish_pg.php?eventid=$eventid&pagestate=init&warnings=$warning_count\" style=\"width: 100%; height: 750px; border:0px\" id=\"entryframe\"></iframe>",
         "script"     => "",
         "onsubmit"   => "",
-        "action"     => "", //"results_sc.php?eventid=$eventid&pagestate=message",
+        "action"     => "",
         "target"     => "",
-        "close-lbl"  => "",
+        "close-lbl"  => "Close&nbsp;",
         "reset-lbl"  => "",
         "submit-lbl" => "",
         "footer"     => ""

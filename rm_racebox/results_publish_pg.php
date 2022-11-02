@@ -554,10 +554,10 @@ function display_demo_page($loc, $eventid)
         "theme"      => $_SESSION['racebox_theme'],
         "stylesheet" => "./style/rm_racebox.css",
         "navbar"     => "",
-        "footer"     => "",
+        "footer"     => ""
     );
 
-    $fields['body'] = $tmpl_o->get_template("fm_publish_demo", array(), array());
+    $fields['body'] = $tmpl_o->get_template("fm_publish_demo", array("eventid"=>"$eventid"), array());
 
     return $tmpl_o->get_template("basic_page", $fields);
 }

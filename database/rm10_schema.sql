@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 11, 2022 at 06:59 PM
+-- Generation Time: Nov 02, 2022 at 11:58 AM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 5.6.40
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `pegasus_stx`
+-- Database: `pegasus`
 --
 
 -- --------------------------------------------------------
@@ -52,20 +52,14 @@ CREATE TABLE `a_entry` (
 --
 
 CREATE TABLE `a_finish` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL COMMENT 'id from t_finish table',
   `eventid` int(11) NOT NULL COMMENT 'event id',
   `entryid` int(11) NOT NULL COMMENT 'record id from race table ',
-  `finish_1` int(3) DEFAULT '0' COMMENT 'position at finish 1',
-  `finish_2` int(3) DEFAULT '0' COMMENT 'position at finish 2',
-  `finish_3` int(3) DEFAULT '0' COMMENT 'position at finish 3',
-  `finish_4` int(3) DEFAULT '0' COMMENT 'position at finish 4',
-  `finish_5` int(3) DEFAULT '0' COMMENT 'position at finish 5',
-  `finish_6` int(3) DEFAULT '0' COMMENT 'position at finish 6',
-  `forder` int(3) NOT NULL DEFAULT '0' COMMENT 'sequential finish order',
-  `place` int(3) DEFAULT '0' COMMENT 'place in race',
-  `status` varchar(500) COLLATE latin1_general_ci DEFAULT NULL COMMENT '??????',
-  `state` int(1) NOT NULL DEFAULT '0' COMMENT '??????',
-  `upddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'time of last update',
+  `finishline` int(2) NOT NULL DEFAULT '1' COMMENT 'finishing line',
+  `finishorder` int(3) NOT NULL DEFAULT '0' COMMENT 'sequential finish order at finish line',
+  `raceplace` int(4) DEFAULT '0' COMMENT 'place in overall race',
+  `status` char(10) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'status of this finish information',
+  `upddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'last update date',
   `updby` varchar(20) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'last update by',
   `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'timestamp when record created'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='finish positions for multi finish line pursuit races';
@@ -211,8 +205,8 @@ CREATE TABLE `rm_admin_users` (
   `fullname` varchar(255) DEFAULT NULL,
   `groupid` varchar(255) DEFAULT NULL,
   `active` int(11) DEFAULT NULL,
-  `reset_token` varchar(100) NOT NULL,
-  `reset_date` date NOT NULL,
+  `reset_token` varchar(100) DEFAULT NULL,
+  `reset_date` date DEFAULT NULL,
   `reset_token1` varchar(50) DEFAULT NULL,
   `reset_date1` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -431,43 +425,6 @@ CREATE TABLE `t_competitor` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `t_competitor_save`
---
-
-CREATE TABLE `t_competitor_save` (
-  `id` int(10) NOT NULL COMMENT 'identifier',
-  `classid` int(10) NOT NULL COMMENT 'class id in rtblclass',
-  `boatnum` varchar(20) COLLATE latin1_general_ci NOT NULL COMMENT 'boat number',
-  `sailnum` varchar(20) COLLATE latin1_general_ci NOT NULL COMMENT 'sail number used',
-  `boatname` varchar(60) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'name (or sponsor) of boat',
-  `hullcolour` varchar(20) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'colour of hull',
-  `helm` varchar(40) COLLATE latin1_general_ci NOT NULL COMMENT 'helm name',
-  `helm_dob` date DEFAULT NULL COMMENT 'helm date of birth',
-  `helm_email` varchar(100) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'helm email address',
-  `telephone` varchar(20) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'contact telephone',
-  `crew` varchar(40) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'crew name',
-  `crew_dob` date DEFAULT NULL COMMENT 'crew date of birth',
-  `crew_email` varchar(100) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'crew email address',
-  `club` varchar(60) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'sailing club name',
-  `personal_py` int(5) DEFAULT NULL COMMENT 'personal PN',
-  `skill_level` varchar(20) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'skill coding',
-  `flight` varchar(20) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'allocated flight for specific events',
-  `regular` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'if true this is a regular sailor who can be entered in bulk',
-  `last_entry` date DEFAULT NULL COMMENT 'date of last entry',
-  `last_event` int(11) DEFAULT NULL COMMENT 'last event (id) entered',
-  `active` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'set to 1 if active competitor',
-  `prizelist` varchar(200) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'comma seperated prize eligibility',
-  `grouplist` varchar(100) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'comma separated list of member groups (e.g. member, visitor, junior)',
-  `memberid` varchar(20) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'member id/code',
-  `trackerid` varchar(40) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'identifier for position tracker',
-  `upddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'last update date',
-  `updby` varchar(20) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'last update by',
-  `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'timestamp when record created'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='competitor details';
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `t_cruise`
 --
 
@@ -585,16 +542,10 @@ CREATE TABLE `t_finish` (
   `id` int(11) NOT NULL COMMENT 'table primary key',
   `eventid` int(11) NOT NULL COMMENT 'event id',
   `entryid` int(11) NOT NULL COMMENT 'record id from race table ',
-  `finish_1` int(3) DEFAULT '0' COMMENT 'position at finish 1',
-  `finish_2` int(3) DEFAULT '0' COMMENT 'position at finish 2',
-  `finish_3` int(3) DEFAULT '0' COMMENT 'position at finish 3',
-  `finish_4` int(3) DEFAULT '0' COMMENT 'position at finish 4',
-  `finish_5` int(3) DEFAULT '0' COMMENT 'position at finish 5',
-  `finish_6` int(3) DEFAULT '0' COMMENT 'position at finish 6',
-  `forder` int(3) NOT NULL DEFAULT '0' COMMENT 'sequential finish order',
-  `place` int(3) DEFAULT '0' COMMENT 'place in race',
-  `status` varchar(500) COLLATE latin1_general_ci DEFAULT NULL COMMENT '??????',
-  `state` int(1) NOT NULL DEFAULT '0' COMMENT '??????',
+  `finishline` int(2) NOT NULL DEFAULT '1' COMMENT 'finishing line',
+  `finishorder` int(3) NOT NULL DEFAULT '0' COMMENT 'sequential finish order at finish line',
+  `raceplace` int(4) DEFAULT '0' COMMENT 'place in overall race',
+  `status` char(10) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'status of this finish information',
   `upddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'last update date',
   `updby` varchar(20) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'last update by',
   `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'timestamp when record created'
@@ -1037,14 +988,6 @@ ALTER TABLE `t_competitor`
   ADD KEY `visibility` (`active`);
 
 --
--- Indexes for table `t_competitor_save`
---
-ALTER TABLE `t_competitor_save`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `lastRaced` (`last_entry`),
-  ADD KEY `visibility` (`active`);
-
---
 -- Indexes for table `t_cruise`
 --
 ALTER TABLE `t_cruise`
@@ -1233,12 +1176,6 @@ ALTER TABLE `t_code_type`
 -- AUTO_INCREMENT for table `t_competitor`
 --
 ALTER TABLE `t_competitor`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT COMMENT 'identifier';
-
---
--- AUTO_INCREMENT for table `t_competitor_save`
---
-ALTER TABLE `t_competitor_save`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT COMMENT 'identifier';
 
 --

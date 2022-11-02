@@ -49,41 +49,8 @@ $events = $event_o->get_events("racing", $event_type, array("start" => $today, "
 // if in demo mode - check to see if any events need to be reset
 if ($_SESSION['mode'] == "demo")
 {
-    foreach ($events as $event)
-    {
-        if ($event['event_status'] != "scheduled")
-        {
-            $current_event = $event['id'];
-
-            // get data from t_race - if no updates in last hour - reset
-            $rs = $db_o->db_get_row("SELECT COUNT(*) AS numrows FROM t_race WHERE eventid = $current_event AND upddate >= DATE_SUB(NOW(), INTERVAL 1 HOUR)");
-            if ($rs['numrows'] == 0)
-            {
-                // clear tables
-                $del = $db_o->db_delete("t_entry", array("eventid"=>$current_event));         // entries
-                $del = $db_o->db_delete("t_race", array("eventid"=>$current_event));          // race details
-                $del = $db_o->db_delete("t_lap", array("eventid"=>$current_event));           // lap times
-                $del = $db_o->db_delete("t_finish", array("eventid"=>$current_event));        // pursuit finish positions
-                $del = $db_o->db_delete("t_racestate", array("eventid"=>$current_event));     // racestate
-
-                // reset event status
-                $fields = array(
-                    "id"             =>$current_event,
-                    "timerstart"     => "",
-                    "ws_start"       => "",
-                    "ws_end"         => "",
-                    "wd_start"       => "",
-                    "wd_end"         => "",
-                    "result_valid"   => 0,
-                    "result_publish" => 0
-                );
-                $upd = $db_o->db_update( 't_event', array("event_status"=>"scheduled"), array("id"=>$current_event) );
-            }
-        }
-    }
-
-    // reset events
-    $events = $event_o->get_events("racing", $event_type, array("start" => $today, "end" => $today), array() );
+    clear_old_demo_races($events);   // clear events that have not been active for an hour
+    $events = $event_o->get_events("racing", $event_type, array("start" => $today, "end" => $today), array() ); // reset events
 }
 
 // ----- navbar -----------------------------------------------------------------------------
@@ -201,6 +168,45 @@ echo $tmpl_o->get_template("two_col_page", $fields, $params);
 
 
 // ----- page specific functions ---------------------------------------------------------------
+
+function clear_old_demo_races($events)
+{
+    global $db_o;
+
+    foreach ($events as $event)
+    {
+        if ($event['event_status'] != "scheduled")
+        {
+            $current_event = $event['id'];
+
+            // get data from t_race - if no updates in last hour - reset
+            $rs = $db_o->db_get_row("SELECT COUNT(*) AS numrows FROM t_race WHERE eventid = $current_event AND upddate >= DATE_SUB(NOW(), INTERVAL 1 HOUR)");
+            if ($rs['numrows'] == 0)
+            {
+                // clear tables
+                $del = $db_o->db_delete("t_entry", array("eventid"=>$current_event));         // entries
+                $del = $db_o->db_delete("t_race", array("eventid"=>$current_event));          // race details
+                $del = $db_o->db_delete("t_lap", array("eventid"=>$current_event));           // lap times
+                $del = $db_o->db_delete("t_finish", array("eventid"=>$current_event));        // pursuit finish positions
+                $del = $db_o->db_delete("t_racestate", array("eventid"=>$current_event));     // racestate
+
+                // reset event status
+                $fields = array(
+                    "id"             =>$current_event,
+                    "timerstart"     => "",
+                    "ws_start"       => "",
+                    "ws_end"         => "",
+                    "wd_start"       => "",
+                    "wd_end"         => "",
+                    "result_valid"   => 0,
+                    "result_publish" => 0
+                );
+                $upd = $db_o->db_update( 't_event', array("event_status"=>"scheduled"), array("id"=>$current_event) );
+            }
+        }
+    }
+}
+
 
 function configurestate($eventid, $status )
 {

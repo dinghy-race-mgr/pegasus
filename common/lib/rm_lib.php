@@ -601,34 +601,41 @@ function r_oktoclose($eventid)
     $data = $db_o->db_get_rows ($query);
     $num_missing = count($data);
 
-    // can CLOSE if all boats have been finished AND results published OR the race status is cancelled or abandoned
-    if (($_SESSION["e_$eventid"]['result_publish'] AND $num_missing <= 0)
-        OR $_SESSION["e_$eventid"]['ev_status'] == "cancelled"
-        OR $_SESSION["e_$eventid"]['ev_status'] == "abandoned" )
+    if ($_SESSION['mode'] == "demo" AND $_SESSION["e_$eventid"]['result_publish'])
     {
-        $status = array ("result" => true);
+        $status = array("result" => true);
     }
     else
     {
-        if (!$_SESSION["e_$eventid"]['result_publish'])
+        // can CLOSE if all boats have been finished AND results published OR the race status is cancelled or abandoned
+        if (($_SESSION["e_$eventid"]['result_publish'] AND $num_missing <= 0)
+            OR $_SESSION["e_$eventid"]['ev_status'] == "cancelled"
+            OR $_SESSION["e_$eventid"]['ev_status'] == "abandoned" )
         {
-            $reason_txt.= " - the results have not been published <br><br> ";
+            $status = array ("result" => true);
         }
-
-        if ( $num_missing > 0 )
+        else
         {
-            $reason_txt.= " - $num_missing boats appear not to have finished or have not been given a scoring code (e.g. DNF).<br> ";
-
-            if ( $num_missing < 6 )
+            if (!$_SESSION["e_$eventid"]['result_publish'])
             {
-                foreach ($data as $boat)
+                $reason_txt.= " - the results have not been published <br><br> ";
+            }
+
+            if ( $num_missing > 0 )
+            {
+                $reason_txt.= " - $num_missing boats appear not to have finished or have not been given a scoring code (e.g. DNF).<br> ";
+
+                if ( $num_missing < 6 )
                 {
-                    $missing_txt.= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fleet {$boat['fleet']}: {$boat['class']} - {$boat['sailnum']}
-                                    &nbsp;&nbsp;&nbsp;[lap {$boat['lap']}]<br>";
+                    foreach ($data as $boat)
+                    {
+                        $missing_txt.= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fleet {$boat['fleet']}: {$boat['class']} - {$boat['sailnum']}
+                                        &nbsp;&nbsp;&nbsp;[lap {$boat['lap']}]<br>";
+                    }
                 }
             }
+            $status = array ( "result" => false, "reason" => $reason_txt, "info" => $missing_txt );
         }
-        $status = array ( "result" => false, "reason" => $reason_txt, "info" => $missing_txt );
     }
     return $status;
 }

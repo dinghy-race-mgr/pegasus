@@ -804,7 +804,7 @@ function process_footer($params=array())
     {
         $style = "success";
         $title = "Success";
-        $message = "The results publishing was completed successfully";
+        $message = "Saving Results was completed successfully";
         $action = "";
     }
 
@@ -812,8 +812,8 @@ function process_footer($params=array())
     {
         $close_reminder = <<<EOT
         <div class="alert alert-info" role="alert">
-            <p class="lead text-center">if you are happy that the results are complete ...<p>
-            <h2 class="text-center">Please CLOSE the race on the STATUS page</h2>
+            <p class="">When the results have been saved and no more corrections are required ...<p>
+            <h3 class="text-center">Please CLOSE the race on the STATUS page</h3>
         </div>
 EOT;
     }
@@ -971,39 +971,53 @@ function fm_publish_demo($params = array())
     $html = <<<EOT
     <div class="container" style="margin-top: -40px;">
               
-        <!-- div class="alert alert-danger" role="alert">
-            <h4>Saving Results [ DEMO SYSTEM ]</h4>
-        </div -->
         <div class="margin-top-05" style="font-size: 1.2em">
             <p>The DEMO version of raceManager does not let you Save Results</p>
             <p>The LIVE version does the following for you: </p>
-            <ul>
+            <ul class="text-info lead" style="line-height: 1.5 !important">
                 <li>allows you to select various options for the results </li>
-                <li>archives all the race data</li>
-                <li>produces the race results</li>
-                <li>updates any series results the race is associated with </li>
-                <li>posts the results (race and series) to the club website</li>
+                <li><b>archives</b> all the race data</li>
+                <li>produces the <b>race results</b></li>
+                <li>updates any <b>series results</b> the race is associated with </li>
+                <li>posts the results (race and series) to the <b>club website</b></li>
             </ul>
             
             <p>If you try and save the results with boats not finished or given a scoring code (e.g. DNF), 
             the system will warn you but will let you continue - with the exception that 
             it will not post any results files to the club website</p>
             
-            <p class="text-info"><b>IMPORTANT:</b>If you are running a race and have problems with the results that you are unable to resolve
-             <b>ALWAYS save the results</b> as this archives all the race data so that your raceManager support team can 
-             investigate the problem</p>
+            <p class=""><b>IMPORTANT:</b> If you are running a race and have problems with the results that you are unable to resolve
+             <span class="text-danger"><u>ALWAYS SAVE RESULTS</u></span> so that the raceManager team can investigate.</p>
+             
+             <p class="text-info text-center lead" style="line-height: 1.5 !important">You can save the results as many times as you need before you close the race</p>
         </div>
-        <div class="row">
-            <br>
-            <div class="col-md-offset-10 col-md-2">
-                 <!-- go back to results page -->
-                 <button type="button" id="closeBtn" class="btn btn-primary btn-md pull-right" onclick="window.parent.closeModal();">
-                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>&nbsp;&nbsp;Close&nbsp;&nbsp;
-                 </button>
-            </div>
+
+        <div class="alert alert-info" role="alert">
+            <p class="">When the results have been saved and no more corrections are required ...<p>
+            <h3 class="text-center">Please CLOSE the race on the STATUS page</h3>
         </div>
+
+
     </div>
 EOT;
+
+    /*
+     * //        <!--div class="row">
+//            <br>
+//            <!-- go back to results page -->
+//            <!-- div class="col-md-offset-10 col-md-2">
+//                 <button type="button" id="closeBtn" class="btn btn-info btn-md pull-right" onclick="window.parent.closeModal();">
+//                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>&nbsp;&nbsp;Status Page&nbsp;&nbsp;
+//                 </button>
+//            </div -->
+//
+//            <a href="" data-dismiss="modal" onclick="javascript:window.location='race_pg.php?eventid={eventid}'">Status Page</a>
+//
+//            <!--a href="race_pg.php?eventid={eventid}" type="button" class="btn btn-info btn-md pull-right" onclick="window.parent.closeModal();">
+//                <span data-dismiss="modal">Status Page</span>
+//            </a -->
+//        </div -->
+     */
 
     return $html;
 }

@@ -256,7 +256,7 @@ EOT;
         $num_rows = $this->db->db_delete("a_race", $constraint);
         $num_rows = $this->db->db_delete("a_entry", $constraint);
 
-        return $num_rows;
+        return;
     }
 
     public function race_copy_archive()
@@ -274,9 +274,9 @@ EOT;
         $t_finish_query = "INSERT INTO a_finish SELECT * FROM t_finish WHERE eventid={$this->eventid}";
 
 
-        if (!$this->db->db_query($t_race_query)) { $status = false; }
+        if (!$this->db->db_query($t_race_query))  { $status = false; }
         if (!$this->db->db_query($t_entry_query)) { $status = false; }
-        if (!$this->db->db_query($t_lap_query)) { $status = false; }
+        if (!$this->db->db_query($t_lap_query))   { $status = false; }
         if ($this->pursuit)
         {
             if ($this->db->db_query($t_finish_query)) { $status = false; }

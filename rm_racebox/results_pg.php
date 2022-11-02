@@ -134,7 +134,7 @@ $lbufr.= $tmpl_o->get_template("modal", $mdl_remove['fields'], $mdl_remove);
 // ----- right hand panel ------------------------------------------------------------
 $rbufr = "";
 
-// Results Publish button (only if a) we have entries, and b) the race has started)
+// Save Results button (only if a) we have entries, and b) the race has started)
 if ($event_run AND $total_entries > 0)
 {
     $rbufr.= $tmpl_o->get_template("btn_modal", $btn_publish['fields'], $btn_publish)."<hr>";

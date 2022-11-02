@@ -44,7 +44,7 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/rota_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
-require_once("{$loc}/common/classes/help_class.php");
+require_once ("{$loc}/common/classes/help_class.php");
 
 $db_o = new DB();
 $event_o = new EVENT($db_o);
