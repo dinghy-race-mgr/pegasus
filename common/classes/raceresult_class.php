@@ -385,7 +385,8 @@ EOT;
             "inc-club"      => $include_club,                                        // include club name for each competitor
             "inc-turnout"   => true,                                                 // include turnout statistics
             "race-label"    => "number",                                             // use race number or date for labelling races
-            "club-logo"     => $_SESSION['baseurl']."/config/images/club_logo.jpg",  // if set include club logo
+//            "club-logo"     => $_SESSION['baseurl']."/config/images/club_logo.jpg",  // if set include club logo
+            "club-logo"     => "../../club_logo.jpg",                                // if set include club logo
             "styles"        => file_get_contents($_SESSION['baseurl']."/config/style/result_classic.css")     // styles to be used
         );
 

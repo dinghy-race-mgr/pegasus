@@ -1,7 +1,7 @@
 <?php
 class RESULTS
 {
-   // FIXME add test programme here
+
 
 
     public function __construct($year, $searchstr)
@@ -13,6 +13,8 @@ class RESULTS
         $this->inv_file = "";
         $this->inv_data = array();
         $this->inv_admin = array();
+
+        u_writelog("rm_web - results page request");
     }
 
     public function setinventoryfile($resultsurl)

@@ -27,7 +27,7 @@ EOT;
     // get data rows
     $bufr = <<<EOT
     <div class="jumbotron" style="margin-top: 40px;">
-        <h3>Beth Report Summary</h3>
+        <h3>Berth Report Summary</h3>
         <p>
             <dl class="dl-horizontal">
                 <dt>members processed</dt><dd>{member_input}</dd>

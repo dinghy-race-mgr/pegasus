@@ -157,6 +157,11 @@ class RACE
                 $result['maxlap'] = $maxlap;                                      // updates the set laps and current lap
                 $result['currentlap'] = $currentlap;                              // only if we have entries
             }
+            else
+            {
+                // no entries
+                $result['status'] = "notstarted";                                // fixme - should this be noentries
+            }
         }
         else
         {
@@ -205,7 +210,7 @@ class RACE
 
     public function racestate_updatestatus_all($numfleets, $page)
     {
-        $dbg_on = true;
+        $dbg_on = false;
 
         for ($i = 1; $i <= $numfleets; $i++)
         {
@@ -481,7 +486,7 @@ class RACE
         //   - race has started and requested lap is less than current leaders lap
         //   - requested lap is already set
 
-        $dbg_on = true;
+        $dbg_on = false;
 
         $change_lap = false;  // default is for laps not to be changed
         $update = array("result" =>"", "finishlap" => 0, "currentlap" => 0 );
@@ -542,11 +547,11 @@ class RACE
 
         if ($change_lap)
         {
-            u_writedbg("changing finish lap to $laps", __CLASS__, __FUNCTION__, __LINE__);
+            if ($dbg_on) { u_writedbg("changing finish lap to $laps", __CLASS__, __FUNCTION__, __LINE__); }
             if ($mode == "set")
             {
                 $upd_race = $this->race_update(array("finishlap"=>$laps), $fleetnum);
-                u_writedbg("updating t_race for fleet $fleetnum: |laps: $laps |result: $upd_race|", __CLASS__, __FUNCTION__, __LINE__);
+                if ($dbg_on) { u_writedbg("updating t_race for fleet $fleetnum: |laps: $laps |result: $upd_race|", __CLASS__, __FUNCTION__, __LINE__); }
             }
             else      // mode must be shorten
             {
@@ -564,7 +569,7 @@ class RACE
                 else                             // fleet or normal hanicap race - can set the same finish lap for everyone
                 {
                     $upd_race = $this->race_update(array("finishlap"=>$laps), $fleetnum);
-                    u_writedbg("updating t_race for fleet $fleetnum: |laps: $laps |result: $upd_race|", __CLASS__, __FUNCTION__, __LINE__);
+                    if ($dbg_on) { u_writedbg("updating t_race for fleet $fleetnum: |laps: $laps |result: $upd_race|", __CLASS__, __FUNCTION__, __LINE__);}
                 }
             }
 
@@ -576,7 +581,7 @@ class RACE
             {
                 $update = array("result" => "failed", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap);
             }
-            u_writedbg("fleet $fleetnum: |result: {$update['result']} |flap: {$update['finishlap']}|clap: {$update['currentlap']}", __FILE__, __FUNCTION__, __LINE__);
+            if ($dbg_on) { u_writedbg("fleet $fleetnum: |result: {$update['result']} |flap: {$update['finishlap']}|clap: {$update['currentlap']}", __FILE__, __FUNCTION__, __LINE__);}
         }
 
         return $update;
@@ -599,7 +604,7 @@ class RACE
     
     public function race_laps_current($fleetnum)
     {
-        $dbg_on = true;
+        $dbg_on = false;
 
         $sql = "SELECT MAX(lap) AS maxlaps FROM `t_race` WHERE eventid= {$this->eventid} and fleet=$fleetnum GROUP BY fleet";
 
@@ -1666,7 +1671,8 @@ class RACE
     public function entry_calc_et($time_click, $time_start)
     // calculates elapsed time
     {
-        u_writedbg("ARGS ***  time_click:$time_click|time_start:$time_start<br>", __FILE__, __FUNCTION__, __LINE__);
+        $dbg_on = false;
+        if ($dbg_on) {u_writedbg("ARGS ***  time_click:$time_click|time_start:$time_start<br>", __FILE__, __FUNCTION__, __LINE__);}
         return $et = $time_click - $time_start;
     }
 
@@ -1674,7 +1680,8 @@ class RACE
     public function entry_calc_ct($et, $pn, $racetype)
     // calculates corrected time
     {
-        //u_writedbg("ARGS ***  et:$et|pn:$pn|racetype:$racetype<br>", __FILE__, __FUNCTION__, __LINE__);
+        $dbg_on = false;
+
         if ($pn > 0 AND $et > 0)
         {
             if ($racetype == "level")
@@ -1698,6 +1705,7 @@ class RACE
         {
             $ct = 0;
         }
+        if ($dbg_on) {u_writedbg("Corrected  et:$et|pn:$pn|racetype:$racetype|ct:$ct", __FILE__, __FUNCTION__, __LINE__);}
         return $ct;
     }
 

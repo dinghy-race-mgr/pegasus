@@ -11,7 +11,6 @@ class PROGRAMME
         if (empty($_SESSION['prg']) or $force)    // if $SESSION data not created - do it
         {
             $status = $this->import_programme($loc);
-            //echo "<pre>".print_r($_SESSION['prg'],true)."</pre>";
             if (!$status)                          // programme file not found or not readable
             {
                 $_SESSION['error']['problem'] = "Cannot display current event programme";
@@ -27,6 +26,8 @@ class PROGRAMME
             $this->start = $_SESSION['prg']['meta']['first'];
             $this->end   = $_SESSION['prg']['meta']['last'];
         }
+
+        u_writelog("rm_web - programme page request");
     }
 
    public function set_parameters($request)
@@ -302,6 +303,11 @@ class PROGRAMME
                 }
             }
             $status = true;
+        }
+        else
+        {
+            u_writelog("programme: events inventory file not found or not readable or empty [{$this->programme_file}]");
+            $status = false;
         }
         return $status;
     }

@@ -22,12 +22,15 @@ class TIMER
 {
     private $db;
     private $eventid;
+
+
     
     //Method: construct class object
     public function __construct(DB $db, $eventid)
 	{
 	    $this->db = $db;
         $this->eventid = $eventid;
+
 	}    
 
     
@@ -55,7 +58,11 @@ class TIMER
         $_SESSION["$event"]['timerstart'] = 0;
 
         // initialise timerstart in t_event
-        $this->db->db_update( 't_event', array("timerstart"=>0), array("id"=>$this->eventid) );  // fixme also clear timerstart to 0
+        $this->db->db_update( 't_event', array("timerstart"=>0), array("id"=>$this->eventid) );
+
+        // reset time delays for each start and each fleet based on race format definition (in case where they have been
+        // rest as a result of a general recall or an adjusttimer action
+        $this->reset_start_delays();
 
         // initialise start times in session
         $this->set_start_times("stop", 0, $_SESSION["e_{$this->eventid}"]['rc_startscheme'], $_SESSION["e_{$this->eventid}"]['rc_startint']);
@@ -67,6 +74,17 @@ class TIMER
         u_writelog("timer stopped at ".gmdate("H:i:s",$stoptime), $this->eventid);
     }
 
+    private function reset_start_delays()
+    {
+        // sets startdelay information for each fleet (and start) back to values specified in the race format configuration
+        for ($i=1; $i<=$_SESSION["e_{$this->eventid}"]['rc_numfleets']; $i++)
+        {
+            $start_num = $_SESSION["e_{$this->eventid}"]["fl_$i"]['startnum'];
+            $start_delay = r_getstartdelay($start_num, $_SESSION["e_{$this->eventid}"]['rc_startscheme'], $_SESSION["e_{$this->eventid}"]['rc_startint']);
+            $_SESSION["e_{$this->eventid}"]["st_$start_num"]['startdelay'] = $start_delay;
+            $_SESSION["e_{$this->eventid}"]["fl_$i"]['startdelay'] = $start_delay;
+        }
+    }
 
     private function set_start_times($status, $time, $scheme, $start_interval)
     {
@@ -74,7 +92,7 @@ class TIMER
 
         for ($j=1; $j<=$_SESSION["e_{$this->eventid}"]['rc_numstarts']; $j++)
         {
-            // set start clock time in hh:mm:ss  // FIXME BEING SET TO 00:00:00
+            // set start clock time in hh:mm:ss
             if ($status === "start")   // timer started
             {
                 $_SESSION["e_{$this->eventid}"]["st_$j"]['starttime'] = gmdate("H:i:s", $time + $_SESSION["e_{$this->eventid}"]["st_$j"]['startdelay']);
@@ -96,12 +114,13 @@ class TIMER
         for ($i=1; $i <= $_SESSION["$event"]['rc_numfleets']; $i++)    // loop over each fleet
         {
             $start_delay = $_SESSION["$event"]["st_{$_SESSION["$event"]["fl_$i"]['startnum']}"]['startdelay'];
-            // set actual start time depending on timer status (started | stopped)
+
 
             //u_writedbg("fleet $i status: $status time: $time startdelay: $start_delay ", __FILE__, __FUNCTION__, __LINE__); // debug
+
+            // set actual start time depending on timer status (started | stopped)
             $status === "inprogress" ?  $fleet_start = $time + $start_delay : $fleet_start = 0;
 
-                        
             // set starttime and status in t_racestate
             $rsupdate = array(
                 "starttime"  => gmdate("H:i:s",$fleet_start),
@@ -122,12 +141,27 @@ class TIMER
     
     public function setrecall($startnum, $restarttime)
     {
-        $event = "e_$this->eventid";
-        $newstartdelay = strtotime($restarttime) - $_SESSION["$event"]['timerstart'];
+        $event = "e_{$this->eventid}";
+        $newstartdelay = strtotime($restarttime) - $_SESSION["e_{$this->eventid}"]['timerstart'];
+
+        //u_writedbg("setrecall - start $startnum restarttime: $restarttime | newstartdelay : $newstartdelay", __FILE__, __FUNCTION__, __LINE__);
  
         // update starttime and delay
-        $_SESSION["$event"]["st_$startnum"]['startdelay'] = $newstartdelay;
-        $_SESSION["$event"]["st_$startnum"]['starttime']  = $_SESSION["$event"]['timerstart'] + $newstartdelay;
+        $_SESSION["e_{$this->eventid}"]["st_$startnum"]['startdelay'] = $newstartdelay;
+        $_SESSION["e_{$this->eventid}"]["st_$startnum"]['starttime']  = date("H:i:s", $_SESSION["e_{$this->eventid}"]['timerstart'] + $newstartdelay);
+
+        //u_writedbg("setrecall - start $startnum delay: {$_SESSION["e_{$this->eventid}"]["st_$startnum"]['startdelay']} |
+        //  starttime: {$_SESSION["e_{$this->eventid}"]["st_$startnum"]['starttime']}", __FILE__, __FUNCTION__, __LINE__);
+
+        for ($i=1; $i<=$_SESSION["e_{$this->eventid}"]['rc_numfleets']; $i++)
+        {
+            if ($_SESSION["e_{$this->eventid}"]["fl_$i"]['startnum'] == $startnum)
+            {
+                $_SESSION["e_{$this->eventid}"]["fl_$i"]['startdelay'] = $newstartdelay;
+                $_SESSION["e_{$this->eventid}"]["fl_$i"]['starttime'] =  $_SESSION["e_{$this->eventid}"]['timerstart'] + $newstartdelay;
+                //u_writedbg("setrecall - fleet $startnum delay: {$_SESSION["e_{$this->eventid}"]["fl_$i"]['startdelay']}", __FILE__, __FUNCTION__, __LINE__);
+            }
+        }
         
 //        u_writedbg("start reset: $startnum: time = |{$_SESSION["$event"]["st_$startnum"]['starttime']}| delay = |{$_SESSION["$event"]["st_$startnum"]['startdelay']}|", __FILE__, __FUNCTION__, __LINE__);
 //        u_writedbg("general recall - start $startnum - restart at ".date("H:i:s", $restarttime), __FILE__, __FUNCTION__, __LINE__);
@@ -136,7 +170,7 @@ class TIMER
         $update = $this->db->db_update("t_race", array("starttime"=>$restarttime), array("eventid"=>"$this->eventid", "start"=>"$startnum"));
         $update = $this->db->db_update("t_racestate", array("starttime"=>$restarttime, "startdelay"=>$newstartdelay), array("eventid"=>"$this->eventid", "start"=>"$startnum"));
                 
-        u_writelog("general recall - start $startnum - restart at ".date("H:i:s", $restarttime), $this->eventid);      
+        u_writelog("general recall - start $startnum - restart at ".date("H:i:s", strtotime($restarttime)), $this->eventid);
     }
 }
 

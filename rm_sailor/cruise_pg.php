@@ -63,9 +63,9 @@ if ($_SESSION['events']['numevents'] > 0)
     $_SESSION['pagefields']['body'] = $tmpl_o->get_template("cruise_control", $boat_fields,
         array('state'=>"submitentry", 'event-list'=>$signon_entry_list, "declare_opt" => $_SESSION['sailor_cruiser_declare']));
 
-    // add automated timed return to search page if usage and delay are configured
+    // add automated timed return to index page if usage and delay are configured
     $_SESSION['pagefields']['body'].= add_auto_continue($_SESSION['usage'], $_SESSION['sailor_cruise_sleep_delay'],
-        $external, "search_pg.php");
+        $external, "index.php");
 }
 else
 {

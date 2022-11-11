@@ -216,7 +216,7 @@ elseif ($pagestate == "process")    // run through process workflow
                 "inc-club"      => $series['opt_clubnames'],                                          // include club name for each competitor
                 "inc-turnout"   => $series['opt_turnout'],                                            // include turnout statistics
                 "race-label"    => $series['opt_racelabel'],                                          // use race number or date for labelling races
-                "club-logo"     => $_SESSION['baseurl']."/config/images/club_logo.jpg",               // if set include club logo
+                "club-logo"     => "../../club_logo.jpg",                                             // if set include club logo
                 "styles" => $_SESSION['baseurl']."/config/style/result_{$series['opt_style']}.css"    // styles to be used
             );
 
@@ -224,8 +224,7 @@ elseif ($pagestate == "process")    // run through process workflow
             startProcess($step, $row_start[$step], "Publishing series results ... ", "warning");
 
             $series_notes = "";   // fixme - curently not used
-            //u_writedbg("<pre>BEFORE process_series_file: ".print_r($opts,true)."|".$_SESSION["e_$eventid"]["ev_seriescode"]."|".print_r($args,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
-            $status = process_series_file($opts, $_SESSION["e_$eventid"]["ev_seriescode"], strtoupper($args['result_status']), $series_notes);
+            $status = process_series_file($opts, $event['series_code'], strtoupper($args['result_status']), $series_notes);
             sleep(2);
 
             //u_writedbg("<pre>STATUS: ".print_r($status,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);

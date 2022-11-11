@@ -7,7 +7,7 @@
 // start session
 session_id('sess-rmweb');
 session_start();
-error_reporting(E_ERROR);  // turn of warnings
+error_reporting(E_ERROR);  // turn off warnings
 
 // includes
 require_once ("./include/pages.php");
@@ -17,7 +17,8 @@ require_once ("./include/programme.php");
 require_once ("./include/results.php");
 
 // initialise application
-$cfg = parse_ini_file("./rm_web.ini", true);
+$cfg = parse_ini_file("../config/rm_web.ini", true);
+$_SESSION['logfile'] = $cfg['logfile'];
 
 // set opening page to the rm_web menu page unless page is defined as parameter
 $page = "menu";
@@ -32,6 +33,7 @@ if ($page == "menu")
 elseif ($page == "programme" AND $cfg['pages']['programme'])
 {
     $if_o->pg_programme();
+
 }
 elseif ($page == "results"  AND $cfg['pages']['results'])
 {

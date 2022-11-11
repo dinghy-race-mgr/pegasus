@@ -77,12 +77,12 @@ if ($pagestate == "init")               // display form with lap times for each 
 }
 elseif ($pagestate == "submit")       // update t_race and t_lap records
 {
+    $dbg_on = false;
+
     // get existing record and change lap times to array
     $old = $race_o->entry_get_timings($entryid);
     $laptimes = $race_o->entry_laptimes_get($entryid);
-//    u_writedbg("<pre>RESULT REQUEST ARR:".print_r($_REQUEST,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
-//    u_writedbg("<pre>RESULT OLD ARR:".print_r($old,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
-//    u_writedbg("<pre>RESULT LAPTIMES ARR:".print_r($laptimes,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+    if ($dbg_on) { u_writedbg("<pre>RESULT REQUEST ARR:".print_r($_REQUEST,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); }
 
     // get returned field values
     $edit = get_edit_data($_REQUEST);
@@ -97,7 +97,6 @@ elseif ($pagestate == "submit")       // update t_race and t_lap records
     }
     else // process changes
     {
-
         // check which fields have changed - remove unchanged fields and create audit string for log
         $lap_changed = false;
         $etime_changed = false;
@@ -110,57 +109,36 @@ elseif ($pagestate == "submit")       // update t_race and t_lap records
             if ($k == "etime") {$etime = $v; }
             if ($k == "pn")    {$pn = $v; }
 
-            //$old[$k] != $edit[$k] ? $change = true : $change = false;
-            //$changetxt = var_export($change, true);
-            //$changetxt.= var_export($old[$k], true);
-            //$changetxt.= var_export($edit[$k], true);
-            //u_writedbg("<pre>COMPARE $k : $changetxt </pre>", __FILE__, __FUNCTION__, __LINE__);
-
-            if ($old[$k] != $edit[$k]) {
+            if ($old[$k] != $edit[$k])
+            {
                 $edit_str .= "| $k:$v ";
                 if ($k == "lap") { $lap_changed = true; }
                 if ($k == "etime") { $etime_changed = true; }
-            } else {
+            }
+            else
+            {
                 unset($edit[$k]);
             }
         }
-        u_writedbg("<pre>RESULT EDIT CHANGES:   $edit_str </pre>", __FILE__, __FUNCTION__, __LINE__);
+        if ($dbg_on) { u_writedbg("<pre>RESULT EDIT string:   $edit_str </pre>", __FILE__, __FUNCTION__, __LINE__); }
 
-
+        $time = array();
         if ($etime_changed or $lap_changed) // assume just changing the time recorded for the finish lap
         {
             $race_scoring = $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['scoring'];
 
-            $time = update_times($lap, $etime, $pn, $old, $laptimes, $race_scoring);   //*
-            $result_upd_arr = array_merge($edit, $time);
-            $upd = update_lap($entryid, $old['fleet'], $lap, $time);
+            $time = update_times($lap, $etime, $pn, $old, $laptimes, $race_scoring);
 
-//            if ($etime_changed and !$lap_changed)   // simple updating finish time
-//            {
-//                $time = update_times($lap, $etime, $pn, $old, $laptimes, $race_scoring);   //*
-//                $result_upd_arr = array_merge($edit, $time);
-//                $upd = update_lap($entryid, $old['fleet'], $lap, $time);
-//            }
-//            elseif ($lap_changed)
-//            {
-//                $row = $race_o->entry_lap_get($entryid, "lap", $lap);
-//                if (empty($row))                         // lap doesn't exist create it
-//                {
-//                    $time = update_times($lap, $etime, $pn, $old, $laptimes, $race_scoring);
-//                    $result_upd_arr = array_merge($edit, $time);
-//                    $upd = update_lap($entryid, $old['fleet'], $lap, $time);
-//                }
-//                else                                     // lap does exist - change time
-//                {
-//                    $time = update_times($lap, $row['etime'], $pn, $old, $laptimes, $race_scoring);
-//                    $result_upd_arr = array_merge($edit, $time);
-//                    $upd = update_lap($entryid, $old['fleet'], $lap, $time);
-//                }
-//            }
+            $upd = update_lap($entryid, $old['fleet'], $lap, $time);
         }
 
+        // combine edit and time changes
+        if ($dbg_on) { u_writedbg("<pre>arr1 - edit:".print_r($edit,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); }
+        if ($dbg_on) { u_writedbg("<pre>arr2 - time:".print_r($time,true)."</pre>\"", __FILE__, __FUNCTION__, __LINE__); }
+        $result_upd_arr = array_merge($edit, $time);
+        if ($dbg_on) { u_writedbg("<pre>arr3 - combined:".print_r($result_upd_arr,true)."</pre>\"", __FILE__, __FUNCTION__, __LINE__); }
+
         // update race result in t_race
-        u_writedbg("<pre>ENTRY UPDATE ARR: <br>".print_r($result_upd_arr,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
         $update = $race_o->entry_update($entryid, $result_upd_arr);
 
         // update results status - needs recalculating
@@ -178,10 +156,6 @@ EOT;
             exit();
         }
     }
-
-//    // update race result in t_race
-//    u_writedbg("<pre>ENTRY UPDATE ARR: |et: $etime_changed|lap: $lap_changed| <br>".print_r($result_upd_arr,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
-//    $update = $race_o->entry_update($entryid, $result_upd_arr);
 
 }
 else  // pagestate not recognised
@@ -312,13 +286,12 @@ function update_lap($entryid, $fleetnum, $lap, $times)
 {
     global $race_o;
 
-    u_writedbg("<pre>UPDATE LAP: |$entryid|$fleetnum|$lap|".print_r($times,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
-
     // update t_lap with new times  (clicktime, etime, ctime)
     $del = $race_o->entry_lap_delete($entryid, $lap);
     $lap_edit = array("lap" => $lap, "clicktime" => $times['clicktime'], "etime" => $times['etime'], "ctime" => $times['ctime']);
     $add_lap = $race_o->entry_lap_add($fleetnum, $entryid, $lap_edit);
-    u_writedbg("<pre>LAP UPDATE ARR: <br>".print_r($lap_edit,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
+
+    u_writedbg("<pre>LAP EDIT UPDATE: entry: $entryid| fleet: $fleetnum| lap: $lap|<br>".print_r($lap_edit,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
 
     return $add_lap;
 }

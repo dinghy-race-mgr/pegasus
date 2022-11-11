@@ -215,7 +215,6 @@ class PAGES
        // set script parameters
        $year = checkarg("year", "checkint","",date("Y"));           // results year - defaults to this year
        $searchstr = checkarg("searchstr", "set", "", "");           // specific search str for event name - defaults to empty
-       u_writelog("results: year: $year | searchstr: $searchstr");
 
        $rst_o = new RESULTS($year, $searchstr);
 

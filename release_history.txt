@@ -13,3 +13,12 @@ Version 10.1.2 - Second Operational Release - 24 October 2022
     - improved laps edit function on timer (tabbed) page
     - results processing (including sftp transfer) added to rm_admin
     - programme transfer added to rm_admin
+
+Version 10.1.3 - Third Operational Release - 2 November 2022
+    Bootstrap 3.4.1  PHP 7.2.34
+    - resolved issues with running mysql in strict mode (included small modifications to schema for
+      t_race, t_racestate, and t_lap
+    - fixed archiving into a_ tables
+    - resolved issues with demo mode for Save Results, and Closing race
+    - resolved issue with rm_sailor search - integer search strings must match exactly with class names
+    - modified schema for t_finish to support future pursuit implementation

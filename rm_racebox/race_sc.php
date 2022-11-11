@@ -16,7 +16,7 @@
 $loc        = "..";                                                 // relative path from script to top level folder
 $page       = "race";     // 
 $scriptname = basename(__FILE__);
-$dbg_on     = true;
+$dbg_on     = false;
 $stop_here  = false;
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");

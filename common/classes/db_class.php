@@ -282,7 +282,7 @@ class DB
 
     public function db_update( $table, $variables = array(), $where = array(), $limit = '' )
     {
-        $dbg_on = true;
+        $dbg_on = false;
         //$trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'];
         //if ($dbg_on) { u_writedbg("<pre>".print_r($trace, true)."</pre>",__FILE__,__FUNCTION__,__LINE__); }
 

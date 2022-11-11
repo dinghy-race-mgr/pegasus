@@ -30,7 +30,7 @@ class WEB_TEMPLATE
         <script type="text/javascript" src="{ossloc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
 
         <!-- Custom styles for this template -->
-        <link href="{loc}/style/custom.css" rel="stylesheet">
+        <link href="{loc}/style/rm_web.css" rel="stylesheet">
 
         </head>
         <body style="{body_style}">

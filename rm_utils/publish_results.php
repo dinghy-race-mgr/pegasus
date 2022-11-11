@@ -249,7 +249,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
                         "inc-club"      => $series['opt_clubnames'],                                          // include club name for each competitor
                         "inc-turnout"   => $series['opt_turnout'],                                            // include turnout statistics
                         "race-label"    => $series['opt_racelabel'],                                          // use race number or date for labelling races
-                        "club-logo"     => $_SESSION['baseurl']."/config/images/club_logo.jpg",               // if set include club logo
+                        "club-logo"     => "../../club_logo.jpg",               // if set include club logo
                         "styles" => $_SESSION['baseurl']."/config/style/result_{$series['opt_style']}.css"    // styles to be used
                     );
 

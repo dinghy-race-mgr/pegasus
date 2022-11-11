@@ -26,8 +26,6 @@ $_SESSION['daylight_saving']= array(
 );
 
 $_SESSION['webcollect']= array(
-    "access_token"            => "986T9N5ZDSQFDBWAR4DCKOKEZS35YDFEP49KBBWMKJKXMKEHBPZOWUFC6HPZG6CS",  // FIXME this needs more security
-    "organisation_short_name" => "STARCROSSYC",
     "firstname_fld"           => "firstname",
     "familyname_fld"          => "lastname",
     "phone_fld"               => "mobile_phone",
@@ -59,6 +57,8 @@ $_SESSION['rotamap'] = array(
     "galley"   => "club_duty",
     "bar"      => "club_duty",
 );
+
+$_SESSION['event_card_duties'] = "race|safety|house";
 
 $_SESSION['eventcard_fields'] = array(
     "date" => "Date",

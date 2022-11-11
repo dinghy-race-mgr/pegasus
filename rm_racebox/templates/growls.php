@@ -265,18 +265,18 @@ $g_start_timer_continue = array(
 
 $g_start_timer_adjusted = array(
     "type" => "success",
-    "msg"  => "<b>Master Timer reset with first preparatory signal at %s &hellip;</b>",
+    "msg"  => "<b>Master Timer set with first preparatory signal at %s &hellip;</b>",
 );
 
 $g_start_recall_fail = array(
     "type" => "danger",
     "delay"=> "0",
-    "msg"  => "<b>setting restart time - FAILED</b><br>New start time must be later than original start time",
+    "msg"  => "<b>setting General Recall restart time - FAILED</b><br>New start time must be later than original start time",
 );
 
 $g_start_recall_success = array(
     "type" => "success",
-    "msg"  => "<b>Start %s - start time reset to %s</b>",
+    "msg"  => "<b>General Recall Start %s - start time reset to %s</b>",
 );
 
 

@@ -61,11 +61,11 @@ if ($eventid AND $pagestate)
 /* ------- TIME LAP FOR BOAT ------------------------------------------------------------------------------- */
     if ($pagestate == "timelap")
     {
-        u_writedbg("<pre>passed to timelap: ".print_r($_REQUEST,true)."</pre>", __CLASS__,__FUNCTION__,__LINE__);
+        //u_writedbg("<pre>passed to timelap: ".print_r($_REQUEST,true)."</pre>", __CLASS__,__FUNCTION__,__LINE__);
 
         $if_err = false;
         empty($_REQUEST['entryid']) ? $if_err = true : $entryid = $_REQUEST['entryid'];
-        empty($_REQUEST['start'])   ? $if_err = true : $start = $_REQUEST['start'];
+        empty($_REQUEST['start'])   ? $if_err = true : $start = $_REQUEST['start'];    // need to check this
         empty($_REQUEST['boat'])    ? $if_err = true : $boat = $_REQUEST['boat'];
         empty($_REQUEST['status'])  ? $if_err = true : $boatstatus = $_REQUEST['status'];
         empty($_REQUEST['finishlap']) ? $if_err = true : $finishlap = $_REQUEST['finishlap'];
@@ -113,6 +113,7 @@ if ($eventid AND $pagestate)
                     $msg = "lap $newlap: $boat -- first finished";
                     u_growlSet($eventid, $page, $g_timer_firstfinish, array($boat));
                 }
+                // FIXME entry_calc_et is already called in entry_time (could call it outside of entry_time and pass it as arg)
                 $etime_secs = $race_o->entry_calc_et($_SERVER['REQUEST_TIME'], $_SESSION["e_$eventid"]["fl_$fleet"]['starttime']);
                 $msg.= "[ et: ". gmdate("H:i:s", $etime_secs)." ($etime_secs secs) ]";
 
@@ -142,7 +143,7 @@ if ($eventid AND $pagestate)
 /* ------- FINISH A BOAT ------------------------------------------------------------------------------- */
     elseif ($pagestate == "finish")   // FIXME this code should be combined with timelap above
     {
-        u_writedbg("<pre>passed to finish: ".print_r($_REQUEST,true)."</pre>", __CLASS__,__FUNCTION__,__LINE__);
+        //u_writedbg("<pre>passed to finish: ".print_r($_REQUEST,true)."</pre>", __CLASS__,__FUNCTION__,__LINE__);
 
         $if_err = false;
         empty($_REQUEST['entryid']) ? $if_err = true : $entryid = $_REQUEST['entryid'];
@@ -198,7 +199,7 @@ if ($eventid AND $pagestate)
 /* ------- SET SCORING CODE FOR BOAT ----------------------------------------------------------------------- */
     elseif  ($pagestate == "setcode")
     {
-        u_writedbg("<pre>passed to setcode: ".print_r($_REQUEST,true)."</pre>", __CLASS__,__FUNCTION__,__LINE__);
+        //u_writedbg("<pre>passed to setcode: ".print_r($_REQUEST,true)."</pre>", __CLASS__,__FUNCTION__,__LINE__);
 
         if (!empty($_REQUEST['fleet']))
         {

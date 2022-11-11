@@ -110,10 +110,10 @@ class ROTA
             foreach ($duty_codes as $row) { $codes["{$row['code']}"] = $row['label']; }
         }
 
+        $order = "FIELD(dutycode, 'ood_p', 'ood_c', 'ood_a', 'ood_b', 'safety_d', 'safety_c', 'galley','bar')";   // fixme - this should not be hardcoded
+        empty($dutycode) ? $where = "eventid = $eventid" : $where = "eventid = $eventid AND dutycode = '$dutycode' ";
         $duties = array();
-        $query = "SELECT * FROM t_eventduty WHERE eventid = $eventid ";
-        if (!empty($dutycode)) { $query.= " AND dutycode = '$dutycode' "; }
-
+        $query = "SELECT * FROM t_eventduty WHERE ".$where." ORDER BY ".$order;
         $duties = $this->db->db_get_rows( $query );
 
         if (empty($duties))

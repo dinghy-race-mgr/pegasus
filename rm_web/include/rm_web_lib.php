@@ -31,7 +31,7 @@ function checkarg($arg, $mode, $check, $default = "")
 
 function u_writelog($logmessage)
 {
-    error_log(date('Y-m-d H:i:s')." -- ".$logmessage.PHP_EOL, 3, "log");
+    error_log(date('Y-m-d H:i:s')." -- ".$logmessage.PHP_EOL, 3, $_SESSION['logfile']);
 }
 
 function u_array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
