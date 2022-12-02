@@ -114,6 +114,21 @@ function race_status_display($params)
                     $fleet['status'] = "not started";
                 }
             }
+
+            // get clock parameters
+            $event_state   = r_decoderacestatus($params['race-status']);
+            if ($event_state == "in progress" or $params['race-status'] == "abandoned")
+            {
+                $start_master = $params['timer-start'] + r_getstartdelay($fleet['fleet'], $params['start-scheme'], $params['start-interval']) - time();
+            }
+            else
+            {
+                $start_master = r_getstartdelay($fleet['fleet'], $params['start-scheme'], $params['start-interval']);
+            }
+            $event_state == "not started" ? $start_delta = "00:00:00" : $start_delta = gmdate("H:i:s", $start_master);
+
+            // get timer info
+
             
             $table.= <<<EOT
             <tr class="lead">
@@ -125,7 +140,10 @@ function race_status_display($params)
                 <td style="text-align: center">$num_racing</td>
                 <td align="center">$setlaps</td>
                 <td style="text-align: center">$laps</td>
-                <td style="text-align: center">{$fleet['elapsed']}</td>
+                <!-- td style="text-align: center">{$fleet['elapsed']}</td -->
+                <td >
+                    <div class="timer-sm" style="margin: 0 auto;" id="clock" data-clock="c1" data-countdown="$start_master">$start_delta</div>
+                </td>
                 <td style="text-align: center">{$fleet['status']}</td>
             </tr>
 EOT;
@@ -204,12 +222,35 @@ function fm_changerace($params=array())
 
     $entry_select = u_selectcodelist($db_o->db_getsystemcodes("entry_type"), $params['entry-option'], false);
 
+    if ($params['pursuit'])
+    {
+        $start_interval = <<<EOT
+        <input type="hidden" id="start_interval" name="start_interval" value=""/>
+EOT;
+
+    }
+    else
+    {
+        $start_interval = <<<EOT
+        <div class="form-group">
+            <label class="$labelwidth control-label">Time Between Starts (mins)</label>
+            <div class="$fieldwidth inputfieldgroup">
+                <input type="number" class="form-control" id="start_interval" name="start_interval" value=""
+                    placeholder="interval between starts (mins) - blank if no change "
+                    data-fv-integer="true"
+                    data-fv-integer-message="must be number of minutes"
+                />
+            </div>
+        </div>
+EOT;
+    }
+
     $html = <<<EOT
         <!-- instructions -->
         <div class="alert alert-dismissable well well-sm" role="alert">
             <button type="button" class="close" style="right: 1px !important" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <p class="text-info lead">Just edit the details you want to change.
-            <p class="text-info"><b>Want a New Race?</b> - restart raceManager: RACEBOX and select the <span class="label label-info">Add Race</span> option</p>
+            <p class="text-info"><b>Want a New Race?</b> - restart raceManager: RACEBOX and select the <kbd>Add Race</kbd> option</p>
         </div>
         
         <!-- field #0 - ood name -->
@@ -258,7 +299,8 @@ function fm_changerace($params=array())
         </div>
 
         <!-- field #4 - time interval between starts -->
-        <div class="form-group">
+        $start_interval
+        <!-- div class="form-group">
             <label class="$labelwidth control-label">Time Between Starts (mins)</label>
             <div class="$fieldwidth inputfieldgroup">
                 <input type="number" class="form-control" id="start_interval" name="start_interval" value=""
@@ -267,7 +309,7 @@ function fm_changerace($params=array())
                     data-fv-integer-message="must be number of minutes"
                 />
             </div>
-        </div>
+        </div -->
 
         <!-- field #5 - event notes -->
         <div class="form-group">
@@ -471,78 +513,6 @@ function fm_reset_notok($param=array())
         <p>{reason}</p>
         <p>{info}</p>
 EOT;
-    return $html;
-}
-
-
-function fm_race_pursuitstart($params=array(), $data)
-{
-
-$labelwidth = "col-xs-3";
-$fieldwidth = "col-xs-7";
-
-if ($params['pytype'] != "personal")
-{
-    $list = "";
-    foreach ($data as $k => $class)
-    {
-        $list.= "<option value=\"$k\" >$class</option>";
-    }
-
-    $scratch = <<<EOT
-    <div class="form-group">
-        <label class="$labelwidth control-label">First Start</label>
-        <div class="$fieldwidth selectfieldgroup">
-            <select class="form-control" name="scratchid"
-                 required data-fv-notempty-message="Choose the first (slowest) class start for this race">
-                <option value="">pick slowest class</option>
-                $list
-            </select>
-        </div>
-    </div>
-EOT;
-    }
-    else
-    {
-        $scratch = <<<EOT
-        <input type="hidden" name="scratchid" value="0" \>
-EOT;
-    }
-
-    $html = <<<EOT
-     <p>This form gets the details necessary to calculate the pursuit start times.<br>
-         <span class="text-danger">
-             <b>The list of start times will open in a new browser window for you to print</b>
-         <span>
-     </p>
-
-     <!-- field 1 - race length -->
-     <div class="form-group">
-         <label class="$labelwidth control-label">Race Length</label>
-         <div class="$fieldwidth inputfieldgroup">
-             <input type="text" class="form-control" id="start" name="length" value=""
-                    placeholder="race length in minutes"
-                    required data-fv-notempty-message="we need the pursuit race time in minutes"/>
-         </div>
-     </div>
-
-     <!-- field 2 - slowest class -->
-     $scratch
-
-     <!-- field 3 - start interval -->
-     <div class="form-group">
-         <label class="$labelwidth control-label">Start Interval (secs)</label>
-         <div class="$fieldwidth selectfieldgroup">
-             <select class="form-control" name="resolution">
-                 <option value="60" selected>60</option>
-                 <option value="30" >30</option>
-                 <option value="10" >10</option>
-             </select>
-         </div>
-     </div>
-
-EOT;
-
     return $html;
 }
 

@@ -235,7 +235,7 @@ class SERIES_RESULT
 
         if (empty($this->testfile))
         {
-            if ($this->report) { echo "- getting series data from database for {$this->series_code}<br>"; }
+            if ($this->report) { u_writedbg("getting series data from database for {$this->series_code}",__FILE__,__FUNCTION__,__LINE__); }
 
             // get array of event ids in series and collect some basic information on races completed and turnouts
             $fatalerr = $this->set_eventarr($this->series_code, $event_list);
@@ -290,7 +290,7 @@ class SERIES_RESULT
             if ($this->err_fatal) {
                 return $this->err_fatal;
             } else {
-                if ($this->report) { u_writedbg(".... results info". print_r($this->results,true),__FILE__,__FUNCTION__,__LINE__); }
+                if ($this->report) { u_writedbg(".... results info". print_r($this->rst,true),__FILE__,__FUNCTION__,__LINE__); }
             }
         }
         else
@@ -578,7 +578,11 @@ class SERIES_RESULT
     {
         // get unique competitors for series
         $list = implode(",", $this->event_arr);
-        $query = "SELECT *, count(*) as 'instances' FROM `t_result` WHERE eventid IN ($list) GROUP BY `competitorid`";
+
+        $query = "SELECT a.competitorid, b.helm, b.crew, b.club, c.classname as class, b.sailnum, max(fleet) as fleet, max(pn) as pn
+                  FROM `t_result` as a JOIN t_competitor as b ON a.competitorid=b.id JOIN t_class as c ON b.classid=c.id 
+                  WHERE eventid IN ($list) GROUP BY a.competitorid";
+
         // u_writedbg("$query", __FILE__, __FUNCTION__, __LINE__); //debug:);
         $sailors = $this->db->db_get_rows($query);
 
@@ -601,7 +605,6 @@ class SERIES_RESULT
                 'sailno'  => $sailor['sailnum'],
                 'fleet'   => $sailor['fleet'],
                 'pn'      => $sailor['pn'],
-                'note'    => $sailor['note'],
             );
         }
 
@@ -610,7 +613,7 @@ class SERIES_RESULT
 
     private function set_resultsinfo()
     {
-        $rst = array();
+        $data = array();
 
         foreach ($this->sailor as $k=>$comp)
         {
@@ -630,7 +633,7 @@ class SERIES_RESULT
                     //u_writedbg("<pre>race included</pre>", __FILE__, __FUNCTION__, __LINE__);
 
                     // get data for this result
-                    $col = array_column($results, 'eventid');
+                    //$col = array_column($results, 'eventid');
                     $eventkey = array_search($race['eventid'], array_column($results, 'eventid'));
                     if ($eventkey !== false)
                     {

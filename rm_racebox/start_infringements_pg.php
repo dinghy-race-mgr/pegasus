@@ -86,7 +86,7 @@ elseif ($pagestate == "setcode")
     }
     else
     {
-        error_log("start_infrigements_pg.php/pagestate=setcode : fleet argument not set", 3, $_SESSION['syslog']);
+        error_log("start_infringements_pg.php/pagestate=setcode : fleet argument not set", 3, $_SESSION['syslog']);
     }
 
     empty($_REQUEST['fleet']) ? $err = true : $fleet = $_REQUEST['fleet'];

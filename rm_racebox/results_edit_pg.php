@@ -39,7 +39,8 @@ require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
 
 // templates
-$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/results_tm.php"));
+$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php",
+                             "./templates/results_tm.php", "./templates/pursuit_tm.php"));
 
 $pagefields = array(
     "id"         => "resultedit",
@@ -58,22 +59,109 @@ $race_o = new RACE($db_o, $eventid);    // create race object
 
 if ($pagestate == "init")               // display form with lap times for each lap
 {
-    $old = $race_o->entry_get_timings($entryid);
-    $old["eventid"] = $eventid;
 
-    $params = array("eventid" => $eventid,
-                               "entryid" => $entryid,
-                               "scoring" => $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['scoring'],
-                               "resultcodes" => $_SESSION['resultcodes'],
-                               "points_allocation" => $_SESSION['points_allocation'],
-                               "laptimes" => $old["laptimes"],
-                               "code" => $old['code'],
-                               "etime" => $old['etime'],
+
+    if ($_SESSION["e_$eventid"]['pursuit'])
+    {
+        // get data for selected entry
+
+        //UPDATE SCHEMA t_finish - myclub, p_dev, p_stx, p_wsc, racebox
+
+        // (form fields) entryid, helm, sailnum, crew, club, lap, finishline, finishpos, code, penalty, note
+
+        /*
+        MAPPING
+        (entryid)
+        helm,           t_race.helm
+        crew,           t_race.crew
+        sailnum,        t_race.sailnum
+        club,           t_race.club
+        lap,            t_race.lap
+        finishline,     t_finish.finishline
+        finishpos,      t_finish.finishorder      ?? or is the race finish
+        code,           t_race.code
+        penalty,        t_race.penalty
+        note            t_race.note
+
+        id
+eventid
+entryid
+finishline
+finishorder
+raceplace
+status
+upddate
+updby
+createdate
+
+         */
+
+        $old = $race_o->entry_get_timings($entryid);
+        $old["eventid"] = $eventid;
+        $old["fldw"] = "4";
+        $old["lblw"] = "3";
+        $old["hlpw"] = "4";
+
+        $resultcodes = $_SESSION['resultcodes'];                          // remove codes not relevant to pursuit race
+        unset($resultcodes['BFD']);
+        unset($resultcodes['UFD']);
+
+        $params = array(
+            "eventid"           => $eventid,                                                     //
+            "entryid"           => $entryid,                                                     //
+            "scoring"           => $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['scoring'],     //
+            "resultcodes"       => $resultcodes,                                                 //
+            "points_allocation" => $_SESSION['points_allocation'],                               //
+            "laptimes"          => $old["laptimes"],
+            "code"              => $old['code']                                                  //
         );
 
-    $pagefields['body'] = $tmpl_o->get_template("fm_result_edit", $old, $params);  // create edit form
-    echo $tmpl_o->get_template("basic_page", $pagefields, array("form_validation"=>true));                  // create page with form
+        $pagefields['body'] = $tmpl_o->get_template("fm_result_edit_pursuit", $old, $params);                    // create edit form
+        echo $tmpl_o->get_template("basic_page", $pagefields, array("form_validation"=>true));           // create page with form
+    }
+    else
+    {
+        // get data for selected entry
+        $old = $race_o->entry_get_timings($entryid);
+        $old["eventid"] = $eventid;
+        $old["fldw"] = "4";
+        $old["lblw"] = "3";
+        $old["hlpw"] = "4";
 
+        /*
+         * SELECT id, fleet, start, class, sailnum, helm, crew, club, pn, clicktime, lap, finishlap, etime, code, status, penalty, note,
+                (SELECT GROUP_CONCAT(b.etime ORDER BY b.lap ASC SEPARATOR \",\")
+                FROM t_lap as b
+                WHERE b.entryid=a.id and a.eventid = {$this->eventid}
+                GROUP BY b.entryid) AS laptimes
+                FROM t_race as a
+                WHERE a.eventid = {$this->eventid} AND a.id = $id
+         *
+         */
+
+        $params = array(
+            "eventid"           => $eventid,
+            "entryid"           => $entryid,
+            "scoring"           => $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['scoring'],
+            "resultcodes"       => $_SESSION['resultcodes'],
+            "points_allocation" => $_SESSION['points_allocation'],
+            "laptimes"          => $old["laptimes"],
+            "code"              => $old['code'],
+            "etime"             => $old['etime']
+        );
+
+        $pagefields['body'] = $tmpl_o->get_template("fm_result_edit", $old, $params);                    // create edit form
+        echo $tmpl_o->get_template("basic_page", $pagefields, array("form_validation"=>true));           // create page with form
+    }
+
+}
+elseif ($pagestate == "submit-pursuit")
+{
+    echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
+    // FIXME add the processing
+    // update t_race (does it calculate overall pos on the fly)?
+    // update t_finish
 }
 elseif ($pagestate == "submit")       // update t_race and t_lap records
 {

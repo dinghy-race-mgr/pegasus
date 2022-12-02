@@ -170,7 +170,7 @@ EOT;
 }
 
 
-// Change Finish Lap buton
+// Change Finish Lap button  (if not a pursuit race)
 if (!$_SESSION["e_$eventid"]['pursuit'])
 {
     $rbufr.= $tmpl_o->get_template("btn_modal", $btn_changefinish['fields'], $btn_changefinish);

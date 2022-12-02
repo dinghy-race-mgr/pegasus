@@ -1,5 +1,24 @@
 /* custom styles for rm_utils applications
 -------------------------------------------------- */
+
+:root {
+  --primary: #2c3e50;
+  --darkblue: #2c4c7c;
+  --darkred: #8b0000;
+  --darkgrey: #a9a9a9;
+  --red: #c20000;
+  --white: #ffffff;
+  --black: #000000;
+  --green: #18bc9c;
+  --grey: #708090;
+  --lightgrey: #e6e6e6;
+  --lightyellow: #eee8aa;
+  --lightorange: #f39c12;
+  --lightred: #e74c3c;
+  --lightblue: #add8e6;
+}
+
+
 html { position: relative;  min-height: 100%;}
 
 /* style for body */
@@ -10,7 +29,7 @@ body {
   vertical-align: bottom;
   border-bottom: 3px solid darkgrey;
 }
-.rm-background {background-color: #2e6da4; }
+.rm-background {background-color: #2e6da4; color: white;}
 
 /* typographic styles */
 .rm-page { color: lightgrey; }
@@ -47,15 +66,21 @@ body {
 .rm_form-label { font-size: 1.5em !important; padding-top: 10px !important;}
 .rm-form-field { font-weight: bold;}
 
+.button-green    {background-color: var(--green); border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none;
+  display: inline-block; font-size: 16px; }
+
+.form-control-feedback { padding-right: 20px; }
+::-webkit-input-placeholder { text-transform: none;}
+:-moz-placeholder { text-transform: none; }
+::-moz-placeholder { text-transform: none;}
+:-ms-input-placeholder { text-transform: none; }
+::placeholder { text-transform: none; }
+
 .divider-line { height: 10px; border: none;}
 
-::-webkit-input-placeholder { color: slateblue !important; font-weight: normal !important; font-style: italic; text-align: right; font-size: 0.8em;}
-.form-control::-moz-placeholder { color: slateblue !important;  font-weight: normal !important; font-style: italic; text-align: right; font-size: 0.8em;}
-:-ms-input-placeholder { color: slateblue !important;  font-weight: normal !important; font-style: italic; text-align: right; font-size: 0.8em;}
-
 input[type=checkbox] {
-  transform: scale(2.0); /* All browsers except webkit*/
-  -webkit-transform: scale(2.0);  /* Webkit browsers*/
+  transform: scale(1.7); /* All browsers except webkit*/
+  -webkit-transform: scale(1.7);  /* Webkit browsers*/
 }
 
 input[type=radio] {
@@ -64,3 +89,23 @@ input[type=radio] {
 }
 
 .hover:hover{background-color: lightyellow; color: black;}
+
+.print a:hover {color: white;}
+
+/* print styles */
+@media print {
+  @page         { size: A4 portrait; }
+  @page :left   { margin-left: 2cm; }
+  @page :right  { margin-left: 2cm; }
+
+  table, figure { page-break-inside: avoid; }
+  body          { font-size: 12pt;
+    -webkit-print-color-adjust: exact;
+    -moz-print-color-adjust: exact;
+    -ms-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .noprint      { display: none; !important}
+  .page-break	 { display: block; page-break-before: always; }
+}

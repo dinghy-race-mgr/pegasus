@@ -683,6 +683,17 @@ function u_initsetparams($lang, $mode, $debug)
 
 function u_initpagestart($eventid, $page, $change_page)
 {
+    $timeout = 3600;
+    if (isset($_SESSION['session_timeout']))
+    {
+        if ($_SESSION['session_timeout'] > 3600)
+        {
+            $timeout = $_SESSION['session_timeout'];
+        }
+    }
+
+    ini_set('session.gc_maxlifetime', $timeout);
+    session_set_cookie_params($timeout);
 
     date_default_timezone_set($_SESSION['timezone']);
     // FIXME probably remove following line

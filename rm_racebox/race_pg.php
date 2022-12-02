@@ -110,9 +110,13 @@ else
     );
     $lbufr_top .= $tmpl_o->get_template("race_detail_display", $fields, $fields);
 
+    $event_state   = r_decoderacestatus($_SESSION["e_$eventid"]['ev_status']);
+    $event_state == "not started" ? $timer_script = "" : $timer_script   = gettimerscript();
+
     // get current fleet status
     $params = array(
         "eventid"        => $eventid,
+        "race-status"    => $_SESSION["e_$eventid"]['ev_status'],
         "timer-start"    => $_SESSION["e_$eventid"]['timerstart'],       // time watch started
         "fleet-data"     => $event_o->get_fleetstatus($eventid),         // current fleet status
         "flag-data"      => $flag_data,
@@ -143,41 +147,41 @@ $fields = array(
     "start-option"   => $_SESSION["e_$eventid"]['rc_startscheme'],
     "start-interval" => $_SESSION["e_$eventid"]['rc_startint'],
     "event-notes"    => $_SESSION["e_$eventid"]['ev_notes'],
+    "pursuit"        => $_SESSION["e_$eventid"]['pursuit'],
 );
 $mdl_change['fields']['body'] = $tmpl_o->get_template("fm_changerace", $fields, $fields);
 $rbufr_top.= $tmpl_o->get_template("modal", $mdl_change['fields'], $mdl_change);
 
-// race format  - modal
-$rbufr_top.= $tmpl_o->get_template("btn_modal", $btn_format['fields'], $btn_format);
+// pursuit start times - link
+if ($_SESSION["e_$eventid"]['pursuit'])
+{
+    $rbufr_top.= $tmpl_o->get_template("btn_link", $btn_pursuit['fields'], $btn_pursuit);
+}
+else
+{
+    // race format  - modal
+    $rbufr_top.= $tmpl_o->get_template("btn_modal", $btn_format['fields'], $btn_format);
 
-$racecfg  = $event_o->event_getracecfg($event['event_format'], $eventid);
-$fleetcfg = $event_o->event_getfleetcfg($event['event_format']);
-$duties   = $rota_o->get_event_duties($eventid);
-$viewbufr = createdutypanel($duties, $eventid, "in");
-$viewbufr.= createfleetpanel ($event_o->event_getfleetcfg($event['event_format']), $eventid, "");
-$viewbufr.= createsignalpanel(getsignaldetail($racecfg, $fleetcfg, $event), $eventid, "");
+    $racecfg  = $event_o->event_getracecfg($event['event_format'], $eventid);
+    $fleetcfg = $event_o->event_getfleetcfg($event['event_format']);
+    $duties   = $rota_o->get_event_duties($eventid);
+    $viewbufr = createdutypanel($duties, $eventid, "in");
+    $viewbufr.= createfleetpanel ($event_o->event_getfleetcfg($event['event_format']), $eventid, "");
+    $viewbufr.= createsignalpanel(getsignaldetail($racecfg, $fleetcfg, $event), $eventid, "");
 
-$mdl_format['fields']['body'] = $viewbufr;
-$mdl_format['fields']['title'] = "Race Format: <b>$eventname</b>";
-$mdl_format['fields']['footer'] = createprintbutton($eventid, true);
-$rbufr_top.= $tmpl_o->get_template("modal", $mdl_format['fields'], $mdl_format);
+    $mdl_format['fields']['body'] = $viewbufr;
+    $mdl_format['fields']['title'] = "Race Format: <b>$eventname</b>";
+    $mdl_format['fields']['footer'] = createprintbutton($eventid, true);
+    $rbufr_top.= $tmpl_o->get_template("modal", $mdl_format['fields'], $mdl_format);
+}
+
 
 // send message - modal
 $rbufr_top.= $tmpl_o->get_template("btn_modal", $btn_message['fields'], $btn_message);
 $mdl_message['fields']['body'] = $tmpl_o->get_template("fm_race_message", array());
 $rbufr_top.= $tmpl_o->get_template("modal", $mdl_message['fields'], $mdl_message);
 
-// pursuit start times - modal
-if ($_SESSION["e_$eventid"]['pursuit'])
-{
-    include ("{$loc}/common/classes/boat_class.php");
-    $class_o = new BOAT($db_o);
-    $class_list = $class_o->boat_getclasslist();
-    $rbufr_top.= $tmpl_o->get_template("btn_modal", $btn_pursuit['fields'], $btn_pursuit);
-    $mdl_pursuit['pytype'] = $_SESSION["e_$eventid"]["fl_1"]['pytype'];
-    $mdl_pursuit['body'] = $tmpl_o->get_template("fm_race_pursuitstart", array());
-    $rbufr_top.= $tmpl_o->get_template("modal", $mdl_pursuit['fields'], $class_list);  // FIXME - nnot sure about this
-}
+
 $rbufr_mid ="<hr>";
 
 // cancel  - modal
@@ -307,9 +311,9 @@ $fields = array(
     "l_bot"      => $lbufr_bot,
     "r_top"      => $rbufr_top,
     "r_mid"      => $rbufr_mid,
-    "r_bot"      => $rbufr_bot,
+    "r_bot"      => $rbufr_bot.$timer_script,
     "footer"     => "",
-    "body_attr"  => "onload=\"startTime()\""
+    "body_attr"  => ""                                                      // onload=\"startTime()\""
 );
 
 $params = array(
@@ -339,3 +343,34 @@ function checklapstatus ($eventid)
     return $laps_set;
 }
 
+function gettimerscript()
+{
+    $warnsecs = 0;
+    $bufr = <<<EOT
+        <script type="text/javascript">
+        $('[data-countdown]').each(function() {   
+            var \$this = $(this);
+            var totime = new Date().getTime() + ($(this).data('countdown') * 1000);
+            \$this.countdown(totime, {elapse: true})
+            .on ('update.countdown', function(event) {
+                var secstogo = (event.offset.minutes * 60) + event.offset.seconds;
+                var clock = $(this).data('clock');
+                var elapsed = event.elapsed;
+                if (event.elapsed) {
+                    \$this.html(event.strftime('<span  style=\"color: lightblue\">%H:%M:%S</span>'));
+                } else {
+                    if(secstogo <= $warnsecs & clock!='c0') {
+                        \$this.html(event.strftime('<span style=\"color: red\">%H:%M:%S</span>'));
+                    } else {
+                        \$this.html(event.strftime('<span style=\"color: orange\"><b>%H:%M:%S</b></span>'));
+                    }
+                }
+                if (secstogo == $warnsecs & clock!='c0' & !elapsed) {
+                        window.location.reload(true);
+                }
+            });
+        });
+        </script>
+EOT;
+    return $bufr;
+}

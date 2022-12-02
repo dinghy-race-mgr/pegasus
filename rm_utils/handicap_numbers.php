@@ -48,7 +48,7 @@ $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates
 /* ------------ report page ---------------------------------------------*/
 // get data (sort by national PN)
 $boat_o = new BOAT($db_o);
-$data = $boat_o->getclasses("classname");
+$data = $boat_o->getclasses(array(), array("classname" => "ASC"));
 
 // present report
     $pagefields = array(

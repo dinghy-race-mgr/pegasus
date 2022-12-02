@@ -286,9 +286,12 @@ EOT;
                     }
                     elseif ($entry['lap'] > 0)
                     {
-                        if ( $entry['lap'] < $laps - 1 ) { $bcolor = "btn-info"; $state = "racing";}
-                        elseif ( $entry['lap'] >= $laps ) { $bcolor = "btn-success"; $state = "finished";}
-                        elseif ( $entry['lap'] == $laps - 1 ) { $bcolor = "btn-warning"; $state = "lastlap";}
+//                        if ( $entry['lap'] < $laps - 1 ) { $bcolor = "btn-info"; $state = "racing";}
+//                        elseif ( $entry['lap'] >= $laps ) { $bcolor = "btn-success"; $state = "finished";}
+//                        elseif ( $entry['lap'] == $laps - 1 ) { $bcolor = "btn-warning"; $state = "lastlap";}
+                        if ( $entry['lap'] < $laps - 1 )      { $state = $boat_states['racing']; }
+                        elseif ( $entry['lap'] >= $laps )     { $state = $boat_states['finished']; }
+                        elseif ( $entry['lap'] == $laps - 1 ) { $state = $boat_states['lastlap']; }
                     }
                     else
                     {

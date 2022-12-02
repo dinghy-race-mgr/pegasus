@@ -188,6 +188,15 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
     $rbufr.= $tmpl_o->get_template("modal", $mdl_undoshorten['fields'], $mdl_undoshorten);
 
 }
+else    // display finish edit box
+{
+    $rbufr.=<<<EOT
+    <div class="panel panel-success margin-top-40">
+        <div class="panel-heading"><h4 class="panel-title">Record Boat Finish ...</h4></div>
+        <div class="panel-body">pursuit finish form</div>
+    </div>
+EOT;
+}
 
 $rbufr.= "<hr>";
 

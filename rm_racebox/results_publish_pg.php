@@ -139,6 +139,7 @@ elseif ($pagestate == "process")    // run through process workflow
     u_writelog($results_msg, $eventid);
 
     echo start_page($loc);
+    echo str_pad('',8192)."\n";
     ob_flush();
     flush();
     sleep(1);

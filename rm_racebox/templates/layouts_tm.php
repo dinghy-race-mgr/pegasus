@@ -65,7 +65,7 @@ EOT;
 EOT;
     }
 
-    if ($params['page']=="start")
+    if ($params['page']=="start" or $params['page']=="race")
     {
         $countdown = <<<EOT
         <script type="text/javascript" src="{loc}/common/scripts/jquery.countdown.js"></script>

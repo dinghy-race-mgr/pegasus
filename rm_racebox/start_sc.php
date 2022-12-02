@@ -47,10 +47,11 @@ include("./templates/growls.php");
 
 if ($eventid AND $pagestate)
 {
-    $db_o = new DB;
+    $db_o    = new DB;
     $event_o = new EVENT($db_o);
-    $race_o = new RACE($db_o, $eventid);
-    $timer_o = new TIMER($db_o, $eventid);    // new
+    $race_o  = new RACE($db_o, $eventid);
+    $entry_o = new ENTRY($db_o, $eventid);
+    $timer_o = new TIMER($db_o, $eventid);
 
     if ($pagestate == "starttimer")
     {        
@@ -69,50 +70,6 @@ if ($eventid AND $pagestate)
 
                 if ($delta != 0) { u_growlSet($eventid, $page, $g_entries_failed, array($delta)); }
             }
-
-//            $entry_o = new ENTRY($db_o, $eventid);
-//
-//            // FIXME this code is duplicated of code in entries_sc
-//            $signons = $entry_o->get_signons("entries");
-//            $entries_found = count($signons);
-//
-//            if ($entries_found > 0)             // deal with entries
-//            {
-//                $entries_deleted = 0;
-//                $entries_replaced = 0;
-//                $entered = 0;
-//                foreach ($signons as $signon)
-//                {
-//                    if ($signon['action'] == "delete" OR $signon['action'] == "update" OR $signon['action'] == "replace")
-//                    {
-//                        // delete entry if it exists
-//                        $del = $entry_o->delete_by_compid($signon['id']);
-//                        if ($signon['action'] == "delete" and $del)
-//                        {
-//                            $entries_deleted++;
-//                            $upd = $entry_o->confirm_entry($signon['t_entry_id'], "L");
-//                        }
-//                    }
-//
-//                    if ($signon['action'] == "enter" OR $signon['action'] == "update" OR $signon['action'] == "replace")
-//                    {
-//                        $status = enter_boat($signon, $eventid, "signon");  // add new or replacement record
-//                        if ($status == "entered")
-//                        {
-//                            $entered++;
-//                        }
-//                        elseif ($status == "exists")
-//                        {
-//                            $entries_replaced++;
-//                        }
-//                    }
-//                }
-//                u_growlSet($eventid, $page, $g_entries_report, array($entries_found, $entered, $entries_replaced, $entries_deleted));
-//                $delta = $entries_found - ($entered + $entries_deleted + $entries_replaced);
-//                if ($delta != 0) {
-//                    u_growlSet($eventid, $page, $g_entries_failed, array($delta));
-//                }
-//            }
         }
 
         // process start time data
@@ -184,60 +141,6 @@ if ($eventid AND $pagestate)
             u_growlSet($eventid, $page, $g_start_recall_success, array($_REQUEST['startnum'], $_REQUEST['restarttime']));
         }        
     }
-    
-//    elseif ($pagestate == "setalllaps")        // sets laps for all fleets
-//    {
-//        $lapsetfail = false;
-//        $growlmsg   = "Setting laps:<br>";
-//        for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
-//        {
-//            $fleetname = $_SESSION["e_$eventid"]["fl_$i"]['name'];
-//            $status = $race_o->race_laps_set($i, $_REQUEST['laps'][$i]);
-//            if ($status)
-//            {
-//                if ($status == "less_than_current")
-//                {
-//                    $growlmsg.="$fleetname - not set, at least one boat is on this lap already<br>";
-//                    $lapsetfail = true;
-//                }
-//                else
-//                {
-//                    u_writelog("setlaps: $fleetname - {$_REQUEST['laps'][$i]} laps", $eventid);
-//                }
-//            }
-//            else
-//            {
-//                u_writelog("setlaps: $fleetname - failed [{$_REQUEST['laps'][$i]}] laps", $eventid);
-//                $growlmsg.= "$fleetname - laps set FAILED <br>";
-//                $lapsetfail = true;
-//            }
-//        }
-//        if ($lapsetfail)  { u_growlSet($eventid, $page, $g_start_lapset_fail, array($growlmsg)); }
-//    }
-//
-//
-//    elseif ($pagestate == "setlap")   // sets lap for one fleet
-//    {
-//        $fleetname = $_SESSION["e_$eventid"]["fl_{$_REQUEST['fleet']}"]['name'];
-//        $rs = $race_o->race_laps_set($_REQUEST['fleet'], $_REQUEST['laps']);
-//        //-- u_writedbg("status = $status", __FILE__,__FUNCTION__,__LINE__);
-//        if ($rs)
-//        {
-//            if ($rs['result'] === "less_than_current")
-//            {
-//                u_growlSet($eventid, $page, $g_start_fleetset_notok, array($fleetname));
-//            }
-//            else
-//            {
-//                u_writelog("setlaps: $fleetname - {$_REQUEST['laps']} laps", $eventid);
-//            }
-//        }
-//        else
-//        {
-//            u_writelog("setlaps: $fleetname - failed [{$_REQUEST['laps'][$i]} laps]", $eventid);
-//            u_growlSet($eventid, $page, $g_start_fleetset_fail, array($fleetname));
-//        }
-//    }
 
     // check race state / update session
     $race_o->racestate_updatestatus_all($_SESSION["e_$eventid"]['rc_numfleets'], $page);
@@ -260,11 +163,9 @@ else
 
 function get_entries($eventid)
 {
-    global $db_o;
+    global $db_o, $entry_o;
 
-    $entry_o = new ENTRY($db_o, $eventid);
-
-    // FIXME this code is duplicated of code in entries_sc
+    // FIXME this code is duplicated of code in main part of entries_sc
     $signons = $entry_o->get_signons("entries");
     $entries_found = count($signons);
 
@@ -311,7 +212,9 @@ function get_entries($eventid)
 
 function enter_boat($entry, $eventid, $type)
 {
-    global $entry_o, $db_o;
+    // FIXME this is a copy of function in entries_sc
+
+    global $db_o, $event_o, $boat_o, $entry_o;
 
     $event_o = new EVENT($db_o);
     $boat_o = new BOAT($db_o);

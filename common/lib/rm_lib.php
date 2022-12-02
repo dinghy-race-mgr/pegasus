@@ -279,6 +279,23 @@ function r_initfleetsession($eventid, $fleetnum, $fleet)
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['minskill']     = $fleet['min_skill'];
     $_SESSION["e_$eventid"]["fl_$fleetnum"]['maxskill']     = $fleet['max_skill'];
 
+
+    // set pursuit config details
+    if ($_SESSION["e_$eventid"]['pursuit'])
+    {
+        // FIXME - ultimately needs to check in new t_event field pursuit_chg to check if they have already been changed
+        // FIXME = format will be length:120,interval:30 - these are only fields that can be changed
+
+        $_SESSION['pursuitcfg'] = array(
+            "length"   => $fleet['timelimit_abs'],
+            "maxpn"    => $fleet['max_py'],
+            "minpn"    => $fleet['min_py'],
+            "interval" => $_SESSION["e_$eventid"]['rc_startint'],
+            "pntype"   => strtolower($fleet['py_type']),
+        );
+    }
+
+
     // retrieve current racestate values
     $sql = "SELECT * FROM t_racestate WHERE eventid = $eventid and fleet = $fleetnum order by fleet ASC";
     $fleetdata = $db_o->db_get_row($sql);

@@ -274,9 +274,9 @@ class RACE
 */
 
 
-    public function race_getentries($constraint)
+    public function race_getentries($constraint, $orderarg = array())
     {
-        $fields = "id, class, sailnum, pn, helm, crew, club, code";
+        $fields = "id, class, sailnum, pn, helm, crew, club, code, status";
         
         if (empty($constraint)) 
         { 
@@ -290,8 +290,16 @@ class RACE
             }
             $where =  "AND ".implode(' AND ', $clause);
         }
-        
-        $order = "class, sailnum * 1";
+
+        $order = "";
+        if (!empty($orderarg))
+        {
+            foreach ($orderarg as $field => $dir)
+            {
+                $order.= "$field $dir, ";
+            }
+        }
+        $order.= " class, sailnum * 1";
         
         $entries = $this->race_entry_get($fields, $where, $order, false);
 
@@ -1016,80 +1024,6 @@ class RACE
 
 */
 
-// FIXME - OBSOLETE this is not used and is very similar to entry->set_entry
-//    public function entry_add($comp, $change)  // enter|replace|delete
-//    /*
-//    loads competitor into t_race - allows standard values for sail number and crew to be overwritten
-//    FIXME - need to be able to deal with salcombe issue of changing helm as well
-//
-//    */
-//    {
-//        if (!empty($comp))
-//        {
-//            $result = array(
-//               "class"   => $comp['classname'],
-//               "sailnum" => $comp['sailnum'],
-//               "helm"    => $comp['helmname']
-//            );
-//
-//            if ($comp['eligible'])
-//            {
-//                // create race record
-//                $fields['eventid']      = $this->eventid;
-//                $fields['start']        = $comp['start'];
-//                $fields['fleet']        = $comp['fleet'];
-//                $fields['competitorid'] = $comp['id'];
-//                $fields['helm']         = $comp['helmname'];
-//                $fields['crew']         = $comp['crewname'];
-//                $fields['club']         = $comp['club'];
-//                $fields['class']        = $comp['classname'];
-//                $fields['classcode']    = $comp['acronym'];
-//                $fields['sailnum']      = $comp['sailnum'];
-//                $fields['pn']           = r_getcompetitorpn($this->eventid, $comp['fleet'], $comp['personal_py'], $comp['nat_py'], $comp['local_py']);
-//                $fields['status']       = "R";
-//
-//                if (!empty($change))
-//                {
-//                    foreach ($change as $key=>$mod)
-//                    {
-//                        $fields[$key] = $mod;
-//                    }
-//                }
-//
-//                $exists = $this->entry_get($fields['competitorid'], "competitor");         // does entry exist for this event
-//                if ($exists) { $delete = $this->entry_delete($fields['competitorid']); }   // delete it
-//
-//                $insert      = $this->db->db_insert("t_race", $fields);                   // insert record
-//                $raceentryid = $this->db->db_lastid();
-//
-//                $result['status']  = "entered";                                           // set result status
-//                $result['raceid']  = $raceentryid;
-//
-//                $this->racestate_updateentries($fields['fleet'], "+1");                    // updated entry count
-//
-//                u_writelog("race entry: {$result['class']} {$result['sailnum']}", $this->eventid);
-//            }
-//            else    //  competitor is not eligible
-//            {
-//                $result['status']  = "competitor not eligible";
-//
-//                u_writelog("race entry FAILED: {$result['class']} {$result['sailnum']} - {$result['status']}", $this->eventid);
-//            }
-//        }
-//        else    // competitor not known
-//        {
-//            $result['class']   = "unknown";
-//            $result['sailnum'] = "";
-//            $result['helm']    = "";
-//            $result['status']   = "competitor not registered";
-//
-//            u_writelog("race entry FAILED: {$result['class']} {$result['sailnum']} - {$result['status']}", $this->eventid);
-//        }
-//
-//        return $result;
-//    }
-    
-    
     public function entry_get($id, $idtype="race")
     {
         $where = " eventid = {$this->eventid} ";
@@ -1143,41 +1077,41 @@ class RACE
 //    }
     
     
-    public function entry_delete($entryid)
-    {    
-        $status = true;
-        $fields = $this->entry_get($entryid);
-        $this->db->db_delete("t_finish", array("entryid"=>$entryid));        // delete pursuit finish records
-        $this->db->db_delete("t_lap", array("entryid"=>$entryid));           // delete lap records
-        
-        $num_rows = $this->db->db_delete("t_race", array("id"=>$entryid));    // delete race record
-        if (!$num_rows)
-        { 
-            $status = false; 
-        }
-        else
-        {               
-            $this->racestate_updateentries($fields['fleet'], "-1");           // update racestate entry count
-        }
-
-        return $status;
-    }
-
-     
-     public function entry_duty_set($entryid, $status)
-     {
-        if ($status == "R")  { $status = "X"; }
-        $numrows = $this->entry_update($entryid, array("code" => "DUT", "status" => $status));
-        return $numrows;
-     }
-     
-     public function entry_duty_unset($entryid, $status)
-     {
-        if ($status == "X")  { $status = "R"; }
-        $numrows = $this->entry_update($entryid, array("code" => "", "status" => $status));
-        return $numrows;
-     }
-     
+//    public function entry_delete($entryid)
+//    {
+//        $status = true;
+//        $fields = $this->entry_get($entryid);
+//        $this->db->db_delete("t_finish", array("entryid"=>$entryid));        // delete pursuit finish records
+//        $this->db->db_delete("t_lap", array("entryid"=>$entryid));           // delete lap records
+//
+//        $num_rows = $this->db->db_delete("t_race", array("id"=>$entryid));    // delete race record
+//        if (!$num_rows)
+//        {
+//            $status = false;
+//        }
+//        else
+//        {
+//            $this->racestate_updateentries($fields['fleet'], "-1");           // update racestate entry count
+//        }
+//
+//        return $status;
+//    }
+//
+//
+//     public function entry_duty_set($entryid, $status)
+//     {
+//        if ($status == "R")  { $status = "X"; }
+//        $numrows = $this->entry_update($entryid, array("code" => "DUT", "status" => $status));
+//        return $numrows;
+//     }
+//
+//     public function entry_duty_unset($entryid, $status)
+//     {
+//        if ($status == "X")  { $status = "R"; }
+//        $numrows = $this->entry_update($entryid, array("code" => "", "status" => $status));
+//        return $numrows;
+//     }
+//
      
      public function entry_code_set($entryid, $code, $finish_check = false)
      {

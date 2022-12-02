@@ -86,14 +86,33 @@ class BOAT
         return $rows;
     }
     
-    public function getclasses($sort="")
+    public function getclasses($where, $sort=array())
     {
-        $query = "SELECT * FROM t_class WHERE 1=1 and active = 1";
+        $where_str = "1=1 ";
+        if (!empty($where))
+        {
+            foreach($where as $k=>$v)
+            {
+                $where_str.= "AND "."`$k` = '$v' ";
+            }
+        }
+        $where_str.= " AND active = 1";
 
         if (!empty($sort))
         {
-            $query.= " ORDER BY $sort";
+            $order = " ORDER BY ";
+            foreach ($sort as $k => $v)
+            {
+                $order.= " $k $v,";
+            }
+            $order = rtrim($order, ",");
         }
+        else
+        {
+            $order = "";
+        }
+
+        $query = "SELECT * FROM t_class WHERE $where_str $order";
 
         $detail = $this->db->db_get_rows( $query );
         if (empty($detail)) { $detail = false;}

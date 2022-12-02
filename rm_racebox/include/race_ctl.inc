@@ -187,43 +187,46 @@ $btn_pursuit = array(
     "glyph"     => true,
     "g-pos"     => "left",
     "popover"   => true,
+    "target"    => "_blank",
     "fields"    => array(
         "id"        => "pursuitstart",
         "size"      => "lg",
         "style"     => "info",
-        "label"     => "Get Start Times",
+        "label"     => "Pursuit Start Times",
         "glyph"     => "glyphicon-time",
         "popover"   => "click to get list of start times for this pursuit race",
         "pop-pos"   => "left",
         "block"     => "btn-block",
         "disabled"  => "",
+        "link"      => "../rm_utils/pursuit_starttimes.php",
         "top-margin"  => "margin-top-10"
     ),
 );
 
-$mdl_pursuit = array(
-    "form"    => true,
-    "footer"  => true,
-    "reload"  => true,
-    "close"   => true,
-    "reset"   => false,
-    "submit"  => true,
-    "fields"  => array(
-        "id"          => "pursuitstart",
-        "style"       => "info",
-        "size"        => "lg",
-        "title"       => "<b>Pursuit Start Times</b>",
-        "body"        => "",
-        "script"      => "",
-        "action"      => "rbx_ex_pursuitstart.php?eventid=$eventid&print=false", // FIXME this function doesn't exist
-        "target"      => "_BLANK",
-        "onsubmit"    => "",
-        "close-lbl"   => "close",
-        "reset-lbl"   => "",
-        "submit-lbl"  => "get start times",
-        "footer"      => ""
-    ),
-);
+
+//$mdl_pursuit = array(
+//    "form"    => true,
+//    "footer"  => true,
+//    "reload"  => true,
+//    "close"   => true,
+//    "reset"   => false,
+//    "submit"  => true,
+//    "fields"  => array(
+//        "id"          => "pursuitstart",
+//        "style"       => "info",
+//        "size"        => "lg",
+//        "title"       => "<b>Pursuit Start Times</b>",
+//        "body"        => "",
+//        "script"      => "",
+//        "action"      => "rbx_ex_pursuitstart.php?eventid=$eventid&print=false", // FIXME this function doesn't exist
+//        "target"      => "_BLANK",
+//        "onsubmit"    => "",
+//        "close-lbl"   => "close",
+//        "reset-lbl"   => "",
+//        "submit-lbl"  => "get start times",
+//        "footer"      => ""
+//    ),
+//);
 
 
 // ---- cancel race button --------------------------------------------------------------

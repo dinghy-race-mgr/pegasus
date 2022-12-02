@@ -325,23 +325,31 @@ EOT;
  */
 function btn_link($params = array())
     /*
- PARAMS
+    PARAMS
+    label     : true|false
+    glyph     : true|false
+    g-pos     : left|right
+    popover   : true|false
+    target    : target for link content
+
+    FIELDS
     id        : id for button
     style     : bootstrap style for button
     size      : bootstrap size for button
     label     : text label
     glyph     : glyph label
-    g-pos     :  glyph position (left|right)
+    g-pos     : glyph position (left|right)
     popover   : popover text
     pop-pos   : popover position
     disabled  : 'disabled' if button is to be disabled otherwise leave blank
     block     : 'btn-block' if a block button otherwise leave blank
     top-margin: top margin style (e.g margin-top-20)
-    data
-    link
+    data      :
+    link      : link relative or absolute
  */
 {
     if (!$_SESSION['button_help']) { $params['popover'] = false; }  // turn off tooltip if help is off
+
     $popover = "";
     if ($params['popover'])
     {
@@ -350,11 +358,13 @@ function btn_link($params = array())
 EOT;
     }
 
-    $label = createbtnlabel ($params['label'], $params['glyph'], $params['g-pos']);  // get label
+    empty($params['target']) ? $target = "" : $target = "target=('{$params['target']}')";          // set target for link
+
+    $label = createbtnlabel ($params['label'], $params['glyph'], $params['g-pos']);     // get link label
 
     $html = <<<EOT
     <div $popover class="btn-group {block}">
-        <a id="{id]}" href="{link}" class="btn btn-{style} btn-{size} {block} {top-margin}" aria-expanded="false" role="button" {data} {disabled}>
+        <a id="{id]}" href="{link}" class="btn btn-{style} btn-{size} {block} {top-margin}" $target aria-expanded="false" role="button" {data} {disabled}>
             $label
         </a>
     </div>

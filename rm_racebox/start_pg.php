@@ -22,6 +22,7 @@ $scriptname = basename(__FILE__);
 define('START_WARN_SECS', 30);                           // <-- number of seconds before start when timer colour will change
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
+require_once ("{$loc}/common/lib/pursuit_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 if (!$eventid) {
@@ -43,7 +44,7 @@ include ("{$loc}/common/classes/event_class.php");
 include ("{$loc}/common/classes/race_class.php");
 
 // templates
-$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/start_tm.php"));
+$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/start_tm.php", "./templates/pursuit_tm.php"));
 
 // database connection
 $db_o   = new DB;
@@ -104,87 +105,51 @@ $nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
 
 
 // ----- left hand panel -----------------------------------------------------------------------------
-$lbufr = u_growlProcess($eventid, $page);                      // process growls
+$lbufr = u_growlProcess($eventid, $page);                      // initialise bufr with process growls
 
-// build panels for each start
-for ($startnum=1; $startnum<=$_SESSION["e_$eventid"]['rc_numstarts']; $startnum++)
+if ($_SESSION["e_$eventid"]['pursuit'])                        // pursuit race - produce start list
 {
-    $fleetlist = "";
-    $start_fleet = array();
-    for ($fleetnum=1; $fleetnum<=$_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum++)
+    require_once ("./include/rm_racebox_lib.php");
+
+    // get competitors in order (pn DESC, class ASC, sailnum ASC
+    $competitors = $race_o->race_getentries("", array("pn"=>"DESC"));
+
+    // allocate to starts
+    $pursuit_starts = p_getstarts_competitors($competitors, $_SESSION['pursuitcfg']['maxpn'], $_SESSION['pursuitcfg']['length'], $_SESSION['pursuitcfg']['interval']);
+
+    /// render display
+    $lbufr.= pursuit_start_list($pursuit_starts);
+}
+else                                                           // not a pursuit race - produce panel for each start
+{
+    for ($startnum = 1; $startnum <= $_SESSION["e_$eventid"]['rc_numstarts']; $startnum++)
     {
-        // get fleets in this start
-        if ($fleet_data["$fleetnum"]['startnum'] == $startnum)
-        {
-            $fleetlist.= "{$_SESSION["e_$eventid"]["fl_$fleetnum"]['name']}, ";
-            $start_fleet["$fleetnum"] = $_SESSION["e_$eventid"]["fl_$fleetnum"];
-            $warning_flag = $_SESSION["e_$eventid"]["fl_$fleetnum"]['warnsignal'];
-        }
+        $start_detail = get_start_details($startnum, $fleet_data, $eventid);
+
+        // infringements control
+        $infringebufr = get_infringements_control($eventid, $startnum, $start_detail["fleetlist"], $start, $btn_infringestart, $mdl_infringestart);
+
+        // general recall control
+        $recallbufr = get_genrecall_control($eventid, $startnum, $start_detail["fleetlist"], $start, $timer_start, $btn_generalrecall, $mdl_generalrecall);
+
+        $fields = array(
+            "startnum" => strval($startnum),
+            "flag" => $start_detail["warning_flag"],
+            "fleet-list" => $start_detail["fleetlist"],
+            "start-delta" => gmdate("H:i:s", $start[$startnum]),
+            "start-secs" => strval($start[$startnum]),
+            "start-boats" => $numboats[$startnum],
+            "infringe" => $infringebufr,
+            "recall" => $recallbufr,
+        );
+
+        $params = array(
+            "pursuit" => $_SESSION["e_$eventid"]['pursuit'],
+            "timer-start" => $timer_start,
+            "start-delay" => $_SESSION["e_$eventid"]["st_$startnum"]['startdelay'],
+        );
+        $lbufr .= $tmpl_o->get_template("fleet_panel", $fields, $params);
     }
-    $fleetlist = rtrim($fleetlist, ", ");
-
-    // infringe start button
-    $btn_infringestart['fields']['id'] = "infringestart$startnum";
-    $btn_infringestart['data'] = "data-start=\"$startnum\"";
-    // change button colour with 30 seconds to go
-    $start[$startnum] > constant('START_WARN_SECS') ? $btn_infringestart['fields']["style"] = "default": $btn_infringestart['fields']["style"] = "info";
-    $infringebufr = $tmpl_o->get_template("btn_modal", $btn_infringestart['fields'], $btn_infringestart);
-
-    $mdl_infringestart['fields']['id'] = "infringestart$startnum";
-    $mdl_infringestart['fields']['body'] = <<<EOT
-    <iframe src="start_infringements_pg.php?eventid=$eventid&startnum=$startnum&pagestate=init" 
-            frameborder="0" style="width: 100%; height: 600px;" id="entryframe">
-    </iframe>
-EOT;
-    $mdl_infringestart['fields']['script'] = "$( '#infringestart{$startnum}ModalLabel' ).text( 'Infringements - Start ' + button.data('start') + '  [$fleetlist]')";
-    $infringebufr.= $tmpl_o->get_template("modal", $mdl_infringestart['fields'], $mdl_infringestart);
-
-    // general recall button
-    $recallbufr = "";
-    if (!$_SESSION["e_$eventid"]['pursuit'])
-    {
-        if ($timer_start > 0)
-        {
-            $startdisplay = date("H:i:s",$timer_start + $_SESSION["e_$eventid"]["st_$startnum"]['startdelay']);
-        }
-        else
-        {
-            $startdisplay = date("H:i:s",strtotime($_SESSION["e_$eventid"]['ev_starttime'])
-                + $_SESSION["e_$eventid"]["st_$startnum"]['startdelay']);
-        }
-
-        $btn_generalrecall['fields']['id'] = "generalrecall$startnum";
-        $btn_generalrecall['data'] = "data-start=\"$startnum\"  data-starttime=\"$startdisplay\" ";
-        // change button colour with 30 seconds to go
-        $start[$startnum] > constant('START_WARN_SECS') ? $btn_generalrecall['fields']["style"] = "default" : $btn_generalrecall['fields']["style"] = "info";
-        $recallbufr.= $tmpl_o->get_template("btn_modal", $btn_generalrecall['fields'], $btn_generalrecall);
-
-        $mdl_generalrecall['fields']['id'] = "generalrecall$startnum";
-        $mdl_generalrecall['fields']['body'] = $tmpl_o->get_template("fm_start_genrecall", array(), array("startnum"=>$startnum));
-        $mdl_generalrecall['fields']['script'] =
-            "$( '#generalrecall{$startnum}ModalLabel' ).text( 'General Recall - Start ' + button.data('start') + '  [$fleetlist]')
-            $( '#start{$startnum}' ).val(button.data('start'))
-            $( '#origstart{$startnum}' ).text(button.data('starttime'))";
-        $recallbufr.= $tmpl_o->get_template("modal", $mdl_generalrecall['fields'], $mdl_generalrecall);
-    }
-
-    $fields = array(
-        "startnum"      => strval($startnum),
-        "flag"          => $warning_flag,
-        "fleet-list"    => $fleetlist,
-        "start-delta"   => gmdate("H:i:s", $start[$startnum]),
-        "start-secs"    => strval($start[$startnum]),
-        "start-boats"   => $numboats[$startnum],
-        "infringe"      => $infringebufr,
-        "recall"        => $recallbufr,
-    );
-
-    $params = array(
-        "pursuit"       => $_SESSION["e_$eventid"]['pursuit'],
-        "timer-start"   => $timer_start,
-        "start-delay"   => $_SESSION["e_$eventid"]["st_$startnum"]['startdelay'],
-    );
-    $lbufr.= $tmpl_o->get_template("fleet_panel", $fields, $params);
 }
 
 // ----- right hand panel -----------------------------------------------------------------------------
@@ -231,14 +196,14 @@ $fields = array(
     "loc"        => $loc,
     "stylesheet" => "./style/rm_racebox.css",
     "navbar"     => $nbufr,
-    "l_top"      =>"<div class='margin-top-20' style='margin-left:10%; margin-right:10%;'>",
+    "l_top"      => "<div class='margin-top-40' >",
     "l_mid"      => $lbufr,
     "l_bot"      => "</div>",
     "r_top"      => "<div class='margin-top-10' style='margin-left: 30px;'>",
     "r_mid"      => $rbufr,
     "r_bot"      => "</div>".$timer_script,
     "footer"     => "",
-    "body_attr"  => "onload=\"startTime()\""
+    "body_attr"  => ""                                                          //onload=\"startTime()\""
 );
 
 $params = array(
@@ -269,7 +234,7 @@ function debugTimer($eventid, $start_master, $start, $timerstart)
 }
 
 
-// FIXME this move to a template
+
 function gettimerscript()
 {
     $warnsecs = constant("START_WARN_SECS");
@@ -299,5 +264,157 @@ function gettimerscript()
         });
         </script>
 EOT;
+    return $bufr;
+}
+
+function pursuit_start_list($starts)
+{
+    global $tmpl_o;
+
+    // get number of boats on each start
+    $num_boats = get_boats_per_start($starts);
+
+    // render start list
+    $fields = array(
+        "length"   => $_SESSION['pursuitcfg']['length'],
+        "maxpn"    => $_SESSION['pursuitcfg']['maxpn'],
+        "minpn"    => $_SESSION['pursuitcfg']['minpn'],
+        "startint" => $_SESSION['pursuitcfg']['interval'],
+        "pntype"   => $_SESSION['pursuitcfg']['pntype'],
+        "start-info" => render_start_by_competitor($starts, $num_boats)
+    );
+    return $tmpl_o->get_template("start_by_competitor", $fields );
+}
+
+function get_boats_per_start ($starts)
+{
+    $num_boats = array();
+
+    foreach ($starts as $start)
+    {
+        if (!array_key_exists((int)$start['start'], $num_boats))
+        {
+            $num_boats[(int)$start['start']] = 0;
+        }
+        $num_boats[(int)$start['start']]++;
+    }
+
+    return $num_boats;
+}
+
+function render_start_by_competitor($starts, $num_boats)
+{
+    $bufr = "";
+    $this_start = -1;
+    $this_class = "";
+
+    foreach ($starts as $i => $start)
+    {
+        $s_diff = (int)$start['start'] - $this_start ;                           // check if start time has changed
+        $start['class'] != $this_class ? $c_diff = true : $c_diff = false;       // check if class has changed
+
+        if ($s_diff > 0)                                                         // new start add banner
+        {
+            $bufr .= "<tr><td colspan='2'>&nbsp;&nbsp;</td></tr><tr class='info' ><td style='width: 60%;'>Start +{$start['start']} mins <td>
+                          <td style='width: 40%; pull-right'> {$num_boats[(int)$start['start']]} boat(s)</td></tr>";
+        }
+
+        if ($c_diff)                                                            //  new class
+        {
+            if (!empty($bufr)) { $bufr.= "</td></tr>"; }                        // finish incomplete row for previous class
+
+            $bufr.= "<tr><td colspan='2'>{$start['class']}-{$start['sailnum']} <span class='caret text-info' style=\"border-width:7px;\"></span>, &nbsp;";  // add first boat of new class
+        }
+        else
+        {
+            $bufr.= "{$start['class']}-{$start['sailnum']} <kbd>code</kbd> <span class=\"caret\"></span>, &nbsp;";            // add subsequent boat of this class
+        }
+
+        $this_start = (int)$start['start'];                                     // reset start time
+        $this_class = $start['class'];                                          // reset class
+    }
+
+    return $bufr;
+}
+
+function get_start_details($startnum, $fleet_data, $eventid)
+{
+    $start_detail = array("fleetlist" => "", "warning_fleg" => "");
+
+    $fleetlist = "";
+    //$start_fleet = array();
+    for ($fleetnum = 1; $fleetnum <= $_SESSION["e_$eventid"]['rc_numfleets']; $fleetnum++)
+    {
+        // get fleets in this start
+        if ($fleet_data["$fleetnum"]['startnum'] == $startnum)
+        {
+            $start_detail["fleetlist"] .= "{$_SESSION["e_$eventid"]["fl_$fleetnum"]['name']}, ";
+            //$start_fleet["$fleetnum"] = $_SESSION["e_$eventid"]["fl_$fleetnum"];
+            $start_detail["warning_flag"] = $_SESSION["e_$eventid"]["fl_$fleetnum"]['warnsignal'];
+        }
+    }
+    $start_detail["fleetlist"] = rtrim($start_detail["fleetlist"], ", ");
+
+    return $start_detail;
+}
+
+function get_infringements_control($eventid, $startnum, $fleetlist, $start, $btn_infringestart, $mdl_infringestart)
+{
+    global $tmpl_o;
+
+    $bufr = "";
+    // infringe start button
+    $btn_infringestart['fields']['id'] = "infringestart$startnum";
+    $btn_infringestart['data'] = "data-start=\"$startnum\"";
+
+    // change button colour with 30 seconds to go
+    $start[$startnum] > constant('START_WARN_SECS') ? $btn_infringestart['fields']["style"] = "default" : $btn_infringestart['fields']["style"] = "info";
+    $bufr = $tmpl_o->get_template("btn_modal", $btn_infringestart['fields'], $btn_infringestart);
+
+    // infringe modal
+    $mdl_infringestart['fields']['id'] = "infringestart$startnum";
+    $mdl_infringestart['fields']['body'] = <<<EOT
+        <iframe src="start_infringements_pg.php?eventid=$eventid&startnum=$startnum&pagestate=init" 
+                frameborder="0" style="width: 100%; height: 600px;" id="entryframe">
+        </iframe>
+EOT;
+    $mdl_infringestart['fields']['script'] = "$( '#infringestart{$startnum}ModalLabel' ).text( 'Infringements - Start ' + button.data('start') + '  [$fleetlist]')";
+
+    $bufr .= $tmpl_o->get_template("modal", $mdl_infringestart['fields'], $mdl_infringestart);
+
+    return $bufr;
+}
+
+function get_genrecall_control($eventid, $startnum, $fleetlist, $start, $timer_start, $btn_generalrecall, $mdl_generalrecall)
+{
+    global $tmpl_o;
+
+    $bufr = "";
+
+    if ($timer_start > 0) {
+        $startdisplay = date("H:i:s", $timer_start + $_SESSION["e_$eventid"]["st_$startnum"]['startdelay']);
+    } else {
+        $startdisplay = date("H:i:s", strtotime($_SESSION["e_$eventid"]['ev_starttime'])
+            + $_SESSION["e_$eventid"]["st_$startnum"]['startdelay']);
+    }
+
+    // general recall button
+    $btn_generalrecall['fields']['id'] = "generalrecall$startnum";
+    $btn_generalrecall['data'] = "data-start=\"$startnum\"  data-starttime=\"$startdisplay\" ";
+
+    // change button colour with 30 seconds to go
+    $start[$startnum] > constant('START_WARN_SECS') ? $btn_generalrecall['fields']["style"] = "default" : $btn_generalrecall['fields']["style"] = "info";
+    $bufr .= $tmpl_o->get_template("btn_modal", $btn_generalrecall['fields'], $btn_generalrecall);
+
+    // general recall modal
+    $mdl_generalrecall['fields']['id'] = "generalrecall$startnum";
+    $mdl_generalrecall['fields']['body'] = $tmpl_o->get_template("fm_start_genrecall", array(), array("startnum" => $startnum));
+    $mdl_generalrecall['fields']['script'] =
+        "$( '#generalrecall{$startnum}ModalLabel' ).text( 'General Recall - Start ' + button.data('start') + '  [$fleetlist]')
+        $( '#start{$startnum}' ).val(button.data('start'))
+        $( '#origstart{$startnum}' ).text(button.data('starttime'))";
+
+    $bufr .= $tmpl_o->get_template("modal", $mdl_generalrecall['fields'], $mdl_generalrecall);
+
     return $bufr;
 }

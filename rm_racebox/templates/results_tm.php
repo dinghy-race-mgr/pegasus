@@ -430,15 +430,11 @@ EOT;
 
 function fm_result_edit($params)
 {
-    $lbl_width = "col-xs-2";
-    $fld_width = "col-xs-5";
-    $hlp_width = "col-xs-4";
-
-    //echo "<pre>".print_r($params,true)."</pre>";
-
+//    $lbl_width = "col-xs-2";
+//    $fld_width = "col-xs-5";
+//    $hlp_width = "col-xs-4";
 
     // set up scoring and result code data
-    $scoring_code_bufr = "";
     $resultcodes = array();
     foreach ($params['resultcodes'] as $row) {
         $resultcodes[] = array ("code" => $row['code'], "label" => "{$row['code']} : {$row['short']}");
@@ -453,12 +449,12 @@ function fm_result_edit($params)
     if ($params['points_allocation'] == "boat") {
         $helm_bufr = <<<EOT
         <div class="form-group">
-            <label class="$lbl_width control-label">helm</label>
-            <div class="$fld_width inputfieldgroup">
+            <label class="col-xs-{lblw} control-label">helm</label>
+            <div class="col-xs-{fldw} inputfieldgroup">
                 <input type="text" class="form-control" style="text-transform: capitalize;" id="helm" name="helm" value="{helm}"
                     required data-fv-notempty-message="this information is required"
                 />
-                <div class="$hlp_width help-block">e.g. Fred Flintstone</div>
+                <div class="col-xs-{hlpw} help-block">e.g. Fred Flintstone</div>
             </div>
         </div>
 EOT;
@@ -467,11 +463,11 @@ EOT;
     {
         $helm_bufr = <<<EOT
         <div class="form-group">
-            <label class="$lbl_width control-label">helm</label>
-            <div class="$fld_width inputfieldgroup">
+            <label class="col-xs-{lblw} control-label">helm</label>
+            <div class="col-xs-{fldw} inputfieldgroup">
                 <input type="text" class="form-control" style="text-transform: capitalize;" id="helm" name="helm" value="{helm}" readonly />               
             </div>
-            <div class="$hlp_width help-block">cannot be changed</div>
+            <div class="col-xs-{hlpw} help-block">cannot be changed</div>
         </div>
 EOT;
     }
@@ -482,7 +478,7 @@ EOT;
     $html = <<<EOT
 
     <div class="alert well well-sm" role="alert">
-        <p class="text-info"><b>Change boat / race /lap details as required for this competitor and then click the update button to submit the changes </p>
+        <p class="text-info"><b>Change boat / race details as required for this competitor and then click the update button to submit the changes </p>
     </div>
     
     <form id="resulteditForm" class="form-horizontal" action="results_edit_pg.php?pagestate=submit" method="post"
@@ -509,11 +505,6 @@ EOT;
           <span class="glyphicon glyphicon-flag"> </span> Result Details</a>
         </li>
         
-        <!-- li role="presentation" >
-          <a href="#lapspanel" aria-controls="lapspanel" role="tab" data-toggle="tab">
-          <span class="glyphicon glyphicon-time"> </span> Lap Times</a>
-        </li -->
-        
         <div class="pull-right">
         <button onclick='window.top.location.href = "results_pg.php?eventid={$params['eventid']}";' type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>&nbsp;cancel</button>
         <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span>&nbsp;Update Result</button>
@@ -532,23 +523,23 @@ EOT;
         
             <!-- class -->
             <div class="form-group">
-                <label class="$lbl_width control-label">class</label>
-                <div class="$fld_width inputfieldgroup">
+                <label class="col-xs-{lblw} control-label">class</label>
+                <div class="col-xs-{fldw} inputfieldgroup">
                     <input type="text" class="form-control" style="text-transform: capitalize;" id="helm" name="helm" value="{class}" readonly />                    
                 </div>
-                <div class="$hlp_width help-block">cannot be changed</div>
+                <div class="col-xs-{hlpw} help-block">cannot be changed</div>
             </div>
             
             
             <!-- sailnumber -->  
             <div class="form-group">
-                <label class="$lbl_width control-label text-success" >sail no.</label>
-                <div class="$fld_width inputfieldgroup">
+                <label class="col-xs-{lblw} control-label text-success" >sail no.</label>
+                <div class="col-xs-{fldw} inputfieldgroup">
                     <input type="text" class="form-control" id="idsailnum" name="sailnum" value="{sailnum}"
                         required data-fv-notempty-message="this information is required"
                     />
                 </div>
-                <div class="$hlp_width help-block">sail number used for this race</div>
+                <div class="col-xs-{hlpw} help-block">sail number used for this race</div>
             </div>
                 
             <!-- helm -->  
@@ -556,23 +547,23 @@ EOT;
             
             <!-- crew -->          
             <div class="form-group">
-                <label class="$lbl_width control-label text-success">crew</label>
-                <div class="$fld_width inputfieldgroup">
+                <label class="col-xs-{lblw} control-label text-success">crew</label>
+                <div class="col-xs-{fldw} inputfieldgroup">
                     <input type="text" class="form-control" style="text-transform: capitalize;" id="idcrew" name="crew" value="{crew}"
                     placeholder="for double handers only"
                     />
                 </div>
-                <div class="$hlp_width help-block">e.g. Barney Rubble</div>
+                <div class="col-xs-{hlpw} help-block">e.g. Barney Rubble</div>
             </div>
                 
             <!-- Club -->
             <div class="form-group">
-                <label class="$lbl_width control-label text-success">club</label>
-                <div class="$fld_width inputfieldgroup">
+                <label class="col-xs-{lblw} control-label text-success">club</label>
+                <div class="col-xs-{fldw} inputfieldgroup">
                     <input type="text" class="form-control" style="text-transform: capitalize;" id="club" name="club" value="{club}"
                     />
                 </div>
-                <div class="$hlp_width help-block">generally only required for open events</div>
+                <div class="col-xs-{hlpw} help-block">generally only required for open events</div>
             </div>                   
         </div>
         
@@ -581,34 +572,34 @@ EOT;
                  
             <!-- PN -->  
             <div class="form-group">
-                <label class="$lbl_width control-label text-success">yardstick</label>
-                <div class="$fld_width inputfieldgroup">
+                <label class="col-xs-{lblw} control-label text-success">yardstick</label>
+                <div class="col-xs-{fldw} inputfieldgroup">
                     <input type="text" class="form-control" id="idpn" name="pn" value="{pn}"
                         required data-fv-notempty-message="this information is required"
                         min="{$_SESSION['min_py']}" max="{$_SESSION['max_py']}"
                         data-fv-between-message="The PY must be between {$_SESSION['min_py']} and {$_SESSION['max_py']}"
                     />
                 </div>
-                <div class="$hlp_width help-block">handicap number for this race - if unsure use number for a similar class</div>
+                <div class="col-xs-{hlpw} help-block">handicap number for this race - if unsure use number for a similar class</div>
             </div>
             
             <!-- Laps -->  
             <div class="form-group">
-                <label class="$lbl_width control-label text-success">finish lap</label>
-                <div class="$fld_width inputfieldgroup">
+                <label class="col-xs-{lblw} control-label text-success">finish lap</label>
+                <div class="col-xs-{fldw} inputfieldgroup">
                     <input type="number" class="form-control" id="idlap" name="lap" value="{lap}" $lap_readonly
                     required data-fv-notempty-message="the number of laps completed is required"
                     placeholder=""
                     min="0" 
                     />
                 </div>
-                <div class="$hlp_width help-block">finishing lap for this boat</div>
+                <div class="col-xs-{hlpw} help-block">finishing lap for this boat</div>
             </div>       
             
             <!-- elapsed time -->
             <div class="form-group">
-                <label class="$lbl_width control-label text-success">finish elapsed time</label>
-                <div class="$fld_width inputfieldgroup">
+                <label class="col-xs-{lblw} control-label text-success">finish elapsed time</label>
+                <div class="col-xs-{fldw} inputfieldgroup">
                     <input type="text" class="form-control" id="idetime" name="etime" value="$etime"
                            placeholder="hh:mm:ss"
                            required data-fv-notempty-message="a time [hh:mm:ss] must be entered"
@@ -617,51 +608,44 @@ EOT;
                            data-fv-regexp-message="lap time must be in HH:MM:SS format"
                     />
                 </div>
-                <div class="$hlp_width help-block">elapsed time for boat at the finish (hh:mm:ss)</div>
+                <div class="col-xs-{hlpw} help-block">elapsed time for boat at the finish (hh:mm:ss)</div>
             </div> 
             
             <!-- scoring code -->
             <div class="form-group">
-                <label class="control-label $lbl_width text-success">scoring code</label>
-                <div class = "$fld_width">
-                    <select class="form-control $fld_width" name="code" id="idcode">
+                <label class="col-xs-{lblw} control-label text-success">scoring code</label>
+                <div class = "col-xs-{fldw}">
+                    <select class="form-control" name="code" id="idcode">
                         $scoring_code_bufr
                     </select >
                 </div>
-                <div class="$hlp_width help-block">e.g. OCS, DNF - otherwise leave blank</div >
+                <div class="col-xs-{hlpw} help-block">e.g. OCS, DNF - otherwise leave blank</div >
             </div>                   
             
             <!-- penalty score -->        
             <div class="form-group">
-                <label class="control-label $lbl_width text-success">penalty score</label>
-                <div class="$fld_width">
+                <label class="col-xs-{lblw} control-label text-success">penalty score</label>
+                <div class="col-xs-{fldw}">
                     <input name="penalty" type="text" class="form-control" id="idpenalty" value="{penalty}" 
                     placeholder="extra points to be applied (e.g. 2.5)"
                     data-fv-regexp="true"
                     data-fv-regexp-regexp="^(\d*)\.?(\d){0,1}$"
                     data-fv-regexp-message="penalty must be in format like 2.3">
                 </div>
-                <div class="$hlp_width help-block">CARE - can ONLY be used when DPI code is set. </div>
+                <div class="col-xs-{hlpw} help-block">CARE - can ONLY be used when DPI code is set. </div>
             </div>
             
             <!-- notes -->
             <div class="form-group">
-                <label class="control-label $lbl_width text-success">notes</label>
-                <div class="$fld_width">
+                <label class="col-xs-{lblw} control-label text-success">notes</label>
+                <div class="col-xs-{fldw}">
                     <input name="note" type="text" class="form-control" id="idnote" value="{note}"
                     >
                 </div>
-                <div class="$hlp_width help-block">useful to record why result was edited</div>
+                <div class="col-xs-{hlpw} help-block">useful to record why result was edited</div>
             </div>
-            
-
-          
+                    
         </div>
-        
-        <!-- lap times panel 
-        <div role="tabpanel" class="tab-pane fade in" id="lapspanel">
-            Lap time fields here
-        </div> -->
       
       </div> <!-- end tab-content -->
       
@@ -670,12 +654,12 @@ EOT;
   </div> <!-- end panel -->
   
   <!-- disable penalty field unless code is set to DPI (first script seems to work-->
-  <!--script type=text/javascript>
-      $(document).ready(function(){ $("#idpenalty").prop("disabled", $('#idcode').val() != "DPI"); });  
-  </script -->
-  <!--script type=text/javascript>
+  <script type=text/javascript>
+      $(document).ready(function(){ $("#idpenalty").prop("disabled", $('#idcode').val() !== "DPI"); });  
+  </script >
+  <script type=text/javascript>
     document.getElementById('idcode').onchange = function () {
-    if(this.value != "DPI") {
+    if(this.value !== "DPI") {
         document.getElementById("idpenalty").disabled = true;
         }
 
@@ -683,7 +667,7 @@ EOT;
         document.getElementById("idpenalty").disabled = false;
         }
     }
-  </script -->
+  </script >
   
 
   </form>

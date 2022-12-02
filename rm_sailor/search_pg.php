@@ -94,7 +94,7 @@ $_SESSION['pagefields']['header-center'] = $_SESSION['option_cfg'][$page]['pagen
 $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(),
     array("page" => $page, "options" => set_page_options($page)));
 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boatsearch_fm",
-    array("events_bufr"=>$events_bufr), array("add_btn"=>$_SESSION['option_cfg']['addboat']['active']));
+    array("events_bufr"=>$events_bufr), array("add_btn"=>$_SESSION['option_cfg']['addboat']));
 
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields'] );
 //echo "<pre>".print_r($_SESSION,true)."</pre>";
