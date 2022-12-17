@@ -8,16 +8,13 @@ class PROGRAMME
         $this->programme_file = $programme_file;
 
         // parse programme into session object
-        if (empty($_SESSION['prg']) or $force)    // if $SESSION data not created - do it
+        $status = $this->import_programme($loc);
+        if (!$status)                          // programme file not found or not readable
         {
-            $status = $this->import_programme($loc);
-            if (!$status)                          // programme file not found or not readable
-            {
-                $_SESSION['error']['problem'] = "Cannot display current event programme";
-                $_SESSION['error']['symptom'] = "Programme file not found on system (or not readable)";
-                $_SESSION['error']['where']   = "rm_web | programme.php | __construct | line ".__LINE__;
-                $_SESSION['error']['fix']     = "";
-            }
+            $_SESSION['error']['problem'] = "Cannot display current event programme";
+            $_SESSION['error']['symptom'] = "Programme file not found on system (or not readable)";
+            $_SESSION['error']['where']   = "rm_web | programme.php | __construct | line ".__LINE__;
+            $_SESSION['error']['fix']     = "";
         }
 
         if ($status)

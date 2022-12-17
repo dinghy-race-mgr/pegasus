@@ -290,7 +290,7 @@ function r_initfleetsession($eventid, $fleetnum, $fleet)
             "length"   => $fleet['timelimit_abs'],
             "maxpn"    => $fleet['max_py'],
             "minpn"    => $fleet['min_py'],
-            "interval" => $_SESSION["e_$eventid"]['rc_startint'],
+            "interval" => 60,
             "pntype"   => strtolower($fleet['py_type']),
         );
     }

@@ -249,7 +249,7 @@ function racebox_navbar($params=array())
         "2" => array("name" => "entries",   "label" => "entries",   "target" => "entries_pg.php"),
         "3" => array("name" => "start",     "label" => "start",     "target" => "start_pg.php"),
         "4" => array("name" => "timer",     "label" => "timer",     "target" => "timer_pg.php"),
-        "5" => array("name" => "pursuit",   "label" => "pursuit",   "target" => "pursuit_pg.php"),
+        "5" => array("name" => "pursuit",   "label" => "pursuit",   "target" => "pursuit_pg.php"),    // fixme - remove if we don't have a separate pursuit page
         "6" => array("name" => "results",   "label" => "results",   "target" => "results_pg.php"),
     );
 
@@ -262,7 +262,8 @@ function racebox_navbar($params=array())
 
         foreach ($options as $k=> $option)
         {
-            if ($option['name'] == "pursuit" and !$params['pursuit'])   // FIXME ned
+            //if ($option['name'] == "pursuit" and !$params['pursuit'])   // FIXME remove if we don't have a separate pursuit page
+            if ($option['name'] == "pursuit")
             {
                 continue;
             }

@@ -22,6 +22,7 @@ $debug      = false;
 $stop_here  = false;
 require_once ("{$loc}/common/lib/util_lib.php"); 
 require_once ("{$loc}/common/lib/rm_lib.php");
+require_once ("./include/rm_racebox_lib.php");
 
 // process parameters  (eventid, pagestate)
 $eventid   = u_checkarg("eventid", "checkintnotzero","");
@@ -140,6 +141,15 @@ if ($eventid AND $pagestate)
             $timer_o->setrecall($_REQUEST['startnum'], $_REQUEST['restarttime']);        //  set recall time for start affected
             u_growlSet($eventid, $page, $g_start_recall_success, array($_REQUEST['startnum'], $_REQUEST['restarttime']));
         }        
+    }
+
+    elseif ($pagestate == "setcode")
+    {
+        $setcode = set_code($eventid, $_REQUEST);
+        if ($setcode !== true)
+        {
+            u_growlSet($eventid, $page, $g_timer_setcodefailed, array($_REQUEST['boat'], $setcode));
+        }
     }
 
     // check race state / update session

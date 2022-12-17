@@ -42,7 +42,10 @@ if (empty($_SESSION['timer_options']['mode']))  { $_SESSION['timer_options']['mo
 // check if display view has changed - reset session variable if necessary
 $display_view = u_checkarg("view", "setnotnull", "");
 if ($display_view) { $_SESSION['timer_options']['view'] = $display_view; }
-if (empty($_SESSION['timer_options']['view']))  { $_SESSION['timer_options']['view'] = "sailnum"; }
+if (empty($_SESSION['timer_options']['view']))
+{
+    $_SESSION["e_$eventid"]['pursuit'] ? $_SESSION['timer_options']['view'] = "sailnum_p" : $_SESSION['timer_options']['view'] = "sailnum";
+}
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
@@ -54,7 +57,8 @@ require_once ("{$loc}/common/classes/template_class.php");
 require_once ("./include/rm_racebox_lib.php");
 
 // templates
-$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/timer_tm.php"));
+$tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/layouts_tm.php",
+                             "./templates/timer_tm.php", "./templates/pursuit_tm.php"));
 
 // database connection
 $db_o   = new DB;
@@ -89,80 +93,94 @@ $lbufr = u_growlProcess($eventid, $page);
 $lbufr_bot = "";
 $bunch_display = true;
 
-$problems = problem_check($eventid);    // check problems preventing timing
+$problems = problem_check($eventid);    // check problems preventing timing (timer not started, no entries, laps not set)
 if (in_array(true, $problems, true))
 {
+    $lbufr.= "<pre>".print_r($_SESSION["e_$eventid"],true)."</pre>";
     $lbufr.= $tmpl_o->get_template("problems", array("eventid" => $eventid), $problems);
     $bunch_display = false;
 }
 else
 {
-    // display boats as defined by display mode
-    if ($_SESSION['timer_options']['mode'] == "tabbed")
+    if ($_SESSION["e_$eventid"]['pursuit'])                        // pursuit race
     {
-        $rs_race = $race_o->race_gettimings($_SESSION['timer_options']['listorder']);
-        $lbufr.= $tmpl_o->get_template("timer_tabs", array(),
-              array("eventid" => $eventid, "num-fleets" => $_SESSION["e_$eventid"]['rc_numfleets'], "timings" => $rs_race));
-
-        // add modals
-        $lbufr.= $tmpl_o->get_template("modal", $mdl_editlap['fields'], $mdl_editlap);
+        // display boats for adding finish position
+        $lbufr.= display_boats_pursuit($eventid, $_SESSION['timer_options']['view']);
     }
-    elseif ($_SESSION['timer_options']['mode'] == "list")
+    else                                                           // class, handicap, average lap race
     {
-        //echo "<pre><br><br><br>OPTION: {$_SESSION['timer_options']['view']}</pre>";
-        $rs_race = $race_o->race_gettimings($_SESSION['timer_options']['view']."-list");
-        if ($_SESSION['timer_options']['view'] == "fleet")
-        {
-            $out = array();
-            foreach ($rs_race as $entry)
-            {
-                $out[$entry['fleet']][] = $entry;
-            }
-        }
-        elseif ($_SESSION['timer_options']['view'] == "class")
-        {
-            $out = array();
-            foreach ($rs_race as $entry)
-            {
-                $out[$entry['class']][] = $entry;
-            }
-        }
-        else
-        {
-            $out = array();
-            foreach ($rs_race as $entry)
-            {
-
-                if (ctype_digit($entry['sailnum'][0]))    // if first char of sailnumber is number - use it for group index
-                {
-                    $i = $entry['sailnum'][0];
-                }
-                else                                      // first char is not a number - use group 10
-                {
-                    $i = 10;
-                }
-                $out[$i][] = $entry;
-            }
-        }
-
-        //echo "<pre>".print_r($rs_race,true)."</pre>";
-        $lbufr.= $tmpl_o->get_template("timer_list", array(), 
-            array("eventid" => $eventid, "view" => $_SESSION['timer_options']['view'], "timings" => $out));
-
-        // add modals
+        // display boats for timing in tabbed or list format
+        $lbufr.= display_boats($eventid, $_SESSION['timer_options']['mode'], $_SESSION['timer_options']['view'], $mdl_editlap['fields']);
     }
+
+
+//    // display boats as defined by display mode
+//    if ($_SESSION['timer_options']['mode'] == "tabbed")
+//    {
+//        $rs_race = $race_o->race_gettimings($_SESSION['timer_options']['listorder']);
+//        $lbufr.= $tmpl_o->get_template("timer_tabs", array(),
+//              array("eventid" => $eventid, "num-fleets" => $_SESSION["e_$eventid"]['rc_numfleets'], "timings" => $rs_race));
+//
+//        // add modals
+//        $lbufr.= $tmpl_o->get_template("modal", $mdl_editlap['fields'], $mdl_editlap);
+//    }
+//    elseif ($_SESSION['timer_options']['mode'] == "list")
+//    {
+//        $rs_race = $race_o->race_gettimings($_SESSION['timer_options']['view']."-list");
+//        if ($_SESSION['timer_options']['view'] == "fleet")
+//        {
+//            $out = array();
+//            foreach ($rs_race as $entry)
+//            {
+//                $out[$entry['fleet']][] = $entry;
+//            }
+//        }
+//        elseif ($_SESSION['timer_options']['view'] == "class")
+//        {
+//            $out = array();
+//            foreach ($rs_race as $entry)
+//            {
+//                $out[$entry['class']][] = $entry;
+//            }
+//        }
+//        else
+//        {
+//            $out = array();
+//            foreach ($rs_race as $entry)
+//            {
+//
+//                if (ctype_digit($entry['sailnum'][0]))    // if first char of sailnumber is number - use it for group index
+//                {
+//                    $i = $entry['sailnum'][0];
+//                }
+//                else                                      // first char is not a number - use group 10
+//                {
+//                    $i = 10;
+//                }
+//                $out[$i][] = $entry;
+//            }
+//        }
+//
+//        //echo "<pre>".print_r($rs_race,true)."</pre>";
+//        $lbufr.= $tmpl_o->get_template("timer_list", array(),
+//            array("eventid" => $eventid, "view" => $_SESSION['timer_options']['view'], "timings" => $out));
+//
+//        // no modals to add
+//    }
 
 }
 
 // ----- right hand panel --------------------------------------------------------------------
 $rbufr = "";
 
-// undo
-$btn_undo['fields']['link'] = "timer_sc.php?eventid=$eventid&pagestate=undo";
-$rbufr.= $tmpl_o->get_template("btn_link", $btn_undo['fields'], $btn_undo);
+
 
 if (!$_SESSION["e_$eventid"]['pursuit'])
 {
+    // undo
+    $btn_undo['fields']['link'] = "timer_sc.php?eventid=$eventid&pagestate=undo";
+    $rbufr.= $tmpl_o->get_template("btn_link", $btn_undo['fields'], $btn_undo);
+
     // shorten all and reset laps buttons
     $fleet_data = array();
     for ($i = 1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
@@ -188,7 +206,7 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
     $rbufr.= $tmpl_o->get_template("modal", $mdl_undoshorten['fields'], $mdl_undoshorten);
 
 }
-else    // display finish edit box
+else    // display finish edit box for pursuit
 {
     $rbufr.=<<<EOT
     <div class="panel panel-success margin-top-40">
@@ -217,26 +235,6 @@ EOT;
 
 }
 
-//// quick timer option
-//$rbufr .= $tmpl_o->get_template("btn_modal", $btn_quicktime['fields], $btn_quicktime);
-//$rbufr .= $tmpl_o->get_template("modal", $mdl_quicktime['fields], $btn_quicktime);
-//
-//// bunch timer option
-//$rbufr .= $tmpl_o->get_template("btn_modal", $btn_bunch['fields], $btn_bunch);
-//$rbufr .= $tmpl_o->get_template("modal", $mdl_bunch['fields], $mdl_bunch);
-
-// mode button
-//$toggle_fields = array(
-//    "size"        => "lg",
-//    "off-style"   => "default",
-//    "on-style"    => "warning",
-//    "left-label"  => "Tabbed",
-//    "left-link"   => "timer_pg.php?eventid=$eventid&mode=tabbed",
-//    "right-label" => "List",
-//    "right-link"  => "timer_pg.php?eventid=$eventid&mode=list"
-//);
-//$_SESSION['timer_options']['mode'] == "tabbed" ? $toggle_fields['on'] = "left" : $toggle_fields['on'] = "right";
-
 // ----- render page -------------------------------------------------------------------------
 $db_o->db_disconnect();
 
@@ -249,11 +247,11 @@ $fields = array(
     "l_top"      => $lbufr,
     "l_mid"      => "",
     "l_bot"      => $lbufr_bot,
-    "r_top"      => $rbufr, //"<div class=\"margin-top-40\">".$rbufr."</div>",
+    "r_top"      => $rbufr,
     "r_mid"      => "",
-    "r_bot"      => "", //$tmpl_o->get_template("toggle_button", array(), $toggle_fields),
+    "r_bot"      => "",
     "footer"     => "",
-    "body_attr"  => "onload=\"startTime()\""
+    "body_attr"  => ""
 );
 
 $params = array(
@@ -265,7 +263,10 @@ $params = array(
 );
 echo $tmpl_o->get_template("two_col_page", $fields, $params);
 
+
+
 // ----- page specific functions ---------------------------------------------------------------
+
 function problem_check($eventid)
 {
     global $race_o;
@@ -292,6 +293,7 @@ function problem_check($eventid)
     return $problems;
 }
 
+
 function check_lap_status ($eventid)
 {
     $laps_set = 0;
@@ -300,6 +302,131 @@ function check_lap_status ($eventid)
         if ($_SESSION["e_$eventid"]["fl_$i"]['maxlap'] > 0) { $laps_set++; }            
     }  
     return $laps_set;
+}
+
+function display_boats_pursuit($eventid, $display_view)
+{
+    global $race_o, $tmpl_o;
+
+    $htm = "";
+
+    $rs_race = $race_o->race_gettimings($display_view."-list");
+    if ($display_view == "result_p")
+    {
+        //get no. to be included in each row
+        $num_entry = count($rs_race);
+        $num_rows = $num_entry + (5 - fmod($num_entry,5));
+
+        // organised by result order
+        $out = array();
+        $i = 0;
+        $group = 1;
+        foreach ($rs_race as $entry)
+        {
+            $i++;
+            $out[$group][] = $entry;
+            if ($i >= $num_rows)
+            {
+                $i = 0;
+                $group++;
+            }
+        }
+    }
+    elseif ($display_view == "finish_p")                              // organised by finish line + separate column for non-finishers
+    {
+        $out = array();
+        foreach ($rs_race as $entry) {
+            (empty($entry['f_line']) or $entry['f_line'] > 6) ? $line = 6 : $line = $entry['f_line'];
+            $out["$line"][] = $entry;
+        }
+    }
+    elseif ($display_view == "class_p")                               // organised by classname
+    {
+        $rs_class_counts = $race_o->count_groups("class", "count", 9);
+        echo "<pre>".print_r($rs_class_counts,true)."</pre>";
+
+        $out = array();
+        foreach ($rs_race as $entry)
+        {
+            if (array_key_exists($entry['class'], $rs_class_counts))
+            {
+                
+            }
+
+            $out[$entry['class']][] = $entry;
+        }
+    }
+    else                                                            // default view is sailnum_p
+    {
+        // organised by sailnumber 1,2,3 etc + one non-numeric
+        $out = array();
+        foreach ($rs_race as $entry) {
+            // if first char of sailnumber is number - use it for group index (first char is not a number - use group 10)
+            ctype_digit($entry['sailnum'][0]) ? $i = $entry['sailnum'][0] : $i = 10 ;
+            $out[$i][] = $entry;
+        }
+    }
+
+    //echo "<pre>".print_r($rs_race,true)."</pre>";
+    $htm.= $tmpl_o->get_template("timer_list_pursuit", array(), array("eventid" => $eventid, "view" => $display_view, "timings" => $out));
+
+    // no modals to add
+
+    return $htm;
+}
+
+function display_boats($eventid, $display_mode, $display_view, $mdl_editlap)
+{
+    global $race_o, $tmpl_o;
+
+    $htm = "";
+
+    // display boats as defined by display mode
+    if ($display_mode == "tabbed")
+    {
+        $rs_race = $race_o->race_gettimings($_SESSION['timer_options']['listorder']);
+        $htm.= $tmpl_o->get_template("timer_tabs", array(),
+            array("eventid" => $eventid, "num-fleets" => $_SESSION["e_$eventid"]['rc_numfleets'], "timings" => $rs_race));
+
+        // add modals
+        $htm.= $tmpl_o->get_template("modal", $mdl_editlap['fields'], $mdl_editlap);
+    }
+    elseif ($display_mode == "list")
+    {
+        $rs_race = $race_o->race_gettimings($display_view."-list");
+        if ($display_view == "fleet") {
+            $out = array();
+            foreach ($rs_race as $entry) {
+                $out[$entry['fleet']][] = $entry;
+            }
+        } elseif ($display_view == "class") {
+            $out = array();
+            foreach ($rs_race as $entry) {
+                $out[$entry['class']][] = $entry;
+            }
+        } else {
+            $out = array();
+            foreach ($rs_race as $entry) {
+
+                if (ctype_digit($entry['sailnum'][0]))    // if first char of sailnumber is number - use it for group index
+                {
+                    $i = $entry['sailnum'][0];
+                }
+                else                                      // first char is not a number - use group 10
+                {
+                    $i = 10;
+                }
+                $out[$i][] = $entry;
+            }
+        }
+
+        //echo "<pre>".print_r($rs_race,true)."</pre>";
+        $htm.= $tmpl_o->get_template("timer_list", array(),  array("eventid" => $eventid, "view" => $display_view, "timings" => $out));
+
+        // no modals to add
+    }
+
+    return $htm;
 }
 
 

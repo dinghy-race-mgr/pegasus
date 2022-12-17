@@ -286,9 +286,6 @@ EOT;
                     }
                     elseif ($entry['lap'] > 0)
                     {
-//                        if ( $entry['lap'] < $laps - 1 ) { $bcolor = "btn-info"; $state = "racing";}
-//                        elseif ( $entry['lap'] >= $laps ) { $bcolor = "btn-success"; $state = "finished";}
-//                        elseif ( $entry['lap'] == $laps - 1 ) { $bcolor = "btn-warning"; $state = "lastlap";}
                         if ( $entry['lap'] < $laps - 1 )      { $state = $boat_states['racing']; }
                         elseif ( $entry['lap'] >= $laps )     { $state = $boat_states['finished']; }
                         elseif ( $entry['lap'] == $laps - 1 ) { $state = $boat_states['lastlap']; }
@@ -327,11 +324,17 @@ EOT;
                 }
                 else
                 {
-                    if ($scoring == "average") {
+                    if ($scoring == "average")
+                    {
                         $finish_option = <<<EOT
                             <li><a href="$finish_link$params_list">Finish</a></li>
 EOT;
                     }
+                    else
+                    {
+                        $finish_option = "";
+                    }
+
                     $bunch_option = <<<EOT
                         <li><a href="$bunch_link$params_list">Bunch</a></li>
 EOT;

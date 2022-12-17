@@ -276,7 +276,7 @@ class RACE
 
     public function race_getentries($constraint, $orderarg = array())
     {
-        $fields = "id, class, sailnum, pn, helm, crew, club, code, status";
+        $fields = "id, class, sailnum, pn, helm, crew, club, code, status, lap, declaration";
         
         if (empty($constraint)) 
         { 
@@ -373,6 +373,22 @@ class RACE
                 "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "fleet, class, CAST(sailnum AS unsigned)",
             ),
+            "class_p-list"    => array(
+                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
+                "order"  => "class, CAST(sailnum AS unsigned)",
+            ),
+            "sailnum_p-list"    => array(
+                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
+                "order"  => "CAST(sailnum AS unsigned), sailnum ASC",
+            ),
+            "finish_p-list"    => array(
+                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
+                "order"  => "CAST(sailnum AS unsigned), sailnum ASC",
+            ),
+            "result_p-list"    => array(
+                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
+                "order"  => "CAST(sailnum AS unsigned), sailnum ASC",
+            ),
             "position" => array(
                 "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "fleet ASC, position ASC, pn DESC, class, sailnum ASC",
@@ -420,8 +436,33 @@ class RACE
         
         return $timings;
     }
-    
-    
+
+    public function count_groups($field, $order, $limit)
+    {
+        // counts no. of race entrants defined by one field e.g. class - would get the numbers in each class
+
+        $order_expr = "" ;
+        if (!empty($order) )
+        {
+            $order == "count" ? $order_expr = "ORDER BY groupcount DESC" : $order_expr = "ORDER BY $order";
+        }
+
+        empty($limit) ? $limit_expr = "" : $limit_expr = "LIMIT $limit" ;
+
+        $sql = "SELECT $field, count(*) as groupcount FROM `t_race` WHERE `eventid` = {$this->eventid} GROUP BY $field $order_expr $limit_expr";
+        $rs = $this->db->db_get_rows($sql);
+
+        $result = array();
+        if ($rs)
+        {
+            foreach ($rs as $row)
+            {
+                $result[$row['field']] = $row['groupcount'];
+            }
+        }
+        return $result;
+    }
+
     private function race_entry_get($fields, $where, $order, $laptimes=false)
     {
         // ignores competitors that are marked as deleted

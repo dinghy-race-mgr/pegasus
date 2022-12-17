@@ -98,29 +98,29 @@ for ($j=1; $j<=$_SESSION["e_$eventid"]['rc_numstarts']; $j++)
 }
 //debugTimer($eventid, $start_master, $start, $_SESSION["e_$eventid"]['ev_timerstart']);
 
-// ----- navbar -----------------------------------------------------------------------------
+// --- navbar -----------------------------------------------------------------------------
 $fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
 $params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink'], "num_reminders" => $_SESSION["e_$eventid"]['num_reminders']);
 $nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
 
-
-// ----- left hand panel -----------------------------------------------------------------------------
+// --- left hand panel -----------------------------------------------------------------------------
 $lbufr = u_growlProcess($eventid, $page);                      // initialise bufr with process growls
 
-if ($_SESSION["e_$eventid"]['pursuit'])                        // pursuit race - produce start list
+
+// -------   PURSUIT RACE   --------------------------------------------------------
+if ($_SESSION["e_$eventid"]['pursuit'])
 {
     require_once ("./include/rm_racebox_lib.php");
+    $competitors = $race_o->race_getentries("", array("pn"=>"DESC"));   // get competitors in order (pn DESC, class ASC, sailnum ASC
 
-    // get competitors in order (pn DESC, class ASC, sailnum ASC
-    $competitors = $race_o->race_getentries("", array("pn"=>"DESC"));
+    $pursuit_starts = p_getstarts_competitors($competitors, $_SESSION['pursuitcfg']['maxpn'],             // allocate to starts
+                                              $_SESSION['pursuitcfg']['length'], $_SESSION['pursuitcfg']['interval']);
 
-    // allocate to starts
-    $pursuit_starts = p_getstarts_competitors($competitors, $_SESSION['pursuitcfg']['maxpn'], $_SESSION['pursuitcfg']['length'], $_SESSION['pursuitcfg']['interval']);
-
-    /// render display
-    $lbufr.= pursuit_start_list($pursuit_starts);
+    $lbufr.= pursuit_start_list($pursuit_starts, $eventid);             // render display
 }
-else                                                           // not a pursuit race - produce panel for each start
+
+// -------   CLASS-HANDICAP-AVERAGE LAP RACE   ---------------------------------------
+else
 {
     for ($startnum = 1; $startnum <= $_SESSION["e_$eventid"]['rc_numstarts']; $startnum++)
     {
@@ -152,15 +152,8 @@ else                                                           // not a pursuit 
     }
 }
 
-// ----- right hand panel -----------------------------------------------------------------------------
+// --- right hand panel -----------------------------------------------------------------------------
 $rbufr = "";
-
-//-- debug info ---
-//$rbufr.= "timerstart: {$_SESSION["e_$eventid"]['timerstart']} | $start_master<br>";
-//for ($i=1; $i<=$_SESSION["e_$eventid"]['rc_numfleets']; $i++)
-//{
-//    $rbufr.= "$i - start: ".$_SESSION["e_$eventid"]["st_$i"]['starttime']." - fleet: ".$_SESSION["e_$eventid"]["fl_$i"]['starttime']."<br>";
-//}
 
 if ( $event_state == "not started")
 {
@@ -267,21 +260,24 @@ EOT;
     return $bufr;
 }
 
-function pursuit_start_list($starts)
+function pursuit_start_list($starts, $eventid)
 {
     global $tmpl_o;
 
     // get number of boats on each start
     $num_boats = get_boats_per_start($starts);
 
+    // get classes representing pn limits
+    $pnclass = p_class_match(array("maxpn"=>$_SESSION['pursuitcfg']['maxpn'], "minpn"=>$_SESSION['pursuitcfg']['minpn']), $_SESSION['pursuitcfg']['pntype']);
+
     // render start list
     $fields = array(
         "length"   => $_SESSION['pursuitcfg']['length'],
-        "maxpn"    => $_SESSION['pursuitcfg']['maxpn'],
-        "minpn"    => $_SESSION['pursuitcfg']['minpn'],
+        "maxpn"    => $pnclass['maxpn'],
+        "minpn"    => $pnclass['minpn'],
         "startint" => $_SESSION['pursuitcfg']['interval'],
         "pntype"   => $_SESSION['pursuitcfg']['pntype'],
-        "start-info" => render_start_by_competitor($starts, $num_boats)
+        "start-info" => render_start_by_competitor($starts, $num_boats, $eventid)
     );
     return $tmpl_o->get_template("start_by_competitor", $fields );
 }
@@ -302,32 +298,55 @@ function get_boats_per_start ($starts)
     return $num_boats;
 }
 
-function render_start_by_competitor($starts, $num_boats)
+function render_start_by_competitor($starts, $num_boats, $eventid)
 {
+    $link_tmpl = "start_sc.php?eventid=$eventid&pagestate=setcode&startnum=1&fleet=1&finishlap=1000
+                               &racestatus=%s&declaration=%s&lap=%s&entryid=%s&boat=%s&code";
+
+    $menu_tmpl = '
+    <div class="btn-group">
+      %1$s - %2$s <span class="label label-danger" style="font-size: 1.1em;">%3$s</span> 
+      <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" >
+                <span class="caret text-info" style="border-width:7px;"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a href="%4$s=" >clear code</a></li>
+        <li><a href="%4$s=OCS">OCS</a></li>
+        <li><a href="%4$s=DNS">DNS</a></li>
+        <li><a href="%4$s=DNC">DNC</a></li>
+      </ul>
+    </div>
+';
+
     $bufr = "";
     $this_start = -1;
     $this_class = "";
 
     foreach ($starts as $i => $start)
     {
+        $boat = "{$start['class']}-{$start['sailnum']}";
+        $link = sprintf($link_tmpl, $start['class'], $start['declaration'], $start['lap'],$start['id'],$boat);
+        $menu = sprintf($menu_tmpl, $start['class'], $start['sailnum'], $start['code'], $link);
+
+
         $s_diff = (int)$start['start'] - $this_start ;                           // check if start time has changed
         $start['class'] != $this_class ? $c_diff = true : $c_diff = false;       // check if class has changed
 
         if ($s_diff > 0)                                                         // new start add banner
         {
-            $bufr .= "<tr><td colspan='2'>&nbsp;&nbsp;</td></tr><tr class='info' ><td style='width: 60%;'>Start +{$start['start']} mins <td>
-                          <td style='width: 40%; pull-right'> {$num_boats[(int)$start['start']]} boat(s)</td></tr>";
+            $bufr .= "<tr><td colspan='2'>&nbsp;&nbsp;</td></tr><tr class='info' ><td style='width: 85%;'>Start +{$start['start']} mins <td>
+                          <td style='width: 15%; pull-right'> {$num_boats[(int)$start['start']]} boat(s)</td></tr>";
         }
 
         if ($c_diff)                                                            //  new class
         {
             if (!empty($bufr)) { $bufr.= "</td></tr>"; }                        // finish incomplete row for previous class
 
-            $bufr.= "<tr><td colspan='2'>{$start['class']}-{$start['sailnum']} <span class='caret text-info' style=\"border-width:7px;\"></span>, &nbsp;";  // add first boat of new class
+            $bufr.= "<tr><td colspan='2'>$menu |";  // add first boat of new class
         }
         else
         {
-            $bufr.= "{$start['class']}-{$start['sailnum']} <kbd>code</kbd> <span class=\"caret\"></span>, &nbsp;";            // add subsequent boat of this class
+            $bufr.= "$menu | ";            // add subsequent boat of this class
         }
 
         $this_start = (int)$start['start'];                                     // reset start time

@@ -53,7 +53,9 @@ function p_getstarts_competitors($competitors, $maxpn, $race_length, $start_inte
         $starts[$i] = array(
             "class"   => $row['class'],
             "sailnum" => $row['sailnum'],
-            "id"      => $row['id'],                                  // should this be competitorid
+            "lap"     => $row['lap'],
+            "declaration" => $row['declaration'],
+            "id"      => $row['id'],
             "code"    => $row['code'],
             "status"  => $row['status'],
             "start"   => u_timeresolution($start_interval, $time),    // apply required time resolution
@@ -63,5 +65,28 @@ function p_getstarts_competitors($competitors, $maxpn, $race_length, $start_inte
     }
 
     return $starts;
+}
+
+function p_class_match($pns, $pn_type)
+{
+    global $db_o;
+
+    $pn_type == "national" ? $pn_field = "nat_py" : $pn_field = "local_py" ;
+
+    $data = array();
+    foreach ($pns as $k=>$pn)
+    {
+        $row = $db_o->db_get_row("SELECT classname FROM t_class WHERE $pn_field = {$pn} ORDER BY popular DESC LIMIT 1");
+        if ($row)
+        {
+            $data[$k] = $row['classname'];
+        }
+        else
+        {
+            $data[$k] = $pn;
+        }
+    }
+
+    return $data;
 }
 

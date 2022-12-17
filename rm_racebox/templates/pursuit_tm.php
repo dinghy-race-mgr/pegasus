@@ -301,3 +301,419 @@ EOT;
 
     return $html;
 }
+
+
+function timer_list_pursuit($params = array())
+{
+    //echo "<pre>".print_r($params,true)."</pre>";
+
+    // get display for list view
+
+    // view selector buttons
+    $view_arr = array(
+        "sailnum_p" => array ("label"=>"Sail No.", "mode"=>"list", "style"=>"btn-default", "params"=>""),
+        "class_p"   => array ("label"=>"Class", "mode"=>"list", "style"=>"btn-default", "params"=>""),
+        "finish_p"  => array ("label"=>"Finish Line", "mode"=>"list", "style"=>"btn-default", "params"=>""),
+        "result_p"  => array ("label"=>"Result", "mode"=>"list", "style"=>"btn-default", "params"=>""),
+    );
+
+    $view_option = "";
+    foreach ($view_arr as $view=>$val)
+    {
+        $view == $params['view'] ? $btn_state = "btn-warning" : $btn_state = "btn-default";
+        $view == "tab" ? $view_str = "" : $view_str = "&view=$view";
+        $optlink = "timer_pg.php?eventid={$params['eventid']}&mode={$val['mode']}$view_str";
+
+        $view_option.= <<<EOT
+            <a class="btn btn-lg $btn_state text-center lead" href="$optlink">{$val['label']}</a>
+EOT;
+    }
+
+    // get boat display
+    $view_bufr = timer_list_view_pursuit($params['eventid'], $params['timings'], $params['view'], 1);
+
+    $last_click_txt = "";
+    if (array_key_exists("boat", $_SESSION["e_{$params['eventid']}"]['lastclick']))
+    {
+        $last_click_txt = "<h4><span style='color: darkgrey'>Last Boat Recorded: </span><b>{$_SESSION["e_{$params['eventid']}"]['lastclick']['boat']}</b></h4>";
+    }
+
+    $colour_key = <<<EOT
+       <a href="#" class="btn btn-info btn-xs"    style="margin-right: 2px; min-width:15%">racing</a>&nbsp;
+       <a href="#" class="btn btn-success btn-xs" style="margin-right: 2px; min-width:15%">recorded</a>&nbsp;
+       <a href="#" class="btn btn-primary btn-xs" style="margin-right: 2px; min-width:15%">not racing</a>&nbsp;
+EOT;
+
+    // final page body layout
+    $html = <<<EOT
+    <div class="row margin-top-40" >
+        <div class="col-md-8 btn-group pull-left"  style="display: block;">$view_option</div>
+        <div class="col-md-4 pull-right text-danger" style="display: block;">
+           <blockquote style="padding-left: 5px; padding-right: 0px">$last_click_txt $colour_key</blockquote>
+        </div>        
+    </div>
+    <div class="clearfix"></div>
+    <div>
+            $view_bufr
+    </div>
+EOT;
+
+    return $html;
+}
+
+function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
+{
+    // link details for boat controls
+    $timelap_link = "timer_sc.php?eventid=$eventid&pagestate=timelap";
+    $undo_link    = "timer_sc.php?eventid=$eventid&pagestate=undoboat";
+    $bunch_link   = "timer_sc.php?eventid=$eventid&pagestate=bunch&action=addnode";
+    $finish_link  = "timer_sc.php?eventid=$eventid&pagestate=finish";
+    $edit_link    = "";  // fixme no edit on timer page - is this needed - could add it to menu and use same popup form as tabbed
+
+    // boat state info
+    $boat_states = array(
+        "beforelap" => array("color"=>"btn-default", "val"=>"racing",     "index" => "racing"),
+        "racing"    => array("color"=>"btn-info",    "val"=>"racing",     "index" => "racing"),
+        "notracing" => array("color"=>"btn-primary", "val"=>"not racing", "index" => "notracing" ),
+        "lastlap"   => array("color"=>"btn-warning", "val"=>"last lap",   "index" => "lastlap"),
+        "finished"  => array("color"=>"btn-success", "val"=>"finished",   "index" => "finished"),
+    );
+
+
+    if ($view == "finish_p")
+    {
+        $configured = true;  // fixme this needs to be set somewhere
+        $category = array();
+        $dbuf = array();
+        for ($i=1; $i <= 6; $i++)
+        {
+            $i == 6 ? $category[$i] = "No Finish" : $category[$i] = "Line $i";
+            $dbufr[$i] = array();
+        }
+
+        if ($configured) {
+            foreach ($data as $item => $group) {
+                foreach ($group as $entry) {
+                    $dbufr[$item][] = array(
+                        "entryid" => $entry['id'],
+                        "class"   => $entry['class'],
+                        "sailnum" => $entry['sailnum'],
+                        "boat"    => $entry['class']." - ".$entry['sailnum'],
+                        "fleet"   => $entry['fleet'],
+                        "start"   => $entry['start'],
+                        "lap"     => $entry['lap'],
+                        "finishlap" => $entry['finishlap'],
+                        "code"    => $entry['code'],
+                        "pn"      => $entry['pn'],
+                        "etime"   => $entry['etime'],
+                        "status"  => $entry['status'],
+                        "declaration" => $entry['declaration'],
+                        "label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'], // FIXME - should use stored class acronym if available
+                        "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
+                    );
+                }
+            }
+        }
+    }
+
+    elseif ($view == "class_p")
+    {
+        $configured = true;     // fixme this needs to be set somewhere
+        $classes = array();
+        if (array_key_exists("racebox_class_category", $_SESSION))
+        {
+            $classes = explode("|", $_SESSION["racebox_class_category"]);   // FIXME instead of using a fixed list would it be better to have number threshold
+            // FIXME and just generate classes who reach the threshold
+        }
+        if (empty($classes))
+        {
+            $configured = false;
+        }
+        else
+        {
+            $category = array();
+            for ($i=1; $i <= count($classes); $i++)
+            {
+                $category[$i] = $classes[$i-1];
+            }
+            $category[] = "MISC";
+        }
+
+        if ($configured)    // FIXME - what happens if this is not configured
+        {
+            $dbuf = array();
+            for ($i = 1; $i <= count($category); $i++) {
+                $dbufr[$i] = array();
+            }
+
+            foreach ($data as $class => $group) {
+                foreach ($group as $entry) {
+                    $arr = array(
+                        "entryid" => $entry['id'],
+                        "class"   => $entry['class'],
+                        "sailnum" => $entry['sailnum'],
+                        "boat"    => "{$entry['class']} - {$entry['sailnum']}",
+                        "fleet"   => $entry['fleet'],
+                        "start"   => $entry['start'],
+                        "lap"     => $entry['lap'],
+                        "finishlap" => $entry['finishlap'],
+                        "code"    => $entry['code'],
+                        "pn"      => $entry['pn'],
+                        "etime"   => $entry['etime'],
+                        "status"  => $entry['status'],
+                        "declaration" => $entry['declaration'],
+                        "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
+                    );
+
+                    $set = false;
+                    for ($i = 1; $i < count($category); $i++) {
+
+                        if (strpos(strtolower($entry['class']), strtolower($category[$i])) !== false) {
+                            $arr['label'] = $entry['sailnum']; // only need sailnum for label
+                            $dbufr[$i][] = $arr;
+                            $set = true;
+                            break;
+                        }
+                    }
+
+                    if (!$set) {                                    // add to misc group
+                        $arr['label'] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum']; // FIXME - should use stored class acronym if available
+                        $dbufr[count($category)][] = $arr;
+                    }
+                }
+            }
+        }
+    }
+
+    else   // sailnumber view
+    {
+        $configured = true;    // fixme this needs to be set somewhere
+        $category = array(1=>"1 &hellip;", 2=>"2 &hellip;", 3=>"3 &hellip;", 4=>"4 &hellip;", 5=>"5 &hellip;", 6=>"6 &hellip;", 7=>"7 &hellip;", 8=>"8 &hellip;", 9=>"9 &hellip;", 10=>"other",);
+        $dbufr = array(1=>array(), 2=>array(), 3=>array(), 4=>array(), 5=>array(), 6=>array(), 7=>array(), 8=>array(), 9=>array(), 10=>array() );
+
+        if ($configured) {
+            foreach ($data as $item => $group) {
+                foreach ($group as $entry) {
+                    $dbufr[$item][] = array(
+                        "entryid" => $entry['id'],
+                        "class"   => $entry['class'],
+                        "sailnum" => $entry['sailnum'],
+                        "boat"    => "{$entry['class']} - {$entry['sailnum']}",
+                        "fleet"   => $entry['fleet'],
+                        "start"   => $entry['start'],
+                        "lap"     => $entry['lap'],
+                        "finishlap" => $entry['finishlap'],
+                        "code"    => $entry['code'],
+                        "pn"      => $entry['pn'],
+                        "etime"   => $entry['etime'],
+                        "status"  => $entry['status'],
+                        "declaration" => $entry['declaration'],
+                        "label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'],   // FIXME - should use stored class acronym if available
+                        "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
+                    );
+                }
+            }
+        }
+    }
+
+    if (empty($dbufr)) {
+        $html = <<<EOT
+            <div role="tabpanel" class="tab-pane" id="fleet$i">
+                <div class="alert alert-info text-center" role="alert" style="margin-right: 40%;">
+                   <h3>no entries - nothing to display</h3><br>
+                </div>
+            </div>
+EOT;
+    }
+
+    elseif ($configured)
+    {
+        $html = "";
+
+        $label_bufr = "<div class='row'>";
+        $data_bufr  = "<div class='row' style='margin-left: 10px; margin-bottom: 10px'>";
+        foreach ($category as $i => $label) {
+            // flush buffers if we need to go to second or third row (6 columns per row)
+            if ($i % 7 === 0)
+            {
+                $html.= $label_bufr . $data_bufr;
+                $label_bufr = "</div><br><br><div class='row'>";
+                $data_bufr  = "</div><div class='row' style='margin-left: 10px; margin-bottom: 10px'>";
+            }
+
+            // category labels
+            $view == "fleet" ? $laps_txt = " <small> {$_SESSION["e_$eventid"]["fl_$i"]['maxlap']} lap(s)</small>" : $laps_txt = "" ;
+            $label_bufr .= <<<EOT
+            <div class="col-md-2 text-center"><h4 style="margin-bottom: 4px;"><b>$label</b></h4> $laps_txt</div>
+EOT;
+
+            // boat buttons
+            $data_bufr .= "<div class='col-md-2' style='padding: 0px 0px 0px 0px;'>";
+            foreach ($dbufr[$i] as $entry) {
+
+                $boat = "{$entry['class']} - {$entry['sailnum']}";
+                $laps = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['maxlap'];
+                $scoring = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['scoring'];
+
+                if ($scoring == "average")
+                {
+                    if ( $entry['status'] == "X" )
+                    {
+                        $state = $boat_states['notracing'];
+                    }
+                    elseif ($entry['lap'] > 0)
+                    {
+                        if ( $entry['status'] == "F" )
+                        {
+                            { $state = $boat_states['finished']; }
+                        }
+                        else
+                        {
+                            if ( $entry['lap'] < $entry['finishlap'] - 1 )      { $state = $boat_states['racing']; }
+                            elseif ( $entry['lap'] >= $entry['finishlap'] )     { $state = $boat_states['finished']; }
+                            elseif ( $entry['lap'] == $entry['finishlap'] - 1 ) { $state = $boat_states['lastlap']; }
+                        }
+                    }
+                    else
+                    {
+                        $state = $boat_states['beforelap'];
+                    }
+                }
+                else
+                {
+                    if ( $entry['status'] == "X" )
+                    {
+                        $state = $boat_states['notracing'];
+                    }
+                    elseif ($entry['lap'] > 0)
+                    {
+                        if ( $entry['lap'] < $laps - 1 )      { $state = $boat_states['racing']; }
+                        elseif ( $entry['lap'] >= $laps )     { $state = $boat_states['finished']; }
+                        elseif ( $entry['lap'] == $laps - 1 ) { $state = $boat_states['lastlap']; }
+                    }
+                    else
+                    {
+                        $state = $boat_states['beforelap'];
+                    }
+                }
+
+                empty($entry['code']) ? $cog_style = "primary" : $cog_style = "danger";
+
+                // competitor identity and lap count
+                $title = $entry['label'];
+                $lapcount = "L {$entry['lap']}";
+
+                // popover information
+                $ptitle = "<b>{$entry['class']} - {$entry['sailnum']}</b> - ".strtoupper($state['val']);
+                $pcontent = "lap: {$entry['lap']} [ ".gmdate("H:i:s", $entry['etime'])." ]&nbsp;&nbsp;&nbsp;<b>{$entry['code']}</b>";
+
+                // set params for link options
+                unset($entry['class']);
+                unset($entry['sailnum']);
+                $params_list = "&" . http_build_query($entry);
+
+                // setcode link
+                $link = <<<EOT
+timer_sc.php?eventid=$eventid&pagestate=setcode&fleet={$entry['fleet']}&entryid={$entry['entryid']}&boat={$entry['boat']}
+&racestatus={$entry['status']}&declaration={$entry['declaration']}&lap={$entry['lap']}&finishlap=$laps}
+EOT;
+                // finish/bunch menu options
+                if ($entry['status'] == "F")
+                {
+                    $finish_option = "";
+                    $bunch_option = "";
+                }
+                else
+                {
+                    if ($scoring == "average")
+                    {
+                        $finish_option = <<<EOT
+                            <li><a href="$finish_link$params_list">Finish</a></li>
+EOT;
+                    }
+                    else
+                    {
+                        $finish_option = "";
+                    }
+
+                    $bunch_option = <<<EOT
+                        <li><a href="$bunch_link$params_list">Bunch</a></li>
+EOT;
+                }
+
+
+                $options_bufr = <<<EOT
+                <ul class="dropdown-menu">
+                    <li><a href="$undo_link$params_list">Undo Last Timing</a></li>
+                    $bunch_option
+                    $finish_option
+                    <!-- li><a href="timer_sc.php?">Edit (future)</a></li -->
+                    <li class="divider"></li>
+                    <li><a href="$link&code=">clear code</a></li>  <!--FIXME don't display this if no code set -->
+                    <li><a href="$link&code=DNC">set DNC</a></li>
+                    <li><a href="$link&code=DNF">set DNF</a></li>
+                    <li><a href="$link&code=DNS">set DNS</a></li>
+                    <li><a href="$link&code=NSC">set NSC</a></li>
+                    <li><a href="$link&code=OCS">set OCS</a></li>
+                </ul>
+EOT;
+                $entry['status'] == "F" ? $disabled = "disabled" : $disabled = "";  // turn of lap timing for boats that have finished
+
+                $data_bufr .= <<<EOT
+                <div class="btn-group btn-block" role="group" aria-label="..." >
+                    <div data-toggle="popover" data-placement="top"  title="$ptitle" data-content="$pcontent">
+                        <a type="button" href="$timelap_link$params_list" class="btn {$state['color']} btn-xs $disabled" style="width:70%" 
+                            >
+                            <div class="pull-left">$title</div>
+                            <div class="pull-right">$lapcount</div>     
+                        </a>                 
+                        <button type="button" class="btn btn-$cog_style btn-xs dropdown-toggle" 
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </button>
+                        $options_bufr
+                    </div>
+                </div>
+EOT;
+
+//                $data_bufr .= <<<EOT
+//                <div class="btn-group btn-block" role="group" aria-label="...">
+//                    <a type="button" href="$timelap_link$params_list" class="btn {$state['color']} btn-xs $disabled" style="width:70%"
+//                        data-toggle="popover" data-placement="top"  title="$ptitle" data-content="$pcontent">
+//                        <div class="pull-left">$title</div>
+//                        <div class="pull-right">$lapcount</div>
+//
+//                    </a>
+//                    <div class="btn-group" role="group">
+//                        <button type="button" class="btn btn-$cog_style btn-xs dropdown-toggle"
+//                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+//                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+//                        </button>
+//                        $options_bufr
+//                    </div>
+//                </div>
+//EOT;
+            }
+            $data_bufr .= "</div>";
+
+        }
+        $label_bufr .= "</div>";
+        $data_bufr .= "</div>";
+
+
+        $html.= $label_bufr . $data_bufr;
+    }
+    else
+    {
+        $html = <<<EOT
+        <div class="pull-left text-info"  style="display: block;">
+            <blockquote>
+                <h4>This view is not configured - please contact your system administrator</h4>
+            </blockquote>
+        </div>
+EOT;
+
+    }
+
+    return $html;
+}
