@@ -198,7 +198,7 @@ $btn_pursuit = array(
         "pop-pos"   => "left",
         "block"     => "btn-block",
         "disabled"  => "",
-        "link"      => "../rm_utils/pursuit_starttimes.php",
+        "link"      => "../rm_utils/pursuit_starttimes.php?",
         "top-margin"  => "margin-top-10"
     ),
 );

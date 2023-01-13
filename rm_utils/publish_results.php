@@ -315,6 +315,9 @@ elseif ($_REQUEST['pagestate'] == "submit")
         {
             if ($continue)     // continue if previous processsing hasn't causes a problem
             {
+                // check if the race was part of a series
+                $series = $event_o->event_in_series($eventid);  // - if not set series upload flag
+                if (!$series) { $series['opt_upload'] = true; } // has effect of ignoring series
 
                 // results files will be transferred if a) individual race has not been embargoed, b) the series upload flag is
                 // not set in t_series, c) the result_upload parameter is not set to 'none'

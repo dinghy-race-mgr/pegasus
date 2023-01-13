@@ -3,15 +3,15 @@
 function pursuit_start_form($params = array())
 {
 
+    $args = $params['args'];
     $classes = $params['classes'];   // already sorted from slow o fast
-//    u_array_sort_by_column($classes, "nat_py", SORT_DESC);
+
     $classlist_slow = array();
     foreach ($classes as $row)
     {
         $classlist_slow[$row['id']] = $row['classname'];
     }
-
-    $class_select_slow = u_selectlist($classlist_slow);  // select list for classes - slow to fast
+    $class_select_slow = u_selectlist($classlist_slow, $args['slowclass']);  // select list for classes - slow to fast
 
     $classes = $params['classes'];
     u_array_sort_by_column($classes, "nat_py", SORT_ASC);
@@ -20,8 +20,33 @@ function pursuit_start_form($params = array())
     {
         $classlist_fast[$row['id']] = $row['classname'];
     }
-    $class_select_fast = u_selectlist($classlist_fast);  // select list for classes - fast to slow
+    $class_select_fast = u_selectlist($classlist_fast, $args['fastclass']);  // select list for classes - fast to slow
 
+    $args['pytype'] == "national" ? $selected_py_national = "checked" : $selected_py_national = "";
+    $args['pytype'] == "local" ? $selected_py_local = "checked" : $selected_py_local = "";
+    $args['pytype'] == "personal" ? $selected_py_personal = "disabled" : $selected_py_personal = "";  // FIXME - when local PY allowed
+    $args['interval'] == "60" ? $selected_int_60 = "checked" : $selected_int_60 = "";
+    $args['interval'] == "30" ? $selected_int_30 = "checked" : $selected_int_30 = "";
+
+    if (empty($args['boattypes']))
+    {
+        $selected_btype_D = "1";
+        $selected_btype_K = "0";
+        $selected_btype_F = "0";
+        $selected_btype_M = "0";
+    }
+    else
+    {
+        strpos($args['boattypes'], "D") === false ? $selected_btype_D = "0" : $selected_btype_D = "1";
+        strpos($args['boattypes'], "K") === false ? $selected_btype_K = "0" : $selected_btype_K = "1";
+        strpos($args['boattypes'], "F") === false ? $selected_btype_F = "0" : $selected_btype_F = "1";
+        strpos($args['boattypes'], "M") === false ? $selected_btype_M = "0" : $selected_btype_M = "1";
+    }
+
+    $selected_btype_D == "1" ? $checked_btype_D = "checked" : $checked_btype_D = "";
+    $selected_btype_K == "1" ? $checked_btype_K = "checked" : $checked_btype_K = "";
+    $selected_btype_F == "1" ? $checked_btype_F = "checked" : $checked_btype_F = "";
+    $selected_btype_M == "1" ? $checked_btype_M = "checked" : $checked_btype_M = "";
 
     $bufr = <<<EOT
     <div class="container" style="margin-top: 40px;">
@@ -62,7 +87,7 @@ function pursuit_start_form($params = array())
             <label class="col-sm-3 control-label text-right" style="margin-top: 10px !important;">Race Length</label>
             <div class="form-group">  
             <div class="col-sm-3" style="padding-left:0px !important;">                 
-                 <input type="number" class="form-control" id="length"  name="length" value="" placeholder="length of race in minutes" 
+                 <input type="number" class="form-control" id="length"  name="length" value="{$args['timelimit']}" placeholder="length of race in minutes" 
                     required 
                     data-fv-notempty-message="please ad the race length in minutes (e.g. 90)"
                     data-fv-integer="true"
@@ -76,8 +101,9 @@ function pursuit_start_form($params = array())
         <div class="row margin-top-20">
             <label class="col-sm-3 control-label text-right">Choose Handicap Source</label>                                 
             <div class="col-sm-8">
-              <label class="radio-inline"><input type="radio" name="pntype" value="national" checked>&nbsp;RYA PY&nbsp;&nbsp;&nbsp;</label>
-              <label class="radio-inline"><input type="radio" name="pntype" value="local" >&nbsp;Local PY&nbsp;&nbsp;&nbsp;</label>                 
+              <label class="radio-inline"><input type="radio" name="pntype" value="national" $selected_py_national>&nbsp;RYA PN&nbsp;&nbsp;&nbsp;</label>
+              <label class="radio-inline"><input type="radio" name="pntype" value="local"  $selected_py_local>&nbsp;Local PN&nbsp;&nbsp;&nbsp;</label>  
+              <label class="radio-inline"><input type="radio" name="pntype" value="personal"  $selected_py_personal>&nbsp;Personal PN&nbsp;&nbsp;&nbsp;</label>                
             </div>               
         </div>
         
@@ -85,8 +111,8 @@ function pursuit_start_form($params = array())
         <div class="row margin-top-20">
             <label class="col-sm-3 control-label text-right">Choose Start Interval</label>                                 
             <div class="col-sm-8">
-              <label class="radio-inline"><input type="radio" name="startint" value="60" checked>&nbsp;1 minute&nbsp;&nbsp;&nbsp;</label>
-              <label class="radio-inline"><input type="radio" name="startint" value="30" >&nbsp;30 seconds&nbsp;&nbsp;&nbsp;</label>                 
+              <label class="radio-inline"><input type="radio" name="startint" value="60" $selected_int_60>&nbsp;1 minute&nbsp;&nbsp;&nbsp;</label>
+              <label class="radio-inline"><input type="radio" name="startint" value="30" $selected_int_30>&nbsp;30 seconds&nbsp;&nbsp;&nbsp;</label>                 
             </div>               
         </div>
         
@@ -94,10 +120,10 @@ function pursuit_start_form($params = array())
         <div class="row margin-top-20">
             <label class="col-sm-3 control-label text-right">Include Boat Types</label>                         
             <div class="col-sm-5">
-              <label class="checkbox-inline"><input type="checkbox" name="typeD" value="1" checked>&nbsp;Dinghy&nbsp;&nbsp;&nbsp;</label>
-              <label class="checkbox-inline"><input type="checkbox" name="typeK" value="0" >&nbsp;Keelboat&nbsp;&nbsp;&nbsp;</label>               
-              <label class="checkbox-inline"><input type="checkbox" name="typeF" value="0" >&nbsp;Foiler&nbsp;&nbsp;&nbsp;</label>
-              <label class="checkbox-inline"><input type="checkbox" name="typeM" value="0" >&nbsp;Multihull&nbsp;&nbsp;&nbsp;</label>                           
+              <label class="checkbox-inline"><input type="checkbox" name="typeD" value="$selected_btype_D" $checked_btype_D>&nbsp;Dinghy&nbsp;&nbsp;&nbsp;</label>
+              <label class="checkbox-inline"><input type="checkbox" name="typeK" value="$selected_btype_K" $checked_btype_K>&nbsp;Keelboat&nbsp;&nbsp;&nbsp;</label>               
+              <label class="checkbox-inline"><input type="checkbox" name="typeF" value="$selected_btype_F" $checked_btype_F>&nbsp;Foiler&nbsp;&nbsp;&nbsp;</label>
+              <label class="checkbox-inline"><input type="checkbox" name="typeM" value="$selected_btype_M" $checked_btype_M>&nbsp;Multihull&nbsp;&nbsp;&nbsp;</label>                           
             </div>  
             <div class="col-sm-4 help-block">select the boat types you want to include - must be at least one type</div>            
         </div>                  

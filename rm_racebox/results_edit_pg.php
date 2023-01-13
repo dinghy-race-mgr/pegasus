@@ -60,51 +60,17 @@ $race_o = new RACE($db_o, $eventid);    // create race object
 if ($pagestate == "init")               // display form with lap times for each lap
 {
 
-
     if ($_SESSION["e_$eventid"]['pursuit'])
     {
-        // get data for selected entry
-
-        //UPDATE SCHEMA t_finish - myclub, p_dev, p_stx, p_wsc, racebox
-
-        // (form fields) entryid, helm, sailnum, crew, club, lap, finishline, finishpos, code, penalty, note
-
-        /*
-        MAPPING
-        (entryid)
-        helm,           t_race.helm
-        crew,           t_race.crew
-        sailnum,        t_race.sailnum
-        club,           t_race.club
-        lap,            t_race.lap
-        finishline,     t_finish.finishline
-        finishpos,      t_finish.finishorder      ?? or is the race finish
-        code,           t_race.code
-        penalty,        t_race.penalty
-        note            t_race.note
-
-        id
-eventid
-entryid
-finishline
-finishorder
-raceplace
-status
-upddate
-updby
-createdate
-
-         */
-
-        $old = $race_o->entry_get_timings($entryid);
+        $entry = $race_o->race_getresults_pursuit(array("id"=>$entryid), "");
+        $old = $entry[0];
         $old["eventid"] = $eventid;
         $old["fldw"] = "4";
         $old["lblw"] = "3";
         $old["hlpw"] = "4";
 
         $resultcodes = $_SESSION['resultcodes'];                          // remove codes not relevant to pursuit race
-        unset($resultcodes['BFD']);
-        unset($resultcodes['UFD']);
+        unset($resultcodes['BFD'], $resultcodes['UFD']);
 
         $params = array(
             "eventid"           => $eventid,                                                     //
@@ -112,7 +78,6 @@ createdate
             "scoring"           => $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['scoring'],     //
             "resultcodes"       => $resultcodes,                                                 //
             "points_allocation" => $_SESSION['points_allocation'],                               //
-            "laptimes"          => $old["laptimes"],
             "code"              => $old['code']                                                  //
         );
 
@@ -127,17 +92,6 @@ createdate
         $old["fldw"] = "4";
         $old["lblw"] = "3";
         $old["hlpw"] = "4";
-
-        /*
-         * SELECT id, fleet, start, class, sailnum, helm, crew, club, pn, clicktime, lap, finishlap, etime, code, status, penalty, note,
-                (SELECT GROUP_CONCAT(b.etime ORDER BY b.lap ASC SEPARATOR \",\")
-                FROM t_lap as b
-                WHERE b.entryid=a.id and a.eventid = {$this->eventid}
-                GROUP BY b.entryid) AS laptimes
-                FROM t_race as a
-                WHERE a.eventid = {$this->eventid} AND a.id = $id
-         *
-         */
 
         $params = array(
             "eventid"           => $eventid,
@@ -159,9 +113,51 @@ elseif ($pagestate == "submit-pursuit")
 {
     echo "<pre>".print_r($_REQUEST,true)."</pre>";
 
-    // FIXME add the processing
-    // update t_race (does it calculate overall pos on the fly)?
-    // update t_finish
+    $old = $race_o->entry_get_timings($entryid);
+
+    // get returned field values
+    $edit = get_edit_data_pursuit($_REQUEST);
+
+    $warnings = check_edit($edit, array("maxlap" => 0), true);
+
+    if ($warnings)
+    {
+        $pagefields['body'] = $tmpl_o->get_template("result_edit_warnings", array(),
+            array("warnings" => $warnings, "eventid" => $eventid, "entryid" => $entryid));  // warnings layout
+        echo $tmpl_o->get_template("basic_page", $pagefields, array());
+    }
+    else  // process changes
+    {
+        foreach ($edit as $k => $v)
+        {
+            if ($old[$k] != $edit[$k])
+            {
+                $edit_str .= "| $k:$v ";
+            }
+            else
+            {
+                unset($edit[$k]);
+            }
+        }
+        
+        // update race result in t_race
+        $update = $race_o->entry_update($entryid, $edit);
+
+        // update results status - needs recalculating
+        $_SESSION["e_$eventid"]['result_valid'] = false;
+    }
+
+    // log change
+    u_writelog("Result Update - {$old['class']} {$old['sailnum']} : changes [ $edit_str ]", $eventid);
+
+    // return to main results page - closing modal
+    if (!$stop_here)
+    {
+        echo <<<EOT
+            <script "text/javascript"> window.top.location.href = 'results_pg.php?eventid=$eventid';</script>
+EOT;
+        exit();
+    }
 }
 elseif ($pagestate == "submit")       // update t_race and t_lap records
 {
@@ -253,7 +249,7 @@ else  // pagestate not recognised
 }
 
 
-function check_edit($edit, $data)
+function check_edit($edit, $data, $pursuit = false)
 {
     $issues = array(
         1 => array( "type" => "error", "title" => "Finish Lap", "msg" => "Finish lap cannot be greater than the no. of laps set"),
@@ -263,15 +259,20 @@ function check_edit($edit, $data)
     );
 
     $warnings = array();
-    if ($edit['lap'] > $data['maxlap'])
+
+    if ($pursuit === false)
     {
-        $warnings[] = $issues[1];
+        if ($edit['lap'] > $data['maxlap'])
+        {
+            $warnings[] = $issues[1];
+        }
+
+        if ($edit['etime'] <= 0)
+        {
+            $warnings[] = $issues[2];
+        }
     }
 
-     if ($edit['etime'] <= 0)
-     {
-         $warnings[] = $issues[2];
-     }
 
     if ((float)$edit['penalty'] > "0" AND $edit['code'] != "DPI")
     {
@@ -343,6 +344,34 @@ function get_edit_data($args)
     if (ctype_digit($args['pn']) )      { $edit['pn'] = (int)$args['pn']; }
     
     if (ctype_digit($args['lap']) )     { $edit['lap'] = (int)$args['lap']; }
+
+    empty($args['penalty']) ? $edit['penalty'] = 0 : $edit['penalty'] = $args['penalty'];
+
+    return $edit;
+}
+
+function get_edit_data_pursuit($args)
+{
+    $edit = array();
+
+
+    if (!empty($args['helm']))    { $edit['helm'] = ucwords($args['helm']); }
+
+    $edit['crew']    = ucwords($args['crew']);
+    $edit['club']    = u_getclubname($args['club']);
+    $edit['sailnum'] = $args['sailnum'];
+
+    $edit['code']    = $args['code'];
+    $edit['note']    = $args['note'];
+
+    if (!array_key_exists("code", $args) or empty($args['code']))
+    {
+        $edit['code'] = "";
+    }
+    else
+    {
+        $edit['code'] = $args['code'];
+    }
 
     empty($args['penalty']) ? $edit['penalty'] = 0 : $edit['penalty'] = $args['penalty'];
 

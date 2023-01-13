@@ -72,7 +72,7 @@ if ($_SESSION["e_$eventid"]['ev_status'] == "running" OR $_SESSION["e_$eventid"]
     $_SESSION["e_$eventid"]['ev_status'] == "completed") { $event_run = true; }
 
 // ---- Recalculate results if required ----------------------------------
-$results = array("eventid" => $eventid, "num-fleets" => $numfleets);
+$results = array("eventid" => $eventid, "num-fleets" => $numfleets, "pursuit" => $_SESSION["e_$eventid"]['pursuit']);
 if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need recalculating
 {
     $warning_count = 0;
@@ -85,7 +85,14 @@ if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need 
             $fleet_rs['data'] = array();
             if (!empty($rs_data[$i]))
             {
-                $fleet_rs = $race_o->race_score($eventid, $i, $_SESSION["e_$eventid"]["fl_$i"]['scoring'], $rs_data[$i] );
+                if ($_SESSION["e_$eventid"]['pursuit'])
+                {
+                    $fleet_rs = $race_o->race_score_pursuit($rs_data[$i]);
+                }
+                else
+                {
+                    $fleet_rs = $race_o->race_score($eventid, $i, $_SESSION["e_$eventid"]["fl_$i"]['scoring'], $rs_data[$i] );
+                }
             }
 
             if (!empty($fleet_rs['warning'])) { $warning_count++; }

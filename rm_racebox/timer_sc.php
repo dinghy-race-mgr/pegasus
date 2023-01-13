@@ -143,6 +143,8 @@ if ($eventid AND $pagestate)
 /* ------- FINISH A BOAT ------------------------------------------------------------------------------- */
     elseif ($pagestate == "finish")   // FIXME this code should be combined with timelap above
     {
+
+
         //u_writedbg("<pre>passed to finish: ".print_r($_REQUEST,true)."</pre>", __CLASS__,__FUNCTION__,__LINE__);
 
         $if_err = false;
@@ -178,8 +180,6 @@ if ($eventid AND $pagestate)
                     "clicktime" => $_SERVER['REQUEST_TIME'],
                     "boat"      => $boat
                 );
-
-
                 u_writelog("lap $newlap: $boat finished ", $eventid);
 
                 if ($_SESSION['timer_options']['growl_finish'] == "on")
@@ -196,10 +196,207 @@ if ($eventid AND $pagestate)
         }
     }
 
+/* ------- SET FINISH FOR PURSUIT -------------------------------------------------------------------------- */
+    elseif ($pagestate == "setfinishpursuit")
+    {
+
+        // set session with entryid
+        empty($_REQUEST['entryid']) ? $_SESSION['pursuitcfg']['entryid'] = "" : $_SESSION['pursuitcfg']['entryid'] = $_REQUEST['entryid'];
+    }
+
+/* ------- PROCESS FINISH FOR PURSUIT -------------------------------------------------------------------------- */
+    elseif ($pagestate == "processfinishpursuit")
+    {
+        echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
+        // process form   [set lap, f_line, f_pos, code, status]
+        $entryid = u_checkarg("entryid", "checkintnotzero", "");
+        $prev_fl = u_checkarg("prev_fl", "set", "", "");
+        $boat    = u_checkarg("boat", "set", "", "");
+        $prev_status = u_checkarg("prev_status", "set", "", "");
+        $f_line  = u_checkarg("f_line", "checkintnotzero", "");
+        $f_pos   = u_checkarg("f_pos", "checkintnotzero", "");
+        $lap     = u_checkarg("lap", "checkintnotzero", "");
+        $code    = u_checkarg("code", "set", "", "");
+
+        if ($prev_status == "X") {
+            if (empty($code) OR ($code == "ZFP" or $code == "SCP" or $code == "DPI")) {
+                $status = "F";
+            } else {
+                $status = "X";
+            }
+        } elseif ($prev_status == "R") {
+            $status = "F";
+        } else {
+            $status = $prev_status;
+        }
+
+        // update t_race
+        $update = array(
+            "f_line" => $f_line,
+            "f_pos"  => $f_pos,
+            "lap"    => $lap,
+            "code"   => $code,
+            "status" => $status
+        );
+
+        // check update
+        $err_txt = array();
+
+        if (empty($code))
+        {
+            if (empty($f_line) or $f_line > 5) {$err_txt[] = "line must be between 1 and 5";}
+            if (empty($f_pos) or $f_pos < 1) {$err_txt[] = "position must be > 0";}
+            if (empty($lap) or $lap < 1) {$err_txt[] = "laps must be > 0";}
+        }
+
+
+        if (empty($err_txt))  // no input errors - process finish data
+        {
+            // need to check if boat has already been finished at an earlier (higher) finish line
+            $report = "";
+            if (empty($prev_fl))  // no finish entered for this boat so far
+            {
+                $set_finish = true;
+                $report.= "finished:<br> line $f_line - position $f_pos";
+            }
+            else                  // we already have a finish
+            {
+                if ($f_line >= $prev_fl)   // new data seems like the first finish
+                {
+                    $set_finish = true;
+                    $report.= "updated finish: line $f_line - position $f_pos";
+                }
+                else                       // old data seems like the first finish
+                {
+                    $set_finish = false;
+                    $report.= " already finished at line $prev_fl - NOT updated";
+                }
+            }
+
+            if ($set_finish)
+            {
+                $race_o->entry_update($entryid, $update);
+                u_writelog("$boat - finished at line $f_line, position $f_pos - $report", $eventid);
+            }
+            else
+            {
+                u_writelog("$boat - $report", $eventid);
+            }
+
+        }
+        else  // report input errors
+        {
+            $set_finish = false;
+            $err_rpt = implode("<br>", $err_txt);
+            $report = "finish data problem ...<br>$err_rpt";
+        }
+
+        // set last boat details
+        $_SESSION['pursuitcfg']['last-boat'] = array("boat"=>$boat, "f_line"=>$f_line, "f_pos"=>$f_pos, "lap"=>$lap, "set_finish"=>$set_finish, "report"=>$report);
+
+        // unset entryid
+        $_SESSION['pursuitcfg']['entryid'] = "";
+
+
+    }
+
+/* ------- CLEAR FINISH FOR PURSUIT ----------------------------------------------------------------------- */
+    elseif  ($pagestate == "clearfinishpursuit")
+    {
+        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
+        $entryid = u_checkarg("entryid", "checkintnotzero", "");
+        $boat    = u_checkarg("boat", "set", "");
+
+        $update = array ("f_line" => 0, "f_pos" => 0, "points" => 0.0, "lap" => 0, "status" => 'R');
+        $result = $race_o->entry_update($entryid, $update);
+
+        if ($result > 0)
+        {
+            $_SESSION['pursuitcfg']['last-boat'] = array("boat"=>$boat, "f_line"=>0, "f_pos"=>0, "lap"=>0,
+                                                         "set_finish"=>true, "report"=>"finish cleared");
+            u_growlSet($eventid, $page, $g_timer_pursuitclearfinish, array($boat));
+            u_writelog("$boat - finishing details cleared", $eventid);
+        }
+        elseif ($result == -1)
+        {
+            $reason = "clearing finish position details failed - try making changes manually";
+            u_growlSet($eventid, $page, $g_timer_pursuitclearfinish_fail, array($boat, $reason));
+        }
+        elseif ($result == 0)
+        {
+            $_SESSION['pursuitcfg']['last-boat'] = array();
+            u_growlSet($eventid, $page, $g_timer_pursuitclearfinish_fail, array($boat, "not finished - nothing to clear"));
+        }
+    }
+
+/* ------- SWAP POSITION FOR PURSUIT ----------------------------------------------------------------------- */
+
+    elseif  ($pagestate == "swappositionpursuit")
+    {
+        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
+        $entryid = u_checkarg("entryid", "checkintnotzero", "");
+        $boat    = u_checkarg("boat", "set", "");
+        $line    = u_checkarg("f_line", "checkintnotzero", "");
+        $dir     = u_checkarg("dir", "set", "");
+
+        $result = $race_o->race_line_swap_pursuit($entryid, $line, $dir, $boat);
+
+        if ($result > 0)
+        {
+            u_growlSet($eventid, $page, $g_timer_pursuitswap, array($boat, u_numordinal($result)));
+            u_writelog("$boat - position swapped to ".u_numordinal($result), $eventid);
+        }
+        elseif ($result == -1)
+        {
+            $reason = "position updates failed - try making changes manually";
+            u_growlSet($eventid, $page, $g_timer_pursuitswap_fail, array($boat, $reason));
+        }
+        elseif ($result == -2)
+        {
+            $dir == "up" ? $reason = "boat above has more laps" : $reason = "boat below has more laps";
+            u_growlSet($eventid, $page, $g_timer_pursuitswap_fail, array($boat, $reason));
+        }
+        elseif ($result == -3)
+        {
+            $dir == "up" ? $reason = "no previous boat on his finish line" : $reason = "no following boat on his finish line";
+            u_growlSet($eventid, $page, $g_timer_pursuitswap_fail, array($boat, $reason));
+        }
+        elseif ($result == -4)
+        {
+            u_growlSet($eventid, $page, $g_timer_pursuitswap_fail, array($boat, "swap direction not recognised"));
+        }
+    }
+
+/* ------- RENUMBER FOR PURSUIT ----------------------------------------------------------------------- */
+    elseif  ($pagestate == "renumberlinepursuit")
+    {
+        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
+        $line  = u_checkarg("line", "checkintnotzero", "");
+        $result = $race_o->race_line_renumber_pursuit($line);
+
+        if ($result == 1)
+        {
+            u_growlSet($eventid, $page, $g_timer_pursuitrenumber, array($line));
+        }
+        elseif ($result == -1)
+        {
+            u_growlSet($eventid, $page, $g_timer_pursuitrenumber_fail, array($line, "database update failed"));
+        }
+        elseif ($result == -2)
+        {
+            u_growlSet($eventid, $page, $g_timer_pursuitrenumber_fail, array($line, "no boats on line $line"));
+        }
+
+    }
+
 /* ------- SET SCORING CODE FOR BOAT ----------------------------------------------------------------------- */
     elseif  ($pagestate == "setcode")
     {
-        //u_writedbg("<pre>passed to setcode: ".print_r($_REQUEST,true)."</pre>", __CLASS__,__FUNCTION__,__LINE__);
+        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
 
         if (!empty($_REQUEST['fleet']))
         {
@@ -216,6 +413,8 @@ if ($eventid AND $pagestate)
 /* ------- REMOVE LAST LAP TIMING  ------------------------------------------------------------------- */
     elseif  ($pagestate == "undo")
     {
+        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
         $entry = $race_o->entry_time_undo();
             
         if ($entry == 0)
@@ -242,6 +441,8 @@ if ($eventid AND $pagestate)
 /* ------- REMOVE LAST LAP TIMING FOR SPECIFIC BOAT ---------------------------------------------------- */
     elseif  ($pagestate == "undoboat")
     {
+        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
         $entry = $race_o->entry_time_undo($_REQUEST['entryid']);
 
         if ($entry)
@@ -264,6 +465,8 @@ if ($eventid AND $pagestate)
 /* ------- SHORTEN FLEET ------------------------------------------------------------------------------- */
     elseif  ($pagestate == "shorten")
     {
+        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
         // shortens one fleet to finish
         if ($fleet)
         {
@@ -290,6 +493,8 @@ if ($eventid AND $pagestate)
 
 /* ------- SHORTEN ALL FLEETS ------------------------------------------------------------------------------- */
     elseif  ($pagestate == "shortenall") {
+
+        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
 
         $msg = "";
         $msgtype = "info";
@@ -319,6 +524,8 @@ if ($eventid AND $pagestate)
 /* ------- CHANGEFINISH ------------------------------------------------------------------------------- */
     elseif ($pagestate == "changefinish")
     {
+        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
         $growl_txt = "";
         $racestate = $race_o->racestate_get();   // get racestate for all fleets
 
@@ -350,6 +557,8 @@ if ($eventid AND $pagestate)
 
     elseif ($pagestate == "undoshorten")   // FIXME - this code is the same as set all laps on race_sc - refactor accordingly
     {
+        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
         $lapsetfail = false;
         $growlmsg   = "";
 
@@ -410,8 +619,7 @@ if ($eventid AND $pagestate)
 /* ------- BUNCH PROCESSING ------------------------------------------------------------------------------- */
     elseif ($pagestate == "bunch")
     {
-//        echo "<pre>".print_r($_SESSION["e_$eventid"]['bunch'],true)."</pre>";
-//        echo "<pre>".print_r($_REQUEST,true)."</pre>";
+        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
 
         if ($_REQUEST['action'] == "addnode")
         {
@@ -445,7 +653,6 @@ if ($eventid AND $pagestate)
             {
                 u_growlSet($eventid, $page, $g_timer_addbunch_fail, array());
             }
-
 
         }
         elseif ($_REQUEST['action'] == "delnode")

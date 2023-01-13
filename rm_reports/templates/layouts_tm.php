@@ -52,6 +52,9 @@ function table_style1($params=array())
         td      {display: table-cell; vertical-align: inherit; padding: 5px}
         th      {padding: 5px} 
         a:link  {color: rgb(44, 76, 124); text-decoration: none;}
+               
+        .container { display: flex; }       
+        .column { flex: 1; }
         
         .title  {font-family: Kalinga,arial,helvetica,sans-serif; font-weight: bold; font-size: 250%; letter-spacing: -1px; color: rgb(44, 76, 124);}
         .title2 {font-family: Kalinga,arial,helvetica,sans-serif; font-weight: bold; font-size: 200%; color: rgb(44, 76, 124); padding-top: 10px}

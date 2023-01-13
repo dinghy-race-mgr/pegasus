@@ -1132,9 +1132,10 @@ EOT;
 
     foreach ($list as $key=>$opt)
     {
-        ($opt == $selected) ? $selectstr = "selected" : $selectstr = "";
+        //echo $opt."|".$selected."<br>";
+        $opt == $selected ? $selectstr = "selected" : $selectstr = "";
         $bufr.= <<<EOT
-            <option value="$key" $selectstr>$opt</option>"
+            <option value="$key" $selectstr>$opt</option>
 EOT;
     }
     return $bufr;

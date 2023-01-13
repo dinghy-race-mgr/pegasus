@@ -74,7 +74,7 @@ $rp_data = array(
         "date"       => $_SESSION["e_$eventid"]['ev_date'],
         "time"       => $_SESSION["e_$eventid"]['ev_starttime'],
         "format"     => $_SESSION["e_$eventid"]['rc_name'],
-        "starts" => $_SESSION["e_$eventid"]['rc_numstarts'],
+        "starts"     => $_SESSION["e_$eventid"]['rc_numstarts'],
         "sequence"   => $_SESSION["e_$eventid"]['rc_startscheme'],
     ),
     "fleets" => $fleets,
@@ -102,6 +102,25 @@ if ($format == "entrylist" or $format == "entrylistclub")
     echo u_sendJsonPost($_SESSION['baseurl']."/rm_reports/entrylist.php", $rp_data);
 
 }
+elseif($format == "pursuitlaps")
+{
+    $rp_data['cols'] = array(
+        "class"   => array("label"=>"Class",        "style"=>"width: 30%; text-align: left; border: 1px solid black; height: 2.5em"),
+        "sailnum" => array("label"=>"Sail No.",     "style"=>"width: 20%; text-align: right; border: 1px solid black; height: 2.5em"),
+        "helm"    => array("label"=>"Laps / Code",  "style"=>"width: 50%; text-align: left; border: 1px solid black; height: 2.5em"),
+    );
+
+    $rp_data['admin']['report'] = "pursuit laps";
+    $rp_data['admin']['title'] = "Pursuit Laps";
+    $rp_data['admin']['print'] = true;
+    $rp_data['admin']['paging'] = true;
+    $rp_data['admin']['table-border'] = true;
+    $rp_data['admin']['table-style'] = "width: 95%; border-collapse: collapse; border: 1px solid black";
+
+    // create data for report as JSON and send to report creation script via POST
+    echo u_sendJsonPost($_SESSION['baseurl']."/rm_reports/pursuitlaps.php", $rp_data);
+}
+
 elseif($format == "declarationsheet")
 {
     $rp_data['cols'] = array(

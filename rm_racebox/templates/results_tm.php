@@ -128,7 +128,7 @@ EOT;
                <th width="13%" style="font-weight: bold" >class</th>
                <th width="8%"  style="font-weight: bold" >no.</th>
                <th width="20%" >crew</th>
-               <th width="10%" style="text-align: center" >elapsed</th>
+               <th width="10%" style="text-align: center" >finish</th>
                <th width="6%" style="text-align: center" >laps</th>
                <th width="6%" style="text-align: center" >code</th>
                <th width="6%" style="text-align: center" >points</th>
@@ -264,8 +264,22 @@ EOT;
 
         $result['stillracing'] == "Y" ? $row_style = "lastlap" : $row_style = "";
 
+        $finish = "";
+        if ($racetype == 'pursuit' and $result['status'] == 'F')
+        {
+            $finish = "L".$result['f_line']." / P".$result['f_pos'];
+        }
+
         // points
-        $result['points'] >= 999 ? $points = " - " : $points = number_format((float)$result['points'], 1, '.', '');;
+        if ($result['points'] >= 999)
+        {
+            $points = " - ";
+        }
+        else
+        {
+            is_numeric($result['points']) ? $points = number_format($result['points'], 0, '', '') : $points = number_format((float)$result['points'], 1, '.', '');
+        }
+        //$result['points'] >= 999 ? $points = " - " : $points = number_format((float)$result['points'], 1, '.', '');
 
         if ($racetype == "level")  // pn and corrected time not required
         {
@@ -293,7 +307,7 @@ EOT;
                <td class="truncate">{$result['class']}</td>
                <td class="">{$result['sailnum']}</td>
                <td class="truncate">{$result['competitor']}</td>
-               <td style="text-align: center">{$result['et']}</td>
+               <td style="text-align: center">$finish</td>
                <td style="text-align: center">{$result['lap']}</td>
                <td style="text-align: center">$code_link</td>
                <td style="text-align: center">$points</td>
@@ -630,7 +644,7 @@ EOT;
                     placeholder="extra points to be applied (e.g. 2.5)"
                     data-fv-regexp="true"
                     data-fv-regexp-regexp="^(\d*)\.?(\d){0,1}$"
-                    data-fv-regexp-message="penalty must be in format like 2.3">
+                    data-fv-regexp-message="penalty must be in format like 2.5">
                 </div>
                 <div class="col-xs-{hlpw} help-block">CARE - can ONLY be used when DPI code is set. </div>
             </div>

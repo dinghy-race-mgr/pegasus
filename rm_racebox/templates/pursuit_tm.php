@@ -82,7 +82,7 @@ function fm_result_edit_pursuit($params = array())
         <div class="form-group">
             <label class="col-xs-{lblw} control-label text-success">helm</label>
             <div class="col-xs-{fldw} inputfieldgroup">
-                <input type="text" class="form-control" style="text-transform: capitalize;" id="helm" name="helm" value="{helm}"
+                <input type="text" class="form-control" style="text-transform: capitalize;" id="idhelm" name="helm" value="{helm}"
                     required data-fv-notempty-message="this information is required" />
             </div>
             <div class="col-xs-{hlpw} help-block">e.g. Fred Flintstone</div>
@@ -97,7 +97,7 @@ EOT;
             <label class="col-xs-{lblw} control-label text-success">helm</label>
             <div class="col-xs-{fldw} inputfieldgroup">
                 <p class="form-control-static">{helm}</p>
-                <!-- input type="text" class="form-control" style="text-transform: capitalize;" id="helm" name="helm" value="{helm}" readonly / -->               
+                <input type="hidden" class="form-control" style="text-transform: capitalize;" id="idhelm" name="helm" value="{helm}">               
             </div>
             <div class="col-xs-{hlpw} help-block">cannot be changed</div>
         </div>
@@ -153,7 +153,7 @@ EOT;
                 <label class="col-xs-{lblw} control-label text-success">class</label>
                 <div class="col-xs-{fldw} inputfieldgroup">
                     <p class="form-control-static">{class}</p>
-                    <!-- input type="text" class="form-control" style="text-transform: capitalize;" id="helm" name="class" value="{class}" readonly / -->                    
+                    <input type="hidden" class="form-control" style="text-transform: capitalize;" id="idclass" name="class" value="{class}" />                    
                 </div>
                 <div class="col-xs-{hlpw} help-block">cannot be changed</div>
             </div>
@@ -198,7 +198,7 @@ EOT;
         <div role="tabpanel" class="tab-pane fade in active" id="resultpanel">
             
             <!-- Laps -->  
-            <div class="form-group">
+            <!-- div class="form-group">
                 <label class="col-xs-{lblw} control-label text-success">finish lap</label>
                 <div class="col-xs-{fldw} inputfieldgroup">
                     <input type="number" class="form-control" id="idlap" name="lap" value="{lap}"
@@ -208,33 +208,33 @@ EOT;
                     />
                 </div>
                 <div class="col-xs-{hlpw} help-block">no.of completed laps for this boat</div>
-            </div>       
+            </div -->       
  
             <!-- finish line -->
-            <div class="form-group">
+            <!-- div class="form-group">
                 <label class="col-xs-{lblw} control-label text-success">finish line number</label>
                 <div class="col-xs-{fldw} inputfieldgroup">
-                    <input type="number" class="form-control" id="idfinishline" name="finishline" value="{finishline}" 
+                    <input type="number" class="form-control" id="idf_line" name="f_line" value="{f_line}" 
                     required data-fv-notempty-message="the finish line number  is required"
                     placeholder="e.g 2"
                     min="1" 
                     />
                 </div>
                 <div class="col-xs-{hlpw} help-block">finishing line for this boat (where 1 is finish for leaders, 2 is next finish line, and so on)</div>
-            </div> 
+            </div --> 
  
             <!-- position at finish line -->
-            <div class="form-group">
+            <!-- div class="form-group">
                 <label class="col-xs-{lblw} control-label text-success">position at finish line</label>
                 <div class="col-xs-{fldw} inputfieldgroup">
-                    <input type="number" class="form-control" id="idfinishpos" name="finishpos" value="{finishpos}" 
+                    <input type="number" class="form-control" id="idf_pos" name="f_pos" value="{f_pos}" 
                     required data-fv-notempty-message="the finishing position is required"
                     placeholder="e.g. 4"
                     min="1" 
                     />
                 </div>
                 <div class="col-xs-{hlpw} help-block">finishing position at specified finish line (e.g 4 means 4th boat to finish at specified finish line)</div >
-            </div>
+            </div -->
 
             <!-- scoring code -->
             <div class="form-group">
@@ -314,7 +314,7 @@ function timer_list_pursuit($params = array())
         "sailnum_p" => array ("label"=>"Sail No.", "mode"=>"list", "style"=>"btn-default", "params"=>""),
         "class_p"   => array ("label"=>"Class", "mode"=>"list", "style"=>"btn-default", "params"=>""),
         "finish_p"  => array ("label"=>"Finish Line", "mode"=>"list", "style"=>"btn-default", "params"=>""),
-        "result_p"  => array ("label"=>"Result", "mode"=>"list", "style"=>"btn-default", "params"=>""),
+//        "result_p"  => array ("label"=>"Result", "mode"=>"list", "style"=>"btn-default", "params"=>""),
     );
 
     $view_option = "";
@@ -338,18 +338,42 @@ EOT;
         $last_click_txt = "<h4><span style='color: darkgrey'>Last Boat Recorded: </span><b>{$_SESSION["e_{$params['eventid']}"]['lastclick']['boat']}</b></h4>";
     }
 
+    $renumber_option = "";
+    if ($params['view'] == "finish_p")
+    {
+        $link = "timer_sc.php?eventid={$params['eventid']}&pagestate=renumberlinepursuit";
+
+        $renumber_option = <<<EOT
+        <div class="btn-group">
+          <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            ReNumber Finishers <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="$link&line=1">Line 1</a></li>
+            <li><a href="$link&line=2">Line 2</a></li>
+            <li><a href="$link&line=3">Line 3</a></li>
+            <li><a href="$link&line=4">Line 4</a></li>
+            <li><a href="$link&line=5">Line 5</a></li>
+          </ul>
+        </div>
+EOT;
+    }
+
+
     $colour_key = <<<EOT
-       <a href="#" class="btn btn-info btn-xs"    style="margin-right: 2px; min-width:15%">racing</a>&nbsp;
-       <a href="#" class="btn btn-success btn-xs" style="margin-right: 2px; min-width:15%">recorded</a>&nbsp;
-       <a href="#" class="btn btn-primary btn-xs" style="margin-right: 2px; min-width:15%">not racing</a>&nbsp;
+       <a href="#" class="btn btn-default btn-sm" style="margin-right: 2px; min-width:15%">no laps</a>
+       <a href="#" class="btn btn-info btn-sm"    style="margin-right: 2px; min-width:15%">racing</a>&nbsp;
+       <a href="#" class="btn btn-success btn-sm" style="margin-right: 2px; min-width:15%">finished</a>&nbsp;
+       <a href="#" class="btn btn-primary btn-sm" style="margin-right: 2px; min-width:15%">not racing</a>&nbsp;
 EOT;
 
     // final page body layout
     $html = <<<EOT
     <div class="row margin-top-40" >
-        <div class="col-md-8 btn-group pull-left"  style="display: block;">$view_option</div>
+        <div class="col-md-5 btn-group pull-left"  style="display: block;">$view_option</div>
+        <div class="col-md-3 btn-group pull-left"  style="display: block;">$renumber_option</div>
         <div class="col-md-4 pull-right text-danger" style="display: block;">
-           <blockquote style="padding-left: 5px; padding-right: 0px">$last_click_txt $colour_key</blockquote>
+           <blockquote style="padding-left: 5px; padding-right: 0px">$colour_key $last_click_txt </blockquote>
         </div>        
     </div>
     <div class="clearfix"></div>
@@ -366,19 +390,22 @@ function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
     // link details for boat controls
     $timelap_link = "timer_sc.php?eventid=$eventid&pagestate=timelap";
     $undo_link    = "timer_sc.php?eventid=$eventid&pagestate=undoboat";
+    $move_link    = "timer_sc.php?eventid=$eventid&pagestate=swappositionpursuit";
+    $clearfinish_link = "timer_sc.php?eventid=$eventid&pagestate=clearfinishpursuit";
     $bunch_link   = "timer_sc.php?eventid=$eventid&pagestate=bunch&action=addnode";
-    $finish_link  = "timer_sc.php?eventid=$eventid&pagestate=finish";
-    $edit_link    = "";  // fixme no edit on timer page - is this needed - could add it to menu and use same popup form as tabbed
+    $finish_link  = "timer_sc.php?eventid=$eventid&pagestate=setfinishpursuit";
 
     // boat state info
     $boat_states = array(
-        "beforelap" => array("color"=>"btn-default", "val"=>"racing",     "index" => "racing"),
-        "racing"    => array("color"=>"btn-info",    "val"=>"racing",     "index" => "racing"),
-        "notracing" => array("color"=>"btn-primary", "val"=>"not racing", "index" => "notracing" ),
-        "lastlap"   => array("color"=>"btn-warning", "val"=>"last lap",   "index" => "lastlap"),
-        "finished"  => array("color"=>"btn-success", "val"=>"finished",   "index" => "finished"),
+        "beforelap" => array("color"=>"default", "val"=>"no laps",     "index" => "racing"),
+        "racing"    => array("color"=>"info",    "val"=>"racing",     "index" => "racing"),
+        "notracing" => array("color"=>"primary", "val"=>"not racing", "index" => "notracing" ),
+        "finished"  => array("color"=>"success", "val"=>"finished",   "index" => "finished"),
     );
 
+    $fieldmap = array("entryid" => "id", "class" => "class", "sailnum" => "sailnum", "fleet" => "fleet", "start" => "start", "lap" => "lap",
+        "finishlap" => "finishlap", "f_line" => "f_line", "f_pos" => "f_pos", "code" => "code", "pn" => "pn", "etime" => "etime",
+        "status" => "status", "declaration" => "declaration");
 
     if ($view == "finish_p")
     {
@@ -391,27 +418,24 @@ function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
             $dbufr[$i] = array();
         }
 
-        if ($configured) {
-            foreach ($data as $item => $group) {
-                foreach ($group as $entry) {
-                    $dbufr[$item][] = array(
-                        "entryid" => $entry['id'],
-                        "class"   => $entry['class'],
-                        "sailnum" => $entry['sailnum'],
-                        "boat"    => $entry['class']." - ".$entry['sailnum'],
-                        "fleet"   => $entry['fleet'],
-                        "start"   => $entry['start'],
-                        "lap"     => $entry['lap'],
-                        "finishlap" => $entry['finishlap'],
-                        "code"    => $entry['code'],
-                        "pn"      => $entry['pn'],
-                        "etime"   => $entry['etime'],
-                        "status"  => $entry['status'],
-                        "declaration" => $entry['declaration'],
-                        "label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'], // FIXME - should use stored class acronym if available
-                        "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
-                    );
+        if ($configured)
+        {
+            foreach ($data as $item => $group)
+            {
+                foreach ($group as $entry)
+                {
+                    foreach ($fieldmap as $k=>$v)
+                    {
+                        $arr[$k] = $entry[$v];
+                    }
+                    $arr["boat"] = $entry['class']." - ".$entry['sailnum'];
+                    $arr["label"] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'];
+                    $arr["bunchlbl"] = explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum'];
+
+                    $dbufr[$item][] = $arr;
                 }
+
+                //u_array_sort_by_column($dbufr[$item], "f_pos");
             }
         }
     }
@@ -419,25 +443,17 @@ function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
     elseif ($view == "class_p")
     {
         $configured = true;     // fixme this needs to be set somewhere
-        $classes = array();
-        if (array_key_exists("racebox_class_category", $_SESSION))
+
+        $category = array();
+        $i = 0;
+        foreach($_SESSION['pursuitcfg']['classes'] as $k=>$v)
         {
-            $classes = explode("|", $_SESSION["racebox_class_category"]);   // FIXME instead of using a fixed list would it be better to have number threshold
-            // FIXME and just generate classes who reach the threshold
+            $i++;
+            $category[$i] = $k;
         }
-        if (empty($classes))
-        {
-            $configured = false;
-        }
-        else
-        {
-            $category = array();
-            for ($i=1; $i <= count($classes); $i++)
-            {
-                $category[$i] = $classes[$i-1];
-            }
-            $category[] = "MISC";
-        }
+        $category[] = "MISC";
+        //echo "<pre>".print_r($category,true)."</pre>";
+
 
         if ($configured)    // FIXME - what happens if this is not configured
         {
@@ -448,27 +464,17 @@ function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
 
             foreach ($data as $class => $group) {
                 foreach ($group as $entry) {
-                    $arr = array(
-                        "entryid" => $entry['id'],
-                        "class"   => $entry['class'],
-                        "sailnum" => $entry['sailnum'],
-                        "boat"    => "{$entry['class']} - {$entry['sailnum']}",
-                        "fleet"   => $entry['fleet'],
-                        "start"   => $entry['start'],
-                        "lap"     => $entry['lap'],
-                        "finishlap" => $entry['finishlap'],
-                        "code"    => $entry['code'],
-                        "pn"      => $entry['pn'],
-                        "etime"   => $entry['etime'],
-                        "status"  => $entry['status'],
-                        "declaration" => $entry['declaration'],
-                        "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
-                    );
+                    foreach ($fieldmap as $k=>$v)
+                    {
+                        $arr[$k] = $entry[$v];
+                    }
+                    $arr["boat"] = $entry['class']." - ".$entry['sailnum'];
+                    $arr["bunchlbl"] = explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum'];
 
                     $set = false;
                     for ($i = 1; $i < count($category); $i++) {
 
-                        if (strpos(strtolower($entry['class']), strtolower($category[$i])) !== false) {
+                        if (strtolower($entry['class']) == strtolower($category[$i])) {
                             $arr['label'] = $entry['sailnum']; // only need sailnum for label
                             $dbufr[$i][] = $arr;
                             $set = true;
@@ -480,6 +486,36 @@ function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
                         $arr['label'] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum']; // FIXME - should use stored class acronym if available
                         $dbufr[count($category)][] = $arr;
                     }
+                }
+            }
+        }
+    }
+
+    elseif ($view == "result_p")
+    {
+        $configured = true;     // fixme this needs to be set somewhere
+
+        $category = array();
+        $dbuf = array();
+        for ($i=1; $i <= 6; $i++)
+        {
+            $category[$i] = "Group $i";
+            $dbufr[$i] = array();
+        }
+
+        if ($configured)
+        {
+            foreach ($data as $item => $group) {
+                foreach ($group as $entry) {
+                    foreach ($fieldmap as $k=>$v)
+                    {
+                        $arr[$k] = $entry[$v];
+                    }
+                    $arr["boat"] = $entry['class']." - ".$entry['sailnum'];
+                    $arr["label"] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'];
+                    $arr["bunchlbl"] = explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum'];
+
+                    $dbufr[$item][] = $arr;
                 }
             }
         }
@@ -503,6 +539,8 @@ function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
                         "start"   => $entry['start'],
                         "lap"     => $entry['lap'],
                         "finishlap" => $entry['finishlap'],
+                        "f_line"  => $entry["f_line"],
+                        "f_pos"   => $entry["f_pos"],
                         "code"    => $entry['code'],
                         "pn"      => $entry['pn'],
                         "etime"   => $entry['etime'],
@@ -515,6 +553,8 @@ function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
             }
         }
     }
+
+    // now produce html
 
     if (empty($dbufr)) {
         $html = <<<EOT
@@ -542,9 +582,8 @@ EOT;
             }
 
             // category labels
-            $view == "fleet" ? $laps_txt = " <small> {$_SESSION["e_$eventid"]["fl_$i"]['maxlap']} lap(s)</small>" : $laps_txt = "" ;
             $label_bufr .= <<<EOT
-            <div class="col-md-2 text-center"><h4 style="margin-bottom: 4px;"><b>$label</b></h4> $laps_txt</div>
+            <div class="col-md-2 text-center"><h4 style="margin-bottom: 4px;"><b>$label</b></h4></div>
 EOT;
 
             // boat buttons
@@ -553,59 +592,38 @@ EOT;
 
                 $boat = "{$entry['class']} - {$entry['sailnum']}";
                 $laps = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['maxlap'];
-                $scoring = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['scoring'];
-
-                if ($scoring == "average")
-                {
-                    if ( $entry['status'] == "X" )
-                    {
-                        $state = $boat_states['notracing'];
-                    }
-                    elseif ($entry['lap'] > 0)
-                    {
-                        if ( $entry['status'] == "F" )
-                        {
-                            { $state = $boat_states['finished']; }
-                        }
-                        else
-                        {
-                            if ( $entry['lap'] < $entry['finishlap'] - 1 )      { $state = $boat_states['racing']; }
-                            elseif ( $entry['lap'] >= $entry['finishlap'] )     { $state = $boat_states['finished']; }
-                            elseif ( $entry['lap'] == $entry['finishlap'] - 1 ) { $state = $boat_states['lastlap']; }
-                        }
-                    }
-                    else
-                    {
-                        $state = $boat_states['beforelap'];
-                    }
-                }
-                else
-                {
-                    if ( $entry['status'] == "X" )
-                    {
-                        $state = $boat_states['notracing'];
-                    }
-                    elseif ($entry['lap'] > 0)
-                    {
-                        if ( $entry['lap'] < $laps - 1 )      { $state = $boat_states['racing']; }
-                        elseif ( $entry['lap'] >= $laps )     { $state = $boat_states['finished']; }
-                        elseif ( $entry['lap'] == $laps - 1 ) { $state = $boat_states['lastlap']; }
-                    }
-                    else
-                    {
-                        $state = $boat_states['beforelap'];
-                    }
-                }
+//                $scoring = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['scoring'];
 
                 empty($entry['code']) ? $cog_style = "primary" : $cog_style = "danger";
+
+
+                if ($entry['status'] == "X")
+                {
+                    $state = $boat_states['notracing'];
+                }
+                elseif ($entry['status'] == "F")
+                {
+                    $state = $boat_states['finished'];
+                }
+                else {
+                    if ($entry['lap'] == 0)
+                    {
+                        $state = $boat_states['beforelap'];
+                    }
+                    else
+                    {
+                        $state = $boat_states['racing'];
+                    }
+                }
 
                 // competitor identity and lap count
                 $title = $entry['label'];
                 $lapcount = "L {$entry['lap']}";
 
                 // popover information
-                $ptitle = "<b>{$entry['class']} - {$entry['sailnum']}</b> - ".strtoupper($state['val']);
-                $pcontent = "lap: {$entry['lap']} [ ".gmdate("H:i:s", $entry['etime'])." ]&nbsp;&nbsp;&nbsp;<b>{$entry['code']}</b>";
+                $ptitle = "<b>$boat</b>";
+                empty($entry['code']) ? $pstatus = strtoupper($state['val']) : $pstatus = $entry['code'];
+                $pcontent = "line: <b>{$entry['f_line']}</b>&nbsp;&nbsp;pos: <b>{$entry['f_pos']}</b>&nbsp;&nbsp;lap: <b>{$entry['lap']}</b>";
 
                 // set params for link options
                 unset($entry['class']);
@@ -617,36 +635,35 @@ EOT;
 timer_sc.php?eventid=$eventid&pagestate=setcode&fleet={$entry['fleet']}&entryid={$entry['entryid']}&boat={$entry['boat']}
 &racestatus={$entry['status']}&declaration={$entry['declaration']}&lap={$entry['lap']}&finishlap=$laps}
 EOT;
-                // finish/bunch menu options
-                if ($entry['status'] == "F")
-                {
-                    $finish_option = "";
+                // finish menu options
+                $finish_option = $finish_link."&entryid=".$entry['entryid'];
+
+
+                // bunch / undo / finish options
+                if ($entry['status'] == "F") {
                     $bunch_option = "";
+                    $undo_option = "";
+                    $finish_display = $entry['f_pos'];
+                    $move_option = "<li><a href=\"$move_link$params_list&dir=up\">Move Up</a></li>
+                                    <li><a href=\"$move_link$params_list&dir=down\">Move Down</a></li>";
+                    $clearfinish_option = "<li><a href=\"$clearfinish_link$params_list&dir=up\">Clear Finish</a></li>";
                 }
                 else
                 {
-                    if ($scoring == "average")
-                    {
-                        $finish_option = <<<EOT
-                            <li><a href="$finish_link$params_list">Finish</a></li>
-EOT;
-                    }
-                    else
-                    {
-                        $finish_option = "";
-                    }
-
-                    $bunch_option = <<<EOT
-                        <li><a href="$bunch_link$params_list">Bunch</a></li>
-EOT;
+                    $bunch_option = "<li><a href='$bunch_link$params_list'>Bunch</a></li>";
+                    $undo_option = "<li><a href=\"$undo_link$params_list\">Undo Last Lap</a></li>";
+                    $finish_display = "<span class=\"glyphicon glyphicon-flag\" aria-hidden=\"true\"></span>";
+                    $move_option = "";
+                    $clearfinish_option = "";
                 }
 
 
                 $options_bufr = <<<EOT
                 <ul class="dropdown-menu">
-                    <li><a href="$undo_link$params_list">Undo Last Timing</a></li>
+                    $undo_option
                     $bunch_option
-                    $finish_option
+                    $clearfinish_option
+                    $move_option
                     <!-- li><a href="timer_sc.php?">Edit (future)</a></li -->
                     <li class="divider"></li>
                     <li><a href="$link&code=">clear code</a></li>  <!--FIXME don't display this if no code set -->
@@ -661,8 +678,8 @@ EOT;
 
                 $data_bufr .= <<<EOT
                 <div class="btn-group btn-block" role="group" aria-label="..." >
-                    <div data-toggle="popover" data-placement="top"  title="$ptitle" data-content="$pcontent">
-                        <a type="button" href="$timelap_link$params_list" class="btn {$state['color']} btn-xs $disabled" style="width:70%" 
+                    <div data-toggle="popover" data-placement="top"  title="$ptitle" data-content="$pstatus</br>$pcontent">
+                        <a type="button" href="$timelap_link$params_list" class="btn btn-{$state['color']} btn-xs $disabled" style="width:60%" 
                             >
                             <div class="pull-left">$title</div>
                             <div class="pull-right">$lapcount</div>     
@@ -672,27 +689,14 @@ EOT;
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                         </button>
                         $options_bufr
+                        <a type="button" href="$finish_option" class="btn btn-{$state['color']} btn-xs dropdown-toggle" style="min-width: 28px">
+                            $finish_display
+                        </a>
+               
                     </div>
                 </div>
 EOT;
 
-//                $data_bufr .= <<<EOT
-//                <div class="btn-group btn-block" role="group" aria-label="...">
-//                    <a type="button" href="$timelap_link$params_list" class="btn {$state['color']} btn-xs $disabled" style="width:70%"
-//                        data-toggle="popover" data-placement="top"  title="$ptitle" data-content="$pcontent">
-//                        <div class="pull-left">$title</div>
-//                        <div class="pull-right">$lapcount</div>
-//
-//                    </a>
-//                    <div class="btn-group" role="group">
-//                        <button type="button" class="btn btn-$cog_style btn-xs dropdown-toggle"
-//                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-//                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-//                        </button>
-//                        $options_bufr
-//                    </div>
-//                </div>
-//EOT;
             }
             $data_bufr .= "</div>";
 

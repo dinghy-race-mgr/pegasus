@@ -380,9 +380,40 @@ $g_timer_addbunch_fail = array(
 );
 
 
-
-
 // ----- page: PURSUIT  ---------------------------------------------------------------------
+
+$g_timer_pursuitswap = array(
+    "type" => "success",
+    "msg"  => "Position swap for %s completed - now %s",
+);
+
+$g_timer_pursuitswap_fail = array(
+    "type" => "warning",
+    "msg"  => "Position swap for %s failed - %s",
+);
+
+$g_timer_pursuitrenumber = array(
+    "type" => "success",
+    "msg"  => "Reordering of positions for line %s completed",
+);
+
+$g_timer_pursuitrenumber_fail = array(
+    "type" => "danger",
+    "msg"  => "Reordering of positions for line %s failed - %s",
+);
+
+$g_timer_pursuitclearfinish = array(
+    "type" => "success",
+    "msg"  => "%s  - finishing details cleared",
+);
+
+$g_timer_pursuitclearfinish_fail = array(
+    "type" => "danger",
+    "msg"  => "%s - %s",
+);
+
+
+
 // ----- page: RESULTS  ---------------------------------------------------------------------
 $g_results_zero_declare = array(
     "type" => "info",

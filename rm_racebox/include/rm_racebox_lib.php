@@ -139,7 +139,7 @@ function set_code($eventid, $params)
             $entry = $race_o->entry_get($entryid);
 
             // unset it
-            $update = $race_o->entry_code_unset($entryid, $racestatus, $declaration, $finish_check);
+            $update = $race_o->entry_code_unset($entryid, $entry, $declaration, $finish_check);
 
             if ($update)
             {

@@ -69,10 +69,10 @@ include ("./include/timer_ctl.inc");
 include ("./templates/growls.php");
 
 // FIXME - review if these options are used and where they should be set
-$_SESSION['timer_options']['listorder']     = "class";     // options "class|pn|position|ptime""
-$_SESSION['timer_options']['laptime']       = "button";    // options "row|button|both"
-$_SESSION['timer_options']['notify_length'] = "on ";       // options "on|off"
-$_SESSION['timer_options']['notify_undo']   = "on";        // options "on|off"
+//$_SESSION['timer_options']['listorder']     = "class";     // options "class|pn|position|ptime""
+//$_SESSION['timer_options']['laptime']       = "button";    // options "row|button|both"
+//$_SESSION['timer_options']['notify_length'] = "on ";       // options "on|off"
+//$_SESSION['timer_options']['notify_undo']   = "on";        // options "on|off"
 
 // get fleet data
 $numfleets = $_SESSION["e_$eventid"]['rc_numfleets'];
@@ -96,7 +96,7 @@ $bunch_display = true;
 $problems = problem_check($eventid);    // check problems preventing timing (timer not started, no entries, laps not set)
 if (in_array(true, $problems, true))
 {
-    $lbufr.= "<pre>".print_r($_SESSION["e_$eventid"],true)."</pre>";
+    //$lbufr.= "<pre>".print_r($_SESSION["e_$eventid"],true)."</pre>";
     $lbufr.= $tmpl_o->get_template("problems", array("eventid" => $eventid), $problems);
     $bunch_display = false;
 }
@@ -110,7 +110,7 @@ else
     else                                                           // class, handicap, average lap race
     {
         // display boats for timing in tabbed or list format
-        $lbufr.= display_boats($eventid, $_SESSION['timer_options']['mode'], $_SESSION['timer_options']['view'], $mdl_editlap['fields']);
+        $lbufr.= display_boats($eventid, $_SESSION['timer_options']['mode'], $_SESSION['timer_options']['view'], $mdl_editlap);
     }
 
 
@@ -173,8 +173,6 @@ else
 // ----- right hand panel --------------------------------------------------------------------
 $rbufr = "";
 
-
-
 if (!$_SESSION["e_$eventid"]['pursuit'])
 {
     // undo
@@ -208,15 +206,31 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
 }
 else    // display finish edit box for pursuit
 {
-    $rbufr.=<<<EOT
-    <div class="panel panel-success margin-top-40">
-        <div class="panel-heading"><h4 class="panel-title">Record Boat Finish ...</h4></div>
-        <div class="panel-body">pursuit finish form</div>
-    </div>
-EOT;
+    require_once ("{$loc}/common/classes/pursuit_class.php");
+    $finish_o = new PURSUIT($eventid);
+    if (!empty($_SESSION['pursuitcfg']['entryid']))           // if boat selected - display form
+    {
+        // get entryid data
+        $entry = $race_o->race_get_entry($_SESSION['pursuitcfg']['entryid']);
+        empty($_SESSION['pursuitcfg']['last-boat']) ? $last = array() : $last = $_SESSION['pursuitcfg']['last-boat'];
+        $finish_htm = $finish_o->render_form($entry, $last);
+    }
+    else                                                      // display empty form
+    {
+        if (!empty($_SESSION['pursuitcfg']['last-boat'])) {
+            $boat = $_SESSION['pursuitcfg']['last-boat']['boat'];
+            $report = $_SESSION['pursuitcfg']['last-boat']['report'];
+            $_SESSION['pursuitcfg']['last-boat']['set_finish'] ? $style = "normal" : $style = "warning";
+        } else {
+            $boat = "";
+            $report = "";
+            $style = "normal";
+        }
+        $finish_htm = $finish_o->render_empty_form($boat, $report, $style);
+    }
 }
 
-$rbufr.= "<hr>";
+$rbufr.= $finish_htm."<hr>";
 
 // bunch display
 if ($_SESSION['racebox_timer_bunch'] and $bunch_display)
@@ -313,6 +327,12 @@ function display_boats_pursuit($eventid, $display_view)
     $rs_race = $race_o->race_gettimings($display_view."-list");
     if ($display_view == "result_p")
     {
+        /*
+         * order by pos, lap, f_line, f_pos
+         * put all codes except penalty codes in NO FINISH
+         * put into columns labelled 1-n, n+1 - 2n)
+         */
+
         //get no. to be included in each row
         $num_entry = count($rs_race);
         $num_rows = $num_entry + (5 - fmod($num_entry,5));
@@ -324,36 +344,67 @@ function display_boats_pursuit($eventid, $display_view)
         foreach ($rs_race as $entry)
         {
             $i++;
-            $out[$group][] = $entry;
-            if ($i >= $num_rows)
+
+            if (empty($entry['code']) or ($entry['code'] == "ZFP" or $entry['code'] == "SCP"))
             {
-                $i = 0;
-                $group++;
+                $i++;
+                $out[$group][] = $entry;
+                if ($i >= $num_rows)
+                {
+                    $i = 0;
+                    $group++;
+                }
+            }
+            else
+            {
+                $out[$group][6] = $entry;
             }
         }
     }
     elseif ($display_view == "finish_p")                              // organised by finish line + separate column for non-finishers
     {
         $out = array();
-        foreach ($rs_race as $entry) {
-            (empty($entry['f_line']) or $entry['f_line'] > 6) ? $line = 6 : $line = $entry['f_line'];
+
+
+
+        foreach ($rs_race as $entry)
+        {
+            //echo "<pre>{$entry['code']}, {$entry['class']}, {$entry['sailnum']}, {$entry['f_line']}, {$entry['f_pos']}, {$entry['lap']}</pre>";
+
+
+            if (!empty($entry['code']) and $entry['code'] != "DPI" and $entry['code'] != "SCP")
+            {
+                $line = 6;
+            }
+            elseif (!empty($entry['f_line']) )
+            {
+                if ($entry['f_line'] > 5 or $entry['f_line'] < 1)
+                {
+                    $line = 6;
+                }
+                else
+                {
+                    $line = $entry['f_line'];
+                }
+            }
+            else
+            {
+                $line = 6;
+            }
             $out["$line"][] = $entry;
+
         }
+        //exit();
     }
     elseif ($display_view == "class_p")                               // organised by classname
     {
-        $rs_class_counts = $race_o->count_groups("class", "count", 9);
-        echo "<pre>".print_r($rs_class_counts,true)."</pre>";
+        $_SESSION['pursuitcfg']['classes'] = $race_o->count_groups("class", "count", 11);    // FIXME move this to entries.sc - also should no. of classes always be 9
+        //echo "<pre>".print_r($rs_class_counts,true)."</pre>";
 
         $out = array();
         foreach ($rs_race as $entry)
         {
-            if (array_key_exists($entry['class'], $rs_class_counts))
-            {
-                
-            }
-
-            $out[$entry['class']][] = $entry;
+            array_key_exists($entry['class'], $_SESSION['pursuitcfg']['classes']) ? $out[$entry['class']][] = $entry : $out['misc'][] = $entry;
         }
     }
     else                                                            // default view is sailnum_p
@@ -407,7 +458,6 @@ function display_boats($eventid, $display_mode, $display_view, $mdl_editlap)
         } else {
             $out = array();
             foreach ($rs_race as $entry) {
-
                 if (ctype_digit($entry['sailnum'][0]))    // if first char of sailnumber is number - use it for group index
                 {
                     $i = $entry['sailnum'][0];

@@ -279,6 +279,10 @@ elseif ($pagestate == "process")    // run through process workflow
         $step = 4;
         $result_year = date("Y", strtotime($event['event_date']));
 
+        // check if the race was part of a series
+        $series = $event_o->event_in_series($eventid);  // if not set series upload flag
+        if (!$series) { $series['opt_upload'] = true; } // has effect of ignoring series
+
         // results files will be transferred if a) individual race has not been embargoed, b) the series upload flag is
         // not set in t_series, c) the result_upload parameter is not set to 'none', d) the results are not complete
         if ($args['result_status'] == "embargoed" OR !$series['opt_upload']
