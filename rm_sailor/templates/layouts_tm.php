@@ -9,6 +9,13 @@
  */
  function basic_page($params = array())
  {
+
+     $plugin_htm = "";
+     if (array_key_exists("plugin", $params))
+     {
+         foreach ($params['plugin'] as $plugin_file) { $plugin_htm.= file_get_contents($plugin_file);}
+     }
+
      $bufr = <<<EOT
      <!DOCTYPE html>
      <html lang="en">
@@ -93,6 +100,9 @@
                     return false;   
                 }
             </script>
+            
+            <!-- plugin scripts -->
+            $plugin_htm
           </body>
      </html>        
 EOT;

@@ -45,24 +45,7 @@ CREATE TABLE `a_entry` (
   `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'timestamp when record created'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `a_finish`
---
-
-CREATE TABLE `a_finish` (
-  `id` int(11) NOT NULL COMMENT 'id from t_finish table',
-  `eventid` int(11) NOT NULL COMMENT 'event id',
-  `entryid` int(11) NOT NULL COMMENT 'record id from race table ',
-  `finishline` int(2) NOT NULL DEFAULT '1' COMMENT 'finishing line',
-  `finishorder` int(3) NOT NULL DEFAULT '0' COMMENT 'sequential finish order at finish line',
-  `raceplace` int(4) DEFAULT '0' COMMENT 'place in overall race',
-  `status` char(10) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'status of this finish information',
-  `upddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'last update date',
-  `updby` varchar(20) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'last update by',
-  `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'timestamp when record created'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='finish positions for multi finish line pursuit races';
+-- -------------------------------------------------------
 
 -- --------------------------------------------------------
 
@@ -107,11 +90,13 @@ CREATE TABLE `a_race` (
   `pn` int(5) NOT NULL DEFAULT '0' COMMENT 'portsmouth number used in this race',
   `clicktime` int(20) DEFAULT NULL COMMENT 'date/time of last timing click',
   `lap` int(3) NOT NULL DEFAULT '0' COMMENT 'completed laps',
-  `finishlap` int(3) DEFAULT NULL COMMENT 'lap boat will finish on (this is only required for average lap racing - can I find a better way)',
+  `finishlap` int(3) NOT NULL DEFAULT '1' COMMENT 'lap boat will finish on (this is only required for average lap racing - can I find a better way)',
   `etime` int(6) NOT NULL DEFAULT '0' COMMENT 'last elapsed time recorded (secs)',
   `ctime` int(6) NOT NULL DEFAULT '0' COMMENT 'last corrected time (secs)',
   `atime` int(6) NOT NULL DEFAULT '0' COMMENT 'aggregate time (pro-rata time for all boats doing the same number of laps in average lap race)',
   `ptime` int(6) NOT NULL DEFAULT '0' COMMENT 'predicted elapsed time for next lap (secs)',
+  `f_line` int(2) DEFAULT NULL COMMENT 'pursuit finish line number (1 is first finish line)  only used for pursuit races',
+  `f_pos` int(3) DEFAULT NULL COMMENT 'pursuit finish position (1 is first boat at that finish line) - only used for pursuit races',
   `code` varchar(10) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'result code for competitor (e.g. DNF)',
   `penalty` decimal(4,1) NOT NULL DEFAULT '0.0',
   `points` decimal(4,1) NOT NULL DEFAULT '0.0' COMMENT 'last points calculated',
@@ -120,7 +105,7 @@ CREATE TABLE `a_race` (
   `protest` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'protest flag',
   `note` varchar(200) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'notes field',
   `status` enum('R','F','X','D') COLLATE latin1_general_ci DEFAULT NULL COMMENT 'status field (R = racing, F = finished, X = excluded, D = deleted',
-  `upddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'time of last update',
+  `upddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'last update date',
   `updby` varchar(20) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'last update by',
   `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'timestamp when record created'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='current state for each competitor in races today';
@@ -535,25 +520,6 @@ CREATE TABLE `t_eventduty` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `t_finish`
---
-
-CREATE TABLE `t_finish` (
-  `id` int(11) NOT NULL COMMENT 'table primary key',
-  `eventid` int(11) NOT NULL COMMENT 'event id',
-  `entryid` int(11) NOT NULL COMMENT 'record id from race table ',
-  `finishline` int(2) NOT NULL DEFAULT '1' COMMENT 'finishing line',
-  `finishorder` int(3) NOT NULL DEFAULT '0' COMMENT 'sequential finish order at finish line',
-  `raceplace` int(4) DEFAULT '0' COMMENT 'place in overall race',
-  `status` char(10) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'status of this finish information',
-  `upddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'last update date',
-  `updby` varchar(20) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'last update by',
-  `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'timestamp when record created'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='finish positions for multi finish line pursuit races';
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `t_help`
 --
 
@@ -707,6 +673,8 @@ CREATE TABLE `t_race` (
   `ctime` int(6) NOT NULL DEFAULT '0' COMMENT 'last corrected time (secs)',
   `atime` int(6) NOT NULL DEFAULT '0' COMMENT 'aggregate time (pro-rata time for all boats doing the same number of laps in average lap race)',
   `ptime` int(6) NOT NULL DEFAULT '0' COMMENT 'predicted elapsed time for next lap (secs)',
+  `f_line` int(2) DEFAULT NULL COMMENT 'pursuit finish line number (1 is first finish line)  only used for pursuit races',
+  `f_pos` int(3) DEFAULT NULL COMMENT 'pursuit finish position (1 is first boat at that finish line) - only used for pursuit races',
   `code` varchar(10) COLLATE latin1_general_ci DEFAULT NULL COMMENT 'result code for competitor (e.g. DNF)',
   `penalty` decimal(4,1) NOT NULL DEFAULT '0.0',
   `points` decimal(4,1) NOT NULL DEFAULT '0.0' COMMENT 'last points calculated',
@@ -1012,12 +980,6 @@ ALTER TABLE `t_eventduty`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `t_finish`
---
-ALTER TABLE `t_finish`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `t_help`
 --
 ALTER TABLE `t_help`
@@ -1201,12 +1163,6 @@ ALTER TABLE `t_event`
 --
 ALTER TABLE `t_eventduty`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `t_finish`
---
-ALTER TABLE `t_finish`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'table primary key';
 
 --
 -- AUTO_INCREMENT for table `t_help`

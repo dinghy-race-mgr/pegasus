@@ -386,47 +386,47 @@ class RACE
     {
         $cfg = array(
             "class"    => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
+                "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "fleet ASC, class, sailnum ASC",
             ),
             "class-list"    => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
+                "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "class, CAST(sailnum AS unsigned)",
             ),
             "sailnum-list"    => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
+                "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "CAST(sailnum AS unsigned), sailnum ASC",
             ),
             "fleet-list"    => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
+                "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "fleet, class, CAST(sailnum AS unsigned), sailnum ASC",
             ),
             "class_p-list"    => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
+                "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
                 "order"  => "class, CAST(sailnum AS unsigned), sailnum ASC",
             ),
             "sailnum_p-list"    => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
+                "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
                 "order"  => "CAST(sailnum AS unsigned), sailnum ASC",
             ),
             "finish_p-list"    => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
+                "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
                 "order"  => "code ASC, f_line ASC, lap DESC, f_pos ASC, class, CAST(sailnum AS unsigned), sailnum ASC",
             ),
             "result_p-list"    => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
+                "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
                 "order"  => "f_line ASC, lap DESC, f_pos ASC",
             ),
             "position" => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
+                "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "fleet ASC, position ASC, pn DESC, class, sailnum ASC",
             ),
             "pn"       => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
+                "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "fleet ASC, pn ASC, class, sailnum ASC",
             ),
             "ptime"    => array(
-                "fields" => "id, fleet, start, class, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
+                "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration",
                 "order"  => "fleet ASC, ptime ASC, pn DESC, class, sailnum ASC",
             )
         );
@@ -549,13 +549,13 @@ class RACE
     }
 
 
-    public function race_finish_delete()
-    {
-        $constraint = array("eventid"=>$this->eventid);
-        $numrows = $this->db->db_delete("t_finish", $constraint);
-
-        return $numrows;
-    }
+//    public function race_finish_delete()
+//    {
+//        $constraint = array("eventid"=>$this->eventid);
+//        $numrows = $this->db->db_delete("t_finish", $constraint);
+//
+//        return $numrows;
+//    }
     
     public function race_laps_set($mode, $fleetnum, $scoring, $laps)
     {
@@ -709,7 +709,7 @@ class RACE
 
         $numrows = $this->db->db_update("t_race", $time_update, $constraint);             // update timing info for all entries
         $this->race_laps_delete($fleetnum);                                               // remove all lap times
-        $this->race_finish_delete();                                                      // remove all finish line data for pursuit race
+//        $this->race_finish_delete();                                                      // remove all finish line data for pursuit race
 
         return $numrows;
     }

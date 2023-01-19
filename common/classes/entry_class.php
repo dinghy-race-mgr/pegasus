@@ -2,7 +2,7 @@
 /**
  *  ENTRY class
  *
- *  Handles entry processing - interacts with t_entry, t_competitor, t_race, t_racestate, t_laps and t_finish
+ *  Handles entry processing - interacts with t_entry, t_competitor, t_race, t_racestate, and t_laps
  *
  *  METHODS
  *     __construct
@@ -26,8 +26,8 @@
  *     confirm_entry  - confirms load to t_entry
  *
  * T_RACE
- *     delete           - deletes entry from t_race based on t_race.id (also t_lap, t_finish, t_racestate)
- *     delete_by_compid - deletes entry from t_race based on competitor id (also t_lap, t_finish, t_racestate)
+ *     delete           - deletes entry from t_race based on t_race.id (also t_lap, t_racestate)
+ *     delete_by_compid - deletes entry from t_race based on competitor id (also t_lap, t_racestate)
  *     update           - updates entry in t_race
  *     duty_set         - adds duty code to entry in t_race
  *     duty_unset       - removes duty code from entry in t_race
@@ -276,6 +276,8 @@ class ENTRY
     {
         // note not counting deletes, updates and replaces although these will be processed
 
+        //
+
         $where_options  = array(
             "entries"      => " AND action = 'enter' ",
             "retirements"  => " AND action = 'retire' ",
@@ -395,7 +397,7 @@ class ENTRY
         $status = true;
         $fields = $this->get_by_raceid($entryid);
         //$fleetnum = $fields['fleet'];
-        $this->db->db_delete("t_finish", array("entryid"=>$entryid));           // delete pursuit finish records
+//        $this->db->db_delete("t_finish", array("entryid"=>$entryid));           // delete pursuit finish records
         $this->db->db_delete("t_lap", array("entryid"=>$entryid));              // delete lap records
         $num_rows = $this->db->db_delete("t_race", array("id"=>$entryid));      // delete race record
         if (!$num_rows)

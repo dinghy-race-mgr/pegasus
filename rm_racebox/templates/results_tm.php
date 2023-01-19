@@ -277,9 +277,15 @@ EOT;
         }
         else
         {
-            is_numeric($result['points']) ? $points = number_format($result['points'], 0, '', '') : $points = number_format((float)$result['points'], 1, '.', '');
+                if ((int)$result['points'] == $result['points'])
+                {
+                    $points =  number_format(floatval($result['points']), 0, '.', '');
+                }
+                else
+                {
+                    $points =  number_format(floatval($result['points']), 1, '.', '');
+                }
         }
-        //$result['points'] >= 999 ? $points = " - " : $points = number_format((float)$result['points'], 1, '.', '');
 
         if ($racetype == "level")  // pn and corrected time not required
         {

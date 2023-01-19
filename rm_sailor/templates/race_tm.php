@@ -146,6 +146,30 @@ EOT;
                 <!-- /table -->
             </form>
 EOT;
+
+        // PLUGIN HANDLING --------------------------------------------
+
+        // handle plugin code   FIXME - this need to be dealt with through config and with up to 3 plugins
+        $plugin_link_1_str = file_get_contents("./plugins/qfo/include_link.htm");
+
+        // get event status for first event
+        reset($params['event-list']);
+        $event1_arr = current($params['event-list']);
+        $event1_status = $event1_arr['event-status-code'];
+        ($event1_status >=3 and $event1_status <=5) ? $racestatus = "inprogress" : $racestatus = "notstarted" ;
+
+        $plugin_data = array(
+            "{eventid}"    => "$eventid",
+            "{helm}"       => $params['data']['helm'],
+            "{crew}"       => $params['data']['crew'],
+            "{class}"      => $params['data']['class'],
+            "{sailnum}"    => $params['data']['sailnum'],
+            "{racestatus}" => $racestatus,
+        );
+
+        $plugin_link_1 = str_replace(array_keys($plugin_data), array_values($plugin_data), $plugin_link_1_str);
+
+
         $bufr.= <<<EOT
             <div class="row margin-top-10">
                 <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">   
@@ -160,10 +184,20 @@ EOT;
                 </div>
             </div>
             
-            <hr>
-            <div class="margin-top-40 margin-bot-60">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
-                    <a href="search_pg.php" class="btn btn-info btn-sm rm-text-sm" role="button" >
+            <hr>        
+
+            <div class="row margin-top-40 margin-bot-40">
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left">
+                    $plugin_link_1
+                </div>
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left">
+                    &nbsp;
+                </div>
+                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left">
+                    &nbsp;
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right">
+                    <a href="search_pg.php" class="btn btn-info btn-sm rm-text-sm" role="button">
                         <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span> &nbsp;Back to Start ...
                     </a>
                 </div>

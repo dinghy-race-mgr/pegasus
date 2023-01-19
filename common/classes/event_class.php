@@ -956,11 +956,11 @@ class EVENT
         $del === false ? $msg.="FAILED - t_lap, " : $msg.="t_lap, ";
         $del = $this->db->db_delete("t_racestate", $constraint);    // race state
         $del === false ? $msg.="FAILED - t_racestate, " : $msg.="t_racestate, ";
-        if ($_SESSION["e_$eventid"]['pursuit'])
-        {
-            $del = $this->db->db_delete("t_finish", $constraint);       // pursuit finishing positions
-            $del === false ? $msg.="FAILED - t_finish, " : $msg.="t_finish, ";
-        }
+//        if ($_SESSION["e_$eventid"]['pursuit'])
+//        {
+//            $del = $this->db->db_delete("t_finish", $constraint);       // pursuit finishing positions
+//            $del === false ? $msg.="FAILED - t_finish, " : $msg.="t_finish, ";
+//        }
         $msg = rtrim($msg, ", ");
 
         // set event status
@@ -1001,7 +1001,7 @@ class EVENT
                 // clear tables
                 $del = $this->db->db_delete("t_race", array("eventid" => $eventid));          // race details
                 $del = $this->db->db_delete("t_lap", array("eventid" => $eventid));           // lap times
-                $del = $this->db->db_delete("t_finish", array("eventid" => $eventid));        // pursuit finish positions
+//                $del = $this->db->db_delete("t_finish", array("eventid" => $eventid));        // pursuit finish positions
                 $del = $this->db->db_delete("t_racestate", array("eventid" => $eventid));     // racestate
 
                 // set status

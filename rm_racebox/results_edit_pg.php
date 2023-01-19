@@ -139,7 +139,7 @@ elseif ($pagestate == "submit-pursuit")
                 unset($edit[$k]);
             }
         }
-        
+
         // update race result in t_race
         $update = $race_o->entry_update($entryid, $edit);
 

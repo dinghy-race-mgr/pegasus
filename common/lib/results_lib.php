@@ -10,13 +10,13 @@
 function process_archive()
     /*
      * copies race data from t_race to t_results
-     * creates archive of t_race/t_lap/t_finish in equivalent a_*** tables
+     * creates archive of t_race/t_lap/t_entry in equivalent a_*** tables
      */
 {
     global $result_o;
 
     $status['copy']    = $result_o->race_copy_results();      // copy data from t_race to t_results
-    $status['archive'] = $result_o->race_copy_archive();      // copy data from t_race/t_lap/t_finish to a_<tables>>
+    $status['archive'] = $result_o->race_copy_archive();      // copy data from t_race/t_lap/t_entry to a_<tables>>
 
     return $status;
 }

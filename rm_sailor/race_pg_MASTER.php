@@ -49,18 +49,16 @@ $_SESSION['entries'] = get_entry_information($_SESSION['sailor']['id'], $_SESSIO
 // set up boat information
 $race_fields = set_boat_details();
 $race_fields["boat-label"] = $tmpl_o->get_template("boat_label", $race_fields,
-             array("change"=>true, "change_set"=>$_SESSION['sailor']['change'], "type" => "race", ));
+             array("change"=>true, "change_set"=>$_SESSION['sailor']['change'], "type" => "race"));
 
 // display race page
 if ($_SESSION['events']['numevents'] > 0)
 {
     $signon_entry_list = set_event_status_list($_SESSION['events']['details'], $_SESSION['entries'], $action);
 
-    //echo "<pre>".print_r($signon_entry_list,true)."</pre>"; exit();
-
     $_SESSION['pagefields']['body'] = $tmpl_o->get_template("race_control", $race_fields,
         array('state'=>"submitentry", 'numdays'=> $_SESSION['events']['numdays'],
-              'event-list'=>$signon_entry_list, 'opt_cfg' =>$_SESSION['option_cfg'], "data" => $race_fields ));
+              'event-list'=>$signon_entry_list, 'opt_cfg' =>$_SESSION['option_cfg'] ));
 }
 
 else
@@ -79,10 +77,10 @@ $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburg
 $_SESSION['pagefields']['body'].= add_auto_continue($_SESSION['usage'], $_SESSION['sailor_race_sleep_delay'],
     $external, "search_pg.php");
 
-// add scripts required for plugins if necessary  FIXME - needs to relate to config + handle multiple plugins
-$plugin_scripts_files = array("plugin_1" => "./plugins/qfo/include_scripts.htm");
+//echo "<pre>".print_r($_SESSION,true)."</pre>";
+//exit();
 
-echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields'], array("plugin" => $plugin_scripts_files));
+echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();
 
 

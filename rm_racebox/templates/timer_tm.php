@@ -107,7 +107,8 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "etime"   => $entry['etime'],
                         "status"  => $entry['status'],
                         "declaration" => $entry['declaration'],
-                        "label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'], // FIXME - should use stored class acronym if available
+                        "label"   => $entry['classcode']."&nbsp;&nbsp;".$entry['sailnum'],
+                        //"label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'],
                         "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
                     );
                 }
@@ -118,25 +119,17 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
     elseif ($view == "class")
     {
         $configured = true;     // fixme this needs to be set somewhere
-        $classes = array();
-        if (array_key_exists("racebox_class_category", $_SESSION))
+        $category = array();
+        $i = 0;
+        foreach($_SESSION["e_$eventid"]['classes'] as $k=>$v)                               // establish categories
         {
-            $classes = explode("|", $_SESSION["racebox_class_category"]);   // FIXME instead of using a fixed list would it be better to have number threshold
-                                                                            // FIXME and just generate classes who reach the threshold
+            $i++;
+            $category[$i] = $k;
         }
-        if (empty($classes))
-        {
-            $configured = false;
-        }
-        else
-        {
-            $category = array();
-            for ($i=1; $i <= count($classes); $i++)
-            {
-                $category[$i] = $classes[$i-1];
-            }
-            $category[] = "MISC";
-        }
+        sort($category);                                                                    // sort categories alphabetically
+        $category = array_combine(range(1, count($category)), array_values($category));     // reindex from 1
+        $category[] = "MISC";                                                               // add MISC category
+
 
         if ($configured)    // FIXME - what happens if this is not configured
         {
@@ -166,8 +159,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
 
                     $set = false;
                     for ($i = 1; $i < count($category); $i++) {
-
-                        if (strpos(strtolower($entry['class']), strtolower($category[$i])) !== false) {
+                        if (strtolower($entry['class']) == strtolower($category[$i])) {
                             $arr['label'] = $entry['sailnum']; // only need sailnum for label
                             $dbufr[$i][] = $arr;
                             $set = true;
@@ -175,8 +167,10 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         }
                     }
 
-                    if (!$set) {                                    // add to misc group
-                        $arr['label'] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum']; // FIXME - should use stored class acronym if available
+                    // if not set add to misc group with class label
+                    if (!$set) {
+                        //$arr['label'] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'];
+                        $arr['label'] = $entry['classcode']."&nbsp;&nbsp;".$entry['sailnum'];
                         $dbufr[count($category)][] = $arr;
                     }
                 }
@@ -207,7 +201,8 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "etime"   => $entry['etime'],
                         "status"  => $entry['status'],
                         "declaration" => $entry['declaration'],
-                        "label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'],   // FIXME - should use stored class acronym if available
+                        "label"   => $entry['classcode']."&nbsp;&nbsp;".$entry['sailnum'],
+                        //"label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'],
                         "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
                     );
                 }

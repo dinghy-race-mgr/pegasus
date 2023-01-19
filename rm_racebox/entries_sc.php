@@ -122,10 +122,10 @@ if ($eventid and !empty($pagestate))
 
     elseif ($pagestate == "loadentries")
     {
-        $signons = $entry_o->get_signons("entries");
-        $entries_found = count($signons);
+        $signons = $entry_o->get_signons("entries");           // this is just
+        $entries_found = count($signons);                      // this is all types of records
 
-        if ($entries_found > 0)                      // deal with entries
+        if ($entries_found > 0)                                // deal with entries
         {
             $entries_deleted = 0;
             $entries_replaced = 0;
@@ -320,6 +320,9 @@ if ($eventid and !empty($pagestate))
     {
         u_growlSet($eventid, $page, $g_invalid_pagestate, array($pagestate, $page));
     }
+
+    // get classes (used on list pages)
+    $_SESSION["e_$eventid"]['classes'] = $race_o->count_groups("class", "count", 11);
 
     // check race state / update session
     $race_o->racestate_updatestatus_all($_SESSION["e_$eventid"]['rc_numfleets'], $page);

@@ -187,7 +187,7 @@ function clear_old_demo_races($events)
                 $del = $db_o->db_delete("t_entry", array("eventid"=>$current_event));         // entries
                 $del = $db_o->db_delete("t_race", array("eventid"=>$current_event));          // race details
                 $del = $db_o->db_delete("t_lap", array("eventid"=>$current_event));           // lap times
-                $del = $db_o->db_delete("t_finish", array("eventid"=>$current_event));        // pursuit finish positions
+//                $del = $db_o->db_delete("t_finish", array("eventid"=>$current_event));        // pursuit finish positions
                 $del = $db_o->db_delete("t_racestate", array("eventid"=>$current_event));     // racestate
 
                 // reset event status

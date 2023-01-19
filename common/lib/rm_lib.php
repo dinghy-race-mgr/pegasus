@@ -29,7 +29,7 @@ function r_initialiseevent($mode, $eventid, $current_event_status = "")
      *    eventid     id for event being initialised
      *    current_event_status     event status before initialisation (only required for rejoin mode)
      *
-     *    assumes t_race, t_lap, t_finish, t_racestate have had all event related records
+     *    assumes t_race, t_lap, t_racestate have had all event related records
      *    deleted if the mode is 'init' or 'reset'
      */
 {

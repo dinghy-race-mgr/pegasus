@@ -31,7 +31,7 @@ EVENT
 
 
 RACE
-  tables: t_race, t_racestate, t_lap, t_finish, a_race, a_lap
+  tables: t_race, t_racestate, t_lap, a_race, a_lap
 
   methods:
       race_loadentries          (eventid, entries)

@@ -252,7 +252,7 @@ EOT;
     {
         $constraint = array("eventid" => $this->eventid);
         $num_rows = $this->db->db_delete("a_lap", $constraint);
-        $num_rows = $this->db->db_delete("a_finish", $constraint);
+//        $num_rows = $this->db->db_delete("a_finish", $constraint);
         $num_rows = $this->db->db_delete("a_race", $constraint);
         $num_rows = $this->db->db_delete("a_entry", $constraint);
 
@@ -271,16 +271,16 @@ EOT;
         $t_race_query   = "INSERT INTO a_race SELECT * FROM t_race WHERE eventid={$this->eventid}";
         $t_entry_query  = "INSERT INTO a_entry SELECT * FROM t_entry WHERE eventid={$this->eventid}";
         $t_lap_query    = "INSERT INTO a_lap SELECT * FROM t_lap WHERE eventid={$this->eventid}";
-        $t_finish_query = "INSERT INTO a_finish SELECT * FROM t_finish WHERE eventid={$this->eventid}";
+//        $t_finish_query = "INSERT INTO a_finish SELECT * FROM t_finish WHERE eventid={$this->eventid}";
 
 
         if (!$this->db->db_query($t_race_query))  { $status = false; }
         if (!$this->db->db_query($t_entry_query)) { $status = false; }
         if (!$this->db->db_query($t_lap_query))   { $status = false; }
-        if ($this->pursuit)
-        {
-            if ($this->db->db_query($t_finish_query)) { $status = false; }
-        }
+//        if ($this->pursuit)
+//        {
+//            if ($this->db->db_query($t_finish_query)) { $status = false; }
+//        }
 
         $status ? $msg = "copied results to archive tables" : $msg = "FAILED to copy results to archive tables" ;
         u_writelog($msg, $this->eventid);

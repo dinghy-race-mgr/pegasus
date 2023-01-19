@@ -131,10 +131,10 @@ if ($eventid AND $pagestate)
                 $entry_o = NEW ENTRY ($db_o, $eventid);
                 $entryrows = $entry_o->reset_signons($eventid);
 
-                // delete entries in t_race, t_lap, t_finish
+                // delete entries in t_race and t_lap
                 $del = $db_o->db_delete("t_race", array("eventid" => $eventid));          // race details
                 $del = $db_o->db_delete("t_lap", array("eventid" => $eventid));           // lap times
-                $del = $db_o->db_delete("t_finish", array("eventid" => $eventid));        // pursuit finish positions
+//                $del = $db_o->db_delete("t_finish", array("eventid" => $eventid));        // pursuit finish positions
 
                 u_writelog("race CANCELLED", $eventid);
                 u_growlSet($eventid, $page, $g_race_cancel_success);
@@ -174,7 +174,7 @@ if ($eventid AND $pagestate)
                 // archive data
                 $result_o = new RACE_RESULT($db_o, $eventid);
                 $status['copy']    = $result_o->race_copy_results();      // copy data from t_race to t_results
-                $status['archive'] = $result_o->race_copy_archive();      // copy data from t_race/t_lap/t_finish to a_<tables>
+                $status['archive'] = $result_o->race_copy_archive();      // copy data from t_race/t_lap/t_entry to a_<tables>
 
                 u_writelog("race ABANDONED", $eventid);
                 u_growlSet($eventid, $page, $g_race_abandon_success);

@@ -36,7 +36,7 @@ $remember_script = "rememberme.php?searchstr=".$_REQUEST['searchstr']."&sailor=%
 $tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php", "./templates/search_tm.php"));
 
 // check number of competitors found
-if ($_SESSION['competitors']) { $numcompetitors = count($_SESSION['competitors']);  }
+if (!empty($_SESSION['competitors'])) { $numcompetitors = count($_SESSION['competitors']);  }
 
 if ($numcompetitors == 0) { // none found
    $pbufr = $tmpl_o->get_template("search_nonfound_response",

@@ -40,26 +40,37 @@ function get_entry_information($sailorid, $events)
 function add_auto_continue($usage, $delay, $external, $target_url)
     // adds an automatic return to the search page when usage mode is "multi"
     // delay before return is set in the rm_sailor_cfg.php file
+    // first time for user on this page? - gives user twice as long to check the content before retuning to search
 {
     if ($usage == "multi") {          // multi user session
+
         $delay = $delay * 1000;       // convert delay to millisecs
-        if ($external) {              // double it if coming from somewhere other than this page
+        if ($external) {
             $delay = $delay * 2;
         }
-    }
 
-    // add jump to target page after delay
-    $bufr = str_repeat("\n",4096);
-    if ($delay > 0) {
-        $bufr .= <<<EOT
-            <script>
-                $(document).ready(function () {
-                window.setTimeout(function () {
-                    location.replace('$target_url');
-                }, $delay);
-            });
-            </script>
+        // add jump to target page after delay
+        $bufr = "";
+        if ($delay > 0) {
+//            $bufr .= <<<EOT
+//                <script>
+//                    $(document).ready(function () {
+//                    window.setTimeout(function () {
+//                        location.replace('$target_url');
+//                    }, $delay);
+//                });
+//                </script>
+//EOT;
+            $bufr .= <<<EOT
+                <script>
+                    $(document).ready(function () {
+                        window.replaceTimer = window.setTimeout(function () {
+                            location.replace('$target_url');
+                        }, $delay);
+                    });
+                </script>
 EOT;
+        }
     }
 
     return $bufr;

@@ -22,3 +22,12 @@ Version 10.1.3 - Third Operational Release - 2 November 2022
     - resolved issues with demo mode for Save Results, and Closing race
     - resolved issue with rm_sailor search - integer search strings must match exactly with class names
     - modified schema for t_finish to support future pursuit implementation
+
+Version 10.2 - Fourth Operational Release - 20 January 2023
+    Bootstrap 3.4.1  PHP 7.2.34
+    - introduced support for pursuit races (involved modifying t_race, a_race, and removing t_finish tables).
+      It supports multiple finish lines on Timer page, and listing of entries against start times on the Start page
+    - modified timer page (class list view) to show the 11 most popular classes and a miscellaneous group based on
+      the boats entered for the race
+    - modified rm_sailor to support plugin links to external applications (e.g. ordering hot food before sailing)
+    - added dynamic elapsed time counter for each fleet on Status page

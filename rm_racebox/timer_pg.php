@@ -228,9 +228,9 @@ else    // display finish edit box for pursuit
         }
         $finish_htm = $finish_o->render_empty_form($boat, $report, $style);
     }
+    $rbufr.= $finish_htm;
 }
-
-$rbufr.= $finish_htm."<hr>";
+$rbufr.= "<hr>";
 
 // bunch display
 if ($_SESSION['racebox_timer_bunch'] and $bunch_display)
@@ -398,13 +398,16 @@ function display_boats_pursuit($eventid, $display_view)
     }
     elseif ($display_view == "class_p")                               // organised by classname
     {
-        $_SESSION['pursuitcfg']['classes'] = $race_o->count_groups("class", "count", 11);    // FIXME move this to entries.sc - also should no. of classes always be 9
+        if (empty($_SESSION["e_$eventid"]['classes'])) {$_SESSION["e_$eventid"]['classes'] = $race_o->count_groups("class", "count", 11);}
+
+        //$_SESSION['pursuitcfg']['classes'] = $race_o->count_groups("class", "count", 11);    // FIXME move this to entries.sc
+        //$_SESSION["e_$eventid"]['classes'] = $race_o->count_groups("class", "count", 11);
         //echo "<pre>".print_r($rs_class_counts,true)."</pre>";
 
         $out = array();
         foreach ($rs_race as $entry)
         {
-            array_key_exists($entry['class'], $_SESSION['pursuitcfg']['classes']) ? $out[$entry['class']][] = $entry : $out['misc'][] = $entry;
+            array_key_exists($entry['class'], $_SESSION["e_$eventid"]['classes']) ? $out[$entry['class']][] = $entry : $out['misc'][] = $entry;
         }
     }
     else                                                            // default view is sailnum_p
@@ -445,32 +448,37 @@ function display_boats($eventid, $display_mode, $display_view, $mdl_editlap)
     elseif ($display_mode == "list")
     {
         $rs_race = $race_o->race_gettimings($display_view."-list");
-        if ($display_view == "fleet") {
+        if ($display_view == "fleet") 
+        {
             $out = array();
             foreach ($rs_race as $entry) {
                 $out[$entry['fleet']][] = $entry;
             }
-        } elseif ($display_view == "class") {
+        } 
+        elseif ($display_view == "class") 
+        {
+            if (empty($_SESSION["e_$eventid"]['classes'])) {$_SESSION["e_$eventid"]['classes'] = $race_o->count_groups("class", "count", 11);}
+            
             $out = array();
             foreach ($rs_race as $entry) {
-                $out[$entry['class']][] = $entry;
+                //$out[$entry['class']][] = $entry;
+                array_key_exists($entry['class'], $_SESSION["e_$eventid"]['classes']) ? $out[$entry['class']][] = $entry : $out['misc'][] = $entry;
             }
-        } else {
+        } 
+        else 
+        {
             $out = array();
             foreach ($rs_race as $entry) {
-                if (ctype_digit($entry['sailnum'][0]))    // if first char of sailnumber is number - use it for group index
-                {
+                if (ctype_digit($entry['sailnum'][0])) {   // if first char of sailnumber is number - use it for group index
                     $i = $entry['sailnum'][0];
-                }
-                else                                      // first char is not a number - use group 10
-                {
+                } else {                                   // first char is not a number - use group 10
                     $i = 10;
                 }
                 $out[$i][] = $entry;
             }
         }
 
-        //echo "<pre>".print_r($rs_race,true)."</pre>";
+        //echo "<pre>".print_r($out,true)."</pre>";
         $htm.= $tmpl_o->get_template("timer_list", array(),  array("eventid" => $eventid, "view" => $display_view, "timings" => $out));
 
         // no modals to add

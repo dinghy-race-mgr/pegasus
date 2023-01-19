@@ -429,7 +429,8 @@ function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
                         $arr[$k] = $entry[$v];
                     }
                     $arr["boat"] = $entry['class']." - ".$entry['sailnum'];
-                    $arr["label"] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'];
+                    //$arr["label"] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'];
+                    $arr["label"] = $entry['classcode']."&nbsp;&nbsp;".$entry['sailnum'];
                     $arr["bunchlbl"] = explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum'];
 
                     $dbufr[$item][] = $arr;
@@ -446,13 +447,14 @@ function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
 
         $category = array();
         $i = 0;
-        foreach($_SESSION['pursuitcfg']['classes'] as $k=>$v)
+        foreach($_SESSION["e_$eventid"]['classes'] as $k=>$v)
         {
             $i++;
             $category[$i] = $k;
         }
-        $category[] = "MISC";
-        //echo "<pre>".print_r($category,true)."</pre>";
+        sort($category);                                                                    // sort categories alphabetically
+        $category = array_combine(range(1, count($category)), array_values($category));     // reindex from 1
+        $category[] = "MISC";                                                               // add MISC category
 
 
         if ($configured)    // FIXME - what happens if this is not configured
@@ -483,7 +485,8 @@ function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
                     }
 
                     if (!$set) {                                    // add to misc group
-                        $arr['label'] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum']; // FIXME - should use stored class acronym if available
+                        //$arr['label'] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'];
+                        $arr['label'] = $entry['classcode']."&nbsp;&nbsp;".$entry['sailnum'];
                         $dbufr[count($category)][] = $arr;
                     }
                 }
@@ -491,35 +494,35 @@ function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
         }
     }
 
-    elseif ($view == "result_p")
-    {
-        $configured = true;     // fixme this needs to be set somewhere
-
-        $category = array();
-        $dbuf = array();
-        for ($i=1; $i <= 6; $i++)
-        {
-            $category[$i] = "Group $i";
-            $dbufr[$i] = array();
-        }
-
-        if ($configured)
-        {
-            foreach ($data as $item => $group) {
-                foreach ($group as $entry) {
-                    foreach ($fieldmap as $k=>$v)
-                    {
-                        $arr[$k] = $entry[$v];
-                    }
-                    $arr["boat"] = $entry['class']." - ".$entry['sailnum'];
-                    $arr["label"] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'];
-                    $arr["bunchlbl"] = explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum'];
-
-                    $dbufr[$item][] = $arr;
-                }
-            }
-        }
-    }
+//    elseif ($view == "result_p")
+//    {
+//        $configured = true;     // fixme this needs to be set somewhere
+//
+//        $category = array();
+//        $dbuf = array();
+//        for ($i=1; $i <= 6; $i++)
+//        {
+//            $category[$i] = "Group $i";
+//            $dbufr[$i] = array();
+//        }
+//
+//        if ($configured)
+//        {
+//            foreach ($data as $item => $group) {
+//                foreach ($group as $entry) {
+//                    foreach ($fieldmap as $k=>$v)
+//                    {
+//                        $arr[$k] = $entry[$v];
+//                    }
+//                    $arr["boat"] = $entry['class']." - ".$entry['sailnum'];
+//                    $arr["label"] = $entry['classcode']."&nbsp;&nbsp;".$entry['sailnum'];
+//                    $arr["bunchlbl"] = explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum'];
+//
+//                    $dbufr[$item][] = $arr;
+//                }
+//            }
+//        }
+//    }
 
     else   // sailnumber view
     {
@@ -546,7 +549,8 @@ function timer_list_view_pursuit($eventid, $data, $view, $rows = 1)
                         "etime"   => $entry['etime'],
                         "status"  => $entry['status'],
                         "declaration" => $entry['declaration'],
-                        "label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'],   // FIXME - should use stored class acronym if available
+                        "label"   => $entry['classcode']."&nbsp;&nbsp;".$entry['sailnum'],
+                        //"label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'],
                         "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
                     );
                 }
