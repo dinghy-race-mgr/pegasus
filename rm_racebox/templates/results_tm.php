@@ -264,8 +264,10 @@ EOT;
 
         $result['stillracing'] == "Y" ? $row_style = "lastlap" : $row_style = "";
 
+        // output finish line/position if a pursuit race and finished without a no position code
         $finish = "";
-        if ($racetype == 'pursuit' and $result['status'] == 'F')
+        if ($racetype == 'pursuit' and $result['status'] == 'F' and
+            (empty($result['code']) or $_SESSION['resultcodes'][$result['code']]['scoringtype'] == "penalty"))
         {
             $finish = "L".$result['f_line']." / P".$result['f_pos'];
         }

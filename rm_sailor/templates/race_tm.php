@@ -148,26 +148,37 @@ EOT;
 EOT;
 
         // PLUGIN HANDLING --------------------------------------------
+        $plugin_link_1 = "&nbsp;";
+        $plugin_link_2 = "&nbsp;";
+        $plugin_link_3 = "&nbsp;";
+        //echo "<pre>".print_r($params[],true)."</pre>";
+        if (!empty($params['plugins']))
+        {
+            // set up data
+            reset($params['event-list']);
+            $event1_arr = current($params['event-list']);
+            $event1_status = $event1_arr['event-status-code'];
+            ($event1_status >=3 and $event1_status <=5) ? $racestatus = "inprogress" : $racestatus = "notstarted" ;
 
-        // handle plugin code   FIXME - this need to be dealt with through config and with up to 3 plugins
-        $plugin_link_1_str = file_get_contents("./plugins/qfo/include_link.htm");
+            $plugin_data = array(
+                "{eventid}"    => "$eventid",
+                "{helm}"       => $params['data']['helm'],
+                "{crew}"       => $params['data']['crew'],
+                "{class}"      => $params['data']['class'],
+                "{sailnum}"    => $params['data']['sailnum'],
+                "{racestatus}" => $racestatus,                    // event status for first event
+            );
 
-        // get event status for first event
-        reset($params['event-list']);
-        $event1_arr = current($params['event-list']);
-        $event1_status = $event1_arr['event-status-code'];
-        ($event1_status >=3 and $event1_status <=5) ? $racestatus = "inprogress" : $racestatus = "notstarted" ;
-
-        $plugin_data = array(
-            "{eventid}"    => "$eventid",
-            "{helm}"       => $params['data']['helm'],
-            "{crew}"       => $params['data']['crew'],
-            "{class}"      => $params['data']['class'],
-            "{sailnum}"    => $params['data']['sailnum'],
-            "{racestatus}" => $racestatus,
-        );
-
-        $plugin_link_1 = str_replace(array_keys($plugin_data), array_values($plugin_data), $plugin_link_1_str);
+            if (array_key_exists("1", $params['plugins'])) {
+                $plugin_link_1 = str_replace(array_keys($plugin_data), array_values($plugin_data), $params['plugins'][1]);
+            }
+            if (array_key_exists("2", $params['plugins'])) {
+                $plugin_link_2 = str_replace(array_keys($plugin_data), array_values($plugin_data), $params['plugins'][2]);
+            }
+            if (array_key_exists("3", $params['plugins'])) {
+                $plugin_link_3 = str_replace(array_keys($plugin_data), array_values($plugin_data), $params['plugins'][3]);
+            }
+        }
 
 
         $bufr.= <<<EOT
@@ -191,10 +202,10 @@ EOT;
                     $plugin_link_1
                 </div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left">
-                    &nbsp;
+                    $plugin_link_2
                 </div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-left">
-                    &nbsp;
+                    $plugin_link_3
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right">
                     <a href="search_pg.php" class="btn btn-info btn-sm rm-text-sm" role="button">

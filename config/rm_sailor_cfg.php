@@ -82,3 +82,10 @@ else
                            "placeholder" => "contact mobile number", "evtype"=> "individual|freesail|dcruise"),
     );
 }
+
+// plugin options
+$_SESSION['plugins'] = array(
+    "1" => array("configured" => true, "name" => "qfo"),    // ordering hot food
+    "2" => array("configured" => false, "name" => ""),
+    "3" => array("configured" => false, "name" => ""),
+);

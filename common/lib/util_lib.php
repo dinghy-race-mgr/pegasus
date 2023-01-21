@@ -254,11 +254,21 @@ function u_pick ($newvalue, $oldvalue)
 
 function u_conv_result($code, $code_type, $points)
 {
-    $val = number_format((float)$points, 1, '.', '');
+    //$val = number_format((float)$points, 1, '.', '');
+
+    if ((int)$points == $points)
+    {
+        $val =  number_format(floatval($points), 0, '.', '');
+    }
+    else
+    {
+        $val =  number_format(floatval($points), 1, '.', '');
+    }
+
     if (empty($code)) {
         $result = "$val";
     } else {
-        $code_type == "series" ? $result = "$code" : $result = "$val ($code)";
+        $code_type == "series" ? $result = "$code" : $result = "$val [$code]";
     }
 
     return $result;

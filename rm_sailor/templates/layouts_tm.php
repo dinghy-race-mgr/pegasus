@@ -13,7 +13,7 @@
      $plugin_htm = "";
      if (array_key_exists("plugin", $params))
      {
-         foreach ($params['plugin'] as $plugin_file) { $plugin_htm.= file_get_contents($plugin_file);}
+         $plugin_htm = $params['plugin'];
      }
 
      $bufr = <<<EOT

@@ -56,6 +56,10 @@ elseif ($pagestate == "enterone")       // add competitor to current event
     if ($entry)
     {
         $status = enter_boat($entry, $eventid);
+
+        // get classes (used on list pages)
+        $race_o = new RACE($db_o, $eventid);
+        $_SESSION["e_$eventid"]['classes'] = $race_o->count_groups("class", "count", 11);
     }
     else
     {

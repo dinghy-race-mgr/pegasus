@@ -37,8 +37,8 @@ function race_sheet($params = array())
             "widths" => "12,8,25,10,5,5,8,8,8",
         ),
         "pursuit"  => array(
-            "fields" => "class,sailnum,team,club,pn,result",
-            "widths" => "15,10,25,15,5,10",
+            "fields" => "class,sailnum,team,club,result",
+            "widths" => "15,10,25,15,10",
         ),
     );
 

@@ -51,6 +51,16 @@ $race_fields = set_boat_details();
 $race_fields["boat-label"] = $tmpl_o->get_template("boat_label", $race_fields,
              array("change"=>true, "change_set"=>$_SESSION['sailor']['change'], "type" => "race", ));
 
+// get plugin links
+$plugin_htm = array( "1"=>"&nbsp;", "2"=>"&nbsp;", "3"=>"&nbsp;",);
+foreach ($_SESSION['plugins'] as $k => $plugin)
+{
+    if ($plugin['configured'])
+    {
+        $plugin_htm["$k"].=  file_get_contents("./plugins/{$plugin['name']}/include_link.htm");
+    }
+}
+
 // display race page
 if ($_SESSION['events']['numevents'] > 0)
 {
@@ -60,7 +70,7 @@ if ($_SESSION['events']['numevents'] > 0)
 
     $_SESSION['pagefields']['body'] = $tmpl_o->get_template("race_control", $race_fields,
         array('state'=>"submitentry", 'numdays'=> $_SESSION['events']['numdays'],
-              'event-list'=>$signon_entry_list, 'opt_cfg' =>$_SESSION['option_cfg'], "data" => $race_fields ));
+              'event-list'=>$signon_entry_list, 'opt_cfg' =>$_SESSION['option_cfg'], "data" => $race_fields, "plugins" => $plugin_htm ));
 }
 
 else
@@ -79,10 +89,27 @@ $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburg
 $_SESSION['pagefields']['body'].= add_auto_continue($_SESSION['usage'], $_SESSION['sailor_race_sleep_delay'],
     $external, "search_pg.php");
 
-// add scripts required for plugins if necessary  FIXME - needs to relate to config + handle multiple plugins
-$plugin_scripts_files = array("plugin_1" => "./plugins/qfo/include_scripts.htm");
+if (empty($_SESSION['plugins']))
+{
+    $params = array();
+}
+else
+{
+    $plugin_scripts_htm = "";
+    foreach ($_SESSION['plugins'] as $plugin)
+    {
+        if ($plugin['configured'])
+        {
+            $plugin_scripts_htm.=  file_get_contents("./plugins/{$plugin['name']}/include_scripts.htm");
+        }
+    }
+    $params['plugin'] = $plugin_scripts_htm;
+}
 
-echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields'], array("plugin" => $plugin_scripts_files));
+//// add scripts required for plugins if necessary  FIXME - needs to relate to config + handle multiple plugins
+//$plugin_scripts_files = array("plugin_1" => "./plugins/qfo/include_scripts.htm");
+
+echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields'], $params);
 exit();
 
 

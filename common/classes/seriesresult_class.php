@@ -1090,7 +1090,7 @@ class SERIES_RESULT
                     "total"   => $row['tot_pts'],
                     "net"     => $row['net_pts'],
                     "posn"    => $row['posn'],
-                    "note"    => $row['note'],
+                    //"note"    => $row['note'],
                 );
                 if (!$this->opts['inc-club']) { unset($output['fleets'][$k]['sailors'][$rownum]['club']); }
 

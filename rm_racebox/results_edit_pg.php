@@ -111,8 +111,6 @@ if ($pagestate == "init")               // display form with lap times for each 
 }
 elseif ($pagestate == "submit-pursuit")
 {
-    echo "<pre>".print_r($_REQUEST,true)."</pre>";
-
     $old = $race_o->entry_get_timings($entryid);
 
     // get returned field values
@@ -128,6 +126,7 @@ elseif ($pagestate == "submit-pursuit")
     }
     else  // process changes
     {
+        $edit_str = "";
         foreach ($edit as $k => $v)
         {
             if ($old[$k] != $edit[$k])
