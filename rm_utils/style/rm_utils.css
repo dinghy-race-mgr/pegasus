@@ -94,9 +94,7 @@ input[type=radio] {
 
 /* print styles */
 @media print {
-  @page         { size: A4 portrait; }
-  @page :left   { margin-left: 2cm; }
-  @page :right  { margin-left: 2cm; }
+  @page         { size: A4 portrait; margin: 2cm; }
 
   table, figure { page-break-inside: avoid; }
   body          { font-size: 12pt;

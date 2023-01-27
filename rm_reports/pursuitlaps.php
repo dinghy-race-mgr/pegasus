@@ -57,9 +57,9 @@ foreach ($rpData['fleets'] as $key=>$fleet )       // loop over fleets
 
     //echo "<pre>".print_r($rpData['rows'][$key], true)."</pre>";
     $num_boats = count($rpData['rows'][$key]);
-    $round = 20;
-    $num_per_col = (round($num_boats/3)%$round === 0) ? round($num_boats/3) : round(($num_boats/3+$round/2)/$round)*$round;;
-    //echo "<pre>boats: $num_boats per_col: $num_per_col</pre>";
+    if ($num_boats <= 45) { $num_per_col = 15; }
+    elseif ($num_boats <=80)  { $num_per_col = 20; }
+    else { $num_per_col = 25; }
 
     $j = 1;  //column count
     $k = 1;  //entry per col count

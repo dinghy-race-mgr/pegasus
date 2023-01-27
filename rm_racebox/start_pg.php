@@ -110,13 +110,30 @@ $lbufr = u_growlProcess($eventid, $page);                      // initialise buf
 // -------   PURSUIT RACE   --------------------------------------------------------
 if ($_SESSION["e_$eventid"]['pursuit'])
 {
+    // check current config settings (and update as necessary)
+    check_pursuit_cfg($eventid);
+
     require_once ("./include/rm_racebox_lib.php");
     $competitors = $race_o->race_getentries("", array("pn"=>"DESC"));   // get competitors in order (pn DESC, class ASC, sailnum ASC
 
-    $pursuit_starts = p_getstarts_competitors($competitors, $_SESSION['pursuitcfg']['maxpn'],             // allocate to starts
+    $warnings = array();
+    if (empty($competitors)) {
+        $warnings[] = "> no boats entered yet <br>... 
+                       <span class='text-info'>try again when you have boats entered </span>";
+    }
+    if (empty($_SESSION['pursuitcfg']['maxpn'])) {
+        $warnings[] = "> the class for the first start has not been set <br>... 
+                       <span class='text-info'>use the <b>Pursuit Start Times</b> option on the Status Page to set this</span>";
+    }
+    if (empty($_SESSION['pursuitcfg']['length'])) {
+        $warnings[] = "> the length of the race has not been set <br>... 
+                       <span class='text-info'>use the <b>Pursuit Start Times</b> option on the Status Page to set this</span>";
+    }
+
+    $pursuit_starts = p_getstarts_competitors($competitors, $_SESSION['pursuitcfg']['slowpn'],             // allocate to starts
                                               $_SESSION['pursuitcfg']['length'], $_SESSION['pursuitcfg']['interval']);
 
-    $lbufr.= pursuit_start_list($pursuit_starts, $eventid);             // render display
+    $lbufr.= pursuit_start_list($pursuit_starts, $warnings, $eventid);             // render display
 }
 
 // -------   CLASS-HANDICAP-AVERAGE LAP RACE   ---------------------------------------
@@ -260,26 +277,27 @@ EOT;
     return $bufr;
 }
 
-function pursuit_start_list($starts, $eventid)
+function pursuit_start_list($starts, $warnings, $eventid)
 {
     global $tmpl_o;
 
-    // get number of boats on each start
-    $num_boats = get_boats_per_start($starts);
+        // get number of boats on each start
+        $num_boats = get_boats_per_start($starts);
 
-    // get classes representing pn limits
-    $pnclass = p_class_match(array("maxpn"=>$_SESSION['pursuitcfg']['maxpn'], "minpn"=>$_SESSION['pursuitcfg']['minpn']), $_SESSION['pursuitcfg']['pntype']);
+        // get classes representing pn limits
+        //$pnclass = p_class_match(array("maxpn"=>$_SESSION['pursuitcfg']['maxpn'], "minpn"=>$_SESSION['pursuitcfg']['minpn']), $_SESSION['pursuitcfg']['pntype']);
 
-    // render start list
-    $fields = array(
-        "length"   => $_SESSION['pursuitcfg']['length'],
-        "maxpn"    => $pnclass['maxpn'],
-        "minpn"    => $pnclass['minpn'],
-        "startint" => $_SESSION['pursuitcfg']['interval'],
-        "pntype"   => $_SESSION['pursuitcfg']['pntype'],
-        "start-info" => render_start_by_competitor($starts, $num_boats, $eventid)
-    );
-    return $tmpl_o->get_template("start_by_competitor", $fields );
+        // render start list
+        $fields = array(
+            "length"     => $_SESSION['pursuitcfg']['length'],
+            "slowclass"  => p_class_match($_SESSION['pursuitcfg']['slowpn'], $_SESSION['pursuitcfg']['pntype']),
+            "fastclass"  => p_class_match($_SESSION['pursuitcfg']['fastpn'], $_SESSION['pursuitcfg']['pntype']),
+            "interval"   => $_SESSION['pursuitcfg']['interval'],
+            "pntype"     => $_SESSION['pursuitcfg']['pntype'],
+            "start-info" => render_start_by_competitor($starts, $num_boats, $eventid)
+        );
+
+    return $tmpl_o->get_template("start_by_competitor", $fields, array("warnings"=>$warnings));
 }
 
 function get_boats_per_start ($starts)

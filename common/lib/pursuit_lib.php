@@ -44,6 +44,8 @@ function p_getstarts_competitors($competitors, $maxpn, $race_length, $start_inte
     // receives competitors array in sorted by pn desc, classname asc, sailnum asc
     // assumes race config sets max and min py and boat types that can be included
 
+    if (empty($start_interval)) { $start_interval = 60; }
+
     $i = 0;
     $starts = array();
     foreach ($competitors as $key => $row)
@@ -67,26 +69,46 @@ function p_getstarts_competitors($competitors, $maxpn, $race_length, $start_inte
     return $starts;
 }
 
-function p_class_match($pns, $pn_type)
+function p_class_match($pn, $pn_type)
 {
     global $db_o;
 
     $pn_type == "national" ? $pn_field = "nat_py" : $pn_field = "local_py" ;
 
-    $data = array();
-    foreach ($pns as $k=>$pn)
+    $row = $db_o->db_get_row("SELECT classname FROM t_class WHERE $pn_field = $pn and active = 1 ORDER BY $pn_field ASC LIMIT 1");
+    if ($row)
     {
-        $row = $db_o->db_get_row("SELECT classname FROM t_class WHERE $pn_field = {$pn} ORDER BY popular DESC LIMIT 1");
-        if ($row)
-        {
-            $data[$k] = $row['classname'];
-        }
-        else
-        {
-            $data[$k] = $pn;
-        }
+        $classname = $row['classname'];
+    }
+    else
+    {
+        $classname = false;
     }
 
-    return $data;
+    return $classname;
 }
 
+function check_pursuit_cfg($eventid)
+{
+    $cfg_filename = $_SESSION['basepath']."/tmp/pursuitcfg_$eventid.json";
+    if (file_exists($cfg_filename))
+    {
+        $json = file_get_contents($cfg_filename,0,null,null);
+        if ($json !== false and strlen($json) > 0)
+        {
+            $cfg = json_decode($json,true);
+            if (isset($cfg['length']) and !empty($cfg['length'])) { $_SESSION['pursuitcfg']['length'] = $cfg['length']; }
+            if (isset($cfg['interval']) and !empty($cfg['interval'])) { $_SESSION['pursuitcfg']['interval'] = $cfg['interval']; }
+            if (isset($cfg['pntype']) and !empty($cfg['pntype'])) { $_SESSION['pursuitcfg']['pntype'] = $cfg['pntype']; }
+            if (isset($cfg['slowpn']) and !empty($cfg['slowpn'])) { $_SESSION['pursuitcfg']['slowpn'] = $cfg['slowpn']; }
+            if (isset($cfg['slowclass']) and !empty($cfg['slowclass'])) { $_SESSION['pursuitcfg']['slowclass'] = $cfg['slowclass']; }
+            if (isset($cfg['fastpn']) and !empty($cfg['fastpn'])) { $_SESSION['pursuitcfg']['fastpn'] = $cfg['fastpn']; }
+            if (isset($cfg['fastclass']) and !empty($cfg['fastclass'])) { $_SESSION['pursuitcfg']['fastclass'] = $cfg['fastclass']; }
+        }
+    }
+    else{
+        $cfg = false;
+    }
+
+    return $cfg;
+}

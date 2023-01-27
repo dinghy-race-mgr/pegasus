@@ -243,6 +243,20 @@ function racebox_navbar($params=array())
      *      num_reminders no. of remiders for this event
      *      current_view: current view on timer page (str: tabbed | list ) - only required on timer page
      */
+//    $refresh_htm = "";
+//    if ($params['page'] == "race")
+//    {
+//        $refresh_htm = <<<EOT
+//        <script>
+//        document.addEventListener("visibilitychange", function() {
+//           if (!document.hidden){
+//                location.reload();
+//           }
+//        });
+//        </script>
+//EOT;
+//    }
+
 
     $options = array(
         "1" => array("name" => "race",      "label" => "status",    "target" => "race_pg.php"),

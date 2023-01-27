@@ -88,6 +88,7 @@ function table_style1($params=array())
         }
         
         @media print {
+           @page { size: auto; margin: 2cm; } 
            .noprint { display:none }
            .page-break	{ display: block; page-break-before: always; }
         }
@@ -165,18 +166,13 @@ function report_style($params=array())
         .spacer      {border-top: 1px solid slategrey; margin-top: 15px; margin-bottom: 5px; display: block;}
         .codes-info  {color: var(--blue); font-weight: normal; line-height: 1.0em; font-size: 0.8em; margin-top: 25px;}
         .footer      {color: var(--blue); font-weight: normal; line-height: 1.0em; font-size: 0.8em; margin-top: 25px;}
-        
-
-        
-        
+             
         
         @media all   {.page-break	{ display: none; }  }
         
         /* print styles */
         @media print {
-           @page         { size: A4 portrait; }
-           @page :left   { margin-left: 2cm; }
-           @page :right  { margin-left: 2cm; }
+           @page         { size: auto; margin: 2cm; }
         
            table, figure { page-break-inside: avoid; }
            body          { font-size: 12pt; }

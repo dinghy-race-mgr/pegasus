@@ -33,6 +33,8 @@ if (!$eventid)
 }
 
 // start session
+ini_set('session.gc_maxlifetime', 10800);
+session_set_cookie_params(10800);
 session_id('sess-rmracebox');   // creates separate session for this application
 session_start();
 
@@ -155,20 +157,16 @@ $rbufr_top.= $tmpl_o->get_template("modal", $mdl_change['fields'], $mdl_change);
 // pursuit start times - link
 if ($_SESSION["e_$eventid"]['pursuit'])
 {
-    require_once ("{$loc}/common/lib/pursuit_lib.php");
-    $classes = p_class_match(array($_SESSION["e_$eventid"]['fl_1']['minpy'], $_SESSION["e_$eventid"]['fl_1']['maxpy']), $_SESSION["e_$eventid"]['fl_1']['pytype']);
-
     $args = array(
-        "pagestate" => "init",
-        "format"    => $_SESSION["e_$eventid"]['rc_name'],
-        "pytype"    => $_SESSION["e_$eventid"]['fl_1']['pytype'],
-        "fastclass" => $classes[0],
-        "slowclass" => $classes[1],
-        "timelimit" => $_SESSION["e_$eventid"]['fl_1']['timelimitabs'],
-        "boattypes" => "D",
-        "interval"  => "60",
-    );
-
+        "pagestate"=>"init",
+        "caller" => "race_pg",
+        "format" => $_SESSION["e_$eventid"]['rc_name'],
+        "pntype" => $_SESSION["e_$eventid"]['fl_1']['pytype'],
+        "length" => $_SESSION["e_$eventid"]['fl_1']['timelimitabs'],
+        "maxpy"  => $_SESSION["e_$eventid"]['fl_1']['maxpy'],
+        "minpy"  => $_SESSION["e_$eventid"]['fl_1']['minpy'],
+        "eventid" => $eventid
+);
     $btn_pursuit['fields']['link'].= http_build_query($args);
     $rbufr_top.= $tmpl_o->get_template("btn_link", $btn_pursuit['fields'], $btn_pursuit);
 }
@@ -189,7 +187,6 @@ else
     $mdl_format['fields']['footer'] = createprintbutton($eventid, true);
     $rbufr_top.= $tmpl_o->get_template("modal", $mdl_format['fields'], $mdl_format);
 }
-
 
 // send message - modal
 $rbufr_top.= $tmpl_o->get_template("btn_modal", $btn_message['fields'], $btn_message);

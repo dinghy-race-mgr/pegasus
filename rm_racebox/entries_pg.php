@@ -136,10 +136,15 @@ $rbufr_top .= $tmpl_o->get_template("modal", $mdl_addentry['fields'], $mdl_adden
 $btn_printentries['data'] = array(
     "entry list"             => "entries_print_pg.php?eventid=$eventid&format=entrylist",
     "entry list (inc. club)" => "entries_print_pg.php?eventid=$eventid&format=entrylistclub",
-    "pursuit lap records"    => "entries_print_pg.php?eventid=$eventid&format=pursuitlaps",
     "signoff sheet"          => "entries_print_pg.php?eventid=$eventid&format=declarationsheet",
     "timing sheet"           => "entries_print_pg.php?eventid=$eventid&format=timingsheet"
     );
+
+if ($_SESSION["e_$eventid"]['pursuit'])
+{
+    $btn_printentries['data']["pursuit lap records"] = "entries_print_pg.php?eventid=$eventid&format=pursuitlaps";
+}
+
 $rbufr_mid = "";
 $rbufr_mid.= $tmpl_o->get_template("btn_multilink", $btn_printentries['fields'], $btn_printentries);
 

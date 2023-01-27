@@ -5,14 +5,14 @@ function start_by_class($params=array())
     $htm = <<<EOT
     <div class="row">
         <div class="col-md-3" style="padding-left: 30px; ">
-            <div class="well">           
+            <div class="well">  
+                <h4>RACE DETAILS</h4>         
                 <table class="table ">
-                    <tr><td colspan="2" class="rm-text-md"><b>RACE DETAILS</b></td></tr>
                     <tr><td>Race Length</td><td class="rm-text-sm"><b>{length} minutes</b></td></tr>
-                    <tr><td>Scratch PN</td><td class="rm-text-sm"><b>{maxclass}</b></td></tr>  
-                    <tr><td>Fastest PN</td><td class="rm-text-sm"><b>{minclass}</b></td></tr>
+                    <tr><td>Scratch PN</td><td class="rm-text-sm"><b>{slowclass}</b></td></tr>  
+                    <tr><td>Fastest PN</td><td class="rm-text-sm"><b>{fastclass}</b></td></tr>
                     <tr><td>PY Used</td><td class="rm-text-sm"><b>{pntype}</b></td></tr>
-                    <tr><td>Start Interval</td><td class="rm-text-sm"><b>{startint} seconds</b></td></tr>         
+                    <tr><td>Start Interval</td><td class="rm-text-sm"><b>{interval} seconds</b></td></tr>         
                 </table>
                 <span class="print"><a class="button-green noprint" onclick="window.print()" href="#" >Print Start List</a></span>
             </div>       
@@ -33,33 +33,68 @@ EOT;
 
 function start_by_competitor($params=array())
 {
-    $htm = <<<EOT
+    $htm = "";
+    if (!empty($params['warnings']))
+    {
+        $warnings_htm = "";
+        foreach ($params['warnings'] as $warning)
+        {
+            $warnings_htm.= "<p style='font-size: 1.2em'>$warning</p>";
+        }
 
-    <div class="row" style="margin-top: 60px; padding-left: 50px; padding-right: 50px;">
-        <div class="col-md-4" style="padding-left: 30px; ">
-            <div class="well">           
-                <table class="table ">
-                    <tr><td colspan="2" class="rm-text-md"><b>RACE DETAILS</b></td></tr>
-                    <tr><td>Race Length</td><td class="rm-text-sm"><b>{length} minutes</b></td></tr>
-                    <tr><td>Scratch</td><td class="rm-text-sm"><b>{maxpn}</b></td></tr>  
-                    <tr><td>Fastest</td><td class="rm-text-sm"><b>{minpn}</b></td></tr>
-                    <tr><td>PY Used</td><td class="rm-text-sm"><b>{pntype}</b></td></tr>
-                    <tr><td>Start Interval</td><td class="rm-text-sm"><b>{startint} seconds</b></td></tr>         
-                </table>
-                <!--span class="print"><a class="button-green noprint" onclick="window.print()" href="#" >Print Start List</a></span -->
-            </div>       
+        $htm.= <<<EOT
+        <div class="row" style="margin-top: 60px; padding-left: 50px; padding-right: 50px;">
+            <div class="col-md-4" style="padding-left: 30px; ">
+                <div class="well">           
+                    <table class="table ">
+                        <tr><td colspan="2" class="rm-text-md"><b>RACE DETAILS</b></td></tr>
+                        <tr><td>Race Length</td><td class="rm-text-sm"><b>{length} minutes</b></td></tr>
+                        <tr><td>Scratch</td><td class="rm-text-sm"><b>{slowclass}</b></td></tr>  
+                        <tr><td>Fastest</td><td class="rm-text-sm"><b>{fastclass}</b></td></tr>
+                        <tr><td>PY Used</td><td class="rm-text-sm"><b>{pntype}</b></td></tr>
+                        <tr><td>Start Interval</td><td class="rm-text-sm"><b>{interval} seconds</b></td></tr>         
+                    </table>
+                </div>       
+            </div>
+            <div class="col-md-8">
+                <div class="well">
+                    <div class="alert alert-dismissible alert-danger">   
+                        <h4>Start times for each boat have not been produced due to missing information</h4>
+                        <p>Please correct the problem(s) as indicated below.</p>
+                    </div>
+                    $warnings_htm
+                </div>
+            </div>      
         </div>
-        <div class="col-md-8">
-            <div style="overflow-y: scroll; overflow-x: hidden; height:600px;">
-                <table class="table width="90%">
-                    {start-info}            
-                </table>       
-            </div> 
-        </div>      
-    </div>
-
-
 EOT;
+    }
+    else
+    {
+        $htm.= <<<EOT
+        <div class="row" style="margin-top: 60px; padding-left: 50px; padding-right: 50px;">
+            <div class="col-md-4" style="padding-left: 30px; ">
+                <div class="well">           
+                    <table class="table ">
+                        <tr><td colspan="2" class="rm-text-md"><b>RACE DETAILS</b></td></tr>
+                        <tr><td>Race Length</td><td class="rm-text-sm"><b>{length} minutes</b></td></tr>
+                        <tr><td>Scratch</td><td class="rm-text-sm"><b>{slowclass}</b></td></tr>  
+                        <tr><td>Fastest</td><td class="rm-text-sm"><b>{fastclass}</b></td></tr>
+                        <tr><td>PY Used</td><td class="rm-text-sm"><b>{pntype}</b></td></tr>
+                        <tr><td>Start Interval</td><td class="rm-text-sm"><b>{interval} seconds</b></td></tr>         
+                    </table>
+                    <!--span class="print"><a class="button-green noprint" onclick="window.print()" href="#" >Print Start List</a></span -->
+                </div>       
+            </div>
+            <div class="col-md-8">
+                <div style="overflow-y: scroll; overflow-x: hidden; height:600px;">
+                    <table class="table width="90%">
+                        {start-info}            
+                    </table>       
+                </div> 
+            </div>      
+        </div>
+EOT;
+    }
 
     return $htm;
 }

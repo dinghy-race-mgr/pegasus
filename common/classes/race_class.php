@@ -411,7 +411,7 @@ class RACE
             ),
             "finish_p-list"    => array(
                 "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
-                "order"  => "code ASC, f_line ASC, lap DESC, f_pos ASC, class, CAST(sailnum AS unsigned), sailnum ASC",
+                "order"  => "code ASC, f_line ASC, f_pos ASC, lap DESC, class, CAST(sailnum AS unsigned), sailnum ASC",
             ),
             "result_p-list"    => array(
                 "fields" => "id, fleet, start, class, classcode, sailnum, helm, pn, lap, finishlap, etime, code, status, declaration, f_line, f_pos",
@@ -945,6 +945,13 @@ class RACE
                                 for ($i = $tie; $i > 0; $i--) {
                                     //error_log("- allocating tie points ($score) to {$row['class']} {$row['sailnum']} \n",3, $_SESSION['dbglog']);
                                     $rs_data[$k - $i]['points'] = $score;
+
+                                    //if ($fleetnum == 3) { echo "<pre>TIE ITEM sail={$rs_data[$k-$i]['sailnum']}|item=$k - $i|points={$rs_data[$k - $i]['points']}</pre>";}
+                                    $points_arr[$k-$i]  = $rs_data[$k-$i]['points'];
+                                    $status_arr[$k-$i]  = $rs_data[$k-$i]['status'];  // sort array for status
+                                    $pn_arr[$k-$i]      = $rs_data[$k-$i]['pn']; // sort array for PN
+                                    $sailnum_arr[$k-$i] = $rs_data[$k-$i]['sailnum']; // sort array for sailnumber
+                                    // sort arrays
                                 }
                                 $tie = 0;                      // reset tie counts
                                 $sum = 0;
@@ -952,6 +959,7 @@ class RACE
                             $pos++;
                             //error_log("- allocating points ($pos) to id [$k] \n",3, $_SESSION['dbglog']);
                             $rs_data[$k]['points'] = $pos;
+
                         }
                         else                                   // is a tie - record and move on
                         {
@@ -973,22 +981,23 @@ class RACE
                             }
                         }
                     }
-                    //error_log("points for $k: {$rs_data[$k]['points']} \n",3, $_SESSION['dbglog']);
-//                    $points_arr[] = $rs_data[$k]['points'];  // sort array for points
-//                    $status_arr[] = $rs_data[$k]['status'];  // sort array for status
                 }
                 else
                 {
-//                    $points_arr[] = $rs_data[$k]['points'];  // sort array for points
-//                    $status_arr[] = $rs_data[$k]['status'];  // sort array for status
+//                    // boat still racing
                 }
-                $points_arr[] = $rs_data[$k]['points'];  // sort array for points
-                $status_arr[] = $rs_data[$k]['status'];  // sort array for status
-                $pn_arr[] = $rs_data[$k]['pn']; // sort array for PN
-                $sailnum_arr[] = $rs_data[$k]['sailnum']; // sort array for sailnumber
+
+                //if ($fleetnum == 3) { echo "<pre>ITEM sail={$rs_data[$k]['sailnum']}|item=$k|points={$rs_data[$k]['points']}</pre>"; }
+                $points_arr[$k]  = $rs_data[$k]['points'];  // sort array for points
+                $status_arr[$k]  = $rs_data[$k]['status'];  // sort array for status
+                $pn_arr[$k]      = $rs_data[$k]['pn'];      // sort array for PN
+                $sailnum_arr[$k] = $rs_data[$k]['sailnum']; // sort array for sailnumber
             }
 
+            //if ($fleetnum == 3) { echo "<pre>BEFORE".print_r($points_arr,true)."</pre>";}
+
             array_multisort($status_arr, SORT_ASC, $points_arr, SORT_ASC, $pn_arr, SORT_ASC, $sailnum_arr, SORT_NUMERIC, $rs_data);
+
         }
 
         // end dbg chk
@@ -1020,14 +1029,14 @@ class RACE
             {
                 // check that laps are the same for the swap
                 $swap_ok = true;
-                if ($dir == "up")
-                {
-                    if ($rs[$otherboat_key]['lap'] > $rs[$swapboat_key]['lap']) { $swap_ok = false; }
-                }
-                else
-                {
-                    if ($rs[$swapboat_key]['lap'] > $rs[$otherboat_key]['lap']) { $swap_ok = false; }
-                }
+//                if ($dir == "up")
+//                {
+//                    if ($rs[$otherboat_key]['lap'] > $rs[$swapboat_key]['lap']) { $swap_ok = false; }
+//                }
+//                else
+//                {
+//                    if ($rs[$swapboat_key]['lap'] > $rs[$otherboat_key]['lap']) { $swap_ok = false; }
+//                }
 
                 if ($swap_ok)
                 {
@@ -1064,8 +1073,9 @@ class RACE
 
     public function race_line_renumber_pursuit($line)
     {
-        // get boats on this line in lap, position order
-        $rs = $this->race_getresults_pursuit(array("f_line" => "$line", "status" => "F"), "lap DESC, f_pos ASC");
+        // get boats on this line in position order
+        //$rs = $this->race_getresults_pursuit(array("f_line" => "$line", "status" => "F"), "lap DESC, f_pos ASC");
+        $rs = $this->race_getresults_pursuit(array("f_line" => "$line", "status" => "F"), "f_pos ASC");
 
         if ($rs)
         {

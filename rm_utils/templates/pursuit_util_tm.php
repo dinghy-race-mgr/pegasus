@@ -4,30 +4,33 @@ function pursuit_start_form($params = array())
 {
 
     $args = $params['args'];
-    $classes = $params['classes'];   // already sorted from slow o fast
+    $classes = $params['classes'];   // already sorted from slow to fast
 
+    // get select htm for slowest class
     $classlist_slow = array();
-    foreach ($classes as $row)
-    {
-        $classlist_slow[$row['id']] = $row['classname'];
-    }
+    foreach ($classes as $row) { $classlist_slow[$row['id']] = $row['classname']; }
     $class_select_slow = u_selectlist($classlist_slow, $args['slowclass']);  // select list for classes - slow to fast
 
+    // resort classes array
     $classes = $params['classes'];
-    u_array_sort_by_column($classes, "nat_py", SORT_ASC);
+    $args['pntype'] == "national" ? $sort_key = "nat_py" : $sort_key = "local_py";
+    u_array_sort_by_column($classes, $sort_key, SORT_ASC);
+
+    // get select htm for fastest class
     $classlist_fast = array();
-    foreach ($classes as $row)
-    {
-        $classlist_fast[$row['id']] = $row['classname'];
-    }
+    foreach ($classes as $row)  { $classlist_fast[$row['id']] = $row['classname'];}
     $class_select_fast = u_selectlist($classlist_fast, $args['fastclass']);  // select list for classes - fast to slow
 
-    $args['pytype'] == "national" ? $selected_py_national = "checked" : $selected_py_national = "";
-    $args['pytype'] == "local" ? $selected_py_local = "checked" : $selected_py_local = "";
-    $args['pytype'] == "personal" ? $selected_py_personal = "disabled" : $selected_py_personal = "";  // FIXME - when local PY allowed
+    // set options for handicap type
+    $args['pntype'] == "national" ? $selected_py_national = "checked" : $selected_py_national = "";
+    $args['pntype'] == "local" ? $selected_py_local = "checked" : $selected_py_local = "";
+    $args['pntype'] == "personal" ? $selected_py_personal = "disabled" : $selected_py_personal = "";  // FIXME - when local PY allowed
+
+    // set options for start interval
     $args['interval'] == "60" ? $selected_int_60 = "checked" : $selected_int_60 = "";
     $args['interval'] == "30" ? $selected_int_30 = "checked" : $selected_int_30 = "";
 
+    // set options for boat types allowed
     if (empty($args['boattypes']))
     {
         $selected_btype_D = "1";
@@ -61,13 +64,14 @@ function pursuit_start_form($params = array())
             data-fv-icon-invalid="glyphicon glyphicon-remove"
             data-fv-icon-validating="glyphicon glyphicon-refresh"
             >
+            <input type="hidden" name="eventid" value="{$args['eventid']}">
             
         <!-- slowest/fastest class -->
         <div class="row form-inline">
-            <label class="col-sm-3 control-label text-right" style="margin-top: 10px !important;">Classes (Slowest/Fastest)</label>
+            <label class="col-sm-3 control-label text-right" style="margin-top: 10px !important;">Classes (Slowest - to - Fastest)</label>
             <div class="form-group">                   
                 <div class="selectfieldgroup">
-                    <select class="form-control" name="maxclassid" required data-fv-notempty-message="choose the slowest class to include">
+                    <select class="form-control" name="slowclassid" required data-fv-notempty-message="choose the slowest class to include">
                          $class_select_slow
                     </select>
                 </div>
@@ -75,7 +79,7 @@ function pursuit_start_form($params = array())
             </div>
             <div class="form-group" style="margin-left: 30px !important">                   
                 <div class="selectfieldgroup">
-                    <select class="form-control" name="minclassid" required data-fv-notempty-message="choose the fastest class to include">
+                    <select class="form-control" name="fastclassid" required data-fv-notempty-message="choose the fastest class to include">
                          $class_select_fast
                     </select>
                 </div>
@@ -87,7 +91,7 @@ function pursuit_start_form($params = array())
             <label class="col-sm-3 control-label text-right" style="margin-top: 10px !important;">Race Length</label>
             <div class="form-group">  
             <div class="col-sm-3" style="padding-left:0px !important;">                 
-                 <input type="number" class="form-control" id="length"  name="length" value="{$args['timelimit']}" placeholder="length of race in minutes" 
+                 <input type="number" class="form-control" id="length"  name="length" value="{$args['length']}" placeholder="length of race in minutes" 
                     required 
                     data-fv-notempty-message="please ad the race length in minutes (e.g. 90)"
                     data-fv-integer="true"
@@ -111,8 +115,8 @@ function pursuit_start_form($params = array())
         <div class="row margin-top-20">
             <label class="col-sm-3 control-label text-right">Choose Start Interval</label>                                 
             <div class="col-sm-8">
-              <label class="radio-inline"><input type="radio" name="startint" value="60" $selected_int_60>&nbsp;1 minute&nbsp;&nbsp;&nbsp;</label>
-              <label class="radio-inline"><input type="radio" name="startint" value="30" $selected_int_30>&nbsp;30 seconds&nbsp;&nbsp;&nbsp;</label>                 
+              <label class="radio-inline"><input type="radio" name="interval" value="60" $selected_int_60>&nbsp;1 minute&nbsp;&nbsp;&nbsp;</label>
+              <label class="radio-inline"><input type="radio" name="interval" value="30" $selected_int_30>&nbsp;30 seconds&nbsp;&nbsp;&nbsp;</label>                 
             </div>               
         </div>
         

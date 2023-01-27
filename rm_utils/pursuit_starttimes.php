@@ -67,28 +67,51 @@ if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
 
 if ($_REQUEST['pagestate'] == "init")
 {
+    empty($_REQUEST['caller']) ? $caller = "util" : $caller = $_REQUEST['caller'];
 
-    $args = array(
-        "pytype"    => "",
-        "fastclass" => "",
-        "slowclass" => "",
-        "timelimit" => "90",
-        "boattypes" => "D",
-        "interval"  => "60",
-    );
-
-    if (!empty($_REQUEST['format']))
+    if ($caller == "race_pg")
     {
-        if(!empty($_REQUEST['pytype'])) { $args['pytype'] = $_REQUEST['pytype']; }
-        if(!empty($_REQUEST['fastclass'])) { $args['fastclass'] = $_REQUEST['fastclass']; }
-        if(!empty($_REQUEST['slowclass'])) { $args['slowclass'] = $_REQUEST['slowclass']; }
-        if(!empty($_REQUEST['timelimit'])) { $args['timelimit'] = $_REQUEST['timelimit']; }
-        if(!empty($_REQUEST['interval'])) { $args['interval'] = $_REQUEST['interval']; }
-        if(!empty($_REQUEST['boattypes'])) { $args['boattypes'] = $_REQUEST['boattypes']; }
+        // get args data from file
+        $cfg = check_pursuit_cfg($_REQUEST['eventid']);
+
+        if ($cfg === false)   // file hasn't been written yet - use parameters from race format cfg
+        {
+            $_SESSION['pursuitcfg']['length']    = $_REQUEST['length'];
+            $_SESSION['pursuitcfg']['interval']  = 60;
+            $_SESSION['pursuitcfg']['pntype']    = $_REQUEST['pntype'];
+            $_SESSION['pursuitcfg']['slowclass'] = p_class_match($_REQUEST['maxpy'], $_REQUEST['pntype']) ;
+            $_SESSION['pursuitcfg']['fastclass'] = p_class_match($_REQUEST['minpy'], $_REQUEST['pntype']) ;
+        }
+
+        $args = array(
+            //"pagestate" => "init",
+            //"format"    => $_REQUEST['format'],
+            //"caller"    => "race_pg",
+            "pntype"    => $_SESSION['pursuitcfg']['pntype'],
+            "fastclass" => $_SESSION['pursuitcfg']['fastclass'],
+            "slowclass" => $_SESSION['pursuitcfg']['slowclass'],
+            "length"    => $_SESSION['pursuitcfg']['length'],
+            "interval"  => $_SESSION['pursuitcfg']['interval'],
+            "boattypes" => "D",
+            "eventid"   => $_REQUEST['eventid']
+        );
+    }
+    else
+    {
+        // direct util call - get args from script url
+        empty($_REQUEST['pntype'])    ? $args['pntype'] = "national" : $args['pntype'] = $_REQUEST['pntype'];
+        empty($_REQUEST['fastclass']) ? $args['fastclass'] = ""      : $args['fastclass'] = $_REQUEST['fastclass'];
+        empty($_REQUEST['slowclass']) ? $args['pntype'] = ""         : $args['slowclass'] = $_REQUEST['slowclass'];
+        empty($_REQUEST['length'])    ? $args['length'] = "90"       : $args['length'] = $_REQUEST['length'];
+        empty($_REQUEST['interval'])  ? $args['interval'] = "60"     : $args['interval'] = $_REQUEST['interval'];
+        empty($_REQUEST['boattypes']) ? $args['boattypes'] = "D"     : $args['boattypes'] = $_REQUEST['boattypes'];
+        empty($_REQUEST['eventid'])   ? $args['eventid'] = "0"       : $args['eventid'] = $_REQUEST['eventid'];
+
     }
 
     // get list of classes
-    $classes = $boat_o->getclasses(array(), $sort=array("nat_py"=>"DESC"));
+    $args['pntype'] == "national" ? $py_field = "nat_py" : $py_field = "local_py";
+    $classes = $boat_o->getclasses(array(), $sort=array("$py_field"=>"DESC"));
 
     // use form to get parameters for start time report
     $formfields = array(
@@ -96,33 +119,39 @@ if ($_REQUEST['pagestate'] == "init")
         "script" => "pursuit_starttimes.php?pagestate=submit",
     );
 
+    if ($caller == "race_pg")
+    {
+        $formfields["instructions"].= "<br><b>Important:</b><br>
+                                       <span class='text-info'>The information entered here will be used to calculate the start times for each boat on the Start Page</span>";
+    }
+
     // present form to select json file for processing (general template)
     $params = array();
     $pagefields['body'] =  $tmpl_o->get_template("pursuit_start_form", $formfields, array("classes"=>$classes, "args"=>$args));
     echo $tmpl_o->get_template("basic_page", $pagefields );
 }
+
+
 elseif ($_REQUEST['pagestate'] == "submit")
 {
-
-    //echo "<pre>".print_r($_REQUEST,true)."</pre>";
-
     // get/check arguments
     $pntype     = u_checkarg('pntype', 'set', "", "national");      // selects nat_py or local_py field
-    $length     = u_checkarg('length', 'set', "", 0);               // length of race in minutes
-    $maxclassid = u_checkarg('maxclassid', 'set', "", 0);           // class id for slowest class
-    $minclassid = u_checkarg('minclassid', 'set', "", 0);           // class id for fastest class
-    $startint   = u_checkarg('startint', 'set', "", 60);            // interval between starts in seconds
-    $dinghy     = u_checkarg('typeD', 'set', "1", "");              // dinghy classes included
-    $keelboat   = u_checkarg('typeK', 'set', "1", "");              // keelboat classes included
-    $foiler     = u_checkarg('typeF', 'set', "1", "");              // foiler classes included
-    $multihull  = u_checkarg('typeM', 'set', "1", "");              // multihull classes included
+    $length     = u_checkarg('length', 'set', "", 90);              // length of race in minutes
+    $slowclassid = u_checkarg('slowclassid', 'set', "", 0);         // class id for slowest class
+    $fastclassid = u_checkarg('fastclassid', 'set', "", 0);         // class id for fastest class
+    $interval   = u_checkarg('interval', 'set', "", 60);            // interval between starts in seconds
+    $dinghy     = u_checkarg('typeD', 'set', "", "1");              // dinghy classes included
+    $keelboat   = u_checkarg('typeK', 'set', "", "0");              // keelboat classes included
+    $foiler     = u_checkarg('typeF', 'set', "", "0");              // foiler classes included
+    $multihull  = u_checkarg('typeM', 'set', "", "0");              // multihull classes included
+    $eventid    = u_checkarg('eventid', 'set', "", "");
 
     // select py to use
     $pntype == "national" ? $py_field = "nat_py" : $py_field = "local_py";
 
     // get pn for fastest and slowest classes
-    $maxdata = get_class_pn($maxclassid, $pntype);   // slowest
-    $mindata = get_class_pn($minclassid, $pntype);   // fastest
+    $slowdata = get_class_pn($slowclassid, $py_field);   // slowest
+    $fastdata = get_class_pn($fastclassid, $py_field);   // fastest
 
     // create array of allowed boat types
     $btype_arr = get_boat_types_array($dinghy,$keelboat,$foiler,$multihull);
@@ -131,13 +160,19 @@ elseif ($_REQUEST['pagestate'] == "submit")
     $classes = $boat_o->getclasses(array(), $sort=array("$py_field"=>"DESC"));
 
     // get start time report data
-    $starts = p_getstarts_class($classes, $mindata['pn'], $maxdata['pn'], $py_field, $length, $startint, $btype_arr);
+    $starts = p_getstarts_class($classes, $fastdata['pn'], $slowdata['pn'], $py_field, $length, $interval, $btype_arr);
+
+    // send details to tmp file for use by racemanager
+    $cfg = array("slowpn"=> $slowdata['pn'], "slowclass"=> $slowdata['class'],
+                 "fastpn" => $fastdata['pn'], "fastclass"=> $fastdata['class'],
+                 "length" => $length, "interval" => $interval, "pntype" => $pntype);
+    $set_tmp_file = file_put_contents($_SESSION['basepath']."/tmp/pursuitcfg_$eventid.json", json_encode($cfg));
 
     $fields = array(
         "length"     => $length,
-        "maxclass"   => $maxdata['class'],
-        "minclass"   => $mindata['class'],
-        "startint"   => $startint,
+        "slowclass"   => $slowdata['class'],
+        "fastclass"   => $fastdata['class'],
+        "interval"   => $interval,
         "pntype"     => $pntype,
         "start-info" => render_start_by_class($starts)
     );
@@ -154,25 +189,19 @@ else
 
 
 
-function get_class_pn($classid, $pntype)
+function get_class_pn($classid, $py_field)
 {
     global $boat_o;
     $data = array();
 
-    if (empty($classid) or empty($pntype) or ($pntype != "national" and $pntype != "local"))
-    {
+    if (empty($classid) or empty($py_field) or ($py_field != "nat_py" and $py_field != "local_py")) {
         $data = false;
-    }
-    else
-    {
+    } else {
         $row = $boat_o->boat_getdetail("", $classid);
-        if ($row)
-        {
-            $pntype == "local" ? $data['pn'] = $row['local_py'] : $data['pn'] = $row['nat_py'] ;
+        if ($row) {
+            $py_field == "local_py" ? $data['pn'] = $row['local_py'] : $data['pn'] = $row['nat_py'];
             $data['class'] = $row['classname'];
-        }
-        else
-        {
+        } else {
             $data = false;
         }
     }
@@ -200,18 +229,18 @@ function render_start_by_class($starts)
         $start['popular'] ? $style = "font-weight: bold;" : $style = "";
 
         $diff = (int)$start['start'] - $this_start ;
-        if ($diff > 0)                                                                            // next start
+        if ($diff > 0)                                                                 // next start
         {
-            if (!empty($bufr)) { $bufr.= "</td></tr>"; }                                          // finish incomplete tow
+            if (!empty($bufr)) { $bufr.= "</td></tr>"; }                               // finish incomplete tow
 
-            if ($diff > 1 ) { $bufr.= "<tr><td>&nbsp;</td><td>----</td></tr>"; }                  // missing start - leave a gap
+            if ($diff > 1 ) { $bufr.= "<tr><td>&nbsp;</td><td>----</td></tr>"; }       // missing start - leave a gap
 
             $bufr.= "<tr><td >{$start['start']} mins &nbsp;&nbsp;&nbsp;&nbsp;</td>
                          <td ><span style=\"$style\">{$start['class']}</span>";        // start + first class
         }
         else
         {
-            $bufr.= ", <span style=\"$style\">{$start['class']}</span>";                // add additional classes
+            $bufr.= ", <span style=\"$style\">{$start['class']}</span>";               // add additional classes
         }
         $this_start = (int)$start['start'];
     }
