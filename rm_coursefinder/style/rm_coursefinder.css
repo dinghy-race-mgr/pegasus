@@ -1,0 +1,120 @@
+/* custom styles for rm_utils applications
+-------------------------------------------------- */
+
+:root {
+  --primary: #2c3e50;
+  --darkblue: #2c4c7c;
+  --darkred: #8b0000;
+  --darkgrey: #a9a9a9;
+  --red: #c20000;
+  --white: #ffffff;
+  --black: #000000;
+  --green: #18bc9c;
+  --grey: #708090;
+  --yellow: yellow;
+  --lightgrey: #e6e6e6;
+  --lightyellow: #eee8aa;
+  --lightorange: #f39c12;
+  --lightred: #e74c3c;
+  --lightblue: #add8e6;
+}
+
+
+html { position: relative;  min-height: 100%;}
+
+/* style for body */
+body {       
+  font-family: Kalinga, Arial, sans-serif;    /* default font */
+}
+.table>thead>tr>th {
+  vertical-align: bottom;
+  border-bottom: 3px solid darkgrey;
+}
+.rm-background {background-color: #2e6da4; color: white;}
+
+/* typographic styles */
+.rm-page { color: lightgrey; }
+.rm-pagebold { color: lightgrey; font-size:2.0em; font-weight: bold; }
+.rm-hamburger  { color: lightgrey; font-size:2.0em; }
+
+.rm-text-bg {font-weight: bold; font-size:1.8em;}
+.rm-text-md {font-size:1.6em;}
+.rm-text-sm {font-size:1.0em;}
+.rm-text-xs {font-size:0.8em;}
+.rm-text-space {padding-top:5px; padding-bottom: 5px; }
+.rm-text-highlight {color: yellow; }
+.rm-text-capitalise {text-transform: capitalize;}
+
+
+.rm-table-col-title {font-weight:bold; font-size: 1.2em; color: yellow; text-transform: capitalize;}
+.rm-table-col-value {font-size: 1.2em;}
+.rm-table-col-highlight {font-size: 1.2em; color: black; background-color: LightYellow}
+.rm-table-event-list {padding-top: 10px !important; padding-bottom: 10px !important; }
+
+.rm-glyph-bg {font-weight: bold; font-size:2.0em;}
+.rm-glyph-md {font-weight: bold; font-size:1.4em;}
+
+/* top margin styles */
+.margin-top-05 { margin-top: 0.5em; }
+.margin-top-10 { margin-top: 1.0em; }
+.margin-top-20 { margin-top: 2.0em; }
+.margin-top-40 { margin-top: 4.0em; }
+.margin-bot-40 { margin-bottom: 4.0em; }
+
+.fixed-button { min-width: 150px; max-width: 150px; margin-top: 10px; }
+
+.rm-form-style { font-size: 1.5em !important; }
+.rm_form-label { font-size: 1.5em !important; padding-top: 10px !important;}
+.rm-form-field { font-weight: bold;}
+
+.board-wide   {text-align: center; min-width: 80px; max-width: 80px; height: 75px; top-padding: 10px; bottom-padding: 10px; font-size: 3em;}
+.board-thin   {text-align: center; min-width: 40px; max-width: 40px; height: 75px; top-padding: 10px; bottom-padding: 10px; font-size: 3em;}
+.board-yellow {background-color: var(--yellow); color: var(--black); border: none;}
+.board-white  {background-color: var(--lightgrey); color: var(--black); border: var(--grey) 1px solid;}
+.board-red    {background-color: var(--red); color: var(--lightgrey); border: none;}
+.board-green  {background-color: var(--green); color: var(--lightgrey); border: none;}
+.board-blue   {background-color: var(--darkblue); color: var(--lightgrey); border: none;}
+.board-table  {border-collapse: separate; border-spacing: 10px;}
+.board-fleet  {color: var(--darkblue); font-weight: bold; font-size: 1.2em; line-height: 1.6;}
+
+.button-green    {background-color: var(--green); border: none; color: white; padding: 15px 32px; text-align: center; text-decoration: none;
+  display: inline-block; font-size: 16px; }
+
+.form-control-feedback { padding-right: 20px; }
+::-webkit-input-placeholder { text-transform: none;}
+:-moz-placeholder { text-transform: none; }
+::-moz-placeholder { text-transform: none;}
+:-ms-input-placeholder { text-transform: none; }
+::placeholder { text-transform: none; }
+
+.divider-line { height: 10px; border: none;}
+
+input[type=checkbox] {
+  transform: scale(1.7); /* All browsers except webkit*/
+  -webkit-transform: scale(1.7);  /* Webkit browsers*/
+}
+
+input[type=radio] {
+  transform: scale(1.7); /* All browsers except webkit*/
+  -webkit-transform: scale(1.7); /* Webkit browsers*/
+}
+
+.hover:hover{background-color: lightyellow; color: black;}
+
+.print a:hover {color: white;}
+
+/* print styles */
+@media print {
+  @page         { size: A4 portrait; margin: 2cm; }
+
+  table, figure { page-break-inside: avoid; }
+  body          { font-size: 12pt;
+    -webkit-print-color-adjust: exact;
+    -moz-print-color-adjust: exact;
+    -ms-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .noprint      { display: none; !important}
+  .page-break	 { display: block; page-break-before: always; }
+}
