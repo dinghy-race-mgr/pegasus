@@ -15,7 +15,6 @@ if ($values['event_type'] == "racing")
             if this is supposed to be a series event please go back and edit the event.";
             $display_msg = true;
         }
-
     }
     else
     {

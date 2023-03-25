@@ -1,25 +1,24 @@
 <!doctype html>
 <html  {$html_attrs}>
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-      {$pagetitle}
-    </title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="icon" href="../../common/images/logos/favicon.png">
-    <link REL="stylesheet" href="styles/default.css" type="text/css">
-    {BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
-    {END rtlCSS}
-    {BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
-    {END styleCSSFiles}
-  </head>
-  <BODY class="{$stylename} function-list" {$bodyattrs}>
-    {BEGIN body}{$header}
-      <style>
-        {$containerCss}
-      </style>
-      {BEGIN container_menu}<nav {$menu_chiddenattr} data-pageid="{$pageid}" data-container="menu" class="navbar navbar-default ">					
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+	</head>
+
+	<body class="{$stylename} function-list" {$bodyattrs}>
+	{BEGIN body}{$header}
+		<style>
+			{$containerCss}
+		</style>
+		{BEGIN container_menu}<nav {$menu_chiddenattr} data-pageid="{$pageid}" data-container="menu" class="navbar navbar-default ">					
 
 
 
@@ -172,9 +171,9 @@
 
 
 									</nav>{END container_menu}
-      <DIV class="bs-middle ">
-        <DIV class="bs-topmiddle">
-          
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
 
 {BEGIN container_breadcrumbs}<div {$breadcrumbs_chiddenattr} data-pageid="{$pageid}" data-container="breadcrumbs" class="    "> 
 
@@ -231,14 +230,14 @@
 {END container_masterinfo}
 
 
-        </div>
-        <DIV class="bs-left" {$blockattr_left}>
-          
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
 
 
-        </div>
-        <DIV class="bs-center bs-screenwidth bs-minwidth">
-          
+			</div>
+			<div class="bs-center bs-screenwidth bs-minwidth">
+				
 
 {BEGIN container_gridcontrols}<div {$gridcontrols_chiddenattr} data-pageid="{$pageid}" data-container="gridcontrols" class="row rnr-rowcontainer bs-navcontrolled bs-hidden-xs">
 
@@ -808,13 +807,13 @@
 {END container_pagination}
 
 
-        </div>
-        <DIV class="bs-right">
-          
-        </div>
-      </div>
-      
-      {$footer}
-    {END body}
-  </body>
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		
+		{$footer}
+	{END body}
+	</body>
 </html>

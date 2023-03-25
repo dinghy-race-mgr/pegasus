@@ -2,6 +2,7 @@
 <html  {$html_attrs}>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{$pagetitle}</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -12,319 +13,352 @@
 		{BEGIN styleCSSFiles}
 		<link REL="stylesheet" href="{$stylepath}" type="text/css">
 		{END styleCSSFiles}
-		{BEGIN pageCSSFiles}
-		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
-		{END pageCSSFiles}
 	</head>
-	
+
 	<body class="{$stylename} function-search" {$bodyattrs}>
 	{BEGIN body}
 		{$header}
-	<div class="rnr-page">
-		<div class="rnr-top {$blockclass_top}">
-			
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
 
-{BEGIN container_search}
-<div class="rnr-c rnr-cv rnr-c-search">
+{BEGIN container_searchpage}
+<div {$searchpage_chiddenattr} data-pageid="{$pageid}" data-container="searchpage" class="container    "> 
+
+
+
+
+{BEGIN container_header}
+<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-6 col-md-offset-3"> 
 
 {BEGIN searchheader}
-<div  class="rnr-brickcontents style2 rnr-b-srchheader {$brickclass_srchheader}"><span>	<h1>{$pagetitlelabel t_class search}</h1>
-</span></div>{END searchheader}
+	<h2 {$bssearchheader_hiddenattr} data-pageid="{$pageid}" data-brick="bssearchheader" >{$pagetitlelabel t_class search}</h2>
+	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
 
-
-{BEGIN conditions_block}
-<div  class="rnr-brickcontents style1 rnr-b-srchconditions {$brickclass_srchconditions}">	<center>
-	<span class=fieldname>Criteria:&nbsp;</span>	
-	<input type="radio" class="rnr-radio-button" name="srchType{$id}" {$all_checkbox}><label for="all_checkbox"> All conditions</label>
-	&nbsp;&nbsp;&nbsp;
-	<input type="radio" class="rnr-radio-button" name="srchType{$id}" {$any_checkbox}><label for="any_checkbox"> Any condition</label>
-	</center></div>{END conditions_block}
+{END searchheader}
 
 
 
-<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
+</div>
+{END container_header}
+
+
+
+
+
+
+</div>
+{END container_searchpage}
+
+
 
 {BEGIN container_fields}
-<div class="rnr-c rnr-cv rnr-c-fields">
+<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class="   col-md-12 "> 
 
 
-<div  class="rnr-brickcontents style1 rnr-b-srchfields {$brickclass_srchfields}"><table class="fieldGrid">
-	<tr>
-		<td>&nbsp;</td>
-		<td>NOT</td>
-		<td colspan=3>&nbsp; </td>
-	</tr>
-	<tr class="{$fielddispclass_classname}">
+<div {$bssearchfields_hiddenattr} data-pageid="{$pageid}" data-brick="bssearchfields" class="form-horizontal" role="form">
+<div class="container">
+	<div class="form-group">
+		<div class="col-md-12" >
+			&nbsp;
+		</div>
+	</div>
+</div>
 	{BEGIN classname_fieldblock}		
-	<td>
-		{$label t_class classname}
-	</td>
-	<td>
-		<input type="checkbox" {$classname_notbox}>
-	</td>
-	<td>
-		{$searchtype_classname}
-	</td>
-	<td>
-		{$classname_editcontrol}&nbsp;
-	</td>
-	<td>
-		{$classname_editcontrol1}&nbsp;
-	</td>
+	<div class="container {$fielddispclass_classname}" data-fieldname="classname">
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="{$labelfor_classname}">
+				{$label t_class classname}
+			</label>
+			<div class="col-md-2 bs-srchoption" >
+				{$searchtype_classname}
+			</div>
+			<div class="col-md-4" >
+				{$classname_editcontrol}
+			</div>
+			<div class="col-md-4" >
+				{$classname_editcontrol1}
+			</div>
+		</div>
+	</div>
 {END classname_fieldblock}
-	</tr>
-	<tr class="{$fielddispclass_active}">
-	{BEGIN active_fieldblock}		
-	<td>
-		{$label t_class active}
-	</td>
-	<td>
-		<input type="checkbox" {$active_notbox}>
-	</td>
-	<td>
-		{$searchtype_active}
-	</td>
-	<td>
-		{$active_editcontrol}&nbsp;
-	</td>
-	<td>
-		{$active_editcontrol1}&nbsp;
-	</td>
-{END active_fieldblock}
-	</tr>
-	<tr class="{$fielddispclass_popular}">
-	{BEGIN popular_fieldblock}		
-	<td>
-		{$label t_class popular}
-	</td>
-	<td>
-		<input type="checkbox" {$popular_notbox}>
-	</td>
-	<td>
-		{$searchtype_popular}
-	</td>
-	<td>
-		{$popular_editcontrol}&nbsp;
-	</td>
-	<td>
-		{$popular_editcontrol1}&nbsp;
-	</td>
-{END popular_fieldblock}
-	</tr>
-	<tr class="{$fielddispclass_nat_py}">
-	{BEGIN nat_py_fieldblock}		
-	<td>
-		{$label t_class nat_py}
-	</td>
-	<td>
-		<input type="checkbox" {$nat_py_notbox}>
-	</td>
-	<td>
-		{$searchtype_nat_py}
-	</td>
-	<td>
-		{$nat_py_editcontrol}&nbsp;
-	</td>
-	<td>
-		{$nat_py_editcontrol1}&nbsp;
-	</td>
-{END nat_py_fieldblock}
-	</tr>
-	<tr class="{$fielddispclass_local_py}">
-	{BEGIN local_py_fieldblock}		
-	<td>
-		{$label t_class local_py}
-	</td>
-	<td>
-		<input type="checkbox" {$local_py_notbox}>
-	</td>
-	<td>
-		{$searchtype_local_py}
-	</td>
-	<td>
-		{$local_py_editcontrol}&nbsp;
-	</td>
-	<td>
-		{$local_py_editcontrol1}&nbsp;
-	</td>
-{END local_py_fieldblock}
-	</tr>
-	<tr class="{$fielddispclass_category}">
-	{BEGIN category_fieldblock}		
-	<td>
-		{$label t_class category}
-	</td>
-	<td>
-		<input type="checkbox" {$category_notbox}>
-	</td>
-	<td>
-		{$searchtype_category}
-	</td>
-	<td>
-		{$category_editcontrol}&nbsp;
-	</td>
-	<td>
-		{$category_editcontrol1}&nbsp;
-	</td>
-{END category_fieldblock}
-	</tr>
-	<tr class="{$fielddispclass_crew}">
-	{BEGIN crew_fieldblock}		
-	<td>
-		{$label t_class crew}
-	</td>
-	<td>
-		<input type="checkbox" {$crew_notbox}>
-	</td>
-	<td>
-		{$searchtype_crew}
-	</td>
-	<td>
-		{$crew_editcontrol}&nbsp;
-	</td>
-	<td>
-		{$crew_editcontrol1}&nbsp;
-	</td>
-{END crew_fieldblock}
-	</tr>
-	<tr class="{$fielddispclass_spinnaker}">
-	{BEGIN spinnaker_fieldblock}		
-	<td>
-		{$label t_class spinnaker}
-	</td>
-	<td>
-		<input type="checkbox" {$spinnaker_notbox}>
-	</td>
-	<td>
-		{$searchtype_spinnaker}
-	</td>
-	<td>
-		{$spinnaker_editcontrol}&nbsp;
-	</td>
-	<td>
-		{$spinnaker_editcontrol1}&nbsp;
-	</td>
-{END spinnaker_fieldblock}
-	</tr>
-	<tr class="{$fielddispclass_rig}">
-	{BEGIN rig_fieldblock}		
-	<td>
-		{$label t_class rig}
-	</td>
-	<td>
-		<input type="checkbox" {$rig_notbox}>
-	</td>
-	<td>
-		{$searchtype_rig}
-	</td>
-	<td>
-		{$rig_editcontrol}&nbsp;
-	</td>
-	<td>
-		{$rig_editcontrol1}&nbsp;
-	</td>
-{END rig_fieldblock}
-	</tr>
-	<tr class="{$fielddispclass_engine}">
-	{BEGIN engine_fieldblock}		
-	<td>
-		{$label t_class engine}
-	</td>
-	<td>
-		<input type="checkbox" {$engine_notbox}>
-	</td>
-	<td>
-		{$searchtype_engine}
-	</td>
-	<td>
-		{$engine_editcontrol}&nbsp;
-	</td>
-	<td>
-		{$engine_editcontrol1}&nbsp;
-	</td>
-{END engine_fieldblock}
-	</tr>
-	<tr class="{$fielddispclass_keel}">
-	{BEGIN keel_fieldblock}		
-	<td>
-		{$label t_class keel}
-	</td>
-	<td>
-		<input type="checkbox" {$keel_notbox}>
-	</td>
-	<td>
-		{$searchtype_keel}
-	</td>
-	<td>
-		{$keel_editcontrol}&nbsp;
-	</td>
-	<td>
-		{$keel_editcontrol1}&nbsp;
-	</td>
-{END keel_fieldblock}
-	</tr>
-	<tr class="{$fielddispclass_info}">
 	{BEGIN info_fieldblock}		
-	<td>
-		{$label t_class info}
-	</td>
-	<td>
-		<input type="checkbox" {$info_notbox}>
-	</td>
-	<td>
-		{$searchtype_info}
-	</td>
-	<td>
-		{$info_editcontrol}&nbsp;
-	</td>
-	<td>
-		{$info_editcontrol1}&nbsp;
-	</td>
+	<div class="container {$fielddispclass_info}" data-fieldname="info">
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="{$labelfor_info}">
+				{$label t_class info}
+			</label>
+			<div class="col-md-2 bs-srchoption" >
+				{$searchtype_info}
+			</div>
+			<div class="col-md-4" >
+				{$info_editcontrol}
+			</div>
+			<div class="col-md-4" >
+				{$info_editcontrol1}
+			</div>
+		</div>
+	</div>
 {END info_fieldblock}
-	</tr>
+	{BEGIN nat_py_fieldblock}		
+	<div class="container {$fielddispclass_nat_py}" data-fieldname="nat_py">
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="{$labelfor_nat_py}">
+				{$label t_class nat_py}
+			</label>
+			<div class="col-md-2 bs-srchoption" >
+				{$searchtype_nat_py}
+			</div>
+			<div class="col-md-4" >
+				{$nat_py_editcontrol}
+			</div>
+			<div class="col-md-4" >
+				{$nat_py_editcontrol1}
+			</div>
+		</div>
+	</div>
+{END nat_py_fieldblock}
+	{BEGIN local_py_fieldblock}		
+	<div class="container {$fielddispclass_local_py}" data-fieldname="local_py">
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="{$labelfor_local_py}">
+				{$label t_class local_py}
+			</label>
+			<div class="col-md-2 bs-srchoption" >
+				{$searchtype_local_py}
+			</div>
+			<div class="col-md-4" >
+				{$local_py_editcontrol}
+			</div>
+			<div class="col-md-4" >
+				{$local_py_editcontrol1}
+			</div>
+		</div>
+	</div>
+{END local_py_fieldblock}
+	{BEGIN popular_fieldblock}		
+	<div class="container {$fielddispclass_popular}" data-fieldname="popular">
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="{$labelfor_popular}">
+				{$label t_class popular}
+			</label>
+			<div class="col-md-2 bs-srchoption" >
+				{$searchtype_popular}
+			</div>
+			<div class="col-md-4" >
+				{$popular_editcontrol}
+			</div>
+			<div class="col-md-4" >
+				{$popular_editcontrol1}
+			</div>
+		</div>
+	</div>
+{END popular_fieldblock}
+	{BEGIN category_fieldblock}		
+	<div class="container {$fielddispclass_category}" data-fieldname="category">
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="{$labelfor_category}">
+				{$label t_class category}
+			</label>
+			<div class="col-md-2 bs-srchoption" >
+				{$searchtype_category}
+			</div>
+			<div class="col-md-4" >
+				{$category_editcontrol}
+			</div>
+			<div class="col-md-4" >
+				{$category_editcontrol1}
+			</div>
+		</div>
+	</div>
+{END category_fieldblock}
+	{BEGIN crew_fieldblock}		
+	<div class="container {$fielddispclass_crew}" data-fieldname="crew">
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="{$labelfor_crew}">
+				{$label t_class crew}
+			</label>
+			<div class="col-md-2 bs-srchoption" >
+				{$searchtype_crew}
+			</div>
+			<div class="col-md-4" >
+				{$crew_editcontrol}
+			</div>
+			<div class="col-md-4" >
+				{$crew_editcontrol1}
+			</div>
+		</div>
+	</div>
+{END crew_fieldblock}
+	{BEGIN spinnaker_fieldblock}		
+	<div class="container {$fielddispclass_spinnaker}" data-fieldname="spinnaker">
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="{$labelfor_spinnaker}">
+				{$label t_class spinnaker}
+			</label>
+			<div class="col-md-2 bs-srchoption" >
+				{$searchtype_spinnaker}
+			</div>
+			<div class="col-md-4" >
+				{$spinnaker_editcontrol}
+			</div>
+			<div class="col-md-4" >
+				{$spinnaker_editcontrol1}
+			</div>
+		</div>
+	</div>
+{END spinnaker_fieldblock}
+	{BEGIN rig_fieldblock}		
+	<div class="container {$fielddispclass_rig}" data-fieldname="rig">
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="{$labelfor_rig}">
+				{$label t_class rig}
+			</label>
+			<div class="col-md-2 bs-srchoption" >
+				{$searchtype_rig}
+			</div>
+			<div class="col-md-4" >
+				{$rig_editcontrol}
+			</div>
+			<div class="col-md-4" >
+				{$rig_editcontrol1}
+			</div>
+		</div>
+	</div>
+{END rig_fieldblock}
+	{BEGIN engine_fieldblock}		
+	<div class="container {$fielddispclass_engine}" data-fieldname="engine">
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="{$labelfor_engine}">
+				{$label t_class engine}
+			</label>
+			<div class="col-md-2 bs-srchoption" >
+				{$searchtype_engine}
+			</div>
+			<div class="col-md-4" >
+				{$engine_editcontrol}
+			</div>
+			<div class="col-md-4" >
+				{$engine_editcontrol1}
+			</div>
+		</div>
+	</div>
+{END engine_fieldblock}
+	{BEGIN keel_fieldblock}		
+	<div class="container {$fielddispclass_keel}" data-fieldname="keel">
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="{$labelfor_keel}">
+				{$label t_class keel}
+			</label>
+			<div class="col-md-2 bs-srchoption" >
+				{$searchtype_keel}
+			</div>
+			<div class="col-md-4" >
+				{$keel_editcontrol}
+			</div>
+			<div class="col-md-4" >
+				{$keel_editcontrol1}
+			</div>
+		</div>
+	</div>
+{END keel_fieldblock}
+	{BEGIN active_fieldblock}		
+	<div class="container {$fielddispclass_active}" data-fieldname="active">
+		<div class="form-group">
+			<label class="col-md-2 control-label" for="{$labelfor_active}">
+				{$label t_class active}
+			</label>
+			<div class="col-md-2 bs-srchoption" >
+				{$searchtype_active}
+			</div>
+			<div class="col-md-4" >
+				{$active_editcontrol}
+			</div>
+			<div class="col-md-4" >
+				{$active_editcontrol1}
+			</div>
+		</div>
+	</div>
+{END active_fieldblock}
+</div>
 
-</table></div>
 
-
-{BEGIN searchbuttons}
-<div  class="rnr-brickcontents style2 rnr-b-srchbuttons {$brickclass_srchbuttons}">{BEGIN search_button}
-<a href="#" class="rnr-button main" {$searchbutton_attrs}>Search</a>
-{END search_button} 
-{BEGIN reset_button}
-<a href="#" class="rnr-button" {$resetbutton_attrs}>Reset</a>
-{END reset_button}
-{BEGIN back_button}
-<a href="#" class="rnr-button" {$backbutton_attrs}>Back to list</a>
-{END back_button}</div>{END searchbuttons}
 
 
 </div>
 {END container_fields}
 
+
+
+{BEGIN container_bottombuttons}
+<div {$bottombuttons_chiddenattr} data-pageid="{$pageid}" data-container="bottombuttons" class="container form-horizontal   "> 
+
+
+
+
+{BEGIN container_bbuttons}
+<div {$bbuttons_chiddenattr} data-pageid="{$pageid}" data-container="bbuttons" class=" form-group   "> 
+
+
+
+
+{BEGIN container_leftbuttons}
+<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-10 col-md-offset-2"> 
+
+{BEGIN searchbuttons}
+{BEGIN search_button}
+<button class="btn btn-primary" {$searchbutton_attrs}>Search</button>
+{END search_button} 
+{BEGIN reset_button}
+<button class="btn btn-default" {$resetbutton_attrs}>Reset</button>
+{END reset_button}
+{BEGIN back_button}
+<button class="btn btn-default" {$backbutton_attrs}>Back to list</button>
+{END back_button}
+{END searchbuttons}
+
+
+
 </div>
+{END container_leftbuttons}
+
+
+
+
 
 
 </div>
-{END container_search}
+{END container_bbuttons}
+
+
+
+
+
+
+</div>
+{END container_bottombuttons}
 
 
 		</div>
-		<div class="rnr-middle">
-			<div class="rnr-left {$blockclass_left}">
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
 				
 			</div>
-			<div class="rnr-center {$blockclass_center}">
+			<div class="bs-left" {$blockattr_left}>
 				
 			</div>
-			<div class="rnr-right {$blockclass_right}">
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
 				
 			</div>
 		</div>
-		<div class="rnr-bottom {$blockclass_bottom}">
-			<!--%%bottom%%-->
+		<DIV class="bs-bottom">
+        
 		</div>
-	</div>
-		
 		{$footer}
 	{END body}
 	</body>

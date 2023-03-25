@@ -31,7 +31,7 @@
 
 
 {BEGIN container_header}
-<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-9 col-md-offset-3"> 
+<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-12 "> 
 
 {BEGIN viewheader}
 	<h2 {$viewheader_hiddenattr} data-pageid="{$pageid}" data-brick="viewheader" >{$pagetitlelabel t_series view}</h2>
@@ -59,162 +59,189 @@
 
 
 <div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
-	{BEGIN seriesname_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_seriesname} bs-viewform-group" data-fieldname="seriesname">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_seriesname}">
-			{$label t_series seriesname}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$seriesname_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END seriesname_fieldblock}
-	{BEGIN seriescode_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_seriescode} bs-viewform-group" data-fieldname="seriescode">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_seriescode}">
+
+	<div class="container">
+					{BEGIN seriescode_fieldblock}
+	<div class="{$fielddispclass_seriescode} col-md-4 bs-viewcontrolgroup" data-fieldname="seriescode">
+		<label class="control-label" for="{$labelfor_seriescode}">
 			{$label t_series seriescode}
 		</label>
-		<div class="col-md-6 bs-horizontal-value" >
+		<div class="" >
 			{$seriescode_value}&nbsp;
 		</div>
 	</div>
-</div>
 {END seriescode_fieldblock}
-	{BEGIN seriestype_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_seriestype} bs-viewform-group" data-fieldname="seriestype">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_seriestype}">
+					{BEGIN seriesname_fieldblock}
+	<div class="{$fielddispclass_seriesname} col-md-4 bs-viewcontrolgroup" data-fieldname="seriesname">
+		<label class="control-label" for="{$labelfor_seriesname}">
+			{$label t_series seriesname}
+		</label>
+		<div class="" >
+			{$seriesname_value}&nbsp;
+		</div>
+	</div>
+{END seriesname_fieldblock}
+					{BEGIN seriestype_fieldblock}
+	<div class="{$fielddispclass_seriestype} col-md-4 bs-viewcontrolgroup" data-fieldname="seriestype">
+		<label class="control-label" for="{$labelfor_seriestype}">
 			{$label t_series seriestype}
 		</label>
-		<div class="col-md-6 bs-horizontal-value" >
+		<div class="" >
 			{$seriestype_value}&nbsp;
 		</div>
 	</div>
-</div>
 {END seriestype_fieldblock}
-	{BEGIN race_format_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_race_format} bs-viewform-group" data-fieldname="race_format">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_race_format}">
-			{$label t_series race_format}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$race_format_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END race_format_fieldblock}
-	{BEGIN startdate_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_startdate} bs-viewform-group" data-fieldname="startdate">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_startdate}">
-			{$label t_series startdate}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$startdate_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END startdate_fieldblock}
-	{BEGIN enddate_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_enddate} bs-viewform-group" data-fieldname="enddate">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_enddate}">
-			{$label t_series enddate}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$enddate_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END enddate_fieldblock}
-	{BEGIN classresults_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_classresults} bs-viewform-group" data-fieldname="classresults">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_classresults}">
-			{$label t_series classresults}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$classresults_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END classresults_fieldblock}
-	{BEGIN merge_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_merge} bs-viewform-group" data-fieldname="merge">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_merge}">
-			{$label t_series merge}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$merge_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END merge_fieldblock}
-	{BEGIN notes_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_notes} bs-viewform-group" data-fieldname="notes">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_notes}">
-			{$label t_series notes}
-		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$notes_value}&nbsp;
-		</div>
-	</div>
-</div>
-{END notes_fieldblock}
-	{BEGIN active_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_active} bs-viewform-group" data-fieldname="active">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_active}">
+					{BEGIN active_fieldblock}
+	<div class="{$fielddispclass_active} col-md-4 bs-viewcontrolgroup" data-fieldname="active">
+		<label class="control-label" for="{$labelfor_active}">
 			{$label t_series active}
 		</label>
-		<div class="col-md-6 bs-horizontal-value" >
+		<div class="" >
 			{$active_value}&nbsp;
 		</div>
 	</div>
-</div>
 {END active_fieldblock}
-	{BEGIN createdate_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_createdate} bs-viewform-group" data-fieldname="createdate">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_createdate}">
-			{$label t_series createdate}
+					{BEGIN race_format_fieldblock}
+	<div class="{$fielddispclass_race_format} col-md-4 bs-viewcontrolgroup" data-fieldname="race_format">
+		<label class="control-label" for="{$labelfor_race_format}">
+			{$label t_series race_format}
 		</label>
-		<div class="col-md-6 bs-horizontal-value" >
-			{$createdate_value}&nbsp;
+		<div class="" >
+			{$race_format_value}&nbsp;
 		</div>
 	</div>
-</div>
-{END createdate_fieldblock}
-	{BEGIN upddate_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_upddate} bs-viewform-group" data-fieldname="upddate">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_upddate}">
+{END race_format_fieldblock}
+					{BEGIN opt_upload_fieldblock}
+	<div class="{$fielddispclass_opt_upload} col-md-4 bs-viewcontrolgroup" data-fieldname="opt_upload">
+		<label class="control-label" for="{$labelfor_opt_upload}">
+			{$label t_series opt_upload}
+		</label>
+		<div class="" >
+			{$opt_upload_value}&nbsp;
+		</div>
+	</div>
+{END opt_upload_fieldblock}
+					{BEGIN notes_fieldblock}
+	<div class="{$fielddispclass_notes} col-md-4 bs-viewcontrolgroup" data-fieldname="notes">
+		<label class="control-label" for="{$labelfor_notes}">
+			{$label t_series notes}
+		</label>
+		<div class="" >
+			{$notes_value}&nbsp;
+		</div>
+	</div>
+{END notes_fieldblock}
+					{BEGIN opt_style_fieldblock}
+	<div class="{$fielddispclass_opt_style} col-md-4 bs-viewcontrolgroup" data-fieldname="opt_style">
+		<label class="control-label" for="{$labelfor_opt_style}">
+			{$label t_series opt_style}
+		</label>
+		<div class="" >
+			{$opt_style_value}&nbsp;
+		</div>
+	</div>
+{END opt_style_fieldblock}
+					{BEGIN opt_clubnames_fieldblock}
+	<div class="{$fielddispclass_opt_clubnames} col-md-4 bs-viewcontrolgroup" data-fieldname="opt_clubnames">
+		<label class="control-label" for="{$labelfor_opt_clubnames}">
+			{$label t_series opt_clubnames}
+		</label>
+		<div class="" >
+			{$opt_clubnames_value}&nbsp;
+		</div>
+	</div>
+{END opt_clubnames_fieldblock}
+					{BEGIN opt_scorecode_fieldblock}
+	<div class="{$fielddispclass_opt_scorecode} col-md-4 bs-viewcontrolgroup" data-fieldname="opt_scorecode">
+		<label class="control-label" for="{$labelfor_opt_scorecode}">
+			{$label t_series opt_scorecode}
+		</label>
+		<div class="" >
+			{$opt_scorecode_value}&nbsp;
+		</div>
+	</div>
+{END opt_scorecode_fieldblock}
+					{BEGIN opt_turnout_fieldblock}
+	<div class="{$fielddispclass_opt_turnout} col-md-4 bs-viewcontrolgroup" data-fieldname="opt_turnout">
+		<label class="control-label" for="{$labelfor_opt_turnout}">
+			{$label t_series opt_turnout}
+		</label>
+		<div class="" >
+			{$opt_turnout_value}&nbsp;
+		</div>
+	</div>
+{END opt_turnout_fieldblock}
+					{BEGIN opt_pagebreak_fieldblock}
+	<div class="{$fielddispclass_opt_pagebreak} col-md-4 bs-viewcontrolgroup" data-fieldname="opt_pagebreak">
+		<label class="control-label" for="{$labelfor_opt_pagebreak}">
+			{$label t_series opt_pagebreak}
+		</label>
+		<div class="" >
+			{$opt_pagebreak_value}&nbsp;
+		</div>
+	</div>
+{END opt_pagebreak_fieldblock}
+					{BEGIN opt_racelabel_fieldblock}
+	<div class="{$fielddispclass_opt_racelabel} col-md-4 bs-viewcontrolgroup" data-fieldname="opt_racelabel">
+		<label class="control-label" for="{$labelfor_opt_racelabel}">
+			{$label t_series opt_racelabel}
+		</label>
+		<div class="" >
+			{$opt_racelabel_value}&nbsp;
+		</div>
+	</div>
+{END opt_racelabel_fieldblock}
+					{BEGIN classresults_fieldblock}
+	<div class="{$fielddispclass_classresults} col-md-4 bs-viewcontrolgroup" data-fieldname="classresults">
+		<label class="control-label" for="{$labelfor_classresults}">
+			{$label t_series classresults}
+		</label>
+		<div class="" >
+			{$classresults_value}&nbsp;
+		</div>
+	</div>
+{END classresults_fieldblock}
+					{BEGIN merge_fieldblock}
+	<div class="{$fielddispclass_merge} col-md-4 bs-viewcontrolgroup" data-fieldname="merge">
+		<label class="control-label" for="{$labelfor_merge}">
+			{$label t_series merge}
+		</label>
+		<div class="" >
+			{$merge_value}&nbsp;
+		</div>
+	</div>
+{END merge_fieldblock}
+					{BEGIN upddate_fieldblock}
+	<div class="{$fielddispclass_upddate} col-md-4 bs-viewcontrolgroup" data-fieldname="upddate">
+		<label class="control-label" for="{$labelfor_upddate}">
 			{$label t_series upddate}
 		</label>
-		<div class="col-md-6 bs-horizontal-value" >
+		<div class="" >
 			{$upddate_value}&nbsp;
 		</div>
 	</div>
-</div>
 {END upddate_fieldblock}
-	{BEGIN updby_fieldblock}
-<div class="container">
-	<div class="{$fielddispclass_updby} bs-viewform-group" data-fieldname="updby">
-		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_updby}">
+					{BEGIN updby_fieldblock}
+	<div class="{$fielddispclass_updby} col-md-4 bs-viewcontrolgroup" data-fieldname="updby">
+		<label class="control-label" for="{$labelfor_updby}">
 			{$label t_series updby}
 		</label>
-		<div class="col-md-6 bs-horizontal-value" >
+		<div class="" >
 			{$updby_value}&nbsp;
 		</div>
 	</div>
-</div>
 {END updby_fieldblock}
+					{BEGIN createdate_fieldblock}
+	<div class="{$fielddispclass_createdate} col-md-4 bs-viewcontrolgroup" data-fieldname="createdate">
+		<label class="control-label" for="{$labelfor_createdate}">
+			{$label t_series createdate}
+		</label>
+		<div class="" >
+			{$createdate_value}&nbsp;
+		</div>
+	</div>
+{END createdate_fieldblock}
+	</div>
 </div>
 
 
@@ -238,7 +265,7 @@
 
 
 {BEGIN container_leftbuttons}
-<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
+<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-8 "> 
 
 {BEGIN viewbuttons}
 {BEGIN back_button}
@@ -262,7 +289,7 @@
 
 
 {BEGIN container_leftbuttons_1}
-<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="  text-right col-md-3 "> 
+<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="   col-md-4 "> 
 
 {BEGIN rightviewbuttons}
 <div class="btn-group" role="group">

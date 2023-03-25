@@ -1,25 +1,24 @@
 <!doctype html>
 <html  {$html_attrs}>
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-      {$pagetitle}
-    </title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="icon" href="../../common/images/logos/favicon.png">
-    <link REL="stylesheet" href="styles/default.css" type="text/css">
-    {BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
-    {END rtlCSS}
-    {BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
-    {END styleCSSFiles}
-  </head>
-  <BODY class="{$stylename} function-edit" {$bodyattrs}>
-    {BEGIN body}{$header}
-      <style>
-        {$containerCss}
-      </style>
-      <DIV class="bs-top">
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+	</head>
+
+	<body class="{$stylename} function-edit" {$bodyattrs}>
+	{BEGIN body}{$header}
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
         
 
 {BEGIN container_editpage}<div {$editpage_chiddenattr} data-pageid="{$pageid}" data-container="editpage" class="container    "> 
@@ -134,10 +133,12 @@
 
 {BEGIN editbuttons}{BEGIN save_button}<button class="btn btn-primary" {$savebutton_attrs}>Save</button>
 	<A class="rnr-button main" id="saveButton{$id}" href="#" {$savebutton_attrs}>{END save_button}
-	{BEGIN cancel_button}<A class="rnr-button" id="cancelButton{$id}" href="#"> Cancel </A> {END cancel_button}{BEGIN back_button}<button class="btn btn-default" {$backbutton_attrs}>Back to list</button>
+	{BEGIN back_button}<button class="btn btn-default" {$backbutton_attrs}>Back to list</button>
 	<A class="rnr-button" id="backButton{$id}" href="#">{END back_button}
-	{BEGIN backToMenu_button}<A class="rnr-button" id="backToMenuButton{$id}" href="#"> Back to menu </A> 
-{END backToMenu_button}{END editbuttons}
+	{BEGIN close_button}<a href="#" class="btn btn-default" {$closebutton_attrs}>Cancel</a>
+	{END close_button}
+
+{END editbuttons}
 
 
 
@@ -193,25 +194,25 @@
 {END container_bottombuttons}
 
 
-      </div>
-      <DIV class="bs-middle ">
-        <DIV class="bs-topmiddle">
-          
-        </div>
-        <DIV class="bs-left" {$blockattr_left}>
-          
-        </div>
-        <DIV class="bs-center">
-          
-        </div>
-        <DIV class="bs-right">
-          
-        </div>
-      </div>
-      <DIV class="bs-bottom">
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		<DIV class="bs-bottom">
         
-      </div>
-      {$footer}
-    {END body}
-  </body>
+		</div>
+		{$footer}
+	{END body}
+	</body>
 </html>

@@ -459,7 +459,8 @@ EOT;
         $events = array_reverse($events);
 
         $inventory["events"] = array();
-        foreach ($events as $event) {
+        foreach ($events as $event)
+        {
             $inventory["events"][$event['id']] = array(
                 "eventdate"    => $event['event_date'],
                 "eventtime"    => $event['event_start'],
@@ -480,12 +481,16 @@ EOT;
             $dutyarray = array();
             if ($duties)
             {
-                foreach ($duties as $duty) {
-                    $dutyarray[] = array(
-                        "dutytype" => $codes["{$duty['dutycode']}"],
-                        "dutyname" => $duty['person'],
-                        "dutyphone"=> $duty['phone'],
-                    );
+                foreach ($duties as $duty)
+                {
+                    if (key_exists($duty['dutycode'], $codes))
+                    {
+                        $dutyarray[] = array(
+                            "dutytype" => $codes["{$duty['dutycode']}"],
+                            "dutyname" => $duty['person'],
+                            "dutyphone"=> $duty['phone'],
+                        );
+                    }
                 }
             }
 

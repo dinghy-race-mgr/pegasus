@@ -57,11 +57,23 @@ in_array($pagestate, $valid_states) ? $valid_state = true : $valid_state = false
 
 // control params
 $check_event = u_checkarg("check_event", "set", "", "");
-if ($check_event) { if ($check_event == "off") { $_SESSION['check_event'] = false; }
+if ($check_event) {
+    if ($check_event == "off") {
+        $_SESSION['check_event'] = false;
+    }
+}
 $check_eventformat = u_checkarg("check_eventformat", "set", "", "");
-if ($check_eventformat) { if ($check_eventformat == "off") { $_SESSION['check_eventformat'] = false; }
+if ($check_eventformat) {
+    if ($check_eventformat == "off") {
+        $_SESSION['check_eventformat'] = false;
+    }
+}
 $check_tide = u_checkarg("check_tide", "set", "", "");
-if ($check_tide) { if ($check_tide == "off") { $_SESSION['check_tide'] = false; }
+if ($check_tide) {
+    if ($check_tide == "off") {
+        $_SESSION['check_tide'] = false;
+    }
+}
 
 
 if ($valid_state)
@@ -142,7 +154,7 @@ if ($valid_state)
             {
                 foreach($course_list as $row)
                 {
-                    if ($courseid == $row['id']) { $course = $row;}
+                    if ($courseid == $row['id']) { $course = $row; }
                 }
             }
             else  // just take the first one
@@ -151,14 +163,16 @@ if ($valid_state)
                 $courseid = $course_list[0]['id'];
             }
 
-            if ($course) {
+            if ($course)
+            {
                 // decode instructions for course
                 $course['info'] = decode_instructions($course['info']);
 
                 // get subcourse information
                 $subcourses = $db_o->db_get_rows("SELECT * FROM t_coursedetail WHERE courseid = '$courseid' ORDER BY sort asc");
 
-                foreach ($subcourses as $j => $subcourse) {
+                foreach ($subcourses as $j => $subcourse)
+                {
                     $subcourses[$j]['fleets'] = decode_fleets($subcourse['fleets']);     // decode fleets
                     $subcourses[$j]['start']  = decode_starts($subcourse['start']);       // decode starts
                     $subcourses[$j]['buoys']  = decode_buoys($subcourse['buoys']);        // decode buoys
@@ -183,6 +197,7 @@ if ($valid_state)
     }
     else
     {
+        $x = 1;
     }
 
 }
@@ -329,7 +344,7 @@ function state_coursedetail($category, $course_list, $courseid, $course, $subcou
 function state_courseprint($courses, $details, $event = array())
 {
     $htm = <<<EOT
-
+    print version
 EOT;
 
     return $htm;
@@ -338,7 +353,8 @@ EOT;
 
 function state_error()
 {
-
+    $htm = "error";
+    return $htm;
 }
 
 function decode_instructions($instructions_str)
@@ -401,6 +417,7 @@ function decode_group($group)
 
     return $data;
 }
+
 
 
 

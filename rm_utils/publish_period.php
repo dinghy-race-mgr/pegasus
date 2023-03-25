@@ -103,11 +103,10 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
         require_once("{$loc}/common/classes/event_class.php");
         require_once("{$loc}/common/classes/rota_class.php");
         $event_o = new EVENT($db_o);
-        $rota_o = new ROTA($db_o);
-        $period = array("start" => $_REQUEST['date-start'], "end" => $_REQUEST['date-end']);
+        $rota_o  = new ROTA($db_o);
+        $period  = array("start" => $_REQUEST['date-start'], "end" => $_REQUEST['date-end']);
         strtolower($_REQUEST['action']) == "unpublish" ? $event_state = "active" : $event_state = "not_active";
 
-        //$events = $event_o->get_events_inperiod(array(), $_REQUEST['date-start'], $_REQUEST['date-end'], "live", false);
         $events = $event_o->get_events("all", $event_state, $period, array());
 
         $data = array();

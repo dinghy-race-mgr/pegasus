@@ -41,7 +41,7 @@ if ($commit)
     if ($values['rya_id']=="") { $values['rya_id'] = strtoupper($values['acronym'].$values['crew'].$values['rig'].$values['spinnaker']); }
 
     // set active flag
-    $values['active'] = 1;
+    //$values['active'] = 1;
 
     // set audit fields
     $values['updby']   = $_SESSION['UserID'];

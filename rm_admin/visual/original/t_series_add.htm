@@ -85,13 +85,15 @@
 
 
 {BEGIN container_steps}
-<div {$steps_chiddenattr} data-pageid="{$pageid}" data-container="steps" class="   col-md-12 "> 
+<div {$steps_chiddenattr} data-pageid="{$pageid}" data-container="steps" class="   col-md-6 col-md-offset-3"> 
 
 
 <ul {$multistep_nav_add_hiddenattr} data-pageid="{$pageid}" data-brick="multistep_nav_add" class="nav nav-pills nav-justified" {$stepnav_attrs} data-stepcontrol>
 	<li role="presentation"><a href="#">Details
 </a></li>
 	<li role="presentation"><a href="#">Results Format
+</a></li>
+	<li role="presentation"><a href="#">Advanced
 </a></li>
 </ul>
 
@@ -120,6 +122,7 @@
 				
 		{$Step Step1}
 		{$Step Step2}
+		{$Step Advanced1}
 </div>
 
 </div>

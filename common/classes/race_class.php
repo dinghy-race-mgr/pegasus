@@ -867,7 +867,8 @@ class RACE
                 }
                 else
                 {
-                    $rs_data[$k]['atime'] = $row['etime'];
+                    //$rs_data[$k]['atime'] = $row['etime'];
+                    $rs_data[$k]['atime'] = $row['ctime'];
                 }
 
                 // set initial points to 0 unless it has a non-penalty scoring code (e.g. DNF, OCS, NCS)
@@ -928,7 +929,8 @@ class RACE
             foreach ($rs_data as $k => $row)
             {
                 //error_log("PROCESSING $k: {$row['class']} {$row['sailnum']} {$row['atime']} {$row['code']} {$row['points']} \n",3, $_SESSION['dbglog']);
-                if ($row['status'] != "R")
+
+                if ($row['status'] != "R")  // boat not racing
                 {
                     if ($row['points'] == 0)
                     {
@@ -937,19 +939,16 @@ class RACE
                         // apply points - checking for ties
                         if ($row['atime'] != $atime)           // not a tie
                         {
-                            //error_log("- not a tie [$tie] \n",3, $_SESSION['dbglog']);
                             if ($tie > 0)                      // end of tie - reset allocated points to tie points
                             {
                                 $tie++;
                                 $score = round(($sum + $prevpos) / $tie, 1);
                                 for ($i = $tie; $i > 0; $i--) {
-                                    //error_log("- allocating tie points ($score) to {$row['class']} {$row['sailnum']} \n",3, $_SESSION['dbglog']);
                                     $rs_data[$k - $i]['points'] = $score;
 
-                                    //if ($fleetnum == 3) { echo "<pre>TIE ITEM sail={$rs_data[$k-$i]['sailnum']}|item=$k - $i|points={$rs_data[$k - $i]['points']}</pre>";}
-                                    $points_arr[$k-$i]  = $rs_data[$k-$i]['points'];
+                                    $points_arr[$k-$i]  = $rs_data[$k-$i]['points'];  // sort array for points
                                     $status_arr[$k-$i]  = $rs_data[$k-$i]['status'];  // sort array for status
-                                    $pn_arr[$k-$i]      = $rs_data[$k-$i]['pn']; // sort array for PN
+                                    $pn_arr[$k-$i]      = $rs_data[$k-$i]['pn'];      // sort array for PN
                                     $sailnum_arr[$k-$i] = $rs_data[$k-$i]['sailnum']; // sort array for sailnumber
                                     // sort arrays
                                 }
@@ -957,13 +956,10 @@ class RACE
                                 $sum = 0;
                             }
                             $pos++;
-                            //error_log("- allocating points ($pos) to id [$k] \n",3, $_SESSION['dbglog']);
-                            $rs_data[$k]['points'] = $pos;
-
+                            $rs_data[$k]['points'] = $pos;     // allocate points
                         }
                         else                                   // is a tie - record and move on
                         {
-                            //error_log("- a tie \n",3, $_SESSION['dbglog']);
                             $tie++;
                             $pos++;
                             $sum = $sum + $prevpos;
@@ -972,19 +968,17 @@ class RACE
                         $atime = $row['atime'];
 
                         // add any penalties applied
-                        if (!empty($code_arr) and $code_arr['scoringtype'] == "penalty") {
-                            //error_log("- checking penalties for id [$k] \n",3, $_SESSION['dbglog']);
+                        if (!empty($code_arr) and $code_arr['scoringtype'] == "penalty")
+                        {
+
                             $rs_data[$k]['penalty'] = $this->penaltycode_points($code_arr, $race_entries, $rs_data[$k]['penalty']);
+
                             if ($rs_data[$k]['penalty'] > 0) {
                                 $rs_data[$k]['points'] = $rs_data[$k]['points'] + $rs_data[$k]['penalty'];
                                 if ($rs_data[$k]['points'] > $maxscore) { $rs_data[$k]['points'] = $maxscore; }
                             }
                         }
                     }
-                }
-                else
-                {
-//                    // boat still racing
                 }
 
                 //if ($fleetnum == 3) { echo "<pre>ITEM sail={$rs_data[$k]['sailnum']}|item=$k|points={$rs_data[$k]['points']}</pre>"; }
@@ -994,15 +988,11 @@ class RACE
                 $sailnum_arr[$k] = $rs_data[$k]['sailnum']; // sort array for sailnumber
             }
 
-            //if ($fleetnum == 3) { echo "<pre>BEFORE".print_r($points_arr,true)."</pre>";}
-
             array_multisort($status_arr, SORT_ASC, $points_arr, SORT_ASC, $pn_arr, SORT_ASC, $sailnum_arr, SORT_NUMERIC, $rs_data);
 
         }
 
-        // end dbg chk
-        //foreach ($rs_data as $r) { error_log("END CHK: {$r['class']} {$r['sailnum']} {$r['atime']} {$r['penalty']} {$r['code']} {$r['points']} \n",3, $_SESSION['dbg_file']);}
-
+        // prepare return array
         $fleet_rs['warning'] = $warnings;
         $fleet_rs['data']    = $rs_data;
         return $fleet_rs;

@@ -352,6 +352,32 @@
                           <A>
                             <DIV class="checkbox">
                               <LABEL>
+                                <INPUT id="hide_idlog" type="checkbox" checked="checked" 
+  value="1" data-field="idlog">
+                                <SPAN>
+                                  {$label t_event_results idlog}
+                                </SPAN>
+                              </LABEL>
+                            </DIV>
+                          </A>
+                        </LI>
+                        <LI>
+                          <A>
+                            <DIV class="checkbox">
+                              <LABEL>
+                                <INPUT id="hide_datelog" type="checkbox" checked="checked" 
+  value="1" data-field="datelog">
+                                <SPAN>
+                                  {$label t_event_results datelog}
+                                </SPAN>
+                              </LABEL>
+                            </DIV>
+                          </A>
+                        </LI>
+                        <LI>
+                          <A>
+                            <DIV class="checkbox">
+                              <LABEL>
                                 <INPUT id="hide_id1" type="checkbox" checked="checked" 
   value="1" data-field="id1">
                                 <SPAN>
@@ -476,29 +502,35 @@
                       .bs-gridcell[data-field=id1]:before {
                       content: "{$label t_event_results id1}";
                       }
+                      .bs-gridcell[data-field=idlog]:before {
+                      content: "{$label t_event_results idlog}";
+                      }
+                      .bs-gridcell[data-field=datelog]:before {
+                      content: "{$label t_event_results datelog}";
+                      }
                     </STYLE>
-                    <TABLE class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" style="width: 1201px;" cellpadding="0" data-brick="grid" data-pageid="{$pageid}" {$grid_hiddenattr}>
+                    <TABLE class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" data-brick="grid" data-pageid="{$pageid}" {$grid_hiddenattr}>
                       <THEAD>
                         {BEGIN grid_header}
                           <TR class="rnr-toprow {$gridHeader_class}">
                             {BEGIN record_header}
                               {BEGIN listIcons_column}
-                                <TH style="width: 50px; white-space: nowrap;" ieditcont="all">
+                                <TH ieditcont="all">
                                   &nbsp;
                                 </TH>
                               {END listIcons_column}
                               {BEGIN checkbox_column}
-                                <TH style="width: 30px; white-space: normal;">
+                                <TH>
                                   <INPUT type="checkbox" {$checkboxheader_attrs}>
                                 </TH>
                               {END checkbox_column}
                               {BEGIN t_event_results_dtable_column}
-                                <TH style="width: 68px; white-space: normal;">
+                                <TH>
                                   &nbsp;
                                 </TH>
                               {END t_event_results_dtable_column}
                               {BEGIN event_date_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$event_date_class}" style="width: 113px; white-space: nowrap;" data-field="event_date">
+                                <TH class="rnr-gridfieldlabel {$event_date_class}" data-field="event_date">
                                   {BEGIN event_date_fieldheader}
                                     <SPAN {$event_date_orderlinkattrs}>
                                       {$label t_event_results event_date}
@@ -507,7 +539,7 @@
                                 </TH>
                               {END event_date_fieldheadercolumn}
                               {BEGIN event_name_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$event_name_class}" style="width: 120px; white-space: nowrap;" data-field="event_name">
+                                <TH class="rnr-gridfieldlabel {$event_name_class}" data-field="event_name">
                                   {BEGIN event_name_fieldheader}
                                     <SPAN {$event_name_orderlinkattrs}>
                                       {$label t_event_results event_name}
@@ -516,7 +548,7 @@
                                 </TH>
                               {END event_name_fieldheadercolumn}
                               {BEGIN event_start_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$event_start_class}" style="width: 114px;" data-field="event_start">
+                                <TH class="rnr-gridfieldlabel {$event_start_class}" data-field="event_start">
                                   {BEGIN event_start_fieldheader}
                                     <SPAN {$event_start_orderlinkattrs}>
                                       {$label t_event_results event_start}
@@ -525,7 +557,7 @@
                                 </TH>
                               {END event_start_fieldheadercolumn}
                               {BEGIN event_format_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$event_format_class}" style="width: 127px; white-space: nowrap;" data-field="event_format">
+                                <TH class="rnr-gridfieldlabel {$event_format_class}" data-field="event_format">
                                   {BEGIN event_format_fieldheader}
                                     <SPAN {$event_format_orderlinkattrs}>
                                       {$label t_event_results event_format}
@@ -534,7 +566,7 @@
                                 </TH>
                               {END event_format_fieldheadercolumn}
                               {BEGIN series_code_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$series_code_class}" style="width: 115px; white-space: nowrap;" data-field="series_code">
+                                <TH class="rnr-gridfieldlabel {$series_code_class}" data-field="series_code">
                                   {BEGIN series_code_fieldheader}
                                     <SPAN {$series_code_orderlinkattrs}>
                                       {$label t_event_results series_code}
@@ -543,7 +575,7 @@
                                 </TH>
                               {END series_code_fieldheadercolumn}
                               {BEGIN event_status_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$event_status_class}" style="width: 196px; white-space: nowrap;" data-field="event_status">
+                                <TH class="rnr-gridfieldlabel {$event_status_class}" data-field="event_status">
                                   {BEGIN event_status_fieldheader}
                                     <SPAN {$event_status_orderlinkattrs}>
                                       {$label t_event_results event_status}
@@ -552,7 +584,7 @@
                                 </TH>
                               {END event_status_fieldheadercolumn}
                               {BEGIN result_notes_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$result_notes_class}" style="width: 248px; white-space: nowrap;" data-field="result_notes">
+                                <TH class="rnr-gridfieldlabel {$result_notes_class}" data-field="result_notes">
                                   {BEGIN result_notes_fieldheader}
                                     <SPAN {$result_notes_orderlinkattrs}>
                                       {$label t_event_results result_notes}
@@ -560,6 +592,15 @@
                                   {END result_notes_fieldheader}
                                 </TH>
                               {END result_notes_fieldheadercolumn}
+                              {BEGIN idlog_fieldheadercolumn}
+                                <TH class="rnr-gridfieldlabel {$idlog_class}" data-field="idlog">
+                                  {BEGIN idlog_fieldheader}
+                                    <SPAN {$idlog_orderlinkattrs}>
+                                      {$label t_event_results idlog}
+                                    </SPAN>
+                                  {END idlog_fieldheader}
+                                </TH>
+                              {END idlog_fieldheadercolumn}
                               {BEGIN id1_fieldheadercolumn}
                                 <TH class="rnr-gridfieldlabel {$id1_class}" data-field="id1">
                                   {BEGIN id1_fieldheader}
@@ -570,7 +611,7 @@
                                 </TH>
                               {END id1_fieldheadercolumn}
                               {BEGIN endrecordheader_block}
-                                <TH class="rnr-cs" style="width: 20px; white-space: nowrap;">
+                                <TH class="rnr-cs">
                                   &nbsp;
                                 </TH>
                               {END endrecordheader_block}
@@ -583,7 +624,7 @@
                           <TR class="{$rowclass} bs-gridrow" {$rowattrs} {$rowstyle}>
                             {BEGIN grid_record}
                               {BEGIN listIcons_column}
-                                <TD class="bs-gridicons" style="width: 50px; white-space: nowrap;" ieditcont="all" {$rowstyle} {$recordattrs}>
+                                <TD class="bs-gridicons" ieditcont="all" {$rowstyle} {$recordattrs}>
                                   {BEGIN edit_column}
                                     {BEGIN edit_link}
                                       <A title="Edit" class="glyphicon glyphicon-pencil" {$editlink_attrs}>
@@ -601,69 +642,103 @@
                                 </TD>
                               {END listIcons_column}
                               {BEGIN checkbox_column}
-                                <TD class="bs-gridcheckbox" style="width: 30px; white-space: normal;" ieditcont="checkBox" {$rowstyle} {$recordattrs}>
+                                <TD class="bs-gridcheckbox" ieditcont="checkBox" {$rowstyle} {$recordattrs}>
                                   {BEGIN checkbox}
                                     <INPUT type="checkbox" {$checkbox_attrs}>
                                   {END checkbox}
                                 </TD>
                               {END checkbox_column}
                               {BEGIN t_event_results_dtable_column}
-                                <TD class="rnr-nowrap bs-griddetails" style="width: 68px; white-space: nowrap;" {$rowstyle} {$recordattrs}>
-                                  {BEGIN dtables_link}
-                                    <A title="Show details" {$dtables_link_attrs}>
-                                      <SPAN class="badge t_result_badge" {$t_result_childnumber_attr}>
-                                        <SPAN class="glyphicon glyphicon-th-list">
+                                <TD class="rnr-nowrap bs-griddetails" {$rowstyle} {$recordattrs}>
+                                  {BEGIN t_result_dtable_link}
+                                    <SPAN>
+                                      <A {$t_result_dtablelink_attrs}>
+                                        Results
+                                        <SPAN dir="ltr" {$t_result_childnumber_attr}>
+                                          {BEGIN t_result_childcount}
+                                            ({$t_result_childnumber})
+                                          {END t_result_childcount}
                                         </SPAN>
-                                        <SPAN class="{$t_result_cntspan_class}">
-                                          {$t_result_childnumber}
+                                      </A>
+                                      <BR>
+                                    </SPAN>
+                                  {END t_result_dtable_link}
+                                  {BEGIN t_resultfile_dtable_link}
+                                    <SPAN>
+                                      <A {$t_resultfile_dtablelink_attrs}>
+                                        Result Files
+                                        <SPAN dir="ltr" {$t_resultfile_childnumber_attr}>
+                                          {BEGIN t_resultfile_childcount}
+                                            ({$t_resultfile_childnumber})
+                                          {END t_resultfile_childcount}
                                         </SPAN>
-                                      </SPAN>
-                                    </A>
-                                  {END dtables_link}
+                                      </A>
+                                      <BR>
+                                    </SPAN>
+                                  {END t_resultfile_dtable_link}
+                                  {BEGIN t_message_dtable_link}
+                                    <SPAN>
+                                      <A {$t_message_dtablelink_attrs}>
+                                        Messages
+                                        <SPAN dir="ltr" {$t_message_childnumber_attr}>
+                                          {BEGIN t_message_childcount}
+                                            ({$t_message_childnumber})
+                                          {END t_message_childcount}
+                                        </SPAN>
+                                      </A>
+                                      <BR>
+                                    </SPAN>
+                                  {END t_message_dtable_link}
                                 </TD>
                               {END t_event_results_dtable_column}
                               {BEGIN event_date_fieldcolumn}
-                                <TD class="bs-gridcell {$event_date_class}" style="width: 113px; white-space: normal;" data-field="event_date" {$rowstyle} {$recordattrs}>
+                                <TD class="bs-gridcell {$event_date_class}" data-field="event_date" {$rowstyle} {$recordattrs}>
                                   {$event_date_value}
                                 </TD>
                               {END event_date_fieldcolumn}
                               {BEGIN event_name_fieldcolumn}
-                                <TD class="bs-gridcell {$event_name_class}" style="width: 120px; white-space: normal;" data-field="event_name" {$rowstyle} {$recordattrs}>
+                                <TD class="bs-gridcell {$event_name_class}" data-field="event_name" {$rowstyle} {$recordattrs}>
                                   {$event_name_value}
                                 </TD>
                               {END event_name_fieldcolumn}
                               {BEGIN event_start_fieldcolumn}
-                                <TD class="bs-gridcell {$event_start_class}" style="width: 114px; white-space: normal;" data-field="event_start" {$rowstyle} {$recordattrs}>
+                                <TD class="bs-gridcell {$event_start_class}" data-field="event_start" {$rowstyle} {$recordattrs}>
                                   {$event_start_value}
                                 </TD>
                               {END event_start_fieldcolumn}
                               {BEGIN event_format_fieldcolumn}
-                                <TD class="bs-gridcell {$event_format_class}" style="width: 127px; white-space: normal;" data-field="event_format" {$rowstyle} {$recordattrs}>
+                                <TD class="bs-gridcell {$event_format_class}" data-field="event_format" {$rowstyle} {$recordattrs}>
                                   {$event_format_value}
                                 </TD>
                               {END event_format_fieldcolumn}
                               {BEGIN series_code_fieldcolumn}
-                                <TD class="bs-gridcell {$series_code_class}" style="width: 115px; white-space: normal;" data-field="series_code" {$rowstyle} {$recordattrs}>
+                                <TD class="bs-gridcell {$series_code_class}" data-field="series_code" {$rowstyle} {$recordattrs}>
                                   {$series_code_value}
                                 </TD>
                               {END series_code_fieldcolumn}
                               {BEGIN event_status_fieldcolumn}
-                                <TD class="bs-gridcell {$event_status_class}" style="width: 196px; white-space: normal;" data-field="event_status" {$rowstyle} {$recordattrs}>
+                                <TD class="bs-gridcell {$event_status_class}" data-field="event_status" {$rowstyle} {$recordattrs}>
                                   {$event_status_value}
                                 </TD>
                               {END event_status_fieldcolumn}
                               {BEGIN result_notes_fieldcolumn}
-                                <TD class="bs-gridcell {$result_notes_class}" style="width: 248px; white-space: normal;" data-field="result_notes" {$rowstyle} {$recordattrs}>
+                                <TD class="bs-gridcell {$result_notes_class}" data-field="result_notes" {$rowstyle} {$recordattrs}>
                                   {$result_notes_value}
                                 </TD>
                               {END result_notes_fieldcolumn}
+                              {BEGIN idlog_fieldcolumn}
+                                <TD class="bs-gridcell {$idlog_class}" data-field="idlog" {$rowstyle} {$recordattrs}>
+                                  {$idlog_value}<br>
+                                  {$datelog_value}
+                                </TD>
+                              {END idlog_fieldcolumn}
                               {BEGIN id1_fieldcolumn}
                                 <TD class="bs-gridcell {$id1_class}" data-field="id1" {$rowstyle} {$recordattrs}>
-                                    {$id1_value}
+                                  {$id1_value}
                                 </TD>
                               {END id1_fieldcolumn}
                               {BEGIN endrecord_block}
-                                <TD class="rnr-cs" style="width: 20px;" {$endrecordblock_attrs}>
+                                <TD class="rnr-cs" {$endrecordblock_attrs}>
                                   &nbsp;
                                 </TD>
                               {END endrecord_block}

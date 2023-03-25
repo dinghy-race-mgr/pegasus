@@ -4,6 +4,23 @@
 <div {$tabfields_chiddenattr} data-pageid="{$pageid}" data-container="tabfields" class=" form-horizontal   "> 
 
 
+{BEGIN event_ood_tabfieldblock}
+<div class="container">
+	<div class="form-group in-tab {$fielddispclass_event_ood}" data-fieldname="event_ood" data-signal-error-for="event_ood{$id}" >
+		<label class="col-md-3 control-label" for="{$labelfor_event_ood}">
+			{BEGIN event_ood_label}{$label t_event event_ood}{END event_ood_label}
+		</label>
+		<div class="col-md-6 " >
+			{$event_ood_editcontrol}
+		</div>
+		<div class="col-md-3 help-block " data-helpfor="event_ood">
+			<div class="text-muted" >
+			{$tooltip t_event event_ood}
+			</div>
+		</div>
+	</div>
+</div>
+{END event_ood_tabfieldblock}
 {BEGIN weblink_tabfieldblock}
 <div class="container">
 	<div class="form-group in-tab {$fielddispclass_weblink}" data-fieldname="weblink" data-signal-error-for="weblink{$id}" >

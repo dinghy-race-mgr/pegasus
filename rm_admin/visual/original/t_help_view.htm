@@ -1,28 +1,27 @@
 <!doctype html>
 <html  {$html_attrs}>
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-      {$pagetitle}
-    </title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="icon" href="../../common/images/logos/favicon.png">
-    <link REL="stylesheet" href="styles/default.css" type="text/css">
-    {BEGIN rtlCSS}
-      <link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
-    {END rtlCSS}
-    {BEGIN styleCSSFiles}
-      <link REL="stylesheet" href="{$stylepath}" type="text/css">
-    {END styleCSSFiles}
-  </head>
-  <BODY class="{$stylename} function-view" {$bodyattrs}>
-    {BEGIN body}
-      {$header}
-      <style>
-        {$containerCss}
-      </style>
-      <DIV class="bs-top">
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}
+		<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}
+		<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+	</head>
+
+	<body class="{$stylename} function-view" {$bodyattrs}>
+	{BEGIN body}
+		{$header}
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
         
 
 {BEGIN container_viewpage}
@@ -32,7 +31,7 @@
 
 
 {BEGIN container_header}
-<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-9 col-md-offset-3"> 
+<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-12 "> 
 
 {BEGIN viewheader}
 	<h2 {$viewheader_hiddenattr} data-pageid="{$pageid}" data-brick="viewheader" >{$pagetitlelabel t_help view}</h2>
@@ -60,8 +59,10 @@
 
 
 <div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
-	<div class="container">	
-			<div class="panel panel-default form-section">
+
+	<div class="container">
+				<div class="col-md-12">
+				<div class="panel panel-default form-section">
 		<div class="panel-heading" role="tab" {$section_Details1_headattrs} data-toggle="collapse"   >
 		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
 		  <h4 class="panel-title">
@@ -78,9 +79,9 @@
 		</div>
 	</div>
 
-	</div>
-	<div class="container">	
-			<div class="panel panel-default form-section">
+		</div>
+				<div class="col-md-12">
+				<div class="panel panel-default form-section">
 		<div class="panel-heading" role="tab" {$section_Controls_on_when_topic_appears____1_headattrs} data-toggle="collapse"   >
 		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
 		  <h4 class="panel-title">
@@ -97,6 +98,7 @@
 		</div>
 	</div>
 
+		</div>
 	</div>
 </div>
 
@@ -121,7 +123,7 @@
 
 
 {BEGIN container_leftbuttons}
-<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
+<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-8 "> 
 
 {BEGIN viewbuttons}
 {BEGIN back_button}
@@ -145,7 +147,7 @@
 
 
 {BEGIN container_leftbuttons_1}
-<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="  text-right col-md-3 "> 
+<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="   col-md-4 "> 
 
 {BEGIN rightviewbuttons}
 <div class="btn-group" role="group">
@@ -190,25 +192,25 @@
 {END container_bottombuttons}
 
 
-      </div>
-      <DIV class="bs-middle ">
-        <DIV class="bs-topmiddle">
-          
-        </div>
-        <DIV class="bs-left" {$blockattr_left}>
-          
-        </div>
-        <DIV class="bs-center">
-          
-        </div>
-        <DIV class="bs-right">
-          
-        </div>
-      </div>
-      <DIV class="bs-bottom">
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		<DIV class="bs-bottom">
         
-      </div>
-      {$footer}
-    {END body}
-  </body>
+		</div>
+		{$footer}
+	{END body}
+	</body>
 </html>

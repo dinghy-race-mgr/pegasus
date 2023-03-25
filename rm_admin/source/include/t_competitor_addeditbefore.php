@@ -25,7 +25,7 @@ if ($commit)
     if (empty($values['sailnum'])) { $values['sailnum'] = $values['boatnum']; }
 
     // make record active
-    $values['active'] = 1;
+    //$values['active'] = 1;
 
     // audit fields
     $values['updby']   = $_SESSION['UserID'];
