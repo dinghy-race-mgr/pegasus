@@ -35,6 +35,20 @@ function race_detail_display($params=array())
         $event_style = "danger";
     }
 
+    // coursefinder
+    $course_htm = "";
+    if ($params['coursefinder'])
+    {
+        $course_htm = <<<EOT
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <a href="../rm_coursefinder/rm_coursefinder.php?pagestate=init" class="btn btn-lg btn-block btn-primary" 
+                    target="_blank">COURSE FINDER: &nbsp;<span class="glyphicon glyphicon-globe" aria-hidden="true"></span>&nbsp; Pick a Course</a>
+            </div>
+        </div>
+EOT;
+    }
+
     $html = <<<EOT
     <div class="margin-top-10 well">
         <div class="row">
@@ -55,6 +69,7 @@ function race_detail_display($params=array())
             </div>
         </div>
     </div>
+    $course_htm
 EOT;
     return $html;
 }

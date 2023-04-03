@@ -43,29 +43,30 @@
       
           </head>
           <body class="{$_SESSION['background']}" style="" >
-            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+          <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary noprint">
                 <div class="container-fluid">
                     <h2 class="text-success">{header-left}<span class="pull-right">{header-right}</span></h2>
                 </div>
             </nav>
-          
-            <div class="container-fluid">
-            
-                <!-- Body -->
-                <div class="container" style="margin-bottom: 20px; min-height: 400px;">
-                {body}
+                     
+            <!-- Body -->
+            <div class="container-fluid" style="margin-bottom: 20px; min-height: 400px;">
+                <div class="row">
+                    <div class="col-md-offset-1 col-md-10">{body}</div>
                 </div>
-                
-                <!-- Footer -->
-                <div class="container" >
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-left rm-page">{footer-left}</div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center rm-page">{footer-center}</div>
-                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-right rm-page">{footer-right}</div>
-                    </div>   
-                </div>
-
             </div>
+                
+            <!-- Footer -->
+            <div class="container" >
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-left rm-page">{footer-left}</div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center rm-page">{footer-center}</div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-right rm-page">{footer-right}</div>
+                </div>   
+            </div>
+
+          </div>
             
             <!-- popover activation for all popovers -->
             <script type="text/javascript">
@@ -109,22 +110,6 @@ EOT;
             <h2>{today}</h2>
             <h3>{tide_str}</h3>
             <h3>{race_str}</h3>
-            <!-- temp dropdown -->
-            <div class="btn-group">
-              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" 
-              aria-haspopup="true" aria-expanded="false"> Wind Direction <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu">
-                <li><a href="{link}N" >North</a></li>
-                <li><a href="{link}NE">North-East</a></li>
-                <li><a href="{link}E" >East</a></li>
-                <li><a href="{link}SE">South-East</a></li>
-                <li><a href="{link}S" >South</a></li>
-                <li><a href="{link}SW">South-West</a></li>
-                <li><a href="{link}W" >West</a></li>
-                <li><a href="{link}NW">North-West</a></li>   
-              </ul>
-            </div>
         </div>
     </div>
 EOT;
@@ -133,38 +118,73 @@ EOT;
 
  function coursedetail_page($params = array())
  {
-     if (empty($params['instructions']))
-     {
-         $info = <<<EOT
-        <div class="row margin-top-20" style="border: grey 1pt solid;">
-            <div class="col-md-10 col-md-offset-1"><h4>OOD Instructions&hellip;</h4>{course-instructions}</div>
-        </div>
-EOT;
-     }
-     else
-     {
-         $info = <<<EOT
-        <div class="row margin-top-20" style="border: grey 1pt solid;">
-            <div class="col-md-6"><h4>OOD Instructions&hellip;</h4>{course-instructions}</div>
-            <div class="col-md-6">{course-picture}</div>
-        </div>
-EOT;
-     }
-
-     $htm = <<<EOT
+    $courseid = $params['courseid'];
+    $htm = <<<EOT
     <div>
         {course-selection}
-        <hr>
-        {course-board}
-        $info
         
-        <!-- print button -->
-        <div>
-            <span class="print">
-            <a class="btn btn-succes noprint" onclick="window.print()" href="#" type="button">Print Results</a>
-            </span>
+        <div class='alert alert-info' style='padding: 5px;'></div>
+
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10">{course-board}</div>
         </div>
+        
+        <div class='alert alert-info' style='padding: 5px;'></div>
+        
+        <div class="row margin-top-20">
+            <div class="col-md-8">
+                <div class=" alert alert-warning">
+                    <h3>OOD Instructions&hellip;</h3>
+                    <div style="font-size: 1.5em !important">{course-instructions}</div>
+                </div>
+            </div>
+            <div class="col-md-offset-1 col-md-3">
+                <span class="noprint">
+                <a class="btn btn-info btn-md btn-block" href="rm_coursefinder.php?pagestate=courseprint&courseid=$courseid" type="button">
+                    <span class="glyphicon glyphicon-print" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;Print Friendly
+                </a>
+                </span>
+                <br>
+                <span class="noprint">
+                <a class="btn btn-info btn-md btn-block" href="rm_coursefinder.php?pagestate=init" type="button">
+                    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;Back to Wind Directions
+                </a>
+                </span>           
+            </div>
+        </div>
+    </div>
+EOT;
+
+    return $htm;
+ }
+
+ function coursedetail_print($params = array())
+ {
+
+    $htm = <<<EOT
     <div>
+        {course-selection}
+        
+        <hr style='border: 5px solid grey; border-radius: 3px;'>
+
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10">{course-board}</div>
+        </div>
+        
+        <hr style='border: 5px solid grey; border-radius: 3px;'>
+        
+        <div class="row margin-top-20">
+            <div class="col-md-8">
+                <div style="padding: 15px; border: 2px solid darkgrey; border-radius 4px">
+                    <h3>OOD Instructions&hellip;</h3>
+                    <div style="font-size: 1.5em !important">{course-instructions}</div>
+                </div>
+            </div>
+            <div class="col-md-offset-1 col-md-3">
+                &nbsp;         
+            </div>
+        </div>
+    </div>
 EOT;
 
      return $htm;
@@ -231,18 +251,19 @@ function course_selection($params = array())
             $i++;
 
             $active ? $btn_type = "info" : $btn_type = "default";
+            $blurb = $course['blurb'];
 
             $link = "rm_coursefinder.php?pagestate=coursedetail&category=$category&courseid={$course['id']}";
-            $button = "<a href='$link' class='btn btn-$btn_type btn-md' style='min-width: 200px' role='button'>{$course['name']}</a>";
+            $button = "<a href='$link' class='btn btn-$btn_type btn-lg btn-block' role='button'>{$course['name']}</a>";
 
             if ($i == 1)
             {
-                $htm.= "<div class='row' style='border-bottom: blue 2px solid;'>";
-                $htm.= "<div class='col-md-offset-1 col-md-3'>$button<br>{$course['blurb']}</div>";
+                $htm.= "<div class='row' style='padding-bottom: 5px;'>";
+                $htm.= "<div class='col-md-offset-1 col-md-3' >$button<br><span style='font-size: 1.2em'>$blurb</span></div>";
             }
             else
             {
-                $htm.= "<div class='col-md-3'>$button<br>{$course['blurb']}</div>";
+                $htm.= "<div class='col-md-offset-1 col-md-3'>$button<br><span style='font-size: 1.2em'>$blurb</span></div>";
             }
         }
         $htm.= "</div>";
@@ -258,14 +279,63 @@ EOT;
     return $htm;
 }
 
+function course_selection_print($params=array())
+{
+    $event = "";
+    $start_tide = "";
+    if ($params['eventname'])
+    {
+        $event.= $params['eventname'];
+        if ($params['eventdate']) { $event.= "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;".date("D M j", strtotime($params['eventdate'])); }
+
+        if ($params['eventstart'])
+        {
+            $start_tide.= "Start:&nbsp;&nbsp;&nbsp;".$params['eventstart']."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+        }
+
+        if ($params['tidetime'])
+        {
+            $start_tide.= "Tide:&nbsp;&nbsp;&nbsp;".$params['tidetime'];
+            if ($params['tideheight']) { $start_tide.= " - ".$params['tideheight']."m"; }
+        }
+    }
+
+    $htm = <<<EOT
+    <div class="well">
+        <div class="row">
+            <div class="col-md-6"><h2>$event</h2><h3>$start_tide</h3></div>
+            <div class="col-md-6 ">
+                <a class="btn btn-info btn-md pull-right noprint" onclick="window.print()" href="#" type="button">
+                    <span class="glyphicon glyphicon-print" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;Print 
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10"><h3>Course: {name}</h3><h4>{blurb}</h4></div>
+        </div>
+    </div>
+EOT;
+
+
+    return $htm;
+}
+
 function course_board($params=array())
 {
-    $htm = "<h3>{course-title}</h3>";
+    if ($params['mode'] == "colour")
+    {
+        $htm = "<h2>{course-title} Course</h2>";
+    }
+    else
+    {
+        $htm = "";
+    }
 
     foreach ($params['subcourses'] as $course)
     {
         $row = "";
 
+        // fleet boards
         $fleets = "";
         foreach ($course['fleets'] as $fleet)
         {
@@ -273,42 +343,75 @@ function course_board($params=array())
         }
         $fleets = rtrim($fleets, "<br>");
 
-        $start = <<<EOT
-        <table class="board-table"><tbody>
-            <tr>
-                <td class="board-thin board-{$course['start']['colour']}">{$course['start']['type']}</td>
-            </tr>
-        </tbody></table>
+        // start boards
+        $starts = <<<EOT
+        <table class="board-table"><tbody><tr>
 EOT;
+        foreach($course['start'] as $start)
+        {
+            if ($params['mode'] == "colour")
+            {
+                $starts.= <<<EOT
+                    <td class="board-thin board-{$start['colour']}">{$start['type']}</td>
+EOT;
+            }
+            else
+            {
+                $starts.= <<<EOT
+                    <td class="board-thin-print ">{$start['type']}<br><span class="colour-txt">{$start['colour']}</span></td>
+EOT;
+            }
+        }
+        $starts.= "</tr></tbody></table>";
 
+        // race mark boards
         $buoys = <<<EOT
         <table class="board-table"><tbody><tr>
 EOT;
         foreach($course['buoys'] as $buoy)
         {
-            $buoys.= <<<EOT
+            if ($params['mode'] == "colour")
+            {
+                $buoys.= <<<EOT
                  <td class="board-wide board-{$buoy['colour']}">{$buoy['type']}</td>
 EOT;
+            }
+            else
+            {
+                $buoys.= <<<EOT
+                 <td class="board-wide-print ">{$buoy['type']}<br><span class="colour-txt">{$buoy['colour']}</span></td>
+EOT;
+            }
         }
         $buoys.= "</tr></tbody></table>";
 
+        // lap boards
         $laps = <<<EOT
         <table class="board-table"><tbody><tr>
 EOT;
         foreach($course['laps'] as $lap)
         {
-            $laps.= <<<EOT
+            if ($params['mode'] == "colour")
+            {
+                $laps.= <<<EOT
                 <td class="board-thin board-{$lap['colour']}">{$lap['type']}</td>
 EOT;
+            }
+            else
+            {
+                $laps.= <<<EOT
+                <td class="board-thin-print">{$lap['type']}<br><span class="colour-txt">{$lap['colour']}</span></td>
+EOT;
+            }
         }
         $laps.= "</tr></tbody></table>";
 
         $row.= <<<EOT
-        <table style="table-layout: fixed; width: 100%;"><tbody>
+        <table style="table-layout: fixed; width: 80%;"><tbody>
         <tr>
             <td width="10%" class="board-fleet">$fleets</td>
-            <td width="10%">$start</td>
-            <td width="70%">$buoys</td>
+            <td width="15%">$starts</td>
+            <td width="65%">$buoys</td>
             <td width="10%">$laps</td>
          </tr>            
         </tbody></table>
@@ -321,7 +424,6 @@ EOT;
 
 function course_instructions($params=array())
 {
-    $htm = "";
     $instructions = $params['course']['info'];
 
     $list = "";

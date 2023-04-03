@@ -6,18 +6,20 @@
         <author>Mark Elkington - SYC</author>
         <rank>5</rank>
         <active>1</active>
-        <question>Using the SYC Course Guide</question>
+        <question>Selecting a course for today's race</question>
         <answer><![CDATA[
-            <p>The Sailing Committee has published suggested courses for each of the cardinal wind directions. The
-                courses also include options for light winds and low tide conditions. Each course is shown exactly as it
+            <p>The Sailing Committee has recommended courses for each of the cardinal wind directions. The
+                courses also include options for light winds and low tide conditions. Each course is shown as it
                 should be displayed on the course board and has some tips on how to position the inflatable buoys.
             </p>
 
-            <p>A paper copy of the course guide should be on the OOD desk in the race box -
+            <p>The courses can be viewed by selecting the CourseFinder option on the Status Page</p>
+
+            <!-- p>A paper copy of the course guide should be on the OOD desk in the race box -
                 <a href="https://www.starcrossyc.org.uk/racing/apps/course-guide" target="_blank">there is an online
                     version here
                 </a>
-            </p>
+            </p -->
             <p>An online copy of the buoy locations <a
                     href="https://www.starcrossyc.org.uk/racing/essentials/buoy-chart" target="_blank">can be found here
             </a>

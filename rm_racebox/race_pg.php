@@ -109,6 +109,7 @@ else
         "race-starts"  => $_SESSION["e_$eventid"]['rc_numstarts'],
         "series-name"  => $_SESSION["e_$eventid"]['ev_seriesname'],
         "event-notes"  => $_SESSION["e_$eventid"]['ev_notes'],
+        "coursefinder" => $_SESSION['racebox_coursefinder']
     );
     $lbufr_top .= $tmpl_o->get_template("race_detail_display", $fields, $fields);
 

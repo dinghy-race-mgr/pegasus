@@ -254,6 +254,8 @@ function process_member(WebCollectResource $resource)
             if (strpos(strtolower($sub['description']), "berth") !== false OR
                 strpos(strtolower($sub['description']), "rack") !== false OR
                 strpos(strtolower($sub['description']), "storage") !== false) {
+
+
                 $member_output++;
 
                 $key = array_search($sub['description'], $sub_map);

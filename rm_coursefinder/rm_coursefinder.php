@@ -100,7 +100,7 @@ if ($valid_state)
     );
 
     $category_str = array("N"=>"north", "NE"=>"north-east","E"=>"east","SE"=>"south-east",
-        "S"=>"south", "SW"=>"south-wast","W"=>"West","NW"=>"orth-west",);
+        "S"=>"south", "SW"=>"south-west","W"=>"west","NW"=>"north-west",);
 
     if ($pagestate == "init")
     {
@@ -171,6 +171,9 @@ if ($valid_state)
                 // get subcourse information
                 $subcourses = $db_o->db_get_rows("SELECT * FROM t_coursedetail WHERE courseid = '$courseid' ORDER BY sort asc");
 
+                // modify courses for race format if option is set
+                if ($_SESSION['check_eventformat']) { $subcourses = modify_course_for_format($_SESSION['event'], $subcourses); }
+
                 foreach ($subcourses as $j => $subcourse)
                 {
                     $subcourses[$j]['fleets'] = decode_fleets($subcourse['fleets']);     // decode fleets
@@ -188,18 +191,28 @@ if ($valid_state)
     elseif ($pagestate == "courseprint")
     {
         // get course and details
-        $course = $db_o->db_query("SELECT * FROM t_course WHERE course = '$category' ORDER BY category asc, sort asc");
-        $details = array();
-        $details[$course['id']] = $db_o->db_query("SELECT * FROM t_coursedetail WHERE courseid = '{$course['id']}'");
+        $course = $db_o->db_get_row("SELECT * FROM t_course WHERE id = $courseid");
+        // decode instructions for course
+        $course['info'] = decode_instructions($course['info']);
+
+        // get fleet information
+        $subcourses = array();
+        $subcourses = $db_o->db_get_rows("SELECT * FROM t_coursedetail WHERE courseid = $courseid");
+
+        // modify courses for race format if option is set
+        if ($_SESSION['check_eventformat']) { $subcourses = modify_course_for_format($_SESSION['event'], $subcourses); }
+
+        foreach ($subcourses as $j => $subcourse)
+        {
+            $subcourses[$j]['fleets'] = decode_fleets($subcourse['fleets']);     // decode fleets
+            $subcourses[$j]['start']  = decode_starts($subcourse['start']);       // decode starts
+            $subcourses[$j]['buoys']  = decode_buoys($subcourse['buoys']);        // decode buoys
+            $subcourses[$j]['laps']   = decode_laps($subcourse['laps']);           // decode laps
+        }
 
         // render
-        $htm = state_courseprint($course, $details, $event);
+        $htm = state_courseprint($course, $subcourses, $_SESSION['event']);
     }
-    else
-    {
-        $x = 1;
-    }
-
 }
 else
 {
@@ -293,9 +306,8 @@ function state_coursedetail($category, $course_list, $courseid, $course, $subcou
 
         $htm = $tmpl_o->get_template("missing_course_detail", array("reason"=>ucfirst($reason), "url" => $url), array());
     }
-    else
+    else // we have courses to display
     {
-
         // create course selection block - use template
         $htm_courseselection = $tmpl_o->get_template("course_selection", array("category"=>$category, "wind_str" => $wind_str),
             array("courses" => $course_list, "courseid" => $courseid, "category"=>$category));
@@ -303,8 +315,8 @@ function state_coursedetail($category, $course_list, $courseid, $course, $subcou
         // create course board block - use template
         if (empty($course['buoy_url']))
         {
-            $htm_courseboard = $tmpl_o->get_template("course_board", array("wind-str" => $wind_str, "course-title" => $course['name']),
-                array("subcourses" => $subcourses));
+            $htm_courseboard = $tmpl_o->get_template("course_board", array( "wind-str" => $wind_str, "course-title" => $course['name']),
+                array("mode"=>"colour", "subcourses" => $subcourses));
         }
         else
         {
@@ -329,23 +341,70 @@ function state_coursedetail($category, $course_list, $courseid, $course, $subcou
         }
 
         $fields = array(
-            "course-selection" => $htm_courseselection,
-            "course-board"     => $htm_courseboard,
+            "course-selection"    => $htm_courseselection,
+            "course-board"        => $htm_courseboard,
             "course-instructions" => $htm_courseinstructions,
-            "course-picture"   => $htm_coursepicture
+            "course-picture"      => $htm_coursepicture
         );
 
-        $htm = $tmpl_o->get_template("coursedetail_page", $fields, array());
+        $htm = $tmpl_o->get_template("coursedetail_page", $fields, array("courseid" => $courseid));
     }
 
     return $htm;
 }
 
-function state_courseprint($courses, $details, $event = array())
+function state_courseprint($course, $details, $event = array())
 {
-    $htm = <<<EOT
-    print version
-EOT;
+    global $tmpl_o;
+
+    $params = array();
+    if (!empty($event))
+    $params = array(
+        "eventname"  => $event['event_name'],
+        "eventdate"  => $event['event_date'],
+        "eventstart" => $event['event_start'],
+        "tidetime"   => $event['tide_time'],
+        "tideheight" => $event['tide_height']
+    );
+
+    // create course selection block - use template
+    $htm_courseselection = $tmpl_o->get_template("course_selection_print", array("name"=>$course['name'], "blurb" => $course['blurb']), $params);
+
+    // create course board block - use template
+    if (empty($course['buoy_url']))
+    {
+        $htm_courseboard = $tmpl_o->get_template("course_board", array(), array("mode"=>"monochrome", "subcourses" => $details));
+    }
+    else
+    {
+        $htm_courseboard = $course['buoy_url'];
+    }
+
+    // create instructions block - use template
+    if (empty($course['info_url']))
+    {
+        $htm_courseinstructions = $tmpl_o->get_template("course_instructions", array(), array("course" => $course));
+    }
+    else
+    {
+        $htm_courseinstructions = $course['info_url'];
+    }
+
+    // create picture block
+    $htm_coursepicture = "";
+    if (!empty($course['other_url']))
+    {
+        $htm_coursepicture = $tmpl_o->get_template("course_picture", array(), array("course" => $course));
+    }
+
+    $fields = array(
+        "course-selection"    => $htm_courseselection,
+        "course-board"        => $htm_courseboard,
+        "course-instructions" => $htm_courseinstructions,
+        "course-picture"      => $htm_coursepicture
+    );
+
+    $htm = $tmpl_o->get_template("coursedetail_print", $fields, array());
 
     return $htm;
 }
@@ -371,7 +430,10 @@ function decode_starts($starts_str)
 {
     $start = array();
     $arr = explode("|", $starts_str);
-    $start = decode_group($arr[0]);
+    foreach($arr as $group)
+    {
+        $start[] = decode_group($group);
+    }
     return $start;
 }
 
@@ -400,7 +462,7 @@ function decode_laps($laps_str)
 function decode_group($group)
 {
     $data = array();
-    $colours = array("R"=>"red", "Y"=>"yellow", "G"=>"green", "B"=>"blue",
+    $colours = array("R"=>"red", "Y"=>"orange", "G"=>"green", "B"=>"blue",
                      "W"=>"white", "P"=>"red", "S"=>"green") ;
 
     $elem = explode("-", $group);
@@ -412,14 +474,75 @@ function decode_group($group)
     }
     else
     {
-        $data['colour'] = "white";
+        $data['colour'] = $colours['W'];
     }
 
     return $data;
 }
 
+function modify_course_for_format($event, $courses)
+{
 
+//    echo "<pre>EVENT ".print_r($event,true)."</pre>";
+//    exit();
 
+//    $event['race_name'] = "club-pursuit";
 
+    if (!empty($event))
+    {
+        if ($event['race_name'] == "trophy")
+        {
+            // change fleet label for first course
+            $courses[0]['fleets'] = "DINGHY";
+
+            // remove second (SHCAP) course
+            $courses[1] = $courses[2];
+            unset($courses[2]);
+
+            // change colour of starts and laps
+            $courses[0]['start'] = substr($courses[0]['start'], 0, 3);
+            $courses[1]['start'] = str_replace("W", "G", $courses[1]['start']);
+            $courses[0]['laps'] = substr($courses[0]['laps'], 0, 3);
+            $courses[1]['laps'] = str_replace("W", "G", $courses[1]['laps']);
+
+        }
+        elseif($event['race_name'] == "multi-junior" or $event['race_name'] == "club-pursuit")
+        {
+            // change fleet names
+            $courses[0]['fleets'] = "PURSUIT";
+            $courses[1]['fleets'] = "JUNIOR";
+            $courses[2]['fleets'] = "MULTI";
+
+            // reorder courses
+            $courses = array_combine(array_reverse(array_keys($courses)), $courses);
+            ksort($courses);
+
+            // change colour of starts and laps
+            $courses[0]['start'] = str_replace("W", "Y", $courses[0]['start']);
+            $courses[0]['laps'] = str_replace("W", "Y", $courses[0]['laps']);
+            $courses[1]['start'] = str_replace("R", "G", $courses[1]['start']);
+            $courses[1]['laps'] = str_replace("R", "G", $courses[1]['laps']);
+            $courses[2]['start'] = substr($courses[2]['start'], 0, 3);
+            $courses[2]['laps'] = substr($courses[2]['start'], 0, 3);
+        }
+        elseif($event['race_name'] == "evening-series")
+        {
+            // change fleet label for first course
+            $courses[0]['fleets'] = "FAST";
+
+            // change colour of starts and laps
+            $courses[0]['start'] = substr($courses[0]['start'], 0, 3);
+            $courses[1]['start'] = str_replace("R", "G", $courses[1]['start']);
+            $courses[2]['start'] = str_replace("W", "R", $courses[2]['start']);
+            $courses[0]['laps'] = substr($courses[0]['laps'], 0, 3);
+            $courses[1]['laps'] = str_replace("R", "G", $courses[1]['laps']);
+            $courses[2]['laps'] = str_replace("W", "R", $courses[2]['laps']);
+        }
+    }
+
+//    echo "<pre>EXIT ".print_r($courses,true)."</pre>";
+//    exit();
+    return $courses;
+}
 
 

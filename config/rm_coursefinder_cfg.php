@@ -16,6 +16,6 @@ $_SESSION['dbglog'] = "../logs/dbg/" . $_SESSION['app_name'] . "_" . date("Y-m-d
 $_SESSION['background']        = "";           // page background colour
 $_SESSION['sql_debug']         = false;        // set to true to turn on debugging of sql commands - otherwise false
 
-$_SESSION['check_event']       = true;        // checks for event
-$_SESSION['check_eventformat'] = false;        // takes race format into account when presenting course
+$_SESSION['check_event']       = true;         // checks for event
+$_SESSION['check_eventformat'] = true;        // takes race format into account when presenting course
 $_SESSION['check_tide']        = false;        // checks tide condition when assessing best course
