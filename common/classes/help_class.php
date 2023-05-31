@@ -145,6 +145,7 @@ EOT;
             foreach ($this->topics as $k=>$topic)
             {
                 $i++;
+                $i==1 ? $panel_status = "in" : $panel_status = "";
                 $panel_bufr.= <<<EOT
                 <div class="panel panel-primary margin-top-20" style="margin-bottom: 20px">
                      <div class="panel-heading" role="tab" id="heading$i">
@@ -153,7 +154,7 @@ EOT;
                      </a>
                     </div>
                     
-                    <div id="collapse$i" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading$i">
+                    <div id="collapse$i" class="panel-collapse collapse $panel_status" role="tabpanel" aria-labelledby="heading$i">
                         <div class="panel-body">
                             <div class="help-answer-text">{$topic['answer']}</div>
                             <hr style="border: 1px solid darkblue">
@@ -208,6 +209,7 @@ EOT;
             foreach ($this->topics as $k=>$topic)
             {
                 $i++;
+                $i==1 ? $panel_status = "in" : $panel_status = "";
                 $panel_bufr.= <<<EOT
                 <div class="panel panel-info">
                      <div class="panel-heading" role="tab" id="heading$i">                    
@@ -217,7 +219,7 @@ EOT;
                      
                     </div>
                     
-                    <div id="collapse$i" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading$i">
+                    <div id="collapse$i" class="panel-collapse collapse $panel_status" role="tabpanel" aria-labelledby="heading$i">
                         <div class="panel-body">
                             <div class="help-answer-text">{$topic['answer']}</div>
                             <hr style="border: 1px solid darkblue">

@@ -6,7 +6,7 @@
         <author>Mark Elkington - SYC</author>
         <rank>5</rank>
         <active>1</active>
-        <question>Selecting a course for today's race</question>
+        <question>Selecting a course for today</question>
         <answer><![CDATA[
             <p>The Sailing Committee has recommended courses for each of the cardinal wind directions. The
                 courses also include options for light winds and low tide conditions. Each course is shown as it
@@ -26,8 +26,7 @@
             </p>
         ]]></answer>
         <notes><![CDATA[
-        <p>As OOD you are of course free to come up with your own race course - but in this case please try to check
-            with a regular sailor from each fleet that the proposed course is OK</p>
+        <p>As OOD you are of course free to come up with your own race course - but in this case please check your course with a member of the Sailing Committee</p>
         ]]></notes>
     </page>
 
@@ -146,28 +145,6 @@
     </page>
 
     <page>
-        <category>pickrace</category>
-        <author>Mark Elkington - SYC</author>
-        <rank>10</rank>
-        <active>1</active>
-        <question>What course should I use for each fleet</question>
-        <answer><![CDATA[
-            <p>The SYC Course Guide gives suggestions for courses to use for dinghies and multihulls. There should be a
-                copy of the course guide on the OOD desk.
-            </p>
-            <p>In general you should try and avoid the dinghies using the same marks - especially in any breeze. If you
-                want to lay marks for the dinghy fleets and the multihulls in the same area - the multihull mark should
-                have a black band.
-            </p>
-            <p>The multihulls prefer a larger course and a windward/leeward configuration if the wind direction allows
-                it. Typically the dinghy courses will be 'inside' the multihull course.
-            </p>
-        ]]></answer>
-        <notes></notes>
-    </page>
-
-
-    <page>
         <category>race</category>
         <author>Mark Elkington - SYC</author>
         <rank>0</rank>
@@ -238,7 +215,7 @@
         <question>how do I ABANDON a race?</question>
         <answer><![CDATA[
             <p>You can abandon a race at any time from the STATUS page - just click the Abandon button. You can also change
-                your mind and unabandon the race as long as you haven't missed recording lap times
+                your mind and unabandon the race as long as you continued to record lap times
             </p>
             <p>Once the race is abandoned you can then CLOSE the race - do NOT publish the partial results.</p>
         </answer>
@@ -278,7 +255,7 @@
                 loaded.
             </p>
             <p>Alternatively you can use the ENTER BOATS button to search the database for boats to enter. You can
-                search for the sail number, class name, or helm’s surname. The system will find all matches in the
+                search for the sail number, class name, or helms surname. The system will find all matches in the
                 database and then you can select the boats to enter.
             </p>
             <p>The entries will be shown for each fleet as a separate tab - click the tab to see a fleet entries. You
@@ -304,10 +281,10 @@
         <author>Mark Elkington - SYC</author>
         <rank>5</rank>
         <active>1</active>
-        <question>I can't find the boat I want to enter</question>
+        <question>I cannot find the boat I want to enter</question>
         <answer><![CDATA[
             <p>This generally only occurs if your club does not use the raceManager SAILOR application to allow the
-                competitor to create their own entry or if you hae a new competitor that isn't familiar with the SAILOR application.
+                competitor to create their own entry or if you hae a new competitor that unfamiliar with the SAILOR application.
             </p>
 
             <p>The Enter Boat button on the ENTRIES page allows you to search using sail number, class name, or helm
@@ -320,7 +297,7 @@
             </p>
         ]]></answer>
         <notes><![CDATA[
-            <p>In very rare cases you may have a new boat which belongs to a class that isn't recognised by raceManager.
+            <p>In very rare cases you may have a new boat which belongs to a class that is not recognised by raceManager.
                 In this case use the Register Class button first to create the new class. Then use he Register New Boat
                 button to create the new boat in the new class, and finally use the Enter Boat button to ener it into
                 the race.
@@ -493,7 +470,7 @@
         <active>1</active>
         <question>How do I correct a lap time?</question>
         <answer><![CDATA[
-            <p>On the TIMER page - using the 'tabbed' view find the boat for which you want to make the correction.
+            <p>On the TIMER page - using the TABBED view find the boat for which you want to make the correction.
                 Click the edit icon (pencil) and the lap times recorded for that boat will be shown. Edit the incorrect
                 lap times by entering the correct elapsed time in hh:mm:ss format.
             </p>
@@ -503,7 +480,7 @@
             </p>
         ]]></answer>
         <notes><![CDATA[
-            <p>If the error you want to correct is the boat's finishing time (i.e. the last lap) - the edit function on the
+            <p>If the error you want to correct is a finishing time (i.e. for a boat on the last lap) - the edit function on the
                 RESULTS page provides a more comprehensive mechanism to correct this time and make other changes (e.g. no. of laps, apply
                 penalty points, change PY number, add crew name etc.)
             </p>

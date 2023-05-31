@@ -62,25 +62,26 @@ $_SESSION['options_map'] = array(
 // boat change fields
 $_SESSION['change_fm'] = array();
 
-if ($_SESSION['mode'] == "race")
-{
-    $_SESSION['change_fm'] = array (
-        "chg-helm"  => array("status" => false, "label" => "Helm", "width" => "col-xs-6"),
-        "chg-crew"  => array("status" => true, "label" => "Crew", "width" => "col-xs-6"),
-        "chg-sailnum" => array("status" => true, "label" => "Sail No.", "width" => "col-xs-3"),
-    );
-}
-else
+if ($_SESSION['mode'] == "cruise")
 {
     $_SESSION['change_fm'] = array (
         "chg-helm"    => array("status" => true, "width" => "col-xs-6", "label" => "Helm name"),
         "chg-crew"    => array("status" => true, "width" => "col-xs-6", "label" => "Crew name(s)"),
         "chg-sailnum" => array("status" => true, "width" => "col-xs-3", "label" => "Sail No."),
         "chg-numcrew"=> array("status" => true, "width" => "col-xs-3", "label" => "Total crew",
-                           "placeholder" => "number of people in boat...", "evtype"=> "individual|freesail|dcruise"),
+            "placeholder" => "number of people in boat...", "evtype"=> "individual|freesail|dcruise"),
         "chg-contact" => array("status" => true, "width" => "col-xs-6", "label" => "Contact Details",
-                           "placeholder" => "contact mobile number", "evtype"=> "individual|freesail|dcruise"),
+            "placeholder" => "contact mobile number", "evtype"=> "individual|freesail|dcruise"),
     );
+}
+else
+{
+    $_SESSION['change_fm'] = array (
+        "chg-helm"  => array("status" => false, "label" => "Helm", "width" => "col-xs-6"),
+        "chg-crew"  => array("status" => true, "label" => "Crew", "width" => "col-xs-6"),
+        "chg-sailnum" => array("status" => true, "label" => "Sail No.", "width" => "col-xs-3"),
+    );
+
 }
 
 // plugin options

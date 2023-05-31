@@ -34,11 +34,17 @@ session_start();
 session_unset();
 
 // initialise standard parameters based on passed arguments
-initialise_params($_REQUEST);
+//initialise_params($_REQUEST);
 
 // initialisation for application - stop if error
 $init_status = u_initialisation("$loc/config/rm_sailor_cfg.php", $loc, $scriptname);
 if (!$init_status) { error_stop("initialisation"); }
+
+// initialise standard parameters based on passed arguments
+//echo "<pre>".print_r($_REQUEST,true)."</pre>";
+initialise_params($_REQUEST);
+//echo "<pre>".print_r($_SESSION,true)."</pre>";
+//exit();
 
 // set timezone
 if (array_key_exists("timezone", $_SESSION)) {
@@ -143,7 +149,16 @@ function initialise_params($arg)
 //        }
 //    }
 
-    // are we going to use a fixed set of events
+    // check if we have an 'open' and are getting event list from configuration (racemanager.ini)
+    if (!empty($arg['open'])) {
+        //echo "<pre>".print_r($arg['open'],true)."</pre>";
+        if (array_key_exists($arg['open'], $_SESSION))
+        {
+            $arg['event'] = $_SESSION["{$arg['open']}"];
+        }
+    }
+
+    // check if we are going to use a fixed set of events (either from configuration or via url)
     empty ($arg['event']) ? $_SESSION['event_arg'] = "" : $_SESSION['event_arg'] = $arg['event'] ;
     $_SESSION['event_passed'] = array();
     if ($_SESSION['mode'] == "race" and array_key_exists('event', $arg)) {
@@ -151,7 +166,6 @@ function initialise_params($arg)
             $_SESSION['event_passed'] = explode(",", $arg['event']);
         }
     }
-
 }
 
 function error_stop($cause)

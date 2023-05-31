@@ -93,6 +93,10 @@ $_SESSION['dutyman'] = array(
 );
 
 $_SESSION['pmaker'] = array(
-    "loc" => "../data/programme",                     // needs to be
+    "loc" => "../data/programme",
     "export_file" => "programme_import_date.csv"
+);
+
+$_SESSION['pys_export'] = array(
+    "file_format" => "csv"                               // file output format required
 );

@@ -51,9 +51,10 @@ $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates
 $eventid      = u_checkarg("eventid", "checkintnotzero", "", "");
 $category     = u_checkarg("category", "set", "", "");
 $courseid     = u_checkarg("courseid", "checkintnotzero", "", "");
-$pagestate    = u_checkarg("pagestate", "set", "", "");
+$pagestate    = u_checkarg("pagestate", "set", "", "init");
 $valid_states = array("init", "courselist", "coursedetail", "courseprint");
 in_array($pagestate, $valid_states) ? $valid_state = true : $valid_state = false;
+
 
 // control params
 $check_event = u_checkarg("check_event", "set", "", "");
@@ -133,7 +134,7 @@ if ($valid_state)
         }
 
         // display course picker
-        $htm = state_init($tide, $_SESSION['event']);
+        $htm = state_init($tide, $_SESSION['event'], $_SESSION['wind_info']);
     }
 
     elseif ($pagestate == "coursedetail")
@@ -224,7 +225,7 @@ if ($category) { $pagefields['header-left'] = ucwords($category_str["$category"]
 $pagefields['body'] = $htm;
 echo $tmpl_o->get_template("basic_page", $pagefields );
 
-function state_init($tide, $event)
+function state_init($tide, $event, $wind_info)
 {
     global $tmpl_o;
 
@@ -251,7 +252,7 @@ function state_init($tide, $event)
         "link" => $link
     );
 
-    $htm = $tmpl_o->get_template("courseinit_page", $fields, array());
+    $htm = $tmpl_o->get_template("courseinit_page", $fields, array("wind_info_link"=>$wind_info));
 
     return $htm;
 }
@@ -467,7 +468,8 @@ function decode_group($group)
 
     $elem = explode("-", $group);
     $data['type'] = trim($elem[0]);
-    $col = trim(strtoupper($elem[1]));
+    isset($elem[1]) ? $col = trim(strtoupper($elem[1])) : $col = "W";
+    //$col = trim(strtoupper($elem[1]));
     if (array_key_exists($col, $colours))
     {
         $data['colour'] = $colours[$col];
@@ -483,59 +485,65 @@ function decode_group($group)
 function modify_course_for_format($event, $courses)
 {
 
-//    echo "<pre>EVENT ".print_r($event,true)."</pre>";
-//    exit();
-
-//    $event['race_name'] = "club-pursuit";
+// note these are modification for the current four fleet standard courses
 
     if (!empty($event))
     {
         if ($event['race_name'] == "trophy")
         {
-            // change fleet label for first course
-            $courses[0]['fleets'] = "DINGHY";
-
-            // remove second (SHCAP) course
-            $courses[1] = $courses[2];
+            // remove fast-assy and slow hcap courses
+            $courses[0] = $courses[1];
+            $courses[1] = $courses[3];
             unset($courses[2]);
+            unset($courses[3]);
 
-            // change colour of starts and laps
-            $courses[0]['start'] = substr($courses[0]['start'], 0, 3);
+            // change details on dinghy course
+            $courses[0]['fleets'] = "DINGHY";
+            $courses[0]['start'] = str_replace("G", "Y", $courses[0]['start']);
+            $courses[0]['laps'] = str_replace("G", "Y", $courses[0]['laps']);
+
+            // change details on multihull course
             $courses[1]['start'] = str_replace("W", "G", $courses[1]['start']);
-            $courses[0]['laps'] = substr($courses[0]['laps'], 0, 3);
             $courses[1]['laps'] = str_replace("W", "G", $courses[1]['laps']);
 
         }
         elseif($event['race_name'] == "multi-junior" or $event['race_name'] == "club-pursuit")
         {
-            // change fleet names
-            $courses[0]['fleets'] = "PURSUIT";
-            $courses[1]['fleets'] = "JUNIOR";
-            $courses[2]['fleets'] = "MULTI";
+            // reorganise courses   -  fast becomes pursuit/junior
+            $courses[0] = $courses[3];
+            $courses[2] = $courses[1];
+            unset($courses[3]);
 
-            // reorder courses
-            $courses = array_combine(array_reverse(array_keys($courses)), $courses);
-            ksort($courses);
-
-            // change colour of starts and laps
+            // change details on multihull course
+            $courses[0]['fleets'] = "MULTI";
             $courses[0]['start'] = str_replace("W", "Y", $courses[0]['start']);
             $courses[0]['laps'] = str_replace("W", "Y", $courses[0]['laps']);
+
+            // change details on junior course
+            $courses[1]['fleets'] = "JUNIOR";
             $courses[1]['start'] = str_replace("R", "G", $courses[1]['start']);
-            $courses[1]['laps'] = str_replace("R", "G", $courses[1]['laps']);
-            $courses[2]['start'] = substr($courses[2]['start'], 0, 3);
-            $courses[2]['laps'] = substr($courses[2]['start'], 0, 3);
+            $courses[1]['laps'] = "1-G";
+
+            // change details on pursuit course
+            $courses[2]['fleets'] = "PURSUIT";
+            $courses[2]['start'] = str_replace("G", "Y", $courses[2]['start']);
+            $courses[2]['laps'] = "";
         }
         elseif($event['race_name'] == "evening-series")
         {
-            // change fleet label for first course
-            $courses[0]['fleets'] = "FAST";
+            unset($courses[0]);
+            $courses = array_values($courses);
 
-            // change colour of starts and laps
-            $courses[0]['start'] = substr($courses[0]['start'], 0, 3);
+            // change details on fast course
+            $courses[0]['start'] = str_replace("G", "Y", $courses[0]['start']);
+            $courses[0]['laps'] = str_replace("G", "Y", $courses[0]['laps']);
+
+            // change details on fast course
             $courses[1]['start'] = str_replace("R", "G", $courses[1]['start']);
-            $courses[2]['start'] = str_replace("W", "R", $courses[2]['start']);
-            $courses[0]['laps'] = substr($courses[0]['laps'], 0, 3);
             $courses[1]['laps'] = str_replace("R", "G", $courses[1]['laps']);
+
+            // change details on multihull course
+            $courses[2]['start'] = str_replace("W", "R", $courses[2]['start']);
             $courses[2]['laps'] = str_replace("W", "R", $courses[2]['laps']);
         }
     }

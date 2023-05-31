@@ -242,7 +242,6 @@ elseif ($_REQUEST['pagestate'] == "submit")
                 // $series = $event_o->event_in_series($eventid);  // check if event is part of series
                 if ($series)
                 {
-                    // FIXME some of these should be set as form options
                     $opts = array(
                         "inc-pagebreak" => $series['opt_pagebreak'],                                          // page break after each fleet
                         "inc-codes"     => $series['opt_scorecode'],                                          // include key of codes used

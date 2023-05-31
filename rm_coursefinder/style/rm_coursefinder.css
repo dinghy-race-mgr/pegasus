@@ -67,10 +67,14 @@ body {
 .rm_form-label { font-size: 1.5em !important; padding-top: 10px !important;}
 .rm-form-field { font-weight: bold;}
 
-.board-wide   {text-align: center; min-width: 80px; max-width: 80px; height: 75px; padding-top: 10px; padding-bottom: 10px; font-size: 3em;}
-.board-wide-print   {text-align: center; min-width: 80px; max-width: 80px; height: 60px; padding-top: 10px; font-size: 3em; border: var(--grey) 1px solid;}
-.board-thin   {text-align: center; min-width: 40px; max-width: 40px; height: 75px; padding-top: 10px; padding-bottom: 10px; font-size: 3em;}
-.board-thin-print   {text-align: center; min-width: 50px; max-width: 40px; height: 60px; padding-top: 10px; font-size: 3em; border: var(--grey) 1px solid;}
+.board-wide   {text-align: center; min-width: 80px; max-width: 80px; height: 55px; padding-top: 1px; padding-bottom: 1px;
+  font-size: 3em;}
+.board-wide-print   {text-align: center; min-width: 80px; max-width: 80px; height: 55px; padding-top: 1px; padding-bottom: 1px;
+  font-size: 3em; border: var(--grey) 1px solid;}
+.board-thin   {text-align: center; min-width: 40px; max-width: 40px; height: 55px; padding-top: 1px; padding-bottom: 1px;
+  font-size: 3em;}
+.board-thin-print   {text-align: center; min-width: 50px; max-width: 40px; height: 55px; padding-top: 1px; padding-bottom: 1px;
+  font-size: 3em; border: var(--grey) 1px solid;}
 .board-yellow {background-color: var(--yellow); color: var(--black); border: none;}
 .board-orange {background-color: var(--orange); color: var(--black); border: none;}
 .board-white  {background-color: var(--lightgrey); color: var(--black); border: var(--grey) 1px solid;}

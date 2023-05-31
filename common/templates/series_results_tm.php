@@ -157,7 +157,7 @@ EOT;
     if ($opts['inc-turnout'])
     {
         $series_turnout = <<<EOT
-        turnout: max - {$series['max_turnout']}, min - {$series['min_turnout']}, avg - {$series['avg_turnout']}
+        &nbsp;|&nbsp; turnout: max - {$series['max_turnout']}, min - {$series['min_turnout']}, avg - {$series['avg_turnout']}
 EOT;
     }
 
@@ -165,7 +165,7 @@ EOT;
     <div class="flex-container">
         <div class="flex-child">
             <span class="event-hdr-left" >{$series['name']} {$params['eventyear']}</span>
-            <div class="report-notes" >{$series['notes']} | $series_turnout</div>
+            <div class="report-notes" >{$series['notes']} $series_turnout</div>
         </div> 
         <div class="flex-child" style="text-align: right">
             <span class="print"><a class="button-green noprint" onclick="window.print()" href="#" type="button">Print Results</a></span>

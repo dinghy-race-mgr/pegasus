@@ -19,20 +19,31 @@ $rst = $db_o->db_truncate(array("t_help"));
 $file = "../config/help_text.xml";
 $xmldata = simplexml_load_file($file) or die("Failed to load file");
 $i = 0;
-$values = "";
+
+$fields = "INSERT INTO t_help(`category`, `question`, `answer`, `notes`, `author`, `rank`, `active`)";
 foreach($xmldata->children() as $topic) {
 
     if (!empty($topic->answer))             // don't load topics without answers
     {
-        echo $topic->question."</br>";
         $i++;
-        $values.= "('$topic->category', '$topic->question', '$topic->answer', '$topic->notes', '$topic->author', '$topic->rank', '$topic->active'),";
+        $values = "VALUES ('$topic->category', '$topic->question', '$topic->answer', '$topic->notes', '$topic->author', '$topic->rank', '$topic->active')";
     }
+
+    $sql = $fields.$values;
+    $insert = $db_o->db_query($sql);
+    $error = "";
+    if ($insert === false)
+    {
+        $error = "insert failed";
+    }
+
+
+    echo "$i: {$topic->question} - $error <br>";
 }
 
-$first_part = "INSERT INTO t_help(`category`, `question`, `answer`, `notes`, `author`, `rank`, `active`) VALUES ";
-$sql = $first_part.rtrim($values, ',').";";
-echo "<pre>$sql</pre>";
-$insert = $db_o->db_query($sql);
+//$first_part = "INSERT INTO t_help(`category`, `question`, `answer`, `notes`, `author`, `rank`, `active`) VALUES ";
+//$sql = $first_part.rtrim($values, ',').";";
+//echo "<pre>$sql</pre>";
+//$insert = $db_o->db_query($sql);
 echo "$i topics inserted into t_help<br>";
 exit("done");

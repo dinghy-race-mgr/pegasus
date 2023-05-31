@@ -90,10 +90,22 @@ EOT;
 
  function courseinit_page($params = array())
  {
-    $htm = <<<EOT
+     if (!empty($params['wind_info_link']))
+     {
+        $wind_bufr = <<<EOT
+        <div style="margin-top: 100px">        
+            <hr style="border: 5px solid #add8e6; border-radius: 3px;">
+            <h3 class="text-info">Check wind conditions ...  
+                <a class="btn btn-info" href="{$params['wind_info_link']}" target="_blank">CLICK HERE</a>
+            </h3>
+        </div>
+EOT;
+     }
+
+     $htm = <<<EOT
     <div class="row">
         <div class="col-md-7">
-            <h2>pick wind direction&hellip;</h2>
+            <h2 style="margin-bottom: 40px">Click wind direction&hellip;</h2>
             <img src="./images/compassrose.jpg" alt="Compass" usemap="#compass" width="480" height="462">
             <map name="compass">
               <area shape="poly" coords="146,6,334,6,260,185,222,185" alt="N"  title="north" href="{link}N">
@@ -110,6 +122,7 @@ EOT;
             <h2>{today}</h2>
             <h3>{tide_str}</h3>
             <h3>{race_str}</h3>
+            $wind_bufr           
         </div>
     </div>
 EOT;
@@ -283,7 +296,7 @@ function course_selection_print($params=array())
 {
     $event = "";
     $start_tide = "";
-    if ($params['eventname'])
+    if (!empty($params['eventname']))
     {
         $event.= $params['eventname'];
         if ($params['eventdate']) { $event.= "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;".date("D M j", strtotime($params['eventdate'])); }

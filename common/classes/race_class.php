@@ -827,10 +827,12 @@ class RACE
             // error_log("entries: $race_entries - maxscore: $maxscore - maxlap: $maxlap\n",3, $_SESSION['dbg_file']);
 
             $still_racing = 0;
-            $lap_arr    = array();  // sorting array for laps
+//            $lap_arr    = array();  // sorting array for laps
             $atime_arr  = array();  // sorting array for corrected time
             $points_arr = array();  // sorting array for points
 
+            // STEP 1 - loop over boats in fleet - determine if racing - get corcected and aggregate corrected times
+            //          add points for boats with a non-penalty scoring code and then sort by points and then aggregate corrected time and
             foreach ($rs_data as $k => $row)
             {
                 // error_log("boat $k: {$rs_data[$k]['class']} {$rs_data[$k]['sailnum']}\n",3, $_SESSION['dbg_file']);
@@ -913,22 +915,23 @@ class RACE
             }
 
             // sort array on points then aggregate time
-            //echo "<pre>FIRST SORT ".print_r($points_arr,true)."</pre>";
             array_multisort($points_arr, SORT_ASC, $atime_arr, SORT_ASC, $rs_data);
 
-            // end dbg chk
-            //foreach ($rs_data as $r){error_log("PRE CHK: {$r['class']} {$r['sailnum']} {$r['atime']} {$r['penalty']} {$r['code']} {$r['points']} \n",3, $_SESSION['dbg_file']);}
 
-            // loop over sorted array setting position and points - including handling ties
+            // STEP 2 - loop over sorted results setting position and points - including handling ties
+            //        - resolve any unresolved tie for the last boat in te fleet
+            //        - sort results on status, points, pn, sailnum  ( supports both final results and interim
+            //          results with some boats still racing)
             $pos = 0;
             $atime = 0;
             $prevpos = 0;
             $tie = 0;
+            $last_tie = 0;
             $sum = 0;
             $points_arr = array();
             foreach ($rs_data as $k => $row)
             {
-                //error_log("PROCESSING $k: {$row['class']} {$row['sailnum']} {$row['atime']} {$row['code']} {$row['points']} \n",3, $_SESSION['dbglog']);
+                error_log("PROCESSING $k: {$row['class']} {$row['sailnum']} {$row['atime']} {$row['code']} {$row['points']} \n",3, $_SESSION['dbglog']);
 
                 if ($row['status'] != "R")  // boat not racing
                 {
@@ -939,38 +942,40 @@ class RACE
                         // apply points - checking for ties
                         if ($row['atime'] != $atime)           // not a tie
                         {
-                            if ($tie > 0)                      // end of tie - reset allocated points to tie points
+                            if ($tie > 0)                      // end of tie - reset allocated points to tie points for affected boats
                             {
                                 $tie++;
                                 $score = round(($sum + $prevpos) / $tie, 1);
                                 for ($i = $tie; $i > 0; $i--) {
                                     $rs_data[$k - $i]['points'] = $score;
 
-                                    $points_arr[$k-$i]  = $rs_data[$k-$i]['points'];  // sort array for points
-                                    $status_arr[$k-$i]  = $rs_data[$k-$i]['status'];  // sort array for status
-                                    $pn_arr[$k-$i]      = $rs_data[$k-$i]['pn'];      // sort array for PN
-                                    $sailnum_arr[$k-$i] = $rs_data[$k-$i]['sailnum']; // sort array for sailnumber
-                                    // sort arrays
+                                    // update sort arrays (points, status, PN, sailnumber)
+                                    $points_arr[$k-$i]  = $rs_data[$k-$i]['points'];
+                                    $status_arr[$k-$i]  = $rs_data[$k-$i]['status'];
+                                    $pn_arr[$k-$i]      = $rs_data[$k-$i]['pn'];
+                                    $sailnum_arr[$k-$i] = $rs_data[$k-$i]['sailnum'];
                                 }
                                 $tie = 0;                      // reset tie counts
                                 $sum = 0;
+                                $last_tie = 0;
                             }
+                            // add points for current boat
                             $pos++;
-                            $rs_data[$k]['points'] = $pos;     // allocate points
+                            $rs_data[$k]['points'] = $pos;
                         }
-                        else                                   // is a tie - record and move on
+                        else                                   // is a tie with previous boat - record and move to next boat
                         {
                             $tie++;
                             $pos++;
-                            $sum = $sum + $prevpos;
+                            $sum = $sum + $prevpos;           // calculates summed score for tied boats
+                            $last_tie = $k;                   // records array index of last boat in tie
                         }
                         $prevpos = $pos;
                         $atime = $row['atime'];
 
-                        // add any penalties applied
+                        // add any scoring penalties applied
                         if (!empty($code_arr) and $code_arr['scoringtype'] == "penalty")
                         {
-
                             $rs_data[$k]['penalty'] = $this->penaltycode_points($code_arr, $race_entries, $rs_data[$k]['penalty']);
 
                             if ($rs_data[$k]['penalty'] > 0) {
@@ -981,11 +986,31 @@ class RACE
                     }
                 }
 
-                //if ($fleetnum == 3) { echo "<pre>ITEM sail={$rs_data[$k]['sailnum']}|item=$k|points={$rs_data[$k]['points']}</pre>"; }
-                $points_arr[$k]  = $rs_data[$k]['points'];  // sort array for points
-                $status_arr[$k]  = $rs_data[$k]['status'];  // sort array for status
-                $pn_arr[$k]      = $rs_data[$k]['pn'];      // sort array for PN
-                $sailnum_arr[$k] = $rs_data[$k]['sailnum']; // sort array for sailnumber
+                // update sort arrays (points, status, PN, sailnumber)
+                $points_arr[$k]  = $rs_data[$k]['points'];
+                $status_arr[$k]  = $rs_data[$k]['status'];
+                $pn_arr[$k]      = $rs_data[$k]['pn'];
+                $sailnum_arr[$k] = $rs_data[$k]['sailnum'];
+            }
+
+            error_log("END PROCESSING $k: {$row['class']} {$row['sailnum']} {$row['code']} {$rs_data[$k]['points']} tie=$tie sum=$sum prevpos=$prevpos \n",3, $_SESSION['dbglog']);
+            // need to resolve any unresolved ties for the last boat
+            if ($last_tie != 0)                                     // last boat (id) in fleet is in a tie
+            {
+                $tie++;                                             // number of boats in tie
+                $score = round(($sum + $prevpos) / $tie, 1);        // tie score
+                for ($i = $tie; $i > 0; $i--) {
+                    error_log("TIE PROCESSING $k:$i:$score:$tie:$last_tie \n",3, $_SESSION['dbglog']);
+                    $boat = $last_tie;                              // boat to apply tie score to
+                    $rs_data[$boat]['points'] = $score;
+                    $last_tie--;                                    // decrement boat (id) to next to last
+
+                    // update sort arrays (points, status, PN, sailnumber)
+                    $points_arr[$boat]  = $rs_data[$boat]['points'];  // sort array for points
+                    $status_arr[$boat]  = $rs_data[$boat]['status'];  // sort array for status
+                    $pn_arr[$boat]      = $rs_data[$boat]['pn'];      // sort array for PN
+                    $sailnum_arr[$boat] = $rs_data[$boat]['sailnum']; // sort array for sailnumber
+                }
             }
 
             array_multisort($status_arr, SORT_ASC, $points_arr, SORT_ASC, $pn_arr, SORT_ASC, $sailnum_arr, SORT_NUMERIC, $rs_data);

@@ -243,6 +243,8 @@ function process_member(WebCollectResource $resource)
                 <tr>
                 <td>{$member['firstname']} {$member['familyname']}</td>
                 <td>$rota_str</td>
+                <td>{$member['phone']}</td>
+                <td>{$member['email']}</td>
                 <td>{$member['note']}</td>
                 </tr>
 EOT;

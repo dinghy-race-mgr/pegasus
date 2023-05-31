@@ -45,7 +45,10 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
     // FIXME - remove use of $_SESSION here
     $race_path = $_SESSION['result_path']."/".$file_attr['eventyear']."/".$file_attr['folder'];
     $file_path = $race_path."/".$file_attr['filename'];
-    $race_url  = $_SESSION['result_url']."/".$file_attr['eventyear']."/".$file_attr['folder']."/".$file_attr['filename'];
+
+    //$race_url  = $_SESSION['result_url']."/".$file_attr['eventyear']."/".$file_attr['folder']."/".$file_attr['filename'];
+    // transform url in case using a virtual host
+    $race_url = $_SERVER['HTTP_ORIGIN'].substr($_SESSION['result_url'], strpos($_SESSION['result_url'],"/",9))."/".$file_attr['eventyear']."/".$file_attr['folder']."/".$file_attr['filename'];
 
     // create results html
     $race_bufr = $result_o->render_race_result($loc, $result_status, $include_club, $result_notes, $fleet_msg);
@@ -176,7 +179,10 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
         // FIXME - remove use of $_SESSION here
         $series_path = $_SESSION['result_path']."/".$file_attr['eventyear']."/".$file_attr['folder'];
         $file_path = $series_path."/".$file_attr['filename'];
-        $series_url  = $_SESSION['result_url']."/".$file_attr['eventyear']."/".$file_attr['folder']."/".$file_attr['filename'];
+
+        //$series_url  = $_SESSION['result_url']."/".$file_attr['eventyear']."/".$file_attr['folder']."/".$file_attr['filename'];
+        // transform url in case using a virtual host
+        $series_url = $_SERVER['HTTP_ORIGIN'].substr($_SESSION['result_url'], strpos($_SESSION['result_url'],"/",9))."/".$file_attr['eventyear']."/".$file_attr['folder']."/".$file_attr['filename'];
 
         // If master folder doesn’t exist - create it (year/type)
         $folder_exists = true;
