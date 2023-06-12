@@ -401,7 +401,7 @@ function list_events($params = array())
                 <td class="rm-text-md rm-text-trunc" style="width: 30%">{$row['event_name']} $event_date</td>
                 <td class="rm-text-md" >{$row['event_start']}</td>
                 <td class="rm-text-md" >{$row['race_name']}</td>
-                <td class="rm-text-md rm-text-highlight" style="width: 30%" >{$row['status_label']}</td>
+                <td class="rm-text-bg rm-text-highlight" style="width: 30%" >{$row['status_label']}</td>
             </tr>
 EOT;
     }

@@ -25,15 +25,15 @@ class PYS
         $this->races    = array();
     }
 
-    private function pys_xml_tag($tag, $type, $handle)
-    {
-        if ($type=="open")
-        { fwrite($handle, "<".$tag.">"); }
-        elseif ($type=="close")
-        { fwrite($handle, "</".$tag.">"); }
-        else
-        { $this->error[] = "xml tag type not recognised ($type)"; }
-    }
+//    private function pys_xml_tag($tag, $type, $handle)
+//    {
+//        if ($type=="open")
+//        { fwrite($handle, "<".$tag.">"); }
+//        elseif ($type=="close")
+//        { fwrite($handle, "</".$tag.">"); }
+//        else
+//        { $this->error[] = "xml tag type not recognised ($type)"; }
+//    }
 
     public function get_control_files()
     {
@@ -44,7 +44,7 @@ class PYS
             if (is_file($this->path . "/" . $file)) {
                 $info = pathinfo($this->path . "/" . $file);
                 if ($info["extension"] == "json") {
-                    $control = $this->read_control_file($file);
+                    $this->read_control_file($file);
                     $control_files[] = array(
                         "url" => $this->path . "/" . $file,
                         "name"=>str_replace(' ', '_', $this->admin['name'])
@@ -64,6 +64,8 @@ class PYS
         $jsonData = json_decode($str, true);
         $this->admin = $jsonData['admin'];
         $this->commands = $jsonData['commands'];
+        
+        //echo "<pre>".print_r($this->commands,true)."</pre>";
 
         if (empty($this->commands))
         {
@@ -109,13 +111,13 @@ class PYS
         return $swapped;
     }
 
-    public function set_filename($command, $pysid)
+    public function set_filename($command, $pysid, $file_type)
     {
         // gets path/filename for output data
         $str = "SYC_".date("Ymd")."_".str_replace(' ', '', $command['description']);
         if (!empty($pysid)) { $str.= "_$pysid"; }
 
-        $this->outfile = $str.".csv";
+        $this->outfile = $str.".$file_type";
 
         // get path
         $this->outpath = $this->path."/".date("Y")."/".$this->outfile;
@@ -518,7 +520,7 @@ class PYS
     }
 
 
-    public function output_csv($data, $reporting)
+    public function output_csv($data)
     {
         // outputs data into a RYA cvs format
         $fields = array("class", "race-num", "event-date", "fleet-name", "points", "sailnum", "helm", "crew", "pn",
@@ -549,8 +551,53 @@ class PYS
             }
         }
 
+
         // create output file
-        $status = $this->create_csv_file($this->outpath, $cols, $rows);
+        $status = "0";
+        $fp = fopen($this->outpath, 'w');
+        if ($fp)
+        {
+            $r = fputcsv($fp, $cols, ',');
+            if (!$r) { $status = "-2"; }
+
+            foreach ($rows as $row)
+            {
+                if ($status != "0") { break; }
+                $r = fputcsv($fp, $row, ',');
+                if (!$r) {$status = "-3"; }
+            }
+            fclose($fp);
+        }
+        else
+        {
+            $status = "-1";
+        }
+
+        return $status;
+    }
+
+    public function output_xml($xml)
+    {
+        // outputs xml data into a RYA xml format file
+        $status = "0";
+        $fp = fopen($this->outpath, 'w');
+        if ($fp)
+        {
+            $r = fwrite($fp, $xml);
+            if ($r === false)
+            {
+                $status = "-2";
+            }
+            elseif ($r == 0)
+            {
+                $status = "-3";
+            }
+            fclose($fp);
+        }
+        else
+        {
+            $status = "-1";
+        }
 
         return $status;
     }
@@ -576,28 +623,28 @@ class PYS
     }
 
 
-    private function create_csv_file($file, $cols, $rows)
-    {
-        $status = "0";
-        $fp = fopen($file, 'w');
-        if (!$fp) { $status = "-1"; }
-
-        if ($fp)
-        {
-            $r = fputcsv($fp, $cols, ',');
-            if (!$r) { $status = "-2"; }
-
-            foreach ($rows as $row)
-            {
-                if ($status != "0") { break; }
-                $r = fputcsv($fp, $row, ',');
-                if (!$r) {$status = "-3"; }
-            }
-            fclose($fp);
-        }
-
-    return $status;
-    }
+//    private function create_csv_file($file, $cols, $rows)
+//    {
+//        $status = "0";
+//        $fp = fopen($file, 'w');
+//        if (!$fp) { $status = "-1"; }
+//
+//        if ($fp)
+//        {
+//            $r = fputcsv($fp, $cols, ',');
+//            if (!$r) { $status = "-2"; }
+//
+//            foreach ($rows as $row)
+//            {
+//                if ($status != "0") { break; }
+//                $r = fputcsv($fp, $row, ',');
+//                if (!$r) {$status = "-3"; }
+//            }
+//            fclose($fp);
+//        }
+//
+//    return $status;
+//    }
 
 
 }

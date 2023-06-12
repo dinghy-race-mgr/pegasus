@@ -24,6 +24,7 @@ $pagestate    = u_checkarg("pagestate", "set", "", "init");
 $control_file = u_checkarg("control-file", "set", "", "");
 $start_date   = u_checkarg("start-date", "set", "", "");
 $end_date     = u_checkarg("end-date", "set", "", "");
+$file_type    = u_checkarg("file-type", "set", "", "xml");
 
 session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
 session_start();
@@ -91,8 +92,7 @@ if ($pagestate != "init" AND $pagestate != "submit")         // error pagestate 
 
 if ($pagestate == "submit" )                                 // error check for input arguments
 {
-    // check control file is no empty
-    //$control_file = "";
+    // check control file is not empty
     if (empty($control_file))
     {
         $state = 5;
@@ -106,6 +106,13 @@ if ($pagestate == "submit" )                                 // error check for 
     {
         $state = 3;
         $error[] = 3;
+    }
+
+    // check file type is set and valid
+    if ($file_type != "csv" and $file_type != "xml")
+    {
+        $state = 7;
+        $error[] = 7;
     }
 
     // check target directory exists
@@ -161,7 +168,7 @@ elseif ($_REQUEST['pagestate'] == "submit" and $state == 0)  // process data as 
             if (file_exists($logfile)) { unlink($logfile); }
 
             // get data output filename
-            $out_filename = $pys_o->set_filename($command, $_SESSION['pys_id']);
+            $out_filename = $pys_o->set_filename($command, $_SESSION['pys_id'], $file_type);
 
             // get events associated with command
             $status = $pys_o->set_events($command);
@@ -229,11 +236,11 @@ elseif ($_REQUEST['pagestate'] == "submit" and $state == 0)  // process data as 
                 // output in required format
                 if ($_SESSION['pys_export']['file_format'] == "xml") {
 
-                    $status = output_xml_file($logging, $reporting, $out_filename, $logfile);
+                    $status = output_xml_file($data, $command, $logging, $out_filename, $logfile);
                 }
                 else  // defaults to csv
                 {
-                    $status = output_csv_file($data, $logging, $reporting, $out_filename, $logfile);
+                    $status = output_csv_file($data, $logging, $out_filename, $logfile);
                 }
 
                 // output report details for command + link to logging + link to output file
@@ -302,11 +309,11 @@ function report_fleet_checks($fleetnum, $checks, $logging, $logfile, $fleet_coun
     return $included;
 }
 
-function output_csv_file($data, $logging, $reporting, $file, $logfile)
+function output_csv_file($data, $logging, $file, $logfile)
 {
     global $pys_o;
 
-    $status = $pys_o->output_csv($data, $reporting);
+    $status = $pys_o->output_csv($data);
     if ($logging) {
         if ($status >= 0)
         {
@@ -319,23 +326,32 @@ function output_csv_file($data, $logging, $reporting, $file, $logfile)
             } elseif ($status == -2) {
                 $problem = " writing column labels";
             } elseif ($status == -3) {
-                $problem = " writing data rows)";
+                $problem = " writing data rows";
             }
-            error_log(date('H:i:s') . " ---- results_output: failed (problem $problem)" . PHP_EOL, 3, $logfile);
+            error_log(date('H:i:s') . " ---- results output: failed (problem $problem)" . PHP_EOL, 3, $logfile);
         }
     }
     return $status;
 }
 
-function output_xml_file($data, $logging, $reporting, $file, $logfile)
+function output_xml_file($data, $command, $logging, $file, $logfile)
 {
     global $pys_o;
     global $tmpl_o;
 
-    $status = false;
-    $xml = $tmpl_o->get_template("output_xml", array(), array("data" => $data));
+//    echo "<pre>".print_r($data,true)."</pre>";
+//    exit();
 
-    //$status = $pys_o->output_xml($reporting);
+    $params = array(
+        "data" => $data,
+        "pys_id" => $_SESSION['pys_id'],
+        "club" => $_SESSION['clubname'],
+        "eventid" => $command['attribute'],
+        "eventname" => $command['description']
+    );
+
+    $xml = $tmpl_o->get_template("output_xml", array(), $params);
+    $status = $pys_o->output_xml($xml);
 
     if ($logging)
     {
@@ -348,11 +364,14 @@ function output_xml_file($data, $logging, $reporting, $file, $logfile)
             if ($status == -1) {
                 $problem = " opening output file";
             } elseif ($status == -2) {
-                $problem = " writing data";
+                $problem = " writing xml data to file";
+            } elseif ($status == -3) {
+                $problem = " zero length xml file";
             }
-            error_log(date('H:i:s') . " ---- results_output: failed (problem $problem)" . PHP_EOL, 3, $logfile);
+            error_log(date('H:i:s') . " ---- results output: failed (problem $problem)" . PHP_EOL, 3, $logfile);
         }
     }
+
     return $status;
 }
 

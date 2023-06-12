@@ -383,7 +383,7 @@ function get_event_status_txt($event_status, $type)
     $status_map = array(
         "scheduled" => array("search"=> "", "race"=> "not started" ),
         "selected"  => array("search"=> "", "race"=> "not started" ),
-        "running"   => array("search"=> "race has started", "race"=> "in progress" ),
+        "running"   => array("search"=> "race has started - entry closed", "race"=> "in progress - entry closed" ),
         "sailed"    => array("search"=> "race is finishing", "race"=> "finishing" ),
         "completed" => array("search"=> "race has finished", "race"=> "complete" ),
         "abandoned" => array("search"=> "race has been abandoned", "race"=> "abandoned" ),
@@ -407,13 +407,19 @@ function set_event_status_list($events, $entries, $action = array())
 
     foreach ($events as $eventid => $event) {
         $entry_status = "";
-        if ($entries[$eventid]['declare'] == "retire") {
+        if ($entries[$eventid]['declare'] == "retire")
+        {
             $entry_status = "retired";
-        } elseif ($entries[$eventid]['declare'] == "declare") {
+        }
+        elseif ($entries[$eventid]['declare'] == "declare")
+        {
             $entry_status = "signed off";
-        } elseif ($entries[$eventid]['entered']) {
+        }
+        elseif ($entries[$eventid]['entered'])
+        {
             $entries[$eventid]['updated'] ? $entry_status = "updated" : $entry_status = "entered";
-        } else // not entered
+        }
+        else // not entered
         {
             if (!$entries[$eventid]['allocate']['status']) // problem with allocating
             {

@@ -97,6 +97,3 @@ $_SESSION['pmaker'] = array(
     "export_file" => "programme_import_date.csv"
 );
 
-$_SESSION['pys_export'] = array(
-    "file_format" => "csv"                               // file output format required
-);

@@ -48,7 +48,17 @@ EOT;
                         <input type="date" class="form-control" id="end-date" name="end-date" value="">
                     </div>
                 </div>
-            </div>   
+            </div>
+             
+            <div class="row form-inline margin-top-10" >
+                <label class="col-sm-3 control-label text-right">Output File Type</label>
+                <div class="col-sm-8">
+                    &nbsp;&nbsp;
+                    <label class="radio-inline"><input type="radio" name="file-type" value="csv"> CSV </label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <label class="radio-inline"><input type="radio" name="file-type" checked value="xml"> XML </label>
+                </div>
+            </div>
             
             <div class="row margin-top-20">
                 <div class="col-sm-8 col-sm-offset-1">
@@ -232,7 +242,8 @@ function publish_state($params = array())
         "3" => "<h3>Problem!</h3> <h4>Defined start and/or end date, missing or invalid  [$start - $end]</h4>",
         "4" => "<h3>Problem!</h3> <h4>Could not create directory for output files</h4>",
         "5" => "<h3>Problem!</h3> <h4>Unable to read control file - or control file contains no processing commands</h4>",
-        "6" => "<h3>Warning!</h3> <h4>Unrecognised completion state - please check output data </h4>"
+        "6" => "<h3>Warning!</h3> <h4>Unrecognised completion state - please check output data </h4>",
+        "7" => "<h3>Warning!</h3> <h4>Output file type (cvs or xml) not defined </h4>"
     );
 
     $bufr = "";
@@ -271,94 +282,94 @@ EOT;
 
 function output_xml($params = array())
 {
-    $races = $params['data'];
 
     $submit_date = date("Y-m-d");
     $submit_time = date("H:i:s");
 
-
-    $races = array();
-    $race_bufr = "";
-    foreach ($races as $race)
-    {
-        $fleets = array();
-        $fleet_bufr = "";
-        foreach ($fleets as $fleet)
-        {
-            $entries = array();
-            $entry_bufr = "";
-            foreach ($entries as $entry)
-            {
-                $entry_bufr.= <<<EOT
-                <entry>
-                    <classid>{$entry['class']}</classid>
-                    <persons>{$entry['class-crew']}</persons>
-                    <category>{$entry['class-type']}</category>
-                    <rig>{$entry['class-rig']}</rig>
-                    <spinnaker>{$entry['class-spin']}</spinnaker>
-                    <keel>{$entry['class-keel']}</keel>
-                    <engine>{$entry['class-engine']}</engine>
-                    <sailno>{$entry['sailnum']}</sailno>
-                    <helm>{$entry['helm']}</helm>
-                    <crew1>{$entry['crew']}</crew1>
-                    <rating>{$entry['pn']}</rating>
-                    <elapsed>{$entry['etime']}</elapsed>
-                    <corrected>{$entry['atime']}</corrected>
-                    <laps>{$entry['lap']}</laps>
-                    <rank>{$entry['points']}</rank>
-                </entry>
-EOT;
-            }
-
-            $fleet_bufr.= <<<EOT
-            <start>
-                <name>Monohull</name>
-                <windspeed>5-10</windspeed>
-                <winddir>180</winddir>
-                <starttime>09:30:00</starttime>
-                <entries>
-                    $entry_bufr
-                </entries>
-            </start>
-EOT;
-        }
-
-        $race_bufr.= <<<EOT
-        <race>
-            <date>2022-04-18</date>
-            <raceno>2</raceno>
-            <starts>
-                $fleet_bufr
-            </starts>    
-        </race>
-EOT;
-    }
-
-    $bufr = <<<EOT
+    $xml = <<<EOT
 <?xml version="1.0" encoding="utf-8"?><?xml-stylesheet href="RYAPY.xsl" type="text/xsl" ?>
 <RYAPY xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
        noNamespaceschemaLocation="http://www.halsraceresults.com/XMLSchemas/RYAPY.xsd">
-    <admin>
-        <source>raceManager</source>
-        <sourcever>10.0</sourcever>
-        <submittedon>$submit_date</submittedon>
-        <submittedat>$submit_time</submittedat>
-    </admin>
-    <event>
-        <clubid>8111325</clubid>
-        <clubpassword>ryapy</clubpassword>
-        <clubname>Starcross Yacht Club</clubname>
-        <eventid>EASTER22</eventid>
-        <eventname>Easter 2022</eventname>
-    </event>
-    <races>
-        $race_bufr
-    </races>
-</RYAPY>
-
+<admin>
+<source>raceManager</source>
+<sourcever>10.0</sourcever>
+<submittedon>$submit_date</submittedon>
+<submittedat>$submit_time</submittedat>
+</admin>
+<event>
+<clubid>{$params['pys_id']}</clubid>
+<clubpassword>ryapy</clubpassword>
+<clubname>{$params['club']}</clubname>
+<eventid>{$params['eventid']}</eventid>
+<eventname>{$params['eventname']}</eventname>
+</event>
+<races>
 EOT;
 
+    foreach ($params['data'] as $j=>$race)                             // process each race in results
+    {
+        $xml.= <<<EOT
+<race>
+<date>{$race['event_date']}</date>
+<raceno>{$race['race-num']}</raceno>
+<starts>
+EOT;
 
+        foreach ($race['fleets'] as $k=>$fleet)                    // process each start (fleet) in race
+        {
+            $xml.= <<<EOT
+<start>
+<name>{$fleet['fleet_name']}</name>
+<windspeed>{$race['ws_start']}</windspeed>
+<winddir>{$race['wd_start']}</winddir>
+<starttime>{$race['event_start']}</starttime>
+<entries>
+EOT;
+
+            foreach ($fleet['entries'] as $entry)              // process each entry (boat) in fleet
+            {
+                //echo "<pre>".print_r($entry,true)."</pre>";
+
+                $xml.= <<<EOT
+<entry>
+<classid>{$entry['class']}</classid>
+<persons>{$entry['crewnum']}</persons>
+<category>{$entry['category']}</category>
+<rig>{$entry['rig']}</rig>
+<spinnaker>{$entry['spinnaker']}</spinnaker>
+<keel>{$entry['keel']}</keel>
+<engine>{$entry['engine']}</engine>
+<sailno>{$entry['sailnum']}</sailno>
+<helm>{$entry['helm']}</helm>
+<crew1>{$entry['crew']}</crew1>
+<rating>{$entry['pn']}</rating>
+<elapsed>{$entry['etime']}</elapsed>
+<corrected>{$entry['atime']}</corrected>
+<laps>{$entry['lap']}</laps>
+<rank>{$entry['points']}</rank>
+</entry>
+EOT;
+            }
+
+            $xml.= <<<EOT
+</entries>
+</start>
+EOT;
+        }
+
+        $xml.= <<<EOT
+</starts>    
+</race>
+EOT;
+
+    }
+
+    $xml.= <<<EOT
+</races>
+</RYAPY>
+EOT;
+
+return $xml;
 
 }
 
