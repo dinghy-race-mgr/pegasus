@@ -149,22 +149,26 @@ function initialise_params($arg)
 //        }
 //    }
 
-    // check if we have an 'open' and are getting event list from configuration (racemanager.ini)
-    if (!empty($arg['open'])) {
-        //echo "<pre>".print_r($arg['open'],true)."</pre>";
-        if (array_key_exists($arg['open'], $_SESSION))
-        {
-            $arg['event'] = $_SESSION["{$arg['open']}"];
-        }
-    }
-
-    // check if we are going to use a fixed set of events (either from configuration or via url)
-    empty ($arg['event']) ? $_SESSION['event_arg'] = "" : $_SESSION['event_arg'] = $arg['event'] ;
+    // check if we have defined events and are getting event list from configuration (racemanager.ini)
     $_SESSION['event_passed'] = array();
-    if ($_SESSION['mode'] == "race" and array_key_exists('event', $arg)) {
-        if (!empty($arg['event'])) {
-            $_SESSION['event_passed'] = explode(",", $arg['event']);
+    $_SESSION['event_arg'] = "";
+    if (!empty($arg['event']))
+    {
+        if (array_key_exists($arg['event'], $_SESSION))                                // check if arg value is a code defined in racemanager.ini
+        {
+            $_SESSION['event_passed'] = explode(",", $_SESSION[$arg['event']]);
+            $_SESSION['event_arg'] = $_SESSION[$arg['event']];
         }
+        elseif ( preg_match("/^\d+(?:,\d+)*$/",str_replace(" ","",$arg['event'])) )    // check if one or more eventids in a list
+        {
+            $_SESSION['event_passed'] = explode(",", $arg['event']);
+            $_SESSION['event_arg'] = $arg['event'];
+        }
+//        else                                                                           // invalid use of event argument default to today's events
+//        {
+//            $_SESSION['event_passed'] = array();
+//            $_SESSION['event_arg'] = "";
+//        }
     }
 }
 

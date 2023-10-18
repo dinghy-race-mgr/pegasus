@@ -799,6 +799,11 @@ class SERIES_RESULT
 
     }
 
+    public function get_results_data()
+    {
+        return $this->results;
+    }
+
     private function count_sailors()
     {
         // gets number of competitors in each fleet and adds to $this->fleets
@@ -930,23 +935,25 @@ class SERIES_RESULT
 
             foreach ($this->rst[$s_id] as $k=>$result)
             {
-                //debug if ($s_id == 29) { echo "<pre>BEFORE ".print_r($this->rst[$s_id],true)."</pre>"; }
-
                 if ($this->series['avgscheme'] == "all_races")
                 {
                     if ( $result['code'] != "AVG" AND $result['pts'] != 999 )
-                    $score_count++;
-                    $score_sum = $score_sum + $result['pts'];
-                }
-
-                elseif ($this->series['avgscheme'] == "all_competed")
-                {
-                    if ( $result['code'] != "DNC" AND $result['code'] != "AVG" AND $result['pts'] != 999 )
                     {
                         $score_count++;
                         $score_sum = $score_sum + $result['pts'];
                     }
                 }
+
+                elseif ($this->series['avgscheme'] == "all_competed")
+                {
+                    if ( $result['code'] != "DNC" AND  $result['code'] != "DNS"
+                         AND $result['code'] != "AVG" AND $result['pts'] != 999 )
+                    {
+                        $score_count++;
+                        $score_sum = $score_sum + $result['pts'];
+                    }
+                }
+
                 elseif  ($this->series['avgscheme'] == "all_counting")
                 {
                     if (!$result['discard'] AND $result['pts'] != 999 )
@@ -1085,6 +1092,7 @@ class SERIES_RESULT
                 $output['fleets'][$k]['sailors'][$rownum] = array(
                     "class"   => $row['class'],
                     "sailnum" => $row['sailno'],
+                    "compid"  => $row['id'],
                     "team"    => u_getteamname($row['helm'], $row['crew']),
                     "club"    => $row['club'],
                     "total"   => $row['tot_pts'],

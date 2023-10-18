@@ -105,9 +105,16 @@ if ($format == "entrylist" or $format == "entrylistclub")
 elseif($format == "pursuitlaps")
 {
     $rp_data['cols'] = array(
-        "class"   => array("label"=>"Class",        "style"=>"width: 30%; text-align: left; border: 1px solid black; height: 2.5em"),
-        "sailnum" => array("label"=>"Sail No.",     "style"=>"width: 20%; text-align: right; border: 1px solid black; height: 2.5em"),
-        "helm"    => array("label"=>"Laps / Code",  "style"=>"width: 50%; text-align: left; border: 1px solid black; height: 2.5em"),
+        "class"   => array("label"=>"Class", "style"=>"width: 35%; text-align: left; height: 2em;"),
+        "sailnum" => array("label"=>"Sail No.", "style"=>"width: 15%; text-align: left;"),
+        "lap1"    => array("label"=>"Lap 1", "style"=>"width: 5%; text-align: center;"),
+        "lap2"    => array("label"=>"Lap 2", "style"=>"width: 5%; text-align: center;"),
+        "lap3"    => array("label"=>"Lap 3", "style"=>"width: 5%; text-align: center;"),
+        "lap4"    => array("label"=>"Lap 4", "style"=>"width: 5%; text-align: center;"),
+        "lap5"    => array("label"=>"Lap 5", "style"=>"width: 5%; text-align: center;"),
+        "lap6"    => array("label"=>"Lap 6", "style"=>"width: 5%; text-align: center;"),
+        "lap7"    => array("label"=>"Lap 7", "style"=>"width: 5%; text-align: center;"),
+        "code"=> array("label"=>"Code<br><small>e.g DNF</small>", "style"=>"width: 10%; text-align: center;"),
     );
 
     $rp_data['admin']['report'] = "pursuit laps";

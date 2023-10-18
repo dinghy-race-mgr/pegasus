@@ -1,36 +1,82 @@
 <?php
+function enter_boat($entry, $eventid, $type)
+/*
+ * enters boat into race  (used in entries_add_sc, entries_sc, and start_sc scripts
+ */
+{
+    global $entry_o, $event_o, $db_o;
 
-//function process_code($eventid, $params)
-//{
-//    $fail_reason = "";
-//    $err = false;
-//    key_exists("entryid", $params)    ? $entryid = $params['entryid'] : $err = true;
-//    key_exists("boat", $params)       ? $boat = $params['boat'] : $err = true;
-//    key_exists("racestatus", $params) ? $racestatus = $params['racestatus'] : $err = true;
-//    key_exists("declaration", $params)? $declaration = $params['declaration'] : $err = true;
-//    key_exists("lap", $params)        ? $lap = $params['lap'] : $err = true;
-//    key_exists("finishlap", $params)  ? $finishlap = $params['finishlap'] : $err = true;
-//    key_exists("code", $params)       ? $code = $params['code'] : $code = "";
-//
-//    echo "<pre>|err: $err|<br>".print_r($params,true)."</pre>";
-//
-//    if ($err)
-//    {
-//        $fail_reason = "required parameters were invalid
-//                       (id: {$_REQUEST['entryid']}; boat: {$_REQUEST['boat']}; status: {$_REQUEST['racestatus']};)";
-//        u_writelog("$boat - set code failed - $fail_reason", $eventid);
-//    }
-//    else {
-//        $update = set_code($eventid, $entryid, $code, $racestatus, $declaration, $boat, $finishlap, $lap);
-//
-//        if (!$update) {
-//            $fail_reason = "database update failed";
-//            u_writelog("$boat - attempt to set code to $code] FAILED" - $fail_reason, $eventid);
-//        }
-//    }
-//
-//    return $fail_reason;
-//}
+    // get fleet allocation details for entry
+    $boat_o = new BOAT($db_o);
+    $classcfg = $boat_o->boat_getdetail($entry['classname']);
+    $fleets = $event_o->event_getfleetcfg($_SESSION["e_$eventid"]['ev_format']);
+    $alloc = r_allocate_fleet($classcfg, $fleets);
+
+    $success = "failed";
+    $problem = "";
+    $entry_tag = "{$entry['classname']} - {$entry['sailnum']}";
+
+    if ($alloc['status'])                                                    // fleet allocated so ok to load entry
+    {
+        $entry = array_merge($entry, $alloc);
+        $i = $entry['fleet'];
+        $result = $entry_o->set_entry($entry, $_SESSION["e_$eventid"]["fl_$i"]['pytype'], $_SESSION["e_$eventid"]["fl_$i"]['maxlap']);
+        if ($result['status'])
+        {
+            $i = $entry['fleet'];
+
+            if ($result["exists"])                                            // updating existing entry
+            {
+                $success = "exists";
+                u_writelog("ENTRY ($type) UPDATED: $entry_tag", $eventid);
+            }
+            else                                                              // adding new entry
+            {
+                $success = "entered";
+                $_SESSION["e_$eventid"]["fl_$i"]['entries']++;
+                u_writelog("ENTRY ($type): $entry_tag", $eventid);
+            }
+
+            if ($type == "signon")
+            {
+                $upd = $entry_o->confirm_entry($entry['t_entry_id'], "L", $result['raceid']);
+            }
+
+            $fleet_name = $_SESSION["e_$eventid"]["fl_$i"]['code'];
+            $_SESSION["e_$eventid"]['enter_rst'][] = "<b>$entry_tag</b> &nbsp;&nbsp;[$fleet_name]";
+
+            $_SESSION["e_$eventid"]['result_status'] = "invalid";              // new competitor details so reset results update flag
+        }
+        else                                                                   // failed to enter
+        {
+            $problem = $result["problem"];
+            u_writelog("ENTRY ($type) FAILED: $entry_tag [$problem]", $eventid);
+            if ($type == "signon")
+            {
+                $upd = $entry_o->confirm_entry($entry['t_entry_id'], "F");
+            }
+
+            $_SESSION["e_$eventid"]['enter_rst'][] = "<b>$entry_tag</b> &nbsp;&nbsp;[FAILED] <br>$problem";
+        }
+    }
+    else                                                                       // fleet not allocated
+    {
+        $alloc['alloc_code'] == "E" ? $reason_txt = "boat ineligible for this event" : $reason_txt = "fleet configuration not defined for this event";
+
+        $problem = "no fleet allocation - ".$reason_txt;
+        u_writelog("ENTRY ($type) FAILED: $entry_tag [$problem]", $eventid);
+        if ($type == "signon")
+        {
+            $upd = $entry_o->confirm_entry($entry['t_entry_id'], $alloc['alloc_code']);
+        }
+
+        $_SESSION["e_$eventid"]['enter_rst'][] = "<b>$entry_tag</b> &nbsp;&nbsp;[FAILED] <br>$problem";
+    }
+
+    $status = array ("state" => $success, "entry" => $entry_tag, "reason" => $problem);
+
+    return $status;
+}
 
 
 function get_code($code, $link, $domain, $dirn = "", $set = "danger", $unset= "primary" )
@@ -159,4 +205,31 @@ function set_code($eventid, $params)
     }
 
     return $result;
+}
+
+function add_auto_redirect ($target_url, $secs)
+{
+    $bufr = "";
+    if (!empty($target_url) and $secs > 0)
+    {
+        $bufr.= <<<EOT
+    <script>    
+        $(function(){
+          var idleTimer;
+          function resetTimer(){
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(whenUserIdle,$secs*1000);
+          }
+          $(document.body).bind('mousemove keydown click',resetTimer); // events list that we want to monitor
+          resetTimer();                                                // start the timer when the page loads
+        });
+        
+        function whenUserIdle(){
+          location.replace ('$target_url');
+        }
+    </script>
+EOT;
+    }
+
+    return $bufr;
 }

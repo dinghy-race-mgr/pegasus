@@ -95,6 +95,8 @@ if ($_REQUEST['pagestate'] == "init")
             "boattypes" => "D",
             "eventid"   => $_REQUEST['eventid']
         );
+
+        //echo "<pre>".print_r($args,true)."</pre>";
     }
     else
     {

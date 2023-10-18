@@ -16,7 +16,7 @@ session_id('sess-rmsailor');
 session_start();
 
 // initialise page
-u_initpagestart(0,$page,false);
+u_initpagestart(0,$scriptname,false);
 
 $db_o = new DB();
 $comp_o = new COMPETITOR($db_o);

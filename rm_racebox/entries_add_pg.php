@@ -56,7 +56,7 @@ $params = array(
     "entries"   => isset($_SESSION["e_$eventid"]['enter_rst']) ? $_SESSION["e_$eventid"]['enter_rst'] : array(),
 );
 
-if (isset($_SESSION["e_$eventid"]['enter_err'])) { unset($_SESSION["e_$eventid"]['enter_err']); }
+//if (isset($_SESSION["e_$eventid"]['enter_err'])) { unset($_SESSION["e_$eventid"]['enter_err']); }
 
 $body = $tmpl_o->get_template("fm_addentry", array("eventid" =>$eventid), $params);
 
@@ -67,7 +67,7 @@ $fields = array(
     "stylesheet" => "./style/rm_racebox.css",
     "navbar"     => "",
     "body"       => $body,
-    "footer"     => "<script>window.location.reload(true);)</script>",
+    "footer"     => "<script>window.location.reload();)</script>",
     "body_attr" => ""
 );
 

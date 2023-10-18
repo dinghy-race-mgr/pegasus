@@ -31,3 +31,17 @@ Version 10.2 - Fourth Operational Release - 20 January 2023
       the boats entered for the race
     - modified rm_sailor to support plugin links to external applications (e.g. ordering hot food before sailing)
     - added dynamic elapsed time counter for each fleet on Status page
+
+Version 10.3 - Fifth Operational Release - 1 November 2023
+    Bootstrap 3.4.1  PHP 7.2.34
+    - improved and extended logging - especially for entries / retirements
+    - returns to status page if no activity on entries page for 10 minutes
+    - reports failed entries after loading and during OOD manual entry
+    - allows OOD to change restart after a general recall to an earlier time - but displays warning
+    - moved the tooltips on the timer page so that they don't obscure the boat control on the list views
+    - added a separate button for adding a boat to the bunch control on the timer list pages
+
+    DEPLOYMENT
+        - update race format config to include new fleet codes ASSY .... CATS
+        - add laser radial junior as included class for junior fleet in Multi-Junior format
+        - change Fast/Slow divide to 1028 in evening series (same as club series)

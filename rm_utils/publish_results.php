@@ -76,7 +76,17 @@ $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "$loc/commo
 
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
 
-
+// system_info
+$system_info = array(
+    "sys_name"      => $_SESSION['sys_name'],
+    "sys_release"   => $_SESSION['sys_release'],
+    "sys_version"   => $_SESSION['sys_version'],
+    "clubname"      => $_SESSION['clubname'],
+    "sys_copyright" => $_SESSION['sys_copyright'],
+    "sys_website"   => $_SESSION['sys_website'],
+    "result_path"   => $_SESSION['result_public_path'],
+    "result_url"    => $_SESSION['result_public_url']
+);
 
 // setup debug
 array_key_exists("debug", $_REQUEST) ? $params['debug'] = $_REQUEST['debug'] : $params['debug'] = "off" ;
@@ -162,8 +172,6 @@ elseif ($_REQUEST['pagestate'] == "submit")
     isset($_REQUEST['include_club']) ? $include_club = true : $include_club = false;
     empty($_REQUEST['result_notes']) ? $result_notes = "" : $result_notes = $_REQUEST['result_notes'];
 
-    //echo "<pre>SUBMIT - eventid: $eventid|race: $race_results|series: $series_results|post: $post_results|result_status: $result_status|inc_club: $include_club|notes: $result_notes|</pre>";
-
     // if event exists do requested processing
     if ($event)
     {
@@ -188,7 +196,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
             {
 
                 $fleet_msg = array();  // FIXME - future use
-                $status = process_result_file($loc, strtoupper($result_status), $include_club, $result_notes, $fleet_msg);
+                $status = process_result_file($loc, strtoupper($result_status), $include_club, $result_notes, $system_info, $fleet_msg);
 
                 if ($status['success'])
                 {
@@ -242,18 +250,19 @@ elseif ($_REQUEST['pagestate'] == "submit")
                 // $series = $event_o->event_in_series($eventid);  // check if event is part of series
                 if ($series)
                 {
+                    // options for series result display
                     $opts = array(
                         "inc-pagebreak" => $series['opt_pagebreak'],                                          // page break after each fleet
                         "inc-codes"     => $series['opt_scorecode'],                                          // include key of codes used
                         "inc-club"      => $series['opt_clubnames'],                                          // include club name for each competitor
                         "inc-turnout"   => $series['opt_turnout'],                                            // include turnout statistics
                         "race-label"    => $series['opt_racelabel'],                                          // use race number or date for labelling races
-                        "club-logo"     => "../../club_logo.jpg",               // if set include club logo
+                        "club-logo"     => "../../club_logo.jpg",                                             // if set include club logo
                         "styles" => $_SESSION['baseurl']."/config/style/result_{$series['opt_style']}.css"    // styles to be used
                     );
 
                     $series_notes = "";   // fixme - curently not used
-                    $status = process_series_file($opts, $event['series_code'], strtoupper($result_status), $series_notes);
+                    $status = process_series_file($opts, $event['series_code'], strtoupper($result_status), $system_info, $series_notes);
 
                     if ($status['success'])
                     {
@@ -345,7 +354,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
                 {
                     // create inventory
                     $result_year = date("Y", strtotime($event['event_date']));
-                    $inventory = process_inventory($result_year );
+                    $inventory = process_inventory($result_year, $system_info );
 
                     if ($inventory)                         // if inventory created successfully then proceed
                     {

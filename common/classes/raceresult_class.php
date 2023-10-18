@@ -271,7 +271,6 @@ EOT;
         $t_race_query   = "INSERT INTO a_race SELECT * FROM t_race WHERE eventid={$this->eventid}";
         $t_entry_query  = "INSERT INTO a_entry SELECT * FROM t_entry WHERE eventid={$this->eventid}";
         $t_lap_query    = "INSERT INTO a_lap SELECT * FROM t_lap WHERE eventid={$this->eventid}";
-//        $t_finish_query = "INSERT INTO a_finish SELECT * FROM t_finish WHERE eventid={$this->eventid}";
 
 
         if (!$this->db->db_query($t_race_query))  { $status = false; }
@@ -310,18 +309,20 @@ EOT;
     }
 
 
-    public function render_race_result($loc, $result_status, $include_club, $result_notes, $fleet_msg = array())
+    public function render_race_result($loc, $result_status, $include_club, $result_notes, $system_info, $fleet_msg = array())
     {
         global $tmpl_o;
 
         // get default system info in case not in session
-        if (!isset($_SESSION['sys_name']))
+        if (!isset($system_info['sys_name']))
         {
-            $_SESSION['sys_name'] = "raceManager";                                   // name of system
-            $_SESSION['sys_release'] = "";                                           // release name
-            $_SESSION['sys_version'] = "";                                           // code version
-            $_SESSION['sys_copyright'] = "Elmswood Software " . date("Y");           // copyright
-            $_SESSION['sys_website'] = "";                                           // website
+            $system_info = array(
+                "sys_name"      => "raceManager",                       // name of system
+                "sys_release"   => "",                                  // release name
+                "sys_version"   => "",                                  // code version
+                "sys_copyright" => "Elmswood Software " . date("Y"),    // copyright
+                "sys_website"   => ""                                   // website
+            );
         }
 
         // get club info
@@ -331,8 +332,6 @@ EOT;
         $event = $this->db->db_get_row("SELECT * FROM t_event WHERE id = $this->eventid");
         $event_label = $event['event_name'];
         !empty($event['event_start']) ? $event_label.= " - ".date("H:i", strtotime($event['event_start'])) : $event_label.= " - ".$event['event_order'];
-        //u_writedbg("<pre>".print_r($event,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
-        //echo "<pre>".print_r($event,true)."</pre>";
 
         // get OOD information (use duty detail if set otherwise ood in event record
         $ood = $this->db->db_get_row("SELECT * FROM t_eventduty WHERE eventid = $this->eventid and dutycode = 'ood_p' ");
@@ -344,17 +343,14 @@ EOT;
         {
             $ood_name = $event['event_ood'];
         }
-        //u_writedbg("<pre>".print_r($ood,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
-        //echo "<pre>".print_r($ood,true)."</pre>";
 
         // get fleet information and reindex
         $fleet = $this->db->db_get_rows(
             "SELECT * FROM t_cfgfleet WHERE eventcfgid = {$event['event_format']} ORDER BY start_num, fleet_num");
+
         array_unshift($fleet, null);
         unset($fleet[0]);
         $num_fleets = count($fleet);
-        //u_writedbg("<pre>".print_r($fleet,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); //debug:);
-        //echo "<pre>".print_r($fleet,true)."</pre>";
 
         // get result information
         $codes_used = array();
@@ -385,7 +381,6 @@ EOT;
             "inc-club"      => $include_club,                                        // include club name for each competitor
             "inc-turnout"   => true,                                                 // include turnout statistics
             "race-label"    => "number",                                             // use race number or date for labelling races
-//            "club-logo"     => $_SESSION['baseurl']."/config/images/club_logo.jpg",  // if set include club logo
             "club-logo"     => "../../club_logo.jpg",                                // if set include club logo
             "styles"        => file_get_contents($_SESSION['baseurl']."/config/style/result_classic.css")     // styles to be used
         );
@@ -401,10 +396,10 @@ EOT;
             "event_ood"     => $ood_name,
             "result_notes"  => $result_notes,
             "result_status" => $result_status,
-            "sys_name"      => $_SESSION['sys_name'],
-            "sys_version"   => $_SESSION['sys_version'],
-            "sys_release"   => $_SESSION['sys_release'],
-            "sys_copyright" => "Elmswood Software " . date("Y"),
+            "sys_name"      => $system_info['sys_name'],
+            "sys_version"   => $system_info['sys_version'],
+            "sys_release"   => $system_info['sys_release'],
+            "sys_copyright" => $system_info['sys_copyright'],
             "pagetitle"     => $event_label,
         );
 
@@ -413,10 +408,9 @@ EOT;
             "result"        => $result,
             "opts"          => $opts,
             "codes"         => $codes_info,
-            "sys_website"   => $_SESSION['sys_website']
+            "sys_website"   => $system_info['sys_website']
         );
 
-        //echo "<pre>".print_r($params,true)."</pre>";
         $htm = $tmpl_o->get_template("race_sheet", $fields, $params);
 
         return $htm;
@@ -425,10 +419,6 @@ EOT;
 
     public function create_result_inventory($inventory_year, $target_filepath, $system_info)
     {
-        // FIXME arguments in result_publish_pg/#219  and publish_results/#298
-
-        // set default start date to first day of relevant year
-        $startdate = "$inventory_year-01-01";
 
         // get duty codes
         $codes = array();
@@ -438,8 +428,8 @@ EOT;
             $codes["{$dutycode['code']}"] = $dutycode['label'];
         }
 
+        // setup inventory array and add admin details
         $inventory = array();
-
         $inventory["admin"] = array(
             "type"       => "event_inventory",
             "createdate" => date("Y-m-d H:i"),
@@ -452,8 +442,8 @@ EOT;
         $event_o = new EVENT($this->db);
         $rota_o = new ROTA($this->db);
 
-        // get all events from startdate
-        $events = $event_o->get_events("racing", "active", array("start"=>$startdate));
+        // get all events for inventory year
+        $events = $event_o->get_events("racing", "active", array("start"=>"$inventory_year-01-01", "end"=>"$inventory_year-12-31"));
 
         // put the events in reverse order (most recent first)
         $events = array_reverse($events);
@@ -476,6 +466,13 @@ EOT;
                 "eventdisplay" => $event['display_code']
             );
 
+            // overwrite event status if we are processing the current event
+            // - to reflect OOD considers race is complete as they are producing the result
+            if ($event['id'] == $this->eventid)
+            {
+                $inventory["events"][$event['id']]['eventstatus'] = "completed";
+            }
+
             // get duties
             $duties = $rota_o->get_event_duties($event['id']);
             $dutyarray = array();
@@ -497,12 +494,13 @@ EOT;
             $inventory["events"][$event['id']]['duties'] = $dutyarray;
 
             // get results files for this event and any associated series file
+            // FIXME this will need fixing to deal with multiple series
             empty($event['series_code']) ? $series_search = array() : $series_search = array("folder"=>"series", "filename"=>$event['series_code'].".htm");
             $files = $this->get_result_files(array("eventid"=>$event['id']), $series_search);
 
             $resultsfiles = array();
             foreach ($files as $file) {
-                //echo "<pre>FILEDATA".print_r($file,true)."</pre>";
+
                 $resultsfiles[] = array(
                     "file_id" =>$file['id'],
                     "year"   => $file['eventyear'],

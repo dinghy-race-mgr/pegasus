@@ -1,9 +1,9 @@
 <?php
 
 /* ------------------------------------------------------------
-   rbx_pg_publishresults
+   results_publish_pg
    
-   Performs all of the tasks associated with publishing the results
+   Performs all of the tasks associated with publishing the results.  Appears in modal frame on results page
    
    arguments:
        eventid     id of event
@@ -47,12 +47,16 @@ $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./template
     "./templates/results_tm.php", "$loc/common/templates/race_results_tm.php", "$loc/common/templates/series_results_tm.php"));
 
 
+// system_info
 $system_info = array(
-    "sys_name"    => $_SESSION['sys_name'],
-    "sys_version" => $_SESSION['sys_version'],
-    "clubname"    => $_SESSION['clubname'],
-    "result_path" => $_SESSION['result_path'],
-    "result_url"  => $_SESSION['result_url']
+    "sys_name"      => $_SESSION['sys_name'],
+    "sys_release"   => $_SESSION['sys_release'],
+    "sys_version"   => $_SESSION['sys_version'],
+    "clubname"      => $_SESSION['clubname'],
+    "sys_copyright" => $_SESSION['sys_copyright'],
+    "sys_website"   => $_SESSION['sys_website'],
+    "result_path"   => $_SESSION['result_public_path'],
+    "result_url"    => $_SESSION['result_public_url']
 );
 
 if (empty($pagestate) OR !$eventid)
@@ -181,7 +185,7 @@ elseif ($pagestate == "process")    // run through process workflow
 
         // create race result
         $fleet_msg = array(); // TODO this is a future use feature - displays individual notes for each fleet - currently not collected anywhere
-        $status = process_result_file($loc, strtoupper($args['result_status']), $args['include_club'], $args['result_notes'], $fleet_msg);
+        $status = process_result_file($loc, strtoupper($args['result_status']), $args['include_club'], $args['result_notes'], $system_info, $fleet_msg);
         sleep(2);
 
         if ($status['success'])
@@ -211,6 +215,7 @@ elseif ($pagestate == "process")    // run through process workflow
         {
             $series = $event_o->event_in_series($eventid);
 
+            // options for series result display
             $opts = array(
                 "inc-pagebreak" => $series['opt_pagebreak'],                                          // page break after each fleet
                 "inc-codes"     => $series['opt_scorecode'],                                          // include key of codes used
@@ -221,11 +226,10 @@ elseif ($pagestate == "process")    // run through process workflow
                 "styles" => $_SESSION['baseurl']."/config/style/result_{$series['opt_style']}.css"    // styles to be used
             );
 
-
             startProcess($step, $row_start[$step], "Publishing series results ... ", "warning");
 
             $series_notes = "";   // fixme - curently not used
-            $status = process_series_file($opts, $event['series_code'], strtoupper($args['result_status']), $series_notes);
+            $status = process_series_file($opts, $event['series_code'], strtoupper($args['result_status']), $system_info, $series_notes);
             sleep(2);
 
             //u_writedbg("<pre>STATUS: ".print_r($status,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
@@ -281,7 +285,7 @@ elseif ($pagestate == "process")    // run through process workflow
 
         // check if the race was part of a series
         $series = $event_o->event_in_series($eventid);  // if not set series upload flag
-        if (!$series) { $series['opt_upload'] = true; } // has effect of ignoring series
+        if (!$series) { $series['opt_upload'] = true; } // has effect of ignoring serie FIXME is this correct should it be false
 
         // results files will be transferred if a) individual race has not been embargoed, b) the series upload flag is
         // not set in t_series, c) the result_upload parameter is not set to 'none', d) the results are not complete
@@ -319,7 +323,7 @@ elseif ($pagestate == "process")    // run through process workflow
             startProcess($step, $row_start[$step], "Transferring files to website ... ", "warning");
 
             // create inventory
-            $inventory = process_inventory($result_year);
+            $inventory = process_inventory($result_year, $system_info);
 
             if ($inventory)    // if inventory created successfully then proceed
             {

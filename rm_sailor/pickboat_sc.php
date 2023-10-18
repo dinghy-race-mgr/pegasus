@@ -22,7 +22,7 @@ session_id('sess-rmsailor');
 session_start();
 
 // initialise page
-u_initpagestart(0,$page,false);
+u_initpagestart(0,$scriptname,false);
 
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
@@ -45,7 +45,8 @@ if ($sailorid)
     $competitors = $comp_o->comp_findcompetitor(array("id"=>$sailorid));
     $competitors ? $numcompetitors = count($competitors) : $numcompetitors = 0;
 
-    if ($numcompetitors==1) { // found
+    if ($numcompetitors==1) {                                                           // found
+        u_writelog($_SESSION['app_name']." $scriptname : boat selected -> [id: $sailorid]  ","");
         $_SESSION['sailor'] = $competitors[0];
         $_SESSION['sailor']['change'] = false;
 
@@ -61,26 +62,21 @@ if ($sailorid)
             }
 
         } elseif ($_SESSION['mode'] == "race") {
-//            echo "<pre> Before Change:".print_r($_SESSION['sailor'],true)."</pre>";
-            // check if boat already entered in a race today (Can't use ENTRY class as
-            // I'm looking over all races)
+
             $chk_race = get_race_entries($_SESSION['sailor']['id'], date("Y-m-d"));
-//            echo "<pre>".print_r($chk_race,true)."</pre>";
 
             // update sailor info with custom fields
             foreach ($_SESSION['change_fm'] as $field => $spec) {
                 if (!empty($chk_race[$field])) {$_SESSION['sailor']['change'] = true;}
                 $_SESSION['sailor'][$field] = $chk_race[$field];
             }
-//            echo "<pre> After Change:".print_r($_SESSION['sailor'],true)."</pre>";
-            //exit ("Stopping in pickboat_sc");
         }
 
         sailor_redirect($_SESSION['mode'], "race_pg.php?state=init", "cruise_pg.php?state=init" );
         exit();
 
-    } else { // single match not found - report error
-        u_writelog("Fatal Error: selected boat from search list not found", "");
+    } else {                                                                                // single match not found - report error
+        u_writelog($_SESSION['app_name']." $scriptname : boat selected not found -> [id: $sailorid]  ","");
         $error_fields = array(
             "error" => "Fatal Error: Boat selected not found",
             "detail" => "Boat (id: $sailorid) selected from list cannot be retrieved (pickboat_sc.php: records found $numcompetitors)",

@@ -17,7 +17,7 @@ session_id('sess-rmsailor');
 session_start();
 
 // initialise page
-u_initpagestart(0,$page,false);
+u_initpagestart(0,$scriptname,false);
 
 // libraries
 require_once ("{$loc}/common/classes/db_class.php");
@@ -50,17 +50,22 @@ if ($status['code'] == 0) {      // report success
     $competitors = $comp_o->comp_findcompetitor(array("id" => $status['id']));
     $_SESSION['sailor'] = $competitors[0];
 
-    $_SESSION['sailor']['change'] = false;
+    // set change fields
+    $_SESSION['sailor']['change']      = false;
     $_SESSION['sailor']['chg-sailnum'] = "";
-    $_SESSION['sailor']['chg-helm'] = "";
-    $_SESSION['sailor']['chg-crew'] = "";
+    $_SESSION['sailor']['chg-helm']    = "";
+    $_SESSION['sailor']['chg-crew']    = "";
 //    FIXME - need to add other fields with flags to turn them off and on)
+
+    u_writelog($_SESSION['app_name']." $scriptname : new boat registered ->  ".print_r($addboatfields, true),"");
 
 } elseif ($status['code'] == 2) {   // report duplicate
     $template = "addboat_duplicate";
+    u_writelog($_SESSION['app_name']." $scriptname : FAILED - new boat registered was a duplicate ->  ".print_r($addboatfields, true),"");
 
 } else  {                           // report other failure
     $template = "addboat_fail";
+    u_writelog($_SESSION['app_name']." $scriptname : FAILED - new boat registered not completed ->  ".print_r($addboatfields, true),"");
 }
 
 // assemble and render page (header assigned in addboat_pg.php

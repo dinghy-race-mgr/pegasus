@@ -23,7 +23,7 @@ session_id('sess-rmsailor');
 session_start();
 
 // initialise page
-u_initpagestart(0,$page,false);
+u_initpagestart(0,$scriptname,false);
 
 // libraries
 require_once ("{$loc}/common/classes/db_class.php");
@@ -33,9 +33,13 @@ require_once ("{$loc}/common/classes/comp_class.php");
 $db_o = new DB();
 $comp_o = new COMPETITOR($db_o); 
 
-// check for match on quey string (sailnumber, surname or class)
+// check for match on query string (sailnumber, surname or class)
 $searchstr = trim($_REQUEST['searchstr']);
 $_SESSION['competitors'] = $comp_o->comp_searchcompetitor($searchstr);
+
+$num_found = count($_SESSION['competitors']);
+u_writelog($_SESSION['app_name']." $scriptname : search made with |$searchstr| ->  $num_found found","");
+
 
 // go to selection of boat
 header("Location: pickboat_pg.php?searchstr=$searchstr");

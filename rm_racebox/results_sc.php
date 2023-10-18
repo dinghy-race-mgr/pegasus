@@ -57,7 +57,7 @@ if ($eventid AND $pagestate)
     $race_o  = new RACE($db_o, $eventid);
 
 /* ------- RETIREMENTS ------------------------------------------------------------------------------- */
-    if ($pagestate == "retirements" /*OR $pagestate == "declarations"*/)  // FIXME - currently not planning to use declarations
+    if ($pagestate == "retirements")
     {
         $entry_o = new ENTRY($db_o, $eventid);
         $declares = $entry_o->get_signons($pagestate);    // gets declarations ( signoffs/retirements)
@@ -67,16 +67,13 @@ if ($eventid AND $pagestate)
             // loop over entries 
             $counts = array("protests" => 0, "retires" => 0, "declares" => 0);
             $rpt_bufr = "";
-            $error = false;
 
             foreach ($declares as $declare)
             {
-
                 $error = false;
-                // need to get $entryid - as not provided by $_REQUEST for this function
                 $entry = $race_o->entry_get($declare['id'], "competitor");
                 $entryid = $entry['id'];
-                $entry_txt = "{$entry['class']} {$entry['sailnum']}";
+                $entry_txt = "{$entry['class']} - {$entry['sailnum']}";
 
                 $update = array();
                 // process protests
@@ -93,7 +90,7 @@ if ($eventid AND $pagestate)
                     $update["declaration"] = "R";
                     $counts['retires']++;
                     $code_upd = $race_o->entry_code_set($entryid, "RET");   // sets retirement code
-                    if ($code_upd != "code_set") { $error = true; }
+                    if ($code_upd < 0) { $error = true; }
                 }
                 elseif ($declare['action'] == "declare")
                 {
@@ -110,13 +107,13 @@ if ($eventid AND $pagestate)
                 if (!$error)
                 {
                     $entryupdate = $entry_o->confirm_entry($declare['t_entry_id'], "L");
-                    echo "<pre>marking entry record as processed</pre>";
+                    u_writelog("RESULTS (load retirements) $entry_txt: marked as retired ", $eventid);
                 }
                 else
                 {
                     $entryupdate = $entry_o->confirm_entry($declare['t_entry_id'], "F");
                     $rpt_bufr.= " - $entry_txt : $action_txt failed</br>";
-                    echo "<pre>marking entry record as failed</pre>";
+                    u_writelog("RESULTS (load retirements) $entry_txt: retirement processing failed", $eventid);
                 }
             }
             creategrowl($eventid, $page, $pagestate, $counts, rtrim($rpt_bufr, "</br>"));    // present summary as growl
@@ -125,7 +122,6 @@ if ($eventid AND $pagestate)
         {
             u_growlSet($eventid, $page, $g_results_zero_declare);
         }
-        
     }
 
 /* ------- SETCODE ------------------------------------------------------------------------------- */
@@ -143,60 +139,6 @@ if ($eventid AND $pagestate)
         }
 
     }
-// code for editing lap times below
-/*
-    elseif ($pagestate == "editresult")                // change result (handled through iframe
-    {
-        // get existing record and change lap times to array
-        $old = $race_o->entry_get_timings($entryid);
-        $laptimes = $race_o->lapstr_toarray($old['laptimes']);
-
-        // convert returned field values
-        $edit_str = "";
-        $edit = array();
-        if (!empty($_REQUEST['helm']))    { $edit['helm'] = $_REQUEST['helm']; }
-        $edit['crew']    = $_REQUEST['crew'];
-        $edit['club']    = u_getclubname($_REQUEST['club']);
-        $edit['sailnum'] = $_REQUEST['sailnum'];
-        if (ctype_digit($_REQUEST['pn']) ) { $edit['pn'] = (int)$_REQUEST['pn']; }
-        if (ctype_digit($_REQUEST['lap']) ) { $edit['lap'] = (int)$_REQUEST['lap']; }
-        $edit['etime']   = u_conv_timetosecs($_REQUEST['etime']);
-        $edit['code']    = $_REQUEST['code'];
-        if (ctype_digit($_REQUEST['penalty']) ) { $edit['penalty'] = (int)$_REQUEST['penalty']; }
-        $edit['note']    = $_REQUEST['note'];
-
-        // check which fields have changed - remove unchanged fields and create audit string for log
-        foreach ($edit as $k => $v)
-        {
-            if ($old[$k] === $edit[$k]) {
-                unset($edit[$k]);
-            } else {
-                $edit_str .= "$k:$v ";
-            }
-        }
-
-        // update race result in t_race
-        $update = $race_o->entry_update($entryid, $edit);
-
-        // delete and add finish lap time to t_lap
-        $del = $race_o->entry_lap_delete($entryid, $edit['lap']);
-        $ctime = $race_o->entry_calc_ct($edit['etime'], $edit['pn'], $_SESSION["e_$eventid"]["fl_{$old['fleet']}"]['scoring']);
-        $clicktime = strtotime("{$edit['etime']} seconds");
-        $add_lap = $race_o->entry_lap_add($old['fleet'], $entryid, array("lap" => $edit['lap'], "clicktime" => $clicktime,
-            "etime" => $edit['etime'], "ctime" => $ctime));
-
-        // check for missing laps in t_lap - and add placeholders if necessary
-
-        // update t_race with time info to match last lap (use $lap-1 as arg + assumes no force finish and calcs ptime as average)
-        $add_time = $race_o->entry_time($entryid, $old['fleet'], $edit['lap']-1, $edit['pn'], $clicktime );
-        
-        // update results status
-        $_SESSION["e_$eventid"]['result_valid'] = false;
-
-        // log change
-        u_writelog("Result Update - {$old['class']} {$old['sailnum']} : edit_str", $eventid);
-    }
-*/
 
 /* ------- DELETE ------------------------------------------------------------------------------- */
     elseif ($pagestate == "delete")                // remove boat from race - mark status as 'D'
@@ -316,8 +258,8 @@ function creategrowl($eventid, $page, $pagestate, $counts, $rpt_bufr)
     if (!empty($rpt_bufr))
     {
         $rpt_bufr = "<p>$rpt_bufr</p><p>Please use the inline edit button to manually apply failed declarations / retirements</p>";
-        $gclose = 30000;
-        $gstyle = "warning";
+        $gclose = 0;
+        $gstyle = "danger";
     }
     u_growlSet($eventid, $page, array("type" => $gstyle, "delay"=> $gclose, "msg" => "$title $rpt_bufr"), array());
 

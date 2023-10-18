@@ -19,7 +19,7 @@ session_id('sess-rmsailor');
 session_start();
 
 // initialise page
-u_initpagestart(0,$page,false);
+u_initpagestart(0,$scriptname,false);
 
 require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
@@ -64,6 +64,7 @@ foreach ($_SESSION['plugins'] as $k => $plugin)
 // display race page
 if ($_SESSION['events']['numevents'] > 0)
 {
+
     $signon_entry_list = set_event_status_list($_SESSION['events']['details'], $_SESSION['entries'], $action);
 
     //echo "<pre>".print_r($signon_entry_list,true)."</pre>"; exit();

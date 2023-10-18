@@ -170,6 +170,7 @@ if ($valid_state)
                 $course['info'] = decode_instructions($course['info']);
 
                 // get subcourse information
+                $subcourses = array();
                 $subcourses = $db_o->db_get_rows("SELECT * FROM t_coursedetail WHERE courseid = '$courseid' ORDER BY sort asc");
 
                 // modify courses for race format if option is set
@@ -192,13 +193,14 @@ if ($valid_state)
     elseif ($pagestate == "courseprint")
     {
         // get course and details
-        $course = $db_o->db_get_row("SELECT * FROM t_course WHERE id = $courseid");
+        $course = $db_o->db_get_row("SELECT * FROM t_course WHERE id = $courseid ORDER BY category asc, sort asc");
+
         // decode instructions for course
         $course['info'] = decode_instructions($course['info']);
 
         // get fleet information
         $subcourses = array();
-        $subcourses = $db_o->db_get_rows("SELECT * FROM t_coursedetail WHERE courseid = $courseid");
+        $subcourses = $db_o->db_get_rows("SELECT * FROM t_coursedetail WHERE courseid = '$courseid' ORDER BY sort asc");
 
         // modify courses for race format if option is set
         if ($_SESSION['check_eventformat']) { $subcourses = modify_course_for_format($_SESSION['event'], $subcourses); }

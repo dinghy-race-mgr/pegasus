@@ -341,15 +341,15 @@ EOT;
             <p class="text-primary">$num_entries entered in this session &hellip;</p>
 EOT;
             foreach ($entries as $entry) {
-                if (substr_count($entry, "fail") > 0 or substr_count($entry, "error") > 0)     // error or not found
+                if (substr_count(strtolower($entry), "fail") > 0 or substr_count(strtolower($entry), "error") > 0)     // error or not found
                 {
                     $bufr.= <<<EOT
-                    <p class="text-danger">&nbsp;$entry <span class="glyphicon glyphicon-remove"></span></p>
+                    <p class="text-danger">&nbsp;$entry &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-remove" style="color: red"></span></p>
 EOT;
                 } else                                                                        // entry found
                 {
                     $bufr.= <<<EOT
-                    <p class="">&nbsp;$entry <span class="glyphicon glyphicon-ok"></span></p>
+                    <p class="">&nbsp;$entry &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-ok"  style="color: green"></span></p>
 EOT;
                 }
             }
@@ -362,7 +362,7 @@ EOT;
         if (isset($error))  // display error
         {
             $bufr.= <<<EOT
-                    <p class="text-danger">&nbsp;$error</p>
+                    <p class="text-danger">&nbsp;SSS$error</p>
 EOT;
         }
     }

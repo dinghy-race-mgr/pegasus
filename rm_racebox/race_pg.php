@@ -24,23 +24,22 @@ $page       = "race";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-$eventid = u_checkarg("eventid", "checkintnotzero","");
-
-if (!$eventid)
-{
-    u_exitnicely($scriptname, 0, "requested event has an invalid or missing record identifier [{$_REQUEST['eventid']}]",
-    "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
-}
-
 // start session
 ini_set('session.gc_maxlifetime', 10800);
 session_set_cookie_params(10800);
 session_id('sess-rmracebox');   // creates separate session for this application
 session_start();
 
+// arguments
+$eventid = u_checkarg("eventid", "checkintnotzero","");
+if (!$eventid)
+{
+    u_exitnicely($scriptname, 0, "requested event has an invalid or missing record identifier [{$_REQUEST['eventid']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
+}
+
 // page initialisation
-u_initpagestart($_REQUEST['eventid'], $page, true);
-//echo "<pre><br><br><br><br>".print_r($_SESSION["e_$eventid"],true)."</pre>";
+u_initpagestart($eventid, $page, true);
 
 // classes/libraries
 require_once ("{$loc}/common/lib/rm_lib.php");
@@ -169,6 +168,7 @@ if ($_SESSION["e_$eventid"]['pursuit'])
         "eventid" => $eventid
 );
     $btn_pursuit['fields']['link'].= http_build_query($args);
+    //echo "<br><br><br><pre>{$btn_pursuit['fields']['link']}</pre>";
     $rbufr_top.= $tmpl_o->get_template("btn_link", $btn_pursuit['fields'], $btn_pursuit);
 }
 else

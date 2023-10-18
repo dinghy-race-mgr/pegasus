@@ -74,8 +74,10 @@ foreach ($rows as $k => $row)
 
     $change ? $change_text = "*" : $change_text = "" ;
 
+    //$data[$k] = array("class"=>$comp['class'], "sailnum"=>$comp['sailnum'], "helm"=>$comp['helm'],
+    //                  "crew"=>$comp['crew'], "club"=>$comp['club'], "change"=>$change_text, "entry"=>$row['id'], "status"=>$row['status']);
     $data[$k] = array("class"=>$comp['class'], "sailnum"=>$comp['sailnum'], "helm"=>$comp['helm'],
-                      "crew"=>$comp['crew'], "club"=>$comp['club'], "change"=>$change_text, "entry"=>$row['id'], "status"=>$row['status']);
+        "crew"=>$comp['crew'], "club"=>$comp['club'], "entry"=>$row['id']);
     $class_arr[$k]= $comp['class'];
     $sailnum_arr[$k] = $comp['sailnum'];
 }
@@ -87,13 +89,13 @@ $i = 0;
 foreach ($data as $row)
 {
     $i++;
-    $table_htm.= "<tr ><td style='padding-left: 5px; padding-right: 5px'>$i</td>";
+    $table_htm.= "<tr >"; //<td style='padding-left: 5px; padding-right: 5px'>&nbsp;</td>";
 
     foreach ($row as $field)
     {
         $table_htm.= "<td style='padding-left: 10px; padding-right: 10px'>$field</td>";
     }
-    $table_htm.= "<tr>";
+    $table_htm.= "</tr>";
 }
 
 $htm = <<<EOT
@@ -103,15 +105,12 @@ $htm = <<<EOT
     <table>
     <tr >
         <thead>
-            <th>no.</th>
             <th>class</th>
             <th>sailnum</th>
             <th>helm</th>
             <th>crew</th>
             <th>club</th>
-            <th>change</th>
-            <th>entry id</th>
-            <th>status</th>
+            <th>id</th>
         </thead>
     </tr>
         <tbody>

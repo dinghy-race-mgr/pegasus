@@ -25,7 +25,7 @@ function boat_fm($params = array())
             <div class="input-md $fld_width" style="color: black;">
                 <input name="classid" type="hidden" id="classid" readonly value="{$params['sailor']['classid']}">
                 <span class="text-muted rm-form-input-md"> {$params['sailor']['classname']} </span>
-                      <span class="text-info rm-text-xs"><i>[ * use the add boat option if you want to change class]</i></span>
+                      <span class="text-info rm-text-xs"><i>[ * use the register boat option if you want to change class]</i></span>
             </div>
         </div>
 

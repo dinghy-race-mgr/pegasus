@@ -51,16 +51,8 @@ function add_auto_continue($usage, $delay, $external, $target_url)
 
         // add jump to target page after delay
         $bufr = "";
-        if ($delay > 0) {
-//            $bufr .= <<<EOT
-//                <script>
-//                    $(document).ready(function () {
-//                    window.setTimeout(function () {
-//                        location.replace('$target_url');
-//                    }, $delay);
-//                });
-//                </script>
-//EOT;
+        if ($delay > 0)
+        {
             $bufr .= <<<EOT
                 <script>
                     $(document).ready(function () {
@@ -199,8 +191,6 @@ function get_fixed_event($eventid_list)
     // get next event details
     $rs = $event_o->get_nextevent(date("Y-m-d"), "racing");
     $rs ? $data['nextevent'] = $rs : $data['nextevent'] = array();
-    
-    //echo "<pre>".print_r($data,true)."</pre>";
 
     return $data;
 }
@@ -215,10 +205,8 @@ function get_dated_event($future_window)
     // check if any race events today and the next event
     $_SESSION['demo']=="demo" ? $status = "demo" : $status = "active";
     $rs = $event_o->get_events("racing", $status, array("start"=>$today, "end"=>$today));
-    //echo "<pre> RS: ".print_r($rs,true)."</pre>";
 
     $nrs = $event_o->get_nextevent(date("Y-m-d"), "racing");
-    //echo "<pre> NRS: ".print_r($rs,true)."</pre>";
     if ($nrs) { $data['nextevent'] = $nrs; }
 
     // if events today - set race day date as today
@@ -244,9 +232,6 @@ function get_dated_event($future_window)
     }
 
     if ($rs) {
-
-        // add fleet status labels
-
 
         // get event configurations and add event status labels
         foreach ($rs as $k => $event) {
@@ -300,59 +285,73 @@ function get_race_entry_data($sailorid, $events)
     $data = array();
 
     // loop over events
-    foreach ($events as $eventid=>$event) {
-
+    foreach ($events as $eventid=>$event)
+    {
         $entry_o = new ENTRY($db_o, $eventid);
         // get fleet allocation for this sailor
         //$alloc = $entry_o->allocate($_SESSION['sailor']);
         $alloc = r_allocate_fleet($_SESSION['sailor'], $events[$eventid]['fleetcfg']);
 
         $data[$eventid] = array(
-            "sailorid" => $sailorid,
+            "sailorid"   => $sailorid,
             "event-name" => $event['event_name'],
             "start-time" => $event['event_start'],
-            "allocate" => $alloc,
-            "entered" => false,
-            "updated" => false,
-            "declare" => "",
-            "protest" => false,
+            "allocate"   => $alloc,
+            "entered"    => false,
+            "updated"    => false,
+            "loaded"     => false,
+            "protest"    => false,
+            "declare"    => "",
             "event-status" => $event['event_status']
         );
 
         // check position or code in race
         $race = $entry_o->get_by_compid($sailorid);
         $data[$eventid]['position'] = "unknown";
-        if (empty($race['code'])) {
-            if ($race['points'] > 0 AND !empty($race['points'])) {
+        if (empty($race['code']))
+        {
+            if ($race['points'] > 0 AND !empty($race['points']))
+            {
                 $data[$eventid]['position'] = u_numordinal($race['points']);
             }
-        } else {
+        }
+        else
+        {
             $data[$eventid]['position'] = $race['code'];
         }
 
         // get all records from t_entry for this competitor and this event - in ascending time order
         $records = $entry_o->get_signon($eventid, $sailorid);
 
-        if ($records) {
+        if ($records)
+        {
             // loop through t_entry records
             $count = 0;
+            $loaded = false;
 
-            foreach ($records as $k => $r) {
-                if ($r['action'] == "enter") {
+            foreach ($records as $k => $r)
+            {
+                if ($r['action'] == "enter")
+                {
                     $data[$eventid]['entered'] = true;
+                    if ($r['status'] == "L") { $loaded = true; }
 
-                } elseif ($r['action'] == "update") {
-                    $data[$eventid]['updated'] = true;
-                    $count++;
-
-                } elseif ($r['action'] == "declare" or $r['action'] == "retire") {
-                    $data[$eventid]['declare'] = $r['action'];
-                    if ($r['protest']) {
-                        $data[$eventid]['protest'] = true;
-                    }
                 }
+                elseif ($r['action'] == "update")
+                {
+                    $data[$eventid]['updated'] = true;
+                    if ($r['status'] == "L") { $loaded = true; }
+                    $count++;
+                }
+                elseif ($r['action'] == "declare" or $r['action'] == "retire")
+                {
+                    $data[$eventid]['declare'] = $r['action'];
+                    if ($r['protest']) { $data[$eventid]['protest'] = true; }
+                }
+                if ($loaded) { $data[$eventid]['loaded'] = true; }           // confirms entry has been loaded
+
             }
-            $data[$eventid]['update_num'] = $count;
+            $data[$eventid]['update_num'] = $count;                          // count of number of updates
         }
     }
 
@@ -440,17 +439,20 @@ function set_event_status_list($events, $entries, $action = array())
             }
         }
 
+        $fleet = $entries[$eventid]['allocate']['fleet'];
         $event_arr[$eventid] = array(
-            "name" => $event['event_name'],
-            "date" => $event['event_date'],
-            "time" => $event['event_start'],
-            "start" => $entries[$eventid]['allocate']['start'],
-            "signon" => $event['event_entry'],
-            "entry-status" => $entry_status,
-            "entry-updated" => $entries[$eventid]['updated'],
-            "entry-alert" => $entry_alert,
-            "event-status" => $event['event_status'],
-            "event-status-txt" => get_event_status_txt($event['event_status'], "race"),
+            "name"              => $event['event_name'],
+            "date"              => $event['event_date'],
+            "time"              => $event['event_start'],
+            "start"             => $entries[$eventid]['allocate']['start'],
+            "fleet-code"        => $event['fleetcfg'][$fleet]['code'],
+            "signon"            => $event['event_entry'],
+            "entry-status"      => $entry_status,
+            "entry-updated"     => $entries[$eventid]['updated'],
+            "entry-alert"       => $entry_alert,
+            "entry-loaded"      => $entries[$eventid]['loaded'],
+            "event-status"      => $event['event_status'],
+            "event-status-txt"  => get_event_status_txt($event['event_status'], "race"),
             "event-status-code" => get_event_status_sequence($event['event_status'])
         );
 
@@ -524,9 +526,12 @@ function get_race_entries($sailorid, $today)
     $query = "SELECT * FROM t_entry WHERE DATE(`upddate`) = '$today' AND competitorid = $sailorid ORDER BY upddate DESC LIMIT 1";
     $detail = $db_o->db_get_row($query);
 
-    if (empty($detail)) {
+    if (empty($detail))
+    {
         return false;
-    } else {
+    }
+    else
+    {
         return $detail;
     }
 }
@@ -534,7 +539,7 @@ function get_race_entries($sailorid, $today)
 function process_signon($eventid)
     // processes action of sign on for an event on the race control page
 {
-    global $db_o, $loc;
+    global $db_o, $loc, $scriptname;
 
     $entry = $_SESSION["entries"][$eventid];
 
@@ -543,14 +548,35 @@ function process_signon($eventid)
     $status = $entry_o->add_signon($_SESSION['sailor']['id'], $entry['allocate']['status'],
         $_SESSION['sailor']['chg-helm'], $_SESSION['sailor']['chg-crew'], $_SESSION['sailor']['chg-sailnum'], "rm_sailor");
 
-    if ($status == "update" OR $status == "enter") {
-        empty($_SESSION['sailor']['chg-helm']) ? $chg_helm = "" : $chg_helm = "*";
-        empty($_SESSION['sailor']['chg-crew']) ? $chg_crew = "" : $chg_crew = "*";
-        empty($_SESSION['sailor']['chg-sailnum']) ? $chg_sailnum = "" : $chg_sailnum = "*";
-        u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> $chg_sailnum | {$_SESSION['sailor']['helmname']} -> $chg_helm | {$_SESSION['sailor']['crewname']} -> $chg_crew | $status", "");
+
+    //u_writelog("<pre>".print_r($_SESSION['sailor'],true)."</pre>", "");
+    $chg_helm = "";
+    $chg_crew = "";
+    $chg_sailnum = "";
+    if ($status == "update" OR $status == "enter")
+    {
+        if (!empty($_SESSION['sailor']['chg-helm']) and ($_SESSION['sailor']['helmname'] != $_SESSION['sailor']['chg-helm']))
+        {
+            $chg_helm = "-> {$_SESSION['sailor']['chg-helm']}";
+        }
+        if (!empty($_SESSION['sailor']['chg-crew']) and ($_SESSION['sailor']['crewname'] != $_SESSION['sailor']['chg-crew']))
+        {
+            $chg_crew = "-> {$_SESSION['sailor']['chg-crew']}";
+        }
+        if (!empty($_SESSION['sailor']['chg-sailnum']) and ($_SESSION['sailor']['sailnum'] != $_SESSION['sailor']['chg-sailnum']))
+        {
+            $chg_sailnum = "-> {$_SESSION['sailor']['chg-sailnum']}";
+        }
+
+        u_writelog($_SESSION['app_name']." $scriptname : boat entered -> [event: $eventid | {$_SESSION['sailor']['classname']} ".
+            "| {$_SESSION['sailor']['sailnum']} $chg_sailnum | {$_SESSION['sailor']['helmname']} $chg_helm ".
+            "| {$_SESSION['sailor']['crewname']} $chg_crew | $status] competitor: {$_SESSION['sailor']['id']}","");
         $success = true;
-    } else {
-        u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} | entry failed [reason: $status]", "");
+    }
+    else
+    {
+        u_writelog($_SESSION['app_name']." $scriptname : boat entry/update failed -> [event: $eventid | {$_SESSION['sailor']['classname']} ".
+            "| {$_SESSION['sailor']['sailnum']} | reason - $status] competitor: {$_SESSION['sailor']['id']}", "");
         $success = false;
     }
 
@@ -565,10 +591,40 @@ function process_signon($eventid)
     return $success;
 }
 
+function process_cancel($eventid)
+    // processes action to cancel an entry before it has been loaded into racebox
+{
+    global $db_o, $scriptname;
+
+    $entry_o = new ENTRY($db_o, $eventid);
+
+    $records = $entry_o->get_signon($eventid, $_SESSION['sailor']['id']);
+    $entryid = 0;
+    foreach($records as $row)
+    {
+        if ($row['action'] == "enter")
+        {
+            $entryid = $row['entryid'];
+            break;
+        }
+    }
+
+    // find all t_entry records for this boat and event - delete them
+    $del = $entry_o->del_signon($eventid, $_SESSION['sailor']['id'], $entryid);
+
+    u_writelog($_SESSION['app_name']." $scriptname : entry removed [event $eventid | {$_SESSION['sailor']['classname']} ".
+        "| {$_SESSION['sailor']['sailnum']} | competitor: {$_SESSION['sailor']['id']} [$del records]", "");
+
+    // update log
+    $del == 0 ? $success = false : $success = true ;
+
+    return $success;
+}
+
 function process_declare($eventid)
     // processes action of declaration for an event on the race control page
 {
-    global $db_o;
+    global $db_o, $scriptname;
 
     // update entry array
     $_SESSION['entries'][$eventid]['declare'] =  "declare";
@@ -579,11 +635,13 @@ function process_declare($eventid)
 
     if ($status == "declare") {
         // create log record
-        u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | declared", "");
+        u_writelog($_SESSION['app_name']." $scriptname : entry declared [event $eventid | {$_SESSION['sailor']['classname']} ".
+            "| {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | competitor: {$_SESSION['sailor']['id']}", "");
         $success = true;
     } else {
         // create log record of failure
-        u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | declare FAILED", "");
+        u_writelog($_SESSION['app_name']." $scriptname : entry declaration FAILED [event $eventid | {$_SESSION['sailor']['classname']} ".
+            "| {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | competitor: {$_SESSION['sailor']['id']}", "");
         $success = false;
     }
 
@@ -593,22 +651,24 @@ function process_declare($eventid)
 function process_retire($eventid)
     // processes action of retirement for an event on the race control page
 {
-    global $db_o;
+    global $db_o, $scriptname;
 
     // update entry array
     $_SESSION['entries'][$eventid]['declare'] =  "retire";
 
-    // add record to entry table to record declaration
+    // add record to entry table to record retirement
     $entry_o = new ENTRY($db_o, $eventid);
     $status = $entry_o->add_retire($_SESSION['sailor']['id']);
 
     if ($status == "retire") {
         // create log record
-        u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | retired", "");
+        u_writelog($_SESSION['app_name']." $scriptname : entry retired [event $eventid | {$_SESSION['sailor']['classname']} ".
+            "| {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | competitor: {$_SESSION['sailor']['id']}", "");
         $success = true;
     } else {
         // create log record of failure
-        u_writelog("event $eventid | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | retirement FAILED", "");
+        u_writelog($_SESSION['app_name']." $scriptname : entry retirement FAILED [event $eventid | {$_SESSION['sailor']['classname']} ".
+            "| {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | competitor: {$_SESSION['sailor']['id']} ", "");
         $success = false;
     }
 
@@ -773,12 +833,13 @@ function process_cruise_signon($cruise_type, $sailor)
     $status = $cruise_o->add_cruise($cruise_type, $sailor);
 
     if ($status == "update" OR $status == "register") {
-        u_writelog("cruise: $cruise_type $date| {$_SESSION['sailor']['classname']} 
-        | {$_SESSION['sailor']['sailnum']} | {$_SESSION['sailor']['helmname']}  
-        | {$_SESSION['sailor']['crewname']} | $status", "");
+        u_writelog("cruise: $cruise_type $date| {$_SESSION['sailor']['classname']} ".
+        "| {$_SESSION['sailor']['sailnum']} | {$_SESSION['sailor']['helmname']} ".
+        " | {$_SESSION['sailor']['crewname']} | $status", "");
         $success = $status;
     } else {
-        u_writelog("cruise: $cruise_type $date | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} | registration failed [reason: $status]", "");
+        u_writelog("cruise: $cruise_type $date | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} ".
+            "| sign-up failed [reason: $status]", "");
         $success = false;
     }
 
@@ -800,11 +861,13 @@ function process_cruise_declare($cruise_type, $eventid)
     $status = $entry_o->end_cruise($_SESSION['sailor']['id'], $cruise_type);
     if ($status) {
         // create log record
-        u_writelog("cruise: $cruise_type $date | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | return declared", "");
+        u_writelog("cruise: $cruise_type $date | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} ->".
+            " {$_SESSION['sailor']['chg-sailnum']} | return declared", "");
         $success = "declare";
     } else {
         // create log record of failure
-        u_writelog("cruise: $cruise_type $date | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} -> {$_SESSION['sailor']['chg-sailnum']} | return declaration FAILED", "");
+        u_writelog("cruise: $cruise_type $date | {$_SESSION['sailor']['classname']} | {$_SESSION['sailor']['sailnum']} ->".
+            " {$_SESSION['sailor']['chg-sailnum']} | return declaration FAILED", "");
         $success = false;
     }
 

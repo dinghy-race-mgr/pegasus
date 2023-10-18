@@ -26,6 +26,7 @@ $page       = "entries";
 $scriptname = basename(__FILE__);
 
 require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("./include/rm_racebox_lib.php");
 
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 
@@ -40,7 +41,6 @@ session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, true);
-//echo "<pre><br><br><br><br>".print_r($_SESSION["e_$eventid"],true)."</pre>";
 
 // classes
 require_once("{$loc}/common/classes/db_class.php");
@@ -86,6 +86,9 @@ $lbufr .= $tmpl_o->get_template("modal", $mdl_duty['fields'], $mdl_duty);
 $lbufr .= $tmpl_o->get_template("modal", $mdl_unduty['fields'], $mdl_unduty);
 $lbufr .= $tmpl_o->get_template("modal", $mdl_remove['fields'], $mdl_remove);
 
+// add autoredirect if no activity in 10 minutes
+$lbufr .= add_auto_redirect("race_pg.php?eventid=$eventid", 600);
+
 // ----- right hand panel --------------------------------------------------------------------
 $rbufr_top = "";
 
@@ -101,12 +104,10 @@ if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
             $btn_loadentry['fields']['style'] = "danger";
             $btn_loadentry['fields']['label'] .= "($num_entries_waiting)";
             $rbufr_top .= $tmpl_o->get_template("btn_link_blink", $btn_loadentry['fields'], $btn_loadentry);
-            $rbufr_top .= "<hr>";
         }
         else
         {
             $rbufr_top .= $tmpl_o->get_template("btn_link", $btn_loadentry['fields'], $btn_loadentry);
-            $rbufr_top .= "<hr>";
         }
     }
     else
@@ -114,8 +115,9 @@ if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
         $btn_loadentry['fields']['disabled'] = "disabled";
         $btn_loadentry['fields']['popover'] = "Entries not available - race is {$_SESSION["e_$eventid"]['ev_status']}";
         $rbufr_top .= $tmpl_o->get_template("btn_link", $btn_loadentry['fields'], $btn_loadentry);
-        $rbufr_top .= "<hr>";
     }
+
+    $rbufr_top.= "<hr>";
 
 }
 else

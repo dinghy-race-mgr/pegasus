@@ -27,7 +27,7 @@ session_id('sess-rmsailor');
 session_start();
 
 // initialise page
-u_initpagestart(0,$page,false);
+u_initpagestart(0,$scriptname,false);
 
 $tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php", "./templates/search_tm.php", "./templates/cruise_tm.php"));
 

@@ -140,7 +140,7 @@ $g_race_reset_fail = array(
 );
 
 $g_race_reset_noconfirm = array(
-    "type" => "warning",
+    "type" => "danger",
     "msg"  => "Race NOT reset<br>reset confirmation not entered<br>",
 );
 
@@ -214,13 +214,19 @@ $g_entries_loaded = array(
 );
 
 $g_entries_failed = array(
-    "type" => "warning",
-    "msg"  => "%s competitor signon on request not accounted for &hellip;<br>",
+    "type" => "danger",
+    "msg"  => "%s competitor signon on request(s) not accounted for &hellip;<br>",
+);
+
+$g_entries_fail_detail = array(
+    "type" => "danger",
+    "delay"=> "0",
+    "msg"  => "<b>ENTRY PROBLEMS</b><br> %s<br><i>If you cannot solve this by adding the boat(s) manually - note the finish time/laps for any boat that appears to be racing but is not entered</i><br>",
 );
 
 $g_entries_report = array(
     "type" => "info",
-    "msg"  => "%s competitor sign on requests found: <br>- %s entries made, <br>- %s existing entries updated, <br>- %s existing entries deleted<br>",
+    "msg"  => "entries processed: %s<br>",
 );
 
 $g_entries_none = array(
@@ -268,10 +274,16 @@ $g_start_timer_adjusted = array(
     "msg"  => "<b>Master Timer set with first preparatory signal at %s &hellip;</b>",
 );
 
+//$g_start_recall_fail = array(
+//    "type" => "danger",
+//    "delay"=> "0",
+//    "msg"  => "<b>setting General Recall restart time - FAILED</b><br>New start time must be later than original start time",
+//);
+
 $g_start_recall_fail = array(
     "type" => "danger",
     "delay"=> "0",
-    "msg"  => "<b>setting General Recall restart time - FAILED</b><br>New start time must be later than original start time",
+    "msg"  => "<b>setting General Recall restart time - PLEASE CHECK</b><br>New start time is EARLIER than current start time",
 );
 
 $g_start_recall_success = array(

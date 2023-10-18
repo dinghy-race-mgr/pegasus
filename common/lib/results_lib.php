@@ -22,7 +22,7 @@ function process_archive()
 }
 
 
-function process_result_file($loc, $result_status, $include_club, $result_notes, $fleet_msg)
+function process_result_file($loc, $result_status, $include_club, $result_notes, $system_info, $fleet_msg)
     /*
      * Creates an html race results file and posts it to he master (internal) results folder
      */
@@ -51,7 +51,7 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
     $race_url = $_SERVER['HTTP_ORIGIN'].substr($_SESSION['result_url'], strpos($_SESSION['result_url'],"/",9))."/".$file_attr['eventyear']."/".$file_attr['folder']."/".$file_attr['filename'];
 
     // create results html
-    $race_bufr = $result_o->render_race_result($loc, $result_status, $include_club, $result_notes, $fleet_msg);
+    $race_bufr = $result_o->render_race_result($loc, $result_status, $include_club, $result_notes, $system_info, $fleet_msg);
 
     // check if we have a matching file in t_resultfile - if we do delete record
     $num_deleted = $result_o->del_obsolete_file(array("folder"=>$file_attr['folder'], "eventid"=>$file_attr['eventid']));
@@ -110,7 +110,7 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
 }
 
 
-function process_series_file($opts, $series_code, $series_status, $series_notes="")
+function process_series_file($opts, $series_code, $series_status, $system_info, $series_notes="")
     /*
      * creates an html series result file
      */
@@ -136,24 +136,24 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
     // set data for series result
     $err_detail = "";
     $err = $series_o->set_series_data();
-    //u_writedbg("err after set series data: $err", __FILE__, __FUNCTION__, __LINE__);
+
     if (!$err)
     {
         // calculate series result
         $err = $series_o->calc_series_result();
-        //u_writedbg("err after calc series result: $err", __FILE__, __FUNCTION__, __LINE__);
+
         if (!$err)
         {
             // render series result into html
-            $sys_detail = array(
-                "sys_name"      => $_SESSION['sys_name'],
-                "sys_release"   => $_SESSION['sys_release'],
-                "sys_version"   => $_SESSION['sys_version'],
-                "sys_copyright" => $_SESSION['sys_copyright'],
-                "sys_website"   => $_SESSION['sys_website'],
-            );
+//            $sys_detail = array(
+//                "sys_name"      => $_SESSION['sys_name'],
+//                "sys_release"   => $_SESSION['sys_release'],
+//                "sys_version"   => $_SESSION['sys_version'],
+//                "sys_copyright" => $_SESSION['sys_copyright'],
+//                "sys_website"   => $_SESSION['sys_website'],
+//            );
 
-            $series_bufr = $series_o->series_render_styled($sys_detail,  $series_status, file_get_contents($opts['styles']));
+            $series_bufr = $series_o->series_render_styled($system_info,  $series_status, file_get_contents($opts['styles']));
 
             // if series has more than 6 completed - set page format to landscape
             $counts = $series_o->get_race_counts();
@@ -172,15 +172,13 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
         $err_detail = $series_o->get_err();
     }
 
-    //u_writedbg("before trying to create file: |$err|".strlen($series_bufr)."|", __FILE__, __FUNCTION__, __LINE__);
-    if (!$err and !empty($series_bufr)) // FIXME this is the bugg
+    if (!$err and !empty($series_bufr))
     {
         // get file name, path and url for series file
         // FIXME - remove use of $_SESSION here
         $series_path = $_SESSION['result_path']."/".$file_attr['eventyear']."/".$file_attr['folder'];
         $file_path = $series_path."/".$file_attr['filename'];
 
-        //$series_url  = $_SESSION['result_url']."/".$file_attr['eventyear']."/".$file_attr['folder']."/".$file_attr['filename'];
         // transform url in case using a virtual host
         $series_url = $_SERVER['HTTP_ORIGIN'].substr($_SESSION['result_url'], strpos($_SESSION['result_url'],"/",9))."/".$file_attr['eventyear']."/".$file_attr['folder']."/".$file_attr['filename'];
 
@@ -245,7 +243,7 @@ function process_series_file($opts, $series_code, $series_status, $series_notes=
 }
 
 
-function process_inventory($result_year)
+function process_inventory($result_year, $system_info)
 {
     global $result_o;
 
@@ -254,15 +252,6 @@ function process_inventory($result_year)
         "path" => $_SESSION['result_path'].DIRECTORY_SEPARATOR.$result_year
     );
     $inventory['url'] = $_SESSION['result_url'] . "/$result_year/" . $inventory['filename'];
-
-    // FIXME - remove use of $_SESSION here
-    $system_info = array(
-        "sys_name"    => $_SESSION['sys_name'],
-        "sys_version" => $_SESSION['sys_version'],
-        "clubname"    => $_SESSION['clubname'],
-        "result_path" => $_SESSION['result_public_path'],
-        "result_url"  => $_SESSION['result_public_url']
-    );
 
     // create inventory
     $status = $result_o->create_result_inventory($result_year, $inventory['path']."/".$inventory['filename'], $system_info);

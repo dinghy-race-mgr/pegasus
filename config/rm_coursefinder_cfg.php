@@ -19,4 +19,4 @@ $_SESSION['sql_debug']  = false;         // set to true to turn on debugging of 
 $_SESSION['check_event'] = true;         // checks for event
 $_SESSION['check_eventformat'] = true;   // takes race format into account when presenting course
 $_SESSION['check_tide']  = false;        // checks tide condition when assessing best course
-$_SESSION['wind_info']   = "https://www.starcrossyc.org.uk/weather-details/wind-at-syc";   // link to wind information for club
+$_SESSION['wind_info']   = "https://www.starcrossyc.org.uk/essentials/weather-at-syc";   // link to wind information for club

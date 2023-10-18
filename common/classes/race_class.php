@@ -497,7 +497,7 @@ class RACE
         // ignores competitors that are marked as deleted
         if ($laptimes)
         {
-            $sql =  "SELECT $fields, (SELECT GROUP_CONCAT(b.etime ORDER BY b.lap ASC SEPARATOR \",\") FROM t_lap as b WHERE b.entryid=a.id and a.eventid = {$this->eventid}
+            $sql =  "SELECT $fields, (SELECT GROUP_CONCAT(b.etime ORDER BY b.lap ASC SEPARATOR \",\") FROM t_lap as b WHERE b.entryid=a.id and b.eventid = {$this->eventid}
                      GROUP BY b.entryid) AS laptimes
                      FROM t_race as a
                      WHERE a.eventid = {$this->eventid} and status != 'D' $where

@@ -15,7 +15,7 @@ session_id('sess-rmsailor');
 session_start();
 
 // initialise page
-u_initpagestart(0,$page,false);
+u_initpagestart(0,$scriptname,false);
 
 // libraries
 require_once ("{$loc}/common/classes/db_class.php");

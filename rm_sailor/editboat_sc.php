@@ -15,7 +15,7 @@ session_id('sess-rmsailor');
 session_start();
 
 // initialise page
-u_initpagestart(0,$page,false);   // starts session and sets error reporting
+u_initpagestart(0,$scriptname,false);   // starts session and sets error reporting
 
 // libraries
 require_once ("{$loc}/common/classes/db_class.php");
@@ -40,10 +40,12 @@ $editboatfields = array(
 $status = $comp_o->comp_updatecompetitor($_SESSION['sailor']['id'], $_REQUEST, "rm_sailor");
 
 // create confirmation response
-if ($status != "failed") {         // report success
+if ($status != "failed")
+{
     // update sailor session details
     $competitors = $comp_o->comp_findcompetitor(array("id"=>$_SESSION['sailor']['id']));
-    if ($competitors) {
+    if ($competitors)
+    {
         $_SESSION['sailor'] = $competitors[0];
         $_SESSION['sailor']['change'] = true;
         $_SESSION['sailor']['chg-sailnum'] = "";
@@ -51,14 +53,18 @@ if ($status != "failed") {         // report success
         $_SESSION['sailor']['chg-crew'] = "";
 
         $template = "editboat_success";
-
-    } else { // report failure
+        u_writelog($_SESSION['app_name']." $scriptname : registered boat details edited ->  ".print_r($editboatfields, true),"");
+    }
+    else
+    {                                           // report failure to find newly registered boat
         $template = "editboat_fail";
+        u_writelog($_SESSION['app_name']." $scriptname : FAILED - registered boat details edited but not found ->  ".print_r($editboatfields, true),"");
     }
 }
-else                 // report failure
+else                                            // report failure to register new boat
 {
     $template = "editboat_fail";
+    u_writelog($_SESSION['app_name']." $scriptname : FAILED - registered boat details edited but not saved  ".print_r($editboatfields, true),"");
 }
 
 // assemble and render page (header set in editboat_pg)

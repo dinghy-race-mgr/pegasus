@@ -21,7 +21,7 @@ session_id('sess-rmsailor');
 session_start();
 
 // initialise page
-u_initpagestart(0,$page,false);
+u_initpagestart(0,$scriptname,false);
 
 // libraries
 require_once ("{$loc}/common/classes/template_class.php");
@@ -41,6 +41,7 @@ if (!empty($_SESSION['competitors'])) { $numcompetitors = count($_SESSION['compe
 if ($numcompetitors == 0) { // none found
    $pbufr = $tmpl_o->get_template("search_nonfound_response",
        array("searchstr"=>$searchstr, "retryscript"=>"search_pg.php"), array("add_btn"=>$_SESSION['option_cfg']['addboat']['active']));
+   u_writelog($_SESSION['app_name']." $scriptname : no boats match search string ","");
 
 }  elseif ($numcompetitors == 1) { // one match found - go straight to requested function with no display or display details
     $target = sprintf($pick_script, $_SESSION['competitors'][0]['id']);

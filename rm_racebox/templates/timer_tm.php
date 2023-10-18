@@ -3,8 +3,12 @@
 function timer_list($params = array())
 {
     //echo "<pre>".print_r($params,true)."</pre>";
+
+    $eventid = $params['eventid'];
     
     // get display for list view
+
+
 
     // view selector buttons
     $view_arr = array(
@@ -36,17 +40,45 @@ EOT;
     }
 
     $colour_key = <<<EOT
-       <a href="#" class="btn btn-default btn-xs" style="margin-right: 2px; min-width:15%">on first lap</a>
-       <a href="#" class="btn btn-info btn-xs"    style="margin-right: 2px; min-width:15%">racing</a>&nbsp;
-       <a href="#" class="btn btn-warning btn-xs" style="margin-right: 2px; min-width:15%">on last lap</a>&nbsp;
-       <a href="#" class="btn btn-success btn-xs" style="margin-right: 2px; min-width:15%">finished</a>&nbsp;
-       <a href="#" class="btn btn-primary btn-xs" style="margin-right: 2px; min-width:15%">not racing</a>&nbsp;
+   <a href="#" class="btn btn-default btn-xs" style="margin-right: 2px; min-width:15%">on first lap</a>
+   <a href="#" class="btn btn-info btn-xs"    style="margin-right: 2px; min-width:15%">racing</a>&nbsp;
+   <a href="#" class="btn btn-warning btn-xs" style="margin-right: 2px; min-width:15%">on last lap</a>&nbsp;
+   <a href="#" class="btn btn-success btn-xs" style="margin-right: 2px; min-width:15%">finished</a>&nbsp;
+   <a href="#" class="btn btn-primary btn-xs" style="margin-right: 2px; min-width:15%">not racing</a>&nbsp;
 EOT;
+
+    // get shorten fleet
+    $opt_bufr = <<<EOT
+    
+EOT;
+
+    for ($i=1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
+    {
+        $fleetname = $_SESSION["e_$eventid"]["fl_$i"]['code'];
+        $opt_bufr.= <<<EOT
+        <li><a href='timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=$i'>$fleetname</a></li>
+EOT;
+    }
+    $shorten_bufr = <<<EOT
+    <div class="dropdown">
+        <button class="btn btn-lg btn-info dropdown-toggle lead" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        Fleet Shorten Course &nbsp;&nbsp;<span class="caret"></span></button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li class="dropdown-header">pick fleet - will shorten to current leaders lap</li>
+        <li role="separator" class="divider"></li>
+        $opt_bufr
+        </ul>
+</div>
+
+EOT;
+
+
 
     // final page body layout
     $html = <<<EOT
     <div class="row margin-top-40" >
-        <div class="col-md-8 btn-group pull-left"  style="display: block;">$view_option</div>
+        <div class="col-md-5 btn-group pull-left"  style="display: block;">$view_option</div>
+        <div class="col-md-3 btn-group pull-left" style="display: block;">$shorten_bufr</div>
         <div class="col-md-4 pull-right text-danger" style="display: block;">
            <blockquote style="padding-left: 5px; padding-right: 0px">$last_click_txt $colour_key</blockquote>
         </div>        
@@ -298,8 +330,9 @@ EOT;
                 $lapcount = "L {$entry['lap']}";
 
                 // popover information
-                $ptitle = "<b>{$entry['class']} - {$entry['sailnum']}</b> - ".strtoupper($state['val']);
-                $pcontent = "lap: {$entry['lap']} [ ".gmdate("H:i:s", $entry['etime'])." ]&nbsp;&nbsp;&nbsp;<b>{$entry['code']}</b>";
+                //$ptitle = "<b>{$entry['class']} - {$entry['sailnum']}</b> - ".strtoupper($state['val']);
+                $ptitle = "<h4><b><span class='text-info'>{$entry['class']} - {$entry['sailnum']}</span></b></h4> <i>{$state['val']}</i>";
+                $pcontent = "<h4>lap: {$entry['lap']} [ ".gmdate("H:i:s", $entry['etime'])." ]&nbsp;&nbsp;&nbsp;<span class='text-danger'><b>{$entry['code']}</b></span></h4>";
 
                 // set params for link options
                 unset($entry['class']);
@@ -351,42 +384,39 @@ EOT;
                     <li><a href="$link&code=OCS">set OCS</a></li>
                 </ul>
 EOT;
-                $entry['status'] == "F" ? $disabled = "disabled" : $disabled = "";  // turn of lap timing for boats that have finished
+                if ($entry['status'] == "F")
+                {
+                    $disabled = "disabled"; // turn off lap timing for boats that have finished
+                    $bunch_btn = "";        // don't display bunch button for boats that have finished
+                }
+                else
+                {
+                    $disabled = "";
+                    $bunch_btn = <<<EOT
+                    <a type="button" href="$bunch_link$params_list" class="btn btn-info btn-sm" aria-haspopup="true" aria-expanded="false">
+                        <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
+                    </a>
+EOT;
+                }
 
                 $data_bufr .= <<<EOT
                 <div class="btn-group btn-block" role="group" aria-label="..." >
-                    <div data-toggle="popover" data-placement="top"  title="$ptitle" data-content="$pcontent">
-                        <a type="button" href="$timelap_link$params_list" class="btn {$state['color']} btn-xs $disabled" style="width:70%" 
+                    <div id="boat-block" data-toggle="popover" data-container="body" data-placement="right"  title="$ptitle" data-content="$pcontent">
+                        <a type="button" href="$timelap_link$params_list" class="btn {$state['color']} btn-sm $disabled" style="width:60%" 
                             >
                             <div class="pull-left">$title</div>
                             <div class="pull-right">$lapcount</div>     
                         </a>                 
-                        <button type="button" class="btn btn-$cog_style btn-xs dropdown-toggle" 
+                        <button type="button" class="btn btn-$cog_style btn-sm dropdown-toggle" 
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                         </button>
                         $options_bufr
+                        $bunch_btn
                     </div>
                 </div>
 EOT;
 
-//                $data_bufr .= <<<EOT
-//                <div class="btn-group btn-block" role="group" aria-label="...">
-//                    <a type="button" href="$timelap_link$params_list" class="btn {$state['color']} btn-xs $disabled" style="width:70%"
-//                        data-toggle="popover" data-placement="top"  title="$ptitle" data-content="$pcontent">
-//                        <div class="pull-left">$title</div>
-//                        <div class="pull-right">$lapcount</div>
-//
-//                    </a>
-//                    <div class="btn-group" role="group">
-//                        <button type="button" class="btn btn-$cog_style btn-xs dropdown-toggle"
-//                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-//                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-//                        </button>
-//                        $options_bufr
-//                    </div>
-//                </div>
-//EOT;
             }
             $data_bufr .= "</div>";
 
@@ -536,7 +566,6 @@ EOT;
 
                             $laps_btn.= $tmpl_o->get_template("btn_modal", $btn_shortenfleet['fields'], $btn_shortenfleet);
                             $laps_btn.= $tmpl_o->get_template("modal", $mdl_shortenfleet['fields'], $mdl_shortenfleet);
-
                         }
                     }
                 }

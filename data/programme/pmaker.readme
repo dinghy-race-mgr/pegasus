@@ -2,8 +2,15 @@ ProgrammeMaker
 
 Current issues:
  - fixed start time ignores tides (would be nice to include HW must be within N hours of fixed time)
- - not scheduling dinghy cruises - could use a recurrence model (e.g 1st and 3rd Saturday each month - and then look to use 2nd and 4th if already booked)
- - not allowing trophy and series race on same day (is this a good thing)
+ - not scheduling dinghy cruises - could use a recurrence model (start times depends on cruise itineary - perhaps just allow a simple include file to apply these (date + start time))
+ - not allowing trophy and series race on same day (perhaps just do a check after fixed's are done)
  - needs to be tested with a typical inland club events
- - should check that the race format and series are defined (option)
+ - should check that the race format and series are defined (option) - currently it does this by reporting an error at import time
  - would be nice to support pairing (event X has to be scheduled on same day as event Y)
+
+
+ Import file issues (pre-processing)
+  - if new data the id column needs to be removed
+  - the code should be changed to write the date in YYYY-MM-DD format (or does it do this and excel is just changing the display)
+  - you do NOT need to change the race_format names to record ids
+  - the pmaker.cfg file should handle opens by setting the type to racing and the format to "open" (this might change after events syetm is developed)

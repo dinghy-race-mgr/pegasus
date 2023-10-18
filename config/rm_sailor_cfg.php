@@ -16,7 +16,7 @@ $_SESSION['dbglog'] = "../logs/dbg/" . $_SESSION['app_name'] . "_" . date("Y-m-d
 $_SESSION['background']    = "bg-primary";               // page background colour
 $_SESSION['sql_debug']     = false;                      // set to true to turn on debugging of sql commands - otherwise false
 
-$_SESSION['sailor_race_sleep_delay'] = 0;               // in multi use mode will return to search page after specified seconds
+$_SESSION['sailor_race_sleep_delay'] = 10;               // in multi use mode will return to search page after specified seconds
 $_SESSION['sailor_cruise_sleep_delay'] = 20;             // 0 does not auto-return
 
 // options configuration
@@ -25,7 +25,7 @@ $_SESSION['option_cfg'] = array(
             "tip" => "", "active" => true),
         "pick" => array("label" => "Pick Boat", "pagename" => "PICK BOAT", "url" => "pickboat_pg.php",
         "tip" => "", "active" => true),
-        "race" => array("label" => "Racing", "pagename" => "REGISTER FOR RACE", "url" => "race_pg.php",
+        "race" => array("label" => "Racing", "pagename" => "ENTER RACE", "url" => "race_pg.php",
             "tip" => "", "active" => true),
         "cruise" => array("label" => "Cruising", "pagename" => "REGISTER FOR CRUISE", "url" => "cruise_pg.php",
             "tip" => "", "active" => true),
@@ -62,7 +62,7 @@ $_SESSION['options_map'] = array(
 // boat change fields
 $_SESSION['change_fm'] = array();
 
-if ($_SESSION['mode'] == "cruise")
+if ($_REQUEST['mode'] == "cruise")
 {
     $_SESSION['change_fm'] = array (
         "chg-helm"    => array("status" => true, "width" => "col-xs-6", "label" => "Helm name"),

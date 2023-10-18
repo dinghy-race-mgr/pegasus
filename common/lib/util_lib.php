@@ -694,22 +694,14 @@ function u_initsetparams($lang, $mode, $debug)
 function u_initpagestart($eventid, $page, $change_page)
 {
 
-//    if (isset($_SESSION['session_timeout']) and $_SESSION['session_timeout'] > 3600) {
-//        $timeout = $_SESSION['session_timeout'];
-//    } else {
-//        $timeout = 3600;
-//    }
-//    ini_set('session.gc_maxlifetime', $timeout);
-//    session_set_cookie_params($timeout);
-
     date_default_timezone_set($_SESSION['timezone']);
-    // FIXME probably remove following line
-    error_log(date('H:i:s')." -- {$_SESSION['app_name']} $page ------------ [session: ".session_id()."]". PHP_EOL, 3, "../logs/sys/sys_".date("Y-m-d").".log");
+    // log to sys log
+    //error_log(date('H:i:s')." -- {$_SESSION['app_name']} $page ------------ [session: ".session_id()."]". PHP_EOL, 3, "../logs/sys/sys_".date("Y-m-d").".log");
     
     // error reporting - full for development
     $_SESSION['sys_type'] == "live" ? error_reporting(E_ERROR) : error_reporting(E_ALL);
     
-    // add line to indicate change of page (uses arg and check against session variable)
+    // add to event log - line to indicate change of page (uses arg and check against session variable)
     if (!empty($eventid))
     {
         if (!array_key_exists("current_page", $_SESSION["e_$eventid"])) { $_SESSION["e_$eventid"]['current_page'] = ""; }

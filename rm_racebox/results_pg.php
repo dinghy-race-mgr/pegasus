@@ -73,6 +73,7 @@ if ($_SESSION["e_$eventid"]['ev_status'] == "running" OR $_SESSION["e_$eventid"]
 
 // ---- Recalculate results if required ----------------------------------
 $results = array("eventid" => $eventid, "num-fleets" => $numfleets, "pursuit" => $_SESSION["e_$eventid"]['pursuit']);
+$_SESSION["e_$eventid"]['result_valid'] = false;
 if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need recalculating
 {
     $warning_count = 0;

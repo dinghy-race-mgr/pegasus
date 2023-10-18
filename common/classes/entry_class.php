@@ -58,14 +58,8 @@ class ENTRY
 
 
     public function add_signon($competitorid, $allocate, $helm, $crew, $sailnum, $source="")
-        /*
-         * Adds entry record to t_entry
-         * $crew and/or $sailnum only set if temporary change required
-         */
+        // adds entry to t_entry (only includes change fields if the are set
     {
-//        echo "<pre>ARGS: |$competitorid|$allocate|$helm|$crew|$sailnum|</pre>";
-//        exit();
-
         $status = "fail";
         if (empty($competitorid) OR !is_numeric($competitorid))  // check we have a competitor id - if not return error
         {
@@ -100,14 +94,73 @@ class ENTRY
     }
 
 
+    public function del_signon($eventid, $competitorid, $entryid = 0)
+        // removes entry - including records in t_race and t_lap if they exist
+    {
+        $status = false;
+
+        //  delete t_entry records for this event and competitor
+        $entry_del = $this->db->db_delete("t_entry", array("eventid" => $eventid, "competitorid" => $competitorid));
+
+        // delete any relevant records in t_race or t_lap
+        if ($entryid > 0)
+        {
+            $race_del = $this->delete($entryid);
+        }
+
+        return $entry_del;
+    }
+
+
     public function chk_signon($eventid, $competitorid)
     {
         $status = false;
-        $detail = array();
+
         $query = "SELECT * FROM `t_entry` WHERE eventid = '$eventid' AND competitorid = '$competitorid'";
         $detail = $this->db->db_get_rows( $query );
-        if (!empty($detail)) { $status = true; }
+        if (count($detail) > 0) { $status = true; }
+
         return $status;
+    }
+
+    public function chk_signon_errors($type="entries")
+    {
+        $err = array();
+
+        $where_options  = array(
+            "entries"      => " AND action IN ('enter', 'delete', 'update', 'replace') ",
+            "retirements"  => " AND action = 'retire' ",
+            //"declarations" => " AND action IN ('retire', 'declare') ",
+            "all"          => ""
+        );
+        $type ? $where = $where_options["$type"] : $where = "";
+
+        $detail = $this->db->db_get_rows( "SELECT * FROM `t_entry` WHERE eventid = '{$this->eventid}' $where" );
+
+        foreach ($detail as $row)
+        {
+            // check competitor record
+            $chk_comp = $this->db->db_get_row( "SELECT * FROM `t_competitor` WHERE id = '{$row['competitorid']}'" );
+
+            if (!$chk_comp)
+            {
+
+                $err[] = array("id"=>$row['id'], "boat"=>"unknown boat", "reason"=>"competitor details not found");
+            }
+            else
+            {
+                // check class record
+                $chk_class = $this->db->db_get_row( "SELECT * FROM `t_class` WHERE id = '{$chk_comp['classid']}'" );
+
+                if (!$chk_class)
+                {
+                    $err[] = array("id"=>$row['id'], "boat"=>"{$chk_comp['helm']} - {$chk_comp['sailnum']}",
+                                   "reason"=>"boat class details not found");
+                }
+            }
+        }
+
+        return $err;
     }
 
     public function get_signon($eventid, $competitorid)
@@ -232,7 +285,7 @@ class ENTRY
         $where_options  = array(
             "entries"      => " AND action IN ('enter', 'delete', 'update', 'replace') ",
             "retirements"  => " AND action = 'retire' ",
-            "declarations" => " AND action IN ('retire', 'declare') ",
+//            "declarations" => " AND action IN ('retire', 'declare') ",
             "all"          => ""
         );
         $type ? $where = $where_options["$type"] : $where = "";
@@ -245,7 +298,7 @@ class ENTRY
                   FROM t_entry as x
                   JOIN t_competitor as a ON x.competitorid = a.id
                   JOIN t_class as b ON a.classid=b.id
-                  WHERE status IN ('N','F') AND eventid = {$this->eventid} $where ORDER BY x.id, x.createdate ASC";
+                  WHERE status IN ('N', 'E', 'F') AND eventid = {$this->eventid} $where ORDER BY x.id, x.createdate ASC";
 
         $entries = $this->db->db_get_rows($query);
 
@@ -376,8 +429,6 @@ class ENTRY
                              "problem" => "not registered", "raceid" => 0);
         }
 
-        //echo "<pre>SET ENTRY RESULT ".print_r($result,true)."</pre>";
-
         return $result;   // if status is "entered" update $_SESSION to mark result status invalid and add 1 to no. of entries
     }
 
@@ -393,14 +444,15 @@ class ENTRY
 
 
     public function delete($entryid)
+        // deletes entry that has been loaded
     {
         $status = true;
         $fields = $this->get_by_raceid($entryid);
-        //$fleetnum = $fields['fleet'];
-//        $this->db->db_delete("t_finish", array("entryid"=>$entryid));           // delete pursuit finish records
+
         $this->db->db_delete("t_lap", array("entryid"=>$entryid));              // delete lap records
         $num_rows = $this->db->db_delete("t_race", array("id"=>$entryid));      // delete race record
-        if (!$num_rows)
+
+        if (!$num_rows)                                                         // rows deleted
         {
             $status = false;
         }
