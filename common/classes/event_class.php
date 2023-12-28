@@ -216,8 +216,8 @@ class EVENT
          *
          */
     {
-        $select = "SELECT id, event_date, TIME_FORMAT(event_start, '%H:%i') AS event_start, event_order, event_name, series_code, event_type, event_format, 
-                          event_entry, event_status, event_open, event_ood, tide_time, tide_height, start_scheme,
+        $select = "SELECT id, event_date, TIME_FORMAT(event_start, '%H:%i') AS event_start, event_order, event_name, series_code, series_code_extra,  
+                          event_type, event_format,event_entry, event_status, event_open, event_ood, tide_time, tide_height, start_scheme,
                           start_interval, timerstart, ws_start, wd_start, ws_end, wd_end, event_notes, 
                           result_notes, result_valid, result_publish, weblink, 
                           webname, display_code, active, upddate, updby FROM t_event";
@@ -825,22 +825,13 @@ class EVENT
 
         return $num;
     }
-    
-
 
     public function event_in_series($eventid)
     {
         $detail = $this->get_event_byid($eventid);
         if ($detail)
         {
-            if ($detail['series_code'])
-            {
-                $series = $this->event_getseries($detail['series_code']);
-            }
-            else
-            {
-                $series = false;
-            }
+            $detail['series_code'] ? $series = $this->event_getseries($detail['series_code']) : $series = false;;
         }
         else
         {
@@ -867,7 +858,7 @@ class EVENT
                   maxduty, opt_upload, opt_style, opt_turnout, opt_scorecode, opt_clubnames, opt_pagebreak, opt_racelabel, a.notes
                   FROM t_series as a JOIN t_cfgseries as b ON a.seriestype=b.id WHERE a.active=1
                   AND seriescode = '$rootcode'  ORDER BY seriesname ASC";
-        // echo "SERIES QUERY: $query<br>";
+
         $detail = $this->db->db_get_row( $query );
 
         if (empty($detail))
@@ -906,8 +897,10 @@ class EVENT
     public function series_eventarr($code)
     {
         // gets list of events that are part of the specified series
+//        $query = "SELECT id FROM t_event WHERE active=1
+//                  AND series_code = '$code' ORDER BY event_date ASC, event_start ASC";
         $query = "SELECT id FROM t_event WHERE active=1
-                  AND series_code = '$code' ORDER BY event_date ASC, event_start ASC";
+                  AND series_code = '$code' OR series_code_extra LIKE '$code' ORDER BY event_date ASC, event_start ASC";
         $detail = $this->db->db_get_rows( $query );
 
         if (empty($detail))

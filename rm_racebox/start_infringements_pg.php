@@ -13,20 +13,19 @@ $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("./include/rm_racebox_lib.php");
 
-// process standard parameters  (eventid, pagestate, startnum)
-$eventid   = u_checkarg("eventid", "checkintnotzero","");
-$pagestate = u_checkarg("pagestate", "set", "", "");
-$startnum  = u_checkarg("startnum", "checkintnotzero","");
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
+$eventid   = u_checkarg("eventid", "checkintnotzero","");     // eventid (required)
+$pagestate = u_checkarg("pagestate", "set", "", "");          // pagestate
+$startnum  = u_checkarg("startnum", "checkintnotzero","");    // startnum
 
 if (!$eventid)
 {
     u_exitnicely($scriptname, 0,"$page page - event id record [{$_REQUEST['eventid']}] not defined",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-// start session
-session_id('sess-rmracebox');
-session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, false);

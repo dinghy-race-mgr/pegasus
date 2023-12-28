@@ -1,11 +1,38 @@
 <?php
 //error_log("<pre>".print_r($values,true)."</pre>\n", 3, $_SESSION['dbglog']);
 
-$msg = "";
-isset($oldvalues) ? $mode = "edit" : $mode = "add";
-//$values['event_date'] = date("Y-m-d", strtotime($values['event_date']));
 
-// individual field checks
+// set mode
+//isset($oldvalues) ? $mode = "edit" : $mode = "add";
+
+
+// modify series fields to include year modifier
+if (!empty($values['series_root']))
+{
+    $values['series_code'] = $values['series_root']."-".date("y", strtotime($values['event_date']));
+}
+else
+{
+    $values['series_code'] = "";
+}
+unset($values['series_root']);
+
+if (!empty($values['series_root_extra']))
+{
+    $series_arr = explode(",", $values['series_root_extra']);
+    $field_txt = "";
+    foreach ($series_arr as $v)
+    {
+        $field_txt.= $v."-".date("y", strtotime($values['event_date'])).",";
+    }
+    $values['series_code_extra'] = rtrim($field_txt, ",");
+}
+unset($values['series_root_extra']);
+
+
+// individual field validation checks
+$msg = "";
+
 if ($values['event_type'] == "racing")
 {
     // check race format
@@ -30,14 +57,29 @@ if ($values['event_type'] == "racing")
     if (!empty($values['series_code']) and ($values['series_code']))
     {
         $series_root = get_series_root($values['series_code']);
-        if (!f_check_exists("t_series", " seriescode='$series_root' ", $conn))
+        if (!f_check_exists("t_series", " seriescode ='$series_root' ", $conn))
         {
-            $msg .= "- series code [ $series_root ] is not recognised<br>";
+            $msg .= "- series [ $series_root ] is not recognised<br>";
+        }
+    }
+
+    // check all secondary series codes exist
+    if (!empty($values['series_code_extra']) and ($values['series_code_extra']))
+    {
+        $series_arr = explode(",", $values['series_code_extra']);
+        foreach ($series_arr as $v)
+        {
+            $series_root = get_series_root(trim($v));
+            if (!f_check_exists("t_series", " seriescode='$series_root' ", $conn))
+            {
+                $msg .= "- secondary series [ $series_root ] is not recognised<br>";
+            }
         }
     }
 
     // check entry type is set
     if (empty($values['event_entry'])){ $msg.= "- race entry method must be set<br>"; }
+
 }
 elseif ($values['event_type'] == "training" or $values['event_type'] == "social" or $values['event_type'] == "cruise")
 {
@@ -127,6 +169,7 @@ if (empty($msg))
     if ($values['event_type'] != "racing")
     {
         $values['series_code'] = "";
+        $values['series_code_extra'] = "";
         $values['start_scheme'] = "";
         $values['start_interval'] = "";
     }

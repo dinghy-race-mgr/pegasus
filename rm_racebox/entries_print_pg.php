@@ -20,7 +20,10 @@ $today = date("Y-m-d");
 
 include ("{$loc}/common/lib/util_lib.php");
 
-// script parameters
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 $format = u_checkarg("format", "set","");
 
@@ -29,10 +32,6 @@ if (!$eventid or empty($format))
     u_exitnicely($scriptname, 0, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}] or the output report format has not been specified [{$_REQUEST['format']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-// start session
-session_id('sess-rmracebox');
-session_start();
 
 // page initialisation
 u_initpagestart($_REQUEST['eventid'], $page, false);

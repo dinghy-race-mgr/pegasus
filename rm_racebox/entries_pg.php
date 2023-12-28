@@ -28,16 +28,16 @@ $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("./include/rm_racebox_lib.php");
 
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 
 if (!$eventid) {
     u_exitnicely($scriptname, 0, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-// start session
-session_id('sess-rmracebox');   // creates separate session for this application
-session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, true);

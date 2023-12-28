@@ -25,19 +25,18 @@ require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("./include/rm_racebox_lib.php");
 
-// process standard parameters  (eventid, pagestate, fleet)
-$eventid   = u_checkarg("eventid", "checkintnotzero","");
-$pagestate = u_checkarg("pagestate", "set", "", "");
-$fleet     = u_checkarg("fleet", "set", "", "");
-
 // start session
-session_id('sess-rmracebox');
-session_start();
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
+$eventid   = u_checkarg("eventid", "checkintnotzero","");    // eventid (required)
+$pagestate = u_checkarg("pagestate", "set", "", "");         // pagestate (required)
+$fleet     = u_checkarg("fleet", "set", "", "");             // $fleet
 
 // page initialisation
 u_initpagestart($eventid, $page, false);
 
-// app classes
+// classes
 require_once ("{$loc}/common/classes/db_class.php"); 
 require_once ("{$loc}/common/classes/event_class.php");
 require_once ("{$loc}/common/classes/race_class.php");
@@ -207,7 +206,7 @@ if ($eventid AND $pagestate)
 /* ------- PROCESS FINISH FOR PURSUIT -------------------------------------------------------------------------- */
     elseif ($pagestate == "processfinishpursuit")
     {
-        echo "<pre>".print_r($_REQUEST,true)."</pre>";
+        //echo "<pre>".print_r($_REQUEST,true)."</pre>";
 
         // process form   [set lap, f_line, f_pos, code, status]
         $entryid = u_checkarg("entryid", "checkintnotzero", "");

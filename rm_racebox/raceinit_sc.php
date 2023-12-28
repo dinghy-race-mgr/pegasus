@@ -21,7 +21,10 @@ $page       = "raceinit";
 
 require_once ("{$loc}/common/lib/util_lib.php");
 
-// check we have a valid numeric eventid and mode
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 $mode = u_checkarg("mode", "set", "", "init");
 
@@ -30,10 +33,6 @@ if (!$eventid)
     u_exitnicely($scriptname, 0, "requested event has an invalid or missing record identifier [{$_REQUEST['eventid']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-// start session
-session_id('sess-rmracebox');   // creates separate session for this application
-session_start();
 
 // starts session and sets error reporting
 u_initpagestart($eventid, $page, false);

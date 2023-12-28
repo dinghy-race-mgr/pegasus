@@ -16,13 +16,12 @@ $page       = "help";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
+// start session
+u_startsession("sess-rmracebox", 10800);
+
 // script parameters
 $eventid = u_checkarg("eventid", "checkint","");                 // if zero - requested from pickrace_pg
 $helppage = u_checkarg("page", "set", "", "help");
-
-// start session
-session_id('sess-rmracebox');
-session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, false);

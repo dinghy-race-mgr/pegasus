@@ -1,4 +1,26 @@
 <?php
+
+// add ood duty if not provided
+if ($mode == "add" and $values['event_type'] == "racing")
+{
+    $rs = db_query("SELECT * FROM t_eventduty WHERE eventid = '{$values['id']}' AND dutycode='ood_p'", $conn);
+    $data = db_fetch_array($rs);
+    if (!$data)
+    {
+        if ($values['event_ood'])
+        {
+            $name = $values['event_ood'];
+        }
+        else
+        {
+            $name = "- not specified -";
+        }
+
+        $insert = db_query("INSERT INTO t_eventduty (`eventid`,`dutycode`,`person`, `updby`) VALUES ('{$values['id']}','ood_p', '$name', '{$_SESSION['UserID']}')", $conn);
+    }
+}
+
+
 $msg = "";
 
 // check if series in event name but no series specified

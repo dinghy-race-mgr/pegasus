@@ -15,21 +15,20 @@ $page       = "timer_editlaptimes";     //
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-// process standard parameters  (eventid, pagestate, entryid)
-$eventid   = u_checkarg("eventid", "checkintnotzero","");
-$pagestate = u_checkarg("pagestate", "set", "", "");
-$entryid   = $_REQUEST['entryid'];
-$clear = u_checkarg("clear", "setbool", 1, 0);
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
+$eventid   = u_checkarg("eventid", "checkintnotzero","");   // eventid (required)
+$pagestate = u_checkarg("pagestate", "set", "", "");        // pagestate (required)
+$entryid   = $_REQUEST['entryid'];                          // entryid (required)
+$clear     = u_checkarg("clear", "setbool", 1, 0);          // clear
 
 if (empty($_REQUEST['pagestate']) OR empty($_REQUEST['eventid']) OR empty($_REQUEST['entryid']))
 {
     u_exitnicely($scriptname, 0, "$page page - the requested event has an missing/invalid record identifier [{$_REQUEST['eventid']}] or pagestate [{$_REQUEST['pagestate']}",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-// start session
-session_id('sess-rmracebox');
-session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, true);

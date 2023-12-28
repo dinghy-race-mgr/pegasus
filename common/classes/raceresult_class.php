@@ -180,6 +180,9 @@ class RACE_RESULT
 
     public function get_result_files($constraints_1, $constraints_2 = array())
     {
+        // gets results files records from t_resultfile
+        // allows two sets of select criteria - each set is configured with AND and then OR'd
+
         $where_1 = "";
         $where_2 = "";
         foreach ($constraints_1 as $field => $constraint) { $where_1.= " $field = '$constraint' and "; }
@@ -188,13 +191,13 @@ class RACE_RESULT
         if (!empty($constraints_2))
         {
             foreach ($constraints_2 as $field => $constraint) { $where_2.= " $field = '$constraint' and "; }
-            $where_2 = rtrim($where_1, "and ");
+            $where_2 = rtrim($where_2, "and ");
         }
 
         empty($where_2) ? $where = $where_1 : $where = "( ".$where_1.") OR ( ".$where_2." )";
 
         $sql = "SELECT * FROM t_resultfile WHERE $where";
-        //u_writedbg($sql, __CLASS__, __FUNCTION__, __LINE__);
+
         $files = $this->db->db_get_rows($sql);
         return $files;
     }
@@ -493,10 +496,9 @@ EOT;
 
             $inventory["events"][$event['id']]['duties'] = $dutyarray;
 
-            // get results files for this event and any associated series file
-            // FIXME this will need fixing to deal with multiple series
-            empty($event['series_code']) ? $series_search = array() : $series_search = array("folder"=>"series", "filename"=>$event['series_code'].".htm");
-            $files = $this->get_result_files(array("eventid"=>$event['id']), $series_search);
+            // get results files associated with this event
+            //empty($event['series_code']) ? $series_search = array() : $series_search = array("folder"=>"series", "filename"=>$event['series_code'].".htm");
+            $files = $this->get_result_files(array("eventid"=>$event['id']));
 
             $resultsfiles = array();
             foreach ($files as $file) {

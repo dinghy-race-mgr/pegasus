@@ -25,17 +25,14 @@ $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
 // start session
-ini_set('session.gc_maxlifetime', 10800);
-session_set_cookie_params(10800);
-session_id('sess-rmracebox');   // creates separate session for this application
-session_start();
+u_startsession("sess-rmracebox", 10800);
 
 // arguments
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 if (!$eventid)
 {
-    u_exitnicely($scriptname, 0, "requested event has an invalid or missing record identifier [{$_REQUEST['eventid']}]",
-        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
+    u_exitnicely($scriptname, 0, "requested event has an invalid or missing identifier [ eventid = {$_REQUEST['eventid']}]",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => $_REQUEST));
 }
 
 // page initialisation
@@ -98,6 +95,23 @@ else
     $ood  = $rota_o->get_duty_person($eventid, "ood_p");
     if (empty($ood)) { $ood = $_SESSION["e_$eventid"]['ev_ood'] ; }
 
+    // secondary series
+    $secondary_series_txt = "";
+    if (!empty($_SESSION["e_$eventid"]['ev_seriescodeextra']))
+    {
+        $series_arr = explode(",", $_SESSION["e_$eventid"]['ev_seriescodeextra']);
+        $secondary_series_txt = "[ and";
+        foreach ($series_arr as $v)
+        {
+             $series = $event_o->event_getseries($v);
+             $secondary_series_txt.= " ".ucwords($series['seriesname']).",";
+
+            //$secondary_series_txt.= " ".ucwords(substr($v, 0, strpos($v, "-"))).",";
+        }
+        $secondary_series_txt = rtrim($secondary_series_txt, ",")." ]";
+        unset($series);
+    }
+
     $fields = array(
         "start-time"   => $_SESSION["e_$eventid"]['ev_starttime'],
         "tide-detail"  => $tidestr,
@@ -107,6 +121,7 @@ else
         "race-format"  => $_SESSION["e_$eventid"]['rc_name'],
         "race-starts"  => $_SESSION["e_$eventid"]['rc_numstarts'],
         "series-name"  => $_SESSION["e_$eventid"]['ev_seriesname'],
+        "series-extra" => $secondary_series_txt,
         "event-notes"  => $_SESSION["e_$eventid"]['ev_notes'],
         "coursefinder" => $_SESSION['racebox_coursefinder']
     );
@@ -267,13 +282,9 @@ else
 
 }
 
-
-//$rbufr_bot ="status|prevstatus|timerstart<br> {$_SESSION["e_$eventid"]['ev_status']}|{$_SESSION["e_$eventid"]['ev_prevstatus']}|{$_SESSION["e_$eventid"]['timerstart']}";
-
 $rbufr_bot ="";
 
 // close  - modal
-
 $close_ok = r_oktoclose($eventid);    // results must be published and all boats finished
 if ($close_ok['result'])
 {
@@ -357,6 +368,7 @@ function checklapstatus ($eventid)
 }
 
 function gettimerscript()
+    // FIXME this code is also included in start_pg.php
 {
     $warnsecs = 0;
     $bufr = <<<EOT
@@ -379,7 +391,7 @@ function gettimerscript()
                     }
                 }
                 if (secstogo == $warnsecs & clock!='c0' & !elapsed) {
-                        window.location.reload(true);
+                        window.location.reload();
                 }
             });
         });

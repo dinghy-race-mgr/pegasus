@@ -20,8 +20,7 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/event_class.php");
 
 // start session
-session_id('sess-rmracebox');
-session_start();
+u_startsession("sess-rmracebox", 10800);
 
 // page initialisation
 u_initpagestart("", $page, false);

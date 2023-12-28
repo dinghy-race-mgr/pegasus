@@ -660,4 +660,42 @@ function fm_change_finish($params = array())
 
 }
 
+function fm_close_ok($param=array())
+{
+    $html = <<<EOT
+    <div class="margin-top-10">
+        <h4><b>Congratulations - job done!</b></h4>
+        <p>After closing the race you will be returned to the RaceBox dashboard</p>
+        <br>
+        <p>If you want to send a message to the Results Team about the results or any problems you had please enter the details below</p>
 
+        <!-- message field -->
+        <div class="well" style="margin-left: 20px; margin-right: 20px;">
+            <div class="form-group" style="margin-left: 5%; margin-right: 5%;">
+                <div class="inputfieldgroup">
+                    <textarea rows="3" class="form-control" id="message" name="message"
+                     placeholder="any problems? ..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+EOT;
+    return $html;
+}
+
+
+function fm_close_notok($param=array())
+{
+    $html = <<<EOT
+        <!-- instructions -->
+        <h3 >Sorry - you can't CLOSE this race yet because ...</h3>
+        <div style="margin-left: 20px;">
+            <h4>{reason}</h4>
+            <p>{info}</p>
+        </div>
+        
+        <h4><br><hr style="border-top: 1px solid green">If you are not able to resolve the problems with the results
+        - publish them anyway and use the <b>Report Issue</b> button above to describe the problem</h4>
+EOT;
+    return $html;
+}

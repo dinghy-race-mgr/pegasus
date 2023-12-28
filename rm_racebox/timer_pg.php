@@ -19,16 +19,15 @@ $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 
-// set event id
-$eventid = u_checkarg("eventid", "checkintnotzero","");
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
+$eventid = u_checkarg("eventid", "checkintnotzero","");   // eventid (required)
 if (!$eventid) {
     u_exitnicely($scriptname, 0, "$page page - the requested event has an missing/invalid record identifier [{$_REQUEST['eventid']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-// start session
-session_id('sess-rmracebox');
-session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, true);

@@ -28,6 +28,22 @@
 
 // NOT SORTED YET
 
+function u_dbgargs($function, $args)
+{
+    echo $function."<br>";
+    $i = 0;
+    foreach($args as $arg)
+    {
+        $i++;
+        echo "Arg $i is:<br> ";
+        if (is_array($arg)) {
+            echo "<pre>" . print_r($arg, true) . "</pre>";
+        } else {
+            echo "<pre>$arg</pre>";
+        }
+    }
+}
+
 function u_checkarg($arg, $mode, $check, $default = "")
 {
     // tests $_REQUEST argument for existence and sets values or defaults accordingly.
@@ -389,6 +405,16 @@ function u_timeresolution($resolution, $time)
 
 // ------ SYSTEM FUNCTIONS --------------------------------------------------------------------------------------------
 
+function u_startsession ($sess_name, $sess_timeout)
+{
+    ini_set('session.gc_maxlifetime', $sess_timeout);
+    session_set_cookie_params($sess_timeout);
+    session_id($sess_name);   // creates separate session for this application
+    session_start();
+    return;
+}
+
+
 /**
  * u_exitnicely()
  * 
@@ -399,12 +425,14 @@ function u_timeresolution($resolution, $time)
  * @param int       $eventid     eventid or 0 if not event 
  * @param string    $error       description of error
  * @param string    $action      suggested action to take
- * @param array    $attr        array with filename, function, line no., calling script, calling arguments
+ * @param array     $attr        array with filename, function, line no., calling script, calling arguments
  * @return void
  */
  function u_exitnicely($script, $eventid, $error, $action, $attr = array())
 {
     global $loc;
+
+    error_reporting(E_ERROR); // stop session errors being reported
 
     empty($_SESSION['racebox_theme']) ? $theme = $_SESSION['racebox_theme'] : $theme = "flatly_";
     $title = "raceManager";
@@ -416,11 +444,15 @@ function u_timeresolution($resolution, $time)
     empty($attr['calledby']) ? $calledby = "" : $calledby = "- called by {$attr['calledby']}";
 
     $argtxt = "";
-    if (!empty($calledby) and !empty($attr['args']))
+    if (!empty($attr['args']))
     {
         foreach ($attr['args'] as $i=>$arg) { $argtxt.= $i.": ".$arg.", "; }
         $argtxt = " with args [ ".rtrim($argtxt, ", ")." ]";
     }
+
+    $logmsg = "**** FATAL ERROR - $error".PHP_EOL."script: $script, event: $eventid, function: $function, line: $line, calledby: $calledby, args: $argtxt";
+    u_writelog($logmsg, 0);                                // write to system log
+    if ($eventid!=0) { u_writelog($logmsg, $eventid); }    // write to event log
 
 
     echo <<<EOT
@@ -450,30 +482,29 @@ function u_timeresolution($resolution, $time)
           </div>
         </nav>     
         
-        <div class="container" style="margin-top: 50px;">
+        <div class="container" style="margin-top: 30px;">
             <div class="jumbotron">
               <h2 class="text-info">Oops sorry... &nbsp;&nbsp;we have encountered an unexpected error</h2>
               <p class="text-primary">$error</p>
             </div>
             <div>
-                <div class="alert alert-info" style="margin-top: 60px;">
+                <div class="alert alert-info" style="margin-top: 40px;">
                   <h3>You could try ...</h3> 
                   <p class="lead" style="padding-left: 30px;">$action<br>
                   - if this doesn't work contact your raceManager administrator</p>
                 </div>
             </div>
-            <div class="well well-lg" style="margin-top: 80px;">
-                The problem is probably due to some frankly shoddy coding by the deranged system developer!! - the details below might help him find and fix the problem.<br>
-                $script $function (line $line) $calledby $argtxt 
+            <div class="well well-lg" style="margin-top: 30px;">
+                <p class="lead" style="padding-left: 30px;">
+                The problem is probably due to some frankly shoddy coding by the deranged system developer!! - the details below might help him find the problem.<br>
+                <pre>$script $function (line $line) $calledby $argtxt </pre>
+                </p>
             </div>
         </div>
     </body>
     </html>
 EOT;
-    
-    $logmsg = "**** FATAL ERROR - $error".PHP_EOL."script: $script, event: $eventid, function: $function, line: $line, calledby: $calledby, args: $argtxt";
-    u_writelog($logmsg, 0);                                // write to system log
-    if ($eventid!=0) { u_writelog($logmsg, $eventid); }    // write to event log
+
     exit();
 }
 

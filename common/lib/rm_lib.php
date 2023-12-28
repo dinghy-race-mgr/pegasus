@@ -168,6 +168,7 @@ function r_seteventinsession($mode, $eventid, $current_event_status, $event, $se
     $_SESSION["e_$eventid"]['ev_order']       = $event['event_order'];
     $_SESSION["e_$eventid"]['ev_name']        = $event['event_name'];
     $_SESSION["e_$eventid"]['ev_seriescode']  = strtolower($event['series_code']);
+    $_SESSION["e_$eventid"]['ev_seriescodeextra']  = $event['series_code_extra'];
     $_SESSION["e_$eventid"]['ev_type']        = strtolower($event['event_type']);
     $_SESSION["e_$eventid"]['ev_format']      = $event['event_format'];
     $_SESSION["e_$eventid"]['ev_entry']       = strtolower($event['event_entry']);

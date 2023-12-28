@@ -235,10 +235,54 @@ $mdl_publish = array(
         "onsubmit"   => "",
         "action"     => "",
         "target"     => "",
-        "close-lbl"  => "Close&nbsp;",
+        "close-lbl"  => "Done with this page&nbsp;",
         "reset-lbl"  => "",
         "submit-lbl" => "",
         "footer"     => ""
+    ),
+);
+
+// ---- close race button --------------------------------------------------------------------------
+$btn_close = array(
+    "label"     => true,
+    "glyph"     => true,
+    "g-pos"     => "left",
+    "popover"   => true,
+    "fields"    => array(
+        "id"       => "close",
+        "style"     => "primary",
+        "size"      => "lg",
+        "label"     => "Close Race",
+        "glyph"     => "glyphicon-log-out",
+        "popover"   => "click here to close the race and tidy up the system",
+        "pop-pos"   => "left",
+        "block"     => "btn-block",
+        "disabled"  => "",
+        "top-margin"  => "margin-top-10"
+    ),
+);
+
+$mdl_close = array(
+    "form"    => true,
+    "footer"  => true,
+    "reload"  => true,
+    "close"   => true,
+    "reset"   => false,
+    "submit"  => true,
+    "fields"  => array(
+        "id"          => "close",
+        "style"       => "success",
+        "size"        => "md",
+        "title"       => "<b>CLOSE - $eventname</b>",
+        "body"        => "",
+        "script"      => "",
+        "action"      => "race_sc.php?eventid=$eventid&pagestate=close",
+        "target"      => "",
+        "onsubmit"    => "",
+        "close-lbl"   => "cancel",
+        "reset-lbl"   => "",
+        "submit-lbl"  => "CLOSE race",
+        "footer"      => ""
     ),
 );
 

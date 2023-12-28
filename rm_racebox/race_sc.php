@@ -16,18 +16,19 @@
 $loc        = "..";                                                 // relative path from script to top level folder
 $page       = "race";     // 
 $scriptname = basename(__FILE__);
+
 $dbg_on     = false;
 $stop_here  = false;
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 
+// start session
+u_startsession("sess-rmracebox", 10800);
 
+// arguments
 $eventid   = u_checkarg("eventid", "checkintnotzero","");
 $pagestate = u_checkarg("pagestate", "set", "", "");
 
-// start session
-session_id('sess-rmracebox');   // creates separate session for this application
-session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, false);

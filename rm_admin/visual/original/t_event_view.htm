@@ -151,6 +151,16 @@
 		</div>
 	</div>
 {END series_code_fieldblock}
+					{BEGIN series_code_extra_fieldblock}
+	<div class="{$fielddispclass_series_code_extra} col-md-4 bs-viewcontrolgroup" data-fieldname="series_code_extra">
+		<label class="control-label" for="{$labelfor_series_code_extra}">
+			{$label t_event series_code_extra}
+		</label>
+		<div class="" >
+			{$series_code_extra_value}&nbsp;
+		</div>
+	</div>
+{END series_code_extra_fieldblock}
 					{BEGIN event_format_fieldblock}
 	<div class="{$fielddispclass_event_format} col-md-4 bs-viewcontrolgroup" data-fieldname="event_format">
 		<label class="control-label" for="{$labelfor_event_format}">
@@ -201,6 +211,16 @@
 		</div>
 	</div>
 {END event_notes_fieldblock}
+					{BEGIN event_ood_fieldblock}
+	<div class="{$fielddispclass_event_ood} col-md-4 bs-viewcontrolgroup" data-fieldname="event_ood">
+		<label class="control-label" for="{$labelfor_event_ood}">
+			{$label t_event event_ood}
+		</label>
+		<div class="" >
+			{$event_ood_value}&nbsp;
+		</div>
+	</div>
+{END event_ood_fieldblock}
 					{BEGIN weblink_fieldblock}
 	<div class="{$fielddispclass_weblink} col-md-4 bs-viewcontrolgroup" data-fieldname="weblink">
 		<label class="control-label" for="{$labelfor_weblink}">
@@ -303,13 +323,7 @@
 
 {BEGIN rightviewbuttons}
 <div class="btn-group" role="group">
-		{BEGIN prev_button}
-	<button class="btn btn-default {$prevbutton_class}" {$prevbutton_attrs}><span class="glyphicon glyphicon-chevron-left"></span></button>
-	{END prev_button}
-	{BEGIN next_button}
-	<button class="btn btn-default {$nextbutton_class}" {$nextbutton_attrs}><span class="glyphicon glyphicon-chevron-right"></span></button>
-	{END next_button}
-		{BEGIN view_menu_button}
+			{BEGIN view_menu_button}
 	<div class="btn-group dropup" role="group">
 		<button class="btn btn-default dropdown-toggle {$groupbutton_class}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span class="glyphicon glyphicon-menu-hamburger"></span></button>
 		<ul class="dropdown-menu dropdown-left">

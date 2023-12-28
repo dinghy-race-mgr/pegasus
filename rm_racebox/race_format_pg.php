@@ -11,17 +11,16 @@ $page       = "race_format";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-// script parameters
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
 $eventid = $_REQUEST['eventid'];
 if (!$eventid)
 {
     u_exitnicely($scriptname, $_REQUEST['eventid'],"$page page - input parameters eventid [{$_REQUEST['eventid']}] is missing",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-// start session
-session_id('sess-rmracebox');
-session_start();
 
 // page initialisation
 u_initpagestart("", $page, false);   // <-- not logged

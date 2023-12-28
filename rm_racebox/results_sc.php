@@ -23,20 +23,19 @@ $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("./include/rm_racebox_lib.php");
 
-// parameters  [eventid (required), pagestate(required), entryid)
-$eventid   = u_checkarg("eventid", "checkintnotzero","", false);
-$pagestate = u_checkarg("pagestate", "set", "", false);
-$entryid   = u_checkarg("entryid", "set", "", "");
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
+$eventid   = u_checkarg("eventid", "checkintnotzero","", false);      // eventid (required)
+$pagestate = u_checkarg("pagestate", "set", "", false);               // pagestate (required)
+$entryid   = u_checkarg("entryid", "set", "", "");                    // entryid
 
 if (!$eventid)
 {
     u_exitnicely($scriptname, 0,"$page page - event id record [{$_REQUEST['eventid']}] not defined",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-// start session
-session_id('sess-rmracebox');
-session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, false);
@@ -50,13 +49,14 @@ require_once ("{$loc}/common/classes/race_class.php");
 // page controls
 include("./templates/growls.php");
 
-
 if ($eventid AND $pagestate)
 {
     $db_o    = new DB;
     $race_o  = new RACE($db_o, $eventid);
 
-/* ------- RETIREMENTS ------------------------------------------------------------------------------- */
+// -----------------------------------------------------------------------------------
+//   load retirements
+// -----------------------------------------------------------------------------------
     if ($pagestate == "retirements")
     {
         $entry_o = new ENTRY($db_o, $eventid);
@@ -124,7 +124,9 @@ if ($eventid AND $pagestate)
         }
     }
 
-/* ------- SETCODE ------------------------------------------------------------------------------- */
+// -----------------------------------------------------------------------------------
+//   set scoring code
+// -----------------------------------------------------------------------------------
     elseif ($pagestate == "setcode")
     {
         if (!empty($_REQUEST['fleet']))
@@ -140,7 +142,9 @@ if ($eventid AND $pagestate)
 
     }
 
-/* ------- DELETE ------------------------------------------------------------------------------- */
+// -----------------------------------------------------------------------------------
+//   delete boat
+// -----------------------------------------------------------------------------------
     elseif ($pagestate == "delete")                // remove boat from race - mark status as 'D'
     {
         $result = $race_o->entry_get($entryid, "race");
@@ -159,7 +163,9 @@ if ($eventid AND $pagestate)
         }
     }
 
-/* ------- CHANGEFINISH ------------------------------------------------------------------------------- */
+// -----------------------------------------------------------------------------------
+//   change finish lap
+// -----------------------------------------------------------------------------------
     elseif ($pagestate == "changefinish")
     {
         $growl_txt = "";
@@ -192,7 +198,9 @@ if ($eventid AND $pagestate)
 
     }
 
-/* ------- MESSAGE ------------------------------------------------------------------------------- */
+// -----------------------------------------------------------------------------------
+//   send message
+// -----------------------------------------------------------------------------------
     elseif ($pagestate == "message")   // send message
     {
         $event_o = new EVENT($db_o);
@@ -220,15 +228,59 @@ if ($eventid AND $pagestate)
             u_growlSet($eventid, $page, $g_race_msg_fail);
         }
     }
+
+// -----------------------------------------------------------------------------------
+//   close race
+// -----------------------------------------------------------------------------------
+//
+    elseif ($pagestate == "close")
+    {
+        if (!empty($_REQUEST['message']))       // send message if necessary
+        {
+            // set fields to enter
+            $fields = array(
+                "name"    => "OOD",
+                "subject" => $_SESSION["e_$eventid"]['ev_dname']." - OOD closing message",
+                "message" => $_REQUEST['message'],
+                "email"   => "",
+                "status"  => "received",
+            );
+            $add = $event_o->event_addmessage($eventid, $fields);
+        }
+
+        $result = $event_o->event_close($eventid);
+        if ($result)
+        {
+            $_SESSION["e_$eventid"]['exit'] = true;
+            u_writelog("race COMPLETED", $eventid);
+            u_growlSet(0, $page, $g_race_close_success);
+
+            // return to dashboard
+            header("Location: pickrace_pg.php?");
+            exit();
+        }
+        else
+        {
+            u_writelog("ERROR - attempt to close race failed ", $eventid);
+            u_growlSet($eventid, $page, $g_race_close_fail);
+        }
+    }
+
+// -----------------------------------------------------------------------------------
+//   pagestate not recognised
+// -----------------------------------------------------------------------------------
     else
     {
         u_exitnicely($scriptname, $eventid,"$page page - pagestate value not recognised [{$_REQUEST['pagestate']}]",
             "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
 
+// -----------------------------------------------------------------------------------
+//   update racestate and return to results page
+// -----------------------------------------------------------------------------------
     // check status / update session
     $race_o->racestate_updatestatus_all($_SESSION["e_$eventid"]['rc_numfleets'], $page);
-    if (!$stop_here) { header("Location: results_pg.php?eventid=$eventid"); exit(); }  // back to results page
+    if (!$stop_here) { header("Location: results_pg.php?eventid=$eventid"); exit(); }
        
 }
 else
@@ -237,7 +289,9 @@ else
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
-// ------------- FUNCTIONS ---------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------
+//   functions
+// -----------------------------------------------------------------------------------
 function creategrowl($eventid, $page, $pagestate, $counts, $rpt_bufr)
 {
     $protest_txt = "";

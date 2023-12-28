@@ -819,7 +819,7 @@ function process_footer($params=array())
         $close_reminder = <<<EOT
         <div class="alert alert-info" role="alert">
             <p class="">When the results have been saved and no more corrections are required ...<p>
-            <h3 class="text-center">Please CLOSE the race on the STATUS page</h3>
+            <h4 class="text-center">Please CLOSE the race on the STATUS page</h4>
         </div>
 EOT;
     }
@@ -831,10 +831,9 @@ EOT;
     $html = <<<EOT
     <div style='padding-left:10%; width: 80%; position: absolute; top: {top}px;' >
         <div class="alert alert-$style" role="alert">
-            <h4><b>$title</b></h4>
-            <p>$message</p>
-            $action
-            <p><i><b>You can save the results as many times as you need before you close the race</b></i><p>
+            <h4><b>$title</b> - <span style="font-size: smaller;">$message</span></h4>
+            <p>$action</p>
+            <p class="text-right"><b>You can save the results as many times as you need before you close the race</b><p>
         </div>
         $close_reminder
     </div>

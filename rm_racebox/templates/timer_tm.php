@@ -277,6 +277,8 @@ EOT;
             $data_bufr .= "<div class='col-md-2' style='padding: 0px 0px 0px 0px;'>";
             foreach ($dbufr[$i] as $entry) {
 
+
+
                 $boat = "{$entry['class']} - {$entry['sailnum']}";
                 $laps = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['maxlap'];
                 $scoring = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['scoring'];
@@ -328,6 +330,14 @@ EOT;
                 // competitor identity and lap count
                 $title = $entry['label'];
                 $lapcount = "L {$entry['lap']}";
+
+                // set special style for block if it was the last one clicked
+                $last_click_style = "";
+                if (array_key_exists("entryid", $_SESSION["e_$eventid"]['lastclick']))
+                {
+                    if ($_SESSION["e_$eventid"]['lastclick']['entryid'] == $entry['entryid']) { $last_click_style = "border: solid 5px crimson;"; }
+                }
+
 
                 // popover information
                 //$ptitle = "<b>{$entry['class']} - {$entry['sailnum']}</b> - ".strtoupper($state['val']);
@@ -402,7 +412,7 @@ EOT;
                 $data_bufr .= <<<EOT
                 <div class="btn-group btn-block" role="group" aria-label="..." >
                     <div id="boat-block" data-toggle="popover" data-container="body" data-placement="right"  title="$ptitle" data-content="$pcontent">
-                        <a type="button" href="$timelap_link$params_list" class="btn {$state['color']} btn-sm $disabled" style="width:60%" 
+                        <a type="button" href="$timelap_link$params_list" class="btn {$state['color']} btn-sm $disabled" style="width:60%; $last_click_style" 
                             >
                             <div class="pull-left">$title</div>
                             <div class="pull-right">$lapcount</div>     

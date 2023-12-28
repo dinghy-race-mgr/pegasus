@@ -17,12 +17,15 @@ $page       = "reminder";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-// check arguments (eventid(required), afterlink)
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
 $source = u_checkarg("source", "set", "", "");                   // link to proceed after reminders - or no reminders
 $eventid   = u_checkarg("eventid", "checkintnotzero","");        // current event id
 
 // establish target for back button
-if (empty($eventid))  // repor error
+if (empty($eventid))  // report error
 {
     u_exitnicely($scriptname, $eventid,"$page page - has been requested with no event specified [eventid: $eventid, source: $source]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
@@ -31,10 +34,6 @@ else
 {
     $source == "init" ? $sourcelink = "race_pg.php?eventid=$eventid": $sourcelink = $source."_pg.php?eventid=$eventid";
 }
-
-// start session
-session_id('sess-rmracebox');
-session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, false);

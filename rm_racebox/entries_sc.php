@@ -20,14 +20,13 @@ require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("./include/rm_racebox_lib.php");
 
-// process parameters  (eventid, pagestate, entryid)
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
 $eventid   = u_checkarg("eventid", "checkintnotzero","");
 $pagestate = u_checkarg("pagestate", "set", "", "");
 $entryid   = u_checkarg("entryid", "checkint", "", "");
-
-// start session
-session_id('sess-rmracebox');   // creates separate session for this application
-session_start();
 
 // initialise page
 u_initpagestart($eventid, $page, false);

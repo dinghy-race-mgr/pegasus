@@ -247,6 +247,7 @@ function debugTimer($eventid, $start_master, $start, $timerstart)
 
 function gettimerscript()
 {
+    // FIXME this code is also included in race_pg.php
     $warnsecs = constant("START_WARN_SECS");
     $bufr = <<<EOT
         <script type="text/javascript">
@@ -268,7 +269,7 @@ function gettimerscript()
                     }
                 }
                 if (secstogo == $warnsecs & clock!='c0' & !elapsed) {
-                        window.location.reload(true);
+                        window.location.reload();
                 }
             });
         });

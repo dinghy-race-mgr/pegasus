@@ -16,19 +16,18 @@ $stop_here  = false;
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-// parameters  [eventid (required), pagestate(required), entryid(required))
-$eventid   = u_checkarg("eventid", "checkintnotzero","", false);
-$pagestate = u_checkarg("pagestate", "set", "", false);
-$entryid   = u_checkarg("entryid", "set", "", "");
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
+$eventid   = u_checkarg("eventid", "checkintnotzero","", false);  // eventid (required)
+$pagestate = u_checkarg("pagestate", "set", "", false);           // pagestate (required)
+$entryid   = u_checkarg("entryid", "set", "", "");                // entryid (required)
 if (empty($eventid) OR empty($pagestate) OR empty($entryid))
 {
     u_exitnicely($scriptname, $_REQUEST['eventid'],"$page page - input parameters eventid [{$_REQUEST['eventid']}], pagestate [{$_REQUEST['pagestate']}] or entryid [{$_REQUEST['entryid']}] is missing",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-// start session
-session_id('sess-rmracebox');
-session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, true);   // starts session and sets error reporting

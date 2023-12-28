@@ -93,18 +93,13 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
     {
         $status = array('success' => false, 'err' => "file empty [$file_path]");
     }
-    else  // file created successfully
+    else  // file created successfully - add result file details to t_resultfile
     {
         $status = array('success' => true, 'err' => "race result file created ", 'url' => $race_url,
-            'path' => $race_path, 'file' => $file_attr['filename']);
+            'path' => $race_path, 'file' => $file_attr['filename'], 'attr' => $file_attr);
 
-        // add result file entry to t_resultfile
         $listed = $result_o->add_result_file($file_attr);
-        if (!$listed)
-        {
-            $status= array('success' => false, 'err' => "file created but not added to results list [$race_path]");
-        }
-
+        if (!$listed) { $status= array('success' => false, 'err' => "file created but not added to results list [$race_path]"); }
     }
     return $status;
 }
@@ -124,7 +119,7 @@ function process_series_file($opts, $series_code, $series_status, $system_info, 
     $file_attr = array(
         "eventid"   => $result_o->eventid,
         "eventyear" => date("Y", strtotime($result_o->eventdate)),
-        "folder"    => "series",
+        "folder"    => $opts['folder'],
         "format"    => "htm",
         "filename"  => $series_o->get_series_filename(),
         "label"     => "series results",
@@ -133,26 +128,23 @@ function process_series_file($opts, $series_code, $series_status, $system_info, 
         "rank"      => "1",
     );
 
+    $dbg = false;
+    if ($dbg) { u_writedbg("<pre>STATUS STEP 3: ".print_r($file_attr,true)."</pre>", __FILE__, __FUNCTION__, __LINE__); }
+
     // set data for series result
     $err_detail = "";
     $err = $series_o->set_series_data();
 
     if (!$err)
     {
+        // set label value
+        $file_attr['label'] = $series_o->series['name'];
+
         // calculate series result
         $err = $series_o->calc_series_result();
 
         if (!$err)
         {
-            // render series result into html
-//            $sys_detail = array(
-//                "sys_name"      => $_SESSION['sys_name'],
-//                "sys_release"   => $_SESSION['sys_release'],
-//                "sys_version"   => $_SESSION['sys_version'],
-//                "sys_copyright" => $_SESSION['sys_copyright'],
-//                "sys_website"   => $_SESSION['sys_website'],
-//            );
-
             $series_bufr = $series_o->series_render_styled($system_info,  $series_status, file_get_contents($opts['styles']));
 
             // if series has more than 6 completed - set page format to landscape
@@ -221,16 +213,14 @@ function process_series_file($opts, $series_code, $series_status, $system_info, 
         else
         {
             $status = array('success' => true, 'err' => "series file created ", 'url' => $series_url,
-                'path' => $series_path, 'file' => $file_attr['filename']);
+                'path' => $series_path, 'file' => $file_attr['filename'], 'attr' => $file_attr);
 
             // check if we have a matching file in t_resultfile - if we do delete record
             $num_deleted = $result_o->del_obsolete_file(array("folder"=>$file_attr['folder'], "filename" => $file_attr['filename']));
 
             // add series result file entry to t_resultfile
             $listed = $result_o->add_result_file($file_attr);
-            if (!$listed)
-            { $status = array('success' => false, 'err' => "file created but not added to results list [$series_path]"); }
-
+            if (!$listed) { $status = array('success' => false, 'err' => "file created but not added to results list [$series_path]"); }
         }
     }
     else
@@ -264,7 +254,7 @@ function process_inventory($result_year, $system_info)
     }
 }
 
-function get_files_from_inventory($inventory_path, $inventory_file, $result_year)
+function get_new_files_from_inventory($inventory_path, $inventory_file, $result_year)
 {
     // inventory file into array
     $invdata = json_decode(file_get_contents($inventory_path."/".$inventory_file), true);
@@ -275,7 +265,7 @@ function get_files_from_inventory($inventory_path, $inventory_file, $result_year
     {
         foreach($invevent['resultsfiles'] as $k=>$file)
         {
-            // check if file neeeds uploading
+            // check if file needs uploading
             $upload_time = strtotime($file['upload']);
             $update_time = strtotime($file['update']);
             if ($file['status'] != "embargoed" and (empty($file['upload']) or $upload_time < $update_time))
@@ -305,6 +295,14 @@ function get_files_from_inventory($inventory_path, $inventory_file, $result_year
 
 function transfer_files($files, $protocol)
 {
+    // remap files array
+    foreach ($files as $k => $file)
+    {
+        $files[$k]['year'] = $file['eventyear'];
+        $files[$k]['type'] = $file['folder'];
+        $files[$k]['file'] = $file['filename'];
+    }
+
     $num_for_transfer = count($files);
 
     if ($num_for_transfer > 0)       // we have files to transfer
@@ -366,7 +364,6 @@ function transfer_files($files, $protocol)
             $detailtxt = "";
             foreach ($status['files'] as $file)
             {
-                //$detailtxt.= $file['file_type']." file - ";
                 $detailtxt .= "<br>" . $file['label'] . " - ";
                 if ($protocol == "sftp" or $protocol == "ftp")
                 {
@@ -376,12 +373,12 @@ function transfer_files($files, $protocol)
                 $file['target_exists'] ? $detailtxt .= "| target file exists " : $detailtxt .= "| target file does not exist ";
                 $file['file_transferred'] ? $detailtxt .= "| file transferred<br>" : $detailtxt .= "| file not transferred<br>";
             }
-            $detailtxt .= "<pre>FILES " . print_r($files, true) . "</pre>";
+            $detailtxt .= "<pre>FILE DETAILS " . print_r($files, true) . "</pre>";
 
             if ($status['result'] and $status['complete'])
             {
                 $report_arr['result'] = "success";
-                $report_arr['msg'] = "All $num_for_transfer file(s) uploaded";
+                $report_arr['msg'] = "$num_for_transfer file(s) uploaded";
                 $report_arr['detail'] = $detailtxt;
             }
             else
@@ -391,12 +388,11 @@ function transfer_files($files, $protocol)
                 $report_arr['detail'] = $detailtxt;
             }
         }
-
     }
     else
     {
         $report_arr['result'] = "stopped";
-        $report_arr['msg'] = "result files update processing not required";
+        $report_arr['msg'] = "no files to transfer";
         $report_arr['detail'] = "no files to transfer";
     }
 
@@ -412,8 +408,6 @@ function process_transfer_network($files)
     $result_dirs = array("class", "races", "series", "special");   // fixme - needs to be in configuration somewhere
     $num_files = count($files);
     $num_files_sent = 0;
-
-    //u_writedbg("<pre>files to transfer: ".print_r($files,true)."</pre>", __CLASS__, __FUNCTION__, __LINE__);
 
     foreach ($files as $k=>$file)
     {
@@ -499,8 +493,6 @@ function process_transfer_network($files)
     $num_files_sent > 0 ?  $status['result'] = true : $status['result'] = false;
     $num_files_sent >= $num_files ? $status['complete'] = true : $status['complete'] = false;
     $status['num_files'] = $num_files_sent;
-
-    //u_writedbg("<pre>".print_r($status,true)."</pre>", __CLASS__, __FUNCTION__, __LINE__);
 
     return $status;
 }
@@ -621,8 +613,6 @@ function process_transfer_sftp($files, $ftp_env)
     $num_files_sent >= $num_files ? $status['complete'] = true : $status['complete'] = false;
     $status['num_files'] = $num_files_sent;
 
-    //u_writedbg("<pre>".print_r($status,true)."</pre>", __CLASS__, __FUNCTION__, __LINE__);
-
     return $status;
 
 }
@@ -642,4 +632,35 @@ function set_upload_time($file_id)
     return $upd;
 }
 
+function get_all_event_series($event)
+{
+    global $event_o;
+    $series_list = array();
 
+    // check if event has a primary series
+    if (!empty($event['series_code'])) $series_list[] = array ("code" => $event['series_code'], "folder" => "series");
+
+    // check if event has secondary series
+    if (!empty($event['series_code_extra']))
+    {
+        $secondary_arr = explode(',', $event['series_code_extra']);
+        foreach ($secondary_arr as $item)
+        {
+            $series_list[] = array ("code" => $item, "folder" => "special");
+        }
+    }
+
+    // create array with series_code as index
+    $series_arr = array();
+    foreach ($series_list as $series)
+    {
+        $series_cfg = $event_o->event_getseries($series['code']);
+        if ($series_cfg !== false)
+        {
+            $series_arr[$series['code']] = $series_cfg;
+            $series_arr[$series['code']]['folder'] = $series['folder'];
+        }
+    }
+
+    return $series_arr;
+}

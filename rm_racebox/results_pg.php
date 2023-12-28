@@ -18,22 +18,23 @@ $loc        = "..";
 $page       = "results";
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("./include/rm_racebox_lib.php");
 
-$eventid = u_checkarg("eventid", "checkintnotzero","");
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
+$eventid = u_checkarg("eventid", "checkintnotzero","");     // eventid (required)
+
 if (!$eventid)
 {
     u_exitnicely($scriptname, 0,"$page page - event id record [{$_REQUEST['eventid']}] not defined",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
-// start session
-session_id('sess-rmracebox');
-session_start();
-
 // page initialisation
 u_initpagestart($eventid, $page, true);
-//echo "<pre><br><br><br><br>".print_r($_SESSION["e_$eventid"],true)."</pre>";
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");
@@ -51,6 +52,10 @@ include ("./templates/growls.php");
 // database connection
 $db_o = new DB;
 $race_o = new RACE($db_o, $eventid);
+
+// -----------------------------------------------------------------------------------
+//   preprocessing
+// -----------------------------------------------------------------------------------
 
 // set event name
 $eventname = u_conv_eventname($_SESSION["e_$eventid"]['ev_name']);
@@ -123,12 +128,16 @@ if (!$_SESSION["e_$eventid"]['result_valid'])   // check to see if results need 
 
 include ("./include/results_ctl.inc");
 
-// ----- navbar -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------
+//   navbar
+// -----------------------------------------------------------------------------------
 $fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
 $params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink'], "num_reminders" => $_SESSION["e_$eventid"]['num_reminders']);
 $nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
 
-// ----- left hand panel ---------------------------------------------------------------------
+// -----------------------------------------------------------------------------------
+//   left hand panel
+// -----------------------------------------------------------------------------------
 $lbufr = "";
 $lbufr = u_growlProcess($eventid, $page);       // check for confirmations to present
 
@@ -139,7 +148,10 @@ $lbufr.= $tmpl_o->get_template("result_tabs", array(), $results);
 $lbufr.= $tmpl_o->get_template("modal", $mdl_edit['fields'], $mdl_edit);
 $lbufr.= $tmpl_o->get_template("modal", $mdl_remove['fields'], $mdl_remove);
 
-// ----- right hand panel ------------------------------------------------------------
+
+// -----------------------------------------------------------------------------------
+//   right hand panel
+// -----------------------------------------------------------------------------------
 $rbufr = "";
 
 // Save Results button (only if a) we have entries, and b) the race has started)
@@ -160,19 +172,16 @@ if ($_SESSION["e_$eventid"]['ev_entry'] != "ood")
         {
             $text_style = "text-primary";
             $template = "btn_link_blink";
-            $btn_loadret['fields']['style'] = "warning";
+            $btn_loadret['fields']['style'] = "danger";
         }
         else
         {
             $text_style = "text-info";
             $template = "btn_link";
         }
-        $btn_loadret['fields']['label'] = <<<EOT
-            Load Retirements<br>
-            <small>
-                <span class='$text_style' style='padding-left: 30px'><b>$num_retirements waiting</b></span>
-            </small>
-EOT;
+
+        $btn_loadret['fields']['label'] = "Load Retirements ";
+        $num_retirements > 0 ? $btn_loadret['fields']['label'].= "[ $num_retirements ]" : $btn_loadret['fields']['label'].= "";
         $rbufr.= $tmpl_o->get_template("$template", $btn_loadret['fields'], $btn_loadret)."<hr>";
     }
 }
@@ -186,6 +195,20 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
 
 // Send Message button
 $rbufr.= $tmpl_o->get_template("btn_modal", $btn_message['fields'], $btn_message);
+
+// CLOSE button
+$close_ok = r_oktoclose($eventid);    // results must be published and all boats finished
+if ($close_ok['result'])
+{
+    $mdl_close['fields']['body'] = $tmpl_o->get_template("fm_close_ok", $close_ok);
+}
+else
+{
+    $mdl_close['fields']['body'] = $tmpl_o->get_template("fm_close_notok", $close_ok);
+    $mdl_close['submit'] = false;
+}
+$rbufr.= $tmpl_o->get_template("btn_modal", $btn_close['fields'], $btn_close);
+$rbufr.= $tmpl_o->get_template("modal", $mdl_close['fields'], $mdl_close);
 
 
 // modal code
@@ -239,9 +262,11 @@ $params = array(
 echo $tmpl_o->get_template("two_col_page", $fields, $params);
 
 
-/* ---- functions ------- */
+// -----------------------------------------------------------------------------------
+//   functions
+// -----------------------------------------------------------------------------------
 
-function get_lap_details($laptimes)
+/*function get_lap_details($laptimes)   // FIXME probably obsolete - check with timer function page
 {
     // lap timings button
     $laps = explode(",", $laptimes);
@@ -295,4 +320,4 @@ EOT;
         $lapbufr = "<p class='text-center text-danger'> No laps recorded for this competitor </p>";
     }
     return $lapbufr;
-}
+}*/

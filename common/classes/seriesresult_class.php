@@ -1033,7 +1033,7 @@ class SERIES_RESULT
                 "race-name" => "R$k",
                 "race-status" => $this->races[$k]['status'],
                 "race-full-date" => $this->races[$k]['date'],
-                "race-short-date" => date("m/d", strtotime($this->races[$k]['date'])),
+                "race-short-date" => date("d-M", strtotime($this->races[$k]['date'])),
                 "race-url" => $this->races[$k]['url']
             );
         }

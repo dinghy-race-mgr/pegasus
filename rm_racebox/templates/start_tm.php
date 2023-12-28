@@ -8,7 +8,7 @@ function fm_start_adjusttimer($params=array())
     $html = <<<EOT
     <div class="well" role="alert">
         <p class="lead">Forgotten to set the timer at the first signal?</p>
-        <p class="lead" style="text-indent: 50px">&hellip; enter the (approx) time of the first signal e.g 10:32:30</p>
+        <p class="lead" style="text-indent: 50px">&hellip; enter the (approx) time of the first signal e.g <span style="color:darkred">15:32:30</span></p>
     </div>
     <br>
 
@@ -17,7 +17,7 @@ function fm_start_adjusttimer($params=array())
         <label class="$labelwidth control-label">Time of First Warning Signal</label>
         <div class="$fieldwidth inputfieldgroup">
             <input type="text" class="form-control" id="adjusttime" name="adjusttime" value=""
-                placeholder="hh:mm:ss (24 hour clock)"
+                placeholder="hh:mm:ss (use 24 hour clock)"
                 required data-fv-notempty-message="this information is required"
                 data-fv-regexp="true"
                 data-fv-regexp-regexp="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"
@@ -36,8 +36,8 @@ function fm_start_genrecall($params=array())
 
     $html = <<<EOT
     <div class="alert well well-sm" role="alert">
-        <p class="text-info lead">If you have a general recall - enter the actual START time for this fleet.</p>
-        <p class="text-primary lead"><small>Note: This can also be used to correct for a delayed start for other reasons</small></p>
+        <p class="lead">If you have a general recall - enter the actual START time <br>for this fleet e.g <span style="color:darkred">15:32:00</span></p><br>
+        <p class="text-info"><i>Note: This can also be used to correct for a delayed fleet start for other reasons</i></p>
     </div>
 
     <!-- field #1 - restart time -->
@@ -45,7 +45,7 @@ function fm_start_genrecall($params=array())
         <label class="$labelwidth control-label">Time of RESTART</label>
         <div class="$fieldwidth inputfieldgroup">
             <input type="text" class="form-control" id="restarttime" name="restarttime" value=""
-                placeholder="hh:mm:ss (24 hour clock)"
+                placeholder="hh:mm:ss (use 24 hour clock)"
                 required data-fv-notempty-message="this information is required"
                 data-fv-regexp="true"
                 data-fv-regexp-regexp="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$"

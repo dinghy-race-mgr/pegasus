@@ -28,9 +28,8 @@ $page       = "rm_racebox";
 require_once ("{$loc}/common/lib/util_lib.php"); 
 require_once ("{$loc}/common/classes/db_class.php");
 
-// start session
-session_id('sess-rmracebox');
-session_start();
+// start session - and clear it
+u_startsession("sess-rmracebox", 10800);
 session_unset();
 
 // initialise parameters
@@ -50,9 +49,6 @@ u_startsyslog($scriptname, strtoupper($page), session_id('sess-rmracebox'));
 
 // reads contents of application ini file into session
 u_initconfigfile("$loc/config/{$_SESSION['app_ini']}");
-
-// set session length
-//ini_set('session.gc_maxlifetime', $_SESSION['session_timeout']);   FIXME this needs to combe before start of session + session_set_cookie_params(3600);
 
 // set database initialisation parameters (t_ini) into session
 $db = new DB();

@@ -24,13 +24,12 @@ require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/lib/rm_lib.php");
 require_once ("./include/rm_racebox_lib.php");
 
-// process parameters  (eventid, pagestate)
-$eventid   = u_checkarg("eventid", "checkintnotzero","");
-$pagestate = u_checkarg("pagestate", "set", "", "");
-
 // start session
-session_id('sess-rmracebox');
-session_start();
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
+$eventid   = u_checkarg("eventid", "checkintnotzero","");   // eventid (required)
+$pagestate = u_checkarg("pagestate", "set", "", "");        // pagestate (required)
 
 // page initialisation
 u_initpagestart($eventid, $page, false);

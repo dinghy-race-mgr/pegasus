@@ -1,30 +1,125 @@
 <?php
 /*
-  html templates for csv import utility
+  html templates for results publishing utility
 */
-
-
 function publishresults_form($params = array())
 {
-    if ($params['series'])
+    //echo "<pre>".print_r($params,true)."</pre>";
+
+    $form_bufr = "";
+    foreach ($params['list'] as $file)
     {
-        $series_bufr = <<<EOT
-        <div class="row form-inline margin-top-10" style="font-size:1.3em">
-            <label class="col-sm-3 control-label text-right text-info">Create SERIES Results</label>
-            <div class="col-sm-3 col-sm-offset-1">
-                <label class="radio-inline">
-                  <input type="radio" name="series_results" value="1" checked>&nbsp;&nbsp;yes&nbsp;&nbsp;
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="series_results" value="0">&nbsp;&nbsp;no&nbsp;&nbsp;
-                </label>
+        $process_field_name = "process_".$file['code'];
+        $transfer_field_name = "transfer_".$file['code'];
+        $process_label = "";
+        $transfer_label = "";
+        $process_disabled = "";
+        $params['upload'] ? $transfer_disabled = "" : $transfer_disabled = "disabled";
+
+        if ($file['type'] == "race")
+        {
+            $field_label = "RACE results";
+            $process_disabled = "disabled";
+            $process_label = "required";
+
+        }
+        elseif ($file['type'] == "series")
+        {
+            $field_label = "SERIES - ".$file['name'];
+        }
+        else
+        {
+            $field_label = "UNKNOWN results";
+        }
+
+        $form_bufr.= <<<EOT
+        <div class="row form-inline" style="font-size:1.3em">
+            <div class="col-sm-5 control-label text-left text-info"><b>$field_label</b></div>
+            <div class="col-sm-3">
+                  <input type="checkbox" name="$process_field_name" value="1" checked $process_disabled>&nbsp;&nbsp;<small>$process_label</small>
             </div>
-            <div class="col-sm-5 text-info" >
-                [ series: {$params['series_name']} ]
+            <div  class="col-sm-3">
+                <input type="checkbox" name="$transfer_field_name" value="1" checked>&nbsp;&nbsp;<small>$transfer_label</small>
+            </div>      
+        </div>  
+EOT;
+
+    }
+
+    $bufr = <<<EOT
+    <div class="container" style="margin-top: 40px;">
+        <div class="jumbotron">
+            <h3 class="text-primary">Instructions:</h3>
+            <p class="text-primary">{instructions}</p>
+        </div>
+        <form enctype="multipart/form-data" id="publishresultsForm" action="{script}" method="post">
+              
+        <div class="row form-inline margin-top-10" style="font-size:1.3em">
+            <div class="col-sm-5 control-label text-left text-primary">RESULT FILE</div>
+            <div class="col-sm-3 control-label text-left text-primary">PROCESS</div>
+            <div class="col-sm-3 control-label text-left text-primary" >PUBLISH</div>
+        </div>     
+        <div class="row" style="margin-top: 5px; margin-bottom: 15px" >
+            <div class="col-sm-11" style="height: 6px; background-color: slategrey; border-radius: 5px;"></div>
+        </div>
+        $form_bufr                         
+            
+        <div class="row margin-top-20">
+            <div class="col-sm-8 col-sm-offset-1">
+                <div class="pull-left">
+                    <a class="btn btn-lg btn-warning" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
+                </div>
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-lg btn-primary"  style="min-width: 200px;" >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Process</b></button>
+                </div>
             </div>
         </div>
-
+        </form>
+    </div>
+    <script language="javascript">
+    function quitBox(cmd)
+    {   
+        if (cmd=='quit')
+        {
+            open(location, '_self').close();
+        }   
+        return false;   
+    }
+    </script>
 EOT;
+
+    return $bufr;
+}
+
+/*function publishresults_form($params = array())
+{
+    echo "<pre>".print_r($params,true)."</pre>";
+
+    if (!empty($params['series']))
+    {
+        $series_bufr = "";
+        foreach ($params['series'] as $code => $series)
+        {
+            $series_bufr.= <<<EOT
+            <div class="row form-inline margin-top-10" style="font-size:1.3em">
+                <label class="col-sm-3 control-label text-right text-info">Create SERIES Results</label>
+                <div class="col-sm-3 col-sm-offset-1">
+                    <label class="radio-inline">
+                      <input type="radio" name="series_{$series['event_seriescode']}" value="1" checked>&nbsp;&nbsp;yes&nbsp;&nbsp;
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="series_{$series['event_seriescode']}" value="0">&nbsp;&nbsp;no&nbsp;&nbsp;
+                    </label>
+                </div>
+                <div class="col-sm-5 text-info" >
+                    [ series: {$series['seriesname']} ]
+                </div>
+            </div>
+        
+EOT;
+        }
     }
     else
     {
@@ -32,15 +127,16 @@ EOT;
         <div class="row form-inline margin-top-10" style="font-size:1.3em">
             <label class="col-sm-3 control-label text-right text-muted">Create SERIES Results</label>
             <div class="col-sm-3 col-sm-offset-1 text-muted">
-                <label class="radio-inline">
+                &nbsp;
+                <!-- label class="radio-inline">
                   <input type="radio" name="series_results" value="1" disabled>&nbsp;&nbsp;yes&nbsp;&nbsp;
                 </label>
                 <label class="radio-inline">
                   <input type="radio" name="series_results" value="0" disabled>&nbsp;&nbsp;no&nbsp;&nbsp;
-                </label>
+                </label -->
             </div>
             <div class="col-sm-5 text-muted">
-                [ this race is not defined as part of a series ...]
+                [ this race is not defined as part of any series ... ]
             </div>
         </div>
 EOT;
@@ -109,7 +205,7 @@ EOT;
 
     return $bufr;
 
-}
+}*/
 
 function process_header($params=array())
 {
@@ -142,7 +238,7 @@ function process_header($params=array())
           
         <h1>Result File Refresh &hellip; <small>click title for detail info</small></h1>
         <div class="row">
-        <div class="col-md-offset-2 col-md-6"
+        <div class="col-md-offset-2 col-md-7"
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 EOT;
     return $html;
@@ -161,10 +257,12 @@ EOT;
 
 function publishresults_item_rpt($params = array())
 {
-    $tabval = array( "race" => "One", "series" => "Two", "transfer" => "Three" );
-    $tab = $tabval[$params['action']];
+
+    //echo "<pre>REPORT_ARR - ".print_r($params,true)."</pre>";
+
+    $tab = "{$params['tab']}";
     $action = array( "race" => "Race Results", "series" => "Series Results", "transfer" => "File Transfers" );
-    $actiontxt = $action[$params['action']];
+    //$actiontxt = $action[$params['action']];
 
     $righttxt = ucfirst($params['msg'])."&nbsp;&nbsp;&nbsp;&nbsp;";
 
@@ -175,8 +273,8 @@ function publishresults_item_rpt($params = array())
         {
             $link = $params['file']['url'];
             $righttxt.= <<<EOT
-            <a href="$link" id="printrace" type="button" class="btn btn-warning btn-md" target="_BLANK" style="width: 200px; font-size:1.2em;">
-               <span class="glyphicon glyphicon-open-file"></span>&nbsp;&nbsp;{$params['action']} results
+            <a href="$link" id="printrace" type="button" class="btn btn-warning btn-sm" target="_BLANK" style="font-size:1.2em;">
+               <span class="glyphicon glyphicon-sunglasses"></span>&nbsp;&nbsp;View
             </a>
 EOT;
         }
@@ -203,11 +301,11 @@ EOT;
     $bufr = <<<EOT
     <div class="panel $panelstyle margin-top-40">
         <div class="panel-heading" role="tab" id="heading$tab" >
-          <h1 class="panel-title ">
-                <a class="pull left" style="font-size: 3em" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$tab" aria-expanded="true" aria-controls="collapse$tab">
-                  $actiontxt
+          <h1 class="panel-title" style="min-height: 50px;">
+                <a class="pull left" style="font-size: 1.6em" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$tab" aria-expanded="true" aria-controls="collapse$tab">
+                  {label}
                 </a>
-                <span class="pull-right" style="font-size: 1em">$righttxt</span>
+                <span class="pull-right" style="font-size: 1.2em">$righttxt</span>
           </h1>
           
         </div>
@@ -238,7 +336,25 @@ EOT;
     elseif ($params['state'] == 3)
     {
         $bufr = <<<EOT
-        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4> event specified [{$params['eventid']}] is not recognised or not found in the database</h4>
+        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4> event specified [{$params['eventid']}] not found - process stopped</h4>
+EOT;
+    }
+    elseif ($params['state'] == 4)
+    {
+        $bufr = <<<EOT
+        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4> RESULTS UPDATE FAILED - process stopped</h4>
+EOT;
+    }
+    elseif ($params['state'] == 5)
+    {
+        $bufr = <<<EOT
+        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4> FILE TRANSFER FAILED - result inventory file not created - process stopped</h4>
+EOT;
+    }
+    elseif ($params['state'] == 6)
+    {
+        $bufr = <<<EOT
+        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4> FILE TRANSFER FAILED - processing stopped</h4>
 EOT;
     }
     else

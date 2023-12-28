@@ -23,9 +23,7 @@ require_once ("{$loc}/common/classes/rota_class.php");
 require_once ("{$loc}/common/lib/raceformat_lib.php");
 
 // start session
-session_id('sess-rmracebox');   // creates separate session for this application
-session_start();
-//echo "<pre><br><br><br><br>".print_r($_SESSION,true)."</pre>";
+u_startsession("sess-rmracebox", 10800);
 
 // page initialisation
 u_initpagestart("", $page, false);

@@ -18,7 +18,10 @@ $page       = "addentry";     //
 $scriptname = basename(__FILE__);
 require_once ("{$loc}/common/lib/util_lib.php");
 
-// script parameters
+// start session
+u_startsession("sess-rmracebox", 10800);
+
+// arguments
 $eventid = u_checkarg("eventid", "checkintnotzero","");
 $pagestate = u_checkarg("pagestate", "set","");
 
@@ -26,10 +29,6 @@ if (!$eventid or empty($pagestate)) {
     u_exitnicely($scriptname, 0, "$page page has an invalid or missing event identifier [{$_REQUEST['eventid']}] or page state [{$_REQUEST['pagestate']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-// start session
-session_id('sess-rmracebox');
-session_start();
 
 // page initialisation
 u_initpagestart($eventid, $page, false);

@@ -336,7 +336,7 @@ function format_series_columns($races, $inc_club, $race_label)
     $race_cols_hdr = "";
     foreach ($races as $i=>$race)
     {
-        $race_label == "date" ? $val = $race['race-short-date'] : $val = "R$i";
+        $race_label == "dates" ? $val = $race['race-short-date'] : $val = "R$i";
 
         if (!empty($race['race-url']))
         {
