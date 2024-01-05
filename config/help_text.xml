@@ -498,12 +498,12 @@
     </page>
 
     <page>
-        <category>results</category>
-        <author>Mark Elkington - SYC</author>
-        <rank>0</rank>
-        <active>1</active>
-        <question>what is the RESULTS page for?</question>
-        <answer><![CDATA[
+    <category>results</category>
+    <author>Mark Elkington - SYC</author>
+    <rank>0</rank>
+    <active>1</active>
+    <question>what is the RESULTS page for?</question>
+    <answer><![CDATA[
             <p>This page allows you to check the race results and correct any mistakes, before publishing them . Once
                 published you can print the race results (and updated series results where relevant). The results will
                 also be made available on the club website.
@@ -521,7 +521,7 @@
                 you will need to add information on the wind conditions during the race and select some options for the
                 results process.</p>
             ]]></answer>
-        <notes><![CDATA[
+    <notes><![CDATA[
             <p>Note:</p>
             <ul>
                 <li>You can correct and publish the results multiple times as necessary until the race is CLOSED on the
@@ -540,6 +540,31 @@
                     to shorten the course”.
                 </li>
             </ul>
+            ]]></notes>
+    </page>
+
+    <page>
+    <category>timer</category>
+    <author>Mark Elkington - SYC</author>
+    <rank>2</rank>
+    <active>1</active>
+    <question>how do I use the BUNCH function ?</question>
+    <answer><![CDATA[
+            <p>The recommended approach for using raceManager to record lap and finish times is to use the BUNCH
+                function on the timer page - ESPECIALLY if the race has more than 20 boats.  </p>
+            <br>
+            <p>With this approach - one person 'spots' boats approaching  the  line when they are 200 - 300 m away.
+                The person running raceManager clicks the blue button (with a pin icon) for each boat spotted and
+                they will then appear in a list on the right hand side of the screen.</p>
+            <br>
+            <p>You can now use this 'approaching boat' list to easily and quickly record them as they cross the line
+                - avoiding the panic of finding them in the few seconds as they cross the line.</p>
+            <br>
+            <p>The bunch list has up/down arrows so that you can adjust the likely order that the boats will cross
+                the line to make it even easier.  You can also remove boats from the bunch list using the red delete icon.</p>
+            ]]></answer>
+        <notes><![CDATA[
+            <p>Most OODs who have tried this feature find it MUCH easier and less stressful - give it a try.</p>
             ]]></notes>
     </page>
 

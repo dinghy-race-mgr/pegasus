@@ -103,7 +103,7 @@ if ($_REQUEST['pagestate'] == "init")
         // direct util call - get args from script url
         empty($_REQUEST['pntype'])    ? $args['pntype'] = "national" : $args['pntype'] = $_REQUEST['pntype'];
         empty($_REQUEST['fastclass']) ? $args['fastclass'] = ""      : $args['fastclass'] = $_REQUEST['fastclass'];
-        empty($_REQUEST['slowclass']) ? $args['pntype'] = ""         : $args['slowclass'] = $_REQUEST['slowclass'];
+        empty($_REQUEST['slowclass']) ? $args['slowclass'] = ""      : $args['slowclass'] = $_REQUEST['slowclass'];
         empty($_REQUEST['length'])    ? $args['length'] = "90"       : $args['length'] = $_REQUEST['length'];
         empty($_REQUEST['interval'])  ? $args['interval'] = "60"     : $args['interval'] = $_REQUEST['interval'];
         empty($_REQUEST['boattypes']) ? $args['boattypes'] = "D"     : $args['boattypes'] = $_REQUEST['boattypes'];
