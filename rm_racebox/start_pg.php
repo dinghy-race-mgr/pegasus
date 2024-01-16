@@ -193,7 +193,7 @@ $fields = array(
 );
 $rbufr.= $tmpl_o->get_template("timer", $fields, array("event-state" => $event_state, "timer-start"  => $timer_start));
 
-$mdl_latetimer['fields']['body'] = $tmpl_o->get_template("fm_start_adjusttimer", array());
+$mdl_latetimer['fields']['body'] = $tmpl_o->get_template("fm_start_adjusttimer", array(), array("event-state" => $event_state, "timer-start"  => $timer_start));
 $rbufr.= $tmpl_o->get_template("modal", $mdl_latetimer['fields'], $mdl_latetimer);
 
 // disconnect database

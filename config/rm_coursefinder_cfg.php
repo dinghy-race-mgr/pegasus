@@ -1,8 +1,8 @@
 <?php
 /* ---------------------------------------------------------------------------------------
-    rm_sailor_cfg.php
+    rm_coursefinder_cfg.php
     
-    SESSION configuration setup for rm_sailor application
+    SESSION configuration setup for rm_coursefinder application
     
     --------------------------------------------------------------------------------------
 */

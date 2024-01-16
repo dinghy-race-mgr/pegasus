@@ -113,6 +113,7 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
 
         if ($events !== false) {
             $i = 0;
+            u_writedbg("<pre>".print_r($_SESSION['rotamap'], true)."</pre>", __CLASS__, __FUNCTION__, __LINE__);
             foreach ($events as $k => $event) {
                 if (!empty($event['event_name'])) {
                     $i++;
@@ -135,8 +136,11 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
                     {
                         // map them into correct output fields
                         foreach ($duties as $duty) {
-                            $dutybin = $_SESSION['rotamap']["{$duty['dutycode']}"];
-                            $data[$i][$dutybin].= "{$duty['person']}|";
+                            if (!empty($_SESSION['rotamap']["{$duty['dutycode']}"]))
+                            {
+                                $dutybin = $_SESSION['rotamap']["{$duty['dutycode']}"];
+                                $data[$i][$dutybin].= "{$duty['person']}|";
+                            }
                         }
                         $data[$i]['race_duty']   = rtrim($data[$i]['race_duty'], "| ");
                         $data[$i]['safety_duty'] = rtrim($data[$i]['safety_duty'], "| ");

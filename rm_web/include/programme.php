@@ -2,17 +2,16 @@
 class PROGRAMME
 {
    
-    public function __construct($loc, $programme_file, $mode, $force)
+    public function __construct($dir, $file, $mode, $force)
     {
-        $status = true;
-        $this->programme_file = $programme_file;
+        $this->programme_file = $dir."/".$file;
 
         // parse programme into session object
-        $status = $this->import_programme($loc);
+        $status = $this->import_programme();
         if (!$status)                          // programme file not found or not readable
         {
             $_SESSION['error']['problem'] = "Cannot display current event programme";
-            $_SESSION['error']['symptom'] = "Programme file not found on system (or not readable)";
+            $_SESSION['error']['symptom'] = "Programme file not found on system (or not readable) - $file";
             $_SESSION['error']['where']   = "rm_web | programme.php | __construct | line ".__LINE__;
             $_SESSION['error']['fix']     = "";
         }
@@ -25,6 +24,57 @@ class PROGRAMME
         }
 
         u_writelog("rm_web - programme page request");
+    }
+
+    private function import_programme()
+    // reads json file created with export_programme and creates session array
+    {
+        // get contents - use dummy query to prevent caching
+        $string = file_get_contents($this->programme_file."?dev=".rand(1,1000));
+
+        if ($string)
+        {
+            // set programme into session
+            $_SESSION['prg'] = json_decode($string, true);
+
+            $today = new DateTime(date("Y-m-d"));
+
+            // add event state where required
+            $next_set = false;
+            foreach($_SESSION['prg']['events'] as $eventid => $event)
+            {
+                $edate = new DateTime(date("Y-m-d", strtotime($event['date'])));
+                if ($edate >= $today)
+                {
+                    if ($next_set)
+                    {
+                        if ($event['state'] != "trophy" and $event['state'] != "open" and
+                            $event['state'] != "important" and $event['state'] != "noevent")
+                        {
+                            $_SESSION['prg']['events']["$eventid"]['state'] = "future";
+                        }
+                    }
+                    else
+                    {
+                        $_SESSION['prg']['events']["$eventid"]['state'] = "next";
+                        $next_set = true;
+                    }
+                }
+                else
+                {
+                    $_SESSION['prg']['events']["$eventid"]['state'] = "past";
+                }
+            }
+            $status = true;
+        }
+        else
+        {
+            u_writelog("programme: events inventory file not found or not readable or empty [{$this->programme_file}]");
+            $status = false;
+        }
+
+
+        return $status;
     }
 
    public function set_parameters($request)
@@ -98,7 +148,6 @@ class PROGRAMME
    
    
    public function calendar_nav($current, $params)
-
    {
       // programme start and end - and get months between these two dates as an array
       $start    = new DateTime($this->start);
@@ -185,129 +234,7 @@ class PROGRAMME
       return $cal_fields;
    }
    
-//   private function export_programme($event_data, $duty_data, $source, $title, $club, $datetime)
-//   /* Produces programme_old.json file for use by rm_web
-//      Assumes that events will be presented to it in date/time ascending order
-//      Returns false if file not writable or no events to add - otherwise returns no. of events in file
-//   */
-//   {
-//      $num = 0;
-//      $out['prg'] = array(
-//         "meta"   => array(
-//             "last_update" => $datetime,
-//             "source"      => $source,
-//             "title"       => $title,
-//             "club"        => $club,
-//         ),
-//         "events" => array(),
-//      );
-//      foreach ($event_data as $k=>$event)
-//      {
-//         $num++;
-//         if ($num == 1)
-//         {
-//             $out['prg']['meta']['first'] = date("Y-m-d", strtotime($event['date']));
-//         }
-//
-//         $date = date("Y-m-d",strtotime($event['event_date']));
-//         $time = date("H:i",strtotime($event['event_start']));
-//         $hw   = date("H:i",strtotime($event['tide-time']));
-//         $out['prg']['events']["ev_{$event['id']}"] = array(
-//                    "id"          => $event['id'],
-//                    "name"        => $event['event_name'],                 // "Spring Series 1",
-//                    "note"        => $event['event_notes'],                // "First race of series",
-//                    "datetime"    => $date."T".$time,                      // "2016-09-02T10:00",
-//                    "category"    => $event['event_type'],                 // "racing",
-//                    "subcategory" => $event['event_format'],               // "club series",
-//                    "tide"        => "HW $hw {$event['tide-time']}m",      // "HW 10:45 3.4m",
-//         );
-//
-//         // check if event is flagged as important
-//         if (array_key_exists('important', $event))
-//         {
-//            if ($event['important']) { $out['prg']['events']["ev_{$event['id']}"]['state'] = "important"; }
-//         }
-//
-//         // add duties for this event
-//         foreach ($duty_data[$event['id']] as $duty=>$person)
-//         {
-//            $out['prg']['events']["ev_{$event['id']}"]['duties'][$duty] = $person;
-//         }
-//      }
-//      $out['prg']['meta']['last'] = date("Y-m-d", strtotime($event['date']));
-//
-//      if ($num > 0)
-//      {
-//          // create json file
-//          if (is_writable($this->programme_file))
-//          {
-//             $fp = fopen($this->programme_file, 'w');
-//             fwrite($fp, json_encode($out));
-//             fclose($fp);
-//             return $num;
-//          }
-//          else
-//          {
-//             return false;
-//          }
-//
-//      }
-//      else
-//      {
-//          return false;
-//      }
-//   }
-   
-    private function import_programme($loc)
-    // reads json file created with export_programme and creates session array
-    {
-        $status = false;
-        if (is_readable($this->programme_file))
-        {
-            // get absolute file path for json file
-            $absolute_file = substr_replace($loc,'', strrpos($loc, '/')).ltrim($this->programme_file, ".");
-            //echo "<pre>$absolute_file</pre>";
-            // get contents - use dummy query to prevent caching
-            $string = file_get_contents($absolute_file."?dev=".rand(1,1000));
-            $_SESSION['prg'] = json_decode($string, true);
-            
-            $today = new DateTime(date("Y-m-d"));
 
-            // add event state where required
-            $next_set = false;
-            foreach($_SESSION['prg']['events'] as $eventid => $event)
-            {
-                $edate = new DateTime(date("Y-m-d", strtotime($event['date'])));
-                if ($edate >= $today)
-                {
-                    if ($next_set)
-                    {
-                        if ($event['state'] != "trophy" and $event['state'] != "open" and
-                            $event['state'] != "important" and $event['state'] != "noevent")
-                        {
-                            $_SESSION['prg']['events']["$eventid"]['state'] = "future";
-                        }
-                    }
-                    else
-                    {
-                        $_SESSION['prg']['events']["$eventid"]['state'] = "next";
-                        $next_set = true;
-                    }
-                }
-                else
-                {
-                    $_SESSION['prg']['events']["$eventid"]['state'] = "past";
-                }
-            }
-            $status = true;
-        }
-        else
-        {
-            u_writelog("programme: events inventory file not found or not readable or empty [{$this->programme_file}]");
-            $status = false;
-        }
-        return $status;
-    }
 
    
    public function search_programme($needle, $start, $end)

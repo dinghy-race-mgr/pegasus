@@ -5,10 +5,19 @@ function fm_start_adjusttimer($params=array())
     $labelwidth = "col-xs-5";
     $fieldwidth = "col-xs-6";
 
+    if ($params['event-state'] == "not started")
+    {
+        $timer_msg = "Forgotten to set the timer at the first warning signal?";
+    }
+    else
+    {
+        $timer_msg = "Was the timer set at a different time to the first warning signal?  <br><small><span style=\"color:darkred\">[timer was set at - ".date("H:i:s", $params['timer-start'])."</i>]</small></span>";
+    }
+
     $html = <<<EOT
     <div class="well" role="alert">
-        <p class="lead">Forgotten to set the timer at the first signal?</p>
-        <p class="lead" style="text-indent: 50px">&hellip; enter the (approx) time of the first signal e.g <span style="color:darkred">15:32:30</span></p>
+        <p class="lead">$timer_msg</p>
+        <p class="lead">&hellip; if so enter the actual time for the first warning signal </br><small><span style="color:darkred">e.g using hh:mm:ss - like 17:32:30</span></small></p>
     </div>
     <br>
 

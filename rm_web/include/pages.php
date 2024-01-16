@@ -75,7 +75,7 @@ class PAGES
 
     public function pg_programme()
     {
-        $prog = new PROGRAMME($this->cfg['loc'],$this->cfg['programme']['json'], "full", false);
+        $prog = new PROGRAMME($this->cfg['programme']['programmeurl'], $this->cfg['programme']['json'], "full", false);
 
         if (array_key_exists("error", $_SESSION))
         {
