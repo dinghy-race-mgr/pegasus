@@ -221,7 +221,7 @@ class EVENT
                           start_interval, timerstart, ws_start, wd_start, ws_end, wd_end, event_notes, 
                           result_notes, result_valid, result_publish, weblink, 
                           webname, display_code, active, upddate, updby FROM t_event";
-        $order =  " ORDER BY event_date ASC, event_start ASC, event_order ASC  ";
+        $order =  " ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
         $where = "1=1";
         $where_period = "";
         $where_type = "";
