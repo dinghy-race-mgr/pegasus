@@ -50,3 +50,24 @@ function get_event_list_style($status)
     $style = array ("list" => "primary", "open"=> "warning", "complete"=> "secondary", "cancel"=> "danger", "review"=> "warning");
     return $style[$status];
 }
+
+function parse_contacts($contacts_data, $mode)
+{
+    $contacts = array();
+    if ($mode == "club")
+    {
+        $contact_data = explode(",", $contacts_data);
+        $contacts[0] = array("name" => trim($contact_data[0]), "role" => trim($contact_data[1]), "email" => trim($contact_data[2]));
+    }
+    else
+    {
+        foreach ($contacts_data as $k=> $contact)
+        {
+            $contacts[] = array("name" => trim($contact['name']), "role" => trim($contact['role']),
+                                "email" => trim($contact['email']));
+        }
+
+    }
+
+    return $contacts;
+}

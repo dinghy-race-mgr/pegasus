@@ -339,6 +339,8 @@ function get_typeoptions($importtype)
                                in the csv file and then import it here.",
         );
     }
+
+
     return $opts;
 }
 

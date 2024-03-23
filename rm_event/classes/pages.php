@@ -22,22 +22,19 @@ class PAGES
     public function pg_list($db_o, $year = "")
     {
         // FIXME : needs to handle "review" and "cancel" status - only available with password
+        //
 
+
+        // get events for selected year
         if (empty($year)) { $year = date("Y"); }
+        $events = $db_o->run("SELECT * FROM e_event WHERE `date-start` >= ? and `date-end` <= ?", array("$year-01-01","$year-12-31") )->fetchall();
 
-        $start_date = "$year-01-01";
-        $end_date = "$year-12-31";
-
-        // get events for year
-        $events = $db_o->run("SELECT * FROM e_event WHERE `date-start` >= ? and `date-end` <= ?", array($start_date, $end_date) )->fetchall();
+        // get club contact
+        $contacts = parse_contacts($this->cfg['rm_event']['events_contact'], "club");
 
         // create navbar
-        $contact_data = explode(",", $this->cfg['rm_event']['events_contact']);
-        $contacts[0] = array("name" => trim($contact_data[0]), "role" => trim($contact_data[1]), "email" => trim($contact_data[2]));
-
         $fields = array("eventid" => "", "version" => $this->cfg['sys_version'], "year" => date("Y"),
                         "brand-label" => $this->cfg['rm_event']['brand']);
-
         $params = array("page" => "list", "active" => "", "start-year"=> $this->cfg['rm_event']['start_year'], "options"=>$this->cfg['options'], "contact"=> $contacts );
         $nav =$this->tmpl_o->get_template("navbar", $fields, $params);
 
@@ -87,29 +84,61 @@ class PAGES
 
     public function pg_event($db_o, $page, $eid)
     {
-        // get event
+        echo "<pre>$page|$eid</pre>";
+
+        // get event details
+        $event = $db_o->run("SELECT * FROM e_event WHERE id = ?", array($eid) )->fetch();
 
         // get contacts
-        $contacts = array();
+        $contacts_rs = $db_o->run("SELECT * FROM e_contact WHERE eid = ?", array($eid) )->fetchall();
+        if ($contacts_rs)
+        {
+            $contacts = parse_contacts($contacts_rs, "event");
+        }
+        else
+        {
+            $contacts = parse_contacts($this->cfg['rm_event']['events_contact'], "club");
+        }
+        echo "<pre>$page|$eid</pre>";
+
+        // get info counts
+        $counts["entries"]   = $db_o->run("SELECT count(*) FROM e_entry WHERE eid=?", array($eid) )->fetchColumn();
+        $counts["documents"] = $db_o->run("SELECT count(*) FROM e_document WHERE eid=?", array($eid) )->fetchColumn();
+        $counts["notices"]  = $db_o->run("SELECT count(*) FROM e_notice WHERE eid=?", array($eid) )->fetchColumn();
 
         // create navbar
-        $fields = array("eventid" => "", "version" => $this->cfg['sys_version'], "year" => date("Y"),
-                        "brand-label" => $this->cfg['rm_event']['brand']);
-
-        $params = array("page" => "details", "active" => "details", 'eid' => $eid,
-                        "start-year"=> $this->cfg['rm_event']['start_year'], "options"=>$this->cfg['options'], "contact"=> $contacts );
-
+        $fields = array("eventid" => $eid, "version" => $this->cfg['sys_version'], "year" => date("Y"),
+            "brand-label" => $this->cfg['rm_event']['brand']);
+        $params = array("page" => $page, "active" => $page, 'eid' => $eid,
+            "start-year"=> $this->cfg['rm_event']['start_year'], "options"=>$this->cfg['options'],
+            "contact"=> $contacts, "counts" => $counts);
         $nav =$this->tmpl_o->get_template("navbar", $fields, $params);
 
         // create body
         $body = <<<EOT
          <h1> "$page" Page for Event $eid</h1>
 EOT;
+//      if ($event)
+//      {
+//          elseif ($page == "details") {}
+//          elseif ($page == "entries") {}
+//          elseif ($page == "documents") {}
+//          elseif ($page == "notices") {}
+//          elseif ($page == "results") {}
+//      }
+//      else
+//      {
+//           report error - no event
+//      }
 
         // create footer
         $fields = array('version' => $this->cfg['sys_version'], 'year' => date("Y"));
-        $params = array('page' => $page, 'eid' => $eid, 'footer' => true, );
+        $params = array('page' => $page, 'eid' => $eid, 'footer' => true, "counts" => $counts);
         $footer = $this->tmpl_o->get_template("footer", $fields, $params);
+
+        // create modals
+
+        // create javascript
 
         // assemble page
         $fields = array(

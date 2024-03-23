@@ -37,12 +37,6 @@ if ($commit)
     // set acronym if not set
     if ($values['acronym']=="") { $values['acronym'] = substr($values['classname'],0,4) ;}
 
-    // create RYA code (acronym + rya_crew+rya_rig+rya_spinnaker
-    if ($values['rya_id']=="") { $values['rya_id'] = strtoupper($values['acronym'].$values['crew'].$values['rig'].$values['spinnaker']); }
-
-    // set active flag
-    //$values['active'] = 1;
-
     // set audit fields
     $values['updby']   = $_SESSION['UserID'];
     $values['upddate'] = NOW();

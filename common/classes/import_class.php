@@ -38,7 +38,7 @@ Class for managing csv imports
 
             foreach ($this->header as $value)
             {
-                $value = preg_replace('/[^\w-]/', '', $value);
+                $value = preg_replace('/[^\w-]/', '', trim($value));
                 if (!in_array($value, $this->field_map))
                 {
                     $err .= $value." is invalid field<br> ";

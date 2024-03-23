@@ -156,18 +156,22 @@ function footer ($params = array())
     }
     elseif ($params['page'] == "details")
     {
+        $params['counts']['entries'] > 0 ? $entries_htm = "[{$params['counts']['entries']}]" : $entries_htm = "";
+        $params['counts']['documents'] > 0 ? $documents_htm = "[{$params['counts']['documents']}]" : $documents_htm = "";
+        $params['counts']['notices'] > 0 ? $notices_htm = "[{$params['counts']['notices']}]" : $notices_htm = "";
+
         $htm = <<<EOT
         <footer class="footer mt-auto">
             <div class="container py-3">
                 <p class="d-inline-flex gap-5">
                     <a class="btn btn-secondary fs-4" href="rm_event.php?page=entries&eid={$params['eid']}" style="width: 300px" >
-                        ENTER EVENT
+                        ENTER EVENT $entries_htm
                     </a>
                     <a class="btn btn-secondary fs-4" href="rm_event.php?page=documents&eid={$params['eid']}" style="width: 300px" >
-                        DOCUMENTS [2]
+                        DOCUMENTS $documents_htm
                     </a>
                     <a class="btn btn-secondary fs-4" href="rm_event.php?page=notices&eid={$params['eid']}" style="width: 300px" >
-                        NOTICES [3]
+                        NOTICES $notices_htm
                     </a>
                 </p>
             </div>
