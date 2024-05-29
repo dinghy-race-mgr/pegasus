@@ -25,16 +25,6 @@ class PYS
         $this->races    = array();
     }
 
-//    private function pys_xml_tag($tag, $type, $handle)
-//    {
-//        if ($type=="open")
-//        { fwrite($handle, "<".$tag.">"); }
-//        elseif ($type=="close")
-//        { fwrite($handle, "</".$tag.">"); }
-//        else
-//        { $this->error[] = "xml tag type not recognised ($type)"; }
-//    }
-
     public function get_control_files()
     {
         $control_files = array();
@@ -64,8 +54,6 @@ class PYS
         $jsonData = json_decode($str, true);
         $this->admin = $jsonData['admin'];
         $this->commands = $jsonData['commands'];
-        
-        //echo "<pre>".print_r($this->commands,true)."</pre>";
 
         if (empty($this->commands))
         {
@@ -111,8 +99,9 @@ class PYS
         return $swapped;
     }
 
-    public function set_filename($command, $pysid, $file_type)
+    public function set_filename($command, $admin, $pysid, $file_type)
     {
+
         // gets path/filename for output data
         $str = "SYC_".date("Ymd")."_".str_replace(' ', '', $command['description']);
         if (!empty($pysid)) { $str.= "_$pysid"; }
@@ -120,10 +109,15 @@ class PYS
         $this->outfile = $str.".$file_type";
 
         // get path
-        $this->outpath = $this->path."/".date("Y")."/".$this->outfile;
+        $this->outpath = $this->path."/".$admin['data-year']."/".$this->outfile;
+        $dirname = dirname($this->outpath);
+        if (!is_dir($dirname))
+        {
+            mkdir($dirname, 0755, true);
+        }
 
         // get url
-        $this->outurl = $this->baseurl."/".date("Y")."/".$this->outfile;
+        $this->outurl = $this->baseurl."/".$admin['data-year']."/".$this->outfile;
 
         return $this->outpath;
     }
@@ -140,9 +134,9 @@ class PYS
     public function set_log_filename($command)
     {
         $name = "SYC_".date("Ymd")."_".str_replace(' ', '', $command['description']).".log";
-        $this->logfile = $this->path."/".date("Y")."/".$name;
+        $this->logfile = $this->path."/logs/".$name;
 
-        $this->logurl = $this->baseurl."/".date("Y")."/".$name;
+        $this->logurl = $this->baseurl."/logs/".$name;
 
         return $this->logfile;
     }
@@ -172,110 +166,147 @@ class PYS
         $status = 0;
         $field_list  = "a.id, event_name, event_date, event_start, event_order, event_format, tide_time, tide_height, ws_start, wd_start, ws_end, wd_end";
         $order_list  = "event_date ASC, event_start ASC";
-        $where_event = "event_type = 'racing' and active = 1 ";
 
+        // set selection where and join constraints
+        $mode_arr = array(
+            "series" => array( "subwhere" => "series_code LIKE '{$command['attribute']}%'", "join" => ""),
+            "format" => array( "subwhere" => "race_name = '{$command['attribute']}'", "join" => " JOIN t_cfgrace as b ON a.event_format=b.id "),
+            "list"   => array( "subwhere" => "id IN ({$command['attribute']})", "join" => ""),
+            "name"   => array( "subwhere" => "event_name LIKE '%{$command['attribute']}%'", "join" => ""),
+        );
+
+        // date, event type and event status constraints
+        $where_event = " event_type = 'racing' and a.active = 1 ";
         $where_date = "";
         if (!empty($command['start-date']) and !empty($command['end-date']))
         {
             $where_date  = " and event_date >= '{$command['start-date']}' and event_date <= '{$command['end-date']}' ";
         }
+        empty($where_date) ? $where = $where_event : $where = $where_event.$where_date;
 
+        // get list of matching events
 
-        if (strtolower($command['mode']) == "series")
+        if (empty($command['attribute']))
         {
-            if (empty($command['attribute']))
-            {
-                $status = -1;
-            }
-            else
-            {
-                if (!empty($where_date))
-                {
-                    $where = $where_event.$where_date;
-                    $sql = "SELECT $field_list FROM t_event as a WHERE $where and series_code LIKE '{$command['attribute']}%' ORDER BY $order_list";
-                }
-                else
-                {
-                    $where = $where_event;
-                    $sql = "SELECT $field_list FROM t_event as a WHERE $where and series_code = '{$command['attribute']}' ORDER BY $order_list";
-                }
-            }
-        }
-        elseif (strtolower($command['mode']) == "list")
-        {
-            if (empty($command['attribute']))
-            {
-                $status = -1;
-            }
-            else
-            {
-                empty($where_date) ? $where = $where_event : $where = $where_event.$where_date;
-                $sql = "SELECT $field_list FROM t_event as a WHERE $where and id IN ({$command['attribute']}) ORDER BY $order_list";
-            }
-        }
-        elseif (strtolower($command['mode']) == "format")
-        {
-            if (empty($command['attribute']) or empty($command['start-date']) or empty($command['end-date']))
-            {
-                $status = -1;
-            }
-            else
-            {
-                empty($where_date) ? $where = $where_event : $where = $where_event.$where_date;
-                $sql = "SELECT $field_list FROM t_event as a JOIN t_cfgrace as b ON a.event_format=b.id  WHERE b.race_name = '{$command['attribute']}' ORDER BY $order_list";
-            }
-        }
-        elseif (strtolower($command['mode']) == "name")
-        {
-            if (empty($command['attribute']) or empty($command['start-date']) or empty($command['end-date']))
-            {
-                $status = -1;
-            }
-            else
-            {
-                empty($where_date) ? $where = $where_event : $where = $where_event.$where_date;
-                $sql = "SELECT $field_list FROM t_event WHERE $where and event_name LIKE '%{$command['attribute']}%' ORDER BY $order_list";
-            }
+            $status = -1;          // missing information - not possible to process
         }
         else
         {
-            $status = -2;
-        }
-
-        if ($status == 0)
-        {
-            $rs = $this->db->db_get_rows($sql);
-            //echo "<pre>$sql</pre>";
-
-            if ($rs)
+            if (array_key_exists($command['mode'], $mode_arr))
             {
-                $status = count($rs);
-                $i = 0;
-                foreach ($rs as $row)
-                {
-                    $i++;
-                    $row['race-num'] = $i;
-                    $this->events[$row['id']] = $row;
-                }
-                
-                foreach ($this->events as $row)
-                {
-                    $rs = $this->db->db_get_rows("SELECT fleet_num, fleet_code, fleet_name, pursuit FROM t_cfgrace as a 
-                                                  JOIN t_cfgfleet as b on a.id=b.eventcfgid WHERE a.id = {$row['event_format']} ORDER BY fleet_num");
-                    $i =0;
-                    foreach($rs as $fleet)
-                    {
-                        $i++;
-                        $this->fleets[$row['id']][$i] = $fleet;
-                    }
-                }
+                $subwhere = $mode_arr[$command['mode']]['subwhere'];
+                $join = $mode_arr[$command['mode']]['join'];
             }
             else
             {
-                $status = -3;
+                $status = -2;  // mode not recognised
+            }
+
+            if ($status == 0)
+            {
+                // get list of events to process for this command
+                $sql = "SELECT a.id FROM t_event as a $join WHERE $where and $subwhere ORDER BY id ASC";
+                $rs = $this->db->db_get_rows($sql);
+                $list = "";
+
+                foreach ($rs as $eventid)
+                {
+                    $list.= $eventid['id'].",";
+                }
+                $list = rtrim($list,",");
+                //echo "<pre>LIST: $list</pre>";
+
+                // now get event fields for all requested events
+                $sql = "SELECT $field_list FROM t_event as a WHERE id in ($list) ORDER BY $order_list";
+                $rs = $this->db->db_get_rows($sql);
+
+                if ($rs)
+                {
+                    $status = count($rs);
+                    $i = 0;
+                    foreach ($rs as $row)
+                    {
+                        $i++;
+                        $row['race-num'] = $i;
+                        $this->events[$row['id']] = $row;
+                    }
+
+                    foreach ($this->events as $row)
+                    {
+                        $rs = $this->db->db_get_rows("SELECT fleet_num, fleet_code, fleet_name, pursuit FROM t_cfgrace as a 
+                                              JOIN t_cfgfleet as b on a.id=b.eventcfgid WHERE a.id = {$row['event_format']} ORDER BY fleet_num");
+                        $i =0;
+                        foreach($rs as $fleet)
+                        {
+                            $i++;
+                            $this->fleets[$row['id']][$i] = $fleet;
+                        }
+                    }
+                }
+                else
+                {
+                    $status = -3;
+                }
             }
         }
 
+//        if (strtolower($command['mode']) == "series")
+//        {
+//            if (empty($command['attribute']))
+//            {
+//                $status = -1;
+//            }
+//            else
+//            {
+//
+//                $sql = "SELECT $field_list FROM t_event as a WHERE $where and series_code LIKE '{$command['attribute']}%' ORDER BY $order_list";
+//            }
+//        }
+//        elseif (strtolower($command['mode']) == "list")
+//        {
+//            if (empty($command['attribute']))
+//            {
+//                $status = -1;
+//            }
+//            else
+//            {
+//                empty($where_date) ? $where = $where_event : $where = $where_event.$where_date;
+//                $sql = "SELECT $field_list FROM t_event as a WHERE $where and id IN ({$command['attribute']}) ORDER BY $order_list";
+//            }
+//        }
+//        elseif (strtolower($command['mode']) == "format")
+//        {
+//            if (empty($command['attribute']) or empty($command['start-date']) or empty($command['end-date']))
+//            {
+//                $status = -1;
+//            }
+//            else
+//            {
+//                empty($where_date) ? $where = $where_event : $where = $where_event.$where_date;
+//                $sql = "SELECT $field_list FROM t_event as a JOIN t_cfgrace as b ON a.event_format=b.id  WHERE $where AND b.race_name = '{$command['attribute']}' ORDER BY $order_list";
+//            }
+//        }
+//        elseif (strtolower($command['mode']) == "name")
+//        {
+//            if (empty($command['attribute']) or empty($command['start-date']) or empty($command['end-date']))
+//            {
+//                $status = -1;
+//            }
+//            else
+//            {
+//                empty($where_date) ? $where = $where_event : $where = $where_event.$where_date;
+//                $sql = "SELECT $field_list FROM t_event WHERE $where and event_name LIKE '%{$command['attribute']}%' ORDER BY $order_list";
+//            }
+//        }
+//        else
+//        {
+//            $status = -2;
+//        }
+//
+//        if ($status == 0)
+//        {
+//            $rs = $this->db->db_get_rows($sql);
+//            //echo "<pre>$sql</pre>";
         return $status;
     }
 
@@ -527,7 +558,7 @@ class PYS
             "lap", "etime", "atime", "crewnum", "rig", "spinnaker");
 
         $cols = array("Class", "Race Number", "Race Date", "Start Name", "Rank", "SailNo", "Helm", "Crew", "pn",
-            "Laps", "Elapsed", "Corrected", "Persons", "Rig", "Spinnaker");
+            "Laps", "Elapsed", "Corrected", "Persons", "Rig", "Spin");
 
         $rows = array();
         $i = 0;

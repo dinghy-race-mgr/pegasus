@@ -1,15 +1,12 @@
 <?php
-
-
 /* rm_event.php
 
-    Main script for rm_evet application
-
+    Main script for rm_event application
 
 */
 
 // start session
-session_id('sess-rmweb');
+session_id('sess-rmevent');
 session_start();
 // error_reporting(E_ERROR);  // turn off warnings for live operation
 require_once("include/rm_event_lib.php");
@@ -18,7 +15,7 @@ require_once("classes/template.php");
 require_once("classes/db.php");
 
 // initialise application
-$cfg = parse_ini_file("config.ini", true);
+$cfg = parse_ini_file("config.ini", true);                                             // FIXME location
 $_SESSION['logfile'] = str_replace("<date>", date("Y"), $cfg['rm_event']['logfile']);
 
 // fixme - need to sort out configuration
@@ -32,6 +29,9 @@ empty($_REQUEST['page']) ? $page = "list" : $page = $_REQUEST['page'];
 empty($_REQUEST['year']) ? $year = date("Y") : $year = $_REQUEST['year'];
 empty($_REQUEST['eid']) ? $eid = 0 : $eid = $_REQUEST['eid'];
 
+// if newentry arg not supplied set to "noentry" - otherwise take value
+empty($_REQUEST['newentry']) ? $newentry = "noentry" : $newentry = strtolower($_REQUEST['newentry']);
+
 $if_o = new PAGES($cfg);
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass']);
 
@@ -41,7 +41,7 @@ if ($page == "list")                        // events list page
 }
 else                                        // specific event page
 {
-    $if_o->pg_event($db_o, $page, $eid);
+    $if_o->pg_event($db_o, $page, $eid, $newentry);
 }
 
 
@@ -62,6 +62,8 @@ $db->run("INSERT INTO e_notice (eid, category, title, updby) VALUES (:eid,:categ
 $id = $db->pdo->lastInsertId();
 
 echo "inserted record: $id <br>";
+
+
 
 $data = $db->run("SELECT * FROM e_notice", array() )->fetchall();
 echo "<br><pre>".print_r($data, true)."</pre>";

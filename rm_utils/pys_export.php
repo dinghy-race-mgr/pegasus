@@ -1,10 +1,14 @@
 <?php
-// Creates an export race data file for input to the RYA's PYS system
-
 /*
- * TODO -
- * - not handling display of error states
- * - create xml output and check against style sheet and previous returns
+pys_export.php
+
+Creates an export race data file for input to the RYA's PYS system in either csv or xml format.
+
+The csv format files need to be converted to xlsx and the sheet named Front Sheet.
+
+The processing is controlled by a json command file which sits in the data/pyscheme directory
+
+The processing generates a log file in data/pyscheme/logs directory
 
  */
 
@@ -22,8 +26,6 @@ require_once ("{$loc}/common/lib/util_lib.php");
 // arguments
 $pagestate    = u_checkarg("pagestate", "set", "", "init");
 $control_file = u_checkarg("control-file", "set", "", "");
-$start_date   = u_checkarg("start-date", "set", "", "");
-$end_date     = u_checkarg("end-date", "set", "", "");
 $file_type    = u_checkarg("file-type", "set", "", "xml");
 
 session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
@@ -99,15 +101,6 @@ if ($pagestate == "submit" )                                 // error check for 
         $error[] = 5;
     }
 
-    // check user defined dates are valid
-    if ((empty($start_date) and !empty($end_date)) or
-        (empty($end_date) and !empty($start_date)) or
-        (strtotime($start_date) > strtotime($end_date)))
-    {
-        $state = 3;
-        $error[] = 3;
-    }
-
     // check file type is set and valid
     if ($file_type != "csv" and $file_type != "xml")
     {
@@ -131,9 +124,9 @@ if ($_REQUEST['pagestate'] == "init" and $state == 0)        // display user par
 {
     $formfields = array(
         "instructions" => "Processes race results to produce files which can be submitted to the RYA Portsmouth Yardstick System [https://www.pyonline.org.uk/] </br>
-           <span class=' rm-text-xs'> - The races to be processed will be defined in command files selected in the menu below</br>
-            - The optional entry of start and end date allow you to adjust the start and end dates defined in the command files</br>
-             - Links will be provided to each output file produced <i>(files can also be found in your raceManager installation at data/pyscheme)</i></span>",
+           <span class=' rm-text-xs'> - The races to be processed will be defined in a command file selected from the menu below - either create
+           a new command file or edit an existing one.  The files should be in the data/pyscheme directory.</br>
+            - links are provided to each output file produced <i>(files can also be found in your raceManager installation at data/pyscheme/{year})</i></span>",
         "script" => "pys_export.php?pagestate=submit",
     );
 
@@ -157,10 +150,6 @@ elseif ($_REQUEST['pagestate'] == "submit" and $state == 0)  // process data as 
         $admin = $pys_o->get_admin_info();
         echo $tmpl_o->get_template("publish_results", $pagefields, array("state-error"=>false, "name"=>$admin['name'], "file"=>$control_file));
 
-        // change date limits if required
-        $dateswap = $pys_o->swap_control_dates($start_date, $end_date);
-        if ($dateswap) { $commands = $pys_o->get_commands_info(); }
-
         foreach ($commands as $k => $command)
         {
             // create logfile (removing existing one)
@@ -168,7 +157,7 @@ elseif ($_REQUEST['pagestate'] == "submit" and $state == 0)  // process data as 
             if (file_exists($logfile)) { unlink($logfile); }
 
             // get data output filename
-            $out_filename = $pys_o->set_filename($command, $_SESSION['pys_id'], $file_type);
+            $out_filename = $pys_o->set_filename($command, $admin, $_SESSION['pys_id'], $file_type);
 
             // get events associated with command
             $status = $pys_o->set_events($command);
@@ -177,7 +166,7 @@ elseif ($_REQUEST['pagestate'] == "submit" and $state == 0)  // process data as 
             $num_events = count($events);
 
             // start logging for this command
-            if ($logging) { start_logging($logfile, $command, $num_events, $dateswap, $start_date, $end_date, $out_filename); }
+            if ($logging) { start_logging($logfile, $command, $num_events, false, "", "", $out_filename); }
 
             // process each event
             $command_report = array(
@@ -234,7 +223,7 @@ elseif ($_REQUEST['pagestate'] == "submit" and $state == 0)  // process data as 
                 $data = $pys_o->get_results();
 
                 // output in required format
-                if ($_SESSION['pys_export']['file_format'] == "xml") {
+                if ($file_type == "xml") {
 
                     $status = output_xml_file($data, $command, $logging, $out_filename, $logfile);
                 }
@@ -262,13 +251,11 @@ elseif ($_REQUEST['pagestate'] == "submit" and $state > 0)  // process error sta
 }
 
 
-
 function start_logging($logfile, $command, $num_events, $dateswap, $start_date, $end_date, $out_filename)
 {
     error_log(date('H:i:s') . " -- start PYS processing" . PHP_EOL, 3, $logfile);
     error_log(date('H:i:s') . " -- COMMAND:" . print_r($command, true) . PHP_EOL, 3, $logfile);
     error_log(date('H:i:s') . " -- EVENTS: number of events to process - $num_events" . PHP_EOL, 3, $logfile);
-    if ($dateswap) { error_log(date('H:i:s') . " -- swapped date limits in file to $start_date to $end_date" . PHP_EOL, 3, $logfile); }
     error_log(date('H:i:s') . " -- OUTPUT FILE: $out_filename" . PHP_EOL, 3, $logfile);
 }
 
@@ -338,9 +325,6 @@ function output_xml_file($data, $command, $logging, $file, $logfile)
 {
     global $pys_o;
     global $tmpl_o;
-
-//    echo "<pre>".print_r($data,true)."</pre>";
-//    exit();
 
     $params = array(
         "data" => $data,

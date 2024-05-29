@@ -355,6 +355,16 @@
 		<a>
 		  <div class="checkbox">
 			<label>
+			  <input type="checkbox" id="hide_upd_year" checked="checked" value="1" data-field="upd_year">
+			  <span>{$label t_class upd_year}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
 			  <input type="checkbox" id="hide_local_py" checked="checked" value="1" data-field="local_py">
 			  <span>{$label t_class local_py}</span>
 			</label>
@@ -375,6 +385,16 @@
 		<a>
 		  <div class="checkbox">
 			<label>
+			  <input type="checkbox" id="hide_active" checked="checked" value="1" data-field="active">
+			  <span>{$label t_class active}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
 			  <input type="checkbox" id="hide_category" checked="checked" value="1" data-field="category">
 			  <span>{$label t_class category}</span>
 			</label>
@@ -387,16 +407,6 @@
 			<label>
 			  <input type="checkbox" id="hide_crew" checked="checked" value="1" data-field="crew">
 			  <span>{$label t_class crew}</span>
-			</label>
-		</div>
-		</a>
-		</li>
-		<li>
-		<a>
-		  <div class="checkbox">
-			<label>
-			  <input type="checkbox" id="hide_active" checked="checked" value="1" data-field="active">
-			  <span>{$label t_class active}</span>
 			</label>
 		</div>
 		</a>
@@ -528,6 +538,9 @@
 	.bs-gridcell[data-field=active]:before {
 		content: "{$label t_class active}";
 	}
+	.bs-gridcell[data-field=upd_year]:before {
+		content: "{$label t_class upd_year}";
+	}
 </style>
 <table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
 	<thead>
@@ -587,6 +600,19 @@
 									
 									
 									
+									{BEGIN upd_year_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$upd_year_class}" data-field=upd_year>
+									{BEGIN upd_year_fieldheader}
+																				<span {$upd_year_orderlinkattrs}>
+											{$label t_class upd_year}
+										</span>
+									{END upd_year_fieldheader}
+									</th>
+									{END upd_year_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN local_py_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$local_py_class}" data-field=local_py>
 									{BEGIN local_py_fieldheader}
@@ -613,6 +639,19 @@
 									
 									
 									
+									{BEGIN active_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
+									{BEGIN active_fieldheader}
+																				<span {$active_orderlinkattrs}>
+											{$label t_class active}
+										</span>
+									{END active_fieldheader}
+									</th>
+									{END active_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN category_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$category_class}" data-field=category>
 									{BEGIN category_fieldheader}
@@ -635,19 +674,6 @@
 									{END crew_fieldheader}
 									</th>
 									{END crew_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN active_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
-									{BEGIN active_fieldheader}
-																				<span {$active_orderlinkattrs}>
-											{$label t_class active}
-										</span>
-									{END active_fieldheader}
-									</th>
-									{END active_fieldheadercolumn}
 									
 									
 									
@@ -747,6 +773,13 @@
 {END nat_py_fieldcolumn}
 
 
+	{BEGIN upd_year_fieldcolumn}
+	<td class="bs-gridcell {$upd_year_class}"  data-field=upd_year {$rowstyle} {$recordattrs}>
+		{$upd_year_value}
+	</td>
+{END upd_year_fieldcolumn}
+
+
 	{BEGIN local_py_fieldcolumn}
 	<td class="bs-gridcell {$local_py_class}"  data-field=local_py {$rowstyle} {$recordattrs}>
 		{$local_py_value}
@@ -761,6 +794,13 @@
 {END popular_fieldcolumn}
 
 
+	{BEGIN active_fieldcolumn}
+	<td class="bs-gridcell {$active_class}"  data-field=active {$rowstyle} {$recordattrs}>
+		{$active_value}
+	</td>
+{END active_fieldcolumn}
+
+
 	{BEGIN category_fieldcolumn}
 	<td class="bs-gridcell {$category_class}"  data-field=category {$rowstyle} {$recordattrs}>
 		{$category_value}
@@ -773,13 +813,6 @@
 		{$crew_value}
 	</td>
 {END crew_fieldcolumn}
-
-
-	{BEGIN active_fieldcolumn}
-	<td class="bs-gridcell {$active_class}"  data-field=active {$rowstyle} {$recordattrs}>
-		{$active_value}
-	</td>
-{END active_fieldcolumn}
 
 	{BEGIN endrecord_block}
 	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>

@@ -4,7 +4,6 @@
   html templates for PYS export utility
 */
 
-
 function publish_form($params = array())
 {
     if (empty($params['control-files']))
@@ -36,7 +35,7 @@ EOT;
                 </div>               
             </div>           
             
-            <div class="row form-inline margin-top-20">
+            <!-- div class="row form-inline margin-top-20">
                 <label class="col-sm-3 control-label text-right">Define Period (from/to)</label>
                 <div class="form-group">                   
                     <div class="col-sm-8">
@@ -48,7 +47,7 @@ EOT;
                         <input type="date" class="form-control" id="end-date" name="end-date" value="">
                     </div>
                 </div>
-            </div>
+            </div -->
              
             <div class="row form-inline margin-top-10" >
                 <label class="col-sm-3 control-label text-right">Output File Type</label>
@@ -92,7 +91,6 @@ EOT;
 function publish_results($params = array())
 {
     // starts processing report - completed by command_report and end_report templates
-
     if ($params['state-error'])
     {
         $hdr = <<<EOT
@@ -231,8 +229,6 @@ EOT;
 
 function publish_state($params = array())
 {
-    //echo "<pre>PUBLISH_STATE".print_r($params,true)."</pre>";
-
     $start = date("d/m/Y", strtotime($params['args']['start-date']));
     $end = date("d/m/Y", strtotime($params['args']['end-date']));
 
@@ -287,9 +283,7 @@ function output_xml($params = array())
     $submit_time = date("H:i:s");
 
     $xml = <<<EOT
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet href="RYAPY.xsl" type="text/xsl" ?>
-<RYAPY xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-       noNamespaceschemaLocation="http://www.halsraceresults.com/XMLSchemas/RYAPY.xsd">
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet href="./RYAPY.xsl" type="text/xsl" ?>
 <admin>
 <source>raceManager</source>
 <sourcever>10.0</sourcever>
@@ -328,8 +322,6 @@ EOT;
 
             foreach ($fleet['entries'] as $entry)              // process each entry (boat) in fleet
             {
-                //echo "<pre>".print_r($entry,true)."</pre>";
-
                 $xml.= <<<EOT
 <entry>
 <classid>{$entry['class']}</classid>

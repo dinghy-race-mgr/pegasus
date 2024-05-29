@@ -57,17 +57,87 @@ function parse_contacts($contacts_data, $mode)
     if ($mode == "club")
     {
         $contact_data = explode(",", $contacts_data);
-        $contacts[0] = array("name" => trim($contact_data[0]), "role" => trim($contact_data[1]), "email" => trim($contact_data[2]));
+        $contacts[0] = array("name" => trim($contact_data[0]), "role" => trim($contact_data[1]),
+            "email" => trim($contact_data[2]), "link" => trim($contact_data[3]));
     }
     else
     {
         foreach ($contacts_data as $k=> $contact)
         {
             $contacts[] = array("name" => trim($contact['name']), "role" => trim($contact['role']),
-                                "email" => trim($contact['email']));
+                                "email" => trim($contact['email']), "link"=>$contact['link']);
         }
-
     }
 
     return $contacts;
+}
+
+function render_content($content, $image_posn = "")
+{
+    $link_html = "";
+    if (!empty($content['link']))                              // link to be added
+    {
+        $link_html = <<<EOT
+        <p>for more information see &hellip;<a class="link-info lead" href="{$content['link']}" target="_BLANK"><b>{$content['link-label']}</b></a></p>
+EOT;
+    }
+
+    if (empty($content['image']))                              // no image
+    {
+        $html = <<<EOT
+            <div class="container">
+                <p class="" >{$content['content']}</p>
+                $link_html
+            </div>
+EOT;
+    }
+    elseif ($image_posn == "right")
+    {
+        $html = <<<EOT
+            <div class="container">
+              <div class="row">
+                <div class="col-8"><p class="" >{$content['content']}</p>$link_html</div>
+                <div class="col">
+                  <p class="" ><img src='{$content['image']}' alt='{$content['label']}' class='rounded mx-auto d-block' style='max-width: 100%; max-height: 100%'></p>
+                </div>
+              </div>
+            </div>
+EOT;
+    }
+    elseif ($image_posn == "left")
+    {
+        $html = <<<EOT
+            <div class="container">
+              <div class="row">
+                <div class="col">
+                  <p class="lead" ><img src='{$content['image']}' alt='{$content['label']}' class='rounded mx-auto d-block' style='max-width: 100%; max-height: 100%'></p>
+                </div>
+                <div class="col-8"><p class="" >{$content['content']}</p>$link_html</div>               
+              </div>
+            </div>
+EOT;
+    }
+    elseif ($image_posn == "top")
+    {
+        $html = <<<EOT
+            <div class="container">
+                <p class="" ><img src='{$content['image']}' alt ='{$content['label']}' class='rounded mx-auto d-block' style='max-width: 60%; max-height: 60%'></p>
+                <p class="" >{$content['content']}</p>$link_html            
+            </div>
+EOT;
+    }
+    elseif ($image_posn == "bottom")
+    {
+        $html = <<<EOT
+            <div class="container">
+                <p class="" >{$content['content']}</p>$link_html 
+                <p class="" ><img src='{$content['image']}' alt='{$content['label']}' class='rounded mx-auto d-block' style='max-width: 60%; max-height: 60%'></p>                          
+            </div>
+EOT;
+    }
+
+    //echo "<pre>$html</pre>";
+    //exit();
+
+    return $html;
 }

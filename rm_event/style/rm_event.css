@@ -1,0 +1,43 @@
+/* custom styles for rm_event application
+-------------------------------------------------- */
+
+:root {
+    --primary: #2c3e50;
+    --darkblue: #2c4c7c;
+    --darkred: #8b0000;
+    --darkgrey: #a9a9a9;
+    --red: #c20000;
+    --white: #ffffff;
+    --black: #000000;
+    --green: #18bc9c;
+    --grey: #708090;
+    --lightgrey: #e6e6e6;
+    --lightyellow: #eee8aa;
+    --lightorange: #f39c12;
+    --lightred: #e74c3c;
+    --lightblue: #add8e6;
+}
+
+/* flatly colours
+ - primary     #2C3E50
+ - success     #18BC9C
+ - info        #3498DB
+ - warning     #F39C12
+ - danger      #E74C3C
+ - default     #95A5A6
+ - shade       #ECF0F1
+ */
+
+
+.nav-margin {margin-top: 50px;}
+
+.active-option {background-color: var(--lightblue); font-weight: 900;}
+
+.form-section {background-color: rgba(191,139,255,0.4); color: black; font-weight: bold;}
+.readonly-style {font-weight: bold; font-size: larger;}
+
+/* checkbox styling */
+input[type="checkbox"] { width: 1.5em; height: 1.5em; border: solid 2px dodgerblue; }
+
+
+
