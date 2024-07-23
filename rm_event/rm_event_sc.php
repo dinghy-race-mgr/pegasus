@@ -7,21 +7,30 @@
 // start session
 session_id('sess-rmevent');
 session_start();
-// error_reporting(E_ERROR);  // turn off warnings for live operation
+
+// error_reporting(E_ERROR);  // FIXME turn off warnings for live operation
+
 require_once("include/rm_event_lib.php");
 require_once("classes/db.php");
 
 // initialise application
-$cfg = parse_ini_file("config.ini", true);                                                      // FIXME location of ini file
-$_SESSION['logfile'] = str_replace("<date>", date("Y"), $cfg['rm_event']['logfile']);
+$cfg = set_config("config.ini", array("rm_event"), true);   // FIXME location of ini file
+$cfg['logfile'] = str_replace("<date>", date("Y"), $cfg['logfile']);
 
-// debugging
-echo "<pre>".print_r($_REQUEST,true)."</pre>";
+
+//echo "<pre>".print_r($_REQUEST,true)."</pre>";
+//exit();
 
 // get required arguments
-$eid = $_REQUEST['eid'];
+$eid       = $_REQUEST['eid'];
 $pagestate = $_REQUEST['pagestate'];
-if (empty($eid) or empty($pagestate)) { echo "ERROR: eventid or pagestate not set"; exit(); }   // FIXME exit_nicely
+$mode      = $_REQUEST['mode'];
+if (empty($eid) or empty($pagestate))
+{
+    echo "ERROR: eventid [{$_REQUEST['eid']}], pagestate [{$_REQUEST['pagestate']}] or mode [{$_REQUEST['mode']}] not set";
+    exit();
+    // FIXME exit_nicely
+}
 
 // set database
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass']);
@@ -29,156 +38,103 @@ $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass']);
 // get event details
 $event = $db_o->run("SELECT * FROM e_event WHERE id = ?", array($eid) )->fetch();
 
-
 if ($pagestate == "newentry")
 {
+    $action = "newentry";
 
     // set up entry array
-    $entry = array("eid" => $_REQUEST['id']);
+    $entry = array(
+        "eid"          => $eid,
+        "b-class"      => get_class_name($_REQUEST['class']),
+        "b-sailno"     => $_REQUEST['sailnumber'],
+        "b-name"       => $_REQUEST['boatname'],
+        "b-division"   => get_category($_REQUEST['category']),
+        "b-pn"         => get_pn ($event['scoring-type'],$event['handicap-type'], $_REQUEST['class']),
+        "h-name"       => get_name($_REQUEST['helm-name']),
+        "h-club"       => get_club($_REQUEST['club'], $cfg['club_std']),
+        "h-age"        => $_REQUEST['helm-age'],
+        "h-gender"     => "notreported",
+        "h-email"      => $_REQUEST['helm-email'],
+        "h-phone"      => get_phone($_REQUEST['ph-mobile']),
+        "h-emergency"  => get_phone($_REQUEST['ph-emer']),
+        "c-name"       => get_name($_REQUEST['crew-name']),
+        "c-age"        => $_REQUEST['crew-age'],
+        "c-gender"     => "notreported",
+        "e-racemanager"=> check_competitor_exists($_REQUEST['class'], $_REQUEST['sailnumber'], $_REQUEST['helm-name']),
+        "updby"        => "online entry"
+    );
 
-    $entry['b-class']      = get_class($_REQUEST['class']);
-    $entry['b-sailno']     = $_REQUEST['sailnumber'];
-    $entry['b-name']       = $_REQUEST['boatname'];
-    $entry['b-variant']    = "";
-    $entry['b-fleet']      = "";
-    $entry['b-division']   = get_category($_REQUEST['category']);
-    $entry['b-pn']         = "";  // get this from t_class (but need setting for event to get right value
-    $entry['b-personalpn'] = "";
-    $entry['h-name']       = get_name($_REQUEST['helm-name']);
-    $entry['h-club']       = get_club($_REQUEST['club'], $_SESSION['club_std']);
-    $entry['h-age']        = "{$_REQUEST['helm-age']}";
-    $entry['h-gender']     = "notreported";
-    $entry['h-email']      = $_REQUEST['helm-email'];
-    $entry['h-phone']      = get_phone($_REQUEST['ph-mobile']);
-    $entry['h-emergency']  = get_phone($_REQUEST['ph-emer']);
-    $entry['h-country']    = "";
-    $entry['c-name']       = get_name($_REQUEST['crew-name']);
-    $entry['c-club']       = "";
-    $entry['c-age']        = "{$_REQUEST['crew-age']}";
-    $entry['c-gender']     = "notreported";
-    $entry['c-emergency']  = "";
-    $entry['c-country']    = "";
+    // if personal handicap racing get pn from t_competitor [0 means not required or not found]
+    $entry['b-personalpn'] = get_personal_pn ($entry['e-racemanager'], $event['handicap-type']);
 
-    // check if it is a competitor known to raceManager (class and sailnumber match
-    $competitor_id = check_competitor_exists($entry['b-class'], $entry['b-sailno']);
+    // set guid for future updates
+    $mode == "add" ? $entry['e-guid'] = get_guid() : $entry['e-guid'] = "";
 
-    // if handicap racing get pn from t_class or t_competitor
-    $entry['b-pn'] = 0;
-    if ( $event['scoring-type'] == 'handicap' or $event['scoring-type'] == 'pursuit' )
-    {
-        if ( $event['handicap-type'] == 'national' )
-        {
-            $entry['b-pn'] = $db_o->run("SELECT nat_py FROM t_class WHERE classname = ? and `active` = 1", array($entry['b-class']) )->fetchColumn();
-        }
-        elseif ( $event['handicap-type'] == 'local' )
-        {
-            $entry['b-pn'] = $db_o->run("SELECT local_py FROM t_class WHERE classname = ? and `active` = 1", array($entry['b-class']) )->fetchColumn();
-        }
-        elseif ( $event['handicap-type'] == 'personal' and $competitor_id !== false)
-        {
-            $entry['b-pn'] = $db_o->run("SELECT local_py FROM t_competitor WHERE classname = ? and `active` = 1", array($entry['b-class']) )->fetchColumn();y
-        }
-    }
+    // get entry sequence no.
+    $max_id = $db_o->run("SELECT MAX(`e-entryno`) FROM e_entry WHERE `eid` = ?", array($eid) )->fetchColumn();
+    $entry['e-entryno'] = $max_id + 1;
 
-// FIXME get entry no.
+    // determine if entry will be on waiting list
+    $waiting_chk = check_waiting_list ( $event['entry-limit'], $eid);
+    $waiting_chk ? $entry['e-waiting'] = 1 : $entry['e-waiting'] = 0;
 
-// determine if entry will be on waiting list
-    $waiting_chk = false;
-    if ($event['entry-limit'] > 0)
-    {
-        // get no. of current entries in this event
-        $numentries = $db_o->run("SELECT COUNT(*) FROM e_entry WHERE eid = ? and `e-exclude` = 0", array($eid) )->fetchColumn();
-        if ( $numentries > $event['entry-limit'] ) { $waiting_chk = true; }
-    }
+    // determine if a junior consent form is required
+    $junior_chk = check_junior_consent ( $entry['h-age'], $entry['c-age']);
 
-// determine if a junior consent form is required
-    $junior_chk = false;
-    if ( $entry['h-age'] < 18 or $entry['c-age'] < 18 ) { $junior_chk = true; }
+    // FIXME check for duplicates
 
+    // insert record
+    $insertid = $db_o->insert("e_entry", $entry );
+    $insertid ? $status = "success": $status = "fail";
 
-//$newentry = "failed";     // can have value noentry|failed|str<id of entry>
-//header("Location: rm_event.php?page=entries&year=$year&eid={$_REQUEST['eid']}&newentry=$newentry"); exit();
-
-// process fields (club abbrevs, spaces in phone numbers, capitalisation of names)
-
-// create new fields (guide, entry no., )
-
-// should entry be on waiting list
-
-// is any crew members less than 18 years old - need consent form
+    // return to display
+    header("Location: rm_event.php?page=entries&eid=$eid&action=$action&status=$status&recordid=$insertid&junior=$junior_chk&waiting=$waiting_chk");
+    exit();
 }
-elseif ($pagestate == "updentry")
+elseif ($pagestate == "updentry")   // FIXME need to do the update variations
 {
-    $status = "failed";
+    // FIXME - dummy settings
+    $action      = "updentry";
+    $status      = "success";
+    $insertid    = "9";
+    $waiting_chk = 1;
+    $junior_chk  = 0;
+    // return to display
+    header("Location: rm_event.php?page=entries&eid=$eid&action=$action&status=$status&recordid=$insertid&junior=$junior_chk&waiting=$waiting_chk");
+    exit();
+}
+elseif ($pagestate == "juniorconsent")
+{
+    $_REQUEST['consent'] == "on" ? $consent = 1 : $consent = 0;
+    $dob = date ("Y-m-d", strtotime($_REQUEST['c-dob']));
+    $consent = array
+    (
+        "eid" => $eid,
+        "entryid"        => $_REQUEST['entryid'],
+        "parent_name"    => $_REQUEST['p-name'],
+        "parent_phone"   => $_REQUEST['p-mobile'],
+        "parent_email"   => $_REQUEST['p-email'],
+        "parent_address" => $_REQUEST['p-address'],
+        "child_name"     => $_REQUEST['c-name'],
+        "child_dob"      => $dob,
+        "medical"        => $_REQUEST['c-details'],
+        "imagerights"    => 0,
+        "consent"        => $consent,
+        "updby"          => "rm_event_form",
+    );
+
+    // insert record
+    $insertid = $db_o->insert("e_consent", $consent );
+    $insertid ? $status = "success": $status = "fail";
+
+    // return to display
+    header("Location: rm_event.php?page=entries&eid=$eid&action=newconsent&status=$status&recordid=$insertid");
+    exit();
 }
 else
 {
-    $status = "unknown pagestate";
+    echo "ERROR: pagestate in rm_event_sc.php not recognised [$pagestate]"; exit(); // FIXME exit nicely
 }
 
-// return to
 
-
-
-exit();
-
-
-function get_class($in_class)
-{
-    $class = ucwords(strtolower($in_class));
-    return $class;
-}
-
-function get_category($in_category)
-{
-    $class = strtolower($in_category);
-    return $class;
-}
-
-function get_name($in_name)
-{
-    $name = ucwords(strtolower($in_name));
-    return $name;
-}
-
-function get_phone($in_phone)
-{
-    $in_phone = trim($in_phone);
-
-    // remove international codes
-    if (strpos($in_phone, "+") === 0) { $in_phone = str_replace('+','',$in_phone); }
-    if (strpos($in_phone, "44") === 0) { $in_phone = str_replace('+','',$in_phone); }
-
-    $phone = $in_phone;
-
-    // check phone number is 11 digits starting with a 0
-    if (ctype_digit($phone))
-    {
-        if ($phone[0] != "0")  { $phone = "0".$phone; }          // check if first digit is a 0
-
-        if (strlen($phone) != 11 ) { $phone = "invalid"; }       // check if 11 digits
-    }
-    else
-    {
-        $phone = "invalid";
-    }
-
-    return $phone;
-}
-
-function get_club($in_club, $club_std = "")
-{
-    $club = trim($in_club);
-    if ($club == $club_std)                // used to allow home club to always use the same format
-    {
-        $club = $club_std;
-    }
-    else
-    {
-        $club = str_ireplace("sailing club","SC", $club);
-        $club = str_ireplace("yacht club","YC", $club);
-    }
-
-    return $club;
-}
 

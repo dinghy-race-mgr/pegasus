@@ -75,6 +75,37 @@ class DB
         //$stmt->debugDumpParams();
         return $stmt;
     }
+
+    public function insert($table, $args)
+    {
+        $params = array();
+        $fields_str = "";
+        foreach($args as $k=>$v)
+        {
+            $fields_str.= "`$k`, ";
+            $key = str_replace("-", "_", $k);
+            $params[$key] = $v;
+        }
+        $fields_str = rtrim($fields_str, ", ");
+
+        $keys_str = "";
+        foreach ($params as $k=>$v)
+        {
+            $keys_str.= ":$k, ";
+        }
+        $keys_str = rtrim($keys_str, ", ");
+
+        $sql = "INSERT INTO $table ($fields_str) VALUES ($keys_str) ";
+        echo "<pre>$sql</pre>";
+        //echo "<pre>".print_r($params,true)."</pre>";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $insertid = $this->pdo->lastInsertId();
+        //echo "<br>";
+        //$stmt->debugDumpParams();
+        return $insertid;
+    }
 }
 
 

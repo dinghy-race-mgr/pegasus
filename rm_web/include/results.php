@@ -91,7 +91,7 @@ EOT;
             }
             elseif (!empty($event['eventorder']))
             {
-                $datetime.= " - ".$event['eventorder'];
+                $datetime.= " - ".u_numordinal($event['eventorder'])." race";
             }
 
             $eventname = ucwords(strtolower($event['eventname']));

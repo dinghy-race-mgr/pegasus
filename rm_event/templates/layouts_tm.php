@@ -55,8 +55,12 @@ function navbar ($params = array())
     $htm_options = "";
     if ($params['page'] != "list")
     {
+
         foreach ($params['options'] as $option)
         {
+            // don't include page if event is complete unless its the results page
+            if ($option['page'] != "results" and $params['complete']) { continue; }
+
             $inc_count = "";
             if ($option['page'] == "documents" or $option['page'] == "entries" or
                 $option['page'] == "notices" or $option['page'] == "results")
@@ -199,86 +203,110 @@ EOT;
 
 function list_body ($params = array())
 {
+    $events = $params['events'];
+
+    // set up page title
     $lead_txt = "";
     $year = date("Y");
-    if ($params['year'] == $year)
-    {
-        $lead_txt = <<<EOT
-        <p class="lead"> {list-lead-txt} &hellip;</p>
-EOT;
-    }
 
-    $htm = <<<EOT
-    <br>
-    <p class="display-5 text-info"><b>$year Events Schedule</b></p>
-    $lead_txt   
-    {event-panels}
-EOT;
+    $i = 0;        // row counter
+    $panels_htm = "";
+    foreach ($events as $event)
+    {
+        // prep data
+        $event_status    = get_event_list_status($event);
+        $panel_style     = get_event_list_style($event_status);
+        $event_dates     = format_event_dates($event['date-start'], $event['date-end']);
 
-    return $htm;
-}
-
-function list_event_panel($params = array())
-{
-    // create link depending on status
-    if ($params['event-status'] == "complete")
-    {
-        $link = <<<EOT
-        <div class="position-absolute bottom-0 end-0">
-            <a class="icon-link fs-4 " href="rm_event.php?page=results&eid={$params['eid']}" style="text-decoration: none;">
-                Get Results <i class="bi-arrow-right-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
-            </a>                                 
-        </div>
-EOT;
-    }
-    elseif ($params['event-status'] == "open")
-    {
-        $link = <<<EOT
-        <div class="position-absolute bottom-0 end-0">
-            <a class="icon-link fs-4 " href="rm_event.php?page=details&eid={$params['eid']}" style="text-decoration: none;">
-                Event Details <i class="bi-arrow-right-square-fill" style="font-size: 2rem; color: cornflowerblue;"></i>
-            </a>                                 
-        </div>
-EOT;
-    }
-    else
-    {
+        // get link
         $link = "";
-    }
+        if ($event_status == "open" or $event_status == "complete" or $event_status == "review")
+        {
+            if ($event_status == "open" or $event_status == "review") {
+                $link = "rm_event.php?page=details&eid={$event['id']}";
+                $link_icon = "bi-box-arrow-right";
+                $link_title = "Get event details, documents and enter online";
+            } elseif ($event_status == "complete") {
+                $link = "rm_event.php?page=results&eid={$event['id']}";
+                $link_icon = "bi-file-ruled-fill";
+                $link_title = "Get Results";
+            }
 
-    // create event title
-    $title_txt = "{event-dates} - <b>{event-title}</b><br>";
-    if ($params['sub-title']) { $title_txt.= "<p class=\"fs-5\"><b>{sub-title}</b></p>" ;}
-    if ($params['list-status-txt']) { $title_txt.= "<span class=\"text-danger-emphasis fs-5\"><i>{list-status-txt}</i></span>";}
-
-    $htm = <<<EOT
-    <div class="alert alert-{event-style}" role="alert">
-        <div class="row">
-            <div class="col-md-9 fs-4">
-                $title_txt
+            $link_htm = <<<EOT
+            <div class="position-absolute top-0 end-0">
+                <a class="icon-link fs-4 " href="$link" title="$link_title" style="text-decoration: none;">
+                    <i class="$link_icon" style="font-size: 2rem; color: white;"></i>
+                </a>                                 
             </div>
-            <div class="col-md-3 position-relative">    
-                $link
+EOT;
+        }
+        elseif ($event_status == "list" or $event_status == "cancel")
+        {
+            $link_htm = "&nbsp;";
+        }
+
+        // get text for event panel
+        $title_htm = "$event_dates - <b>{$event['title']}</b><br>";
+        if ($event['sub-title']) { $title_htm.= "<p class='fs-5 mb-0'>{$event['sub-title']}</p>" ;}
+
+        !empty($event['list-status-txt']) ? $status_htm = $event['list-status-txt'] : $status_htm = "&nbsp;";
+
+        $i++;                                                        // panel on row count
+        if ($i == 1)                                                 // start a new row
+        {
+            $panels_htm.= "<div class=\"row justify-content-evenly\">";
+        }
+
+        // event panel
+        $panels_htm.= <<<EOT
+        <div class="col-6">
+            <div class="alert $panel_style mb-5" role="alert">
+                <div class="row">
+                    <div class="col-md-11 fs-4"> $title_htm </div>
+                    <div class="col-md-1 position-relative"> $link_htm </div>
+                </div>
+                <div class = "row">
+                    <div class="col-md-12 fs-6"> $status_htm </div>
+                </div>
             </div>
         </div>
-    </div>
+EOT;
+
+        if($i == 2)                                                  // finish a row - two panels per row
+        {
+            $panels_htm.= "</div>";
+            $i = 0;              // reset for next row
+        }
+    }
+
+    // deal with trailing single panel
+    if ($i == 1) { $panels_htm.= "<div class=\"col-6\">&nbsp</div>";}
+
+    $htm = <<<EOT
+    <main class="" >
+        <div class="container nav-margin">
+            <p class="display-6 text-info mb-3"><b>$year Events Schedule</b></p>   
+            $panels_htm
+        </div>
+    </main>
 EOT;
 
     return $htm;
 }
+
+
 
 function details_body ($params = array())
 {
-
     // assemble lead text layout
     $htm_leadtext = "";
     if (array_key_exists("event-leadtext", $params['content']))
     {
-        $htm_leadtext = render_content($params['content']['event-leadtext'], "right");
+        $htm_leadtext = render_content($params['content']['event-leadtext'], $params['document_dir']);
     }
 
     // assemble subtext layout
-    $htm_subtext = render_content($params['content']['event-subtext'], "right");
+    $htm_subtext = render_content($params['content']['event-subtext'], $params['document_dir']);
 
     // assemble collapsible topics layout
     $htm_topics_buttons = "";
@@ -295,7 +323,7 @@ function details_body ($params = array())
         </a>       
 EOT;
 
-        $htm_topic = render_content($topic,"bottom");
+        $htm_topic = render_content($topic, $params['document_dir'], "bottom");
         $htm_topics_content.= <<<EOT
         <div class="collapse" id="collapsetopic$i">
             <div class="card card-body fs-6" style="background-color: lightyellow">
@@ -331,81 +359,89 @@ EOT;
 
 function entries_body ($params = array())
 {
-    empty($params['entry-end']) ? $entry_end = date("d M y", strtotime($params['entry-end'])): $entry_end = "";
-    $entry_count_detail = <<<EOT
-        <p class="lead">{entry-count} entries so far.  $entry_end</p>
-EOT;
-
-    $new_entry_button = <<<EOT
-    <a class="btn btn-large btn-success" href="rm_event.php?page=newentry&eid={$params['eventid']}" role="button">
-        <span class="fs-4">Enter a Boat &hellip;</span>
-    </a>
-EOT;
-
-    // set this according to no entry/entry confirmed/entry failed
-
-    if ($params['newentry']['status'] == "noentry")
-    {
-        $entry_confirmation = "";
-    }
-    elseif ($params['newentry']['status'] == "success")
-    {
-        $entry_confirmation = <<<EOT
-        <div class="alert alert-success fs-3" role="alert">
-            <b>Good God</b> - you are entered 
-        </div>
-EOT;
-    }
-    elseif ($params['newentry']['status'] == "failed")
-    {
-        $entry_confirmation = <<<EOT
-        <div class="alert alert-danger fs-3" role="alert">
-            <b>Holy Guacamole</b> - your entry failed
-        </div>
-EOT;
-    }
-    else
-    {
-        $entry_confirmation = "";
-    }
-
-    $table_hdr = <<<EOT
-    <tr>
-        <td>Class</td>
-        <td>Sail Number</td>
-        <td>Team</td>
-        <td>Club</td>
-        <td>Division</td>
-    </tr>
-EOT;
-
-    $table_rows = "";
+    // construct confirmed entries table
+    $entry_rows = "";
     $current_fleet = "";
     $i = 0;
     foreach ($params['entries'] as $entry)
     {
-        if ($i == 1 or $current_fleet != $entry['b-fleet'])
+        if ($i == 1 or $current_fleet != $entry['b-fleet'])  // add fleet divider if new fleet
         {
-            // add fleet divider
-            $table_rows.=<<<EOT
-            <tr><td colspan="5" class="table-success">fleet</td></tr>
-EOT;
+            $entry_rows.="<tr><td colspan='6' class='table-success'>{$entry['b-fleet']}</td></tr>";
         }
 
-        empty($entry['c-name']) ? $people = $entry['h-name'] : $people = $entry['h-name']."<br>".$entry['c-name'];
-        empty($entry['c-club']) ? $clubs = $entry['h-club'] : $clubs = $entry['h-club']."<br>".$entry['c-club'];
+        $entry['id'] == $params['process']['recordid'] ? $highlight = "fw-bold text-dark table-warning" : $highlight = "" ; // set row styling to highlight new entry
 
-        $table_rows.= <<<EOT
-        <tr>
+        // setup team names and clubs
+        empty($entry['c-name']) ? $people = $entry['h-name'] : $people = u_truncatestring($entry['h-name']." / ".$entry['c-name'], 40);
+        empty($entry['c-club']) ? $clubs = $entry['h-club'] : $clubs = u_truncatestring($entry['h-club']." / ".$entry['c-club'], 40);
+
+        // setup notes field
+        $notes_htm = "";
+        if ($entry['consents_reqd'] > 0)
+        {
+            $notes_htm.= <<<EOT
+            <a class="btn btn-sm btn-secondary" href="rm_event.php?page=juniorconsentform&eid={$params['eid']}&recordid={$entry['id']}" role="button">
+            <span class="fs-6">Junior Consent Form ({$entry['consents_reqd']} reqd)</span>
+            </a>
+EOT;
+        }
+        else
+        {
+            if ($entry['junior']) { $notes_htm.= "<span class='fs-6'>parental consent provided</span>"; }
+        }
+
+        // add row
+        $entry_rows.= <<<EOT
+        <tr class="$highlight">
             <td>{$entry['b-class']}</td>
             <td>{$entry['b-sailno']}</td>
             <td>$people</td>
             <td>$clubs</td>
             <td>{$entry['b-division']}</td>
+            <td width="20%">$notes_htm</td>
         </tr>
 EOT;
         $current_fleet = $entry['b-fleet'];
     }
+
+    // construct waiting list entries table
+    $waiting_htm = "";
+    if (count($params['waiting']) > 0)  // waiting list is active
+    {
+        // create list of boats on waiting list
+        $waiting_rows = "";
+        $i = 0;
+        foreach ($params['waiting'] as $row)
+        {
+            $i++;
+            $order = u_numordinal($i);
+            $waiting_rows .= <<<EOT
+        <tr>
+            <td>$order</td>
+            <td>{$row['b-class']}</td>
+            <td>{$row['b-sailno']}</td>
+            <td>{$row['h-name']}</td>
+            <td>{$row['h-club']}</td>
+            <td>{$row['b-division']}</td>
+        </tr>
+EOT;
+        }
+        // create waiting list table
+        $waiting_htm = <<<EOT
+        <hr>
+        <div class="pt-3 col-8">             
+            <table class="table table-light table-hover caption-top">
+                <caption class="fs-4">Waiting List</caption>
+                <tbody class="table-group-divider">
+                    $waiting_rows
+                </tbody>
+            </table>
+            </div>
+        </div>
+EOT;
+    }
+
 
     $htm = <<<EOT
         <main class="" >
@@ -413,27 +449,25 @@ EOT;
                 <p class="display-6 text-info mb-0"><b>{event-title}</b></p>
                 <p class="lead mt-2">{entries-intro}</p>
                 
-                <div class="alert alert-info fs-3" role="alert">
-                    <div class="row">
-                        <div class="col-6 fs-3">$entry_count_detail</div>
-                        <div class="col-6 text-end">$new_entry_button</div>
-                    </div> 
-                </div>
+                {entry-confirm-block}
                 
-                $entry_confirmation
-                         
+                {entry-status-block}
+                                        
                 <div class="pt-3">                   
-                        <table class="table table-light table-striped">
-                            <caption>List of entries</caption>
-                            <thead>
-                                $table_hdr
-                            </thead>
-                            <tbody class="table-group-divider">
-                                $table_rows
-                            </tbody>
-                        </table>
+                    <table class="table table-success table-hover caption-top">
+                        <caption class="fs-4">List of Entries</caption>
+                        <thead>
+                            <tr>
+                                <td>Class</td><td>Sail Number</td><td>Team</td><td>Club</td><td>Division</td><td>Notes</td>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            $entry_rows
+                        </tbody>
+                    </table>
                     </div>
                 </div>
+                $waiting_htm
             </div>    
         </main>
 EOT;
@@ -441,17 +475,208 @@ EOT;
     return $htm;
 }
 
+function entry_status_before_open($params = array())
+{
+    $opendate = date("D jS F", strtotime($params['entry-start']));
+    if ($params['entry-end'])
+    {
+        if (strtotime($params['entry-end']) > strtotime($params['entry-start']))
+        {
+            $closetxt = " . . . and closes ".date("D jS F", strtotime($params['entry-end']));
+        }
+        else
+        {
+            $closetxt = "";
+        }
+    }
+    $txt = "Entries not available yet - opens on $opendate $closetxt";
+
+
+    $htm = <<<EOT
+    <div class="alert alert-info fs-3" role="alert">
+        <div class="row">
+            <div class="col-9 fs-4">$txt</div>
+        </div> 
+    </div>               
+
+EOT;
+
+    return $htm;
+}
+
+function entry_status_open($params = array())
+{
+    // get waiting list information
+    $num_waiting = count($params['waiting']);
+    $waiting_txt = "";
+    if ($num_waiting > 0)
+    {
+        $waiting_txt = "Waiting list has $num_waiting boats - see below&hellip;";
+    }
+    elseif ($params['entry-count'] == $params['entry-limit'])
+    {
+        $waiting_txt = "Entry limit is {$params['entry-limit']} boats - waiting list is active";
+    }
+
+    // getentry buttons for eligible classes
+    $entry_btns = get_class_entry_btns ($params['eid'], $params['classes']);
+
+    $htm = <<<EOT
+    <div class="alert alert-info" role="alert">
+        <div class="row">
+            <div class="col-8">$entry_btns</div>
+            <div class="col-4 fs-3">
+                <p class="text-end">{$params['entry-count']} entries&hellip;<br>
+                <p class="text-end fs-6">$waiting_txt</p>
+            </div>                       
+        </div> 
+    </div>
+EOT;
+
+    return $htm;
+}
+
+function entry_status_after_close($params = array())
+{
+    $txt = "<h3>Sorry - Entries Now Closed</h3>";
+
+    if ($params['entry-reqd'])
+    {
+        $txt.= "<p class='text-danger'>An entry is required for this event - our apologies but we cannot accept entries on the day of the event</p>";
+    }
+    else
+    {
+        $txt.= "<p>Please just enter on the day at reception</p>";
+    }
+
+    // get waiting list information
+    $num_waiting = count($params['waiting']);
+    $num_waiting > 0 ? $waiting_txt = "Waiting list has $num_waiting boats &hellip; see below" : $waiting_txt = "";
+
+    $htm = <<<EOT
+    <div class="alert alert-info fs-3" role="alert">
+        <div class="row">
+            <div class="col-8 fs-4">$txt</div>
+            <div class="col-4 fs-3">
+                <p class="text-end">{entry-count} entries&hellip;<br>
+                <p class="text-end fs-6">$waiting_txt</p>
+            </div>
+        </div> 
+    </div>
+EOT;
+
+    return $htm;
+}
+
 function newentry_body ($params = array())
 {
+    // add class specific fleet categories if defined in t_class
+    $fleets_select_htm = "";
+    $fleets_validation_js = "";
+    if (!empty($params['inc_fleets']))
+    {
+        $fleets = explode(",", $params['inc_fleets']);
+        $fleets_opt = "";
+        foreach ($fleets as $fleet)
+        {
+            $uc_fleet = ucwords($fleet);
+            $fleets_opt.= "<option value='$fleet'>$uc_fleet</span></option>";
+        }
+
+        $fleets_select_htm.= <<<EOT
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-floating mb-3">      
+                    <select class="form-select" id="category" name="category" aria-label="fleet category selection">
+                        <option>- pick one -</option>
+                        $fleets_opt
+                        <option value="unknown">not sure &hellip;</option>
+                    </select>
+                    <label for="floatingSelect" ><span class="label-style">fleet category</span></label>
+                    <div class="invalid-feedback">pick a fleet from the list</div>
+                </div>
+            </div>
+        </div>
+EOT;
+
+        // configure validation
+        $fleets_validation_js.= <<<EOT
+        let categoryInput = document.getElementById("category");
+        if (categoryInput.value === "- pick one -") {categoryInput.setCustomValidity("error");} else {categoryInput.setCustomValidity("");}
+EOT;
+    }
+
+    // add crew name field if not a singlehander - from t_class
+    $crewname_input_htm = "";
+    $crewname_validation_js = "";
+    if ($params['inc_crew'])
+    {
+        $crewname_input_htm.= <<<EOT
+        <!-- crew section -->
+        <div class="form-section w-100 p-1 mb-3" >&nbsp;&nbsp;Crew &hellip;</div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="crew-name" name="crew-name" placeholder="crew name &hellip;" value="" required>
+                    <label for="floatingInput" class="label-style">Name</label>
+                    <div class="invalid-feedback">enter the crew name (e.g. Ben Ainslie).</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="crew-age" name="crew-age" placeholder="age if under 18 &hellip;" value="" >
+                    <label for="floatingInput" class="label-style">Age (if under 18)</label>
+                </div>
+            </div>
+        </div -->
+EOT;
+        // configure validation
+        $crewname_validation_js.= <<<EOT
+        let crewInput = document.getElementById("crew-name");
+        if (crewInput.value === "") {crewInput.setCustomValidity("error");} else {crewInput.setCustomValidity("");}
+EOT;
+    }
+
+
     // include specific form for this event - returns instructions, form and validation html/js
-    require_once("include/{$params['form-name']}_fm.php");
+    require_once("include/{$params['form-name']}");
+
+    // insert optional category field and validation
+    $form_htm = str_replace("{{fleets_select_htm}}", $fleets_select_htm, $form_htm);
+    $validation_htm = str_replace("{{fleets_validation_js}}", $fleets_validation_js, $validation_htm);
+
+    // insert optional crewname field and validation
+    $form_htm = str_replace("{{crewname_input_htm}}", $crewname_input_htm, $form_htm);
+    $validation_htm = str_replace("{{crewname_validation_js}}", $crewname_validation_js, $validation_htm);
+
 
     // standard entry form layout
     $htm = <<<EOT
         <main class="" >
             <div class="container nav-margin">
-                <p class="display-6 text-info mb-0"><b>{event-title}</b></p>
-                <p class="lead mt-2">{newentry-intro}</p>            
+                <p class="display-6 text-info mb-0"><b>{event-title}</b></p>            
+                $instructions_htm                        
+                <div class="pt-3">
+                    $form_htm
+                </div>
+                $validation_htm
+            </div>    
+        </main>
+EOT;
+
+    return $htm;
+}
+
+function juniorconsent_body ($params = array())
+{
+    // include specific form for this event - returns instructions, form and validation html/js
+    require_once("include/{$params['form-name']}");
+
+    // standard entry form layout
+    $htm = <<<EOT
+        <main class="" >
+            <div class="container nav-margin">
+                <p class="display-6 text-info mb-0"><b>{event-title}</b></p>            
                 $instructions_htm                        
                 <div class="pt-3">
                     $form_htm
@@ -528,9 +753,9 @@ function documents_body ($params = array())
                 $icon = $format_icon[$document['format']];
                 $document['format'] == "htm" ? $label = "View" : $label = "Download";
                 $download = <<<EOT
-            <a href="{$document['filename']}" class="btn btn-sm btn-outline-secondary icon-link fs-6" style="min-width: 200px" target="_BLANK">
-                    <i class="$icon" style="font-size: 2rem; color: cornflowerblue;"></i> $label
-            </a>
+                <a href="../data/events/{$document['filename']}" class="btn btn-sm btn-outline-secondary icon-link fs-6" style="min-width: 200px" target="_BLANK">
+                        <i class="$icon" style="font-size: 2rem; color: cornflowerblue;"></i> $label
+                </a>
 EOT;
             }
 
@@ -567,35 +792,21 @@ EOT;
     return $htm;
 }
 
+
+
 function no_records ($params = array())
 {
-    if ($params['record-type'] == "entries")
-    {
-        $clause = "received yet!";
-        $new_entry_button = <<<EOT
-    <a class="btn btn-large btn-success" href="rm_event.php?page=newentry&eid={$params['eventid']}" role="button">
-        <span class="fs-4">Enter a Boat &hellip;</span>
-    </a>
-EOT;
-    }
-    else
-    {
-        $clause = "have been published yet!";
-        $new_entry_button = "";
-    }
-
     $htm = <<<EOT
-        <main class="" >
-            <div class="container nav-margin">
-                <p class="display-6 text-info mb-6"><b>{event-title}</b></p>
-                <div class="alert alert-info fs-3" role="alert">
-                    <div class="row">
-                        <div class="col-6 fs-3">No {record-type} $clause</div>
-                        <div class="col-6 text-end">$new_entry_button</div>
-                    </div> 
-                </div>               
-            </div>    
-        </main>
+    <main class="" >
+        <div class="container nav-margin">
+            <p class="display-6 text-info mb-6"><b>{event-title}</b></p>
+            <div class="alert alert-info fs-3" role="alert">
+                <div class="row">
+                    <div class="col-6 fs-3">No {record-type} have been published yet!</div>
+                </div> 
+            </div>               
+        </div>    
+    </main>
 EOT;
 
     return $htm;
@@ -700,7 +911,7 @@ EOT;
                 <td>{$notice['id']}</td>
                 <td>$release</td>
                 <td><span class="{$title_color[$notice_type]}"><i>{$notice['category']}</i></span></td>
-                <td><span class="{$title_color[$notice_type]}"><b>{$notice['title']}</b></span><br>{$notice['leadtxt']}</td></td>
+                <td><span class="{$title_color[$notice_type]}"><b>{$notice['title']}</b></span><br>{$notice['leadtxt']}<br><span class="text-black">{$notice['txt']}</span></td></td>
                 <td>{$notice['publisher']}</td>
                 <td>$more_info</td>
             </tr>
@@ -734,15 +945,6 @@ EOT;
     return $htm;
 }
 
-function results_body ($params = array())
-{
-    $htm = <<<EOT
-
-EOT;
-
-    return $htm;
-}
-
 
 function error_body ($params = array())
 {
@@ -769,6 +971,72 @@ EOT;
         </div>    
     </main>
 EOT;
+
+    return $htm;
+}
+
+function entry_confirm_block($params = array())
+{
+    $consent_link = "";
+    $process = $params['process'];
+    $entry = $params['entry'];
+
+    if ($process['junior'])
+    {
+        $consent_link = <<<EOT
+        <div class="alert alert-warning fs-6" style="display:inline-block;">
+            One or more of the boat's crew are under 18 - please make sure that the <b>parental consent form</b> is completed. 
+            <br>Link to the consent form for your boat is in the table below.         
+        </div>
+EOT;
+    }
+
+    $entry_details = "";
+    if (!empty($entry))
+    {
+        empty($entry['c-name']) ? $team = $entry['h-name'] : $team = $entry['h-name']." / ".$entry['c-name'];
+        empty($entry['h-club']) ? $club = "" : $club = " - ".$entry['h-club'];
+
+        $entry_details.= <<<EOT
+        <p class="fs-4">{$entry['b-class']}  {$entry['b-sailno']} : $team &nbsp;&nbsp; $club</p>
+EOT;
+    }
+
+    $htm = "";
+    if ($process['status'] == "success")
+    {
+        if ($process['waiting'] == 1)                        // if on waiting list don't display consent link
+        {
+            $htm = <<<EOT
+            <div class="alert alert-warning" role="alert">
+                <h3>Entry accepted on <b>waiting list</b></h3>
+                <p class="fs-5">
+                    You are number <b>{$params['waiting']}</b> on the waiting list.  
+                    We will contact you by email if a space becomes available
+                </p>
+            </div>
+EOT;
+        }
+        else                                                  // display with consent link
+        {
+            $htm = <<<EOT
+            <div class="alert alert-success" role="alert">
+                <h2>Entry Accepted</h2>
+                $entry_details
+                $consent_link
+            </div>
+EOT;
+        }
+    }
+    elseif ($process['status'] == "fail")
+    {
+        $htm = <<<EOT
+        <div class="alert alert-danger" role="alert">
+            <h3>Apologies - your entry has FAILED for some reason</h3>
+            <p class="fs-5">Please use the CONTACT button to send your boat/crew details to the event contact</p>
+        </div>
+EOT;
+    }
 
     return $htm;
 }

@@ -331,7 +331,7 @@ function u_numordinal ($number)
      return $abbreviation;
 }
 
-function u_truncatestring ($string, $length, $dots = "...") 
+function u_truncatestring ($string, $length, $dots = "...")
 {
     if ($length == 0)
     {
@@ -341,7 +341,6 @@ function u_truncatestring ($string, $length, $dots = "...")
     {
         return (strlen($string) > $length) ? substr($string, 0, $length - strlen($dots)) . $dots : $string;
     }
-
 }
 
 function u_daysdiff($datestr1, $datestr2)
