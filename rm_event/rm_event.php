@@ -16,30 +16,42 @@ require_once("classes/db.php");
 
 // initialise application
 $cfg = set_config("config.ini", array("rm_event"), true);   // FIXME location of ini file
-//echo "<pre>".print_r($cfg,true)."</pre>";
-//$cfg = parse_ini_file("config.ini", true);
 $cfg['logfile'] = str_replace("<date>", date("Y"), $cfg['logfile']);
-
-// fixme - need to sort out configuration
-// database might contain some values that overwrite the ini file (e.g default events contact)
-// do any values need to go into session
-
-
-// arguments
-empty($_REQUEST['page']) ? $page = "list" : $page = $_REQUEST['page'];
-empty($_REQUEST['year']) ? $year = date("Y") : $year = $_REQUEST['year'];
-empty($_REQUEST['eid']) ? $eid = 0 : $eid = $_REQUEST['eid'];
-
-$entryupdate = array();
-empty($_REQUEST['action']) ? $entryupdate['action'] = false : $entryupdate['action'] = $_REQUEST['action'];
-empty($_REQUEST['status']) ? $entryupdate['status'] = false : $entryupdate['status'] = $_REQUEST['status'];
-empty($_REQUEST['recordid']) ? $entryupdate['recordid'] = false : $entryupdate['recordid'] = $_REQUEST['recordid'];
-empty($_REQUEST['junior'])   ? $entryupdate['junior'] = false : $entryupdate['junior'] = $_REQUEST['junior'];
-empty($_REQUEST['waiting'])  ? $entryupdate['waiting'] = false : $entryupdate['waiting'] = $_REQUEST['waiting'];
 
 
 $if_o = new PAGES($cfg);
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass']);
+
+// arguments
+if (key_exists("event", $_REQUEST))   // requesting single nicknamed event
+{
+    // find event matching nick name
+    $eid = $db_o->run("SELECT id FROM e_event WHERE nickname = ?", array($_REQUEST['event']) )->fetchColumn();
+    if ($eid)
+    {
+        empty($_REQUEST['page']) ? $page = "details" : $page = $_REQUEST['page'];
+    }
+    else
+    {
+        $page = "list";
+    }
+}
+else
+{
+    empty($_REQUEST['eid']) ? $eid = 0 : $eid = $_REQUEST['eid'];
+    empty($_REQUEST['page']) ? $page = "list" : $page = $_REQUEST['page'];
+}
+empty($_REQUEST['year']) ? $year = date("Y") : $year = $_REQUEST['year'];
+
+$entryupdate = array();
+empty($_REQUEST['action'])   ? $entryupdate['action']   = false : $entryupdate['action'] = $_REQUEST['action'];
+empty($_REQUEST['status'])   ? $entryupdate['status']   = false : $entryupdate['status'] = $_REQUEST['status'];
+empty($_REQUEST['recordid']) ? $entryupdate['recordid'] = false : $entryupdate['recordid'] = $_REQUEST['recordid'];
+empty($_REQUEST['junior'])   ? $entryupdate['junior']   = false : $entryupdate['junior'] = $_REQUEST['junior'];
+empty($_REQUEST['waiting'])  ? $entryupdate['waiting']  = false : $entryupdate['waiting'] = $_REQUEST['waiting'];
+
+
+
 
 if ($page == "list")                        // events list page
 {

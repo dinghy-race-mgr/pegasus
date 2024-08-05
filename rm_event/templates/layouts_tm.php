@@ -30,16 +30,20 @@ function page ($params = array())
     
         {page-navbar}
         
-        <!-- Begin page content -->
-        <div class="container nav-margin">
-            {page-main}
-        </div>
+        {page-main}
         
         {page-footer}
         
         {page-modals}
                
         {page-js}
+        
+        <script>
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        </script>
     
     </body>
     </html>
@@ -166,8 +170,8 @@ function footer ($params = array())
         $htm = <<<EOT
 <br><br>
         <footer class="footer mt-auto"> 
-            <div class="container px-4 py-3 text-bg-secondary d-flex align-items-baseline">
-                <div class="row  gap-5"
+            <div class="container-fluid px-4 py-3 text-bg-secondary d-flex align-items-baseline">
+                <div class="row gap-5"
                     <div class="col-8 text-start  ">
                         <a class="btn btn-warning fs-5" href="rm_event.php?page=entries&eid={$params['eid']}" style="width: 200px" >
                             <b>ENTER EVENT</b> $entries_htm
@@ -191,7 +195,7 @@ EOT;
     {
         $htm = <<<EOT
         <footer class="footer mt-auto">
-            <div class="container py-2 text-bg-secondary text-end">
+            <div class="container-fluid py-2 text-bg-secondary text-end">
                 raceManager {version} - copyright Elmswood Software {year}
             </div>
         </footer>
@@ -225,16 +229,18 @@ function list_body ($params = array())
             if ($event_status == "open" or $event_status == "review") {
                 $link = "rm_event.php?page=details&eid={$event['id']}";
                 $link_icon = "bi-box-arrow-right";
-                $link_title = "Get event details, documents and enter online";
+                $link_title = "Get details, documents and enter online";
             } elseif ($event_status == "complete") {
                 $link = "rm_event.php?page=results&eid={$event['id']}";
                 $link_icon = "bi-file-ruled-fill";
-                $link_title = "Get Results";
+                $link_title = "Get Results, Reports, Photos, etc";
             }
 
             $link_htm = <<<EOT
             <div class="position-absolute top-0 end-0">
-                <a class="icon-link fs-4 " href="$link" title="$link_title" style="text-decoration: none;">
+                <a class="icon-link fs-4 " data-bs-toggle="tooltip" data-bs-placement="top"
+                   data-bs-custom-class="list-tooltip" data-bs-title="$link_title" 
+                   href="$link" title="$link_title" >
                     <i class="$link_icon" style="font-size: 2rem; color: white;"></i>
                 </a>                                 
             </div>
@@ -282,9 +288,10 @@ EOT;
     // deal with trailing single panel
     if ($i == 1) { $panels_htm.= "<div class=\"col-6\">&nbsp</div>";}
 
+    $params['layout'] == "wide" ? $container = "container-fluid" : $container = "container";
     $htm = <<<EOT
     <main class="" >
-        <div class="container nav-margin">
+        <div class="$container nav-margin">
             <p class="display-6 text-info mb-3"><b>$year Events Schedule</b></p>   
             $panels_htm
         </div>
@@ -335,9 +342,10 @@ EOT;
     }
 
     // assemble complete body htm
+    $params['layout'] == "wide" ? $container = "container-fluid" : $container = "container";
     $htm = <<<EOT
     <main class="" >
-        <div class="container nav-margin">
+        <div class="$container nav-margin">
             <p class="display-6 text-info mb-0"><b>{event-title}</b></p>
             <p class="fs-3 mb-0">{event-dates} | {event-subtitle}</p>
             <p class="lead mt-2">$htm_leadtext</p>
@@ -442,10 +450,10 @@ EOT;
 EOT;
     }
 
-
+    $params['layout'] == "wide" ? $container = "container-fluid" : $container = "container";
     $htm = <<<EOT
         <main class="" >
-            <div class="container nav-margin">
+            <div class="$container nav-margin">
                 <p class="display-6 text-info mb-0"><b>{event-title}</b></p>
                 <p class="lead mt-2">{entries-intro}</p>
                 
@@ -733,7 +741,7 @@ function documents_body ($params = array())
 
         if ($publish)   // we can publish the document
         {
-            $release = date("d-M-Y H:i", strtotime($document['createdate']));
+            $release = date("d-M-Y H:i", strtotime($document['upddate']));
 
             if ($params['mode'] == "results")
             {
@@ -744,16 +752,32 @@ function documents_body ($params = array())
                 !empty($document['version']) ? $version = "version " . $document['version'] : $version = "";
             }
 
-            if (empty($document['filename']))
+            if (empty($document['filename']) or empty($document['file-loc']))
             {
-                $download = " will be available shortly ";
+                $download = "will be available shortly ";
             }
             else
             {
                 $icon = $format_icon[$document['format']];
-                $document['format'] == "htm" ? $label = "View" : $label = "Download";
-                $download = <<<EOT
-                <a href="../data/events/{$document['filename']}" class="btn btn-sm btn-outline-secondary icon-link fs-6" style="min-width: 200px" target="_BLANK">
+                $document['format'] == "htm" or $document['format'] == "pdf" ? $label = "view" : $label = "download";
+                $filename = basename($document['filename']);
+                $label == "download" ? $download = "download =\"$filename\"" : $download = "";
+
+                if ($document['file-loc'] == "external")
+                {
+                    $anchor = $document['filename'];
+                }
+                elseif ($document['file-loc'] == "local-relative")
+                {
+                    $anchor = "../data/events/{$document['filename']}";
+                }
+                else
+                {
+                    $anchor = $document['filename'];
+                }
+
+                $link = <<<EOT
+                <a href="$anchor" class="btn btn-sm btn-outline-secondary icon-link fs-6" $download style="min-width: 200px" target="_BLANK">
                         <i class="$icon" style="font-size: 2rem; color: cornflowerblue;"></i> $label
                 </a>
 EOT;
@@ -762,16 +786,17 @@ EOT;
             $table_rows.= <<<EOT
             <tr>
                 <td style="width: 60%"><span class="text-danger fs-3">{$document['title']}</span><br>{$document['description']}</td>
-                <td style="width: 20%">$release<br>$version</td></td>
-                <td style="width: 20%">$download</td>
+                <td style="width: 20%">$release<br><b>$version</b></td></td>
+                <td style="width: 20%">$link</td>
             </tr>
 EOT;
         }
     }
 
+    $params['layout'] == "wide" ? $container = "container-fluid" : $container = "container";
     $htm = <<<EOT
     <main class="" >
-        <div class="container nav-margin">
+        <div class="$container nav-margin">
             <p class="display-6 text-info mb-0"><b>{event-title}</b></p>
             <p class="lead mt-2">{documents-intro}</p>
             
@@ -796,9 +821,10 @@ EOT;
 
 function no_records ($params = array())
 {
+    $params['layout'] == "wide" ? $container = "container-fluid" : $container = "container";
     $htm = <<<EOT
     <main class="" >
-        <div class="container nav-margin">
+        <div class="$container nav-margin">
             <p class="display-6 text-info mb-6"><b>{event-title}</b></p>
             <div class="alert alert-info fs-3" role="alert">
                 <div class="row">
@@ -918,9 +944,10 @@ EOT;
 EOT;
         }
 
+        $params['layout'] == "wide" ? $container = "container-fluid" : $container = "container";
         $htm = <<<EOT
         <main class="" >
-            <div class="container nav-margin">
+            <div class="$container nav-margin">
                 <p class="display-6 text-info mb-0"><b>{event-title}</b></p>
                 <p class="lead mt-2">{notices-intro}</p>
                 

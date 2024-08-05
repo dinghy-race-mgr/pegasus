@@ -41,6 +41,7 @@ class PAGES
         $params = array(
             "year" => $year,
             "events" => $events,
+            "layout" => $this->cfg["layout"]
         );
         $body =$this->tmpl_o->get_template("list_body", $fields, $params);
 
@@ -130,7 +131,8 @@ class PAGES
                     "eventid" => $eid,
                     "content" => $content,
                     "topics" => $topics,
-                    "document_dir" => $this->cfg['document_dir']
+                    "document_dir" => $this->cfg['document_dir'],
+                    "layout" => $this->cfg["layout"]
                 );
 
                 $body = $this->tmpl_o->get_template("details_body", $fields, $params);
@@ -194,7 +196,8 @@ class PAGES
                     "eid"        => $eid,
                     "entries"    => $entries,
                     "waiting"    => $waiting,
-                    "process"    => $entryupdate
+                    "process"    => $entryupdate,
+                    "layout" => $this->cfg["layout"]
                 );
 
                 // render confirmation and entries table
@@ -247,9 +250,10 @@ class PAGES
                         "evidence" => "form selected: internal - {$event['entry_form']} external - {$event['entry_form_link']}",
                         "report-link" => $this->cfg['system_admin_contact'],
                         "event-title" => $event['title']
+                        
                     );
 
-                    $params = array("action" => "", "event-title" => $event['title']);
+                    $params = array("action" => "", "event-title" => $event['title'], "layout" => $this->cfg["layout"]);
                     $body = $this->tmpl_o->get_template("error_body", $fields, $params);
                 }
             }
@@ -285,47 +289,6 @@ class PAGES
 
                 $body = $this->get_notices_htm($eid, $mode, $event, $content, $notices); // fixme use $this->
 
-               /* if (count($notices) > 0)
-                {
-                    count($notices)> 1 ? $num_notices = "Currently ".count($notices)." $mode notices" : $num_notices = "Currently 1 $mode notice";
-                    $max_date = date("Y-m-d", 0);
-                    foreach ($notices as $k=>$notice)
-                    {
-                        if ($notice['createdate'] > $max_date)
-                        {
-                            $max_date = $notice['createdate'];
-                        }
-                    }
-
-                    $fields = array(
-                        "event-title" => $event['title'],
-                        "notices-intro" => $content['notices-intro']['content'],
-                        "num-notices" => $num_notices
-                    );
-
-                    count($notices) > 0 ? $fields['latest-notice-date'] = "[ last notice at ".date("d-M-Y H:i", strtotime($max_date))." ]" : $fields['latest-notice-date'] = "";
-
-                    $params = array(
-                        "eventid" => $eid,
-                        "content" => $content,
-                        "notices" => $notices
-                    );
-
-                    $body = $this->tmpl_o->get_template("notices_body", $fields, $params);
-                }
-                else
-                {
-                    $fields = array(
-                        "event-title" => $event['title'],
-                        "record-type" => "notices"
-                    );
-
-                    $params = array(
-                        "eventid" => $eid,
-                        "record-type" => "notices",
-                    );
-                    $body = $this->tmpl_o->get_template("no_records", $fields, $params);
-                }*/
             }
 
             // ---------------------------------- results page ---------------------------------------------------------
@@ -350,7 +313,7 @@ class PAGES
                     "event-title" => $event['title']
                 );
 
-                $params = array("action" => "", "event-title" => $event['title']);
+                $params = array("action" => "", "event-title" => $event['title'],"layout" => $this->cfg["layout"]);
 
                 $body = $this->tmpl_o->get_template("error_body", $fields, $params);
             }
@@ -366,7 +329,7 @@ class PAGES
 
         // create footer
         $fields = array('version' => $this->cfg['sys_version'], 'year' => date("Y"));
-        $params = array('page' => $page, 'eid' => $eid, 'footer' => true, "counts" => $counts);
+        $params = array('page' => $page, 'eid' => $eid, 'footer' => true, "counts" => $counts, "layout" => $this->cfg["layout"]);
         $footer = $this->tmpl_o->get_template("footer", $fields, $params);
 
         // create modals
@@ -395,7 +358,8 @@ private function get_juniorconsent_htm($eid, $event, $entryupdate, $form_detail)
         "entryid" => $entryupdate['recordid'],
         "form-name" => $form_detail['form-file'],
         "form-mode" => "add",
-        "instructions" => $form_detail['instructions']
+        "instructions" => $form_detail['instructions'],
+        "layout" => $this->cfg["layout"]
     );
 
     return $this->tmpl_o->get_template("juniorconsent_body", $fields, $params);
@@ -415,7 +379,8 @@ private function get_documents_htm($eid, $mode, $event, $content, $documents)
             "mode" => $mode,
             "content" => $content,
             "doc_dir" => $this->cfg['document_dir'],
-            "documents" => $documents
+            "documents" => $documents,
+            "layout" => $this->cfg["layout"]
         );
         $body = $this->tmpl_o->get_template("documents_body", $fields, $params);
     }
@@ -429,6 +394,7 @@ private function get_documents_htm($eid, $mode, $event, $content, $documents)
         $params = array(
             "eventid" => $eid,
             "record-type" => $mode,
+            "layout" => $this->cfg["layout"]
         );
         $body = $this->tmpl_o->get_template("no_records", $fields, $params);
     }
@@ -461,7 +427,8 @@ private function get_notices_htm($eid, $mode, $event, $content, $notices)
         $params = array(
             "eventid" => $eid,
             "content" => $content,
-            "notices" => $notices
+            "notices" => $notices,
+            "layout" => $this->cfg["layout"]
         );
 
         $body = $this->tmpl_o->get_template("notices_body", $fields, $params);
@@ -476,6 +443,7 @@ private function get_notices_htm($eid, $mode, $event, $content, $notices)
         $params = array(
             "eventid" => $eid,
             "record-type" => "notices",
+            "layout" => $this->cfg["layout"]
         );
         $body = $this->tmpl_o->get_template("no_records", $fields, $params);
     }
@@ -555,22 +523,6 @@ private function entry_confirm_params($entryupdate, $waiting, $eid)
 
     return $params;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 } // end of class

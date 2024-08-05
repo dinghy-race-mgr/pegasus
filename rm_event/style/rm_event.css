@@ -17,6 +17,7 @@
     --lightred: #e74c3c;
     --lightblue: #add8e6;
     --greyblue: #185883;
+    --violet: #9400d3
 }
 
 /* flatly colours
@@ -30,7 +31,7 @@
  */
 
 
-.nav-margin {margin-top: 50px;}
+.nav-margin {margin-top: 100px;}
 
 .active-option {background-color: var(--lightblue); font-weight: 900;}
 
@@ -43,7 +44,14 @@ input[type="checkbox"] { width: 1.5em; height: 1.5em; border: solid 2px dodgerbl
 
 /* list page styling */
 .event-list {background-color: rgba(17,122,101,0.8); color: var(--white); font-size: 1.2em;}
-.event-open {background-color: rgba(24,88,131,0.8); color: var(--white); font-size: 1.2em;}
+.event-open {background-color: rgba(255,165,0,1.0); color: var(--primary); font-size: 1.2em;}
 .event-complete {background-color: rgba(24,88,131,0.6); color: var(--white); font-size: 1.2em;}
 .event-cancel {background-color: rgba(205,92,92,0.8); color: var(--white); font-size: 1.2em;}
 .event-review {background-color: rgba(17,122,101,0.6); color: var(--white); font-size: 1.2em;}
+
+/* tooltips */
+.list-tooltip {
+    font-size: 1.5em;
+    --bs-tooltip-bg: var(--violet);
+    --bs-tooltip-color: var(--white);
+}
