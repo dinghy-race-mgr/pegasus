@@ -121,7 +121,7 @@ if ($_SESSION["e_$eventid"]['pursuit'])
         $warnings[] = "> no boats entered yet <br>... 
                        <span class='text-info'>try again when you have boats entered </span>";
     }
-    if (empty($_SESSION['pursuitcfg']['maxpn'])) {
+    if (empty($_SESSION['pursuitcfg']['slowpn'])) {
         $warnings[] = "> the class for the first start has not been set <br>... 
                        <span class='text-info'>use the <b>Pursuit Start Times</b> option on the Status Page to set this</span>";
     }
@@ -286,8 +286,6 @@ function pursuit_start_list($starts, $warnings, $eventid)
         $num_boats = get_boats_per_start($starts);
 
         // get classes representing pn limits
-        //$pnclass = p_class_match(array("maxpn"=>$_SESSION['pursuitcfg']['maxpn'], "minpn"=>$_SESSION['pursuitcfg']['minpn']), $_SESSION['pursuitcfg']['pntype']);
-
         // render start list
         $fields = array(
             "length"     => $_SESSION['pursuitcfg']['length'],

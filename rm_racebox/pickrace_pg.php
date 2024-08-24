@@ -88,9 +88,13 @@ if ($events)
         // add view format modal
         $racecfg = $event_o->event_getracecfg($event['event_format'], $eventid);
         $fleetcfg = $event_o->event_getfleetcfg($event['event_format']);
-        $viewbufr = createdutypanel($rota_o->get_event_duties($eventid), $eventid, "");
-        $viewbufr.= createfleetpanel ($fleetcfg, $eventid, "");
-        $viewbufr.= createsignalpanel(getsignaldetail($racecfg, $fleetcfg, $event), $eventid, "");
+        $viewbufr = "";
+        if ($fleetcfg)
+        {
+            $viewbufr.= createdutypanel($rota_o->get_event_duties($eventid), $eventid, "");
+            $viewbufr.= createfleetpanel ($fleetcfg, $eventid, "");
+            $viewbufr.= createsignalpanel(getsignaldetail($racecfg, $fleetcfg, $event), $eventid, "");
+        }
 
         $mdl_format['fields']['id']     = "format".$eventid;
         $mdl_format['fields']['body']   = $viewbufr;

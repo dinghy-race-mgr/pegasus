@@ -8,6 +8,7 @@
 // start session
 session_id('sess-rmevent');
 session_start();
+
 // error_reporting(E_ERROR);  // turn off warnings for live operation
 require_once("include/rm_event_lib.php");
 require_once("classes/pages.php");
@@ -16,11 +17,10 @@ require_once("classes/db.php");
 
 // initialise application
 $cfg = set_config("config.ini", array("rm_event"), true);   // FIXME location of ini file
-$cfg['logfile'] = str_replace("<date>", date("Y"), $cfg['logfile']);
-
+$cfg['logfile'] = str_replace("_date", date("_Y"), $cfg['logfile']);
 
 $if_o = new PAGES($cfg);
-$db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass']);
+$db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
 
 // arguments
 if (key_exists("event", $_REQUEST))   // requesting single nicknamed event
@@ -49,9 +49,6 @@ empty($_REQUEST['status'])   ? $entryupdate['status']   = false : $entryupdate['
 empty($_REQUEST['recordid']) ? $entryupdate['recordid'] = false : $entryupdate['recordid'] = $_REQUEST['recordid'];
 empty($_REQUEST['junior'])   ? $entryupdate['junior']   = false : $entryupdate['junior'] = $_REQUEST['junior'];
 empty($_REQUEST['waiting'])  ? $entryupdate['waiting']  = false : $entryupdate['waiting'] = $_REQUEST['waiting'];
-
-
-
 
 if ($page == "list")                        // events list page
 {

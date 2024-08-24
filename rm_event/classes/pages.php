@@ -10,7 +10,7 @@ class PAGES
         // fixme needs to be in session when eid is established (also need to have numbers for entries, documents and notices)
         // fixme - temp solution for only showing results when complete
         $this->cfg['options'] = array(
-            "1" => array("page" => "details","label" => "Event Details", "script" => "rm_event.php?page=details&eid="),
+            "1" => array("page" => "details","label" => "Details", "script" => "rm_event.php?page=details&eid="),
             "2" => array("page" => "entries","label" => "Entries", "script" => "rm_event.php?page=entries&eid="),
             "3" => array("page" => "documents", "label" => "Documents", "script" => "rm_event.php?page=documents&eid="),
             "4" => array("page" => "notices","label" => "Notices", "script" => "rm_event.php?page=notices&eid="),

@@ -9,47 +9,36 @@ $boat = db_fetch_array($rs_boat);
 if (empty($boat))
 {
     $commit = false;
-    $message = "<span style=\"white-space: normal\">OOPS: competitor record for this result is invalid/not found<br><br>
-        Suggest cancel this edit - then copy this result record and add correct competitor details and then delete the original record </span>";
+    $message = "<span style=\"white-space: normal\">OOPs: competitor for this result is invalid/not found<br>
+        Probably because record deleted as part of administrative tidy-up - please check with system admin </span>";
     $_SESSION['results_update'] = false;
 }
 else
 {
-    // set class and helm from competitor record
-    $values['class'] = $boat['classname'];
-    $values['helm']  = $boat['helm'];
+  $mode == "add" ? $values['eventid']   = $_SESSION['copy']['eventid'] : $values['eventid'] = $oldvalues['eventid'];;
+
+    // get fleet cfg details (to get PY value used)
+    $sql = "SELECT b.py_type FROM t_event as a JOIN t_cfgfleet as b ON a.event_format=b.eventcfgid WHERE a.id={$values['eventid']} and b.fleet_num={$values['fleet']}";
+    $rs_fleet = db_query($sql, $conn);
+    $fleet = db_fetch_array($rs_fleet);
+    // set pn  [fixme - what about personal py]
+    $fleet['py_type'] == "local" ? $boat['pn'] = $boat['local_py'] : $boat['pn'] = $boat['nat_py'];
 
     if ($mode == "add")          // copy fields across if copying a record
     {
-        $values['eventid']   = $_SESSION['copy']['eventid'];
-        $values['fleet']     = $_SESSION['copy']['fleet'];
         $values['race_type'] = $_SESSION['copy']['race_type'] ;
+        $values['class']     = $boat['classname'];
+        $values['helm']      = $boat['helm'];
+        $values['sailnum']   = $boat['sailnum'];
+        $values['crew']      = $boat['crew'];
+        $values['club']      = $boat['club'];
+        $values['pn']        = $boat['pn'];
     }
     else
     {
-        $values['eventid']   = $oldvalues['eventid'];
-        $values['fleet']     = $oldvalues['fleet'];
         $values['race_type'] = $oldvalues['race_type'] ;
-    }
-
-
-    // get fleet cfg details
-    $sql = "SELECT b.py_type FROM t_event as a JOIN t_cfgfleet as b ON a.event_format=b.eventcfgid  WHERE a.id={$values['eventid']} and b.fleet_num={$values['fleet']}";
-    $rs_fleet = db_query($sql, $conn);
-    $fleet = db_fetch_array($rs_fleet);
-
-    // set pn
-    $fleet['py_type'] == "local" ? $boat['pn'] = $boat['local_py'] : $boat['pn'] = $boat['nat_py'];
-
-    if ($mode == "add")
-    {
-        $values['sailnum'] = $boat['sailnum'];
-        $values['crew'] = $boat['crew'];
-        $values['club'] = $boat['club'];
-        $values['pn'] = $boat['pn'];
-    }
-    else
-    {
+        $values['class']     = $boat['classname'];
+        $values['helm']      = $boat['helm'];
         // only overwrite from competitor record if not set
         if (empty($values['sailnum'])) {$values['sailnum'] = $boat['sailnum'];}
         if (empty($values['crew']))    {$values['crew'] = $boat['crew'];}
@@ -78,18 +67,35 @@ else
     $values['ctime'] = $race_o->entry_calc_ct($values['etime'], $values['pn'], $values['race_type']);
     $values['atime'] = $race_o->entry_calc_at($values['etime'], $values['pn'], $values['race_type'], $values['lap'], $maxlap);
 
-    // check notes are html compatible
+    // set points (trick to allow it to be inserted in corect position following 'after' processing
+    if ($values['race_type'] == "pursuit")
+    {
+        if ($mode == "add")
+        {
+            $values['points'] = $values['points'] - 0.1 ;
+        }
+        else // edit
+        {
+            if ($values['points'] > 0 and $values['points'] != $oldvalues['points'])
+            {
+                if ($values['points'] < $oldvalues['points']) {
+                    $values['points'] = $values['points'] - 0.1;
+                } else {
+                    $values['points'] = $values['points'] + 0.1;
+                }
+            }
+        }
+    }
+    else
+    {
+        $values['points'] = 0;
+    }
+
+    // make notes html compatible
     $values['note'] = htmlspecialchars($values['note']);
 
     // check penalty codes
-    if ($values['code'] != "DPI")
-    {
-        $values['penalty'] = "0.0";
-    }
-
-    // add audit field
-    $values['updby']   = $_SESSION['UserID'];
-    $values['upddate'] = NOW();
+    if ($values['code'] != "DPI") { $values['penalty'] = "0.0"; }
 
     $_SESSION['results_update'] = true;
     $commit = true;

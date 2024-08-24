@@ -284,18 +284,24 @@ function r_initfleetsession($eventid, $fleetnum, $fleet)
     // set pursuit config details
     if ($_SESSION["e_$eventid"]['pursuit'])
     {
-        // FIXME - ultimately needs to check in new t_event field pursuit_chg to check if they have already been changed
-        // FIXME = format will be length:120,interval:30 - these are only fields that can be changed
 
         $_SESSION['pursuitcfg'] = array(
             "length"   => $fleet['timelimit_abs'],
-            "maxpn"    => $fleet['max_py'],
-            "minpn"    => $fleet['min_py'],
+            "slowpn"    => $fleet['max_py'],
+            "slowclass"=> "",
+            "fastpn"    => $fleet['min_py'],
+            "fastclass"=> "",
             "interval" => 60,
             "pntype"   => strtolower($fleet['py_type']),
         );
-    }
 
+        // check if json file for handling the current setup has been created - if not create it
+        $cfg_filename = $_SESSION['basepath']."/tmp/pursuitcfg_$eventid.json";
+        if (!file_exists($cfg_filename))
+        {
+            file_put_contents($cfg_filename, json_encode($_SESSION['pursuitcfg']));
+        }
+    }
 
     // retrieve current racestate values
     $sql = "SELECT * FROM t_racestate WHERE eventid = $eventid and fleet = $fleetnum order by fleet ASC";

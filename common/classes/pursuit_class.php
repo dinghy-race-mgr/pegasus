@@ -166,11 +166,7 @@ EOT;
                 </div>
 EOT;
             }
-
-
         }
-
-
 
         $htm = <<<EOT
         <div class="panel panel-success margin-top-40">

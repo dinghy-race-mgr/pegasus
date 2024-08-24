@@ -84,9 +84,6 @@ if ($_REQUEST['pagestate'] == "init")
         }
 
         $args = array(
-            //"pagestate" => "init",
-            //"format"    => $_REQUEST['format'],
-            //"caller"    => "race_pg",
             "pntype"    => $_SESSION['pursuitcfg']['pntype'],
             "fastclass" => $_SESSION['pursuitcfg']['fastclass'],
             "slowclass" => $_SESSION['pursuitcfg']['slowclass'],

@@ -33,7 +33,7 @@ if (empty($eid) or empty($pagestate))
 }
 
 // set database
-$db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass']);
+$db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
 
 // get event details
 $event = $db_o->run("SELECT * FROM e_event WHERE id = ?", array($eid) )->fetch();

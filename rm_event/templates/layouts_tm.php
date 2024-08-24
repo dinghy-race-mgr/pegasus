@@ -168,8 +168,7 @@ function footer ($params = array())
         $params['counts']['notices'] > 0 ? $notices_htm = "[{$params['counts']['notices']}]" : $notices_htm = "";
 
         $htm = <<<EOT
-<br><br>
-        <footer class="footer mt-auto"> 
+        <footer class="footer"> 
             <div class="container-fluid px-4 py-3 text-bg-secondary d-flex align-items-baseline">
                 <div class="row gap-5"
                     <div class="col-8 text-start  ">
@@ -184,7 +183,7 @@ function footer ($params = array())
                         </a>
                     </div>           
                     <div class="col text-end">
-                        <span class="align-top">raceManager {version} - copyright Elmswood Software {year}</span>
+                        <span class="align-top">raceManager {version}<br>copyright Elmswood Software {year}</span>
                     </div>                   
                 </div>
             </div>    
@@ -194,7 +193,7 @@ EOT;
     else
     {
         $htm = <<<EOT
-        <footer class="footer mt-auto">
+        <footer class="footer ">
             <div class="container-fluid py-2 text-bg-secondary text-end">
                 raceManager {version} - copyright Elmswood Software {year}
             </div>
@@ -497,7 +496,7 @@ function entry_status_before_open($params = array())
             $closetxt = "";
         }
     }
-    $txt = "Entries not available yet - opens on $opendate $closetxt";
+    $txt = "<b>Entries not available yet &hellip;</b> <br>opens on $opendate $closetxt";
 
 
     $htm = <<<EOT

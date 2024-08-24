@@ -194,9 +194,13 @@ else
     $racecfg  = $event_o->event_getracecfg($event['event_format'], $eventid);
     $fleetcfg = $event_o->event_getfleetcfg($event['event_format']);
     $duties   = $rota_o->get_event_duties($eventid);
-    $viewbufr = createdutypanel($duties, $eventid, "in");
-    $viewbufr.= createfleetpanel ($event_o->event_getfleetcfg($event['event_format']), $eventid, "");
-    $viewbufr.= createsignalpanel(getsignaldetail($racecfg, $fleetcfg, $event), $eventid, "");
+    $viewbufr = "";
+    if ($fleetcfg)
+    {
+        $viewbufr.= createdutypanel($duties, $eventid, "in");
+        $viewbufr.= createfleetpanel ($event_o->event_getfleetcfg($event['event_format']), $eventid, "");
+        $viewbufr.= createsignalpanel(getsignaldetail($racecfg, $fleetcfg, $event), $eventid, "");
+    }
 
     $mdl_format['fields']['body'] = $viewbufr;
     $mdl_format['fields']['title'] = "Race Format: <b>$eventname</b>";

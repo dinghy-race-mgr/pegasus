@@ -106,7 +106,8 @@ function check_pursuit_cfg($eventid)
             if (isset($cfg['fastclass']) and !empty($cfg['fastclass'])) { $_SESSION['pursuitcfg']['fastclass'] = $cfg['fastclass']; }
         }
     }
-    else{
+    else
+    {
         $cfg = false;
     }
 

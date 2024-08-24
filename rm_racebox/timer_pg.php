@@ -399,10 +399,6 @@ function display_boats_pursuit($eventid, $display_view)
     {
         if (empty($_SESSION["e_$eventid"]['classes'])) {$_SESSION["e_$eventid"]['classes'] = $race_o->count_groups("class", "count", 11);}
 
-        //$_SESSION['pursuitcfg']['classes'] = $race_o->count_groups("class", "count", 11);    // FIXME move this to entries.sc
-        //$_SESSION["e_$eventid"]['classes'] = $race_o->count_groups("class", "count", 11);
-        //echo "<pre>".print_r($rs_class_counts,true)."</pre>";
-
         $out = array();
         foreach ($rs_race as $entry)
         {

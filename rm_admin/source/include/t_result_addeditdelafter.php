@@ -7,10 +7,9 @@ if ($_SESSION['results_update'])
     $fleet     = $values['fleet'];
     $race_type = $values['race_type'];
 
-
     // get results to be recalculated
     $sql = "SELECT id, fleet, class, sailnum, helm, crew, club, pn, lap, lap as finishlap, 
-                   etime, 0 as ctime, 0 as atime, 0 as points, penalty, code, declaration, 
+                   etime, 0 as ctime, 0 as atime, points, penalty, code, declaration, 
                    '' as note, '' as protest, 'F' as status FROM t_result  
                    WHERE eventid = $eventid and fleet = $fleet";
 
@@ -21,7 +20,6 @@ if ($_SESSION['results_update'])
     while( $data = db_fetch_array($rs) )
     {
         $rs_data[] = $data;
-        //error_log("DATA: {$data['class']} {$data['sailnum']} {$data['lap']} {$data['etime']} {$data['code']} {$data['penalty']} {$data['points']}\n",3, $_SESSION['dbg_file']);
     }
 
     if ($rs_data)
@@ -37,7 +35,14 @@ if ($_SESSION['results_update'])
 
         $fleet_rs['warning'] = array();
         $fleet_rs['data'] = array();
-        $fleet_rs = $race_o->race_score($eventid, $fleet, $race_type, $rs_data, "t_result" );
+        if ($race_type == "pursuit")     // rescore race for a pursuit race
+        {
+            $fleet_rs = $race_o->race_score_pursuit($rs_data, "t_result");
+        }
+        else                            // rescore race for class, handicap or average lap race types
+        {
+            $fleet_rs = $race_o->race_score($eventid, $fleet, $race_type, $rs_data, "t_result" );
+        }
         $results = $fleet_rs['data'];
         $warning = $fleet_rs['warning'];
     }
