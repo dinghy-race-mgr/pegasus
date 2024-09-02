@@ -36,6 +36,7 @@
 .active-option {background-color: var(--lightblue); font-weight: 900;}
 
 .form-section {background-color: rgba(24,88,131,0.8); color: var(--white); font-size: 1.2em; height: 40px;}
+.field-reqd {color: red; font-weight: 400;}
 .readonly-style {font-weight: bold; font-size: larger;}
 .label-style { color: var(--greyblue); }
 

@@ -288,15 +288,15 @@ EOT;
     }
     else                           // single class or multi class (with separate fleet racing racing)
     {
-        $entry_btns = "<div class='hstack gap-5'>";
+        $entry_btns = "<div class='hstack gap-4'><span class=\"fs-5\"><b>Enter &hellip;</b></span>";
         $classes = explode(",", $class_list);
         foreach ($classes as $k => $class)
         {
             $class_txt = ucwords($class);
             $entry_btns.= <<<EOT
                     <div class="p-6">
-                        <a class="btn btn-large btn-success" href="rm_event.php?page=newentryform&eid=$eid&class=$class_txt" role="button">
-                            <span class="fs-5"><i>enter</i> <b>$class_txt</b></span>
+                        <a class="btn btn-large btn-success" style="min-width: 120px;" href="rm_event.php?page=newentryform&eid=$eid&class=$class_txt" role="button">
+                            <span class="fs-5"><b>$class_txt</b></span>
                         </a>
                     </div>
 EOT;
@@ -353,24 +353,31 @@ function get_personal_pn($competitor_id, $handicap_type)
 
 function get_phone($in_phone)
 {
-    $in_phone = trim($in_phone);
-
-    // remove international codes
-    if (strpos($in_phone, "+") === 0) { $in_phone = str_replace('+','',$in_phone); }
-    if (strpos($in_phone, "44") === 0) { $in_phone = str_replace('+','',$in_phone); }
-
-    $phone = $in_phone;
-
-    // check phone number is 11 digits starting with a 0
-    if (ctype_digit($phone))
+    if (empty($in_phone))
     {
-        if ($phone[0] != "0")  { $phone = "0".$phone; }          // check if first digit is a 0
-
-        if (strlen($phone) != 11 ) { $phone = "invalid"; }       // check if 11 digits
+        $phone = "not given";
     }
     else
     {
-        $phone = "invalid";
+        $in_phone = trim($in_phone);
+
+        // remove international codes
+        if (strpos($in_phone, "+") === 0) { $in_phone = str_replace('+','',$in_phone); }
+        if (strpos($in_phone, "44") === 0) { $in_phone = str_replace('44','',$in_phone); }
+
+        $phone = $in_phone;
+
+        // check phone number is 11 digits starting with a 0
+        if (ctype_digit($phone))
+        {
+            if ($phone[0] != "0")  { $phone = "0".$phone; }          // check if first digit is a 0
+
+            if (strlen($phone) != 11 ) { $phone = "invalid"; }       // check if 11 digits
+        }
+        else
+        {
+            $phone = "invalid";
+        }
     }
 
     return $phone;

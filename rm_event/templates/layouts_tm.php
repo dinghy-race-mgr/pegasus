@@ -520,7 +520,7 @@ function entry_status_open($params = array())
     {
         $waiting_txt = "Waiting list has $num_waiting boats - see below&hellip;";
     }
-    elseif ($params['entry-count'] == $params['entry-limit'])
+    elseif ($params['entry-limit'] > 0 and ($params['entry-count'] == $params['entry-limit']))
     {
         $waiting_txt = "Entry limit is {$params['entry-limit']} boats - waiting list is active";
     }
@@ -570,6 +570,42 @@ function entry_status_after_close($params = array())
             </div>
         </div> 
     </div>
+EOT;
+
+    return $htm;
+}
+
+function external_entries_body ($params = array())
+{
+    $htm = <<<EOT
+        <main class="" >
+            <div class="container nav-margin min-vh-100">
+                <iframe height="1600" width="1000" src="{$params['entry_form']}" title="event entry form"></iframe>           
+            </div>    
+        </main>
+EOT;
+
+    return $htm;
+}
+
+function entries_at_club_body ($params = array())
+{
+    $htm = <<<EOT
+        <main class="" >
+            <div class="container nav-margin">
+                <div class="alert alert-warning" role="alert">
+                    <div class="row">
+                        <div class="col-1">
+                            <p class="bi-info-square-fill" style="font-size: 3rem;"></p>
+                        </div>
+                        <div class="col-8">
+                            <p class="fs-4">We are not collecting pre-entries for this event - please come to the club on the day of the event 
+                             and follow the instructions for entering on arrival.</p>
+                        </div>                       
+                    </div> 
+                </div>
+            </div>    
+        </main>
 EOT;
 
     return $htm;

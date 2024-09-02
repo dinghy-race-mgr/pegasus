@@ -47,13 +47,14 @@ if ($pagestate == "newentry")
         "eid"          => $eid,
         "b-class"      => get_class_name($_REQUEST['class']),
         "b-sailno"     => $_REQUEST['sailnumber'],
+        "b-altno"      => $_REQUEST['bownumber'],
         "b-name"       => $_REQUEST['boatname'],
         "b-division"   => get_category($_REQUEST['category']),
         "b-pn"         => get_pn ($event['scoring-type'],$event['handicap-type'], $_REQUEST['class']),
         "h-name"       => get_name($_REQUEST['helm-name']),
         "h-club"       => get_club($_REQUEST['club'], $cfg['club_std']),
         "h-age"        => $_REQUEST['helm-age'],
-        "h-gender"     => "notreported",
+        "h-gender"     => $_REQUEST['h-gender'],
         "h-email"      => $_REQUEST['helm-email'],
         "h-phone"      => get_phone($_REQUEST['ph-mobile']),
         "h-emergency"  => get_phone($_REQUEST['ph-emer']),
@@ -105,22 +106,30 @@ elseif ($pagestate == "updentry")   // FIXME need to do the update variations
 }
 elseif ($pagestate == "juniorconsent")
 {
-    $_REQUEST['consent'] == "on" ? $consent = 1 : $consent = 0;
-    $dob = date ("Y-m-d", strtotime($_REQUEST['c-dob']));
+//    echo "<pre>".print_r($_REQUEST,true)."</pre>";
+//    exit("stopping");
+
+
+    $_REQUEST['c-treatment'] == "on" ? $treatment = "YES" : $treatment = "NO";
+    $_REQUEST['c-confident'] == "on" ? $confident = "YES" : $confident = "NO";
+
     $consent = array
     (
         "eid" => $eid,
-        "entryid"        => $_REQUEST['entryid'],
-        "parent_name"    => $_REQUEST['p-name'],
-        "parent_phone"   => $_REQUEST['p-mobile'],
-        "parent_email"   => $_REQUEST['p-email'],
-        "parent_address" => $_REQUEST['p-address'],
-        "child_name"     => $_REQUEST['c-name'],
-        "child_dob"      => $dob,
-        "medical"        => $_REQUEST['c-details'],
-        "imagerights"    => 0,
-        "consent"        => $consent,
-        "updby"          => "rm_event_form",
+        "entryid"            => $_REQUEST['entryid'],
+        "parent_name"        => $_REQUEST['p-name'],
+        "parent_phone"       => $_REQUEST['p-mobile'],
+        "parent_email"       => $_REQUEST['p-email'],
+        "parent_address"     => $_REQUEST['p-address'],
+        "alt_contact_detail" => $_REQUEST['p-altcontact'],
+        "child_name"         => $_REQUEST['c-name'],
+        "child_dob"          => date ("Y-m-d", strtotime($_REQUEST['c-dob'])),
+        "medical"            => $_REQUEST['c-medical'],
+        "dietary"            => $_REQUEST['c-dietary'],
+        "confirm-treatment"  => $treatment,
+        "confirm-media"      => $_REQUEST['c-media'],
+        "confirm-confident"  => $confident,
+        "updby"               => "rm_event_form"
     );
 
     // insert record

@@ -25,7 +25,7 @@ $fields_bufr = <<<EOT
     <div class="col-md-6">
         <div class="form-floating">
             <input type="text" class="form-control" id="sailnumber" name="sailnumber" placeholder="sail number &hellip; value="" required autofocus>
-            <label for="floatingInput" class="label-style">Sail Number</label>
+            <label for="floatingInput" class="label-style">Sail Number<span class="field-reqd"> *</span></label>
             <div class="invalid-feedback">enter your sailnumber</div>
         </div>
     </div>
@@ -54,8 +54,8 @@ $fields_bufr = <<<EOT
 <div class="row mb-3">
     <div class="col-md-6">
         <div class="form-floating">
-            <input type="text" class="form-control" id="helm-name" name="helm-name" placeholder="helm name &hellip;" value="" required autofocus>
-            <label for="floatingInput" class="label-style">Name</label>
+            <input type="text" class="form-control" id="helm-name" name="helm-name" placeholder="helm name &hellip;" value="" required>
+            <label for="floatingInput" class="label-style">Name<span class="field-reqd"> *</span></label>
             <div class="invalid-feedback">enter the helm name (e.g. Ben Ainslie).</div>
         </div>
     </div>
@@ -70,15 +70,15 @@ $fields_bufr = <<<EOT
     <div class="col-md-6">
         <div class="form-floating">
             <input type="text" class="form-control" id="ph-mobile" name="ph-mobile" placeholder="mobile phone number &hellip;" value="">
-            <label for="floatingInput" class="label-style">Mobile</label>
-            <div class="invalid-feedback">11 digit phone number (e.g. 07804555666).</div>
+            <label for="floatingInput" class="label-style">Contact Phone</label>
+            <div class="invalid-feedback">enter phone number (e.g. 07804555666).</div>
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-floating">
             <input type="text" class="form-control" id="helm-email" name="helm-email" placeholder="email address &hellip;" value="" >
-            <label for="floatingInput" class="label-style">Email</label>
-            <div class="invalid-feedback">enter your email address (e.g. ben@gmail.com).</div>
+            <label for="floatingInput" class="label-style">Contact Email</label>
+            <div class="invalid-feedback">enter valid email address (e.g. ben@gmail.com).</div>
         </div>
     </div>
 </div>
@@ -92,8 +92,8 @@ $fields_bufr = <<<EOT
     <div class="col-md-8">
         <div class="form-floating">
             <input type="text" class="form-control" id="ph-emer" name="ph-emer" placeholder="emergency contact phone number during event &hellip;" value="" required>
-            <label for="floatingInput" class="label-style">Emergency Telephone Contact</label>
-            <div class="invalid-feedback">11 digit emergency contact phone number (e.g. 07804555666) required.</div>
+            <label for="floatingInput" class="label-style">Emergency Telephone Contact (during event)<span class="field-reqd"> *</span></label>
+            <div class="invalid-feedback">enter phone number (e.g. 07804555666).</div>
         </div>
     </div> 
 </div>
@@ -105,7 +105,7 @@ $fields_bufr = <<<EOT
     <div class="col-md-4">                  
         <div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" id="consent" name="consent" required />
-            <label class="form-check-label" for="consent">&nbsp;&nbsp;&nbsp;I consent</label>
+            <label class="form-check-label" for="consent">&nbsp;&nbsp;&nbsp;I consent<span class="field-reqd"> *</span></label>
             <div class="invalid-feedback">You must agree to the terms and conditions to submit your entry.</div>
         </div>
     </div>
@@ -147,8 +147,8 @@ $validation_htm = <<<EOT
         }
           
         // Custom validation for sail number field
-        // let sailnoInput = document.getElementById("sailnumber");
-        // if (sailnoInput.value === "") {sailnoInput.setCustomValidity("error");} else {sailnoInput.setCustomValidity("");}
+        let sailnoInput = document.getElementById("sailnumber");
+        if (sailnoInput.value === "") {sailnoInput.setCustomValidity("error");} else {sailnoInput.setCustomValidity("");}
      
         // Custom validation for club field
         let clubInput = document.getElementById("club");
@@ -163,12 +163,12 @@ $validation_htm = <<<EOT
         
         // custom validation for ph-mobile field
         let mobileInput = document.getElementById("ph-mobile");
-        let mobileRegex = /^[0-9 ]+$/;
+        let mobileRegex = /^(?:\d[- ]*){9,}$/;
         if (!mobileRegex.test(mobileInput.value)) {mobileInput.setCustomValidity("error");} else { mobileInput.setCustomValidity("");}
 
         // custom validation for email field
         let emailInput = document.getElementById("helm-email");
-        let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        let emailRegex = /^(?:[\w\.\-]+@([\w\-]+\.)+[a-zA-Z]+)$/;
         if (!emailRegex.test(emailInput.value)) {emailInput.setCustomValidity("error");} else { emailInput.setCustomValidity("");}
                
         // Custom validation for (optional) crew name field
@@ -176,7 +176,7 @@ $validation_htm = <<<EOT
         
         // custom validation for ph-emer field
         let emerInput = document.getElementById("ph-emer");
-        let emerRegex = /^[0-9 ]+$/;
+        let emerRegex = /^(?:\d[- ]*){9,}$/;
         if (!emerRegex.test(emerInput.value)) {emerInput.setCustomValidity("error");} else { emerInput.setCustomValidity("");}
             
         // Custom validation for consent field

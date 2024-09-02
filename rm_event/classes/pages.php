@@ -142,66 +142,79 @@ class PAGES
             // ---------------------------------- entries page
             elseif ($page == "entries")
             {
-                //echo "<pre>".print_r($_REQUEST,true)."</pre>";
-                
-                // get all entry data (excluding waiting list - sorted by fleet, class, sailnumber)
-                $entries = $db_o->run("SELECT * FROM e_entry WHERE eid = ? and `e-exclude` = 0 and `e-waiting` = 0 ORDER BY `b-fleet` ASC, `b-class` ASC, `b-sailno` * 1 ASC", array($eid) )->fetchall();
+                if (!empty($event['entry-form']))    // use internal entry form by default
+                {
+                    // get all entry data (excluding waiting list - sorted by fleet, class, sailnumber)
+                    $entries = $db_o->run("SELECT * FROM e_entry WHERE eid = ? and `e-exclude` = 0 and `e-waiting` = 0 ORDER BY `b-fleet` ASC, `b-class` ASC, `b-sailno` * 1 ASC", array($eid) )->fetchall();
 
-                // get all waiting list entries (sorted by order on waiting list)
-                $waiting = $db_o->run("SELECT * FROM e_entry WHERE eid = ? and `e-exclude` = 0 and `e-waiting` = 1 ORDER BY `e-entryno` ASC", array($eid) )->fetchall();
+                    // get all waiting list entries (sorted by order on waiting list)
+                    $waiting = $db_o->run("SELECT * FROM e_entry WHERE eid = ? and `e-exclude` = 0 and `e-waiting` = 1 ORDER BY `e-entryno` ASC", array($eid) )->fetchall();
 
-                // get entry/update confirm message if required
-                $entry_confirm_block = "";
-                if ($entryupdate['action'] == "newentry" or $entryupdate['action'] == "updentry")
+                    // get entry/update confirm message if required
+                    $entry_confirm_block = "";
+                    if ($entryupdate['action'] == "newentry" or $entryupdate['action'] == "updentry")
+                    {
+                        $fields = array();
+                        $params = $this->entry_confirm_params($entryupdate, $waiting, $eid);
+                        $entry_confirm_block = $this->tmpl_o->get_template("entry_confirm_block", $fields, $params);
+                    }
+
+                    // add consent form detail to $entries array   [FUNCTION]
+                    $entries = $this->mark_entries_requiring_consent($entries);
+
+                    // check if entry_state and construct entry state block
+                    $entry_state = check_entry_open($event['entry-start'], $event['entry-end']);  // returns before|after|open
+                    if ($entry_state == "before")
+                    {
+                        $fields = array("event-title" => $event['title']);
+                        $params = array("entry-start"=> $event['entry-start'], "entry-end"=> $event['entry-end'] );
+                        $entry_status_block = $this->tmpl_o->get_template("entry_status_before_open", $fields, $params);
+                    }
+                    elseif ($entry_state == "after")
+                    {
+                        $fields = array("entry-count" => count($entries));
+                        $params = array("entry-reqd"=>$event['entry-reqd'], "waiting" => $waiting);
+                        $entry_status_block = $this->tmpl_o->get_template("entry_status_after_close", $fields, $params);
+                    }
+                    else  // entries are open
+                    {
+                        $fields = array();
+                        $params = array("eid" => $eid, "entry-count" => count($entries), "entry-limit" => $event['entry-limit'],
+                            "classes" => $event['entry-classes'], "waiting" => $waiting);
+                        $entry_status_block = $this->tmpl_o->get_template("entry_status_open", $fields, $params);
+                    }
+
+                    //construct entries body htm
+                    $fields = array(
+                        "event-title"   => $event['title'],
+                        "entries-intro" => $content['entries-intro']['content'],
+                        "entry-confirm-block" => $entry_confirm_block,
+                        "entry-status-block" => $entry_status_block
+                    );
+
+                    $params = array(
+                        "eid"        => $eid,
+                        "entries"    => $entries,
+                        "waiting"    => $waiting,
+                        "process"    => $entryupdate,
+                        "layout" => $this->cfg["layout"]
+                    );
+
+                    // render confirmation and entries table
+                    $body = $this->tmpl_o->get_template("entries_body", $fields, $params);
+                }
+                elseif (!empty($event['entry-form-link']))
                 {
                     $fields = array();
-                    $params = $this->entry_confirm_params($entryupdate, $waiting, $eid);
-                    $entry_confirm_block = $this->tmpl_o->get_template("entry_confirm_block", $fields, $params);
+                    $params = array("entry_form"=> $event['entry-form-link']);
+                    $body = $this->tmpl_o->get_template("external_entries_body", $fields, $params);
                 }
-
-                // add consent form detail to $entries array   [FUNCTION]
-                $entries = $this->mark_entries_requiring_consent($entries);
-
-                // check if entry_state and construct entry state block
-                $entry_state = check_entry_open($event['entry-start'], $event['entry-end']);  // returns before|after|open
-                if ($entry_state == "before")
-                {
-                    $fields = array("event-title" => $event['title']);
-                    $params = array("entry-start"=> $event['entry-start'], "entry-end"=> $event['entry-end'] );
-                    $entry_status_block = $this->tmpl_o->get_template("entry_status_before_open", $fields, $params);
-                }
-                elseif ($entry_state == "after")
-                {
-                    $fields = array("entry-count" => count($entries));
-                    $params = array("entry-reqd"=>$event['entry-reqd'], "waiting" => $waiting);
-                    $entry_status_block = $this->tmpl_o->get_template("entry_status_after_close", $fields, $params);
-                }
-                else  // entries are open
+                else   // report no entry form defined - please enter on the day
                 {
                     $fields = array();
-                    $params = array("eid" => $eid, "entry-count" => count($entries), "entry-limit" => $event['entry-limit'],
-                                    "classes" => $event['entry-classes'], "waiting" => $waiting);
-                    $entry_status_block = $this->tmpl_o->get_template("entry_status_open", $fields, $params);
+                    $params = array();
+                    $body = $this->tmpl_o->get_template("entries_at_club_body", $fields, $params);
                 }
-
-                //construct entries body htm
-                $fields = array(
-                    "event-title"   => $event['title'],
-                    "entries-intro" => $content['entries-intro']['content'],
-                    "entry-confirm-block" => $entry_confirm_block,
-                    "entry-status-block" => $entry_status_block
-                );
-
-                $params = array(
-                    "eid"        => $eid,
-                    "entries"    => $entries,
-                    "waiting"    => $waiting,
-                    "process"    => $entryupdate,
-                    "layout" => $this->cfg["layout"]
-                );
-
-                // render confirmation and entries table
-                $body = $this->tmpl_o->get_template("entries_body", $fields, $params);
             }
 
 
@@ -209,14 +222,7 @@ class PAGES
 
             elseif ($page == "newentryform")
             {
-                // get form
-                if (!empty($event['entry_form_link']))   // external entry form
-                {
-                    // go to external form
-                    header("Location:{$event['entry-form-link']}");
-                    exit;
-                }
-                elseif (!empty($event['entry-form']))    // internal entry form
+                if (!empty($event['entry-form']))    // check internal entry form
                 {
                     $form_detail = $db_o->run("SELECT * FROM e_form WHERE `form-label` = '{$event['entry-form']}'", array() )->fetch();
 
@@ -250,7 +256,6 @@ class PAGES
                         "evidence" => "form selected: internal - {$event['entry_form']} external - {$event['entry_form_link']}",
                         "report-link" => $this->cfg['system_admin_contact'],
                         "event-title" => $event['title']
-                        
                     );
 
                     $params = array("action" => "", "event-title" => $event['title'], "layout" => $this->cfg["layout"]);

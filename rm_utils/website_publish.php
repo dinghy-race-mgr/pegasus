@@ -274,7 +274,7 @@ function create_programme_file($start_date, $end_date)
 function transfer_programme($sourcefile, $targetfile)
 {
     $ftp_env = array(
-        "server" => "178.79.169.125",  //$_SESSION['ftp_server'],
+        "server" => $_SESSION['ftp_server'],
         "user"   => $_SESSION['ftp_user'],
         "pwd"    => $_SESSION['ftp_pwd'],
     );

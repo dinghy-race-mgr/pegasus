@@ -512,6 +512,7 @@ function process_transfer_sftp($files, $ftp_env)
     $num_files = count($files);
     $num_files_sent = 0;
 
+    echo "<pre>".print_r($ftp_env,true)."</pre>";
     $sftp = new Net_SFTP($ftp_env['server']);
 
     // login to server

@@ -1343,56 +1343,6 @@ function u_sendfile_sftp($ftp_env, $source_file, $target_file)
 }
 
 
-//// FIXME change this to transfering a single file create a directory if required
-//function u_sftpFiles($ftp_env, $files)
-//{
-//
-//    u_writedbg("<pre>SFTP->".print_r($ftp_env,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
-//
-//    // FIXME turn off error reporting because of parse errors in phpseclib
-////    error_reporting(0);  //error_reporting(E_ERROR | E_WARNING | E_PARSE);
-////    error_reporting(E_ERROR | E_WARNING | E_PARSE);
-//
-//    $status = array();
-//    $files_transferred = 0;
-//
-//    set_include_path(get_include_path() . PATH_SEPARATOR . "{$_SESSION['basepath']}/common/oss/phpseclib");
-//    include('Net/SFTP.php');
-//    define('NET_SFTP_LOGGING', NET_SFTP_LOG_COMPLEX);
-//
-//    $status['log'] = "Transferring results files using SFTP protocol<br>";
-//
-//    $sftp = new Net_SFTP($ftp_env['server']);
-//
-//    if ($sftp->login($ftp_env['user'], $ftp_env['pwd']))
-//    {
-//        $status['login'] = true;
-//        $status['log'].= " - logged in to sftp server<br>";
-//
-//        foreach ($files as $key => $file)   // loop over all files
-//        {
-//            if ($sftp->put($file['dest'], $file['source'], NET_SFTP_LOCAL_FILE))   // transfer file
-//            {
-//                $files_transferred++;
-//                $status['log'].= " - file transferred ({$file['source']})<br>";
-//            }
-//            else
-//            {
-//                $status['log'].= " - file transfer failed ({$file['source']})<br>";
-//            }
-//        }
-//    }
-//    else
-//    {
-//        $status['login'] = false;
-//        $status['log'].= " - failed to login to sftp server ({$ftp_env['user']}/{$ftp_env['pwd']})<br>";
-//    }
-//
-//    $status['transferred'] = $files_transferred;
-//
-//    error_reporting(E_ERROR);
-//    return $status;
-//}
 
 
 function u_get_result_codes_info($result_codes, $codes_used = array())
