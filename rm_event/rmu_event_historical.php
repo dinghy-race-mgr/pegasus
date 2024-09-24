@@ -77,7 +77,7 @@ function set_event_record($data, $num_entries)
         "list-status-txt" => "online-entries: $num_entries",
         "date-start"      => $data['startdate'],
         "date-end"        => $data['enddate'],
-        "entry-classes"   =>,
+        "entry-classes"   => "",
         "results-mgr"     => "sailwave",
         "updby"           => "transfer"
     );

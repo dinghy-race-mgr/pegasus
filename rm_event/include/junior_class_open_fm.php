@@ -1,14 +1,80 @@
 <?php
+$form_name = "junior_class_open_fm.php";  // important this matches the form-file field in e_form
+
 $instructions_htm = "";
 if (!empty($params['instructions']))      // content defined in table e_form
 {
     $instructions_htm = <<<EOT
-<div class="offset-md-1 col-md-10 mt-3">
+<!-- instructions -->
+<div class="mt-3">
     <div class="alert alert-warning alert-dismissible fade show fs-6 " role="alert">
         {$params['instructions']}.
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 </div>
+EOT;
+}
+
+// check if we need to collect fleet category information (e.g. grandmaster) for specified class
+$fleets_select_htm = "";
+$fleets_validation_js = "";
+if (!empty($params['inc_fleets'])) {
+    $fleets = explode(",", $params['inc_fleets']);
+    $fleets_opt = "";
+    foreach ($fleets as $fleet) {
+        $uc_fleet = ucwords($fleet);
+        $fleets_opt .= "<option value='$fleet'>$uc_fleet</span></option>";
+    }
+
+    $fleets_select_htm .= <<<EOT
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-floating mb-3">      
+                    <select class="form-select" id="category" name="category" aria-label="fleet category selection">
+                        <option>- pick one -</option>
+                        $fleets_opt
+                        <option value="unknown">not sure &hellip;</option>
+                    </select>
+                    <label for="floatingSelect" ><span class="label-style">fleet category</span></label>
+                    <div class="invalid-feedback">pick a fleet from the list</div>
+                </div>
+            </div>
+        </div>
+EOT;
+
+    $fleets_validation_js.= <<<EOT
+        let categoryInput = document.getElementById("category");
+        if (categoryInput.value === "- pick one -") {categoryInput.setCustomValidity("error");} else {categoryInput.setCustomValidity("");}
+EOT;
+}
+
+// check if we need to collect crew information (info obtainde from t_class)
+$crewname_input_htm = "";
+$crewname_validation_js = "";
+if ($params['inc_crew']) {
+    $crewname_input_htm .= <<<EOT
+        <!-- crew section -->
+        <div class="form-section w-100 p-1 mb-3" >&nbsp;&nbsp;Crew &hellip;</div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="crew-name" name="crew-name" placeholder="crew name &hellip;" value="" required>
+                    <label for="floatingInput" class="label-style">Name</label>
+                    <div class="invalid-feedback">enter the crew name (e.g. Ben Ainslie).</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="crew-age" name="crew-age" placeholder="age if under 18 &hellip;" value="" required >
+                    <label for="floatingInput" class="label-style">Age<span class="field-reqd"> *</span></label>
+                </div>
+            </div>
+        </div -->
+EOT;
+    // configure validation
+    $crewname_validation_js .= <<<EOT
+        let crewInput = document.getElementById("crew-name");
+        if (crewInput.value === "") {crewInput.setCustomValidity("error");} else {crewInput.setCustomValidity("");}
 EOT;
 }
 
@@ -18,21 +84,21 @@ $fields_bufr = <<<EOT
 <div class="row mb-3">
     <div class="col-md-3">
         <div class="form-floating">
-            <input type="text" class="form-control-plaintext readonly-style" id="class" name="class" placeholder="boat class &hellip;" value="{class-name}" readonly>
+            <input type="text" class="form-control-plaintext readonly-style" id="class" name="class" placeholder="boat class &hellip;" value="{$params['class-name']}" readonly>
             <label for="floatingInput" class="label-style">Class</label>
         </div>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-4">
         <div class="form-floating">
-            <input type="text" class="form-control" id="sailnumber" name="sailnumber" placeholder="sail number &hellip; value=" required autofocus>
-            <label for="floatingInput" class="label-style">Sail Number</label>
+            <input type="text" class="form-control" id="sailnumber" name="sailnumber" placeholder="sail number &hellip;" value="" required autofocus>
+            <label for="floatingInput" class="label-style">Sail Number<span class="field-reqd"> *</span></label>
             <div class="invalid-feedback">enter your sailnumber</div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="form-floating">
-            <input type="text" class="form-control" id="bownumber" name="bownumber" placeholder="bow / short sail number &hellip; value=" >
-            <label for="floatingInput" class="label-style">Bow / Short Sail No. - <i>if relevant</i></label>
+            <input type="text" class="form-control" id="bownumber" name="bownumber" placeholder="bow / short sail number &hellip;" value="" >
+            <label for="floatingInput" class="label-style">Topper Championship Sail No.</label>
             <div class="invalid-feedback">enter your bow or short sail number</div>
         </div>
     </div>
@@ -46,15 +112,15 @@ $fields_bufr = <<<EOT
     </div>
     <div class="col-md-6">
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="club" name="club" placeholder="home club &hellip;" value="" >
-            <label for="floatingInput" class="label-style">home club</label>
+            <input type="text" class="form-control" id="club" name="club" placeholder="home club &hellip;" value="" required>
+            <label for="floatingInput" class="label-style">home club<span class="field-reqd"> *</span></label>
             <div class="invalid-feedback">enter home club name (e.g. Exe SC)</div>
         </div>
     </div>
 </div>
 
 <!-- optional fleet category field -->
-{{fleets_select_htm}}
+$fleets_select_htm
 
 <!-- helm section -->
 <div class="form-section w-100 p-1 mb-3" >&nbsp;&nbsp;Helm &hellip;</div>
@@ -63,7 +129,7 @@ $fields_bufr = <<<EOT
     <div class="col-md-6">
         <div class="form-floating">
             <input type="text" class="form-control" id="helm-name" name="helm-name" placeholder="helm name &hellip;" value="" required>
-            <label for="floatingInput" class="label-style">Name</label>
+            <label for="floatingInput" class="label-style">Name<span class="field-reqd"> *</span></label>
             <div class="invalid-feedback">enter the helm name (e.g. Ben Ainslie).</div>
         </div>
     </div>
@@ -72,8 +138,8 @@ $fields_bufr = <<<EOT
 <div class="row mb-3">
     <div class="col-md-6">
         <div class="form-floating">
-            <input type="text" class="form-control" id="helm-age" name="helm-age" placeholder="age &hellip;" value="" >
-            <label for="floatingInput" class="label-style">Age</label>
+            <input type="text" class="form-control" id="helm-age" name="helm-age" placeholder="age &hellip;" value="" required>
+            <label for="floatingInput" class="label-style">Age<span class="field-reqd"> *</span></label>
             <div class="invalid-feedback">enter the helm age (e.g. 16).</div>
         </div>
     </div>
@@ -93,8 +159,8 @@ $fields_bufr = <<<EOT
 <div class="row mb-3">
     <div class="col-md-6">
         <div class="form-floating">
-            <input type="text" class="form-control" id="ph-mobile" name="ph-mobile" placeholder="mobile phone number &hellip;" value="">
-            <label for="floatingInput" class="label-style">Contact Phone</label>
+            <input type="text" class="form-control" id="ph-mobile" name="ph-mobile" placeholder="mobile phone number &hellip;" value="" required>
+            <label for="floatingInput" class="label-style">Contact Phone<span class="field-reqd"> *</span></label>
             <div class="invalid-feedback">11 digit phone number (e.g. 07804555666).</div>
         </div>
     </div>
@@ -108,7 +174,7 @@ $fields_bufr = <<<EOT
 </div>
 
 <!-- optional crew section -->
-{{crewname_input_htm}}
+$crewname_input_htm
 
 <!-- admin section -->
 <div class="row mb-3">  
@@ -119,7 +185,7 @@ $fields_bufr = <<<EOT
     <div class="col-md-4">                  
         <div class="mb-3 ps-5 form-check">
             <input type="checkbox" class="form-check-input" id="consent" name="consent" required />
-            <label class="form-check-label" for="consent">&nbsp;&nbsp;&nbsp;I consent</label>
+            <label class="form-check-label" for="consent">&nbsp;&nbsp;&nbsp;I consent<span class="field-reqd"> *</span></label>
             <div class="invalid-feedback">You must agree to the terms and conditions to submit your entry.</div>
         </div>
     </div>
@@ -137,8 +203,8 @@ $form_htm = <<<EOT
 <!-- form details -->
 <div class="container mt-1">
     <div class="row">
-        <div class="offset-md-1 col-md-10">
-            <form id="entryForm" action="rm_event_sc.php?eid={$params['eventid']}&pagestate=newentry&mode={$params['form-mode']}"
+        <div class="">
+            <form id="entryForm" action="rm_event_sc.php?eid={$params['eventid']}&pagestate=newentry&formname=$form_name&mode={$params['form-mode']}"
                   method="post" role="form" autocomplete="off" class="needs-validation" novalidate>
                   $fields_bufr
                   $buttons_bufr
@@ -169,7 +235,8 @@ $validation_htm = <<<EOT
         if (clubInput.value === "") {clubInput.setCustomValidity("error");} else {clubInput.setCustomValidity("");}
         
         // Custom validation for (optional) category field
-        {{fleets_validation_js}} 
+        let categoryInput = document.getElementById("category");
+        if (categoryInput.value === "- pick one -") {categoryInput.setCustomValidity("error");} else {categoryInput.setCustomValidity("");}
              
         // Custom validation for helm name field
         let helmInput = document.getElementById("helm-name");
@@ -186,12 +253,13 @@ $validation_htm = <<<EOT
         if (!mobileRegex.test(mobileInput.value)) {mobileInput.setCustomValidity("error");} else { mobileInput.setCustomValidity("");}
 
         // custom validation for email field
-        let emailInput = document.getElementById("helm-email");
-        let emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-        if (!emailRegex.test(emailInput.value)) {emailInput.setCustomValidity("error");} else { emailInput.setCustomValidity("");}
+        //let emailInput = document.getElementById("helm-email");
+        //let emailRegex = /^(?:[\w\.\-]+@([\w\-]+\.)+[a-zA-Z]+)?$/;
+        //if (!emailRegex.test(emailInput.value)) {emailInput.setCustomValidity("error");} else { emailInput.setCustomValidity("");}
                
         // Custom validation for (optional) crew name field
-        {{crewname_validation_js}}
+        let crewInput = document.getElementById("crew-name");
+        if (crewInput.value === "") {crewInput.setCustomValidity("error");} else {crewInput.setCustomValidity("");}
             
         // Custom validation for consent field
         let consentInput = document.getElementById("consent");

@@ -6,12 +6,13 @@ class PAGES
     {
         $this->tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php"));
         $this->cfg = $cfg;
+        $this->class_spec = array();
 
         // fixme needs to be in session when eid is established (also need to have numbers for entries, documents and notices)
         // fixme - temp solution for only showing results when complete
         $this->cfg['options'] = array(
             "1" => array("page" => "details","label" => "Details", "script" => "rm_event.php?page=details&eid="),
-            "2" => array("page" => "entries","label" => "Entries", "script" => "rm_event.php?page=entries&eid="),
+            "2" => array("page" => "entries","label" => "Enter", "script" => "rm_event.php?page=entries&eid="),
             "3" => array("page" => "documents", "label" => "Documents", "script" => "rm_event.php?page=documents&eid="),
             "4" => array("page" => "notices","label" => "Notices", "script" => "rm_event.php?page=notices&eid="),
             "5" => array("page" => "results", "label" => "Results", "script" => "rm_event.php?page=results&eid=")
@@ -64,9 +65,52 @@ class PAGES
 
     public function pg_event($db_o, $page, $eid, $entryupdate)
     {
-
         // get event details
         $event = $db_o->run("SELECT * FROM e_event WHERE id = ?", array($eid) )->fetch();
+
+        // decode class list definition
+        $invalid_class_spec = false;
+        $this->class_spec = json_decode($event['entry-classes'], true);
+        if (empty($this->class_spec))
+        {
+            $invalid_class_spec = true;
+            $class_spec_type = "unknown";
+        }
+        else
+        {
+            //echo "<pre>{$event['entry-classes']} key:|".key($this->class_spec)."|</pre>";
+            if (key($this->class_spec) != "format" and key($this->class_spec) != "list")  // class spec is not of valid type
+            {
+                $invalid_class_spec = true;
+            }
+            else
+            {
+                if (key($this->class_spec) == "format")  // if race format - convert to list of classes
+                {
+                    $class_spec_type = "format";
+                    $this->class_spec['format'] = get_class_list($this->class_spec);
+                }
+                else
+                {
+                    $class_spec_type = "list";
+                }
+            }
+        }
+
+        //echo "<pre>classes: {$this->class_spec[$class_spec_type]}</pre>";
+        if (empty($this->class_spec[$class_spec_type]))   // value for class spec is empty
+        {
+            $invalid_class_spec = true;
+        }
+
+        // if class spec is not valid stop
+        if ($invalid_class_spec)
+        {
+            $this->exitnicely($this->cfg['sys_name'], "The {$event['title']} does not have a valid definition for the eligible classes",
+                "rm_event/pages.php", "action", $this->cfg['system_admin_contact'],
+                array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
+            exit();
+        }
 
         // get standard content and put into array indexed by content name
         $content = array();
@@ -159,7 +203,7 @@ class PAGES
                         $entry_confirm_block = $this->tmpl_o->get_template("entry_confirm_block", $fields, $params);
                     }
 
-                    // add consent form detail to $entries array   [FUNCTION]
+                    // add consent form detail to $entries array
                     $entries = $this->mark_entries_requiring_consent($entries);
 
                     // check if entry_state and construct entry state block
@@ -180,7 +224,7 @@ class PAGES
                     {
                         $fields = array();
                         $params = array("eid" => $eid, "entry-count" => count($entries), "entry-limit" => $event['entry-limit'],
-                            "classes" => $event['entry-classes'], "waiting" => $waiting);
+                            "classes" => $this->class_spec, "waiting" => $waiting);
                         $entry_status_block = $this->tmpl_o->get_template("entry_status_open", $fields, $params);
                     }
 
@@ -226,15 +270,25 @@ class PAGES
                 {
                     $form_detail = $db_o->run("SELECT * FROM e_form WHERE `form-label` = '{$event['entry-form']}'", array() )->fetch();
 
-                    empty($_REQUEST['class']) ? $class_name = "" : $class_name = $_REQUEST['class'];
-                    // get sub-fleets for class
-                    $class = $db_o->run("SELECT fleets, crew FROM t_class WHERE `classname` = ?", array($class_name) )->fetch();
+                    empty($_REQUEST['class']) ? $class_name = "none" : $class_name = $_REQUEST['class'];
 
-                    $class['crew'] > 1 ? $include_crew = true : $include_crew = false;
+                    if ($class_name == "none")                   // class will be selected from drop down list on form
+                    {
+                        key($this->class_spec) == "list" ? $class_list = $this->class_spec['list'] : $class_list = $this->class_spec['format'];
+                        $class_fleets = "";
+                        $include_crew = true;
+                    }
+                    else                                         // class will be passed as a read only parameter on the form
+                    {
+                        $class_list = "";
+                        // get sub-fleets for named class
+                        $class = $db_o->run("SELECT fleets, crew FROM t_class WHERE `classname` = ?", array($class_name) )->fetch();
+                        $class['crew'] > 1 ? $include_crew = true : $include_crew = false;
+                        $class_fleets = $class['fleets'];
+                    }
 
                     $fields = array(
                         "event-title"    => $event['title'],
-                        "class-name"     => $class_name,
                     );
 
                     $params = array(
@@ -242,13 +296,17 @@ class PAGES
                         "form-name"    => $form_detail['form-file'],
                         "form-mode"    => "add",
                         "instructions" => $form_detail['instructions'],
-                        "inc_fleets"   => $class['fleets'],
+                        "class-name"   => $class_name,
+                        "class-list"   => $class_list,
+                        "inc_fleets"   => $class_fleets,
                         "inc_crew"     => $include_crew
                     );
                     $body = $this->tmpl_o->get_template("newentry_body", $fields, $params);
                 }
                 else                                     // no entry form report error
                 {
+                    // FIXME - replace with an exitnicely
+
                     $fields = array(
                         "page" => $page,
                         "problem" => "The requested entry form is not recognised.",
@@ -266,8 +324,8 @@ class PAGES
             // ---------------------------------- consent form ---------------------------------------------------------
             elseif ($page == "juniorconsentform")
             {
-                    $form_detail = $db_o->run("SELECT * FROM e_form WHERE `form-label` = 'junior consent'", array() )->fetch();
-                    $body = $this->get_juniorconsent_htm($eid, $event, $entryupdate, $form_detail); // fixme use $this->
+                $form_detail = $db_o->run("SELECT * FROM e_form WHERE `form-label` = 'junior consent'", array() )->fetch();
+                $body = $this->get_juniorconsent_htm($eid, $event, $entryupdate, $form_detail);
             }
 
 
@@ -527,6 +585,36 @@ private function entry_confirm_params($entryupdate, $waiting, $eid)
     );
 
     return $params;
+}
+
+private function exitnicely($title, $error, $script, $action, $contact, $attr = array())
+{
+// FIXME write to event log
+//    $logmsg = "**** FATAL ERROR - $error".PHP_EOL."script: $script, event: $eventid, function: {$attr['function']}, line: {$attr['line']}, calledby: {$attr['calledby'}]";
+//    u_writelog($logmsg, 0);                                // write to system log
+//    if ($eventid!=0) { u_writelog($logmsg, $eventid); }    // write to event log
+
+    $fields = array(
+        "error" => $error, "script" => $script, "function" => $attr['function'], "line" => $attr['line'],
+    );
+
+    $params = array(
+        "contact-link" => $contact
+    );
+
+    $body = $this->tmpl_o->get_template("fatal_error_body", $fields, $params);
+
+    // assemble page
+    $fields = array(
+        'page-title'=>$title,
+        'page-navbar'=>"",
+        'page-main'=>$body,
+        'page-footer'=>"",
+        'page-modals'=>"&nbsp;",
+        'page-js'=>"&nbsp;");
+    echo $this->tmpl_o->get_template("page", $fields, array());
+
+    exit();
 }
 
 

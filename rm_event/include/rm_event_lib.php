@@ -165,7 +165,7 @@ EOT;
     {
         $image_url = $document_dir."/content/images/".$content['image'];
         $image_html = <<<EOT
-<img src="$image_url" alt="{$content['image-label']}" title="{$content['image-label']}" class="rounded mx-left d-block" style="max-width: 80%; max-height: 80%"></p>
+<img src="$image_url" alt="{$content['image-label']}" title="{$content['image-label']}" class="rounded mx-left d-block" style="width: 100%; max-height: 80%"></p>
 EOT;
         // set image position
         if (empty($image_posn))
@@ -206,7 +206,7 @@ EOT;
             <div class="container">
               <div class="row">
                 <div class="col">
-                  <p class="lead" >$image_html</p>
+                  <p class="" >$image_html</p>
                 </div>
                 <div class="col-8">
                     $label_html
@@ -276,41 +276,120 @@ function get_class_name($in_class)
 
 function get_class_entry_btns($eid, $class_list)
 {
-    if (empty($class_list))        // multi class handicap racing
+    if (empty($class_list))
+    {
+        $classes = array();
+    }
+    else
+    {
+        $classes = explode(",", $class_list[key($class_list)]);
+    }
+
+    if (count($classes) <= 0)                 // no classes defined - report error message
     {
         $entry_btns = <<<EOT
-            <div class="align-self-start">
-                <a class="btn btn-large btn-success p-6" href="rm_event.php?page=newentryform&eid=$eid" role="button">
-                    <span class="fs-4">Enter Boat &hellip;</span>
-                </a>                  
-            </div>      
+            <div class="alert alert-danger" role="alert">
+                  <h4>Sorry - the entry form is not available</h4>
+                  <p>Please use the contact button to make the event organiser aware of this  </p>
+            </div>
 EOT;
     }
-    else                           // single class or multi class (with separate fleet racing racing)
+    elseif (count($classes) == 1)             // only one  class defined - go straight to form with single button
     {
-        $entry_btns = "<div class='hstack gap-4'><span class=\"fs-5\"><b>Enter &hellip;</b></span>";
-        $classes = explode(",", $class_list);
+        $class_txt = ucwords($classes[0]);
+        $entry_btns = <<<EOT
+        <div class="btn-group" >
+            <a class="btn btn-primary btn-lg" type="button" href="rm_event.php?page=newentryform&eid=$eid&class=$class_txt" 
+               role="button" aria-expanded="false">
+                Enter $class_txt &hellip;
+            </a>            
+        </div>    
+EOT;
+    }
+    elseif (count($classes) <= 10)         // small number classes are defined - pre-select class and go straight to form
+    {
+        $dropdown = "";
         foreach ($classes as $k => $class)
         {
             $class_txt = ucwords($class);
-            $entry_btns.= <<<EOT
-                    <div class="p-6">
-                        <a class="btn btn-large btn-success" style="min-width: 120px;" href="rm_event.php?page=newentryform&eid=$eid&class=$class_txt" role="button">
-                            <span class="fs-5"><b>$class_txt</b></span>
-                        </a>
-                    </div>
+            $dropdown.= <<<EOT
+            <li><a class="dropdown-item" href="rm_event.php?page=newentryform&eid=$eid&class=$class_txt">$class_txt</a></li>
 EOT;
         }
-        $entry_btns.= "</div>";
+
+        $entry_btns = <<<EOT
+        <div class="btn-group dropend" data-bs-theme="dark">
+            <button class="btn btn-primary btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Enter Boat
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><h6 class="dropdown-header">pick class ...</h6></li>
+                <li><hr class="dropdown-divider"></li>
+                $dropdown
+            </ul>
+        </div>
+EOT;
+    }
+    else                                   // large number of classes defined - go to form without defining class
+    {
+        $entry_btns = <<<EOT
+        <div class="btn-group" >
+            <a class="btn btn-primary btn-lg " type="button" href="rm_event.php?page=newentryform&eid=$eid&class=none" 
+               role="button" aria-expanded="false">
+                Enter Boat
+            </a>            
+        </div>
+EOT;
     }
 
     return $entry_btns;
 }
 
+function get_class_list($list)
+    /*
+     * Creates CVS list of eligible classes based on race format
+     */
+{
+    global $db_o;
+
+    // get event configuration
+    $eventcfgid = $db_o->run("SELECT id FROM t_cfgrace WHERE `race_name` = ?",array($list['format']))->fetchColumn();
+
+    // get fleet configurations for event
+    $fleets = $db_o->run("SELECT * FROM t_cfgfleet WHERE `eventcfgid` = ? ORDER BY start_num, fleet_num", array($eventcfgid))->fetchAll();
+
+    // get all classes
+    $classes = $db_o->run("SELECT * FROM t_class WHERE `active` = 1 ORDER BY classname ASC", array())->fetchAll();
+    $num_class = count($classes);
+
+    // get list of classes eligible for the event
+    $class_list = "";
+    $i = 0;
+    foreach ($classes as $class)
+    {
+        $alloc = r_allocate_fleet($class, $fleets);
+        if ($alloc['status'])
+        {
+            $i++;
+            $class_list.= trim($class['classname']).",";
+            //echo "<pre>{$class['classname']} included</pre>";
+        }
+        else
+        {
+            //echo "<pre>{$class['classname']} excluded</pre>";
+        }
+    }
+
+    //echo "<pre>{$list['format']} - $i classes<br>$class_list</pre>";exit();
+
+    return $class_list;
+
+}
+
 function get_category($in_category)
 {
-    $class = strtolower($in_category);
-    return $class;
+    $category = strtolower($in_category);
+    return $category;
 }
 
 function get_name($in_name)
@@ -359,7 +438,8 @@ function get_phone($in_phone)
     }
     else
     {
-        $in_phone = trim($in_phone);
+        //$in_phone = trim($in_phone);
+        $in_phone = str_replace(' ', '', $in_phone);
 
         // remove international codes
         if (strpos($in_phone, "+") === 0) { $in_phone = str_replace('+','',$in_phone); }
@@ -367,12 +447,10 @@ function get_phone($in_phone)
 
         $phone = $in_phone;
 
-        // check phone number is 11 digits starting with a 0
+        // check phone number starts with a 0
         if (ctype_digit($phone))
         {
             if ($phone[0] != "0")  { $phone = "0".$phone; }          // check if first digit is a 0
-
-            if (strlen($phone) != 11 ) { $phone = "invalid"; }       // check if 11 digits
         }
         else
         {
@@ -409,8 +487,9 @@ function check_competitor_exists($class, $sailno, $helm)
     $classid = $db_o->run("SELECT id FROM t_class WHERE classname = ?", array($class) )->fetchColumn();
     if ($classid)
     {
-        $competitorid = $db_o->run("SELECT id FROM t_competitor WHERE classid = ? and sailnum = ? and 
+        $id = $db_o->run("SELECT id FROM t_competitor WHERE classid = ? and sailnum = ? and 
 (helm LIKE '%$helm%' or helm LIKE '%$surname%') ORDER BY createdate DESC LIMIT 1", array($classid, $sailno) )->fetchColumn();
+        if (!empty($id)) { $competitorid = $id; }
     }
     return $competitorid;
 }
@@ -459,4 +538,5 @@ function check_entry_open($start, $end)
 
     return $status;
 }
+
 

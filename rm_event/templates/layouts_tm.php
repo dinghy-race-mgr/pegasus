@@ -387,15 +387,16 @@ function entries_body ($params = array())
         $notes_htm = "";
         if ($entry['consents_reqd'] > 0)
         {
+            $entry['consents_reqd'] == 1 ? $num_reqd = "reqd" : $num_reqd = $entry['consents_reqd']." required";
             $notes_htm.= <<<EOT
             <a class="btn btn-sm btn-secondary" href="rm_event.php?page=juniorconsentform&eid={$params['eid']}&recordid={$entry['id']}" role="button">
-            <span class="fs-6">Junior Consent Form ({$entry['consents_reqd']} reqd)</span>
+            <span class="fs-6">Parental Consent ($num_reqd)</span>
             </a>
 EOT;
         }
         else
         {
-            if ($entry['junior']) { $notes_htm.= "<span class='fs-6'>parental consent provided</span>"; }
+            if ($entry['junior']) { $notes_htm.= "<span class='fs-6'>Parental Consent (<i class=\"bi-check2-square\" style=\"font-size: 1rem; color: darkgreen;\"></i>)</span>"; }
         }
 
         // add row
@@ -405,7 +406,7 @@ EOT;
             <td>{$entry['b-sailno']}</td>
             <td>$people</td>
             <td>$clubs</td>
-            <td>{$entry['b-division']}</td>
+            <!-- td>{$entry['b-division']}</td -->
             <td width="20%">$notes_htm</td>
         </tr>
 EOT;
@@ -465,7 +466,7 @@ EOT;
                         <caption class="fs-4">List of Entries</caption>
                         <thead>
                             <tr>
-                                <td>Class</td><td>Sail Number</td><td>Team</td><td>Club</td><td>Division</td><td>Notes</td>
+                                <td>Class</td><td>Sail Number</td><td>Team</td><td>Club</td><!--td>Division</td--><td>Notes</td>
                             </tr>
                         </thead>
                         <tbody class="table-group-divider">
@@ -489,14 +490,14 @@ function entry_status_before_open($params = array())
     {
         if (strtotime($params['entry-end']) > strtotime($params['entry-start']))
         {
-            $closetxt = " . . . and closes ".date("D jS F", strtotime($params['entry-end']));
+            $closetxt = " . . . and close on ".date("D jS F", strtotime($params['entry-end']));
         }
         else
         {
             $closetxt = "";
         }
     }
-    $txt = "<b>Entries not available yet &hellip;</b> <br>opens on $opendate $closetxt";
+    $txt = "<b>Entries not open yet &hellip;</b> <br><span class='fs-5'>will open on $opendate $closetxt</span>";
 
 
     $htm = <<<EOT
@@ -532,7 +533,7 @@ function entry_status_open($params = array())
     <div class="alert alert-info" role="alert">
         <div class="row">
             <div class="col-8">$entry_btns</div>
-            <div class="col-4 fs-3">
+            <div class="col-4 fs-4">
                 <p class="text-end">{$params['entry-count']} entries&hellip;<br>
                 <p class="text-end fs-6">$waiting_txt</p>
             </div>                       
@@ -549,11 +550,11 @@ function entry_status_after_close($params = array())
 
     if ($params['entry-reqd'])
     {
-        $txt.= "<p class='text-danger'>An entry is required for this event - our apologies but we cannot accept entries on the day of the event</p>";
+        $txt.= "<p class='text-danger'>An entry is required for this event - apologies but we cannot accept entries on the day of the event</p>";
     }
     else
     {
-        $txt.= "<p>Please just enter on the day at reception</p>";
+        $txt.= "<p>Please enter on the day at reception</p>";
     }
 
     // get waiting list information
@@ -564,7 +565,7 @@ function entry_status_after_close($params = array())
     <div class="alert alert-info fs-3" role="alert">
         <div class="row">
             <div class="col-8 fs-4">$txt</div>
-            <div class="col-4 fs-3">
+            <div class="col-4 fs-4">
                 <p class="text-end">{entry-count} entries&hellip;<br>
                 <p class="text-end fs-6">$waiting_txt</p>
             </div>
@@ -613,84 +614,16 @@ EOT;
 
 function newentry_body ($params = array())
 {
-    // add class specific fleet categories if defined in t_class
-    $fleets_select_htm = "";
-    $fleets_validation_js = "";
-    if (!empty($params['inc_fleets']))
-    {
-        $fleets = explode(",", $params['inc_fleets']);
-        $fleets_opt = "";
-        foreach ($fleets as $fleet)
-        {
-            $uc_fleet = ucwords($fleet);
-            $fleets_opt.= "<option value='$fleet'>$uc_fleet</span></option>";
-        }
-
-        $fleets_select_htm.= <<<EOT
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="form-floating mb-3">      
-                    <select class="form-select" id="category" name="category" aria-label="fleet category selection">
-                        <option>- pick one -</option>
-                        $fleets_opt
-                        <option value="unknown">not sure &hellip;</option>
-                    </select>
-                    <label for="floatingSelect" ><span class="label-style">fleet category</span></label>
-                    <div class="invalid-feedback">pick a fleet from the list</div>
-                </div>
-            </div>
-        </div>
-EOT;
-
-        // configure validation
-        $fleets_validation_js.= <<<EOT
-        let categoryInput = document.getElementById("category");
-        if (categoryInput.value === "- pick one -") {categoryInput.setCustomValidity("error");} else {categoryInput.setCustomValidity("");}
-EOT;
-    }
-
-    // add crew name field if not a singlehander - from t_class
-    $crewname_input_htm = "";
-    $crewname_validation_js = "";
-    if ($params['inc_crew'])
-    {
-        $crewname_input_htm.= <<<EOT
-        <!-- crew section -->
-        <div class="form-section w-100 p-1 mb-3" >&nbsp;&nbsp;Crew &hellip;</div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="crew-name" name="crew-name" placeholder="crew name &hellip;" value="" required>
-                    <label for="floatingInput" class="label-style">Name</label>
-                    <div class="invalid-feedback">enter the crew name (e.g. Ben Ainslie).</div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="crew-age" name="crew-age" placeholder="age if under 18 &hellip;" value="" >
-                    <label for="floatingInput" class="label-style">Age (if under 18)</label>
-                </div>
-            </div>
-        </div -->
-EOT;
-        // configure validation
-        $crewname_validation_js.= <<<EOT
-        let crewInput = document.getElementById("crew-name");
-        if (crewInput.value === "") {crewInput.setCustomValidity("error");} else {crewInput.setCustomValidity("");}
-EOT;
-    }
-
-
-    // include specific form for this event - returns instructions, form and validation html/js
+        // include specific form for this event - returns instructions, form and validation html/js
     require_once("include/{$params['form-name']}");
 
-    // insert optional category field and validation
-    $form_htm = str_replace("{{fleets_select_htm}}", $fleets_select_htm, $form_htm);
-    $validation_htm = str_replace("{{fleets_validation_js}}", $fleets_validation_js, $validation_htm);
-
-    // insert optional crewname field and validation
-    $form_htm = str_replace("{{crewname_input_htm}}", $crewname_input_htm, $form_htm);
-    $validation_htm = str_replace("{{crewname_validation_js}}", $crewname_validation_js, $validation_htm);
+//    // insert optional category field and validation
+//    $form_htm = str_replace("{{fleets_select_htm}}", $fleets_select_htm, $form_htm);
+//    $validation_htm = str_replace("{{fleets_validation_js}}", $fleets_validation_js, $validation_htm);
+//
+//    // insert optional crewname field and validation
+//    $form_htm = str_replace("{{crewname_input_htm}}", $crewname_input_htm, $form_htm);
+//    $validation_htm = str_replace("{{crewname_validation_js}}", $crewname_validation_js, $validation_htm);
 
 
     // standard entry form layout
@@ -735,7 +668,7 @@ EOT;
 
 function documents_body ($params = array())
 {
-    $today = date("Y-m-d");
+    $today = date("Y-m-d H:i:s");
     $format_icon = array(
         "pdf"      => "bi-filetype-pdf",
         "word"     => "bi-filetype-doc",
@@ -1101,4 +1034,40 @@ EOT;
     }
 
     return $htm;
+}
+
+function fatal_error_body($params = array())
+{
+    if ($params['contact-link'])
+    {
+        $contact_htm = <<<EOT
+        <p>Please report the problem to our event cordinator.</p>
+        <a class="btn btn-primary btn-lg" href = "{$params['contact-link']}" type="button">Report Problem &hellip;</a>
+EOT;
+    }
+
+    $html = <<<EOT
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand text-info" href="rm_event.php?page=list">raceManager EVENTS</a>
+            <ul class="nav navbar-nav text-info fs-4 navbar-right"><li>FATAL SYSTEM ERROR</li></ul>
+        </div>
+    </nav>
+</header>
+<main class="container text-center nav-margin" >
+<div class="row">
+    <div class="col">
+        <div class="p-5 text-bg-dark border rounded-3">
+            <p class="fs-3 text-warning fw-bold">Oops sorry&nbsp;.&nbsp;.&nbsp;. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;we have an unexpected error</p>
+            <p class="fs-4">{error}</p>
+            $contact_htm
+            <hr>
+            <p class="text-info text-end">Error Details --- script: {script} &nbsp;&nbsp; function: {function} &nbsp;&nbsp; line: {line}</p>
+        </div>
+    </div>
+</div>
+</main>
+EOT;
+    return $html;
 }

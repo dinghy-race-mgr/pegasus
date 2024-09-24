@@ -1,9 +1,12 @@
 <?php
+
+$form_name = "junior_consent_fm.php";     // important this matches the form-file field in e_form
+
 $instructions_htm = "";
 if (!empty($params['instructions']))   // content defined in table e-form
 {
     $instructions_htm = <<<EOT
-<div class="offset-md-2 col-md-8 mt-3">
+<div class="mt-3">
     <div class="alert alert-warning alert-dismissible fade show fs-6" role="alert">
         {$params['instructions']}.
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -14,10 +17,14 @@ EOT;
 
 $fields_bufr = <<<EOT
 <div class="form-section w-100 p-1 mb-3" >&nbsp;&nbsp;Parent / Guardian Information &hellip;</div>
-<div class="form-floating mb-3">
-    <input type="text" class="form-control" id="p-name" name="p-name" placeholder="parent name &hellip;" value="" required autofocus />
-    <label for="floatingInput" class="label-style">Parent Name<span class="field-reqd"> *</span></label>
-    <div class="invalid-feedback">enter name of parent/guardian</div>
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="p-name" name="p-name" placeholder="parent name &hellip;" value="" required autofocus />
+            <label for="floatingInput" class="label-style">Parent Name<span class="field-reqd"> *</span></label>
+            <div class="invalid-feedback">enter name of parent/guardian</div>
+        </div>
+    </div>
 </div>
 
 <div class="row mb-3">
@@ -39,7 +46,7 @@ $fields_bufr = <<<EOT
 
 <div class="form-floating mb-3">
     <input type="text" class="form-control" id="p-address" name="p-address" placeholder="parent address &hellip;" value="" required />
-    <label for="floatingInput" class="label-style">parent address<span class="field-reqd"> *</span></label>
+    <label for="floatingInput" class="label-style">Parent Address<span class="field-reqd"> *</span></label>
     <div class="invalid-feedback">enter parent home address</div>
 </div>
 
@@ -139,8 +146,8 @@ $form_htm = <<<EOT
 <!-- form details -->
 <div class="container mt-1">
     <div class="row">
-        <div class="offset-md-2 col-md-8">
-            <form id="juniorconsentForm" action="rm_event_sc.php?eid={$params['eventid']}&entryid={$params['entryid']}&pagestate=juniorconsent&mode={$params['form-mode']}"
+        <div class="">
+            <form id="juniorconsentForm" action="rm_event_sc.php?eid={$params['eventid']}&entryid={$params['entryid']}&pagestate=juniorconsent&formname=$form_name&mode={$params['form-mode']}"
                   method="post" role="form" autocomplete="off" novalidate>
                   $fields_bufr
                   $buttons_bufr
@@ -188,7 +195,7 @@ $validation_htm = <<<EOT
         
         // Custom validation for child dob field
         let cdobInput = document.getElementById("c-dob");
-        let cdobRegex = /^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([1][26]|[2468][048]|[3579][26])00))))$/;
+        let cdobRegex = /^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/;
         if (!cdobRegex.test(cdobInput.value)) {cdobInput.setCustomValidity("error");} else {cdobInput.setCustomValidity("");}
         
         // Custom validation for confident declaration field

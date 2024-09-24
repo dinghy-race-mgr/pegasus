@@ -89,21 +89,56 @@ class DB
         $fields_str = rtrim($fields_str, ", ");
 
         $keys_str = "";
+//        $val_str = "";
         foreach ($params as $k=>$v)
         {
             $keys_str.= ":$k, ";
+//            $val_str.= "$v, ";
         }
         $keys_str = rtrim($keys_str, ", ");
 
+//        $sql0 = "INSERT INTO $table ($fields_str) VALUES ($val_str) ";
         $sql = "INSERT INTO $table ($fields_str) VALUES ($keys_str) ";
-        echo "<pre>$sql</pre>";
+//        echo "<pre>$sql0</pre>";
+//        echo "<pre>$sql</pre>";
         //echo "<pre>".print_r($params,true)."</pre>";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
         $insertid = $this->pdo->lastInsertId();
+//        echo "<br>";
+//        $stmt->debugDumpParams();
+//        exit("stopping in INSERT");
+        return $insertid;
+    }
+
+    // this is a debug function to allow viewing the actual insert query
+    public function insert2( $table, $args )
+    {
+        //Make sure the array isn't empty
+        if( empty( $args ) ) { return false; }
+
+        $query = "INSERT INTO ". $table;
+        $fields = array();
+        $values = array();
+        foreach( $args as $field => $value )
+        {
+            $fields[] = "`".$field."`";
+            $values[] = "'".addslashes($value)."'";
+        }
+        $fields = ' (' . implode(', ', $fields) . ')';
+        $values = '('. implode(', ', $values) .')';
+
+        $query .= $fields .' VALUES '. $values;
+        $params = array();
+
+        echo "<pre>INSERT: $query</pre>";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($params);
+        $insertid = $this->pdo->lastInsertId();
         //echo "<br>";
         //$stmt->debugDumpParams();
+        //exit("stopping in INSERT2");
         return $insertid;
     }
 }

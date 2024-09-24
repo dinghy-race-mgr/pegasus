@@ -14,6 +14,7 @@ require_once("include/rm_event_lib.php");
 require_once("classes/pages.php");
 require_once("classes/template.php");
 require_once("classes/db.php");
+require_once("../common/lib/rm_lib.php");
 
 // initialise application
 $cfg = set_config("config.ini", array("rm_event"), true);   // FIXME location of ini file
