@@ -56,53 +56,11 @@ if ($pagestate == "newentry")
 
     if(!empty($_REQUEST['helm-email'])) { $entry['h-email'] = $_REQUEST['helm-email']; }
     if(!empty($_REQUEST['ph-mobile']))  { $entry['h-phone'] = get_phone($_REQUEST['ph-mobile']); }
-    if(!empty($_REQUEST['ph-emer']))    { $entry['h-emergency'] = get_phone($_REQUEST['ph-emer']); }
+    if(!empty($_REQUEST['ph-emer']))    { $entry['h-emergency'] = $_REQUEST['ph-emer']; }
 
     if(!empty($_REQUEST['crew-name']))  { $entry['c-name'] = get_name($_REQUEST['crew-name']); }
     if(!empty($_REQUEST['crew-age']))   { $entry['c-age'] = $_REQUEST['crew-age']; }
     if(!empty($_REQUEST['c-gender']))   { $entry['c-gender'] = $_REQUEST['c-gender']; }
-
-
-//    empty($_REQUEST['sailnumber']) ? $entry['b-sailno'] = "MISSING" : $entry['b-sailno'] = $_REQUEST['sailnumber'];
-//    empty($_REQUEST['bownumber'])  ? $entry['b-altno'] = "" : $entry['b-altno'] = $_REQUEST['bownumber'];
-//    empty($_REQUEST['boatname'])   ? $entry['b-name'] = "" : $entry['b-name'] = $_REQUEST['boatname'];
-//    empty($_REQUEST['category'])   ? $entry['b-division'] = "" : $entry['b-division'] = get_category($_REQUEST['category']);
-//
-//    empty($_REQUEST['helm-name'])  ? $entry['h-name'] = "MISSING" : $entry['h-name'] = $_REQUEST['helm-name'];
-//    empty($_REQUEST['club'])       ? $entry['h-club'] = "" : $entry['h-club'] = $_REQUEST['club'];
-//    empty($_REQUEST['helm-age'])   ? $entry['h-age'] = "" : $entry['h-age'] = $_REQUEST['helm-age'];
-//    empty($_REQUEST['h-gender'])   ? $entry['h-gender'] = "" : $entry['h-gender'] = $_REQUEST['h-gender'];
-//
-//    empty($_REQUEST['helm-email']) ? $entry['h-email'] = "" : $entry['h-email'] = $_REQUEST['helm-email'];
-//    empty($_REQUEST['ph-mobile'])  ? $entry['h-phone'] = "" : $entry['h-phone'] = $_REQUEST['ph-mobile'];
-//    empty($_REQUEST['ph-emer'])    ? $entry['h-emergency'] = "" : $entry['h-emergency'] = $_REQUEST['ph-emer'];
-//
-//    empty($_REQUEST['crew-name'])  ? $entry['c-name'] = "" : $entry['c-name'] = $_REQUEST['crew-name'];
-//    empty($_REQUEST['crew-age'])   ? $entry['c-age'] = "" : $entry['c-age'] = $_REQUEST['crew-age'];
-//    empty($_REQUEST['c-gender'])   ? $entry['c-gender'] = "" : $entry['c-gender'] = $_REQUEST['c-gender'];
-
-    // set up entry array
-//    $entry = array(
-//        "eid"          => $eid,
-//        "b-class"      => get_class_name($_REQUEST['class']),
-//        "b-sailno"     => $_REQUEST['sailnumber'],
-//        "b-altno"      => $_REQUEST['bownumber'],
-//        "b-name"       => $_REQUEST['boatname'],
-//        "b-division"   => get_category($_REQUEST['category']),
-//        "b-pn"         => get_pn ($event['scoring-type'],$event['handicap-type'], $_REQUEST['class']),
-//       "h-name"       => get_name($_REQUEST['helm-name']),
-//        "h-club"       => get_club($_REQUEST['club'], $cfg['club_std']),
-//        "h-age"        => $_REQUEST['helm-age'],
-//        "h-gender"     => $_REQUEST['h-gender'],
-//        "h-email"      => $_REQUEST['helm-email'],
-//        "h-phone"      => get_phone($_REQUEST['ph-mobile']),
-//        "h-emergency"  => get_phone($_REQUEST['ph-emer']),
-//        "c-name"       => get_name($_REQUEST['crew-name']),
-//        "c-age"        => $_REQUEST['crew-age'],
-//        "c-gender"     => "",
-//        "e-racemanager"=> check_competitor_exists($_REQUEST['class'], $_REQUEST['sailnumber'], $_REQUEST['helm-name']),
-//        "updby"        => "online entry"
-//    );
 
     // check if boat is known to raceManager
     $entry['e-racemanager'] = check_competitor_exists($_REQUEST['class'], $_REQUEST['sailnumber'], $_REQUEST['helm-name']);

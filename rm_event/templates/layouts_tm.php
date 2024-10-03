@@ -75,7 +75,7 @@ function navbar ($params = array())
             if ($params['active'] == $option['page'])
             {
                 $htm_options.=<<<EOT
-                <li class="nav-item px-4 lead active active-option">
+                <li class="nav-item px-2 lead active active-option">
                     <a class="nav-link text-black fw-bold" href="{$option['script']}{$params['eid']}">{$option['label']}&nbsp;$inc_count</a>
                 </li>
 EOT;
@@ -83,7 +83,7 @@ EOT;
             else
             {
                 $htm_options.=<<<EOT
-                <li class="nav-item px-4 lead">
+                <li class="nav-item px-2 lead">
                     <a class="nav-link" href="{$option['script']}{$params['eid']}">{$option['label']}&nbsp;$inc_count</a>
                 </li>
 EOT;
@@ -138,9 +138,7 @@ EOT;
             </div>
 
             <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav me-auto mb-4 mb-md-0 flex-nowrap" >
-                    $htm_options
-                </ul>
+                <ul class="navbar-nav me-auto mb-md-0 flex-nowrap" >$htm_options</ul>
                 $htm_years
                 <span class="navbar-text">
                     <a class="btn btn-info btn-lg dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Contact SYC</a>
@@ -614,17 +612,8 @@ EOT;
 
 function newentry_body ($params = array())
 {
-        // include specific form for this event - returns instructions, form and validation html/js
+    // include specific form for this event - defines instructions, form and validation html/js
     require_once("include/{$params['form-name']}");
-
-//    // insert optional category field and validation
-//    $form_htm = str_replace("{{fleets_select_htm}}", $fleets_select_htm, $form_htm);
-//    $validation_htm = str_replace("{{fleets_validation_js}}", $fleets_validation_js, $validation_htm);
-//
-//    // insert optional crewname field and validation
-//    $form_htm = str_replace("{{crewname_input_htm}}", $crewname_input_htm, $form_htm);
-//    $validation_htm = str_replace("{{crewname_validation_js}}", $crewname_validation_js, $validation_htm);
-
 
     // standard entry form layout
     $htm = <<<EOT

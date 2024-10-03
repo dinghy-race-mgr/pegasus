@@ -4,6 +4,7 @@
 :root {
     --primary: #2c3e50;
     --darkblue: #2c4c7c;
+    --label: #00284d;
     --darkred: #8b0000;
     --darkgrey: #a9a9a9;
     --red: #c20000;
@@ -36,9 +37,9 @@
 .active-option {background-color: var(--lightblue); font-weight: 900;}
 
 .form-section {background-color: rgba(24,88,131,0.8); color: var(--white); font-size: 1.2em; height: 40px;}
-.field-reqd {color: red; font-weight: 400;}
+.field-reqd {color: red; font-size: 0.7em;}
 .readonly-style {font-weight: bold; font-size: larger;}
-.label-style { color: var(--greyblue); }
+.label-style { color: var(--label); }
 
 /* checkbox styling */
 input[type="checkbox"] { width: 1.5em; height: 1.5em; border: solid 2px dodgerblue; }
