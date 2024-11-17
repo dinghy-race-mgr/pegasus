@@ -59,7 +59,6 @@ function navbar ($params = array())
     $htm_options = "";
     if ($params['page'] != "list")
     {
-
         foreach ($params['options'] as $option)
         {
             // don't include page if event is complete unless its the results page
@@ -562,7 +561,7 @@ function entry_status_after_close($params = array())
     $htm = <<<EOT
     <div class="alert alert-info fs-3" role="alert">
         <div class="row">
-            <div class="col-8 fs-4">$txt</div>
+            <div class="col-8 fs-6">$txt</div>
             <div class="col-4 fs-4">
                 <p class="text-end">{entry-count} entries&hellip;<br>
                 <p class="text-end fs-6">$waiting_txt</p>
@@ -632,7 +631,8 @@ EOT;
     return $htm;
 }
 
-function juniorconsent_body ($params = array())
+function
+juniorconsent_body ($params = array())
 {
     // include specific form for this event - returns instructions, form and validation html/js
     require_once("include/{$params['form-name']}");
@@ -711,12 +711,12 @@ function documents_body ($params = array())
 
             if (empty($document['filename']) or empty($document['file-loc']))
             {
-                $download = "will be available shortly ";
+                $link = "available soon ";
             }
             else
             {
                 $icon = $format_icon[$document['format']];
-                $document['format'] == "htm" or $document['format'] == "pdf" ? $label = "view" : $label = "download";
+                ($document['format'] == "htm" or $document['format'] == "pdf") ? $label = "view" : $label = "download";
                 $filename = basename($document['filename']);
                 $label == "download" ? $download = "download =\"$filename\"" : $download = "";
 

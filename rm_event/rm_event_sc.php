@@ -17,10 +17,6 @@ require_once("classes/db.php");
 $cfg = set_config("config.ini", array("rm_event"), true);   // FIXME location of ini file
 $cfg['logfile'] = str_replace("<date>", date("Y"), $cfg['logfile']);
 
-
-//echo "<pre>".print_r($_REQUEST,true)."</pre>";
-//exit();
-
 // get required arguments
 $eid       = $_REQUEST['eid'];
 $pagestate = $_REQUEST['pagestate'];
@@ -63,10 +59,12 @@ if ($pagestate == "newentry")
     if(!empty($_REQUEST['c-gender']))   { $entry['c-gender'] = $_REQUEST['c-gender']; }
 
     // check if boat is known to raceManager
-    $entry['e-racemanager'] = check_competitor_exists($_REQUEST['class'], $_REQUEST['sailnumber'], $_REQUEST['helm-name']);
+    $class = get_class_detail($_REQUEST['class']);
+    $entry['e-racemanager'] = check_competitor_exists($class['id'], $_REQUEST['sailnumber'], $_REQUEST['helm-name']);
 
     // get boat handicap from t_class
-    $entry['b-pn'] = get_pn ($event['scoring-type'],$event['handicap-type'], $_REQUEST['class']);
+
+    $entry['b-pn'] = get_pn ($event['scoring-type'], $event['handicap-type'], $_REQUEST['class']);
 
     // if personal handicap racing get pn from t_competitor [0 means not required or not found]
     $entry['b-personalpn'] = get_personal_pn ($entry['e-racemanager'], $event['handicap-type']);
@@ -89,8 +87,10 @@ if ($pagestate == "newentry")
 
     // insert record
     $insertid = $db_o->insert("e_entry", $entry );
-    // $insertid = $db_o->insert2("e_entry", $entry );
+//    $insertid = $db_o->insert2("e_entry", $entry );
     $insertid ? $status = "success": $status = "fail";
+//    echo "<pre>INSERT [$status]: ".print_r($entry,true)."</pre>";
+//    exit();
 
     // go directly to parental consent form if a junior event
     if ($junior_chk and $_REQUEST['formname'] == "junior_class_open_fm.php")    // go directly to parental consent form
@@ -102,8 +102,6 @@ if ($pagestate == "newentry")
         header("Location: rm_event.php?page=entries&eid=$eid&action=$action&status=$status&recordid=$insertid&junior=$junior_chk&waiting=$waiting_chk");
     }
 
-    // return to display
-    // header("Location: rm_event.php?page=entries&eid=$eid&action=$action&status=$status&recordid=$insertid&junior=$junior_chk&waiting=$waiting_chk");
     exit();
 }
 elseif ($pagestate == "updentry")   // FIXME need to do the update variations
@@ -120,10 +118,6 @@ elseif ($pagestate == "updentry")   // FIXME need to do the update variations
 }
 elseif ($pagestate == "juniorconsent")
 {
-//    echo "<pre>".print_r($_REQUEST,true)."</pre>";
-//    exit("stopping");
-
-
     $_REQUEST['c-treatment'] == "on" ? $treatment = "YES" : $treatment = "NO";
     $_REQUEST['c-confident'] == "on" ? $confident = "YES" : $confident = "NO";
 
@@ -137,7 +131,6 @@ elseif ($pagestate == "juniorconsent")
         "parent_address"     => $_REQUEST['p-address'],
         "alt_contact_detail" => $_REQUEST['p-altcontact'],
         "child_name"         => $_REQUEST['c-name'],
-        //"child_dob"          => $_REQUEST['c-dob'],
         "child_dob"          => date ("Y-m-d", strtotime($_REQUEST['c-dob'])),
         "medical"            => $_REQUEST['c-medical'],
         "dietary"            => $_REQUEST['c-dietary'],

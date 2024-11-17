@@ -231,6 +231,7 @@ class RACE_RESULT
                                    `helm`, `crew`, `club`, `lap`, `etime`, `ctime`, `atime`, `code`, `penalty`,
                                    `points`, `declaration`, `note`, `updby`) VALUES
 EOT;
+        // FIXME need to fix quotes in names (D'arcy should be D''arcy)
         foreach($select as $key=>$row)
         {
             $racetype = $this->fleet["{$row['fleet']}"]['scoring'];

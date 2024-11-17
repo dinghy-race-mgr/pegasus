@@ -66,13 +66,15 @@ if ($params['inc_crew']) {
             </div>
             <div class="col-md-3">
                 <div class="form-floating">      
-                    <input class="form-control" list="genderlist" id="c-gender" name="c-gender" placeholder="" value="">
+                    <input class="form-control" list="genderlist" id="c-gender" name="c-gender" 
+                           pattern="female|male|other" placeholder="" value="">
                     <datalist id="genderlist">
                       <option value="female">
                       <option value="male">
                       <option value="other">
                     </datalist>
                     <label for="c-gender" class="form-label">Gender</label>
+                    <div class="invalid-feedback">female/male/other - or leave blank.</div>
                 </div>
             </div>
         </div>
@@ -148,13 +150,15 @@ $fleets_select_htm
     </div>
     <div class="col-md-3">
         <div class="form-floating">      
-            <input class="form-control" list="genderlist" id="h-gender" name="h-gender" placeholder="" value="">
+            <input class="form-control" list="genderlist" id="h-gender" name="h-gender" 
+                   pattern="female|male|other"  placeholder="" value="">
             <datalist id="genderlist">
               <option value="female">
               <option value="male">
               <option value="other">
             </datalist>
             <label for="h-gender" class="form-label">Gender</label>
+            <div class="invalid-feedback">female/male/other - or leave blank.</div>
         </div>
     </div>
 </div>

@@ -4,6 +4,8 @@
  *
  */
 
+// could treat fields as blocks - e.g. Helm Identification Block, Helm Contact block - and make sure they are responsive to screen size
+
 function form_section_header($title)
 {
     $htm = <<<EOT

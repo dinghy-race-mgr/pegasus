@@ -71,14 +71,8 @@
 		<span class="caret"></span>
 	</button>
 	<ul class="dropdown-menu">
-				{BEGIN editselected_link}
-		<li class="massButton{$id} disabled"><a href="#" {$editselectedlink_attrs} {$editselectedlink_span} >Edit selected</a></li>
-		{END editselected_link}
-
-				{BEGIN exportselected_link}
-		<li class="massButton{$id} disabled"><a href="#" {$exportselectedlink_attrs} {$exportselectedlink_span} >Export selected</a></li>
-		{END exportselected_link}
 		
+				
 				{BEGIN deleteselected_link}
 		<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
 		{END deleteselected_link}
@@ -101,17 +95,10 @@
 		<li><a {$saveSearchButtonAttrs} id="savedSearches{$id}">Saved searches:</a></li>
 		{END savedSeachesButton}
 		
-				<li role="separator" class="divider"></li>	
-		
 				
-				{BEGIN export_link}
-		<li><a target="_blank" href="t_event_export.php"  {$exportlink_attrs}>Export results</a></li>
-		{END export_link}
-
-				{BEGIN import_link}
-		<li><a href="t_event_import.php?{$crosstable_attrs}"  {$importlink_attrs}>Import</a></li>
-		{END import_link}
-
+				
+		
+		
 				
 	</ul>  
 </div>
@@ -279,13 +266,7 @@
 		{BEGIN deleteselected_link}
 	<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
 	{END deleteselected_link}
-			{BEGIN saveall_link}
-		<button type="button" class="btn btn-primary" {$savealllink_attrs} {$savealllink_span}>Save all</button>
-	{END saveall_link}
-	{BEGIN cancelall_link}
-		<button type="button" class="btn btn-default" {$cancelalllink_attrs} {$cancelalllink_span}>Cancel</button>
-	{END cancelall_link}
-</span>
+		</span>
 
 {END record_controls_block}
 
@@ -315,97 +296,6 @@
 </span>
 {END details_found}
 
-
-{BEGIN print_friendly}
-<span {$printpanel_hiddenattr} data-pageid="{$pageid}" data-brick="printpanel" class="bs-printpanel" id="printpanelblock{$id}">
-	<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" title="Print-friendly page">
-		<span class="glyphicon glyphicon-print" ></span>
-		<span class="caret"></span>
-    </button>
-	<ul class="dropdown-menu pull-right" >
-		<li>
-			<div class="container-fluid" id="print_friendly_scope{$id}">
-				<div class="row">
-					<div class="col-md-4">Scope:</div>
-										{BEGIN print_friendly_all}
-					<div class="col-md-8">
-						<label for="printAll{$id}">
-							<input type="radio" id="printAll{$id}" data-href="t_event_print.php?all=1&amp;{$crosstable_attrs}" name="printScope">
-							Print all pages
-						</label>
-					</div>
-					{END print_friendly_all}
-				</div>
-				<div class="row">
-					<div class="col-md-4">&nbsp;</div>
-					<div class="col-md-8">
-						<label for="printPage{$id}">
-							<input type="radio" id="printPage{$id}" data-href="t_event_print.php?{$crosstable_attrs}" name="printScope" checked>
-							Print this page
-						</label>
-					</div>
-				</div>
-								<div class="row">
-					<div class="col-md-4">&nbsp;</div>
-					<div class="col-md-8">
-						<label for="printSelection{$id}" style="color: gray;">
-							<input type="radio" id="printSelection{$id}" name="printScope" disabled="disabled">
-							Print selected
-						</label>
-					</div>
-				</div>
-			</div>
-		</li>
-		<li class="divider" role="separator"></li>
-
-				<li>			
-		{BEGIN print_details}
-			<div class="rnr-printdetails">
-				<label for="printDetailsToggler{$id}">
-					<input type="checkbox" id="printDetailsToggler{$id}">
-					Print details
-				</label>
-				<div class="rnr-printdetailstables"  id="printdetailstables{$id}" style="display:none;">
-					{BEGIN print_details_t_eventduty}
-						
-							<div class="rnr-printdetialstable">
-								<label for="printDetailst_eventduty{$id}">
-									<input type="checkbox" value="t_eventduty" id="printDetailst_eventduty{$id}" checked>
-									Duties
-								</label>
-							</div>
-					{END print_details_t_eventduty}
-					{BEGIN print_details_t_tide}
-						
-							<div class="rnr-printdetialstable">
-								<label for="printDetailst_tide{$id}">
-									<input type="checkbox" value="t_tide" id="printDetailst_tide{$id}" checked>
-									Tide Data
-								</label>
-							</div>
-					{END print_details_t_tide}
-				</div>
-			</div>
-		{END print_details}
-		</li>
-		<li class="divider" role="separator"></li>
-
-				<li>	
-			<div class="rnr-printdetails">
-				<label for="printPerPage{$id}">
-											Records Per Page:
-				</label>
-				<input type="number" id="printPerPage{$id}" value="{$print_recspp}" class="rnr-printrecspp">		
-			</div>
-		</li>
-		<li class="divider" role="separator"></li>
-		<li class="rnr-printbutton">				
-			<button type="button" class="btn btn-primary" id="print_friendly_button{$id}" >Print</button>			
-		</li>
-	</ul>	
-</span>
-
-{END print_friendly}
 
 
 {BEGIN field_hide_panel}
@@ -900,12 +790,7 @@
 	{END edit_link}
 	{END edit_column}
 
-		{BEGIN inlineedit_column}
-	{BEGIN inlineedit_link}
-			<a class="glyphicon glyphicon-edit" {$inlineeditlink_attrs} title="Inline Edit"></a>
-	{END inlineedit_link}
-	{END inlineedit_column}
-	
+		
 	<span data-hidden {$ieditbuttonsholder_attrs}></span>
 
 		{BEGIN copy_column}

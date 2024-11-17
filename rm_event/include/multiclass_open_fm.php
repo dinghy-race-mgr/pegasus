@@ -9,9 +9,9 @@ if (!empty($params['instructions']))
 {
     $instructions_htm = <<<EOT
 <!-- instructions -->
-<div class="mt-3">
+<div class="">
     <div class="alert alert-warning alert-dismissible fade show fs-6 " role="alert">
-        {$params['instructions']}.
+        {$params['instructions']}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 </div>
@@ -50,7 +50,7 @@ else                                     // create select field with supplied cl
             <datalist id="classopts">$class_options</datalist>
             <label for="class" class="label-style">Boat Class $required</label>                       
             <div class="invalid-feedback">please pick your boat class (or add missing class name)</div> 
-            <div class="text-primary mx-5">type to search &hellip;</div>          
+            <div class="text-primary mx-5">start typing then pick from suggestions &hellip; (or add new class)</div>          
         </div>                  
     </div>      
 EOT;
@@ -107,13 +107,15 @@ $fields_bufr = <<<EOT
     </div>
     <div class="col-md-3">
         <div class="form-floating">                  
-            <input class="form-control" list="genderlist" id="h-gender" name="h-gender" placeholder="" value="" />
+            <input class="form-control" list="genderlist" id="h-gender" name="h-gender" 
+                   pattern="female|male|other" placeholder="" value="" />
             <datalist id="genderlist">
               <option value="female">
               <option value="male">
               <option value="other">
             </datalist>
             <label for="h-gender" class="label-style">Gender</label>
+            <div class="invalid-feedback">female/male/other - or leave blank.</div>
         </div>
     </div>
 </div>
@@ -122,15 +124,15 @@ $fields_bufr = <<<EOT
     <div class="col-md-6">
         <div class="form-floating">           
             <input type="text" class="form-control" id="ph-mobile" name="ph-mobile" pattern="[0-9]+" minlength="9" maxlength="11" placeholder="" value="" required/>
-            <label for="floatingInput" class="label-style">Contact Phone</label>
+            <label for="floatingInput" class="label-style">Contact Phone $required</label>
             <div class="invalid-feedback">enter phone number (e.g. 07804555666)</div>
             <div class="text-primary mx-5">9 to 11 digits no spaces &hellip;</div> 
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-floating">           
-            <input type="email" class="form-control" id="helm-email" name="helm-email"  placeholder="" value="" >
-            <label for="floatingInput" class="label-style">Contact Email</label>
+            <input type="email" class="form-control" id="helm-email" name="helm-email"  placeholder="" value="" required>
+            <label for="floatingInput" class="label-style">Contact Email $required</label>
             <div class="invalid-feedback">enter valid email address (e.g. ben@gmail.com)</div>
         </div>
     </div>
@@ -154,13 +156,15 @@ $fields_bufr = <<<EOT
     </div>
     <div class="col-md-3">
         <div class="form-floating">                 
-            <input class="form-control" list="genderlist" id="c-gender" name="c-gender" placeholder="" value="">
+            <input class="form-control" list="genderlist" id="c-gender" name="c-gender" 
+                   pattern="female|male|other" placeholder="" value="">
             <datalist id="genderlist">
               <option value="female">
               <option value="male">
               <option value="other">
             </datalist>
             <label for="h-gender" class="label-style">Gender</label>
+            <div class="invalid-feedback">female/male/other - or leave blank.</div>
         </div>
     </div>
 </div>

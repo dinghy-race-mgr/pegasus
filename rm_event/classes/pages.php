@@ -134,7 +134,7 @@ class PAGES
         }
 
         // get info counts
-        $counts["entries"]   = $db_o->run("SELECT count(*) FROM e_entry WHERE eid=?", array($eid) )->fetchColumn();
+        $counts["entries"]   = $db_o->run("SELECT count(*) FROM e_entry WHERE eid=? and `e-exclude` = 0", array($eid) )->fetchColumn();
         $counts["documents"] = $db_o->run("SELECT count(*) FROM e_document WHERE eid=? and category != 'results'", array($eid) )->fetchColumn();
         $counts["notices"]   = $db_o->run("SELECT count(*) FROM e_notice WHERE eid=?", array($eid) )->fetchColumn();
         $counts["results"]   = $db_o->run("SELECT count(*) FROM e_document WHERE eid=? AND category = 'results'", array($eid) )->fetchColumn();
@@ -208,6 +208,10 @@ class PAGES
 
                     // check if entry_state and construct entry state block
                     $entry_state = check_entry_open($event['entry-start'], $event['entry-end']);  // returns before|after|open
+
+                    // allow users with valid view code to enter anyway
+                    if ($this->cfg['view_status']) { $entry_state = "open"; }
+
                     if ($entry_state == "before")
                     {
                         $fields = array("event-title" => $event['title']);
@@ -220,7 +224,7 @@ class PAGES
                         $params = array("entry-reqd"=>$event['entry-reqd'], "waiting" => $waiting);
                         $entry_status_block = $this->tmpl_o->get_template("entry_status_after_close", $fields, $params);
                     }
-                    else  // entries are open
+                    else  // entry_state is "open"
                     {
                         $fields = array();
                         $params = array("eid" => $eid, "entry-count" => count($entries), "entry-limit" => $event['entry-limit'],

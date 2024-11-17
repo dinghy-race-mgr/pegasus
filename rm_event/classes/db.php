@@ -141,6 +141,18 @@ class DB
         //exit("stopping in INSERT2");
         return $insertid;
     }
+
+    /*
+       Could use try and catch to handle fatal errors
+            try {
+            $rs = $db->prepare('SELECT * FROM foo');
+            $rs->execute();
+            $foo = $rs->fetchAll();
+            } catch (Exception $e) {
+                die("Oh noes! There's an error in the query!");
+                // error logging could go here
+            }
+     */
 }
 
 

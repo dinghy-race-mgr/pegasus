@@ -375,7 +375,7 @@ class DBPHPR
         elseif ($mode =="enter" )
             { $where.= " AND code = 'DUT' "; }
         
-        $query = "SELECT code, short, info, scoringtype, scoring, timing FROM t_code_result WHERE $where ORDER BY rank ASC, code";
+        $query = "SELECT code, short, info, scoringtype, scoring, timing FROM t_code_result WHERE $where ORDER BY `rank` ASC, code";
         $codes = $this->db_get_rows( $query );
         
         $codelist = array();
@@ -429,7 +429,7 @@ class DBPHPR
     
     public function db_getlinks($category)
     {
-        $query = "SELECT label, url, tip, category, rank FROM t_link";
+        $query = "SELECT label, url, tip, category, `rank` FROM t_link";
         if (!empty($category))
         {
             $query.= " WHERE category = '$category'";

@@ -21,6 +21,13 @@ require_once("include/rm_event_fields.php");
 $cfg = set_config("config.ini", array("rm_event"), true);   // FIXME location of ini file
 $cfg['logfile'] = str_replace("_date", date("_Y"), $cfg['logfile']);
 
+// check "view" status - allows user to ignore entry restrictions
+$cfg['view_status'] = false;
+if (!empty($_REQUEST['view']))
+{
+    if ($_REQUEST['view'] == $cfg['view_code']) { $cfg['view_status'] = true; }
+}
+
 $if_o = new PAGES($cfg);
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
 
@@ -42,6 +49,9 @@ else
 {
     empty($_REQUEST['eid']) ? $eid = 0 : $eid = $_REQUEST['eid'];
     empty($_REQUEST['page']) ? $page = "list" : $page = $_REQUEST['page'];
+
+    empty($_REQUEST['view']) ? $view = "0" : $view = $_REQUEST['view'];
+
 }
 empty($_REQUEST['year']) ? $year = date("Y") : $year = $_REQUEST['year'];
 

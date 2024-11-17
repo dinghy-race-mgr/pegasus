@@ -350,6 +350,7 @@ function get_class_list($list)
      * Creates CVS list of eligible classes based on race format
      */
 {
+    // FIXME - sort out unused else statement below - also unused $num_class
     global $db_o;
 
     // get event configuration
@@ -379,7 +380,6 @@ function get_class_list($list)
             //echo "<pre>{$class['classname']} excluded</pre>";
         }
     }
-
     //echo "<pre>{$list['format']} - $i classes<br>$class_list</pre>";exit();
 
     return $class_list;
@@ -394,20 +394,73 @@ function get_category($in_category)
 
 function get_name($in_name)
 {
+    // FIXME create util lib functions capitalising names and titles (separate) - use it here
     $name = ucwords(strtolower($in_name));
     return $name;
+
+    /*
+     function my_ucwords($str, $is_name=false) {
+   // exceptions to standard case conversion
+   if ($is_name) {
+       $all_uppercase = '';
+       $all_lowercase = 'De La|De Las|Der|Van De|Van Der|Vit De|Von|Or|And';
+   } else {
+       // addresses, essay titles ... and anything else
+       $all_uppercase = 'Po|Rr|Se|Sw|Ne|Nw';
+       $all_lowercase = 'A|And|As|By|In|Of|Or|To';
+   }
+   $prefixes = 'Mc';
+   $suffixes = "'S";
+
+   // captialize all first letters
+   $str = preg_replace('/\\b(\\w)/e', 'strtoupper("$1")', strtolower(trim($str)));
+
+   if ($all_uppercase) {
+       // capitalize acronymns and initialisms e.g. PHP
+       $str = preg_replace("/\\b($all_uppercase)\\b/e", 'strtoupper("$1")', $str);
+   }
+   if ($all_lowercase) {
+       // decapitalize short words e.g. and
+       if ($is_name) {
+           // all occurences will be changed to lowercase
+           $str = preg_replace("/\\b($all_lowercase)\\b/e", 'strtolower("$1")', $str);
+       } else {
+           // first and last word will not be changed to lower case (i.e. titles)
+           $str = preg_replace("/(?<=\\W)($all_lowercase)(?=\\W)/e", 'strtolower("$1")', $str);
+       }
+   }
+   if ($prefixes) {
+       // capitalize letter after certain name prefixes e.g 'Mc'
+       $str = preg_replace("/\\b($prefixes)(\\w)/e", '"$1".strtoupper("$2")', $str);
+   }
+   if ($suffixes) {
+       // decapitalize certain word suffixes e.g. 's
+       $str = preg_replace("/(\\w)($suffixes)\\b/e", '"$1".strtolower("$2")', $str);
+   }
+   return $str;
+}
+     */
 }
 
 function get_pn($scoring, $handicap, $class)
 {
+    // FIXME - first argument isn't used anymore
     global $db_o;
 
     $pn = 0;
-    if ( $scoring == 'handicap' or $scoring == 'pursuit' )
+    if ( $handicap )
     {
-        $handicap == "national" ? $field = "nat_py" : $field = "local_py" ;
-        $pn = $db_o->run("SELECT $field FROM t_class WHERE classname = ? and `active` = 1", array($class))->fetchColumn();
-        empty($pn)? $entry['b_pn'] = 0 : $entry['b_pn'] = $pn;
+        if ($handicap == "local")     // using locally derived PNs or another non-RYA source
+        {
+            $field = "local_py";
+        }
+        else                          // get national PY
+        {
+            $field = "nat_py";
+        }
+
+        $val = $db_o->run("SELECT $field FROM t_class WHERE classname = ? and `active` = 1", array($class))->fetchColumn();
+        if ( $val ) { $pn = $val; };
     }
 
     return $pn;
@@ -417,14 +470,11 @@ function get_personal_pn($competitor_id, $handicap_type)
 {
     global $db_o;
 
+    $personal_pn = 0;
     if ( $handicap_type == 'personal' and $competitor_id !== 0)
     {
-        $hcap = $db_o->run("SELECT personal_py FROM t_competitor WHERE `id` = ?", array($competitor_id) )->fetchColumn();
-        empty($hcap) ? $personal_pn = 0 : $personal_pn = $hcap;
-    }
-    else
-    {
-        $personal_pn = 0;
+        $val = $db_o->run("SELECT personal_py FROM t_competitor WHERE `id` = ?", array($competitor_id) )->fetchColumn();
+        if ($val) { $personal_pn = $val; }
     }
 
     return $personal_pn;
@@ -477,20 +527,49 @@ function get_club($in_club, $club_std = "")
     return ucwords($club);
 }
 
-function check_competitor_exists($class, $sailno, $helm)
+function get_class_detail($class_str)
+{
+    global $db_o;
+    $sql = "SELECT id, classname, variant, nat_py, local_py, category, crew, rig, spinnaker, 
+                   engine, keel, fleets, replace(classname,' ','') as class_nospace 
+                   FROM `t_class` WHERE replace(classname,' ','') = ? and active = 1";
+    //echo "<pre>$sql</pre>";
+    $class = $db_o->run($sql, array(str_replace(' ', '', $class_str)))->fetch();
+    if (!$class)
+    {
+        $class = false;
+    }
+    return $class;
+}
+
+function check_competitor_exists($classid, $sailno, $helm)  // FIXME - needs retesting
 {
     global $db_o;
 
     $names = explode(" ", $helm);
     $surname = $names[1];
     $competitorid = 0;
-    $classid = $db_o->run("SELECT id FROM t_class WHERE classname = ?", array($class) )->fetchColumn();
-    if ($classid)
+
+    // check first on class, sailnum and helm
+    $id = $db_o->run("SELECT id FROM t_competitor WHERE classid = ? and sailnum = ?
+                     (helm LIKE '%$helm%' or helm LIKE '%$surname%') 
+                     ORDER BY createdate DESC LIMIT 1", array($classid, $sailno) )->fetchColumn();
+    if (empty($id))
     {
-        $id = $db_o->run("SELECT id FROM t_competitor WHERE classid = ? and sailnum = ? and 
-(helm LIKE '%$helm%' or helm LIKE '%$surname%') ORDER BY createdate DESC LIMIT 1", array($classid, $sailno) )->fetchColumn();
-        if (!empty($id)) { $competitorid = $id; }
+        // check if we can find just a match on just class and helm
+        $id = $db_o->run("SELECT id FROM t_competitor WHERE classid = ? 
+                     (helm LIKE '%$helm%' or helm LIKE '%$surname%') 
+                     ORDER BY createdate DESC LIMIT 1", array($classid, $sailno) )->fetchColumn();
+        if (!empty($id))
+        {
+            $competitor['id'] = $id;
+        }
     }
+    else
+    {
+        $competitorid = $id;
+    }
+
     return $competitorid;
 }
 
@@ -522,7 +601,7 @@ function check_junior_consent($helm_age, $crew_age)
 
 function check_entry_open($start, $end)
 {
-    $today = date ("Y-m-d");
+    $today = date ("Y-m-d H:i");
     if (strtotime($today) < strtotime($start))
     {
         $status = "before";

@@ -2,7 +2,6 @@
 <html  {$html_attrs}>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>{$pagetitle}</title>
 
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -13,255 +12,156 @@
 		{BEGIN styleCSSFiles}
 		<link REL="stylesheet" href="{$stylepath}" type="text/css">
 		{END styleCSSFiles}
+		{BEGIN pageCSSFiles}
+		<link REL="stylesheet" href="{$pagestylepath}" type="text/css">
+		{END pageCSSFiles}
 	</head>
-
+	
 	<body class="{$stylename} function-view" {$bodyattrs}>
 	{BEGIN body}
 		{$header}
-		<style>
-			{$containerCss}
-		</style>
-		<DIV class="bs-top">
-        
+	<div class="rnr-page">
+		<div class="rnr-top {$blockclass_top}">
+			
 
-{BEGIN container_viewpage}
-<div {$viewpage_chiddenattr} data-pageid="{$pageid}" data-container="viewpage" class="container    "> 
+{BEGIN container_all}
+<div class="rnr-c rnr-cv rnr-c-all">
 
 
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_view} rnr-wrapper rnr-cbw-view">
 
-
-{BEGIN container_header}
-<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-12 "> 
-
-{BEGIN viewheader}
-	<h2 {$viewheader_hiddenattr} data-pageid="{$pageid}" data-brick="viewheader" >{$pagetitlelabel t_cfgrace view}</h2>
-	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
-
-{END viewheader}
-
-
-
-</div>
-{END container_header}
+{BEGIN container_view}
+<div class="rnr-c rnr-cv rnr-c-view">
 
 
 
 
-
-
-</div>
-{END container_viewpage}
-
-
+<div  class="rnr-brickcontents style1 rnr-b-wrapper {$wrapperclass_fields} rnr-wrapper rnr-cbw-fields">
 
 {BEGIN container_fields}
-<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class=" form-horizontal  col-md-12 "> 
+<div class="rnr-c rnr-cv rnr-c-fields">
+
+{BEGIN viewheader}
+<div  class="rnr-brickcontents style2 rnr-b-viewheader {$brickclass_viewheader}"><span>	<h1>{$pagetitlelabel t_cfgrace view}</h1>
+</span></div>{END viewheader}
 
 
-<div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
 
-	<div class="container">
-					{BEGIN race_code_fieldblock}
-	<div class="{$fielddispclass_race_code} col-md-4 bs-viewcontrolgroup" data-fieldname="race_code">
-		<label class="control-label" for="{$labelfor_race_code}">
-			{$label t_cfgrace race_code}
-		</label>
-		<div class="" >
-			{$race_code_value}&nbsp;
-		</div>
-	</div>
-{END race_code_fieldblock}
-					{BEGIN race_name_fieldblock}
-	<div class="{$fielddispclass_race_name} col-md-4 bs-viewcontrolgroup" data-fieldname="race_name">
-		<label class="control-label" for="{$labelfor_race_name}">
-			{$label t_cfgrace race_name}
-		</label>
-		<div class="" >
-			{$race_name_value}&nbsp;
-		</div>
-	</div>
-{END race_name_fieldblock}
-					{BEGIN race_desc_fieldblock}
-	<div class="{$fielddispclass_race_desc} col-md-4 bs-viewcontrolgroup" data-fieldname="race_desc">
-		<label class="control-label" for="{$labelfor_race_desc}">
-			{$label t_cfgrace race_desc}
-		</label>
-		<div class="" >
-			{$race_desc_value}&nbsp;
-		</div>
-	</div>
-{END race_desc_fieldblock}
-					{BEGIN pursuit_fieldblock}
-	<div class="{$fielddispclass_pursuit} col-md-4 bs-viewcontrolgroup" data-fieldname="pursuit">
-		<label class="control-label" for="{$labelfor_pursuit}">
-			{$label t_cfgrace pursuit}
-		</label>
-		<div class="" >
-			{$pursuit_value}&nbsp;
-		</div>
-	</div>
-{END pursuit_fieldblock}
-					{BEGIN numstarts_fieldblock}
-	<div class="{$fielddispclass_numstarts} col-md-4 bs-viewcontrolgroup" data-fieldname="numstarts">
-		<label class="control-label" for="{$labelfor_numstarts}">
-			{$label t_cfgrace numstarts}
-		</label>
-		<div class="" >
-			{$numstarts_value}&nbsp;
-		</div>
-	</div>
-{END numstarts_fieldblock}
-					{BEGIN start_scheme_fieldblock}
-	<div class="{$fielddispclass_start_scheme} col-md-4 bs-viewcontrolgroup" data-fieldname="start_scheme">
-		<label class="control-label" for="{$labelfor_start_scheme}">
-			{$label t_cfgrace start_scheme}
-		</label>
-		<div class="" >
-			{$start_scheme_value}&nbsp;
-		</div>
-	</div>
-{END start_scheme_fieldblock}
-					{BEGIN start_interval_fieldblock}
-	<div class="{$fielddispclass_start_interval} col-md-4 bs-viewcontrolgroup" data-fieldname="start_interval">
-		<label class="control-label" for="{$labelfor_start_interval}">
-			{$label t_cfgrace start_interval}
-		</label>
-		<div class="" >
-			{$start_interval_value}&nbsp;
-		</div>
-	</div>
-{END start_interval_fieldblock}
-					{BEGIN comp_pick_fieldblock}
-	<div class="{$fielddispclass_comp_pick} col-md-4 bs-viewcontrolgroup" data-fieldname="comp_pick">
-		<label class="control-label" for="{$labelfor_comp_pick}">
-			{$label t_cfgrace comp_pick}
-		</label>
-		<div class="" >
-			{$comp_pick_value}&nbsp;
-		</div>
-	</div>
-{END comp_pick_fieldblock}
-					{BEGIN active_fieldblock}
-	<div class="{$fielddispclass_active} col-md-4 bs-viewcontrolgroup" data-fieldname="active">
-		<label class="control-label" for="{$labelfor_active}">
-			{$label t_cfgrace active}
-		</label>
-		<div class="" >
-			{$active_value}&nbsp;
-		</div>
-	</div>
-{END active_fieldblock}
-	</div>
+<div  class="rnr-brickcontents style1 rnr-b-viewfields_simple {$brickclass_viewfields_simple}"><div class="rnr-simplefields">
+	{BEGIN race_code_fieldblock}
+<div data-fieldname="race_code" class="rnr-field style1 {$fielddispclass_race_code}">
+  <span class="rnr-label">{$label t_cfgrace race_code}:</span>
+  <span class="rnr-control style3">{$race_code_value}</span>
 </div>
+{END race_code_fieldblock}
+	{BEGIN race_name_fieldblock}
+<div data-fieldname="race_name" class="rnr-field style1 {$fielddispclass_race_name}">
+  <span class="rnr-label">{$label t_cfgrace race_name}:</span>
+  <span class="rnr-control style3">{$race_name_value}</span>
+</div>
+{END race_name_fieldblock}
+	{BEGIN race_desc_fieldblock}
+<div data-fieldname="race_desc" class="rnr-field style1 {$fielddispclass_race_desc}">
+  <span class="rnr-label">{$label t_cfgrace race_desc}:</span>
+  <span class="rnr-control style3">{$race_desc_value}</span>
+</div>
+{END race_desc_fieldblock}
+	{BEGIN pursuit_fieldblock}
+<div data-fieldname="pursuit" class="rnr-field style1 {$fielddispclass_pursuit}">
+  <span class="rnr-label">{$label t_cfgrace pursuit}:</span>
+  <span class="rnr-control style3">{$pursuit_value}</span>
+</div>
+{END pursuit_fieldblock}
+	{BEGIN numstarts_fieldblock}
+<div data-fieldname="numstarts" class="rnr-field style1 {$fielddispclass_numstarts}">
+  <span class="rnr-label">{$label t_cfgrace numstarts}:</span>
+  <span class="rnr-control style3">{$numstarts_value}</span>
+</div>
+{END numstarts_fieldblock}
+	{BEGIN start_scheme_fieldblock}
+<div data-fieldname="start_scheme" class="rnr-field style1 {$fielddispclass_start_scheme}">
+  <span class="rnr-label">{$label t_cfgrace start_scheme}:</span>
+  <span class="rnr-control style3">{$start_scheme_value}</span>
+</div>
+{END start_scheme_fieldblock}
+	{BEGIN start_interval_fieldblock}
+<div data-fieldname="start_interval" class="rnr-field style1 {$fielddispclass_start_interval}">
+  <span class="rnr-label">{$label t_cfgrace start_interval}:</span>
+  <span class="rnr-control style3">{$start_interval_value}</span>
+</div>
+{END start_interval_fieldblock}
+	{BEGIN comp_pick_fieldblock}
+<div data-fieldname="comp_pick" class="rnr-field style1 {$fielddispclass_comp_pick}">
+  <span class="rnr-label">{$label t_cfgrace comp_pick}:</span>
+  <span class="rnr-control style3">{$comp_pick_value}</span>
+</div>
+{END comp_pick_fieldblock}
+	{BEGIN active_fieldblock}
+<div data-fieldname="active" class="rnr-field style1 {$fielddispclass_active}">
+  <span class="rnr-label">{$label t_cfgrace active}:</span>
+  <span class="rnr-control style3">{$active_value}</span>
+</div>
+{END active_fieldblock}
+</div></div>
 
 
+{BEGIN viewbuttons}
+<div  class="rnr-brickcontents style2 rnr-b-viewbuttons {$brickclass_viewbuttons}"><div class="rnr-buttons-right">
+{BEGIN prev_button}
+<a href="#" class="rnr-button {$prevbutton_class}" {$prevbutton_attrs}>&lt;&lt;&lt;</a>
+{END prev_button}
+{BEGIN next_button}
+<a href="#" class="rnr-button {$nextbutton_class}" {$nextbutton_attrs}>&gt;&gt;&gt;</a>
+{END next_button}
+</div>
+<div class="rnr-buttons-left">
+{BEGIN back_button}
+<a href="#" class="rnr-button" {$backbutton_attrs}>Back to list</a>
+{END back_button}
+{BEGIN close_button}
+<a href="#" class="rnr-button" {$closebutton_attrs}>Close window</a>
+{END close_button}
+{BEGIN edit_page_button}
+<a href="#" class="rnr-button" {$edit_page_button_attrs}>Edit</a>
+{END edit_page_button}
+</div>
+</div>{END viewbuttons}
 
 
 </div>
 {END container_fields}
 
+</div>
 
 
-{BEGIN container_bottombuttons}
-<div {$bottombuttons_chiddenattr} data-pageid="{$pageid}" data-container="bottombuttons" class="container    "> 
+</div>
+{END container_view}
 
-
-
-
-{BEGIN container_buttons}
-<div {$buttons_chiddenattr} data-pageid="{$pageid}" data-container="buttons" class=" form-group   "> 
-
-
-
-
-{BEGIN container_leftbuttons}
-<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-8 "> 
-
-{BEGIN viewbuttons}
-{BEGIN back_button}
-<button class="btn btn-primary" {$backbutton_attrs}>Back to list</button>
-{END back_button}
-{BEGIN close_button}
-<button href="#" class="btn btn-primary" {$closebutton_attrs}>Close window</button>
-{END close_button}
-{END viewbuttons}
+</div>
 
 
 
 </div>
-{END container_leftbuttons}
+{END container_all}
 
 
-
-
-
-
-
-
-{BEGIN container_leftbuttons_1}
-<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="   col-md-4 "> 
-
-{BEGIN rightviewbuttons}
-<div class="btn-group" role="group">
-		{BEGIN prev_button}
-	<button class="btn btn-default {$prevbutton_class}" {$prevbutton_attrs}><span class="glyphicon glyphicon-chevron-left"></span></button>
-	{END prev_button}
-	{BEGIN next_button}
-	<button class="btn btn-default {$nextbutton_class}" {$nextbutton_attrs}><span class="glyphicon glyphicon-chevron-right"></span></button>
-	{END next_button}
-		{BEGIN view_menu_button}
-	<div class="btn-group dropup" role="group">
-		<button class="btn btn-default dropdown-toggle {$groupbutton_class}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><span class="glyphicon glyphicon-menu-hamburger"></span></button>
-		<ul class="dropdown-menu dropdown-left">
-									{BEGIN edit_page_button}
-				<li><a href=# {$edit_page_button_attrs}>Edit</a></li>
-			{END edit_page_button}
-		</ul>
+		</div>
+		<div class="rnr-middle">
+			<div class="rnr-left {$blockclass_left}">
+				
+			</div>
+			<div class="rnr-center {$blockclass_center}">
+				
+			</div>
+			<div class="rnr-right {$blockclass_right}">
+				
+			</div>
+		</div>
+		<div class="rnr-bottom {$blockclass_bottom}">
+			
+		</div>
 	</div>
-	{END view_menu_button}
-</div>
-{END rightviewbuttons}
-
-
-
-</div>
-{END container_leftbuttons_1}
-
-
-
-
-
-
-</div>
-{END container_buttons}
-
-
-
-
-
-
-</div>
-{END container_bottombuttons}
-
-
-		</div>
-		<div class="bs-middle ">
-			<div class="bs-topmiddle">
-				
-			</div>
-			<div class="bs-left" {$blockattr_left}>
-				
-			</div>
-			<div class="bs-center">
-				
-			</div>
-			<div class="bs-right">
-				
-			</div>
-		</div>
-		<DIV class="bs-bottom">
-        
-		</div>
+		
 		{$footer}
 	{END body}
 	</body>

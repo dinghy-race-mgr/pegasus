@@ -60,7 +60,7 @@ class HELP
     {
         //$where = " category LIKE '%".$this->page."%' and active = 1 ";
         $where = " FIND_IN_SET('".$this->page."',category) > 0  AND active = 1";
-        $topics = $this->db->db_get_rows("SELECT * FROM t_help WHERE $where ORDER by rank ASC");
+        $topics = $this->db->db_get_rows("SELECT * FROM t_help WHERE $where ORDER by `rank` ASC");
 
         foreach ($topics as $k=>$topic)
         {
