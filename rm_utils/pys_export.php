@@ -23,11 +23,6 @@ $reporting  = true;
 
 require_once ("{$loc}/common/lib/util_lib.php");
 
-// arguments
-$pagestate    = u_checkarg("pagestate", "set", "", "init");
-$control_file = u_checkarg("control-file", "set", "", "");
-$file_type    = u_checkarg("file-type", "set", "", "xml");
-
 session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
 session_start();
 
@@ -56,14 +51,40 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/pys_class.php");
 
+// arguments
+$pagestate    = u_checkarg("pagestate", "set", "", "init");
+$control_file = u_checkarg("control-file", "set", "", "");
+$start_date   = u_checkarg('start-date', "set", "", "");
+$end_date     = u_checkarg('end-date', "set", "", "");
+$file_type    = u_checkarg("file-type", "set", "", "xml");
+
+//echo "<pre>$pagestate|$control_file|$start_date|$end_date|$file_type</pre>";
+
+// argument errors
+$arg_err = array();
+if (!$control_file)
+{
+    $arg_err[] = "A control file must be selected - see Detailed Instructions for details";
+}
+if (!$start_date or !$end_date)
+{
+    $arg_err[] = "Start and End dates for the races to be processed must be specified in dd/mm/yyyy format";
+}
+else
+{
+    if (strtotime($start_date) >= strtotime($end_date))
+    {
+        $arg_err[] = "End date must be after Start date";
+    }
+}
+
+
 // connect to database
 $db_o = new DB();
 foreach ($db_o->db_getinivalues(false) as $data) { $_SESSION["{$data['parameter']}"] = $data['value']; }
 
 // set templates
 $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/pys_export_tm.php"));
-
-if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
 
 $pagefields = array(
     "loc"           => $loc,
@@ -119,14 +140,16 @@ if ($pagestate == "submit" )                                 // error check for 
     }
 }
 
+//echo "<pre>$state".print_r($error,true)."</pre>";
+
 // --- INIT page -------
-if ($_REQUEST['pagestate'] == "init" and $state == 0)        // display user parameter selection page
+if ($pagestate == "init" and $state == 0)        // display user parameter selection page
 {
     $formfields = array(
-        "instructions" => "Processes race results to produce files which can be submitted to the RYA Portsmouth Yardstick System [https://www.pyonline.org.uk/] </br>
-           <span class=' rm-text-xs'> - The races to be processed will be defined in a command file selected from the menu below - either create
-           a new command file or edit an existing one.  The files should be in the data/pyscheme directory.</br>
-            - links are provided to each output file produced <i>(files can also be found in your raceManager installation at data/pyscheme/{year})</i></span>",
+        "instructions" => "Processes race results to produce data files in the format required by the RYA Portsmouth Yardstick System at 
+           <a href='https://www.pyonline.org.uk/'>https://www.pyonline.org.uk</a> </br></br>
+           If this is the first time using this process you should first read the <a href='../data/pyscheme/detailed_instructions.pdf'>Detailed Instructions</a>. 
+           The process requires configuration files to be located in your racemanager installation directory on your server.",
         "script" => "pys_export.php?pagestate=submit",
     );
 
@@ -135,7 +158,7 @@ if ($_REQUEST['pagestate'] == "init" and $state == 0)        // display user par
 }
 
 // --- SUBMIT processing page --------
-elseif ($_REQUEST['pagestate'] == "submit" and $state == 0)  // process data as requested
+elseif ($pagestate == "submit" and $state == 0)  // process data as requested
 {
     // read json command file
     $commands = $pys_o->read_control_file(basename($control_file));
@@ -148,20 +171,33 @@ elseif ($_REQUEST['pagestate'] == "submit" and $state == 0)  // process data as 
     else
     {
         $admin = $pys_o->get_admin_info();
+
+        // if start/end dates have been supplied as arguments modify the commands accordingly
+        if ($start_date and $end_date)
+        {
+            $swapped = $pys_o->swap_control_dates($start_date, $end_date);
+        }
+        $admin_arr = $pys_o->get_admin_info();
+        $cmd_arr = $pys_o->get_commands_info();
+//        echo "<pre>".print_r($admin_arr,true)."</pre>";
+//        echo "<pre>".print_r($cmd_arr,true)."</pre>";
+
         echo $tmpl_o->get_template("publish_results", $pagefields, array("state-error"=>false, "name"=>$admin['name'], "file"=>$control_file));
 
-        foreach ($commands as $k => $command)
+        foreach ($cmd_arr as $k => $command)
         {
             // create logfile (removing existing one)
             $logfile = $pys_o->set_log_filename($command);
             if (file_exists($logfile)) { unlink($logfile); }
 
             // get data output filename
-            $out_filename = $pys_o->set_filename($command, $admin, $_SESSION['pys_id'], $file_type);
+            $out_filename = $pys_o->set_filename($command, $admin_arr, $_SESSION['pys_id'], $file_type);
 
-            // get events associated with command
+            // create list of events(races to be processed - and get event and fleet descriptive fields for each event in list
             $status = $pys_o->set_events($command);
             if ($logging) { event_logging($logfile, $status); }
+
+            // get event data for events to be processed
             $events = $pys_o->get_events();
             $num_events = count($events);
 
@@ -175,11 +211,16 @@ elseif ($_REQUEST['pagestate'] == "submit" and $state == 0)  // process data as 
                 "attribute"        => $command['attribute'],
                 "start_date"       => $command['start-date'],
                 "end_date"         => $command['end-date'],
-                "events_found"     => count($events),
-                "events_processed" => 0,
-                "races_processed"  => 0,
-                "races_excluded"   => 0,
-                "races_noentries"  => 0,
+                "events_found"     => count($events),               // events have 1 or more races
+                "events_processed" => 0,                            // events processed
+                "races_found"      => 0,                            // no. of individual races found
+                "races_included"   => 0,                            // no. of individual races included
+                "races_excluded"   => 0,                            // no. of individual races excluded
+                "races_fail_0"     => 0,                            // no entries
+                "races_fail_1"     => 0,                            // race is a pursuit race
+                "races_fail_2"     => 0,                            // less than 3 entries
+                "races_fail_3"     => 0,                            // only one class
+                "races_fail_4"     => 0,                            // race less than 20 minutes
                 "log_link"         => $pys_o->get_log_filename("url"),
                 "datafile_link"    => $pys_o->get_filename("url"),
             );
@@ -198,12 +239,17 @@ elseif ($_REQUEST['pagestate'] == "submit" and $state == 0)  // process data as 
 
                     for ($i = 1; $i <= $fleet_num; $i++)
                     {
+                        $command_report['races_found']++;
+
                         if ($logging) { error_log(date('H:i:s') . " --- FLEET $i - {$fleetnames[$i]['fleet_name']}" . PHP_EOL, 3, $logfile); }
 
                         // get result for this fleet
                         $fleet_count = $pys_o->set_fleet_results($event['id'], $i);
 
+                        // check for inclusion in PYS export
                         $checks = $pys_o->check_valid_results($event['id'], $i);
+
+                        // update counts of each success and failure - and log them
                         $included = report_fleet_checks($i, $checks, $logging, $logfile, $fleet_count);
 
                         // process data into required information
@@ -244,7 +290,7 @@ elseif ($_REQUEST['pagestate'] == "submit" and $state == 0)  // process data as 
     }
     echo $tmpl_o->get_template("end_report", $pagefields, array("dir" => $basepath));
 }
-elseif ($_REQUEST['pagestate'] == "submit" and $state > 0)  // process error state
+elseif ($pagestate == "submit" and $state > 0)  // process error state
 {
     echo $tmpl_o->get_template("publish_results", $pagefields, array("state-error" => true));
     echo $tmpl_o->get_template("publish_state", array(), array("error"=>$error, "args"=>$_REQUEST));
@@ -278,11 +324,18 @@ function report_fleet_checks($fleetnum, $checks, $logging, $logfile, $fleet_coun
 
     $check_txt = "";
     $included = true;
-    foreach ($checks as $k => $check) { if (!$check['result']) { $check_txt .= "- check $k fail [{$check['msg']}] "; }}
+    foreach ($checks as $k => $check)
+    {
+        if (!$check['result'])
+        {
+            $command_report["races_fail_$k"]++;
+            $check_txt .= "- check $k fail [{$check['msg']}] ";
+        }
+    }
 
     if (empty($check_txt))
     {
-        $command_report['races_processed']++;
+        $command_report['races_included']++;
         if ($logging) { error_log(date('H:i:s') . " ---- results validity: results OK for inclusion ($fleet_count entries)" . PHP_EOL, 3, $logfile); }
     }
     else

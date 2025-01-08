@@ -367,14 +367,14 @@
         <active>1</active>
         <question>How do I handle a general recall?</question>
         <answer><![CDATA[
-            <p>If you signal a general recall for a fleet - that fleet must restart after remaining fleets have
-                started.   Use the following procedure:
+            <p>If you signal a general recall for a fleet - that fleet must restart AFTER the remaining fleets have
+                started.   Once the other fleets have started use the following procedure to start the recalled fleet:
             </p>
             <ul>
                 <li>restart the lights system (power off / power on) - set the number of starts to 1 (or however many fleets you have recalled)</li>
-                <li>start the recalled start sequence on the light box (take a note of the time of the warning signal</li>
-                <li>if you want to use the black flag - hoist at the 3 minute sound signal</li>
-                <li>on the START page in raceManager click the General Recall option for the fleet(s) in question - enter the clocktime (hh:mm:ss) of the start gun for the recalled fleet (i.e. the time you notes + 6 minutes)</li>
+                <li>start the recalled start sequence on the light box - press the green button (take a note of the clock time of the restart</li>
+                <li>if you want to use the black flag - hoist it at the 3 minute sound signal</li>
+                <li>on the START page in raceManager click the General Recall option for the fleet(s) in question - enter the clocktime (hh:mm:ss) of the start gun for the recalled fleet (i.e. the time you previously noted + 6 minutes)</li>
                 <li>. . . continue to run the race as normal</li>
             </ul>
         ]]></answer>

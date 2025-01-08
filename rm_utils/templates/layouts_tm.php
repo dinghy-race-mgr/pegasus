@@ -40,7 +40,7 @@
             <link href="{stylesheet}" rel="stylesheet"> 
       
           </head>
-          <body class="{$_SESSION['background']}" style="padding-top:10px; padding-bottom: 10px" >
+          <body class="" style="padding-top:10px; padding-bottom: 10px" >
             <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
                 <div class="container-fluid">
                     <h2 class="text-success">{header-left}<span class="pull-right">{header-right}</span></h2>

@@ -34,19 +34,19 @@ EOT;
         </div>
         <form enctype="multipart/form-data" id="publishallForm" action="{script}" method="post">
         
-            <div class="row form-inline">
-                <label class="col-sm-3 control-label text-right">Period (from/to)</label>
-                <div class="form-group">                   
-                    <div class="col-sm-8">
-                        <input type="date" class="form-control" id="date-start"  name="date-start" value="">
-                    </div>
-                </div>
-                <div class="form-group" style="margin-left: 30px !important">                   
-                    <div class="col-sm-10">
-                        <input type="date" class="form-control" id="date-end" name="date-end" value="">
-                    </div>
+        <div class="row form-inline">
+            <label class="col-sm-3 control-label text-right">Period (from/to)</label>
+            <div class="form-group">                   
+                <div class="col-sm-8">
+                    <input type="date" class="form-control" id="date-start"  name="date-start" value="">
                 </div>
             </div>
+            <div class="form-group" style="margin-left: 30px !important">                   
+                <div class="col-sm-10">
+                    <input type="date" class="form-control" id="date-end" name="date-end" value="">
+                </div>
+            </div>
+        </div>
             
         $action_bufr    
             

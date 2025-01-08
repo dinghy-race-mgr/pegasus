@@ -493,15 +493,12 @@ EOT;
                 <div class="col-sm-3 col-md-3">$search_control</div>
             </div>
         </div>
-
-        <div class="row">
+        
+        <div class="row" style="margin-top: 20px">
             <div class="col-md-offset-2 col-md-8">
-                <div class="jumbotron">
-                    <h1>Sorry!</h1>
-                    <p class="lead">We can't find the results for {year}</p>
-                    <p>Please let your raceManager support team know about this</p>
-                    <p class="pull-right"><small>[ Problem file: {inv-file} ]</small></p>
-                </div>              
+                <div class="alert alert-warning" role="alert">
+                    <h3><b>Sorry</b> - no results available yet</h3>
+                </div>             
             </div>
         </div>
 EOT;

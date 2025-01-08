@@ -43,7 +43,7 @@ function table_style1($params=array())
 {
     $html = <<<EOT
     <style>
-      body      {font-family: Kalinga,sans-serif; font-size: 0.8em;}
+      body      {font-family: Kalinga,sans-serif; font-size: 1em;}
         h1      {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 250%; letter-spacing: -1px; color: rgb(44, 76, 124);}
         h2      {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 200%; color: rgb(44, 76, 124);}
         h3      {font-family: Kalinga,arial,helvetica,sans-serif; font-size: 150%; color: rgb(194, 0, 0);}

@@ -10,11 +10,11 @@ session_start();
 
 // error_reporting(E_ERROR);  // FIXME turn off warnings for live operation
 
-require_once("include/rm_event_lib.php");
-require_once("classes/db.php");
+require_once("../common/classes/db.php");
+require_once("../common/lib/rm_event_lib.php");
 
 // initialise application
-$cfg = set_config("config.ini", array("rm_event"), true);   // FIXME location of ini file
+$cfg = set_config("../config/rm_event.ini", array("rm_event"), true);
 $cfg['logfile'] = str_replace("<date>", date("Y"), $cfg['logfile']);
 
 // get required arguments
@@ -63,7 +63,6 @@ if ($pagestate == "newentry")
     $entry['e-racemanager'] = check_competitor_exists($class['id'], $_REQUEST['sailnumber'], $_REQUEST['helm-name']);
 
     // get boat handicap from t_class
-
     $entry['b-pn'] = get_pn ($event['scoring-type'], $event['handicap-type'], $_REQUEST['class']);
 
     // if personal handicap racing get pn from t_competitor [0 means not required or not found]

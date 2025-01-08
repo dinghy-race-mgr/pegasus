@@ -35,7 +35,7 @@ EOT;
                 </div>               
             </div>           
             
-            <!-- div class="row form-inline margin-top-20">
+            <div class="row form-inline margin-top-20">
                 <label class="col-sm-3 control-label text-right">Define Period (from/to)</label>
                 <div class="form-group">                   
                     <div class="col-sm-8">
@@ -47,7 +47,7 @@ EOT;
                         <input type="date" class="form-control" id="end-date" name="end-date" value="">
                     </div>
                 </div>
-            </div -->
+            </div>
              
             <div class="row form-inline margin-top-10" >
                 <label class="col-sm-3 control-label text-right">Output File Type</label>
@@ -173,19 +173,29 @@ function command_report($params = array())
                 <p>Summary Results ...&nbsp;&nbsp;[{$cmd['mode']}: {$cmd['attribute']}&nbsp;&nbsp;&nbsp;&nbsp;(start: {$cmd['start_date']} end: {$cmd['end_date']})&nbsp;&nbsp;]</p>
                 <table class="table">
                     <thead><tr>
-                        <th> Events Found / Processed </th>
-                        <th> Races Included / Excluded / No Entries</th>
-                        <th> Processing Log </th>
-                        <th> Output </th>
+                        <th> EVENTS</th>
+                        <th> INDIVIDUAL RACES</th>
+                        <th> LOGS / OUTPUT</th>
                     </tr></thead>
-                    <tr>
-                        <td>{$cmd['events_found']} / {$cmd['events_processed']}</td>
-                        <td>{$cmd['races_processed']} / {$cmd['races_excluded']} / {$cmd['races_noentries']}</td>
+                    <br>
                         <td>
-                            <a href="{$cmd['log_link']}" target="_blank">Log File</a>
+                            found: {$cmd['events_found']}</br>
+                            processed: {$cmd['events_processed']}
                         </td>
                         <td>
-                            <a href="{$cmd['datafile_link']}" target="_blank">Export Data File</a>
+                            found: {$cmd['races_found']}</br>
+                            included: {$cmd['races_included']}</br>
+                            excluded: {$cmd['races_excluded']}</br>
+                            &nbsp;&nbsp;-&nbsp;&nbsp;no entries: {$cmd['races_fail_0']}</br>
+                            &nbsp;&nbsp;-&nbsp;&nbsp;pursuit race: {$cmd['races_fail_1']}</br>
+                            &nbsp;&nbsp;-&nbsp;&nbsp;< 3 boats: {$cmd['races_fail_2']}</br>
+                            &nbsp;&nbsp;-&nbsp;&nbsp;one class: {$cmd['races_fail_3']}</br>
+                            &nbsp;&nbsp;-&nbsp;&nbsp;short race: {$cmd['races_fail_4']}</br>
+                        </td>
+                        <td>
+                            <a href="{$cmd['log_link']}" target="_blank">Log File</a><br><br>
+                            <a href="{$cmd['datafile_link']}" target="_blank">Review Export File</a><br><br>
+                             <a href="{$cmd['datafile_link']}" download>Download Export File</a>
                         </td>
                     </tr>
                 </table>
@@ -283,10 +293,12 @@ function output_xml($params = array())
     $submit_time = date("H:i:s");
 
     $xml = <<<EOT
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet href="./RYAPY.xsl" type="text/xsl" ?>
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet href="../RYAPY.xsl" type="text/xsl" ?>
+<RYAPY xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+       noNamespaceschemaLocation="http://www.halsraceresults.com/XMLSchemas/RYAPY.xsd">
 <admin>
 <source>raceManager</source>
-<sourcever>10.0</sourcever>
+<sourcever>11.0</sourcever>
 <submittedon>$submit_date</submittedon>
 <submittedat>$submit_time</submittedat>
 </admin>
@@ -320,28 +332,31 @@ EOT;
 <entries>
 EOT;
 
-            foreach ($fleet['entries'] as $entry)              // process each entry (boat) in fleet
-            {
-                $xml.= <<<EOT
-<entry>
-<classid>{$entry['class']}</classid>
-<persons>{$entry['crewnum']}</persons>
-<category>{$entry['category']}</category>
-<rig>{$entry['rig']}</rig>
-<spinnaker>{$entry['spinnaker']}</spinnaker>
-<keel>{$entry['keel']}</keel>
-<engine>{$entry['engine']}</engine>
-<sailno>{$entry['sailnum']}</sailno>
-<helm>{$entry['helm']}</helm>
-<crew1>{$entry['crew']}</crew1>
-<rating>{$entry['pn']}</rating>
-<elapsed>{$entry['etime']}</elapsed>
-<corrected>{$entry['atime']}</corrected>
-<laps>{$entry['lap']}</laps>
-<rank>{$entry['points']}</rank>
-</entry>
+                foreach ($fleet['entries'] as $entry)              // process each entry (boat) in fleet
+                {
+
+                    $entry['helm'] = htmlentities($entry['helm'], ENT_XML1);
+                    $entry['crew'] = htmlentities($entry['crew'], ENT_XML1);
+                    $xml.= <<<EOT
+                    <entry>
+                    <classid>{$entry['class']}</classid>
+                    <persons>{$entry['crewnum']}</persons>
+                    <category>{$entry['category']}</category>
+                    <rig>{$entry['rig']}</rig>
+                    <spinnaker>{$entry['spinnaker']}</spinnaker>
+                    <keel>{$entry['keel']}</keel>
+                    <engine>{$entry['engine']}</engine>
+                    <sailno>{$entry['sailnum']}</sailno>
+                    <helm>{$entry['helm']}</helm>
+                    <crew1>{$entry['crew']}</crew1>
+                    <rating>{$entry['pn']}</rating>
+                    <elapsed>{$entry['etime']}</elapsed>
+                    <corrected>{$entry['atime']}</corrected>
+                    <laps>{$entry['lap']}</laps>
+                    <rank>{$entry['points']}</rank>
+                    </entry>
 EOT;
-            }
+                }
 
             $xml.= <<<EOT
 </entries>

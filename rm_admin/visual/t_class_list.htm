@@ -19,6 +19,7 @@
   <BODY class="{$stylename} function-list" {$bodyattrs}>
     {BEGIN body}
       {$header}
+      
       <STYLE>
         {$containerCss}
       </STYLE>
@@ -127,6 +128,7 @@
                             </A>
                           </LI>
                         {END import_link}
+                        {$event t_class_more_snippet}
                       </UL>
                     </DIV>
                   {END more_list}
@@ -274,9 +276,9 @@
                           Cancel
                         </BUTTON>
                       {END cancelall_link}
-<A class="btn btn-info" href="../../rm_utils/check_fleet_allocation.php" target="_BLANK" type="button">
-Check Fleet Allocations
-</A>
+                      <A class="btn btn-info" href="../../rm_utils/check_fleet_allocation.php" target="_BLANK" type="button">
+                        Check Fleet Allocations
+                      </A>
                     </SPAN>
                   {END record_controls_block}
                 </DIV>

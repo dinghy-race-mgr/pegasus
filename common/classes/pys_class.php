@@ -77,23 +77,37 @@ class PYS
     
     public function swap_control_dates($start_date, $end_date)
     {
+        // modifies command information to reflect the start and end dates specified by user
+
         $swapped = false;
-        if (date("d/m/Y", strtotime($start_date)) and date("d/m/Y", strtotime($end_date)))
+        if (!empty($start_date) and !empty($end_date))
         {
             $swapped = true;
+
+            // set date-year in admin
+            $this->admin['data-year'] = date("Y", strtotime($start_date));
+
+            // loop over commands
             foreach ($this->commands as $k => $command)
             {
-                $this->commands[$k]['start-date'] = $start_date;
-                $this->commands[$k]['end-date'] = $end_date;
-            }
-        }
+                // remove year in series
+                if (strtolower($command['mode']) == "series")
+                {
+                    $this->commands[$k]['attribute'] = strtok($command['attribute'],"-");
+                }
 
-        foreach ($this->commands as $k => $command)
-        {
-            if (strtolower($command['mode']) == "series" and !empty($command['start-date']))
-            {
-                $this->commands[$k]['attribute'] = strtok($command['attribute'],"-");
+                // change start-date and end-date
+                $this->commands[$k]['start-date'] = date("Y-m-d", strtotime($start_date));
+                $this->commands[$k]['end-date']   = date("Y-m-d", strtotime($end_date));
+
+                // change description
+                if (strpos($command['description'], date("Y", strtotime($start_date) )) === false)
+                {
+                    $this->commands[$k]['description'] = $command['description']." ".date("Y", strtotime($start_date));
+                }
             }
+
+            $swapped  = true;
         }
 
         return $swapped;
@@ -101,7 +115,6 @@ class PYS
 
     public function set_filename($command, $admin, $pysid, $file_type)
     {
-
         // gets path/filename for output data
         $str = "SYC_".date("Ymd")."_".str_replace(' ', '', $command['description']);
         if (!empty($pysid)) { $str.= "_$pysid"; }
@@ -118,6 +131,9 @@ class PYS
 
         // get url
         $this->outurl = $this->baseurl."/".$admin['data-year']."/".$this->outfile;
+
+//        echo "<pre>base: {$this->baseurl}| file: {$this->outfile}| url:{$this->outurl}|path: {$this->outpath}|dir: $dirname|</pre>";
+//        exit();
 
         return $this->outpath;
     }
@@ -150,17 +166,11 @@ class PYS
         }
     }
 
-    public function set_data($command)
-    {
-        $this->races = array();
-    }
-
     public function set_events($command)
     {
         // initialise event/fleet arrays
         $this->events = array();
         $this->fleets = array();
-
 
         // get event details for command
         $status = 0;
@@ -185,7 +195,6 @@ class PYS
         empty($where_date) ? $where = $where_event : $where = $where_event.$where_date;
 
         // get list of matching events
-
         if (empty($command['attribute']))
         {
             $status = -1;          // missing information - not possible to process
@@ -235,7 +244,7 @@ class PYS
                     {
                         $rs = $this->db->db_get_rows("SELECT fleet_num, fleet_code, fleet_name, pursuit FROM t_cfgrace as a 
                                               JOIN t_cfgfleet as b on a.id=b.eventcfgid WHERE a.id = {$row['event_format']} ORDER BY fleet_num");
-                        $i =0;
+                        $i = 0;
                         foreach($rs as $fleet)
                         {
                             $i++;
@@ -250,63 +259,6 @@ class PYS
             }
         }
 
-//        if (strtolower($command['mode']) == "series")
-//        {
-//            if (empty($command['attribute']))
-//            {
-//                $status = -1;
-//            }
-//            else
-//            {
-//
-//                $sql = "SELECT $field_list FROM t_event as a WHERE $where and series_code LIKE '{$command['attribute']}%' ORDER BY $order_list";
-//            }
-//        }
-//        elseif (strtolower($command['mode']) == "list")
-//        {
-//            if (empty($command['attribute']))
-//            {
-//                $status = -1;
-//            }
-//            else
-//            {
-//                empty($where_date) ? $where = $where_event : $where = $where_event.$where_date;
-//                $sql = "SELECT $field_list FROM t_event as a WHERE $where and id IN ({$command['attribute']}) ORDER BY $order_list";
-//            }
-//        }
-//        elseif (strtolower($command['mode']) == "format")
-//        {
-//            if (empty($command['attribute']) or empty($command['start-date']) or empty($command['end-date']))
-//            {
-//                $status = -1;
-//            }
-//            else
-//            {
-//                empty($where_date) ? $where = $where_event : $where = $where_event.$where_date;
-//                $sql = "SELECT $field_list FROM t_event as a JOIN t_cfgrace as b ON a.event_format=b.id  WHERE $where AND b.race_name = '{$command['attribute']}' ORDER BY $order_list";
-//            }
-//        }
-//        elseif (strtolower($command['mode']) == "name")
-//        {
-//            if (empty($command['attribute']) or empty($command['start-date']) or empty($command['end-date']))
-//            {
-//                $status = -1;
-//            }
-//            else
-//            {
-//                empty($where_date) ? $where = $where_event : $where = $where_event.$where_date;
-//                $sql = "SELECT $field_list FROM t_event WHERE $where and event_name LIKE '%{$command['attribute']}%' ORDER BY $order_list";
-//            }
-//        }
-//        else
-//        {
-//            $status = -2;
-//        }
-//
-//        if ($status == 0)
-//        {
-//            $rs = $this->db->db_get_rows($sql);
-//            //echo "<pre>$sql</pre>";
         return $status;
     }
 
@@ -365,11 +317,11 @@ class PYS
         $check = 0;
         if (count($this->results[$eventid][$fleetnum]) > 0)
         {
-            $checks[$check] = array("result" => true, "msg" => "");
+            $checks[$check] = array("result" => true, "type" => "", "msg" => "");
         }
         else
         {
-            $checks[$check] = array("result" => false, "msg" => "failed entries check - no results");
+            $checks[$check] = array("result" => false, "type" => "0", "msg" => "failed entries check - no results");
             $this->fleets[$eventid][$fleetnum]['include'] = 0;
         }
 
@@ -378,7 +330,7 @@ class PYS
         $check = 1;
         if ($this->fleets[$eventid][$fleetnum]['pursuit'])
         {
-            $checks[$check] = array("result" => false, "msg" => "failed scoring check - race is a pursuit race");
+            $checks[$check] = array("result" => false, "type" => "1", "msg" => "failed scoring check - race is a pursuit race");
             $this->fleets[$eventid][$fleetnum]['include'] = 0;
         }
 
@@ -398,13 +350,13 @@ class PYS
 
                 if ($i >= $thresh_2)
                 {
-                    $checks[$check] = array("result" => true, "msg" => "");
+                    $checks[$check] = array("result" => true, "type" => "", "msg" => "");
                     break;
                 }
             }
             if (empty($checks[$check]))
             {
-                $checks[$check] = array("result" => false, "msg" => "failed entries check - less than 3 entries");
+                $checks[$check] = array("result" => false, "type" => "2", "msg" => "failed entries check - less than 3 entries");
                 $this->fleets[$eventid][$fleetnum]['include'] = 0;
             }
         }
@@ -430,13 +382,13 @@ class PYS
 
                 if ($i >= $thresh_3)
                 {
-                    $checks[$check] = array("result" => true, "msg" => "");
+                    $checks[$check] = array("result" => true, "type" => "", "msg" => "");
                     break;
                 }
             }
             if (empty($checks[3]))
             {
-                $checks[$check] = array("result" => false, "msg" => "failed entries check - only one class");
+                $checks[$check] = array("result" => false, "type" => "3", "msg" => "failed entries check - only one class");
                 $this->fleets[$eventid][$fleetnum]['include'] = 0;
             }
         }
@@ -452,11 +404,11 @@ class PYS
 
             if ($max_et >= $thresh_4)
             {
-                $checks[$check] = array("result" => true, "msg" => "");
+                $checks[$check] = array("result" => true, "type" => "", "msg" => "");
             }
             else
             {
-                $checks[$check] = array("result" => false, "msg" => "failed time check - race less than 20 minutes ");
+                $checks[$check] = array("result" => false, "type" => "4", "msg" => "failed time check - race less than 20 minutes ");
                 $this->fleets[$eventid][$fleetnum]['include'] = 0;
             }
         }
@@ -633,7 +585,6 @@ class PYS
         return $status;
     }
 
-
     public function get_results()
     {
         // outputs data into a RYA xml format file
@@ -652,30 +603,4 @@ class PYS
 
         return $races;
     }
-
-
-//    private function create_csv_file($file, $cols, $rows)
-//    {
-//        $status = "0";
-//        $fp = fopen($file, 'w');
-//        if (!$fp) { $status = "-1"; }
-//
-//        if ($fp)
-//        {
-//            $r = fputcsv($fp, $cols, ',');
-//            if (!$r) { $status = "-2"; }
-//
-//            foreach ($rows as $row)
-//            {
-//                if ($status != "0") { break; }
-//                $r = fputcsv($fp, $row, ',');
-//                if (!$r) {$status = "-3"; }
-//            }
-//            fclose($fp);
-//        }
-//
-//    return $status;
-//    }
-
-
 }

@@ -15,7 +15,7 @@ $_SESSION['app_db'] = false;            // no application specific database stor
 
 $_SESSION['sql_debug'] = false;         // set true to turn on debugging of sql commands - otherwise false
 
-$_SESSION['background'] = "";           // display has white background
+$_SESSION['background'] = "";           // display has white background [FIXME no longer used]
 
 $_SESSION['daylight_saving']= array(
     "start_ref"   => "YYYY-04-01",
@@ -88,8 +88,11 @@ $_SESSION['berth'] = array(
 
 $_SESSION['dutyman'] = array(
     "loc"        => "../data/dutyman",
-    "event_file" => "dutyman_event_import_date.csv",
-    "duty_file"  =>"dutyman_duty_import_date.csv"
+    "event_file" => "dutyman_event_import_date.csv",     // must start with dutyman_event
+    "duty_file"  => "dutyman_duty_import_date.csv",      // must start with dutyman_duty
+
+    "tide"       => true,
+    "clean"      => true
 );
 
 $_SESSION['pmaker'] = array(

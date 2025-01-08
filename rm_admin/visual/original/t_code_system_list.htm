@@ -82,8 +82,14 @@
 		
 				<li role="separator" class="divider"></li>	
 
+				{BEGIN asearch_link}
+		<li><a href="t_code_system_search.php" {$advsearchlink_attrs}>Advanced search</a></li>
+		{END asearch_link}
+
+				{BEGIN searchPanelTopButtons}
+		<li><a href=# id="showOptPanel{$id}">Show search panel</a></li>
+		{END searchPanelTopButtons}	
 		
-				
 				
 				
 				
@@ -142,6 +148,26 @@
 {BEGIN searchform_block}
 <span {$search_hiddenattr} data-pageid="{$pageid}" data-brick="search" class="form-group">
 
+	{$simpleSearchFieldCombo}
+	
+	{$simpleSearchTypeCombo}
+ <div  class="input-group">
+{BEGIN searchform_text}
+	<input type="search" class="form-control" {$searchfor_attrs} size="25">
+{END searchform_text}
+	<span class="input-group-btn">
+	{BEGIN searchform_showall}
+		<button class="btn btn-default" {$showAllCont_attrs} {$showallbutton_attrs} title="Show all">
+			<span class="glyphicon glyphicon-remove"></span>
+		</button>
+	{END searchform_showall}
+	{BEGIN searchform_search}
+	<button {$searchbutton_attrs} class="btn btn-primary" >
+		<span class="glyphicon glyphicon-search"></span>
+	</button>
+	{END searchform_search}
+	</span>
+</div>
 		
 </span>
 {END searchform_block}
@@ -378,6 +404,9 @@
 	.bs-gridcell[data-field=label]:before {
 		content: "{$label t_code_system label}";
 	}
+	.bs-gridcell[data-field=listorder]:before {
+		content: "{$label t_code_system listorder}";
+	}
 	.bs-gridcell[data-field=rank]:before {
 		content: "{$label t_code_system rank}";
 	}
@@ -410,6 +439,32 @@
 									{END checkbox_column}
 
 																		
+									{BEGIN listorder_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$listorder_class}" data-field=listorder>
+									{BEGIN listorder_fieldheader}
+																				<span {$listorder_orderlinkattrs}>
+											{$label t_code_system listorder}
+										</span>
+									{END listorder_fieldheader}
+									</th>
+									{END listorder_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN rank_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$rank_class}" data-field=rank>
+									{BEGIN rank_fieldheader}
+																				<span {$rank_orderlinkattrs}>
+											{$label t_code_system rank}
+										</span>
+									{END rank_fieldheader}
+									</th>
+									{END rank_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN code_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$code_class}" data-field=code>
 									{BEGIN code_fieldheader}
@@ -432,19 +487,6 @@
 									{END label_fieldheader}
 									</th>
 									{END label_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN rank_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$rank_class}" data-field=rank>
-									{BEGIN rank_fieldheader}
-																				<span {$rank_orderlinkattrs}>
-											{$label t_code_system rank}
-										</span>
-									{END rank_fieldheader}
-									</th>
-									{END rank_fieldheadercolumn}
 									
 									
 									
@@ -515,6 +557,20 @@
 
 	
 
+	{BEGIN listorder_fieldcolumn}
+	<td class="bs-gridcell {$listorder_class}"  data-field=listorder {$rowstyle} {$recordattrs}>
+		{$listorder_value}
+	</td>
+{END listorder_fieldcolumn}
+
+
+	{BEGIN rank_fieldcolumn}
+	<td class="bs-gridcell {$rank_class}"  data-field=rank {$rowstyle} {$recordattrs}>
+		{$rank_value}
+	</td>
+{END rank_fieldcolumn}
+
+
 	{BEGIN code_fieldcolumn}
 	<td class="bs-gridcell {$code_class}"  data-field=code {$rowstyle} {$recordattrs}>
 		{$code_value}
@@ -527,13 +583,6 @@
 		{$label_value}
 	</td>
 {END label_fieldcolumn}
-
-
-	{BEGIN rank_fieldcolumn}
-	<td class="bs-gridcell {$rank_class}"  data-field=rank {$rowstyle} {$recordattrs}>
-		{$rank_value}
-	</td>
-{END rank_fieldcolumn}
 
 
 	{BEGIN defaultval_fieldcolumn}

@@ -101,20 +101,41 @@ if ($format == "entrylist" or $format == "entrylistclub")
     echo u_sendJsonPost($_SESSION['baseurl']."/rm_reports/entrylist.php", $rp_data);
 
 }
-elseif($format == "pursuitlaps")
+elseif($format == "pursuitlaps5" or $format == "pursuitlaps10")
 {
-    $rp_data['cols'] = array(
-        "class"   => array("label"=>"Class", "style"=>"width: 35%; text-align: left; height: 2em;"),
-        "sailnum" => array("label"=>"Sail No.", "style"=>"width: 15%; text-align: left;"),
-        "lap1"    => array("label"=>"Lap 1", "style"=>"width: 5%; text-align: center;"),
-        "lap2"    => array("label"=>"Lap 2", "style"=>"width: 5%; text-align: center;"),
-        "lap3"    => array("label"=>"Lap 3", "style"=>"width: 5%; text-align: center;"),
-        "lap4"    => array("label"=>"Lap 4", "style"=>"width: 5%; text-align: center;"),
-        "lap5"    => array("label"=>"Lap 5", "style"=>"width: 5%; text-align: center;"),
-        "lap6"    => array("label"=>"Lap 6", "style"=>"width: 5%; text-align: center;"),
-        "lap7"    => array("label"=>"Lap 7", "style"=>"width: 5%; text-align: center;"),
-        "code"=> array("label"=>"Code<br><small>e.g DNF</small>", "style"=>"width: 10%; text-align: center;"),
-    );
+    if ($format == "pursuitlaps5")
+    {
+        $rp_data['cols'] = array(
+            "class"   => array("label"=>"Class", "style"=>"width: 15%; text-align: left; height: 2em;"),
+            "sailnum" => array("label"=>"Sail No.", "style"=>"width: 10%; text-align: left;"),
+            "lap1"    => array("label"=>"Lap 1", "style"=>"width: 6%; text-align: center;"),
+            "lap2"    => array("label"=>"Lap 2", "style"=>"width: 6%; text-align: center;"),
+            "lap3"    => array("label"=>"Lap 3", "style"=>"width: 6%; text-align: center;"),
+            "lap4"    => array("label"=>"Lap 4", "style"=>"width: 6%; text-align: center;"),
+            "lap5"    => array("label"=>"Lap 5", "style"=>"width: 6%; text-align: center;"),
+            "code"=> array("label"=>"Code<br><small>e.g DNF</small>", "style"=>"width: 15%; text-align: center;"),
+        );
+        $rp_data['admin']['data_col'] = 5;
+    }
+    else
+    {
+        $rp_data['cols'] = array(
+            "class"   => array("label"=>"Class", "style"=>"width: 15%; text-align: left; height: 2em;"),
+            "sailnum" => array("label"=>"Sail No.", "style"=>"width: 10%; text-align: left;"),
+            "lap1"    => array("label"=>"Lap 1", "style"=>"width: 6%; text-align: center;"),
+            "lap2"    => array("label"=>"Lap 2", "style"=>"width: 6%; text-align: center;"),
+            "lap3"    => array("label"=>"Lap 3", "style"=>"width: 6%; text-align: center;"),
+            "lap4"    => array("label"=>"Lap 4", "style"=>"width: 6%; text-align: center;"),
+            "lap5"    => array("label"=>"Lap 5", "style"=>"width: 6%; text-align: center;"),
+            "lap6"    => array("label"=>"Lap 6", "style"=>"width: 6%; text-align: center;"),
+            "lap7"    => array("label"=>"Lap 7", "style"=>"width: 6%; text-align: center;"),
+            "lap8"    => array("label"=>"Lap 8", "style"=>"width: 6%; text-align: center;"),
+            "lap9"    => array("label"=>"Lap 9", "style"=>"width: 6%; text-align: center;"),
+            "lap10"    => array("label"=>"Lap 10", "style"=>"width: 6%; text-align: center;"),
+            "code"=> array("label"=>"Code<br><small>e.g DNF</small>", "style"=>"width: 15%; text-align: center;"),
+        );
+        $rp_data['admin']['data_col'] = 10;
+    }
 
     $rp_data['admin']['report'] = "pursuit laps";
     $rp_data['admin']['title'] = "Pursuit Laps";

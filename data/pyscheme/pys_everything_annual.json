@@ -1,0 +1,48 @@
+{
+  "admin": {
+    "name": "all club series and trophy races",
+    "version": "1.0",
+    "date-created": "2024-10-01",
+    "author": "Mark Elkington",
+    "data-year": "",
+    "file": "pys_series_annual.json",
+    "output": "xml"
+  },
+  "commands": {
+    "1": {
+      "mode": "series",
+      "attribute": "FROSTBITE",
+      "start-date": "",
+      "end-date": "",
+      "description": "SYC Frostbite series"
+    },
+    "2": {
+      "mode": "series",
+      "attribute": "SPRING",
+      "start-date": "",
+      "end-date": "",
+      "description": "SYC Spring series"
+    },
+    "3": {
+      "mode": "series",
+      "attribute": "SUMMER",
+      "start-date": "",
+      "end-date": "",
+      "description": "SYC Summer series"
+    },
+    "4": {
+      "mode": "series",
+      "attribute": "AUTUMN",
+      "start-date": "",
+      "end-date": "",
+      "description": "SYC Autumn series"
+    },
+    "5": {
+      "mode": "format",
+      "attribute": "trophy",
+      "start-date": "",
+      "end-date": "",
+      "description": "SYC trophy races"
+    }
+  }
+}

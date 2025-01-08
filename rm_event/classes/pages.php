@@ -32,7 +32,7 @@ class PAGES
 
         // create navbar
         $fields = array("eventid" => "", "version" => $this->cfg['sys_version'], "year" => date("Y"),
-                        "brand-label" => $this->cfg['brand']);
+                        "brand-label" => $this->cfg['brand'], "view" => $this->cfg['view_status']);
         $params = array("page" => "list", "active" => "", "start-year"=> $this->cfg['start_year'], "options"=>$this->cfg['options'], "contact"=> $contacts );
         $nav =$this->tmpl_o->get_template("navbar", $fields, $params);
 

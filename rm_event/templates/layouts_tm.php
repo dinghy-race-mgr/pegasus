@@ -94,7 +94,7 @@ EOT;
     $htm_contacts = "";
     foreach ($params['contact'] as $contact)
     {
-        // FIXME - use a modal when we have out own email service
+        // FIXME - use a modal when we have our own email service
         $htm_contacts.= <<<EOT
         <li><a class="dropdown-item text-info fs-5" href="{$contact['link']}" target="_BLANK">{$contact['name']} - {$contact['role']}</a></li>
 EOT;
@@ -106,7 +106,7 @@ EOT;
     for ($i = $current_year - 1; $i >= $params['start-year']; $i--)
     {
         $htm_year_select.= <<<EOT
-            <li><a class="dropdown-item text-info fs-5" href="#">$i</a></li>
+            <li><a class="dropdown-item text-info fs-5" href="rm_event.php?page=list&year=$i&view={view}">$i</a></li>
 EOT;
     }
 

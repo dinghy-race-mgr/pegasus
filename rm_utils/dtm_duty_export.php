@@ -1,272 +1,381 @@
 <?php
-
+// NOW OBSOLETE - REPLACED BY dutyman_export.php
 /*
-*
  * dtm_duty_export.php
  *
  * script to export duties from racemanager to the dutyman csv format
  *
- * usage: dtm_duty_export.php?start=&end=
+ * usage: dtm_duty_export.php?pagestate=init
  *
  * Arguments (* required)
+ *    event_form - event form required
+ *    duty_form -  duty form required
  *    start    -   start date (yyyy-mm-dd) *
  *    end      -   end date (yyyy-mm-dd)
  *    status   -   |draft|live|both| - default is live (only published events)
- *    tide     -   |Y|N| - default is N (do not include tide in event description)
- *    cleanup  -   |Y|N| if set to Y removes old export files of this type - defaults to Y
+ *
+ * Config Settings
+ *    tide     -   |true|false| - default is true (include tide in event description)
+ *    clean    -   |true|false| - default is true (removes old export files of this type)
  */
 
 $loc  = "..";
 $page = "dutyman duty export";
 define('BASE', dirname(__FILE__) . '/');
+$scriptname = basename(__FILE__);
+$today = date("Y-m-d");
+$styletheme = "flatly_";
+$stylesheet = "./style/rm_utils.css";
+
+require_once ("{$loc}/common/lib/util_lib.php");
 
 session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
 session_start();
 
-require_once ("$loc/config/rm_utils_cfg.php");
+// initialise session
+$init_status = u_initialisation("$loc/config/rm_utils_cfg.php", $loc, $scriptname);
 
-// set timezone
-if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
-
-// start log
-error_log(date('H:i:s')." -- rm_util DUTYMANAGER DUTY EXPORT --------------------[session: ".session_id()."]".PHP_EOL, 3, $_SESSION['syslog']);
-
-
-$target_dir = $_SESSION['dutyman']['loc']."/";
-$filename   = str_replace("date", date("YmdHi"), $_SESSION['dutyman']['duty_file']);
-$filepath = $target_dir.$filename;
-
-$_SESSION = parse_ini_file("../config/common.ini", false);
-$_SESSION['sql_debug'] = false;
-require_once("../common/classes/db_class.php");
-
-$start_date  = "";
-$end_date    = "";
-$status      = "live";
-$tide        = false;
-$cleanup     = true;
-
-$duty_instruction = array(
-    "ood_p"    => "PLEASE ARRIVE AT LEAST AN HOUR BEFORE THE PUBLISHED EVENT START",
-    "ood_a"    => "PLEASE ARRIVE AT LEAST AN HOUR BEFORE THE PUBLISHED EVENT START",
-    "ood_c"    => "PLEASE ARRIVE AT LEAST AN HOUR BEFORE THE PUBLISHED EVENT START",
-    "safety_d" => "PLEASE ARRIVE AT LEAST AN HOUR BEFORE THE PUBLISHED EVENT START",
-    "safety_c" => "PLEASE ARRIVE AT LEAST AN HOUR BEFORE THE PUBLISHED EVENT START",
-    "galley"   => "",
-    "bar"      => "",
-);
-
-// get input parameters
-$where = array();
-if (key_exists("start", $_REQUEST))
+if ($init_status)
 {
-    $start_date = date("Y-m-d", strtotime($_REQUEST['start']));
-    $where[] = " event_date >= '$start_date' ";
+    // set timezone
+    if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
+
+    // start log
+    error_log(date('H:i:s')." -- rm_util PUBLISH EVENTS ------- [session: ".session_id()."]".PHP_EOL, 3, $_SESSION['syslog']);
+
+    // set initialisation flag
+    $_SESSION['util_app_init'] = true;
 }
 else
 {
-    echo "ERROR! - start date for events not specified [start=YYYYMMDD]<br>";
-    exit("stopping ...");
+    u_exitnicely($scriptname, 0, "one or more problems with script initialisation",
+        "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
-if (key_exists("end", $_REQUEST))
-{
-    $end_date = date("Y-m-d", strtotime($_REQUEST['end']));
-    $where[] = " event_date <= '$end_date' ";
-}
-
-if (key_exists("status", $_REQUEST))
-{
-    if (strtolower($_REQUEST['status']) == "draft" OR strtolower($_REQUEST['status']) == "both")
-    {
-        $status = strtolower($_REQUEST['status']);
-    }
-}
-
-if ($status == "live")
-{
-    $where[] = " active = 1 ";
-}
-elseif ($status == "draft")
-{
-    $where[] = " active = 0 ";
-}
-
-if (key_exists("tide", $_REQUEST))
-{
-    if (strtolower($_REQUEST['tide']) == "y")
-    {
-        $tide = true;
-    }
-}
-
-if (key_exists("cleanup", $_REQUEST))
-{
-    if (strtolower($_REQUEST['cleanup']) == "n")
-    {
-        $cleanup = false;
-    }
-}
-
+require_once ("$loc/common/classes/db_class.php");
+require_once ("$loc/common/classes/template_class.php");
 
 // connect to database
 $db_o = new DB();
-echo <<<EOT
-<html>
-<head>
-<style>
-body {
-    margin-top: 20px;                           /* margin for navbar and footer */
-    margin-bottom: 20px;
-    font-family: Kalinga, Arial, sans-serif;    /* default font */
-    background-color: #FFFFFF;
-}
-</style>
-</head>
-<body>
-     Generating duty allocation details from raceManager as a csv file for import to dutyman<br><br>
-	 Using database server [{$_SESSION['db_host']}/{$_SESSION['db_name']}]<br><br>
-     Processing . . . (this may take a few minutes)<br><hr><br>
-     <b>get the csv DUTY import file from <a href="$filepath">HERE</a></br></b>
-	 <b>List of exported records:</b> 
-	 <table border=0 width=80%>			 
-EOT;
-html_flush();
 
-
-// get event records
-$where_str = implode(" AND ", $where);
-$sql = "SELECT * FROM t_event WHERE $where_str ORDER BY event_date ASC, event_order ASC";
-$rs = $db_o->db_get_rows($sql);
-$num_events = count($rs);
-
-// get duty code map
-$dutycode_map = array();
-$codes = $db_o->db_getsystemcodes("rota_type");
-foreach($codes as $code) { $dutycode_map["{$code['code']}"] = $code['label']; }
-
-// get events
-$event_total = 0;
-$duty_total = 0;
-$duty_arr = array();
-foreach ($rs as $k=>$row)
+foreach ($db_o->db_getinivalues(false) as $data)
 {
-    $event_total++;
+    $_SESSION["{$data['parameter']}"] = $data['value'];
+}
 
-    $id = $row['id'];
-    $event_name = $row['event_name'];
-    $tide ? $event_name = "$event_name [HW {$row['tide_time']} - {$row['tide_height']}m]" : $event_name = $event_name;
-    $duty_date = date("d/m/Y", strtotime($row['event_date']));
-    $duty_time = substr($row['event_start'], 0, 5);
+// get rota types
+$rota_types = $db_o->db_getsystemcodes("rota_type");
+$all_rotas = array();
+foreach($rota_types as $rota)
+{
+    $dutycode_map["{$rota['code']}"] = $rota['label'];
+    $all_rotas[] = $rota['code'];
+}
 
-    // get duties for event
-    $sql = "SELECT eventid, dutycode, person, swapable  FROM t_eventduty WHERE eventid = $id 
-            ORDER BY FIELD(dutycode, 'ood_p', 'ood_c', 'ood_a', 'safety_d', 'safety_c', 'galley', 'bar')";
-    $duty_rs = $db_o->db_get_rows($sql);
+// set templates
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/dutyman_tm.php"));
 
-    $duty_found = false;
+// set filenames and paths
+$target_dir = $_SESSION['dutyman']['loc']."/";
+$duty_fn   = str_replace("date", date("YmdHi"), $_SESSION['dutyman']['duty_file']);
+$duty_path   = $target_dir.$duty_fn;
+$event_fn   = str_replace("date", date("YmdHi"), $_SESSION['dutyman']['event_file']);
+$event_path   = $target_dir.$event_fn;
 
-    foreach ($duty_rs as $j=>$duty)
+
+// get arguments
+$pagestate = u_checkarg("pagestate", "set", "", "init");
+
+$pagefields = array(
+    "loc"           => $loc,
+    "theme"         => $styletheme,
+    "stylesheet"    => $stylesheet,
+    "title"         => "Dutyman DUTY Export",
+    "header-left"   => $_SESSION['sys_name'],
+    "header-right"  => "Export Duties to CSV ...",
+    "body"          => "",
+    "confirm"       => "Create Export",
+    "footer-left"   => "",
+    "footer-center" => "",
+    "footer-right"  => "",
+);
+
+/* ------------ confirm run script page ---------------------------------------------*/
+
+if (trim(strtolower($pagestate)) == "init")
+{
+
+    // present form to select json file for processing (general template)
+    $fields = array(
+        "instructions"  => "Creates DutyMan import CVS format files for EVENTS and/or DUTIES between start and end dates for selected rotas.  
+                       These can be used to update DutyMan with new events or duty allocations when the programme is first published <br><br>
+                       If this is your first time using this process please read the 
+                       <a href='../data/dutyman/detailed_instructions.pdf'>Detailed Instructions</a>.",
+        "script"        => "dtm_duty_export.php?pagestate=submit"
+    );
+
+    $pagefields['body'] =  $tmpl_o->get_template("dtm_export_form", $fields, array("rotas" => $dutycode_map));
+
+    // render page
+    echo $tmpl_o->get_template("basic_page", $pagefields, array());
+}
+
+/* ------------ submit page ---------------------------------------------*/
+
+elseif (trim(strtolower($pagestate)) == "submit")
+{
+
+    // get arguments for processing
+    $event_file = u_checkarg("event_file", "setbool", "1");
+
+    $duty_file = u_checkarg("duty_file", "setbool", "1");
+
+    $start_date = u_checkarg("start", "set", "", "");      // start_date
+    $start_date ? $start_date =  date("Y-m-d", strtotime($start_date)) : $start_date = "";
+
+    $end_date = u_checkarg("end", "set", "", "");          // end_date
+    $end_date ? $end_date = date("Y-m-d", strtotime($end_date)) : $end_date = "";
+
+    $rotas = $_REQUEST['rotas'];     // multiple select received as array
+
+    // check args status
+    $arg_status = check_args($event_file, $duty_file, $start_date, $end_date, $rotas);
+
+    // handle $rota information - if "all" selected
+    if (in_array("all", $rotas))
     {
+        $rotas = $all_rotas;
+    }
 
-        $duty_found = true;
-        $duty_total++;
+    // create lists from array
+    foreach($rotas as $rota)
+    {
+        $rota_list.= "$rota,";
+        $rota_list_quote.= "'$rota',";
+    }
+    $rota_list = rtrim($rota_list, ",");
+    $rota_list_quote = rtrim($rota_list_quote, ",");
 
-        // extract name into first and last name
-        // works for John Allen MBE, Fred van Tam, Sir Paul McCartney OBE, Marie Anne Beard etc.
-        $name_out = get_name($duty['person']);
-        $first_name = $name_out["fn"];
-        $last_name = $name_out["fm"];
+    echo "<pre>".print_r($_REQUEST,true)."</pre>";
+    echo "<pre>-- $rota_list</pre>";
+    echo "<pre>-- $rota_list_quote</pre>";
+    echo "<pre>".print_r($rotas,true)."</pre>";
 
-        $duty_type = $dutycode_map["{$duty['dutycode']}"];
 
-        // check if duty member is in t_rotamember table
-        $exists = check_member(trim(preg_replace('/\s+/', ' ',$duty['person'])));
-        $exists ? $exist_check = "" : $exist_check = "**** duty person missing ****";
-
-        $duty['swapable'] == "1" ? $swapable = "YES" : $swapable = "NO";
-
-        $duty_arr[] = array(
-            "duty_date"  => $duty_date,
-            "duty_time"  => $duty_time,
-            "duty_type"  => $duty_type,
-            "event"      => $event_name,
-            "first_name" => $first_name,
-            "last_name"  => $last_name,
-            "instruction" => $duty_instruction["{$duty['dutycode']}"],
-            "swappable"   => $swapable
+    if (!empty($arg_status))
+    {
+        // output report to screen
+        $fields = array(
+            "start"     => $start_date,
+            "end"       => $end_date,
+            "rotas"     => $rota_list_quote,
+            "host"      => $_SESSION['db_host'],
+            "database"  => $_SESSION['db_name'],
         );
 
-        echo <<<EOT
-        <tr>
-            <td>{$event_name}</td>
-            <td>{$duty_date}</td>
-            <td>{$duty_time}</td>
-            <td>{$duty_type}</td>
-            <td>{$first_name} {$last_name}</td>
-            <td>swap: $swapable</td>
-            <td>{$exist_check}</td>
-        </tr>
-EOT;
-        html_flush();
+        $event_file ? $fields['event_file'] = "YES" : $fields['event_file'] = "NO";
+        $duty_file ? $fields['duty_file'] = "YES" : $fields['duty_file'] = "NO";
 
+        $pagefields['body'] =  $tmpl_o->get_template("dtm_export_err", $fields, array("errors" => $arg_status) );  // report body
+        echo $tmpl_o->get_template("basic_page", $pagefields, array());                          // full rendered page
     }
-    if ($duty_found)
+    else
     {
-        echo "<tr><td cols=6> ----------------- </td></tr>";
+
+        // get duty instructions
+        $duty_instruction = get_duty_instructions();
+
+        // get event formats information
+        $ev_format_types = get_event_formats();
+
+        // get events
+        $events = get_events($start_date, $end_date);
+        $num_events = count($events);
+
+        // process events
+        $event_total = 0;
+        $duty_total = 0;
+        $duty_arr = array();
+        $event_arr = array();
+        foreach ($events as $k=>$event)
+        {
+            $event_total++;
+
+            $event['event_format'] ? $ev_format = $ev_format_types[$event['event_format']] : $ev_format = "none";
+
+            $_SESSION['dutyman']['tide'] ? $event_name = "{$event['event_name']} [HW {$event['tide_time']} - {$event['tide_height']}m]" : $event_name = $event['event_name'];
+            $duty_date = date("d/m/Y", strtotime($event['event_date']));
+            $duty_time = substr($event['event_start'], 0, 5);
+
+            $event_arr[] = array(
+                "event"       => $event['event_name'],
+                "date"        => $duty_date,
+                "start"       => substr($event['event_start'], 0, 8),     // FIXME should this be dutytime
+                "description" => "tide: ".substr($event['tide_time'], 0, 5)." - ".trim($event['tide_height'])."m", // FIXME is this the format I want
+            );
+
+            // get duties
+            $duty_rs = get_duties($event['id'], $rota_list_quote);
+
+            // process duties
+            foreach ($duty_rs as $j=>$duty)
+            {
+                $duty_total++;
+
+                $name_out = get_name($duty['person']);
+
+                $duty_type = $dutycode_map["{$duty['dutycode']}"];
+
+                $duty['swapable'] == "1" ? $swapable = "YES" : $swapable = "NO";
+
+                $duty_arr[] = array(
+                    "duty_date"   => $duty_date,
+                    "duty_time"   => $duty_time,
+                    "duty_type"   => $duty_type,
+                    "event"       => $event_name,
+                    "swappable"   => $swapable,
+                    "reminders"   => "Yes",
+                    "duty_notify" => "",
+                    "duty_instructions" => $duty_instruction["{$duty['dutycode']}"],
+                    "duty_dbid"   => "",
+                    "notes"       => "",
+                    "confirmed"   => "No",
+                    "first_name"  => $name_out["fn"],
+                    "last_name"   => $name_out["fm"],
+                    "member_name" => "",
+                    "mode"        => "",
+                    "genpswd"     => "",
+                    "date_format" => "",
+                    "exists"      => check_member(trim(preg_replace('/\s+/', ' ', $duty['person'])))
+                );
+            }
+        }
+
+
+
+        // delete any csv files to avoid them being cached
+        if ($duty_file)
+        {
+            if ($_SESSION['dutyman']['clean'])
+            {
+                foreach (GLOB($target_dir . "dutyman_duty*.csv") AS $file) { unlink($file); }
+            }
+
+            $duty_cols = array("Duty Date","Duty Time","Duty Type","Event","Swappable",
+                "Reminders","Duty Notify","Duty Instructions","Duty DBID","Notes",
+                "Confirmed","First Name","Last Name","Member Name","Mode","GenPswd","Date Format");
+
+            $duty_file_status = create_csv_file($duty_path, $duty_cols, $duty_arr, array("exists"));
+        }
+        else
+        {
+            $duty_file_status = "not processed";
+        }
+
+        if ($event_file) {
+            if ($_SESSION['dutyman']['clean']) {
+                foreach (GLOB($target_dir . "dutyman_event*.csv") AS $file) { unlink($file); }
+            }
+
+            $event_cols = array("event", "date", "start", "description");
+
+            $event_file_status = create_csv_file($event_path, $event_cols, $event_arr, array());
+        }
+        else
+        {
+            $event_file_status = "not processed";
+        }
+
+
+        // output report to screen
+        $fields = array(
+            "start"     => $start_date,
+            "end"       => $end_date,
+            "rotas"     => $rota_list_quote,
+            "dutypath"  => $duty_path,
+            "eventpath" => $event_path,
+            "host"      => $_SESSION['db_host'],
+            "database"  => $_SESSION['db_name'],
+        );
+        $params = array(
+            "duty_file_status"  => $duty_file_status,
+            "event_file_status" => $event_file_status,
+            "duty_data"         => $duty_arr,
+            "event_data"        => $event_arr,
+        );
+
+        $pagefields['body'] =  $tmpl_o->get_template("dtm_export_report", $fields, $params);  // report body
+        echo $tmpl_o->get_template("basic_page", $pagefields, array());                                                 // full rendered page
     }
+
 }
 
-echo <<<EOT
-     </table>
-	 <br><br>
-	 Programme events processed: $event_total<br>
-	 Duty allocations transferred: $duty_total<br>
-EOT;
-html_flush();
-
-if ($cleanup)
+function check_args($event_file, $duty_file, $start_date, $end_date, $rotas)
 {
-    // delete any csv files to avoid them being cached
-    foreach (GLOB($target_dir . "dutyman_duty*.csv") AS $file) { unlink($file); }
+    $arg_status = array();
+
+    if (!$event_file and !$duty_file)
+    {
+        $arg_status[] = array("err" => 1, "msg" => "no output files have been selected");
+    }
+
+    if (empty($start_date) or empty($end_date))
+    {
+        // missing date information
+        $arg_status[] = array("err" => 2, "msg" => "either the start date or end date is missing");
+    }
+    elseif (strtotime($start_date) >= strtotime($end_date))
+    {
+        // start is after end
+        $arg_status[] = array("err" => 3, "msg" => "start date is after end date");
+    }
+
+    if (empty($rotas))
+    {
+        // no rotas requested
+        $arg_status[] = array("err" => 4, "msg" => "no rotas have been selected");
+    }
+
+    return $arg_status;
 }
 
-// now create csv file
-$fp = fopen($filepath, 'wb');
-
-$cols = array("Duty Date","Duty Time","Duty Type","Event","Swappable",
-              "Reminders","Duty Notify","Duty Instructions","Duty DBID","Notes",
-              "Confirmed","First Name","Last Name","Member Name","Mode","GenPswd","Date Format");
-
-fputcsv($fp, $cols, ',');
-foreach ($duty_arr as $k=>$v)
+function get_events($start_date, $end_date)
 {
-    $out_arr = array(
-        "Duty Date"   => $v['duty_date'],
-        "Duty Time"   => $v['duty_time'],
-        "Duty Type"   => $v['duty_type'],
-        "Event"       => $v['event'],
-        "Swappable"   => $v['swappable'],
-        "Reminders"   => "Yes",
-        "Duty Notify" => "",
-        "Duty Instructions" => $v['instruction'],
-        "Duty DBID"   => "",
-        "Notes"       => "",
-        "Confirmed"   => "No",
-        "First Name"  => $v['first_name'],
-        "Last Name"   => $v['last_name'],
-        "Member Name" => "",
-        "Mode"        => "",
-        "GenPswd"     => "",
-        "Date Format" => ""
-    );
-    fputcsv($fp, $out_arr, ',');
+    global $db_o;
+
+    $sql = "SELECT * FROM t_event WHERE `event_date` >= '$start_date' AND `event_date` <= '$end_date' AND `active` = 1 
+                    ORDER BY `event_date` ASC, `event_order` ASC";
+    //echo "<pre>$sql</pre>";
+    $rs = $db_o->db_get_rows($sql);
+
+    return $rs;
 }
-fclose($fp);
 
-// now output download link to file
-echo "<b>get the csv DUTY import file from <a href=\"$filepath\">HERE</a></br></b>";
+function get_event_formats()
+{
+    global $db_o;
 
+    $sql = "SELECT * FROM t_cfgrace ORDER BY id ASC";
+    $rs = $db_o->db_get_rows($sql);
+    $race_formats = array();
+    foreach ($rs as $row)
+    {
+        $race_formats[$row['id']] = $row['race_name'];
+    }
+
+    return $race_formats;
+}
+
+function get_duties($eventid, $rota_list)
+{
+    global $db_o;
+
+    $sql = "SELECT `eventid`, `dutycode`, `person`, `swapable`  FROM t_eventduty WHERE `eventid` = $eventid AND `dutycode` IN ($rota_list) ORDER BY FIELD(`dutycode`, $rota_list)";
+    //echo "<pre>$sql</pre>";
+    $duty_rs = $db_o->db_get_rows($sql);
+
+    return $duty_rs;
+}
 
 function html_flush()
 {
@@ -277,6 +386,8 @@ function html_flush()
 
 function get_name($name)
 {
+    // extract name into first and last name
+    // works for John Allen MBE, Fred van Tam, Sir Paul McCartney OBE, Marie Anne Beard etc.
     $name_arr = explode(' ', $name);
     $count = count($name_arr);
     $last = end($name_arr);
@@ -313,9 +424,55 @@ function check_member($name)
     return $exists;
 }
 
+function get_duty_instructions()
+{
+    $duty_instruction = array(
+        "ood_p"    => "PLEASE ARRIVE AT LEAST AN HOUR BEFORE THE PUBLISHED EVENT START",
+        "ood_a"    => "PLEASE ARRIVE AT LEAST AN HOUR BEFORE THE PUBLISHED EVENT START",
+        "ood_c"    => "PLEASE ARRIVE AT LEAST AN HOUR BEFORE THE PUBLISHED EVENT START",
+        "safety_d" => "PLEASE ARRIVE AT LEAST AN HOUR BEFORE THE PUBLISHED EVENT START",
+        "safety_c" => "PLEASE ARRIVE AT LEAST AN HOUR BEFORE THE PUBLISHED EVENT START",
+        "galley"   => "",
+        "bar"      => "",
+    );
 
+    return $duty_instruction;
+}
 
+function create_csv_file($file, $cols, $rows, $excludes = array())
+{
+    // FIXME - this function is used elsewhere in rm_utils
 
+    // remove any fields not required in CSV file
+    foreach ($rows as $k => $row) {
+        foreach ($excludes as $exclude) {
+
+            if (key_exists($exclude, $row)) {
+                unset($rows[$k][$exclude]);
+            }
+        }
+    }
+
+    $status = "0";
+    $fp = fopen($file, 'w');
+    if (!$fp) { $status = "1"; }
+
+    if ($fp)
+    {
+        $r = fputcsv($fp, $cols, ',');
+        if (!$r) { $status = "2"; }
+
+        foreach ($rows as $row)
+        {
+            if ($status != "0") { break; }
+            $r = fputcsv($fp, $row, ',');
+            if (!$r) {$status = "3"; }
+        }
+        fclose($fp);
+    }
+
+    return $status;
+}
 
 
 

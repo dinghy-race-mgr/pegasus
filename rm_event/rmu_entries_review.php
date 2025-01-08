@@ -8,12 +8,14 @@ session_id('sess-rmuevent');
 session_start();
 
 error_reporting(E_ALL);  //set for live operation to E_ERROR
-require_once("include/rm_event_lib.php");
+
+require_once("../common/classes/db.php");
+require_once("../common/lib/rm_event_lib.php");
 require_once("classes/template.php");
-require_once("classes/db.php");
+
 
 // initialise application
-$cfg = set_config("config.ini", array("rm_event"), true);
+$cfg = set_config("../config/rm_event.ini", array("rm_event"), true);
 $cfg['logfile'] = str_replace("_date", date("_Y"), $cfg['logfile']);
 
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
@@ -73,7 +75,6 @@ $entries = $db_o->run($sql, array($eid) )->fetchall();
 
 // process entries
 $entries = validate_entries($entries);
-
 
 // produce body of report
 $fields = array(

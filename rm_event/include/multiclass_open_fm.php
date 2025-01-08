@@ -76,7 +76,7 @@ $fields_bufr = <<<EOT
 <div class="row mb-3 gx-5">
     <div class="col-md-6">
         <div class="form-floating">           
-            <input type="text" class="form-control" id="boatname" name="boatname" placeholder="name / sponsor &hellip;" value="" /> 
+            <input type="text" class="form-control" id="boatname" name="boatname" placeholder="e.g Black Pearl &hellip;" value="" /> 
             <label for="floatingInput" class="label-style">Boat Name / Sponsor</label>          
         </div>
     </div>

@@ -102,6 +102,7 @@ exit("exit status - ".$status);
 
 function create_csv_file($file, $cols, $rows)
 {
+    // FIXME - this function is used elsewhere in rm_utils
 $status = "0";
 $fp = fopen($file, 'w');
 if (!$fp) { $status = "1"; }

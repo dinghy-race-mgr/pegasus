@@ -32,10 +32,11 @@
 
 */
 
-require_once("include/rm_event_lib.php");
+require_once("../common/classes/db.php");
+require_once("../common/lib/rm_event_lib.php");
 require_once("classes/pages.php");
 require_once("classes/template.php");
-require_once("classes/db.php");
+
 
 $cfg = array(
     "db_host" => "localhost",

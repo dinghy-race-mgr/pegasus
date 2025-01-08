@@ -47,21 +47,22 @@ foreach ($rpData['fleets'] as $key=>$fleet )       // loop over fleets
 EOT;
     }
 
+    // get lap columns
+    $lap_col = "";
+    for ($i = 1; $i <= $rpData['admin']['data_col']; $i++)
+    {
+        $lap_col.= "<td style='border: solid 1px black; width: 6%; '>&nbsp;</td>";
+    }
+
     $row_bufr = "";
     foreach ($rpData['rows'][$key] as $row)
     {
        $row_bufr.= <<<EOT
         <tr >
-            <td style="border: solid 1px black;">{$row['class']}</td>
-            <td style="border: solid 1px black; text-align: right; margin-right:2em">{$row['sailnum']}&nbsp;&nbsp;&nbsp;</td>
-            <td style="border: solid 1px black;">&nbsp;</td>
-            <td style="border: solid 1px black;">&nbsp;</td>
-            <td style="border: solid 1px black;">&nbsp;</td>
-            <td style="border: solid 1px black;">&nbsp;</td>
-            <td style="border: solid 1px black;">&nbsp;</td>
-            <td style="border: solid 1px black;">&nbsp;</td>
-            <td style="border: solid 1px black;">&nbsp;</td>
-            <td style="border: solid 1px black;">&nbsp;</td>
+            <td style="border: solid 1px black; width: 15%; " >{$row['class']}</td>
+            <td style="border: solid 1px black; width: 10%; text-align: right; margin-right:2em">{$row['sailnum']}&nbsp;&nbsp;&nbsp;</td>
+            $lap_col
+            <td style="border: solid 1px black; width: 15%; ">&nbsp;</td>
         </tr>
 EOT;
 

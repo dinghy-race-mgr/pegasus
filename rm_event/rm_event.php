@@ -8,17 +8,17 @@
 // start session
 session_id('sess-rmevent');
 session_start();
-
+error_reporting(E_ALL);
 // error_reporting(E_ERROR);  // turn off warnings for live operation
-require_once("include/rm_event_lib.php");
+require_once("../common/classes/db.php");
+require_once("../common/lib/rm_lib.php");
+require_once("../common/lib/rm_event_lib.php");
 require_once("classes/pages.php");
 require_once("classes/template.php");
-require_once("classes/db.php");
-require_once("../common/lib/rm_lib.php");
 require_once("include/rm_event_fields.php");
 
 // initialise application
-$cfg = set_config("config.ini", array("rm_event"), true);   // FIXME location of ini file
+$cfg = set_config("../config/rm_event.ini", array("rm_event"), true);
 $cfg['logfile'] = str_replace("_date", date("_Y"), $cfg['logfile']);
 
 // check "view" status - allows user to ignore entry restrictions
