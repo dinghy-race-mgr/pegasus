@@ -1,26 +1,31 @@
 <?php
+/*
+ *  Simple script to load help text held in xml format
+ */
 require_once ("../common/lib/util_lib.php");
 require_once ("../common/classes/db_class.php");
 
 session_start();
 unset($_SESSION);
-$_SESSION = parse_ini_file("../config/common.ini", false);
-$common_ini_file = "../config/common.ini";
+
+// data files
+$common_ini_file = "../config/common.ini";              // database access information
+$xmlfile = "../config/help_text.xml";                   // file holding help information
+
+// initialise database access
+$_SESSION = parse_ini_file($common_ini_file, false);
 $_SESSION['sql_debug'] = false;
-echo "<pre>".print_r($_SESSION,true)."</pre>";
-
-
-// truncate t_help
 $db_o = new DB();
+
+// truncate t_help table
 $rst = $db_o->db_truncate(array("t_help"));
 
-// truncate table
-// xml import file
-$file = "../config/help_text.xml";
-$xmldata = simplexml_load_file($file) or die("Failed to load file");
-$i = 0;
+// decode xml import file
+$xmldata = simplexml_load_file($xmlfile) or die("Failed to load file");
 
+// load each help topic
 $fields = "INSERT INTO t_help(`category`, `question`, `answer`, `notes`, `author`, `rank`, `active`)";
+$i = 0;
 foreach($xmldata->children() as $topic) {
 
     if (!empty($topic->answer))             // don't load topics without answers
@@ -37,13 +42,9 @@ foreach($xmldata->children() as $topic) {
         $error = "insert failed";
     }
 
-
     echo "$i: {$topic->question} - $error <br>";
 }
 
-//$first_part = "INSERT INTO t_help(`category`, `question`, `answer`, `notes`, `author`, `rank`, `active`) VALUES ";
-//$sql = $first_part.rtrim($values, ',').";";
-//echo "<pre>$sql</pre>";
-//$insert = $db_o->db_query($sql);
+// confirm number of topics loaded
 echo "$i topics inserted into t_help<br>";
 exit("done");

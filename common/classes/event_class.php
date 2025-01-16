@@ -88,9 +88,6 @@ class EVENT
     public function __construct(DB $db)
 	{
 	    $this->db = $db;
-
-        /* FIXME - is theis the best way to do this - should I have a PROGRAMME class  which act
-           on all events in the programme, and an EVENT class which acts on a specific event */
 	}
 
     public function count_events($constraint)
@@ -104,7 +101,7 @@ class EVENT
             $where = implode(' AND ', $clause);
         }
 
-        $query = "SELECT id  FROM t_event WHERE $where AND active = 1 ";
+        $query = "SELECT `id` FROM t_event WHERE $where AND `active` = 1 ";
         $detail = $this->db->db_get_rows( $query );
 
         return count($detail);
@@ -115,9 +112,9 @@ class EVENT
         $formats = array();
 
         $where = "WHERE 1=1 ";
-        if ($active) { $where.= " AND active = '1' "; } 
+        if ($active) { $where.= " AND `active` = '1' "; }
         
-        $query = "SELECT id, race_code, race_name FROM t_cfgrace $where ORDER BY race_name";
+        $query = "SELECT `id`, `race_code`, `race_name` FROM t_cfgrace $where ORDER BY `race_name`";
         $results = $this->db->db_get_rows( $query );
 
         foreach ($results as $value)
@@ -169,42 +166,7 @@ class EVENT
 
         return $detail;       
     }
-
-// NOT USED ANYWHERE
-//    public function geteventsfromdate($date)
-//    /*
-//    Returns all events from specified event - ignores demo events
-//    */
-//    {
-//        $formats = $this->event_geteventformats(true);    // get names for race formats
-//
-//        $where  = " WHERE event_name NOT LIKE '%DEMO%' AND event_date>='$date'
-//                    AND event_type != 'noevent' AND active = 1";
-//        $query = "SELECT * FROM t_event $where ORDER BY event_date ASC LIMIT 1";
-//        //echo "<pre>$query</pre>";
-//        $detail = $this->db->db_get_rows( $query );
-//        if (empty($detail))       // nothing found
-//        {
-//            $detail = false;
-//        }
-//        else
-//        {
-//            foreach($detail as $k=>$row)
-//            {
-//                if (array_key_exists($row['event_format'], $formats))
-//                {
-//                    $detail[$k]['race_name'] = $formats[$row['event_format']];
-//                }
-//                else
-//                {
-//                    $detail[$k]['race_name'] = "";
-//                }
-//            }
-//        }
-//
-//        return $detail;
-//    }
-
+    
 
     public function get_events($type, $status, $period = array(), $constraints = array())
         /*
@@ -216,12 +178,12 @@ class EVENT
          *
          */
     {
-        $select = "SELECT id, event_date, TIME_FORMAT(event_start, '%H:%i') AS event_start, event_order, event_name, series_code, series_code_extra,  
-                          event_type, event_format,event_entry, event_status, event_open, event_ood, tide_time, tide_height, start_scheme,
-                          start_interval, timerstart, ws_start, wd_start, ws_end, wd_end, event_notes, 
-                          result_notes, result_valid, result_publish, weblink, 
-                          webname, display_code, active, upddate, updby FROM t_event";
-        $order =  " ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
+        $select = "SELECT `id`, `event_date`, TIME_FORMAT(`event_start`, '%H:%i') AS `event_start`, `event_order`, `event_name`, `series_code`, 
+                          `series_code_extra`, `event_type`, `event_format`, `event_entry`, `event_status`, `event_open`, `event_ood`, 
+                          `tide_time`, `tide_height`, `start_scheme`, `start_interval`, `timerstart`, `ws_start`, `wd_start`, `ws_end`, `wd_end`, 
+                          `event_notes`, `result_notes`, `result_valid`, `result_publish`, `weblink`, `webname`, `display_code`, `active`, `upddate`, `updby` 
+                          FROM t_event ";
+        $order =  " ORDER BY `event_date` ASC, `event_order` ASC, `event_start` ASC  ";
         $where = "1=1";
         $where_period = "";
         $where_type = "";
@@ -233,29 +195,29 @@ class EVENT
         {
             if (array_key_exists("start", $period))
             {
-                $where_period.= " AND `event_date`>='".date("Y-m-d", strtotime($period['start']))."'";
+                $where_period.= " AND `event_date`>='".date("Y-m-d", strtotime($period['start']))."' ";
             }
             if (array_key_exists("end", $period))
             {
-                $where_period.= " AND `event_date`<='".date("Y-m-d", strtotime($period['end']))."'";
+                $where_period.= " AND `event_date`<='".date("Y-m-d", strtotime($period['end']))."' ";
             }
         }
 
         if ($type != "all") {
             if ($type == "not_noevent") {
-                $where_type = " AND `event_type` != 'noevent'";
+                $where_type = " AND `event_type` != 'noevent' ";
             } elseif ($type == "racing") {
-                $where_type = " AND event_format > 0 AND event_type ='racing'";
+                $where_type = " AND `event_format` > 0 AND `event_type` ='racing' ";
             } else {
-                $where_type = " AND `event_type` = '$type'";
+                $where_type = " AND `event_type` = '$type' ";
             }
         }
 
         if ($status != "all") {
             if ($status == "active") {
-                $where_status = " AND `active` = 1 AND event_name NOT LIKE '%DEMO%'";
+                $where_status = " AND `active` = 1 AND `event_name` NOT LIKE '%DEMO%' ";
             } elseif ($status == "not_active") {
-                $where_status = " AND `active` = 0 AND event_name NOT LIKE '%DEMO%'";
+                $where_status = " AND `active` = 0 AND `event_name` NOT LIKE '%DEMO%' ";
             } elseif ($status == "demo") {
                 $where_status = " AND `event_name` LIKE '%DEMO%'";
             }
@@ -274,10 +236,12 @@ class EVENT
 
         $detail = $this->db->db_get_rows( $query );
         
-        if (empty($detail))       // nothing found
+        if (empty($detail))                               // nothing found
         {
             $detail = false;
-        } else {
+        }
+        else
+        {
             $formats = $this->get_event_formats(true);    // get names for race formats
             foreach ($detail as $k => $row) {
                 if (array_key_exists($row['event_format'], $formats)) {
@@ -696,26 +660,20 @@ class EVENT
     
     public function racecfg_findbyname($name, $active = true)
     {
-        if ($active)
-        {
-            $query  = "SELECT * FROM t_cfgrace WHERE race_name = '$name' AND active=1";
-        }
-        else
-        {
-            $query  = "SELECT * FROM t_cfgrace WHERE race_name = '$name'";
-        }
+        $where = " `race_name` = '$name' ";
+        if ($active) { $where.= " AND `active` = 1 "; }
+
+        $query = "SELECT * FROM t_cfgrace WHERE ".$where ;
+
         $detail = $this->db->db_get_row( $query );
-        if (empty($detail))
-        {
-            $detail = false;
-        }
+        if (empty($detail)) { $detail = false; }
         return $detail;
     }
 
     public function event_getracecfg($racecfgid, $eventid = 0)
     {
         // return race cfg details as array
-        $query  = "SELECT * FROM t_cfgrace WHERE id = $racecfgid AND active=1";       
+        $query  = "SELECT * FROM t_cfgrace WHERE `id` = $racecfgid AND `active` = 1 ";
         $detail = $this->db->db_get_row( $query );
         if (empty($detail)) 
         { 
@@ -735,7 +693,6 @@ class EVENT
                     $detail['start_interval'] = $_SESSION["e_$eventid"]['ev_startint'];
                 }
             }
-
         }       
         return $detail;
     }
@@ -853,11 +810,11 @@ class EVENT
             return false; // code not valid
         }
 
-        $query = "SELECT a.id as id, seriescode, seriesname, a.seriestype as seriestype, b.seriestype as seriestypename,
-                  race_format, startdate, enddate, merge, classresults, discard, nodiscard, multiplier, avgscheme, dutypoints, 
-                  maxduty, opt_upload, opt_style, opt_turnout, opt_scorecode, opt_clubnames, opt_pagebreak, opt_racelabel, a.notes
-                  FROM t_series as a JOIN t_cfgseries as b ON a.seriestype=b.id WHERE a.active=1
-                  AND seriescode = '$rootcode'  ORDER BY seriesname ASC";
+        $query = "SELECT a.`id` as `id`, `seriescode`, `seriesname`, a.`seriestype` as `seriestype`, b.`seriestype` as `seriestypename`,
+                  `race_format`, `startdate`, `enddate`, `merge`, `classresults`, `discard`, `nodiscard`, `multiplier`, `avgscheme`, `dutypoints`, 
+                  `maxduty`, `opt_upload`, `opt_style`, `opt_turnout`, `opt_scorecode`, `opt_clubnames`, `opt_pagebreak`, `opt_racelabel`, a.`notes`
+                  FROM t_series as a JOIN t_cfgseries as b ON a.`seriestype`=b.`id` WHERE a.`active` = 1
+                  AND `seriescode` = '$rootcode'  ORDER BY `seriesname` ASC";
 
         $detail = $this->db->db_get_row( $query );
 
@@ -875,7 +832,7 @@ class EVENT
     public function event_getseriescodes()
     {    
         // this method gets all series that are active to create a codelist                                                            
-        $query = "SELECT seriescode, seriesname FROM t_series WHERE active=1 ORDER BY seriesname ASC";
+        $query = "SELECT `seriescode`, `seriesname` FROM t_series WHERE `active` = 1 ORDER BY `seriesname` ASC";
      
         $result = $this->db->db_get_rows( $query );
 
@@ -897,10 +854,9 @@ class EVENT
     public function series_eventarr($code)
     {
         // gets list of events that are part of the specified series
-//        $query = "SELECT id FROM t_event WHERE active=1
-//                  AND series_code = '$code' ORDER BY event_date ASC, event_start ASC";
-        $query = "SELECT id FROM t_event WHERE active=1
-                  AND series_code = '$code' OR series_code_extra LIKE '$code' ORDER BY event_date ASC, event_start ASC";
+
+        $query = "SELECT `id` FROM t_event WHERE `active` = 1
+                  AND `series_code` = '$code' OR `series_code_extra` LIKE '$code' ORDER BY `event_date` ASC, `event_start` ASC";
         $detail = $this->db->db_get_rows( $query );
 
         if (empty($detail))
@@ -927,17 +883,6 @@ class EVENT
             return false;   
         }
 
-//        // archive entry data to table a_entry
-//        $num_del = $this->db->db_delete("a_lap", array("eventid" => $eventid));
-//        $detail = $this->db->db_get_rows( "SELECT * FROM t_entry WHERE eventid = $eventid" );
-//        if ($detail)
-//        {
-//            foreach ($detail as $row)
-//            {
-//                $insert = $this->db->db_insert("a_entry", $row );
-//            }
-//        }
-
         // clear tables
         $msg = "";
         $constraint = array("eventid"=>$eventid);
@@ -949,11 +894,7 @@ class EVENT
         $del === false ? $msg.="FAILED - t_lap, " : $msg.="t_lap, ";
         $del = $this->db->db_delete("t_racestate", $constraint);    // race state
         $del === false ? $msg.="FAILED - t_racestate, " : $msg.="t_racestate, ";
-//        if ($_SESSION["e_$eventid"]['pursuit'])
-//        {
-//            $del = $this->db->db_delete("t_finish", $constraint);       // pursuit finishing positions
-//            $del === false ? $msg.="FAILED - t_finish, " : $msg.="t_finish, ";
-//        }
+
         $msg = rtrim($msg, ", ");
 
         // set event status

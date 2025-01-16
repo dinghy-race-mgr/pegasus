@@ -16,12 +16,12 @@
             <p>The courses can be viewed by selecting the CourseFinder option on the Status Page</p>
 
             <!-- p>A paper copy of the course guide should be on the OOD desk in the race box -
-                <a href="https://www.starcrossyc.org.uk/racing/apps/course-guide" target="_blank">there is an online
+                <a href="https://www.starcrossyc.org.uk/pegasus_stx/rm_coursefinder/rm_coursefinder.php?pagestate=init" target="_blank">there is an online
                     version here
                 </a>
             </p -->
             <p>An online copy of the buoy locations <a
-                    href="https://www.starcrossyc.org.uk/racing/essentials/buoy-chart" target="_blank">can be found here
+                    href="https://www.starcrossyc.org.uk/buoy-chart" target="_blank">can be found here
             </a>
             </p>
         ]]></answer>
@@ -132,7 +132,7 @@
         <question>Where can I find the Sailing Instructions?</question>
         <answer><![CDATA[
             <p>The Starcross YC Sailing Instructions for club racing can be found on the club website <a
-                href="https://www.starcrossyc.org.uk/racing/essentials/sailing-instructions-v3" target="_BLANK">on this
+                href="https://www.starcrossyc.org.uk/images/sailing_committee/documents/syc_sailinginstructions_v3-7.pdf" target="_BLANK">on this
             page
         </a>
         ]]></answer>
@@ -250,7 +250,7 @@
         <question>what is the ENTRIES page for?</question>
         <answer><![CDATA[
             <p>This page allows you to enter boats into the race and manage the entries.</p>
-            <p>If you are using the sailor signon system in raceManager then you can use the LOAD ENTRIES button to load
+            <p>If you are using the sailor sign-on system in raceManager then you can use the LOAD ENTRIES button to load
                 everybody who signs on. When the button flashes red it means that there are some entries waiting to be
                 loaded.
             </p>
@@ -271,7 +271,7 @@
         ]]></answer>
         <notes><![CDATA[
             <p>Note:<p></p>When you press the timer start button on the START page it will collect any late entries from
-                the sailor signon system automatically.
+                the sailor sign-on system automatically.
             </p>
         ]]></notes>
     </page>
@@ -553,11 +553,11 @@
             <p>The recommended approach for using raceManager to record lap and finish times is to use the BUNCH
                 function on the timer page - ESPECIALLY if the race has more than 20 boats.  </p>
             <br>
-            <p>With this approach - one person 'spots' boats approaching  the  line when they are 200 - 300 m away.
-                The person running raceManager clicks the blue button (with a pin icon) for each boat spotted and
+            <p>With this approach - one person spots approaching boats when they are about 200m from the line - calling them out.
+                The other person- running raceManager - clicks the blue button (with a pin icon) for each boat spotted and
                 they will then appear in a list on the right hand side of the screen.</p>
             <br>
-            <p>You can now use this 'approaching boat' list to easily and quickly record them as they cross the line
+            <p>You can now use this bunch list to easily and quickly record them as they cross the line
                 - avoiding the panic of finding them in the few seconds as they cross the line.</p>
             <br>
             <p>The bunch list has up/down arrows so that you can adjust the likely order that the boats will cross

@@ -170,7 +170,7 @@ function create_programme_file($start_date, $end_date)
     }
 
     // get race format info
-    $rs = $db_o->db_get_rows("SELECT id, race_code, race_name, race_desc FROM t_cfgrace WHERE active=1");
+    $rs = $db_o->db_get_rows("SELECT `id`, `race_code`, `race_name`, `race_desc` FROM t_cfgrace WHERE `active` = 1");
     $race_types = array();
     foreach ($rs as $race) {
         $race_types["{$race['race_name']}"] = array(

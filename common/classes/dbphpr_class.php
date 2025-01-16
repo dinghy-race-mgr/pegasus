@@ -337,7 +337,7 @@ class DBPHPR
 
     public function db_getsystemlabel($codetype, $code)
     {
-        $query = "SELECT label FROM t_code_system WHERE groupname = '$codetype' and code = '$code'";
+        $query = "SELECT `label` FROM t_code_system WHERE `groupname` = '$codetype' and `code` = '$code'";
         $code = $this->db_get_row($query);     
         return $code["label"];
     }
@@ -345,7 +345,7 @@ class DBPHPR
 
     public function db_checksystemcode($codetype, $code)
     {
-        $query = "SELECT id FROM t_code_system WHERE groupname = '$codetype' and code = '$code'";
+        $query = "SELECT `id` FROM t_code_system WHERE `groupname` = '$codetype' and `code` = '$code'";
         $code = $this->db_get_row($query);
         if ($code) {
             return true;
@@ -357,7 +357,7 @@ class DBPHPR
     
     public function db_getsystemcodes($codetype)
     {
-        $query = "SELECT code, label, defaultval FROM t_code_system WHERE groupname = '$codetype' ORDER BY rank";
+        $query = "SELECT `code`, `label`, `defaultval` FROM t_code_system WHERE `groupname` = '$codetype' ORDER BY `listorder` ASC";
         $codes = $this->db_get_rows( $query );
         return $codes;
     }
@@ -367,15 +367,15 @@ class DBPHPR
     {
         $where = "active = $active ";
         if ($mode == "start")
-            { $where.= " AND startcode = '1' "; }
+            { $where.= " AND `startcode` = '1' "; }
         elseif ($mode == "timer")
-            { $where.= " AND timercode = '1' "; }
+            { $where.= " AND `timercode` = '1' "; }
         elseif ($mode == "timing" )
-            { $where.= " AND timing = '1' "; }
+            { $where.= " AND `timing` = '1' "; }
         elseif ($mode =="enter" )
-            { $where.= " AND code = 'DUT' "; }
+            { $where.= " AND `code` = 'DUT' "; }
         
-        $query = "SELECT code, short, info, scoringtype, scoring, timing FROM t_code_result WHERE $where ORDER BY `rank` ASC, code";
+        $query = "SELECT `code`, `short`, `info`, `scoringtype`, `scoring`, `timing` FROM t_code_result WHERE $where ORDER BY `listorder` ASC, `code`";
         $codes = $this->db_get_rows( $query );
         
         $codelist = array();
@@ -389,7 +389,7 @@ class DBPHPR
     
     public function db_getresultcode($code)
     {
-        $query = "SELECT * FROM t_code_result WHERE code = '$code'";
+        $query = "SELECT * FROM t_code_result WHERE `code` = '$code'";
         $code = $this->db_get_row( $query );
         if (empty($code)) { return false; }
         return $code;
@@ -401,7 +401,7 @@ class DBPHPR
         $query = "SELECT `parameter`, `value` FROM t_ini ";
         if (!empty($category))
         {
-            $query.= " WHERE category = '$category'";
+            $query.= " WHERE `category` = '$category'";
         }
         $rs = $this->db_get_rows( $query );
 
@@ -429,7 +429,7 @@ class DBPHPR
     
     public function db_getlinks($category)
     {
-        $query = "SELECT label, url, tip, category, `rank` FROM t_link";
+        $query = "SELECT `label`, `url_link`, `tip`, `category`, `listorder` FROM t_link ORDER BY `listorder` ASC";
         if (!empty($category))
         {
             $query.= " WHERE category = '$category'";
@@ -443,9 +443,9 @@ class DBPHPR
         $query = "SELECT * FROM t_message WHERE 1=1 ";
         foreach ($search as $k => $v)
         {
-            $query.= "AND $k LIKE '%$v% ";
+            $query.= "AND `$k` LIKE '%$v% ";
         }
-        empty($order) ? $query.= "ORDER BY eventid, upddate" : $query.= "ORDER BY $order";
+        empty($order) ? $query.= "ORDER BY `eventid`, `upddate`" : $query.= "ORDER BY `$order`";
 
         $rs = $this->db_get_rows($query);
         return $rs;

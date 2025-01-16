@@ -2,10 +2,12 @@
 
 /* 
 USAGE:
-- take tide .doc file and convert to text file
+- take tide .doc file and convert to text file - > put files in maintenance directory
 - converts to bst for the relevant dates
 - run script with parameters - outputs a csv file with a header line
    ../tide_data_scrape.php?infile=<pathtoinputfile>&outfile=<pathtooutfile>&start-date=<YYYY-MM-DD>&end-date=<YYYY-MM-DD>
+- http://localhost/pegasus/maintenance/tide_data_scrape.php?infile=Starcross_HW_2027.txt&outfile=starcross_tidedata_2027&start-date=2027-01-01&end-date=2027-12-31
+- take tide output files and put in data/tide
 - then run tide import data function on rm_admin tide page to load csv file on your PC
 */
 $loc  = "..";

@@ -174,23 +174,24 @@ class PYS
 
         // get event details for command
         $status = 0;
-        $field_list  = "a.id, event_name, event_date, event_start, event_order, event_format, tide_time, tide_height, ws_start, wd_start, ws_end, wd_end";
-        $order_list  = "event_date ASC, event_start ASC";
+        $field_list  = "a.`id`, `event_name`, `event_date`, `event_start`, `event_order`, `event_format`, `tide_time`, `tide_height`, 
+                        `ws_start`,` wd_start`, `ws_end`, `wd_end`";
+        $order_list  = "`event_date` ASC, `event_start` ASC";
 
         // set selection where and join constraints
         $mode_arr = array(
-            "series" => array( "subwhere" => "series_code LIKE '{$command['attribute']}%'", "join" => ""),
-            "format" => array( "subwhere" => "race_name = '{$command['attribute']}'", "join" => " JOIN t_cfgrace as b ON a.event_format=b.id "),
-            "list"   => array( "subwhere" => "id IN ({$command['attribute']})", "join" => ""),
-            "name"   => array( "subwhere" => "event_name LIKE '%{$command['attribute']}%'", "join" => ""),
+            "series" => array( "subwhere" => "`series_code` LIKE '{$command['attribute']}%'", "join" => ""),
+            "format" => array( "subwhere" => "`race_name` = '{$command['attribute']}'", "join" => " JOIN t_cfgrace as b ON a.`event_format`=b.`id` "),
+            "list"   => array( "subwhere" => "`id` IN ({$command['attribute']})", "join" => ""),
+            "name"   => array( "subwhere" => "`event_name` LIKE '%{$command['attribute']}%'", "join" => ""),
         );
 
         // date, event type and event status constraints
-        $where_event = " event_type = 'racing' and a.active = 1 ";
+        $where_event = " event_type = 'racing' and a.`active` = 1 ";
         $where_date = "";
         if (!empty($command['start-date']) and !empty($command['end-date']))
         {
-            $where_date  = " and event_date >= '{$command['start-date']}' and event_date <= '{$command['end-date']}' ";
+            $where_date  = " and `event_date` >= '{$command['start-date']}' and `event_date` <= '{$command['end-date']}' ";
         }
         empty($where_date) ? $where = $where_event : $where = $where_event.$where_date;
 
@@ -214,7 +215,7 @@ class PYS
             if ($status == 0)
             {
                 // get list of events to process for this command
-                $sql = "SELECT a.id FROM t_event as a $join WHERE $where and $subwhere ORDER BY id ASC";
+                $sql = "SELECT a.`id` FROM t_event as a $join WHERE $where and $subwhere ORDER BY `id` ASC";
                 $rs = $this->db->db_get_rows($sql);
                 $list = "";
 
@@ -223,10 +224,9 @@ class PYS
                     $list.= $eventid['id'].",";
                 }
                 $list = rtrim($list,",");
-                //echo "<pre>LIST: $list</pre>";
 
                 // now get event fields for all requested events
-                $sql = "SELECT $field_list FROM t_event as a WHERE id in ($list) ORDER BY $order_list";
+                $sql = "SELECT $field_list FROM t_event as a WHERE `id` in ($list) ORDER BY $order_list";
                 $rs = $this->db->db_get_rows($sql);
 
                 if ($rs)
@@ -242,8 +242,8 @@ class PYS
 
                     foreach ($this->events as $row)
                     {
-                        $rs = $this->db->db_get_rows("SELECT fleet_num, fleet_code, fleet_name, pursuit FROM t_cfgrace as a 
-                                              JOIN t_cfgfleet as b on a.id=b.eventcfgid WHERE a.id = {$row['event_format']} ORDER BY fleet_num");
+                        $rs = $this->db->db_get_rows("SELECT `fleet_num`, `fleet_code`, `fleet_name`, `pursuit` FROM t_cfgrace as a 
+                                              JOIN t_cfgfleet as b on a.`id`=b.`eventcfgid` WHERE a.`id` = {$row['event_format']} ORDER BY `fleet_num`");
                         $i = 0;
                         foreach($rs as $fleet)
                         {

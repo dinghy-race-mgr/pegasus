@@ -146,7 +146,7 @@ elseif (trim(strtolower($_REQUEST['pagestate'])) == "submit")
         {
             // create and run sql query
             $sql_insert_data = rtrim($sql_insert_data,", ");
-            $sql = "INSERT INTO t_rotamember (firstname, familyname, rota, phone, email, note, active, updby) VALUES $sql_insert_data";
+            $sql = "INSERT INTO t_rotamember (`firstname`, `familyname`, `rota`, `phone`, `email`, `note`, `active`, `updby`) VALUES $sql_insert_data";
             $insert = $db_o->db_query($sql);
             $insert ? $state = 0 : $state = 1;
         }

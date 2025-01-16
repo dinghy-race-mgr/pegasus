@@ -44,7 +44,7 @@ class BOAT
             $where = implode(' AND ', $clause);
         }
 
-        $query = "SELECT id FROM t_class WHERE $where AND active = 1 ";
+        $query = "SELECT id FROM t_class WHERE $where AND `active` = 1 ";
         $detail = $this->db->db_get_rows( $query );
 
         return count($detail);
@@ -66,9 +66,9 @@ class BOAT
     
     public function boat_getclasslist($popular=false)
     {
-        $popular ? $order = "popular DESC, classname ASC" : $order = "classname ASC";
+        $popular ? $order = "`popular` DESC, `classname` ASC" : $order = "`classname` ASC";
 
-        $query = "SELECT id, classname FROM t_class WHERE active = 1 ORDER BY $order";
+        $query = "SELECT `id`, `classname` FROM t_class WHERE `active` = 1 ORDER BY $order";
         $detail = $this->db->db_get_rows( $query );
 
         if (empty($detail))
@@ -96,7 +96,7 @@ class BOAT
                 $where_str.= "AND "."`$k` = '$v' ";
             }
         }
-        $where_str.= " AND active = 1";
+        $where_str.= " AND `active` = 1";
 
         if (!empty($sort))
         {
@@ -120,7 +120,7 @@ class BOAT
     }
 
 //    public function get_mergeclasses($merge_str)
-//        //  FIXME THIS IS A DUPLICATE OF FUNCTION IN SERIESRESULT.PHP #575
+//
 //    {
 //        /* 2d array of groups of classes to be merged
 //           t_series merge field: laser,laser 4.7,laser radial|rs100 8.4,rs100 10.2
@@ -158,11 +158,11 @@ class BOAT
 	    $detail = array();
         if ($classid != 0)               // id specified - use that
         {
-            $query = "SELECT * FROM t_class WHERE id = $classid and active = 1";
+            $query = "SELECT * FROM t_class WHERE `id` = $classid and `active` = 1";
         }
         elseif (!empty($classname))
         {
-            $query = "SELECT * FROM t_class WHERE classname LIKE '$classname' and active = 1";
+            $query = "SELECT * FROM t_class WHERE `classname` LIKE '$classname' and `active` = 1";
         }
         else
         {
@@ -178,7 +178,7 @@ class BOAT
     
     public function boat_getclassname($classid)
     {
-        $query = "SELECT classname FROM t_class WHERE id = $classid and active = 1";
+        $query = "SELECT `classname` FROM t_class WHERE `id` = $classid and `active` = 1";
         $row = $this->db->db_get_row($query);
         if ($row) {
             $classname = $row['classname'];
@@ -194,11 +194,11 @@ class BOAT
         $exists = false;
         if ($active)
         {
-            $query = "SELECT * FROM t_class WHERE classname LIKE '$classname' and active = 1 ";
+            $query = "SELECT * FROM t_class WHERE `classname` LIKE '$classname' and `active` = 1 ";
         }
         else
         {
-            $query = "SELECT * FROM t_class WHERE classname LIKE '$classname'";
+            $query = "SELECT * FROM t_class WHERE `classname` LIKE '$classname'";
         }
         $rs = $this->db->db_get_row($query);
         if ($rs)

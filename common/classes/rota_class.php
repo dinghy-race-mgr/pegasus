@@ -63,40 +63,36 @@ class ROTA
         }
         else                      // build where clause rota IN (rota1, rota2)
         {
-            $where = "rota IN (";
+            $where = "`rota` IN (";
             foreach ($_REQUEST['rotas'] as $rota) { $where .= "'$rota', "; }
             $where = rtrim($where, ", " ) . ") ";
         }
 
         if ($duplicates)
         {
-            $query = "SELECT * FROM t_rotamember WHERE $where AND active = 1 ORDER BY familyname ASC, firstname ASC";
+            $query = "SELECT * FROM t_rotamember WHERE $where AND `active` = 1 ORDER BY `familyname` ASC, `firstname` ASC";
         }
         else
         {
             // query to resolve issue with sql_mode='ONLY_FULL_GROUP_BY' in later version of mysql
-            $query = "SELECT max(id) as id, max(memberid) as memberid, firstname, familyname, max(rota) as rota, 
-                             max(phone) as phone, max(email) as email, max( note) as note, max(partner) as partner, 
-                             max(active) as active, max(updby) as updby, max(createdate) as createdate, max(upddate) as upddate 
+            $query = "SELECT max(`id`) as `id`, max(`memberid`) as `memberid`, `firstname`, `familyname`, max(`rota`) as `rota`, 
+                             max(`phone`) as `phone`, max(`email`) as `email`, max(`note`) as `note`, max(`partner`) as `partner`, 
+                             max(`active`) as `active`, max(`updby`) as `updby`, max(`createdate`) as `createdate`, max(`upddate`) as `upddate` 
                              FROM t_rotamember 
-                             WHERE $where AND active = 1 
-                             GROUP BY familyname, firstname 
-                             ORDER BY familyname ASC, firstname ASC";
+                             WHERE $where AND `active` = 1 
+                             GROUP BY `familyname`, `firstname` 
+                             ORDER BY `familyname` ASC, `firstname` ASC";
         }
-        //echo "<pre>$query</pre>";
         $detail = $this->db->db_get_rows($query);
 
-        if (empty($detail))
-        {
-            $detail = false;
-        }
+        if (empty($detail)) { $detail = false; }
 
         return $detail;
     }
 
     public function get_event_duty($eventid, $dutycode)
     {
-        $query = "SELECT * FROM t_eventduty WHERE eventid = $eventid  AND dutycode = '$dutycode' ";
+        $query = "SELECT * FROM t_eventduty WHERE `eventid` = $eventid  AND `dutycode` = '$dutycode' ";
         $duty = $this->db->db_get_rows( $query );
         return $duty;
     }
@@ -140,11 +136,9 @@ class ROTA
     public function get_duty_person($eventid, $dutycode)
     {
         $duty_person = "";
-        $duties = $this->db->db_get_rows("SELECT * FROM t_eventduty WHERE eventid = $eventid AND dutycode='$dutycode'");
+        $duties = $this->db->db_get_rows("SELECT * FROM t_eventduty WHERE `eventid` = $eventid AND `dutycode` = '$dutycode'");
 
-        if (!empty($duties)) {
-            $duty_person = $duties[0]['person'];
-        }
+        if (!empty($duties)) { $duty_person = $duties[0]['person']; }
         return $duty_person;
     }
 
@@ -171,12 +165,12 @@ class ROTA
             $where.= implode(' AND ', $clause);
         }
 
-        $query = "SELECT a.id, dutycode, person, phone, email, notes, b.event_name, b.event_date FROM t_eventduty as a 
-                  JOIN t_event as b ON a.eventid=b.id  
-                  WHERE $where ORDER BY event_date ASC, event_order ASC, event_start ASC  ";
+        $query = "SELECT a.`id`, `dutycode`, `person`, `phone`, `email`, `notes`, b.`event_name`, b.`event_date` FROM t_eventduty as a 
+                  JOIN t_event as b ON a.`eventid`=b.`id`  
+                  WHERE $where ORDER BY `event_date` ASC, `event_order` ASC, `event_start` ASC  ";
 
         $detail = $this->db->db_get_rows( $query );
-        if (empty($detail))       // nothing found
+        if (empty($detail))
         {
             $detail = false;
         }
@@ -188,11 +182,6 @@ class ROTA
             }
         }
 
-//        if ($fields['person'] == "Mary Elkington")
-//        {
-//            echo "<pre>".print_r($detail,true)."</pre>";
-//        }
-
         return $detail;
     }
 
@@ -202,7 +191,7 @@ class ROTA
 
         if (!empty($id))
         {
-            $where = "id = $id AND active = 1";
+            $where = "`id` = $id AND `active` = 1";
         }
         elseif (empty($fullname))
         {
@@ -213,18 +202,18 @@ class ROTA
             $pos = strpos($fullname, " ");
             if ($pos === false)
             {
-                $where = "familyname = '$fullname' AND active = 1";
+                $where = "`familyname` = '$fullname' AND `active` = 1";
             }
             else
             {
                 $first = substr($fullname, 0, $pos);
                 $last = substr($fullname, $pos + 1);
-                $where = "firstname = '$first' AND familyname = '$last' AND active = 1";
+                $where = "`firstname` = '$first' AND `familyname` = '$last' AND `active` = 1";
             }
         }
         if ($where)
         {
-            $detail = $this->db->db_get_row("SELECT * FROM t_rotamember WHERE $where");
+            $detail = $this->db->db_get_row( "SELECT * FROM t_rotamember WHERE ".$where );
         }
         else
         {

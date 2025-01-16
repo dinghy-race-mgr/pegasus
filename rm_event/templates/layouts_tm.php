@@ -94,9 +94,8 @@ EOT;
     $htm_contacts = "";
     foreach ($params['contact'] as $contact)
     {
-        // FIXME - use a modal when we have our own email service
         $htm_contacts.= <<<EOT
-        <li><a class="dropdown-item text-info fs-5" href="{$contact['link']}" target="_BLANK">{$contact['name']} - {$contact['role']}</a></li>
+        <li><a class="dropdown-item text-info fs-5" href="{$contact['link']}" target="_BLANK">{$contact['name']} - {$contact['job']}</a></li>
 EOT;
     }
 
@@ -742,7 +741,7 @@ EOT;
 
             $table_rows.= <<<EOT
             <tr>
-                <td style="width: 60%"><span class="text-danger fs-3">{$document['title']}</span><br>{$document['description']}</td>
+                <td style="width: 60%"><span class="text-danger fs-3">{$document['title']}</span><br>{$document['infotxt']}</td>
                 <td style="width: 20%">$release<br><b>$version</b></td></td>
                 <td style="width: 20%">$link</td>
             </tr>

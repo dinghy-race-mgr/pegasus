@@ -58,13 +58,11 @@ class HELP
 
     public function get_help()
     {
-        //$where = " category LIKE '%".$this->page."%' and active = 1 ";
-        $where = " FIND_IN_SET('".$this->page."',category) > 0  AND active = 1";
+        $where = " FIND_IN_SET('".$this->page."',category) > 0  AND `active` = 1";
         $topics = $this->db->db_get_rows("SELECT * FROM t_help WHERE $where ORDER by `rank` ASC");
 
         foreach ($topics as $k=>$topic)
         {
-            
             // if not a pursuit race and this topic is only for pursuit races - remove
             if (!$this->constraints['pursuit'])
             {

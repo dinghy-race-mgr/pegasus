@@ -57,16 +57,16 @@ if (count($entries) <= 0)
     exit("Sorry - no entries found for specified event ... STOPPING ");  // FIXME -  change to exit_nicely
 }
 
-// clear t_entry_draft table
+// clear z_entry_draft table
 if ($mode == "process")
 {
     foreach ($races as $race)
     {
         // empty database table for entries
-        $trunc = $db_o->run("TRUNCATE t_entry_draft", array());
+        $trunc = $db_o->run("TRUNCATE z_entry_draft", array());
         if (!$trunc)
         {
-            exit("Sorry - failed to empty table t_entry_draft ... STOPPING");
+            exit("Sorry - failed to empty table z_entry_draft ... STOPPING");
         }
     }
 }
@@ -270,14 +270,13 @@ function get_competitor($compid, $entry, $class)
     $comp_out = array();
     if ($compid > 0)          // we have a racemanager competitor id
     {
-        $sql = "SELECT * FROM `t_competitor` WHERE id = ? and active = 1";
-        //echo "<pre>$sql</pre>";
+        $sql = "SELECT * FROM `t_competitor` WHERE `id` = ? and `active` = 1";
         $comp = $db_o->run($sql, array($compid))->fetch();
         if ($comp)
         {
             report(2,"Competitor found via e-racemanager value - {$comp['id']}");
             $match = check_comp_match($comp, $entry, $class);
-            //echo "<pre>".print_r($match,true)."</pre>";
+
             if ($match['class'] and $match['helm'])
             {
                 $comp_out = $comp;
@@ -292,22 +291,14 @@ function get_competitor($compid, $entry, $class)
         $name = preg_replace('/\s+/', ' ', $entry['h-name']);   // remove multiple spaces
         $names = explode(" ", $name);
         $surname = $names[1];
-        $comp = $db_o->run("SELECT * FROM t_competitor WHERE classid = ? AND (helm LIKE ? or helm LIKE ?) 
-                     ORDER BY createdate DESC LIMIT 1", array($class['id'],"%{$entry['h-name']}%", "%$surname%") )->fetch();
-//        if ($entry_num == 41 )
-//        {
-//            echo "<pre>$surname|{$class['id']}|{$entry['h-name']}</pre>";
-//            echo "<pre>NAMES".print_r($names,true)."</pre>";
-//            echo "<pre>COMP".print_r($comp,true)."</pre>";
-//            echo "<pre>ENTRY".print_r($entry,true)."</pre>";
-//            echo "<pre>CLASS".print_r($class,true)."</pre>";
-//        }
+        $comp = $db_o->run("SELECT * FROM t_competitor WHERE `classid` = ? AND (`helm` LIKE ? or `helm` LIKE ?) 
+                     ORDER BY `createdate` DESC LIMIT 1", array($class['id'],"%{$entry['h-name']}%", "%$surname%") )->fetch();
 
         if ($comp)
         {
             report(2,"Competitor found via search on transfer - {$comp['id']}");
             $match = check_comp_match($comp, $entry, $class);
-            //echo "<pre>".print_r($match,true)."</pre>";
+
             if ($match['class'] and $match['helm'])
             {
                 $comp_out = $comp;
@@ -327,7 +318,7 @@ function get_competitor($compid, $entry, $class)
 
             if ($new_comp_id)
             {
-                $comp_out = $db_o->run("SELECT * FROM t_competitor WHERE id = ?", array($new_comp_id))->fetch();
+                $comp_out = $db_o->run("SELECT * FROM t_competitor WHERE `id` = ?", array($new_comp_id))->fetch();
             }
             else
             {
@@ -350,7 +341,7 @@ function set_entry_record($eventid, $races, $competitor)
         $args = array("action"=>'enter',"protest"=>0,"status"=>'N',"eventid"=>$race,"competitorid"=>$competitor['id'],
             "chg-crew"=>$competitor['crew'],"chg-sailnum"=>$competitor['sailnum'],"updby"=>"rm_event_$eventid");
 
-        $entryid = $db_o->insert("t_entry_draft", $args);
+        $entryid = $db_o->insert("z_entry_draft", $args);
 
         if(!$entryid)
         {

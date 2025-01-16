@@ -94,7 +94,8 @@
 
 
 		<div class="container">
-		
+			
+
 
 
 	<div class="panel with-tabs panel-default form-tabs">
@@ -113,6 +114,60 @@
 
 		
 	</div>
+			{BEGIN event_type_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_event_type}" data-fieldname="event_type" data-signal-error-for="event_type{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_event_type}">
+		{BEGIN event_type_label}{$label t_event_results event_type}{END event_type_label}
+	</label>
+	<div class="col-md-5" >
+		{$event_type_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="event_type">
+		<div class="text-muted" >
+		{$tooltip t_event_results event_type}
+		</div>
+	</div>
+</div>
+</div>
+{END event_type_fieldblock}
+
+			{BEGIN event_format_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_event_format}" data-fieldname="event_format" data-signal-error-for="event_format{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_event_format}">
+		{BEGIN event_format_label}{$label t_event_results event_format}{END event_format_label}
+	</label>
+	<div class="col-md-5" >
+		{$event_format_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="event_format">
+		<div class="text-muted" >
+		{$tooltip t_event_results event_format}
+		</div>
+	</div>
+</div>
+</div>
+{END event_format_fieldblock}
+
+			{BEGIN event_entry_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_event_entry}" data-fieldname="event_entry" data-signal-error-for="event_entry{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_event_entry}">
+		{BEGIN event_entry_label}{$label t_event_results event_entry}{END event_entry_label}
+	</label>
+	<div class="col-md-5" >
+		{$event_entry_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="event_entry">
+		<div class="text-muted" >
+		{$tooltip t_event_results event_entry}
+		</div>
+	</div>
+</div>
+</div>
+{END event_entry_fieldblock}
+
 
 </div>
 

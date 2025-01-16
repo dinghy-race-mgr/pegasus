@@ -399,8 +399,8 @@
 	.bs-gridcell[data-field=nonexclude]:before {
 		content: "{$label t_code_result nonexclude}";
 	}
-	.bs-gridcell[data-field=rank]:before {
-		content: "{$label t_code_result rank}";
+	.bs-gridcell[data-field=listorder]:before {
+		content: "{$label t_code_result listorder}";
 	}
 	.bs-gridcell[data-field=active]:before {
 		content: "{$label t_code_result active}";
@@ -431,6 +431,19 @@
 									{END checkbox_column}
 
 																		
+									{BEGIN listorder_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$listorder_class}" data-field=listorder>
+									{BEGIN listorder_fieldheader}
+																				<span {$listorder_orderlinkattrs}>
+											{$label t_code_result listorder}
+										</span>
+									{END listorder_fieldheader}
+									</th>
+									{END listorder_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN code_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$code_class}" data-field=code>
 									{BEGIN code_fieldheader}
@@ -479,19 +492,6 @@
 									{END scoring_fieldheader}
 									</th>
 									{END scoring_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN rank_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$rank_class}" data-field=rank>
-									{BEGIN rank_fieldheader}
-																				<span {$rank_orderlinkattrs}>
-											{$label t_code_result rank}
-										</span>
-									{END rank_fieldheader}
-									</th>
-									{END rank_fieldheadercolumn}
 									
 									
 									
@@ -559,6 +559,13 @@
 
 	
 
+	{BEGIN listorder_fieldcolumn}
+	<td class="bs-gridcell {$listorder_class}"  data-field=listorder {$rowstyle} {$recordattrs}>
+		{$listorder_value}
+	</td>
+{END listorder_fieldcolumn}
+
+
 	{BEGIN code_fieldcolumn}
 	<td class="bs-gridcell {$code_class}"  data-field=code {$rowstyle} {$recordattrs}>
 		{$code_value}
@@ -585,13 +592,6 @@
 		{$scoring_value}
 	</td>
 {END scoring_fieldcolumn}
-
-
-	{BEGIN rank_fieldcolumn}
-	<td class="bs-gridcell {$rank_class}"  data-field=rank {$rowstyle} {$recordattrs}>
-		{$rank_value}
-	</td>
-{END rank_fieldcolumn}
 
 
 	{BEGIN active_fieldcolumn}

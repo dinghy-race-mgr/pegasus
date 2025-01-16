@@ -111,24 +111,6 @@
 </div>
 {END label_fieldblock}
 
-			{BEGIN url_fieldblock}
-<div class=container>
-<div class="form-group {$fielddispclass_url}" data-fieldname="url" data-signal-error-for="url{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_url}">
-		{BEGIN url_label}{$label t_link url}{END url_label}
-	</label>
-	<div class="col-md-5" >
-		{$url_editcontrol}
-	</div>
-	<div class="col-md-4 help-block" data-helpfor="url">
-		<div class="text-muted" >
-		{$tooltip t_link url}
-		</div>
-	</div>
-</div>
-</div>
-{END url_fieldblock}
-
 			{BEGIN tip_fieldblock}
 <div class=container>
 <div class="form-group {$fielddispclass_tip}" data-fieldname="tip" data-signal-error-for="tip{$id}" >
@@ -165,23 +147,41 @@
 </div>
 {END category_fieldblock}
 
-			{BEGIN rank_fieldblock}
+			{BEGIN url_link_fieldblock}
 <div class=container>
-<div class="form-group {$fielddispclass_rank}" data-fieldname="rank" data-signal-error-for="rank{$id}" >
-	<label class="col-md-3 control-label" for="{$labelfor_rank}">
-		{BEGIN rank_label}{$label t_link rank}{END rank_label}
+<div class="form-group {$fielddispclass_url_link}" data-fieldname="url_link" data-signal-error-for="url_link{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_url_link}">
+		{BEGIN url_link_label}{$label t_link url_link}{END url_link_label}
 	</label>
 	<div class="col-md-5" >
-		{$rank_editcontrol}
+		{$url_link_editcontrol}
 	</div>
-	<div class="col-md-4 help-block" data-helpfor="rank">
+	<div class="col-md-4 help-block" data-helpfor="url_link">
 		<div class="text-muted" >
-		{$tooltip t_link rank}
+		{$tooltip t_link url_link}
 		</div>
 	</div>
 </div>
 </div>
-{END rank_fieldblock}
+{END url_link_fieldblock}
+
+			{BEGIN listorder_fieldblock}
+<div class=container>
+<div class="form-group {$fielddispclass_listorder}" data-fieldname="listorder" data-signal-error-for="listorder{$id}" >
+	<label class="col-md-3 control-label" for="{$labelfor_listorder}">
+		{BEGIN listorder_label}{$label t_link listorder}{END listorder_label}
+	</label>
+	<div class="col-md-5" >
+		{$listorder_editcontrol}
+	</div>
+	<div class="col-md-4 help-block" data-helpfor="listorder">
+		<div class="text-muted" >
+		{$tooltip t_link listorder}
+		</div>
+	</div>
+</div>
+</div>
+{END listorder_fieldblock}
 
 
 </div>

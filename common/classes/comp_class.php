@@ -35,7 +35,7 @@ class COMPETITOR
 
     public function get_competitor($id)
     {
-        $query = "SELECT * FROM t_competitor WHERE id = $id AND active = 1 ";
+        $query = "SELECT * FROM t_competitor WHERE `id` = $id AND `active` = 1 ";
         $detail = $this->db->db_get_row($query);
         return $detail;
     }
@@ -51,54 +51,11 @@ class COMPETITOR
             $where = implode(' AND ', $clause);
         }
 
-        $query = "SELECT id, classid, sailnum, helm FROM t_competitor WHERE $where AND active = 1 ";
+        $query = "SELECT `id`, `classid`, `sailnum`, `helm` FROM t_competitor WHERE $where AND `active` = 1 ";
         $detail = $this->db->db_get_rows($query);
 
         return count($detail);
     }
-
-//    //Method: get competitor detail - just contents of t_competitor
-//    public function comp_getcompetitor($id)
-//    {
-//        $query = "SELECT a.id as id, classid, boatnum, sailnum, classname, acronym, helm as helmname, helm_dob, helm_email,
-//                  a.crew as crewname, crew_dob, crew_email, club, nat_py, local_py, personal_py, skill_level, flight, last_entry,
-//                  last_event, a.active as active, grouplist, category, b.crew as crew, rig, spinnaker, keel, engine
-//                  FROM t_competitor as a
-//                  JOIN t_class as b ON a.classid=b.id
-//                  WHERE a.id = $id  AND a.active=1";
-//        $detail = $this->db->db_get_row($query);
-//
-//        if (empty($detail)) {
-//            $detail = false;
-//        }
-//        return $detail;
-//    }
-
-//    //Method: get competitors from list of ids   FIXME - no usages
-//    public function comp_getcompetitorlist($list)
-//    {
-//        $inlist = implode(",", $list);
-//        if (!empty($inlist))
-//        {
-//            $query = "SELECT a.id as id, classid, boatnum, sailnum, classname, acronym, helm as helmname, helm_dob, helm_email,
-//                  a.crew as crewname, crew_dob, crew_email, club, nat_py, local_py, personal_py, skill_level, flight, last_entry,
-//                  last_event, a.active as active, grouplist, category, b.crew as crew, rig, spinnaker, keel engine
-//                  FROM t_competitor as a
-//                  JOIN t_class as b ON a.classid=b.id
-//                  WHERE a.id IN ($inlist) AND a.active=1";
-//            $detail = $this->db->db_get_rows( $query );
-//
-//            if (empty($detail))
-//            {
-//                $detail = false;
-//            }
-//        }
-//        else
-//        {
-//            return false;
-//        }
-//        return $detail;
-//    }
 
    public function comp_searchcompetitor($searchstr, $app = "")
    {
@@ -169,11 +126,11 @@ class COMPETITOR
        if (empty($where)) {
            $result = array();
        } else {
-           $query = "SELECT a.id, classname, sailnum, helm, a.crew
+           $query = "SELECT a.`id`, `classname`, `sailnum`, `helm`, a.`crew`
                   FROM `t_competitor` as a
-                  JOIN t_class as b ON a.classid=b.id
-                  WHERE 1=0 OR ( ($where) $app_where AND a.active = 1)
-                  ORDER BY  classname, sailnum * 1";
+                  JOIN t_class as b ON a.`classid`=b.`id`
+                  WHERE 1=0 OR ( ($where) $app_where AND a.`active` = 1)
+                  ORDER BY  `classname`, `sailnum` * 1";
            $result = $this->db->db_get_rows($query);
        }
 
@@ -191,8 +148,9 @@ class COMPETITOR
                 if ($field == "id")
                 {
                     $field = "a.`id`";   // need to make sure we are dealing with competitor id
-                } else
-                    {
+                }
+                else
+                {
                     $field = "`$field`";
                 }
                 $clause[] = "$field = '$value'";
@@ -200,39 +158,38 @@ class COMPETITOR
             $where = implode(' AND ', $clause);
         }
         else
-            {
+        {
             $where = " 1=1 ";
         }
 
         $detail = array();
-        $query = "SELECT a.id as id, classid, boatnum, sailnum, classname, acronym, helm as helmname, helm_dob, helm_email,
-                  a.crew as crewname, crew_dob, crew_email, club, nat_py, local_py, personal_py, skill_level, flight, last_entry,
-                  last_event, a.active as active, grouplist, category, b.crew as crew, rig, spinnaker, keel, engine
+        $query = "SELECT a.`id` as `id`, `classid`, `boatnum`, `sailnum`, `classname`, `acronym`, `helm` as `helmname`, `helm_dob`, `helm_email`,
+                  a.`crew` as `crewname`, `crew_dob`, `crew_email`, `club`, `nat_py`, `local_py`, `personal_py`, `skill_level`, `flight`, `last_entry`,
+                  `last_event`, a.`active` as `active`, `grouplist`, `category`, b.`crew` as `crew`, `rig`, `spinnaker`, `keel`, `engine`
                   FROM `t_competitor` as a
-                  JOIN `t_class` as b ON a.classid=b.id
+                  JOIN `t_class` as b ON a.`classid`=b.`id`
                   WHERE $where AND a.`active` = 1";
         // echo "<pre>".$query."</pre>";
         $detail = $this->db->db_get_rows($query);
-        if (empty($detail)) {
-            $detail = false;
-        }
+        if (empty($detail)) { $detail = false; }
         return $detail;
     }
 
     public function comp_findbysailnum($sailnum)
     {
         $detail = array();
-        if ($sailnum) {
+        if ($sailnum)
+        {
             $query = "SELECT *
                       FROM `t_competitor` as a
-                      JOIN `t_class` as b ON a.classid=b.id
-                      WHERE (sailnum='$sailnum' OR boatnum='$sailnum') AND `active` = 1";
-            //echo $query;
+                      JOIN `t_class` as b ON a.`classid` = b.`id`
+                      WHERE (`sailnum` = '$sailnum' OR `boatnum` = '$sailnum') AND `active` = 1";
+
             $detail = $this->db->db_get_rows($query);
-            if (empty($detail)) {
-                $detail = false;
-            }
-        } else {
+            if (empty($detail)) { $detail = false; }
+        }
+        else
+        {
             $detail = false;
         }
         return $detail;

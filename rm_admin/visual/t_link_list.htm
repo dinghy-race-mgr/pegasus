@@ -69,7 +69,9 @@
 		
 				<li role="separator" class="divider"></li>	
 
-		
+				{BEGIN asearch_link}<li><a href="t_link_search.php" {$advsearchlink_attrs}>Advanced search</a></li>
+		{END asearch_link}
+
 				{BEGIN searchPanelTopButtons}<li><a href=# id="showOptPanel{$id}">Show search panel</a></li>
 		{END searchPanelTopButtons}	
 		
@@ -123,6 +125,23 @@
 
 {BEGIN searchform_block}<span {$search_hiddenattr} data-pageid="{$pageid}" data-brick="search" class="form-group">
 
+	{$simpleSearchFieldCombo}
+	
+	{$simpleSearchTypeCombo}
+ <div  class="input-group">
+{BEGIN searchform_text}<input type="search" class="form-control" {$searchfor_attrs} size="25">
+{END searchform_text}
+	<span class="input-group-btn">
+	{BEGIN searchform_showall}<button class="btn btn-default" {$showAllCont_attrs} {$showallbutton_attrs} title="Show all">
+			<span class="glyphicon glyphicon-remove"></span>
+		</button>
+	{END searchform_showall}
+	{BEGIN searchform_search}<button {$searchbutton_attrs} class="btn btn-primary" >
+		<span class="glyphicon glyphicon-search"></span>
+	</button>
+	{END searchform_search}
+	</span>
+</div>
 		
 </span>
 {END searchform_block}
@@ -251,8 +270,8 @@
 		<a>
 		  <div class="checkbox">
 			<label>
-			  <input type="checkbox" id="hide_url" checked="checked" value="1" data-field="url">
-			  <span>{$label t_link url}</span>
+			  <input type="checkbox" id="hide_url_link" checked="checked" value="1" data-field="url_link">
+			  <span>{$label t_link url_link}</span>
 			</label>
 		</div>
 		</a>
@@ -271,8 +290,8 @@
 		<a>
 		  <div class="checkbox">
 			<label>
-			  <input type="checkbox" id="hide_rank" checked="checked" value="1" data-field="rank">
-			  <span>{$label t_link rank}</span>
+			  <input type="checkbox" id="hide_listorder" checked="checked" value="1" data-field="listorder">
+			  <span>{$label t_link listorder}</span>
 			</label>
 		</div>
 		</a>
@@ -351,8 +370,8 @@
 	.bs-gridcell[data-field=label]:before {
 		content: "{$label t_link label}";
 	}
-	.bs-gridcell[data-field=url]:before {
-		content: "{$label t_link url}";
+	.bs-gridcell[data-field=url_link]:before {
+		content: "{$label t_link url_link}";
 	}
 	.bs-gridcell[data-field=tip]:before {
 		content: "{$label t_link tip}";
@@ -360,8 +379,8 @@
 	.bs-gridcell[data-field=category]:before {
 		content: "{$label t_link category}";
 	}
-	.bs-gridcell[data-field=rank]:before {
-		content: "{$label t_link rank}";
+	.bs-gridcell[data-field=listorder]:before {
+		content: "{$label t_link listorder}";
 	}
 	.bs-gridcell[data-field=upddate]:before {
 		content: "{$label t_link upddate}";
@@ -395,13 +414,13 @@
 									
 									
 									
-									{BEGIN url_fieldheadercolumn}<th class="rnr-gridfieldlabel {$url_class}" data-field=url>
-									{BEGIN url_fieldheader}<span {$url_orderlinkattrs}>
-											{$label t_link url}
+									{BEGIN url_link_fieldheadercolumn}<th class="rnr-gridfieldlabel {$url_link_class}" data-field=url_link>
+									{BEGIN url_link_fieldheader}<span {$url_link_orderlinkattrs}>
+											{$label t_link url_link}
 										</span>
-									{END url_fieldheader}
+									{END url_link_fieldheader}
 									</th>
-									{END url_fieldheadercolumn}
+									{END url_link_fieldheadercolumn}
 									
 									
 									
@@ -417,13 +436,13 @@
 									
 									
 									
-									{BEGIN rank_fieldheadercolumn}<th class="rnr-gridfieldlabel {$rank_class}" data-field=rank>
-									{BEGIN rank_fieldheader}<span {$rank_orderlinkattrs}>
-											{$label t_link rank}
+									{BEGIN listorder_fieldheadercolumn}<th class="rnr-gridfieldlabel {$listorder_class}" data-field=listorder>
+									{BEGIN listorder_fieldheader}<span {$listorder_orderlinkattrs}>
+											{$label t_link listorder}
 										</span>
-									{END rank_fieldheader}
+									{END listorder_fieldheader}
 									</th>
-									{END rank_fieldheadercolumn}
+									{END listorder_fieldheadercolumn}
 									
 									
 									
@@ -468,10 +487,10 @@
 {END label_fieldcolumn}
 
 
-	{BEGIN url_fieldcolumn}<td class="bs-gridcell {$url_class}"  data-field=url {$rowstyle} {$recordattrs}>
-		{$url_value}
+	{BEGIN url_link_fieldcolumn}<td class="bs-gridcell {$url_link_class}"  data-field=url_link {$rowstyle} {$recordattrs}>
+		{$url_link_value}
 	</td>
-{END url_fieldcolumn}
+{END url_link_fieldcolumn}
 
 
 	{BEGIN category_fieldcolumn}<td class="bs-gridcell {$category_class}"  data-field=category {$rowstyle} {$recordattrs}>
@@ -480,10 +499,10 @@
 {END category_fieldcolumn}
 
 
-	{BEGIN rank_fieldcolumn}<td class="bs-gridcell {$rank_class}"  data-field=rank {$rowstyle} {$recordattrs}>
-		{$rank_value}
+	{BEGIN listorder_fieldcolumn}<td class="bs-gridcell {$listorder_class}"  data-field=listorder {$rowstyle} {$recordattrs}>
+		{$listorder_value}
 	</td>
-{END rank_fieldcolumn}
+{END listorder_fieldcolumn}
 
 	{BEGIN endrecord_block}<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
 	{END endrecord_block}

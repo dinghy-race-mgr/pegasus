@@ -530,9 +530,9 @@ function get_club($in_club, $club_std = "")
 function get_class_detail($class_str)
 {
     global $db_o;
-    $sql = "SELECT id, classname, variant, nat_py, local_py, category, crew, rig, spinnaker, 
-                   engine, keel, fleets, replace(classname,' ','') as class_nospace 
-                   FROM `t_class` WHERE replace(classname,' ','') = ? and active = 1";
+    $sql = "SELECT `id`, `classname`, `variant`, `nat_py`, `local_py`, `category`, `crew`, `rig`, `spinnaker`, 
+                   `engine`, `keel`, `fleets`, replace(`classname`,' ','') as `class_nospace` 
+                   FROM `t_class` WHERE replace(`classname`,' ','') = ? and `active` = 1";
     //echo "<pre>$sql</pre>";
     $class = $db_o->run($sql, array(str_replace(' ', '', $class_str)))->fetch();
     if (!$class)

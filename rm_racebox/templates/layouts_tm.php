@@ -340,7 +340,7 @@ EOT;
         foreach ($params['links'] as $link)
         {
             $club_links.= <<<EOT
-            <li ><a href="{$link['url']}" target="_blank">{$link['label']}</a></li>
+            <li ><a href="{$link['url_link']}" target="_blank">{$link['label']}</a></li>
 EOT;
         }
 

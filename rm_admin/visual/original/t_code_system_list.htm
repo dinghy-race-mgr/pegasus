@@ -90,7 +90,14 @@
 		<li><a href=# id="showOptPanel{$id}">Show search panel</a></li>
 		{END searchPanelTopButtons}	
 		
-				
+				<li role="separator" class="divider"></li>	
+		{BEGIN saveSeachButton}
+		<li><a href=# id="saveSearch{$id}"  >Save search</a></li>
+		{END saveSeachButton}
+		{BEGIN savedSeachesButton}
+		<li><a {$saveSearchButtonAttrs} id="savedSearches{$id}">Saved searches:</a></li>
+		{END savedSeachesButton}
+		
 				
 				
 		
@@ -407,9 +414,6 @@
 	.bs-gridcell[data-field=listorder]:before {
 		content: "{$label t_code_system listorder}";
 	}
-	.bs-gridcell[data-field=rank]:before {
-		content: "{$label t_code_system rank}";
-	}
 	.bs-gridcell[data-field=defaultval]:before {
 		content: "{$label t_code_system defaultval}";
 	}
@@ -439,32 +443,6 @@
 									{END checkbox_column}
 
 																		
-									{BEGIN listorder_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$listorder_class}" data-field=listorder>
-									{BEGIN listorder_fieldheader}
-																				<span {$listorder_orderlinkattrs}>
-											{$label t_code_system listorder}
-										</span>
-									{END listorder_fieldheader}
-									</th>
-									{END listorder_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN rank_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$rank_class}" data-field=rank>
-									{BEGIN rank_fieldheader}
-																				<span {$rank_orderlinkattrs}>
-											{$label t_code_system rank}
-										</span>
-									{END rank_fieldheader}
-									</th>
-									{END rank_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN code_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$code_class}" data-field=code>
 									{BEGIN code_fieldheader}
@@ -556,20 +534,6 @@
 	{END checkbox_column}
 
 	
-
-	{BEGIN listorder_fieldcolumn}
-	<td class="bs-gridcell {$listorder_class}"  data-field=listorder {$rowstyle} {$recordattrs}>
-		{$listorder_value}
-	</td>
-{END listorder_fieldcolumn}
-
-
-	{BEGIN rank_fieldcolumn}
-	<td class="bs-gridcell {$rank_class}"  data-field=rank {$rowstyle} {$recordattrs}>
-		{$rank_value}
-	</td>
-{END rank_fieldcolumn}
-
 
 	{BEGIN code_fieldcolumn}
 	<td class="bs-gridcell {$code_class}"  data-field=code {$rowstyle} {$recordattrs}>

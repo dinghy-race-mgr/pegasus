@@ -90,7 +90,14 @@
 		<li><a href=# id="showOptPanel{$id}">Show search panel</a></li>
 		{END searchPanelTopButtons}	
 		
-				
+				<li role="separator" class="divider"></li>	
+		{BEGIN saveSeachButton}
+		<li><a href=# id="saveSearch{$id}"  >Save search</a></li>
+		{END saveSeachButton}
+		{BEGIN savedSeachesButton}
+		<li><a {$saveSearchButtonAttrs} id="savedSearches{$id}">Saved searches:</a></li>
+		{END savedSeachesButton}
+		
 				<li role="separator" class="divider"></li>	
 		
 				

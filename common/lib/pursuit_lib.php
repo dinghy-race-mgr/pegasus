@@ -73,9 +73,9 @@ function p_class_match($pn, $pn_type)
 {
     global $db_o;
 
-    $pn_type == "national" ? $pn_field = "nat_py" : $pn_field = "local_py" ;
+    $pn_type == "national" ? $pn_field = "`nat_py`" : $pn_field = "`local_py`" ;
 
-    $row = $db_o->db_get_row("SELECT classname FROM t_class WHERE $pn_field = $pn and active = 1 ORDER BY $pn_field ASC LIMIT 1");
+    $row = $db_o->db_get_row("SELECT `classname` FROM t_class WHERE ".$pn_field." = ".$pn." and `active` = 1 ORDER BY $pn_field ASC LIMIT 1");
     if ($row)
     {
         $classname = $row['classname'];

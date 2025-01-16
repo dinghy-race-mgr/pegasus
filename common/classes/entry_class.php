@@ -285,20 +285,19 @@ class ENTRY
         $where_options  = array(
             "entries"      => " AND action IN ('enter', 'delete', 'update', 'replace') ",
             "retirements"  => " AND action = 'retire' ",
-//            "declarations" => " AND action IN ('retire', 'declare') ",
             "all"          => ""
         );
         $type ? $where = $where_options["$type"] : $where = "";
 
-        $query = "SELECT a.id as id, classid, boatnum, sailnum, classname, acronym, helm as helmname, helm_dob,
-                         helm_email, a.crew as crewname, crew_dob, crew_email, club, nat_py, local_py, personal_py,
-                         skill_level, flight, last_entry, last_event, a.active as active, grouplist, category,
-                         b.crew as crew, rig, spinnaker, keel, engine, `chg-helm`, `chg-crew`, `chg-sailnum`,
-                         x.id as t_entry_id, `action`, `status`, protest, x.createdate
+        $query = "SELECT a.`id` as `id`, `classid`, `boatnum`, `sailnum`, `classname`, `acronym`, `helm` as `helmname`, `helm_dob`,
+                         `helm_email`, a.`crew` as `crewname`, `crew_dob`, `crew_email`, `club`, `nat_py`, `local_py`, `personal_py`,
+                         `skill_level`, `flight`, `last_entry`, `last_event`, a.`active` as `active`, `grouplist`, `category`,
+                         b.`crew` as `crew`, `rig`, `spinnaker`, `keel`, `engine`, `chg-helm`, `chg-crew`, `chg-sailnum`,
+                         x.`id` as `t_entry_id`, `action`, `status`, `protest`, x.`createdate`
                   FROM t_entry as x
-                  JOIN t_competitor as a ON x.competitorid = a.id
-                  JOIN t_class as b ON a.classid=b.id
-                  WHERE status IN ('N', 'E', 'F') AND eventid = {$this->eventid} $where ORDER BY x.id, x.createdate ASC";
+                  JOIN t_competitor as a ON x.`competitorid` = a.`id`
+                  JOIN t_class as b ON a.`classid`=b.`id`
+                  WHERE `status` IN ('N', 'E', 'F') AND `eventid` = {$this->eventid} $where ORDER BY x.`id`, x.`createdate` ASC";
 
         $entries = $this->db->db_get_rows($query);
 
@@ -329,15 +328,13 @@ class ENTRY
     {
         // note not counting deletes, updates and replaces although these will be processed
 
-        //
-
         $where_options  = array(
-            "entries"      => " AND action = 'enter' ",
-            "retirements"  => " AND action = 'retire' ",
-            "declarations" => " AND action IN ('retire', 'declare') ",
+            "entries"      => " AND `action` = 'enter' ",
+            "retirements"  => " AND `action` = 'retire' ",
+            "declarations" => " AND `action` IN ('retire', 'declare') ",
         );
         $type ? $where = $where_options["$type"] : $where = "";
-        $query = "SELECT * FROM t_entry WHERE status IN ('N','F') AND eventid = {$this->eventid} $where";
+        $query = "SELECT * FROM t_entry WHERE `status` IN ('N','F') AND `eventid` = {$this->eventid} $where";
         $num_signons = $this->db->db_num_rows($query);
 
         return $num_signons;
@@ -345,13 +342,9 @@ class ENTRY
 
     public function set_entry($entry, $pytype, $finishlap = 0)
         /*
-         *
          * sets entry into t_race
-         *
          */
     {
-        // echo "<pre>SET_ENTRY: ".print_r($entry,true)."</pre>";
-
         if (!empty($entry))
         {
             $result = array(
