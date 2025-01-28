@@ -3,6 +3,7 @@ class PAGES
 {  
    
    public function __construct($cfg)
+
    {
        //include ("../templates/web_tm.php");
        //include ("../include/rm_web_lib.php");

@@ -540,7 +540,7 @@ class SERIES_RESULT
                 {
                     $this->err_fatal = true;
                     $this->err[] = array("code" => "2", "type" => "fatal",
-                        "msg" => "the race format is not consistent for all races in the series - cannot produce series result");
+                        "msg" => "the race format [$format] for event id [$eventid] is not consistent with the format [{$event['event_format']}] for other races in the series");
                 }
             }
 

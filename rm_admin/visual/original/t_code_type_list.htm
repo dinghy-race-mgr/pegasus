@@ -380,11 +380,20 @@
 	.bs-gridcell[data-field=info]:before {
 		content: "{$label t_code_type info}";
 	}
-	.bs-gridcell[data-field=rank]:before {
-		content: "{$label t_code_type rank}";
+	.bs-gridcell[data-field=listorder]:before {
+		content: "{$label t_code_type listorder}";
 	}
 	.bs-gridcell[data-field=type]:before {
 		content: "{$label t_code_type type}";
+	}
+	.bs-gridcell[data-field=upddate]:before {
+		content: "{$label t_code_type upddate}";
+	}
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_code_type updby}";
+	}
+	.bs-gridcell[data-field=createdate]:before {
+		content: "{$label t_code_type createdate}";
 	}
 </style>
 <table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
@@ -419,6 +428,19 @@
 									
 									
 									
+									{BEGIN listorder_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$listorder_class}" data-field=listorder>
+									{BEGIN listorder_fieldheader}
+																				<span {$listorder_orderlinkattrs}>
+											{$label t_code_type listorder}
+										</span>
+									{END listorder_fieldheader}
+									</th>
+									{END listorder_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN type_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$type_class}" data-field=type>
 									{BEGIN type_fieldheader}
@@ -428,6 +450,45 @@
 									{END type_fieldheader}
 									</th>
 									{END type_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN upddate_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$upddate_class}" data-field=upddate>
+									{BEGIN upddate_fieldheader}
+																				<span {$upddate_orderlinkattrs}>
+											{$label t_code_type upddate}
+										</span>
+									{END upddate_fieldheader}
+									</th>
+									{END upddate_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN updby_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$updby_class}" data-field=updby>
+									{BEGIN updby_fieldheader}
+																				<span {$updby_orderlinkattrs}>
+											{$label t_code_type updby}
+										</span>
+									{END updby_fieldheader}
+									</th>
+									{END updby_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN createdate_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$createdate_class}" data-field=createdate>
+									{BEGIN createdate_fieldheader}
+																				<span {$createdate_orderlinkattrs}>
+											{$label t_code_type createdate}
+										</span>
+									{END createdate_fieldheader}
+									</th>
+									{END createdate_fieldheadercolumn}
 									
 									
 									
@@ -454,19 +515,6 @@
 									{END info_fieldheader}
 									</th>
 									{END info_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN rank_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$rank_class}" data-field=rank>
-									{BEGIN rank_fieldheader}
-																				<span {$rank_orderlinkattrs}>
-											{$label t_code_type rank}
-										</span>
-									{END rank_fieldheader}
-									</th>
-									{END rank_fieldheadercolumn}
 									
 									
 									
@@ -542,11 +590,39 @@
 {END groupname_fieldcolumn}
 
 
+	{BEGIN listorder_fieldcolumn}
+	<td class="bs-gridcell {$listorder_class}"  data-field=listorder {$rowstyle} {$recordattrs}>
+		{$listorder_value}
+	</td>
+{END listorder_fieldcolumn}
+
+
 	{BEGIN type_fieldcolumn}
 	<td class="bs-gridcell {$type_class}"  data-field=type {$rowstyle} {$recordattrs}>
 		{$type_value}
 	</td>
 {END type_fieldcolumn}
+
+
+	{BEGIN upddate_fieldcolumn}
+	<td class="bs-gridcell {$upddate_class}"  data-field=upddate {$rowstyle} {$recordattrs}>
+		{$upddate_value}
+	</td>
+{END upddate_fieldcolumn}
+
+
+	{BEGIN updby_fieldcolumn}
+	<td class="bs-gridcell {$updby_class}"  data-field=updby {$rowstyle} {$recordattrs}>
+		{$updby_value}
+	</td>
+{END updby_fieldcolumn}
+
+
+	{BEGIN createdate_fieldcolumn}
+	<td class="bs-gridcell {$createdate_class}"  data-field=createdate {$rowstyle} {$recordattrs}>
+		{$createdate_value}
+	</td>
+{END createdate_fieldcolumn}
 
 
 	{BEGIN label_fieldcolumn}
@@ -561,13 +637,6 @@
 		{$info_value}
 	</td>
 {END info_fieldcolumn}
-
-
-	{BEGIN rank_fieldcolumn}
-	<td class="bs-gridcell {$rank_class}"  data-field=rank {$rowstyle} {$recordattrs}>
-		{$rank_value}
-	</td>
-{END rank_fieldcolumn}
 
 	{BEGIN endrecord_block}
 	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>

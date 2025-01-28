@@ -12,6 +12,7 @@
  *
  *
  */
+$dbg = true;
 $loc  = "..";
 $page = "publish_results";     //
 $scriptname = basename(__FILE__);
@@ -204,7 +205,8 @@ elseif ($_REQUEST['pagestate'] == "submit")
         }
         else
         {
-            //echo "<pre>".print_r($process_list,true)."</pre>";
+
+            if ($dbg) { u_writedbg("<pre>".print_r($process_list,true)."</pre>", __FILE__,__FUNCTION__,__LINE__); }
             
             foreach ($process_list as $k => $process)
             {
@@ -232,6 +234,8 @@ elseif ($_REQUEST['pagestate'] == "submit")
                         }
                         else
                         {
+                            if ($dbg) { u_writedbg("<pre>".print_r($$status,true)."</pre>", __FILE__,__FUNCTION__,__LINE__); }
+
                             // we have an error - process any detail information
                             $err_detail_txt = "";
                             foreach ($status['detail'] as $detail)

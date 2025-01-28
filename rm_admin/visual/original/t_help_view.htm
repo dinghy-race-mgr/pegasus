@@ -61,6 +61,26 @@
 <div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
 
 	<div class="container">
+					{BEGIN listorder_fieldblock}
+	<div class="{$fielddispclass_listorder} col-md-6 bs-viewcontrolgroup" data-fieldname="listorder">
+		<label class="control-label" for="{$labelfor_listorder}">
+			{$label t_help listorder}
+		</label>
+		<div class="" >
+			{$listorder_value}&nbsp;
+		</div>
+	</div>
+{END listorder_fieldblock}
+					{BEGIN createdate_fieldblock}
+	<div class="{$fielddispclass_createdate} col-md-6 bs-viewcontrolgroup" data-fieldname="createdate">
+		<label class="control-label" for="{$labelfor_createdate}">
+			{$label t_help createdate}
+		</label>
+		<div class="" >
+			{$createdate_value}&nbsp;
+		</div>
+	</div>
+{END createdate_fieldblock}
 				<div class="col-md-12">
 				<div class="panel panel-default form-section">
 		<div class="panel-heading" role="tab" {$section_Details1_headattrs} data-toggle="collapse"   >

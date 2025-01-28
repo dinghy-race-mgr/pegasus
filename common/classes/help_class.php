@@ -59,7 +59,7 @@ class HELP
     public function get_help()
     {
         $where = " FIND_IN_SET('".$this->page."',category) > 0  AND `active` = 1";
-        $topics = $this->db->db_get_rows("SELECT * FROM t_help WHERE $where ORDER by `rank` ASC");
+        $topics = $this->db->db_get_rows("SELECT * FROM t_help WHERE $where ORDER by `listorder` ASC");
 
         foreach ($topics as $k=>$topic)
         {
@@ -207,7 +207,8 @@ EOT;
             foreach ($this->topics as $k=>$topic)
             {
                 $i++;
-                $i==1 ? $panel_status = "in" : $panel_status = "";
+                $panel_status = "";
+                //$i==1 ? $panel_status = "in" : $panel_status = "";
                 $panel_bufr.= <<<EOT
                 <div class="panel panel-info">
                      <div class="panel-heading" role="tab" id="heading$i">                    

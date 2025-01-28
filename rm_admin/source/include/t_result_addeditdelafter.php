@@ -48,8 +48,7 @@ if ($_SESSION['results_update'])
     }
     else
     {
-        $pageObject->setMessageType(MESSAGE_ERROR);
-        $pageObject->setMessage("ERROR: data not found - results for fleet {$values['fleet']} not updated");
+        $message = "No competitors found for fleet {$values['fleet']} - results not updated";
     }
 }
 

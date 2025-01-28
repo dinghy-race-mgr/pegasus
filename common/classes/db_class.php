@@ -335,6 +335,10 @@ class DB
 
     public function db_truncate( $tables = array() )
     {
+        /*
+         * Note for truncate the database user must have DROP permissions
+         */
+
         $truncated = 0;
         if( !empty( $tables ) )
         {
@@ -447,11 +451,13 @@ class DB
     
     public function db_getlinks($category)
     {
-        $query = "SELECT `label`, `url_link`, `tip`, `category`, `listorder` FROM t_link ORDER BY `listorder` ASC";
+        $query = "SELECT `label`, `url_link`, `tip`, `category`, `listorder` FROM t_link ";
         if (!empty($category))
         {
             $query.= " WHERE category = '$category'";
         }
+        $query.= " ORDER BY `listorder` ASC ";
+
         $links = $this->db_get_rows( $query );
         return $links;
     }

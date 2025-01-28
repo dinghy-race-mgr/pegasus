@@ -1,567 +1,673 @@
-<!DOCTYPE html>
-<HTML {$html_attrs}>
-  <HEAD>
-    <META http-equiv="X-UA-Compatible" content="IE=Edge">
-    <META name="viewport" content="width=device-width, initial-scale=1.0">
-    <TITLE>
-      {$pagetitle}
-    </TITLE>
-    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <LINK href="styles/default.css" rel="stylesheet" type="text/css">
-    {BEGIN rtlCSS}
-      <LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">
-    {END rtlCSS}
-    {BEGIN styleCSSFiles}
-      <LINK href="{$stylepath}" rel="stylesheet" type="text/css">
-    {END styleCSSFiles}
-    <META name="GENERATOR" content="MSHTML 11.00.10570.1001">
-  </HEAD>
-  <BODY class="{$stylename} function-list" {$bodyattrs}>
-    {BEGIN body}
-      {$header}
-      <STYLE>
-        {$containerCss}
-      </STYLE>
-      {BEGIN container_menu}
-        <NAV class="navbar navbar-default" data-container="menu" data-pageid="{$pageid}" {$menu_chiddenattr}>
-          {BEGIN container_hdr}
-            <DIV class="navbar-header" data-container="hdr" data-pageid="{$pageid}" {$hdr_chiddenattr}>
-              {BEGIN logo_block}
-                <A class="navbar-brand" href="{$home_link}" data-brick="logo" data-pageid="{$pageid}" {$logo_hiddenattr}>
-                  {$logo}
-                </A>
-              {END logo_block}
-              {BEGIN collapse_block}
-                <BUTTON class="navbar-toggle collapsed" type="button" data-brick="bsnavbarcollapse" data-pageid="{$pageid}" data-target=".bs-navcontrolled" data-runner-toggle="collapse" {$bsnavbarcollapse_hiddenattr}>
-                  <SPAN class="sr-only">
-                    Toggle navigation
-                  </SPAN>
-                  <SPAN class="icon-bar">
-                  </SPAN>
-                </BUTTON>
-              {END collapse_block}
-            </DIV>
-          {END container_hdr}
-          {BEGIN container_menu_1}
-            <DIV class="bs-navform navbar-collapse bs-navcontrolled bs-hidden-xs" aria-expanded="false" data-container="menu_1" data-pageid="{$pageid}" {$menu_1_chiddenattr}>
-              {BEGIN menu_block}
-                {$menu main horizontal}
-              {END menu_block}
-              {BEGIN container_more}
-                <DIV class="navbar-right navbar-form" data-container="more" data-pageid="{$pageid}" {$more_chiddenattr}>
-                  {BEGIN more_list}
-                    <DIV class="btn-group bs-navsection" data-brick="morebutton" data-pageid="{$pageid}" {$morebutton_hiddenattr}>
-                      <BUTTON class="btn btn-default dropdown-toggle" aria-expanded="false" aria-haspopup="true" type="button" data-toggle="dropdown">
-                        <SPAN class="glyphicon glyphicon-cog">
-                        </SPAN>
-                        <SPAN class="caret">
-                        </SPAN>
-                      </BUTTON>
-                      <UL class="dropdown-menu">
-                        {BEGIN deleteselected_link}
-                          <LI class="massButton{$id} disabled">
-                            <A href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>
-                              Delete selected
-                            </A>
-                          </LI>
-                        {END deleteselected_link}
-                        <LI class="divider" role="separator">
-                        </LI>
-                        {BEGIN asearch_link}
-                          <LI>
-                            <A href="t_help_search.php" {$advsearchlink_attrs}>
-                              Advanced search
-                            </A>
-                          </LI>
-                        {END asearch_link}
-                        {BEGIN searchPanelTopButtons}
-                          <LI>
-                            <A id="showOptPanel{$id}" href="#">
-                              Show search panel
-                            </A>
-                          </LI>
-                        {END searchPanelTopButtons}
-                      </UL>
-                    </DIV>
-                  {END more_list}
-                  {BEGIN security_block}
-                    <SPAN class="bs-navsection" id="login_block{$id}" data-brick="loggedas" data-pageid="{$pageid}" {$loggedas_hiddenattr}>
-                      {BEGIN guestloginbutton}
-                        <BUTTON class="btn btn-info" type="button" {$guestloginlink_attrs}>
-                          Login
-                        </BUTTON>
-                      {END guestloginbutton}
-                      {BEGIN loggedas_message}
-                        <SPAN class="dropdown">
-                          <BUTTON class="btn btn-info dropdown-toggle" aria-expanded="false" aria-haspopup="true" type="button" data-toggle="dropdown">
-                            <SPAN class="glyphicon glyphicon-user">
-                            </SPAN>
-                            {$username}
-                          </BUTTON>
-                          <UL class="dropdown-menu">
-                            {BEGIN logoutbutton}
-                              <LI>
-                                <A href="#" {$logoutlink_attrs}>
-                                  Log out
-                                </A>
-                              </LI>
-                            {END logoutbutton}
-                            {BEGIN adminarea_link}
-                              <LI>
-                                <A href="admin_rights_list.php" {$adminarealink_attrs}>
-                                  Admin Area
-                                </A>
-                              </LI>
-                            {END adminarea_link}
-                            {BEGIN changepwd_link}
-                              <LI>
-                                <A href="#" {$changepwdlink_attrs}>
-                                  Change password
-                                </A>
-                              </LI>
-                            {END changepwd_link}
-                          </UL>
-                        </SPAN>
-                      {END loggedas_message}
-                    </SPAN>
-                  {END security_block}
-                </DIV>
-              {END container_more}
-              {BEGIN container_more_1}
-                <DIV class="navbar-right navbar-form" data-container="more_1" data-pageid="{$pageid}" {$more_1_chiddenattr}>
-                  {BEGIN searchform_block}
-                    <SPAN class="form-group" data-brick="search" data-pageid="{$pageid}" {$search_hiddenattr}>
-                    </SPAN>
-                  {END searchform_block}
-                </DIV>
-              {END container_more_1}
-            </DIV>
-          {END container_menu_1}
-        </NAV>
-      {END container_menu}
-      <DIV class="bs-middle">
-        <DIV class="bs-topmiddle">
-          {BEGIN container_breadcrumbs}
-            <DIV class=" " data-container="breadcrumbs" data-pageid="{$pageid}" {$breadcrumbs_chiddenattr}>
-              {BEGIN container_bc}
-                <DIV class=" " data-container="bc" data-pageid="{$pageid}" {$bc_chiddenattr}>
-                  {BEGIN breadcrumbs}
-                    <OL class="breadcrumb">
-                      <LI>
-                        <A href="{$home_link}">
-                          <SPAN class="glyphicon glyphicon-home">
-                          </SPAN>
-                        </A>
-                        {$crumb_dropdown}
-                      </LI>
-                      {BEGIN crumb}
-                        <LI class="{$crumb_item_class}">
-                          {BEGIN crumb_title_link}
-                            <A {$crumb_attrs}>
-                              {$crumb_title}
-                            </A>
-                          {END crumb_title_link}
-                          {BEGIN crumb_title_span}
-                            <SPAN {$crumb_attrs}>
-                              {$crumb_title}
-                            </SPAN>
-                          {END crumb_title_span}
-                          {$crumb_dropdown}
-                        </LI>
-                      {END crumb}
-                    </OL>
-                  {END breadcrumbs}
-                </DIV>
-              {END container_bc}
-            </DIV>
-          {END container_breadcrumbs}
-        </DIV>
-        <DIV class="bs-left" {$blockattr_left}>
-        </DIV>
-        <DIV class="bs-center bs-screenwidth bs-minwidth">
-          {BEGIN container_gridcontrols}
-            <DIV class="row rnr-rowcontainer bs-navcontrolled bs-hidden-xs" data-container="gridcontrols" data-pageid="{$pageid}" {$gridcontrols_chiddenattr}>
-              {BEGIN container_add_delete}
-                <DIV class="bottom-margin col-md-6" data-container="add_delete" data-pageid="{$pageid}" {$add_delete_chiddenattr}>
-                  {BEGIN newrecord_controls_block}
-                    {BEGIN add_link}
-                      <A class="btn btn-primary" type="button" data-brick="add" data-pageid="{$pageid}" {$add_hiddenattr} {$addlink_attrs}>
-                        Add new
-                      </A>
-                    {END add_link}
-                  {END newrecord_controls_block}
-                  {BEGIN record_controls_block}
-                    <SPAN data-brick="recordcontrol" data-pageid="{$pageid}" {$recordcontrol_hiddenattr}>
-                      {BEGIN deleteselected_link}
-                        <BUTTON disabled class="btn btn-default" type="button" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>
-                          Delete
-                        </BUTTON>
-                      {END deleteselected_link}
-                    </SPAN>
-                    
-                  {END record_controls_block}
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+	</head>
+
+	<body class="{$stylename} function-list" {$bodyattrs}>
+	{BEGIN body}{$header}
+		<style>
+			{$containerCss}
+		</style>
+		{BEGIN container_menu}<nav {$menu_chiddenattr} data-pageid="{$pageid}" data-container="menu" class="navbar navbar-default ">					
+
+
+
+{BEGIN container_hdr}<div {$hdr_chiddenattr} data-pageid="{$pageid}" data-container="hdr" class=" navbar-header   "> 
+
+{BEGIN logo_block}<a href="{$home_link}" {$logo_hiddenattr} data-pageid="{$pageid}" data-brick="logo" class="navbar-brand" >{$logo}</a>
+{END logo_block}
+
+
+{BEGIN collapse_block}<button {$bsnavbarcollapse_hiddenattr} data-pageid="{$pageid}" data-brick="bsnavbarcollapse" type="button" class="navbar-toggle collapsed" data-runner-toggle="collapse" data-target=".bs-navcontrolled">	
+	<span class="sr-only">Toggle navigation</span>	
+	<span class="icon-bar"></span>					
+</button>												
+
+{END collapse_block}
+
+
+
+</div>
+{END container_hdr}
+
+
+
+
+
+
+{BEGIN container_menu_1}<div {$menu_1_chiddenattr} data-pageid="{$pageid}" data-container="menu_1" class="bs-navform navbar-collapse bs-navcontrolled bs-hidden-xs" aria-expanded="false" >												   
+{BEGIN menu_block}{$menu main horizontal}
+
+{END menu_block}
+
+
+
+
+
+{BEGIN container_more}<div {$more_chiddenattr} data-pageid="{$pageid}" data-container="more" class=" navbar-right navbar-form   "> 
+
+{BEGIN more_list}<div {$morebutton_hiddenattr} data-pageid="{$pageid}" data-brick="morebutton" class="btn-group bs-navsection">
+	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<span class="glyphicon glyphicon-cog"></span>
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu">
+		
+				
+				{BEGIN deleteselected_link}<li class="massButton{$id} disabled"><a href="#" {$deleteselectedlink_attrs} {$deleteselectedlink_span}>Delete selected</a></li>
+		{END deleteselected_link}
+		
+				<li role="separator" class="divider"></li>	
+
+				{BEGIN asearch_link}<li><a href="t_help_search.php" {$advsearchlink_attrs}>Advanced search</a></li>
+		{END asearch_link}
+
+				{BEGIN searchPanelTopButtons}<li><a href=# id="showOptPanel{$id}">Show search panel</a></li>
+		{END searchPanelTopButtons}	
+		
+				
+				
+				
+		
+		
+				
+	</ul>  
+</div>
+
+{END more_list}
+
+
+{BEGIN security_block}<span {$loggedas_hiddenattr} data-pageid="{$pageid}" data-brick="loggedas" id="login_block{$id}" class="bs-navsection">
+	{BEGIN guestloginbutton}<button class="btn btn-info" type="button" {$guestloginlink_attrs}>Login</button>
+	{END guestloginbutton}
+	{BEGIN loggedas_message}<span class="dropdown">
+			<button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<span class="glyphicon glyphicon-user"></span>	{$username}</button>
+			<ul class="dropdown-menu">
+		{BEGIN logoutbutton}<li><a href="#" {$logoutlink_attrs}>Log out</a></li>
+		{END logoutbutton}
+		
+		{BEGIN adminarea_link}<li><a href="admin_rights_list.php" {$adminarealink_attrs}>Admin Area</a></li>
+		{END adminarea_link}
+
+
+	{BEGIN changepwd_link}<li><a href="#" {$changepwdlink_attrs}>Change password</a></li>
+	{END changepwd_link}
+			</ul>
+		</span>
+	{END loggedas_message}
+</span>
+{END security_block}
+
+
+
+</div>
+{END container_more}
+
+
+
+
+
+
+
+
+{BEGIN container_more_1}<div {$more_1_chiddenattr} data-pageid="{$pageid}" data-container="more_1" class=" navbar-right navbar-form   "> 
+
+{BEGIN searchform_block}<span {$search_hiddenattr} data-pageid="{$pageid}" data-brick="search" class="form-group">
+
+	{$simpleSearchFieldCombo}
+	
+	{$simpleSearchTypeCombo}
+ <div  class="input-group">
+{BEGIN searchform_text}<input type="search" class="form-control" {$searchfor_attrs} size="25">
+{END searchform_text}
+	<span class="input-group-btn">
+	{BEGIN searchform_showall}<button class="btn btn-default" {$showAllCont_attrs} {$showallbutton_attrs} title="Show all">
+			<span class="glyphicon glyphicon-remove"></span>
+		</button>
+	{END searchform_showall}
+	{BEGIN searchform_search}<button {$searchbutton_attrs} class="btn btn-primary" >
+		<span class="glyphicon glyphicon-search"></span>
+	</button>
+	{END searchform_search}
+	</span>
+</div>
+		
+</span>
+{END searchform_block}
+
+
+
+</div>
+{END container_more_1}
+
+
+
+
+												</div>						{END container_menu_1}
+
+
+									</nav>{END container_menu}
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+
+{BEGIN container_breadcrumbs}<div {$breadcrumbs_chiddenattr} data-pageid="{$pageid}" data-container="breadcrumbs" class="    "> 
+
+
+
+
+{BEGIN container_bc}<div {$bc_chiddenattr} data-pageid="{$pageid}" data-container="bc" class="    "> 
+
+{BEGIN breadcrumbs}<ol class="breadcrumb">
+<li ><a href="{$home_link}"><span class="glyphicon glyphicon-home"></span></a>{$crumb_dropdown}</li>
+{BEGIN crumb}<li class="{$crumb_item_class}">
+{BEGIN crumb_title_link}<a {$crumb_attrs}>{$crumb_title}</a>
+{END crumb_title_link}
+{BEGIN crumb_title_span}<span {$crumb_attrs}>{$crumb_title}</span>
+{END crumb_title_span}	
+	{$crumb_dropdown}
+  </li>
+{END crumb}
+</ol>
+{END breadcrumbs}
+
+
+
+</div>
+{END container_bc}
+
+
+
+
+
+
+</div>
+{END container_breadcrumbs}
+
+
+
+
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+
+
+			</div>
+			<div class="bs-center bs-screenwidth bs-minwidth">
+				
+
+{BEGIN container_gridcontrols}<div {$gridcontrols_chiddenattr} data-pageid="{$pageid}" data-container="gridcontrols" class="row rnr-rowcontainer bs-navcontrolled bs-hidden-xs">
+
+
+
+
+{BEGIN container_add_delete}<div {$add_delete_chiddenattr} data-pageid="{$pageid}" data-container="add_delete" class=" bottom-margin  col-md-6 "> 
+
+{BEGIN newrecord_controls_block}{BEGIN add_link}<a {$add_hiddenattr} data-pageid="{$pageid}" data-brick="add" type="button" class="btn btn-primary" {$addlink_attrs}>Add new</a>
+	{END add_link}
+
+	
+{END newrecord_controls_block}
+
+
+{BEGIN record_controls_block}<span {$recordcontrol_hiddenattr} data-pageid="{$pageid}" data-brick="recordcontrol">
+		{BEGIN deleteselected_link}<button type="button" class="btn btn-default" {$deleteselectedlink_attrs} {$deleteselectedlink_span} disabled>Delete</button>
+	{END deleteselected_link}
+		</span>
+
+{END record_controls_block}
+
+
+
 {$event t_help_snippet}
-                </DIV>
-              {END container_add_delete}
-              {BEGIN container_gridinfo}
-                <DIV class="bottom-margin pull-right text-right col-md-6" data-container="gridinfo" data-pageid="{$pageid}" {$gridinfo_chiddenattr}>
-                  {BEGIN details_found}
-                    <SPAN class="form-inline form-inline-always" data-brick="details_found" data-pageid="{$pageid}" {$details_found_hiddenattr}>
-                      {$records_indicator}
-                      <SPAN>
-                        {BEGIN recordspp_block}
-                          {$recsPerPage}
-                        {END recordspp_block}
-                      </SPAN>
-                    </SPAN>
-                  {END details_found}
-                  {BEGIN field_hide_panel}
-                    <DIV title="Show/hide columns" class="keep-open btn-group" id="fildhidepanel{$id}" data-brick="bsfieldhidepanel" data-pageid="{$pageid}" {$bsfieldhidepanel_hiddenattr}>
-                      <BUTTON class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                        <I class="glyphicon glyphicon-th-list">
-                        </I>
-                        <SPAN class="caret">
-                        </SPAN>
-                      </BUTTON>
-                      <UL class="dropdown-menu dropdown-left" role="menu">
-                        <LI>
-                          <A>
-                            <DIV class="checkbox">
-                              <LABEL>
-                                <INPUT id="hide_question" type="checkbox" 
-  checked="checked" value="1" data-field="question">
-                                <SPAN>
-                                  {$label t_help question}
-                                </SPAN>
-                              </LABEL>
-                            </DIV>
-                          </A>
-                        </LI>
-                        <LI>
-                          <A>
-                            <DIV class="checkbox">
-                              <LABEL>
-                                <INPUT id="hide_author" type="checkbox" checked="checked" 
-  value="1" data-field="author">
-                                <SPAN>
-                                  {$label t_help author}
-                                </SPAN>
-                              </LABEL>
-                            </DIV>
-                          </A>
-                        </LI>
-                        <LI>
-                          <A>
-                            <DIV class="checkbox">
-                              <LABEL>
-                                <INPUT id="hide_upddate" type="checkbox" checked="checked" 
-  value="1" data-field="upddate">
-                                <SPAN>
-                                  {$label t_help upddate}
-                                </SPAN>
-                              </LABEL>
-                            </DIV>
-                          </A>
-                        </LI>
-                        <LI>
-                          <A>
-                            <DIV class="checkbox">
-                              <LABEL>
-                                <INPUT id="hide_category" type="checkbox" 
-  checked="checked" value="1" data-field="category">
-                                <SPAN>
-                                  {$label t_help category}
-                                </SPAN>
-                              </LABEL>
-                            </DIV>
-                          </A>
-                        </LI>
-                        <LI>
-                          <A>
-                            <DIV class="checkbox">
-                              <LABEL>
-                                <INPUT id="hide_rank" type="checkbox" checked="checked" 
-  value="1" data-field="rank">
-                                <SPAN>
-                                  {$label t_help rank}
-                                </SPAN>
-                              </LABEL>
-                            </DIV>
-                          </A>
-                        </LI>
-                        <LI>
-                          <A>
-                            <DIV class="checkbox">
-                              <LABEL>
-                                <INPUT id="hide_active" type="checkbox" checked="checked" 
-  value="1" data-field="active">
-                                <SPAN>
-                                  {$label t_help active}
-                                </SPAN>
-                              </LABEL>
-                            </DIV>
-                          </A>
-                        </LI>
-                      </UL>
-                    </DIV>
-                  {END field_hide_panel}
-                </DIV>
-              {END container_gridinfo}
-            </DIV>
-          {END container_gridcontrols}
-          {BEGIN container_tabs}
-            <DIV class=" " data-container="tabs" data-pageid="{$pageid}" {$tabs_chiddenattr}>
-              {BEGIN grid_tabs}
-                <DIV data-brick="bsgrid_tabs" data-pageid="{$pageid}" {$bsgrid_tabs_hiddenattr}>
-                  <UL class="nav nav-tabs">
-                    {$grid_tabs_content}
-                  </UL>
-                </DIV>
-              {END grid_tabs}
-            </DIV>
-          {END container_tabs}
-          {BEGIN container_messagerow}
-            <DIV class="row rnr-rowcontainer" data-container="messagerow" data-pageid="{$pageid}" {$messagerow_chiddenattr}>
-              {BEGIN container_message}
-                <DIV class="col-md-12" data-container="message" data-pageid="{$pageid}" {$message_chiddenattr}>
-                  {BEGIN message_block}
-                    <DIV class="alert {$message_class}" role="alert" data-brick="message" data-pageid="{$pageid}" {$message_hiddenattr}>
-                      {$message}
-                    </DIV>
-                  {END message_block}
-                </DIV>
-              {END container_message}
-            </DIV>
-          {END container_messagerow}
-          {BEGIN container_center}
-            <DIV class=" " data-container="center" data-pageid="{$pageid}" {$center_chiddenattr}>
-              {BEGIN container_grid}
-                <DIV class="bs-grid" data-container="grid" data-pageid="{$pageid}" {$grid_chiddenattr}>
-                  {BEGIN grid_block}
-                    <STYLE>
-                      .bs-gridcell[data-field=id]:before {
-                      content: "{$label t_help id}";
-                      }
-                      .bs-gridcell[data-field=category]:before {
-                      content: "{$label t_help category}";
-                      }
-                      .bs-gridcell[data-field=question]:before {
-                      content: "{$label t_help question}";
-                      }
-                      .bs-gridcell[data-field=answer]:before {
-                      content: "{$label t_help answer}";
-                      }
-                      .bs-gridcell[data-field=notes]:before {
-                      content: "{$label t_help notes}";
-                      }
-                      .bs-gridcell[data-field=author]:before {
-                      content: "{$label t_help author}";
-                      }
-                      .bs-gridcell[data-field=rank]:before {
-                      content: "{$label t_help rank}";
-                      }
-                      .bs-gridcell[data-field=upddate]:before {
-                      content: "{$label t_help upddate}";
-                      }
-                      .bs-gridcell[data-field=updby]:before {
-                      content: "{$label t_help updby}";
-                      }
-                      .bs-gridcell[data-field=pursuit]:before {
-                      content: "{$label t_help pursuit}";
-                      }
-                      .bs-gridcell[data-field=eventname]:before {
-                      content: "{$label t_help eventname}";
-                      }
-                      .bs-gridcell[data-field=format]:before {
-                      content: "{$label t_help format}";
-                      }
-                      .bs-gridcell[data-field=startdate]:before {
-                      content: "{$label t_help startdate}";
-                      }
-                      .bs-gridcell[data-field=enddate]:before {
-                      content: "{$label t_help enddate}";
-                      }
-                      .bs-gridcell[data-field=multirace]:before {
-                      content: "{$label t_help multirace}";
-                      }
-                      .bs-gridcell[data-field=active]:before {
-                      content: "{$label t_help active}";
-                      }
-                    </STYLE>
-                    <TABLE class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" data-brick="grid" data-pageid="{$pageid}" {$grid_hiddenattr}>
-                      <THEAD>
-                        {BEGIN grid_header}
-                          <TR class="rnr-toprow {$gridHeader_class}">
-                            {BEGIN record_header}
-                              {BEGIN listIcons_column}
-                                <TH ieditcont="all">
-                                  &nbsp;
-                                </TH>
-                              {END listIcons_column}
-                              {BEGIN checkbox_column}
-                                <TH>
-                                  <INPUT type="checkbox" {$checkboxheader_attrs}>
-                                </TH>
-                              {END checkbox_column}
-                              {BEGIN question_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$question_class}" data-field="question">
-                                  {BEGIN question_fieldheader}
-                                    <SPAN {$question_orderlinkattrs}>
-                                      {$label t_help question}
-                                    </SPAN>
-                                  {END question_fieldheader}
-                                </TH>
-                              {END question_fieldheadercolumn}
-                              {BEGIN author_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$author_class}" data-field="author">
-                                  {BEGIN author_fieldheader}
-                                    <SPAN {$author_orderlinkattrs}>
-                                      {$label t_help author}
-                                    </SPAN>
-                                  {END author_fieldheader}
-                                </TH>
-                              {END author_fieldheadercolumn}
-                              {BEGIN upddate_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$upddate_class}" data-field="upddate">
-                                  {BEGIN upddate_fieldheader}
-                                    <SPAN {$upddate_orderlinkattrs}>
-                                      {$label t_help upddate}
-                                    </SPAN>
-                                  {END upddate_fieldheader}
-                                </TH>
-                              {END upddate_fieldheadercolumn}
-                              {BEGIN category_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$category_class}" data-field="category">
-                                  {BEGIN category_fieldheader}
-                                    <SPAN {$category_orderlinkattrs}>
-                                      {$label t_help category}
-                                    </SPAN>
-                                  {END category_fieldheader}
-                                </TH>
-                              {END category_fieldheadercolumn}
-                              {BEGIN rank_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$rank_class}" data-field="rank">
-                                  {BEGIN rank_fieldheader}
-                                    <SPAN {$rank_orderlinkattrs}>
-                                      {$label t_help rank}
-                                    </SPAN>
-                                  {END rank_fieldheader}
-                                </TH>
-                              {END rank_fieldheadercolumn}
-                              {BEGIN active_fieldheadercolumn}
-                                <TH class="rnr-gridfieldlabel {$active_class}" data-field="active">
-                                  {BEGIN active_fieldheader}
-                                    <SPAN {$active_orderlinkattrs}>
-                                      {$label t_help active}
-                                    </SPAN>
-                                  {END active_fieldheader}
-                                </TH>
-                              {END active_fieldheadercolumn}
-                              {BEGIN endrecordheader_block}
-                                <TH class="rnr-cs">
-                                  &nbsp;
-                                </TH>
-                              {END endrecordheader_block}
-                            {END record_header}
-                          </TR>
-                        {END grid_header}
-                      </THEAD>
-                      <TBODY>
-                        {BEGIN grid_row}
-                          <TR class="{$rowclass} bs-gridrow" {$rowattrs} {$rowstyle}>
-                            {BEGIN grid_record}
-                              {BEGIN listIcons_column}
-                                <TD class="bs-gridicons" ieditcont="all" {$rowstyle} {$recordattrs}>
-                                  {BEGIN edit_column}
-                                    {BEGIN edit_link}
-                                      <A title="Edit" class="glyphicon glyphicon-pencil" {$editlink_attrs}>
-                                      </A>
-                                    {END edit_link}
-                                  {END edit_column}
-                                  <SPAN data-hidden {$ieditbuttonsholder_attrs}>
-                                  </SPAN>
-                                  {BEGIN copy_column}
-                                    {BEGIN copy_link}
-                                      <A title="Copy" class="glyphicon glyphicon-duplicate" {$copylink_attrs}>
-                                      </A>
-                                    {END copy_link}
-                                  {END copy_column}
-                                  {BEGIN view_column}
-                                    {BEGIN view_link}
-                                      <A title="View" class="glyphicon glyphicon-search" {$viewlink_attrs}>
-                                      </A>
-                                    {END view_link}
-                                  {END view_column}
-                                </TD>
-                              {END listIcons_column}
-                              {BEGIN checkbox_column}
-                                <TD class="bs-gridcheckbox" ieditcont="checkBox" {$rowstyle} {$recordattrs}>
-                                  {BEGIN checkbox}
-                                    <INPUT type="checkbox" {$checkbox_attrs}>
-                                  {END checkbox}
-                                </TD>
-                              {END checkbox_column}
-                              {BEGIN question_fieldcolumn}
-                                <TD class="bs-gridcell {$question_class}" data-field="question" {$rowstyle} {$recordattrs}>
-                                  <STRONG></STRONG><STRONG>{$question_value}</STRONG>
-                                </TD>
-                              {END question_fieldcolumn}
-                              {BEGIN author_fieldcolumn}
-                                <TD class="bs-gridcell {$author_class}" data-field="author" {$rowstyle} {$recordattrs}>
-                                  {$author_value}
-                                </TD>
-                              {END author_fieldcolumn}
-                              {BEGIN upddate_fieldcolumn}
-                                <TD class="bs-gridcell {$upddate_class}" data-field="upddate" {$rowstyle} {$recordattrs}>
-                                  {$upddate_value}
-                                </TD>
-                              {END upddate_fieldcolumn}
-                              {BEGIN category_fieldcolumn}
-                                <TD class="bs-gridcell {$category_class}" data-field="category" {$rowstyle} {$recordattrs}>
-                                  {$category_value}
-                                </TD>
-                              {END category_fieldcolumn}
-                              {BEGIN rank_fieldcolumn}
-                                <TD class="bs-gridcell {$rank_class}" data-field="rank" {$rowstyle} {$recordattrs}>
-                                  {$rank_value}
-                                </TD>
-                              {END rank_fieldcolumn}
-                              {BEGIN active_fieldcolumn}
-                                <TD class="bs-gridcell {$active_class}" data-field="active" {$rowstyle} {$recordattrs}>
-                                  {$active_value}
-                                </TD>
-                              {END active_fieldcolumn}
-                              {BEGIN endrecord_block}
-                                <TD class="rnr-cs" {$endrecordblock_attrs}>
-                                  &nbsp;
-                                </TD>
-                              {END endrecord_block}
-                            {END grid_record}
-                          </TR>
-                        {END grid_row}
-                      </TBODY>
-                      <TFOOT>
-                      </TFOOT>
-                    </TABLE>
-                  {END grid_block}
-                </DIV>
-              {END container_grid}
-            </DIV>
-          {END container_center}
-          {BEGIN container_pagination}
-            <DIV class="text-center col-md-12" data-container="pagination" data-pageid="{$pageid}" {$pagination_chiddenattr}>
-              {BEGIN pagination_block}
-                <DIV data-brick="pagination" data-pageid="{$pageid}" {$pagination_hiddenattr}>
-                  {$pagination}
-                </DIV>
-              {END pagination_block}
-            </DIV>
-          {END container_pagination}
-        </DIV>
-        <DIV class="bs-right">
-        </DIV>
-      </DIV>
-      {$footer}
-    {END body}
-  </BODY>
-</HTML>
+                </div>
+{END container_add_delete}
+
+
+
+
+
+
+
+
+{BEGIN container_gridinfo}<div {$gridinfo_chiddenattr} data-pageid="{$pageid}" data-container="gridinfo" class=" bottom-margin pull-right text-right col-md-6 "> 
+
+{BEGIN details_found}<span {$details_found_hiddenattr} data-pageid="{$pageid}" data-brick="details_found" class="form-inline form-inline-always">
+	{$records_indicator}
+	<span>
+	{BEGIN recordspp_block}{$recsPerPage}
+	{END recordspp_block}
+	</span>
+</span>
+{END details_found}
+
+
+
+{BEGIN field_hide_panel}<div {$bsfieldhidepanel_hiddenattr} data-pageid="{$pageid}" data-brick="bsfieldhidepanel" id="fildhidepanel{$id}" class="keep-open btn-group" title="Show/hide columns">
+	<button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button"><i class="glyphicon glyphicon-th-list"></i> <span class="caret"></span></button>
+	<ul role="menu" class="dropdown-menu dropdown-left">
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_listorder" checked="checked" value="1" data-field="listorder">
+			  <span>{$label t_help listorder}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_createdate" checked="checked" value="1" data-field="createdate">
+			  <span>{$label t_help createdate}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_question" checked="checked" value="1" data-field="question">
+			  <span>{$label t_help question}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_author" checked="checked" value="1" data-field="author">
+			  <span>{$label t_help author}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_upddate" checked="checked" value="1" data-field="upddate">
+			  <span>{$label t_help upddate}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_category" checked="checked" value="1" data-field="category">
+			  <span>{$label t_help category}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_active" checked="checked" value="1" data-field="active">
+			  <span>{$label t_help active}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+	</ul>
+</div>
+
+{END field_hide_panel}
+
+
+
+</div>
+{END container_gridinfo}
+
+
+
+
+
+
+
+</div>{END container_gridcontrols}
+
+
+
+{BEGIN container_tabs}<div {$tabs_chiddenattr} data-pageid="{$pageid}" data-container="tabs" class="    "> 
+
+{BEGIN grid_tabs}<div {$bsgrid_tabs_hiddenattr} data-pageid="{$pageid}" data-brick="bsgrid_tabs">
+<ul class="nav nav-tabs">
+{$grid_tabs_content}
+</ul>
+</div>
+{END grid_tabs}
+
+
+
+</div>
+{END container_tabs}
+
+
+
+{BEGIN container_messagerow}<div {$messagerow_chiddenattr} data-pageid="{$pageid}" data-container="messagerow" class="row rnr-rowcontainer ">
+
+
+
+
+{BEGIN container_message}<div {$message_chiddenattr} data-pageid="{$pageid}" data-container="message" class="   col-md-12 "> 
+
+{BEGIN message_block}<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">{$message}</div>
+{END message_block}
+
+
+
+</div>
+{END container_message}
+
+
+
+
+
+
+</div>{END container_messagerow}
+
+
+
+{BEGIN container_center}<div {$center_chiddenattr} data-pageid="{$pageid}" data-container="center" class="    "> 
+
+
+
+
+{BEGIN container_grid}<div {$grid_chiddenattr} data-pageid="{$pageid}" data-container="grid" class="bs-grid    "> 
+
+{BEGIN grid_block}<style>
+	.bs-gridcell[data-field=id]:before {
+		content: "{$label t_help id}";
+	}
+	.bs-gridcell[data-field=category]:before {
+		content: "{$label t_help category}";
+	}
+	.bs-gridcell[data-field=question]:before {
+		content: "{$label t_help question}";
+	}
+	.bs-gridcell[data-field=answer]:before {
+		content: "{$label t_help answer}";
+	}
+	.bs-gridcell[data-field=notes]:before {
+		content: "{$label t_help notes}";
+	}
+	.bs-gridcell[data-field=author]:before {
+		content: "{$label t_help author}";
+	}
+	.bs-gridcell[data-field=pursuit]:before {
+		content: "{$label t_help pursuit}";
+	}
+	.bs-gridcell[data-field=eventname]:before {
+		content: "{$label t_help eventname}";
+	}
+	.bs-gridcell[data-field=format]:before {
+		content: "{$label t_help format}";
+	}
+	.bs-gridcell[data-field=startdate]:before {
+		content: "{$label t_help startdate}";
+	}
+	.bs-gridcell[data-field=enddate]:before {
+		content: "{$label t_help enddate}";
+	}
+	.bs-gridcell[data-field=multirace]:before {
+		content: "{$label t_help multirace}";
+	}
+	.bs-gridcell[data-field=listorder]:before {
+		content: "{$label t_help listorder}";
+	}
+	.bs-gridcell[data-field=active]:before {
+		content: "{$label t_help active}";
+	}
+	.bs-gridcell[data-field=upddate]:before {
+		content: "{$label t_help upddate}";
+	}
+	.bs-gridcell[data-field=updby]:before {
+		content: "{$label t_help updby}";
+	}
+	.bs-gridcell[data-field=createdate]:before {
+		content: "{$label t_help createdate}";
+	}
+</style>
+<table {$grid_hiddenattr} data-pageid="{$pageid}" data-brick="grid" class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" cellpadding="0" >
+	<thead>
+										{BEGIN grid_header}<tr class="rnr-toprow {$gridHeader_class}" >
+									{BEGIN record_header}{BEGIN listIcons_column}<th iEditCont="all">&nbsp;</th>
+									{END listIcons_column}	
+
+																		{BEGIN checkbox_column}<TH>
+                                  <input type="checkbox" {$checkboxheader_attrs}>
+									</th>
+									{END checkbox_column}
+
+																		
+									{BEGIN listorder_fieldheadercolumn}<th class="rnr-gridfieldlabel {$listorder_class}" data-field=listorder>
+									{BEGIN listorder_fieldheader}<span {$listorder_orderlinkattrs}>
+											{$label t_help listorder}
+										</span>
+									{END listorder_fieldheader}
+									</th>
+									{END listorder_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN createdate_fieldheadercolumn}<th class="rnr-gridfieldlabel {$createdate_class}" data-field=createdate>
+									{BEGIN createdate_fieldheader}<span {$createdate_orderlinkattrs}>
+											{$label t_help createdate}
+										</span>
+									{END createdate_fieldheader}
+									</th>
+									{END createdate_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN question_fieldheadercolumn}<th class="rnr-gridfieldlabel {$question_class}" data-field=question>
+									{BEGIN question_fieldheader}<span {$question_orderlinkattrs}>
+											{$label t_help question}
+										</span>
+									{END question_fieldheader}
+									</th>
+									{END question_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN author_fieldheadercolumn}<th class="rnr-gridfieldlabel {$author_class}" data-field=author>
+									{BEGIN author_fieldheader}<span {$author_orderlinkattrs}>
+											{$label t_help author}
+										</span>
+									{END author_fieldheader}
+									</th>
+									{END author_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN upddate_fieldheadercolumn}<th class="rnr-gridfieldlabel {$upddate_class}" data-field=upddate>
+									{BEGIN upddate_fieldheader}<span {$upddate_orderlinkattrs}>
+											{$label t_help upddate}
+										</span>
+									{END upddate_fieldheader}
+									</th>
+									{END upddate_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN category_fieldheadercolumn}<th class="rnr-gridfieldlabel {$category_class}" data-field=category>
+									{BEGIN category_fieldheader}<span {$category_orderlinkattrs}>
+											{$label t_help category}
+										</span>
+									{END category_fieldheader}
+									</th>
+									{END category_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN active_fieldheadercolumn}<th class="rnr-gridfieldlabel {$active_class}" data-field=active>
+									{BEGIN active_fieldheader}<span {$active_orderlinkattrs}>
+											{$label t_help active}
+										</span>
+									{END active_fieldheader}
+									</th>
+									{END active_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN endrecordheader_block}<th class="rnr-cs">&nbsp;</th>
+									
+									{END endrecordheader_block}
+									
+									{END record_header}
+									
+								</tr>
+								{END grid_header}
+
+	</thead>
+	<tbody>	
+		{BEGIN grid_row}<tr class="{$rowclass} bs-gridrow" {$rowattrs} {$rowstyle}>
+	{BEGIN grid_record}{BEGIN listIcons_column}<td class="bs-gridicons" iEditCont="all" {$rowstyle} {$recordattrs}>
+		{BEGIN edit_column}{BEGIN edit_link}<a class="glyphicon glyphicon-pencil" {$editlink_attrs} title="Edit"></a>
+	{END edit_link}
+	{END edit_column}
+
+		
+	<span data-hidden {$ieditbuttonsholder_attrs}></span>
+
+		{BEGIN copy_column}{BEGIN copy_link}<a class="glyphicon glyphicon-duplicate" {$copylink_attrs} title="Copy"></a>
+	{END copy_link}
+	{END copy_column}
+
+		{BEGIN view_column}{BEGIN view_link}<a class="glyphicon glyphicon-search" {$viewlink_attrs} title="View"></a>
+	{END view_link}
+	{END view_column}
+	</td>	
+	{END listIcons_column}	
+
+		{BEGIN checkbox_column}<td  iEditCont="checkBox" class="bs-gridcheckbox" {$rowstyle} {$recordattrs}>
+	{BEGIN checkbox}<input type="checkbox" {$checkbox_attrs}>
+	{END checkbox}
+	</td>
+	{END checkbox_column}
+
+	
+
+	{BEGIN listorder_fieldcolumn}<td class="bs-gridcell {$listorder_class}"  data-field=listorder {$rowstyle} {$recordattrs}>
+		{$listorder_value}
+	</td>
+{END listorder_fieldcolumn}
+
+
+	{BEGIN createdate_fieldcolumn}<td class="bs-gridcell {$createdate_class}"  data-field=createdate {$rowstyle} {$recordattrs}>
+		{$createdate_value}
+	</td>
+{END createdate_fieldcolumn}
+
+
+	{BEGIN question_fieldcolumn}<td class="bs-gridcell {$question_class}"  data-field=question {$rowstyle} {$recordattrs}>
+		<STRONG></STRONG><STRONG>{$question_value}
+	</STRONG>
+                                </td>
+{END question_fieldcolumn}
+
+
+	{BEGIN author_fieldcolumn}<td class="bs-gridcell {$author_class}"  data-field=author {$rowstyle} {$recordattrs}>
+		{$author_value}
+	</td>
+{END author_fieldcolumn}
+
+
+	{BEGIN upddate_fieldcolumn}<td class="bs-gridcell {$upddate_class}"  data-field=upddate {$rowstyle} {$recordattrs}>
+		{$upddate_value}
+	</td>
+{END upddate_fieldcolumn}
+
+
+	{BEGIN category_fieldcolumn}<td class="bs-gridcell {$category_class}"  data-field=category {$rowstyle} {$recordattrs}>
+		{$category_value}
+	</td>
+{END category_fieldcolumn}
+
+
+	{BEGIN active_fieldcolumn}<td class="bs-gridcell {$active_class}"  data-field=active {$rowstyle} {$recordattrs}>
+		{$active_value}
+	</td>
+{END active_fieldcolumn}
+
+	{BEGIN endrecord_block}<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>
+	{END endrecord_block}
+									
+	{END grid_record}
+
+</tr>
+{END grid_row}
+	</tbody>
+	<tfoot>
+										
+	</tfoot>
+</table>
+
+
+
+{END grid_block}
+
+
+
+</div>
+{END container_grid}
+
+
+
+
+
+
+</div>
+{END container_center}
+
+
+
+{BEGIN container_pagination}<div {$pagination_chiddenattr} data-pageid="{$pageid}" data-container="pagination" class="  text-center col-md-12 "> 
+
+{BEGIN pagination_block}<div {$pagination_hiddenattr} data-pageid="{$pageid}" data-brick="pagination">
+{$pagination}
+</div>
+{END pagination_block}
+
+
+
+</div>
+{END container_pagination}
+
+
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		
+		{$footer}
+	{END body}
+	</body>
+</html>
