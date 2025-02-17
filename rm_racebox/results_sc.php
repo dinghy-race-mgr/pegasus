@@ -411,7 +411,7 @@ function fleet_changefinishlap($fleetnum, $fleet, $new_maxlap, $current_lap)
         $race_o->entry_update($boat['id'], $update);
     }
 
-    $race = $race_o->race_getresults($fleetnum);  // get race data for this fleet
+    //$race = $race_o->race_getresults($fleetnum);  // get race data for this fleet
     //u_writedbg("<pre>AFTER: ".print_r($race,true)."</pre>", __FILE__, __FUNCTION__, __LINE__);
 
     return $status;

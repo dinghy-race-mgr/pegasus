@@ -124,14 +124,14 @@ function parse_contacts($contacts_data, $mode)
     if ($mode == "club")
     {
         $contact_data = explode(",", $contacts_data);
-        $contacts[0] = array("name" => trim($contact_data[0]), "role" => trim($contact_data[1]),
+        $contacts[0] = array("name" => trim($contact_data[0]), "job" => trim($contact_data[1]),
             "email" => trim($contact_data[2]), "link" => trim($contact_data[3]));
     }
     else
     {
         foreach ($contacts_data as $k=> $contact)
         {
-            $contacts[] = array("name" => trim($contact['name']), "role" => trim($contact['role']),
+            $contacts[] = array("name" => trim($contact['name']), "job" => trim($contact['job']),
                                 "email" => trim($contact['email']), "link"=>$contact['link']);
         }
     }

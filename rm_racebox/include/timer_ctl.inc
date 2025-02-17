@@ -243,7 +243,7 @@ $btn_shortenfleet = array(
     "popover"   => true,
     "fields"    => array(
         "id"        => "shortenfleet",    // fleet number is appended when used
-        "style"     => "info",
+        "style"     => "warning",
         "size"      => "md",
         "label"     => "",
         "glyph"     => "glyphicon-flag",
@@ -264,8 +264,8 @@ $mdl_shortenfleet = array(
     "submit"  => true,
     "fields"  => array(
         "id"          => "shortenfleet",   // fleet number is appended when used
-        "style"       => "info",
-        "size"        => "sm",
+        "style"       => "warning",
+        "size"        => "md",
         "title"       => "",
         "body"        => "",
         "script"      => "",
@@ -319,6 +319,50 @@ $mdl_undoshorten = array(
         "close-lbl"  => "changed my mind",
         "reset-lbl"  => "",
         "submit-lbl" => "Change Finish lap(s)",
+        "footer"     => ""
+    ),
+);
+
+// ---- change finish lap ----------------------------------------------------------------
+$btn_forgotshorten = array(
+    "label"     => true,
+    "glyph"     => true,
+    "g-pos"     => "left",
+    "popover"   => true,
+    "fields"    => array(
+        "id"         => "forgotshorten",
+        "size"       => "lg",
+        "style"      => "success",
+        "label"      => "Forgot to Shorten",
+        "glyph"      => "glyphicon-pencil",
+        "popover"    => "This can help if you forgot to shorten course",
+        "pop-pos"    => "left",
+        "block"      => "btn-block",
+        "disabled"   => "",
+        "top-margin" => "margin-top-10"
+    ),
+);
+
+$mdl_forgotshorten = array(
+    "form"    => true,
+    "footer"  => false,
+    "reload"  => true,
+    "close"   => true,
+    "reset"   => false,
+    "submit"  => true,
+    "fields"  => array(
+        "id"         => "forgotshorten",
+        "size"       => "lg",
+        "style"      => "success",
+        "title"      => "Forgot to Shorten",
+        "body"       => "",
+        "script"     => "",
+        "onsubmit"   => "",
+        "action"     => "timer_sc.php?eventid=$eventid&pagestate=forgotshorten",
+        "target"     => "",
+        "close-lbl"  => "changed my mind",
+        "reset-lbl"  => "",
+        "submit-lbl" => "Forgot to Shorten",
         "footer"     => ""
     ),
 );

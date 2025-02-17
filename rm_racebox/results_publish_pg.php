@@ -75,6 +75,8 @@ $event = $event_o->get_event_byid($eventid);
 
 if ($pagestate == "init")    // display information collection form
 {
+    ob_start();                             // start output buffering
+
     if ($_SESSION['mode'] == "demo")
     {
         echo display_demo_page($loc, $eventid);
@@ -96,11 +98,14 @@ if ($pagestate == "init")    // display information collection form
     }
 
     ob_flush();
-    flush();      
+    flush();
+    ob_end_clean();
 }
 
 elseif ($pagestate == "process")    // run through process workflow
 {
+    ob_start();
+
     $continue = true;
     $success = array(1=>true, 2=>true, 3=>true, 4=>true );
     u_writelog("Results processing started: ", $eventid);
@@ -142,9 +147,8 @@ elseif ($pagestate == "process")    // run through process workflow
     u_writelog($results_msg, $eventid);
 
     echo start_page($loc);
-    echo str_pad('',8192)."\n";
+    echo str_pad('',4096)."\n";
     ob_flush();
-    flush();
     sleep(1);
 
     // -----------------------------------------------------------------------------------
@@ -560,8 +564,9 @@ EOT;
             </div>   
         </div>
 EOT;
+    echo str_pad('',4096)."\n";
     ob_flush();
-    flush();
+    //flush();
 }
 
 function endProcess($step, $pos, $status, $text, $link="", $end_text="")
@@ -615,8 +620,9 @@ EOT;
             </div>
         </div>
 EOT;
+    echo str_pad('',4096)."\n";
     ob_flush();
-    flush();
+    //flush();
 }
 
 function display_demo_page($loc, $eventid)

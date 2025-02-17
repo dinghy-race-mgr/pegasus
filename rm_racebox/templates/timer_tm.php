@@ -8,8 +8,6 @@ function timer_list($params = array())
     
     // get display for list view
 
-
-
     // view selector buttons
     $view_arr = array(
         "sailnum" => array ("label"=>"Sail No.", "mode"=>"list", "style"=>"btn-default", "params"=>""),
@@ -23,10 +21,10 @@ function timer_list($params = array())
     {
         $view == $params['view'] ? $btn_state = "btn-warning" : $btn_state = "btn-default";
         $view == "tab" ? $view_str = "" : $view_str = "&view=$view";
-        $optlink = "timer_pg.php?eventid={$params['eventid']}&mode={$val['mode']}$view_str";
+        //$optlink = "timer_pg.php?eventid={$params['eventid']}&mode={$val['mode']}$view_str";
 
         $view_option.= <<<EOT
-            <a class="btn btn-lg $btn_state text-center lead" href="$optlink">{$val['label']}</a>
+            <a class="btn btn-lg $btn_state text-center lead" href="timer_pg.php?eventid={$params['eventid']}&mode={$val['mode']}$view_str">{$val['label']}</a>
 EOT;
     }
 
@@ -48,31 +46,45 @@ EOT;
 EOT;
 
     // get shorten fleet
-    $opt_bufr = <<<EOT
-    
-EOT;
-
+    $fleet_opt = "";
     for ($i=1; $i <= $_SESSION["e_$eventid"]['rc_numfleets']; $i++)
     {
-        $fleetname = $_SESSION["e_$eventid"]["fl_$i"]['code'];
-        $opt_bufr.= <<<EOT
-        <li><a href='timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=$i'>$fleetname</a></li>
+        //$fleetname = $_SESSION["e_$eventid"]["fl_$i"]['code'];
+        $fleetname = $_SESSION["e_$eventid"]["fl_$i"]['name'];
+        $fleet_opt.= <<<EOT
+        <li><a href='timer_sc.php?eventid=$eventid&pagestate=shorten&fleet=$i'><b>$fleetname</b></a></li>
 EOT;
     }
+    // get forgot shorten link
+
+    $shorten_forgotten_li = "";
+    $shorten_forgotten_msg = "";
+    if ($_SESSION['racebox_shorten_reminder'] != 0 AND (time() - $_SESSION["e_$eventid"]["fl_1"]['starttime']) > ($_SESSION['racebox_shorten_reminder'] * 60))
+    {
+        $shorten_forgotten_li = <<<EOT
+        <li><li role="separator" class="divider"></li>
+        <li><a href="help_pg.php?eventid=$eventid&page=timer&helpid=15"><span style="color: steelblue">Forgot to Shorten?</span></a></li>
+EOT;
+        $shorten_forgotten_msg = <<<EOT
+        <br><span style = "color: orange; font-weight: bold;">Consider Shortening?</span>
+EOT;
+
+    }
+
     $shorten_bufr = <<<EOT
     <div class="dropdown">
         <button class="btn btn-lg btn-info dropdown-toggle lead" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        Fleet Shorten Course &nbsp;&nbsp;<span class="caret"></span></button>
+        <span data-toggle="tooltip" data-delay='{"show":"500", "hide":"100"}' data-html="true" 
+          data-title="click here to shorten the selected fleet at the end of their next lap" data-placement="top"> Fleet Shorten Course <span class="caret"></span> </span>$shorten_forgotten_msg</button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li class="dropdown-header">pick fleet - will shorten to current leaders lap</li>
+        <li class="dropdown-header">pick fleet - will shorten to lap of current leader</li>
         <li role="separator" class="divider"></li>
-        $opt_bufr
+        $fleet_opt
+        $shorten_forgotten_li
         </ul>
 </div>
 
 EOT;
-
-
 
     // final page body layout
     $html = <<<EOT
@@ -125,6 +137,8 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
         if ($configured) {
             foreach ($data as $item => $group) {
                 foreach ($group as $entry) {
+                    empty($entry['classcode']) ? $classcode = explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum'] : $classcode = $entry['classcode'] ;
+
                     $dbufr[$item][] = array(
                         "entryid" => $entry['id'],
                         "class"   => $entry['class'],
@@ -139,9 +153,10 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "etime"   => $entry['etime'],
                         "status"  => $entry['status'],
                         "declaration" => $entry['declaration'],
-                        "label"   => $entry['classcode']."&nbsp;&nbsp;".$entry['sailnum'],
+                        "label"   => $classcode."&nbsp;&nbsp;".$entry['sailnum'],
                         //"label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'],
-                        "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
+                        //"bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
+                        "bunchlbl"=> $entry['class']." - ".$entry['sailnum']
                     );
                 }
             }
@@ -172,6 +187,8 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
 
             foreach ($data as $class => $group) {
                 foreach ($group as $entry) {
+                    empty($entry['classcode']) ? $classcode = explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum'] : $classcode = $entry['classcode'] ;
+
                     $arr = array(
                         "entryid" => $entry['id'],
                         "class"   => $entry['class'],
@@ -186,7 +203,8 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "etime"   => $entry['etime'],
                         "status"  => $entry['status'],
                         "declaration" => $entry['declaration'],
-                        "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
+                        //"bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
+                        "bunchlbl"=> $entry['class']." - ".$entry['sailnum']
                     );
 
                     $set = false;
@@ -201,8 +219,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
 
                     // if not set add to misc group with class label
                     if (!$set) {
-                        //$arr['label'] = strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'];
-                        $arr['label'] = $entry['classcode']."&nbsp;&nbsp;".$entry['sailnum'];
+                        $arr['label'] = $classcode."&nbsp;&nbsp;".$entry['sailnum'];
                         $dbufr[count($category)][] = $arr;
                     }
                 }
@@ -219,6 +236,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
         if ($configured) {
             foreach ($data as $item => $group) {
                 foreach ($group as $entry) {
+                    empty($entry['classcode']) ? $classcode = explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum'] : $classcode = $entry['classcode'] ;
                     $dbufr[$item][] = array(
                         "entryid" => $entry['id'],
                         "class"   => $entry['class'],
@@ -233,9 +251,10 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "etime"   => $entry['etime'],
                         "status"  => $entry['status'],
                         "declaration" => $entry['declaration'],
-                        "label"   => $entry['classcode']."&nbsp;&nbsp;".$entry['sailnum'],
+                        "label"   => $classcode."&nbsp;&nbsp;".$entry['sailnum'],
                         //"label"   => strtoupper(substr($entry['class'], 0, 3))."&nbsp;&nbsp;".$entry['sailnum'],
-                        "bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
+                        //"bunchlbl"=> explode(' ',trim($entry['class']))[0]." - ".$entry['sailnum']
+                        "bunchlbl"=> $entry['class']." - ".$entry['sailnum']
                     );
                 }
             }
@@ -559,14 +578,15 @@ EOT;
                         }
                         else      // clickable shorten button
                         {
+                            $upper_fleet = strtoupper($fleet['name']);
                             $btn_shortenfleet['fields']['id'] = "shortenfleet$i";
-                            $btn_shortenfleet['fields']['label'] = "{$fleet['maxlap']} LAPS - click to SHORTEN COURSE for this fleet";
+                            $btn_shortenfleet['fields']['label'] = "{$fleet['maxlap']} LAPS - click to SHORTEN COURSE";
                             $mdl_shortenfleet['fields']['id'] = "shortenfleet$i";
-                            $mdl_shortenfleet['fields']['title'] = "Shorten Course - ".strtoupper($fleet['name'])." fleet";
+                            $mdl_shortenfleet['fields']['title'] = "Shorten Course - $upper_fleet fleet";
                             $mdl_shortenfleet['fields']['body'] = <<<EOT
                                 <h3>Are you sure?</h3>
-                                <div style = "font-size: 1.2em; margin-left: 40px;">
-                                <p> This will shorten this fleet so that the leaders will finish on their CURRENT lap</p>
+                                <div style = "font-size: 1.0em; margin-left: 40px;">
+                                <p> This will shorten the $upper_fleet fleet so that the leaders will finish on their CURRENT lap</p>
                                 <p>Click the <b>Shorten this Fleet</b> button below to confirm this change</p>
                                 <p class="text-danger"><i>[Note: to undo this change - use the Undo Shorten Course option]</i></p>
                                 </div>
@@ -576,6 +596,23 @@ EOT;
 
                             $laps_btn.= $tmpl_o->get_template("btn_modal", $btn_shortenfleet['fields'], $btn_shortenfleet);
                             $laps_btn.= $tmpl_o->get_template("modal", $mdl_shortenfleet['fields'], $mdl_shortenfleet);
+
+
+                            // set shorten course reminder if configured reminder time is passed for this fleet
+                            $shorten_reminder = "";
+                            if ($_SESSION['racebox_shorten_reminder'] != 0 AND (time() - $fleet['starttime']) > ($_SESSION['racebox_shorten_reminder'] * 60))
+                            {
+                                $shorten_reminder = <<<EOT
+                            <span style="color: red;">forgotten to shorten course? </span>
+                            <a href="help_pg.php?eventid=$eventid&page=timer&helpid=15" >
+                            <button  
+                               class="btn btn-default btn-md" style="border: solid 2px red !important; background-color: white !important;">
+                                  <span style="color: red !important; "><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>&nbsp;&nbsp; <b>Get Help Here</b></span>
+                            </button>
+                            </a>
+EOT;
+                            }
+
                         }
                     }
                 }
@@ -699,10 +736,13 @@ EOT;
             }
 
             // put panel table layout together
-            $panels .= <<<EOT
+            $panels.= <<<EOT
             <div role="tabpanel" class="tab-pane margin-top-0" id="fleet$i">
                 $all_finished
-                $laps_btn
+                <div class="row">
+                    <div class = "col-sm-3">$laps_btn</div>
+                    <div class = "col-sm-4">&nbsp;$shorten_reminder</div>               
+                </div>
                 <table class="table table-striped table-condensed table-hover table-top-padding table-top-border" style="width: 100%; table-layout: fixed;">
                     <thead class="text-info" >
                         <tr >
@@ -797,39 +837,6 @@ function laptimes_html($laptimes_str, $cfg)
     return $bufr;
 }
 
-//function codes_html($code, $url)    // FIXME same code in both timer_tm and results_tm
-//    /*
-//     * displays codes dropdown on timer page
-//     */
-//{
-//    if (empty($code))
-//    {
-//        //$label = "<span>code &nbsp;</span>";
-//        $label = "<span class='glyphicon glyphicon-cog'>&nbsp;</span>";
-//        $style = "btn-info";
-//    }
-//    else
-//    {
-//        $label = "<span>$code&nbsp;</span>";
-//        $style = "btn-danger";
-//    }
-//
-//    $codebufr = u_dropdown_resultcodes($_SESSION['timercodes'], "short", $url);
-//
-//    $bufr = <<<EOT
-//    <div class="dropdown">
-//        <button type="button" class="btn $style btn-xs dropdown-toggle" data-toggle="dropdown" >
-//            <span class="default"><b>$label&nbsp;</b></span><span class="caret" ></span>
-//        </button>
-//        <ul class="dropdown-menu">
-//            $codebufr
-//        </ul>
-//    </div>
-//EOT;
-//
-//    return $bufr;
-//}
-
 function editlaps_html($eventid, $entryid, $boat, $laptimes_str)
 {
     if (!empty($laptimes_str))
@@ -881,6 +888,7 @@ function bunch_html($eventid, $entryid, $boat, $r)
     //u_writedbg("<pre>bunch_hmtl".print_r($r,true)."</pre>",__CLASS__,__FUNCTION__,__LINE__);
 
     // array to pass data to bunch process
+    empty($r['classcode']) ? $classcode = explode(' ',trim($r['class']))[0]." - ".$r['sailnum'] : $classcode = $r['classcode'];
     $params = array(
         "entryid" => $entryid,
         "boat"    => $boat,
@@ -891,7 +899,7 @@ function bunch_html($eventid, $entryid, $boat, $r)
         "pn"      => $r['pn'],
         "etime"   => $r['etime'],
         "status"  => $r['status'],
-        "bunchlbl"=> explode(' ',trim($r['class']))[0]." - ".$r['sailnum']
+        "bunchlbl"=> $r['class']." - ".$r['sailnum']
     );
 
     $link_txt = "timer_sc.php?eventid=$eventid&pagestate=bunch&action=addnode&".http_build_query($params);
@@ -1065,6 +1073,9 @@ EOT;
             </div>
         </div>
 EOT;
+
+    // set finish button
+
 
     //echo "<pre>MSG: ".print_r($_SESSION["e_$eventid"]['lapeditmsg'],true)."</pre>";
     // create msg_bufr
@@ -1251,7 +1262,8 @@ function fm_timer_undoshorten($params = array())
         }
         elseif ($fleet['status'] == "inprogress")
         {
-            $data['fleets'][$i]['minvallaps'] = array("val"=>$fleet['currentlap'], "msg"=>"cannot be less than {$fleet['currentlap']} lap(s)");
+            $data['fleets'][$i]['minvallaps'] = array("val"=>1, "msg"=>"cannot be less than 1 lap");
+            //$data['fleets'][$i]['minvallaps'] = array("val"=>$fleet['currentlap'], "msg"=>"cannot be less than {$fleet['currentlap']} lap(s)");
         }
     }
 

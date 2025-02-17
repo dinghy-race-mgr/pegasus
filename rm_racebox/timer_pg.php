@@ -31,7 +31,7 @@ if (!$eventid) {
 
 // page initialisation
 u_initpagestart($eventid, $page, true);
-//echo "<pre><br><br><br><br>".print_r($_SESSION["e_$eventid"],true)."</pre>";
+//echo "<pre><br><br><br><br>".print_r($_SESSION,true)."</pre>";
 
 // check if display mode has changed - reset session variable if necessary
 $display_mode = u_checkarg("mode", "setnotnull", "");
@@ -84,7 +84,7 @@ for ($fleetnum=1; $fleetnum<=$numfleets; $fleetnum++)
 // ----- navbar -----------------------------------------------------------------------------
 $fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
 $params = array("page" => $page, "current_view" => $_SESSION['timer_options']['mode'],
-                "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink'], "num_reminders" => $_SESSION["e_$eventid"]['num_reminders']);
+                "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
 $nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
 
 // ----- left hand panel --------------------------------------------------------------------
@@ -111,61 +111,6 @@ else
         // display boats for timing in tabbed or list format
         $lbufr.= display_boats($eventid, $_SESSION['timer_options']['mode'], $_SESSION['timer_options']['view'], $mdl_editlap);
     }
-
-
-//    // display boats as defined by display mode
-//    if ($_SESSION['timer_options']['mode'] == "tabbed")
-//    {
-//        $rs_race = $race_o->race_gettimings($_SESSION['timer_options']['listorder']);
-//        $lbufr.= $tmpl_o->get_template("timer_tabs", array(),
-//              array("eventid" => $eventid, "num-fleets" => $_SESSION["e_$eventid"]['rc_numfleets'], "timings" => $rs_race));
-//
-//        // add modals
-//        $lbufr.= $tmpl_o->get_template("modal", $mdl_editlap['fields'], $mdl_editlap);
-//    }
-//    elseif ($_SESSION['timer_options']['mode'] == "list")
-//    {
-//        $rs_race = $race_o->race_gettimings($_SESSION['timer_options']['view']."-list");
-//        if ($_SESSION['timer_options']['view'] == "fleet")
-//        {
-//            $out = array();
-//            foreach ($rs_race as $entry)
-//            {
-//                $out[$entry['fleet']][] = $entry;
-//            }
-//        }
-//        elseif ($_SESSION['timer_options']['view'] == "class")
-//        {
-//            $out = array();
-//            foreach ($rs_race as $entry)
-//            {
-//                $out[$entry['class']][] = $entry;
-//            }
-//        }
-//        else
-//        {
-//            $out = array();
-//            foreach ($rs_race as $entry)
-//            {
-//
-//                if (ctype_digit($entry['sailnum'][0]))    // if first char of sailnumber is number - use it for group index
-//                {
-//                    $i = $entry['sailnum'][0];
-//                }
-//                else                                      // first char is not a number - use group 10
-//                {
-//                    $i = 10;
-//                }
-//                $out[$i][] = $entry;
-//            }
-//        }
-//
-//        //echo "<pre>".print_r($rs_race,true)."</pre>";
-//        $lbufr.= $tmpl_o->get_template("timer_list", array(),
-//            array("eventid" => $eventid, "view" => $_SESSION['timer_options']['view'], "timings" => $out));
-//
-//        // no modals to add
-//    }
 
 }
 
@@ -194,6 +139,9 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
     // Undo Shorten button/modal
     $rbufr .= $tmpl_o->get_template("btn_modal", $btn_undoshorten['fields'], $btn_undoshorten);
 
+    // Forgotten Shorten button/modal
+    //$rbufr .= $tmpl_o->get_template("btn_modal", $btn_forgotshorten['fields'], $btn_forgotshorten);
+
     $fleet_data = array();
     for ($i = 1; $i <= $numfleets; $i++)
     {
@@ -201,6 +149,9 @@ if (!$_SESSION["e_$eventid"]['pursuit'])
     }
     $mdl_undoshorten['fields']['body'] = $tmpl_o->get_template("fm_timer_undoshorten", $mdl_undoshorten['fields'], array("fleet-data" => $fleet_data));
     $rbufr.= $tmpl_o->get_template("modal", $mdl_undoshorten['fields'], $mdl_undoshorten);
+
+    //$mdl_forgotshorten['fields']['body'] = $tmpl_o->get_template("fm_timer_undoshorten", $mdl_forgotshorten['fields'], array("fleet-data" => $fleet_data));
+    //$rbufr.= $tmpl_o->get_template("modal", $mdl_forgotshorten['fields'], $mdl_forgotshorten);
 
 }
 else    // display finish edit box for pursuit

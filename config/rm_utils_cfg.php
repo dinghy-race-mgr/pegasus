@@ -91,7 +91,7 @@ $_SESSION['dutyman'] = array(
     "event_file" => "dutyman_event_import_date.csv",     // must start with dutyman_event
     "duty_file"  => "dutyman_duty_import_date.csv",      // must start with dutyman_duty
 
-    "tide"       => true,
+    "tide"       => false,
     "clean"      => true
 );
 

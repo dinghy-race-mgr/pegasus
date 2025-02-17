@@ -20,8 +20,9 @@ require_once ("{$loc}/common/lib/util_lib.php");
 u_startsession("sess-rmracebox", 10800);
 
 // script parameters
-$eventid = u_checkarg("eventid", "checkint","");                 // if zero - requested from pickrace_pg
-$helppage = u_checkarg("page", "set", "", "help");
+$eventid  = u_checkarg("eventid", "checkint","");                 // if zero - requested from pickrace_pg
+$helppage = u_checkarg("page", "set", "", "help");               // help category items to include on page
+$helpid   = u_checkarg("helpid", "checkint", "");                  // if not set or not integer or not found - ignore - otherwise open topic
 
 // page initialisation
 u_initpagestart($eventid, $page, false);
@@ -39,9 +40,9 @@ $tmpl_o = new TEMPLATE(array("../common/templates/general_tm.php", "./templates/
 include("./include/help_ctl.inc");
 
 // ----- navbar -----------------------------------------------------------------------------
-$eventid == 0 ? $num_reminders = 0 : $num_reminders = $_SESSION["e_$eventid"]['num_reminders'];
+//$eventid == 0 ? $num_reminders = 0 : $num_reminders = $_SESSION["e_$eventid"]['num_reminders'];
 $nav_fields = array("eventid" => $eventid, "brand" => "raceBox: HELP", "club" => $_SESSION['clubcode']);
-$nav_params = array("page" => $helppage, "current_view" => "", "baseurl"=>$_SESSION['baseurl'], "links" => $_SESSION['clublink'], "num_reminders" => $num_reminders);
+$nav_params = array("page" => $helppage, "current_view" => "", "baseurl"=>$_SESSION['baseurl'], "links" => $_SESSION['clublink']);
 if ($eventid != 0) { $nav_params['pursuit'] = $_SESSION["e_$eventid"]['pursuit']; }
 
 $nbufr = $tmpl_o->get_template("racebox_navbar", $nav_fields, $nav_params);
@@ -66,7 +67,7 @@ else
     $help_o = new HELP($db_o, $helppage, $constraints);
 }
 $topics = $help_o->get_help();
-$lbufr =  $help_o->render_help();
+$lbufr =  $help_o->render_help($helpid);
 
 // ----- right hand panel --------------------------------------------------------------------
 $rbufr = "";

@@ -112,7 +112,7 @@ for ($j=1; $j<=$_SESSION["e_$eventid"]['rc_numstarts']; $j++)
 
 // --- navbar -----------------------------------------------------------------------------
 $fields = array("eventid" => $eventid, "brand" => "raceBox: {$_SESSION["e_$eventid"]['ev_label']}", "club" => $_SESSION['clubcode']);
-$params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink'], "num_reminders" => $_SESSION["e_$eventid"]['num_reminders']);
+$params = array("page" => $page, "pursuit" => $_SESSION["e_$eventid"]['pursuit'], "links" => $_SESSION['clublink']);
 $nbufr = $tmpl_o->get_template("racebox_navbar", $fields, $params);
 
 // --- left hand panel -----------------------------------------------------------------------------

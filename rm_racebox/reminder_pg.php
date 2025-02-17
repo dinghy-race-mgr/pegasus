@@ -65,6 +65,8 @@ $help_o = new HELP($db_o, "reminder", $constraints);
 
 // get relevant reminders
 $topics = $help_o->get_help();
+//echo "<pre>reminder_pg<br>".print_r($topics,true)."</pre>";
+//exit();
 
 // no reminders to display - move on
 if (empty($topics))
@@ -76,7 +78,7 @@ else
 {
     // ----- navbar ----------------------------------------------------------------------------- FIXME do I need options display
     $nav_fields = array("eventid" => $eventid, "brand" => "raceBox: REMINDER", "club" => $_SESSION['clubcode']);
-    $nav_params = array("page" => $page, "links" => $_SESSION['clublink'], "pursuit"=>$_SESSION["e_$eventid"]['pursuit'], "num_reminders" => $_SESSION["e_$eventid"]['num_reminders']);
+    $nav_params = array("page" => $page, "links" => $_SESSION['clublink'], "pursuit"=>$_SESSION["e_$eventid"]['pursuit']);
     $nbufr = $tmpl_o->get_template("racebox_navbar", $nav_fields, $nav_params);
 
     // ----- left hand panel --------------------------------------------------------------------

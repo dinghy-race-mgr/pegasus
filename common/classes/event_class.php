@@ -624,14 +624,17 @@ class EVENT
 
        if ($status_ok )
        {
-           if ($_SESSION["e_$eventid"]['ev_status'] != $status)   // is update required
+           //if ($_SESSION["e_$eventid"]['ev_status'] != $status)   // is update required
+           isset($_SESSION["e_$eventid"]['ev_status']) ? $ev_status =  $_SESSION["e_$eventid"]['ev_status'] : $ev_status = "" ;
+           if ($ev_status != $status)   // is update required
            {
                $success = $this->db->db_update( 't_event', array("event_status"=>"$status"), array("id"=>$eventid) );    
                if (is_int($success))
                {
                     $success = true;
                     // update session status
-                    $_SESSION["e_$eventid"]['ev_prevstatus'] = $_SESSION["e_$eventid"]['ev_status'];
+                    isset($_SESSION["e_$eventid"]['ev_status']) ? $_SESSION["e_$eventid"]['ev_prevstatus'] = $_SESSION["e_$eventid"]['ev_status'] : $_SESSION["e_$eventid"]['ev_prevstatus'] = "";
+                    //$_SESSION["e_$eventid"]['ev_prevstatus'] = $_SESSION["e_$eventid"]['ev_status'];
                     $_SESSION["e_$eventid"]['ev_status']     = $status; 
                     $msg = "event status changed:  {$_SESSION["e_$eventid"]['ev_prevstatus']} -> {$_SESSION["e_$eventid"]['ev_status']}";
                     u_writelog($msg, $eventid);

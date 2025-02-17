@@ -734,12 +734,15 @@ function u_initpagestart($eventid, $page, $change_page)
     // add to event log - line to indicate change of page (uses arg and check against session variable)
     if (!empty($eventid))
     {
-        if (!array_key_exists("current_page", $_SESSION["e_$eventid"])) { $_SESSION["e_$eventid"]['current_page'] = ""; }
-        $_SESSION["e_$eventid"]['current_page'] != $page ? $page_change = true : $page_change = false;
-        if ($change_page and $page_change)
+        if (isset($_SESSION["e_$eventid"]))
         {
-            u_writelog("**** $page page --- [session: ".session_id()."]", $eventid);
-            $_SESSION["e_$eventid"]['current_page'] = $page;
+            if (!array_key_exists("current_page", $_SESSION["e_$eventid"])) { $_SESSION["e_$eventid"]['current_page'] = ""; }
+            $_SESSION["e_$eventid"]['current_page'] != $page ? $page_change = true : $page_change = false;
+            if ($change_page and $page_change)
+            {
+                u_writelog("**** $page page --- [session: ".session_id()."]", $eventid);
+                $_SESSION["e_$eventid"]['current_page'] = $page;
+            }
         }
     }
 }

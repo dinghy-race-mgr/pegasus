@@ -49,7 +49,8 @@ $db_o = new DB();
 $event_o = new EVENT($db_o);
 
 // store current event status before reinitialising event session
-$prev_event_status = $_SESSION["e_$eventid"]['ev_prevstatus'];
+isset($_SESSION["e_$eventid"]['ev_prevstatus']) ? $prev_event_status = $_SESSION["e_$eventid"]['ev_prevstatus'] : $prev_event_status = "" ;
+//$prev_event_status = $_SESSION["e_$eventid"]['ev_prevstatus'];
 
 //echo "<pre>event:$eventid mode:$mode</pre>";
 if ($eventid and ($mode == "init" or $mode == "reset" or $mode == "rejoin"))
@@ -85,20 +86,12 @@ if ($eventid and ($mode == "init" or $mode == "reset" or $mode == "rejoin"))
             "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
 
-    // check if we have reminders for this event
-    $help_o = new HELP($db_o, "reminder", array("pursuit"=>$_SESSION["e_$eventid"]['pursuit'], "numrace"=>$_SESSION['events_today'],
-        "name"=>$_SESSION["e_$eventid"]['ev_name'], "format"=>$_SESSION["e_$eventid"]['ev_format'], "date"=>$_SESSION["e_$eventid"]['ev_date']));
-    $topics = $help_o->get_help();
-
-    $_SESSION["e_$eventid"]['num_reminders'] = count($topics);
 }
 else
 {
     u_exitnicely($scriptname, $eventid,"race initialisation - the event has an invalid record identifier [{$_REQUEST['eventid']}] or initialisation mode [{$_REQUEST['mode']}]",
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
-
-
 
 if ($mode == "init")
 {

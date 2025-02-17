@@ -330,7 +330,7 @@ EOT;
     if (!empty($params['links']))
     {
         $club_links = "";
-        if ($params['page'] != "pickrace" and $params['num_reminders'] > 0 )  // if not pickrace and we have some reminders - include access to today's reminders
+        if ($params['page'] != "pickrace")  // if not pickrace - include access to today's reminders
         {
             $club_links.= <<<EOT
             <li ><a href="reminder_pg.php?eventid={eventid}&source={$params['page']}">Todays Reminders</a></li>

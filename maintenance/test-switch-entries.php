@@ -89,7 +89,7 @@ EOT;
                     empty($entry['chg-sailnum']) ? $sailnum = "": $sailnum = $entry['chg-sailnum'];
 
                     $output = array(
-                        "action"       => "enter",
+                        "action"       => $entry['action'],
                         "protest"      => 0,
                         "status"       => "N",
                         "eventid"      => $switchid,

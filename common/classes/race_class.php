@@ -566,7 +566,7 @@ class RACE
         //   - race has started and requested lap is less than current leaders lap
         //   - requested lap is already set
 
-        $dbg_on = false;
+        $dbg_on = true;
 
         $change_lap = false;  // default is for laps not to be changed
         $update = array("result" =>"", "finishlap" => 0, "currentlap" => 0 );
@@ -579,7 +579,7 @@ class RACE
         {
             $update = array("result" =>"pursuit_race", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap );
         }
-        elseif ($fleet_data['entries'] <= 0)      // no entries in t_race
+        elseif ($fleet_data['entries'] <= 0)      // no entries in t_race - only need to update t_racestate
         {
             $_SESSION["e_{$this->eventid}"]["fl_$fleetnum"]['maxlap'] = $laps;
             $update = array("result" =>"ok", "finishlap" => $laps, "currentlap" => $current_lap );
@@ -600,6 +600,7 @@ class RACE
                     // lap can't be changed - boats are already finishing in this fleet
                     $update = array("result" =>"finishing", "finishlap" => $fleet_data['maxlap'], "currentlap" => $current_lap );
                 }
+
                 else                                                                                     // no finishers yet - laps could change
                 {
                     if ($laps < $current_lap)
@@ -646,7 +647,7 @@ class RACE
                         $upd_race =  $this->entry_update($boat['id'], array("finishlap"=>$new_finish_lap));
                     }
                 }
-                else                             // fleet or normal hanicap race - can set the same finish lap for everyone
+                else                             // fleet or normal handicap race - can set the same finish lap for everyone
                 {
                     $upd_race = $this->race_update(array("finishlap"=>$laps), $fleetnum);
                     if ($dbg_on) { u_writedbg("updating t_race for fleet $fleetnum: |laps: $laps |result: $upd_race|", __CLASS__, __FUNCTION__, __LINE__);}

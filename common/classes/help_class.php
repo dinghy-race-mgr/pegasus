@@ -59,15 +59,21 @@ class HELP
     public function get_help()
     {
         $where = " FIND_IN_SET('".$this->page."',category) > 0  AND `active` = 1";
-        $topics = $this->db->db_get_rows("SELECT * FROM t_help WHERE $where ORDER by `listorder` ASC");
+        $sql = "SELECT * FROM t_help WHERE $where ORDER by `listorder` ASC";
+        //echo "<pre>$sql</pre>";
+        $topics = $this->db->db_get_rows($sql);
+        //echo "<pre>constraints: ".print_r($this->constraints,true)."</pre>";
 
         foreach ($topics as $k=>$topic)
         {
+            //echo "<pre>results".print_r($topic,true)."</pre>";
+
             // if not a pursuit race and this topic is only for pursuit races - remove
             if (!$this->constraints['pursuit'])
             {
                 if ($topic['pursuit'])
                 {
+                    //echo "<pre>unsetting pursuit</pre>";
                     unset($topics[$k]);
                 }
             }
@@ -77,6 +83,7 @@ class HELP
             {
                 if ($topic['multirace'])
                 {
+                    //echo "<pre>unsetting multirace</pre>";
                     unset($topics[$k]);
                 }
             }
@@ -87,6 +94,7 @@ class HELP
                 //  if topic has an event name constraint - if current event name doesn't contain constraint string - remove
                 if (!empty($topic['eventname'])) {
                     if (strpos(strtolower($this->constraints['name']), strtolower($topic['eventname'])) === false) {
+                        //echo "<pre>unsetting eventname</pre>";
                         unset($topics[$k]);
                     }
                 }
@@ -94,24 +102,27 @@ class HELP
                 // if topic has an event format constraint - if it is not matched by the current event format - remove
                 if (!empty($topic['format'])) {
                     if ($this->constraints['format'] != $topic['format']) {
+                        //echo "<pre>unsetting format</pre>";
                         unset($topics[$k]);
                     }
                 }
 
-                // if topic has event constraints (start and/or end) - if not mayched by current event date - remove
-                // if ;
+                // if topic has event constraints (start and/or end) - if not matched by current event date - remove
                 if (!empty($topic['startdate']) or !empty($topic['enddate'])) {
                     if (!empty($topic['startdate']) and !empty($topic['enddate'])) {
                         if (strtotime($this->constraints['date']) < strtotime($topic['startdate']) or
                             strtotime($this->constraints['date']) > strtotime($topic['enddate'])) {
+                           // echo "<pre>unsetting date 1</pre>";
                             unset($topics[$k]);
                         }
                     } elseif (!empty($topic['startdate'])) {
                         if (strtotime($this->constraints['date']) < strtotime($topic['startdate'])) {
+                            //echo "<pre>unsetting date 2</pre>";
                             unset($topics[$k]);
                         }
                     } elseif (!empty($topic['enddate'])) {
                         if (strtotime($this->constraints['date']) > strtotime($topic['enddate'])) {
+                            //echo "<pre>unsetting date 3</pre>";
                             unset($topics[$k]);
                         }
                     }
@@ -120,6 +131,8 @@ class HELP
         }
 
         $this->topics = array_values($topics);    // reindex
+
+        //echo "<pre>TOPICS".print_r($this->topics,true)."</pre>";
 
         return $topics;
     }
@@ -143,9 +156,10 @@ EOT;
             foreach ($this->topics as $k=>$topic)
             {
                 $i++;
-                $i==1 ? $panel_status = "in" : $panel_status = "";
+                //$i==1 ? $panel_status = "in" : $panel_status = "";
+                $panel_status = "";
                 $panel_bufr.= <<<EOT
-                <div class="panel panel-primary margin-top-20" style="margin-bottom: 20px">
+                <div class="panel panel-success margin-top-20" style="margin-bottom: 20px">
                      <div class="panel-heading" role="tab" id="heading$i">
                      <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$i" aria-expanded="true" aria-controls="collapse$i" style="text-decoration: none">
                         <p class="panel-title help-title-text" ><small>topic: </small>&nbsp; {$topic['question']}</p>
@@ -167,7 +181,7 @@ EOT;
             // add outer div
             $htm = <<<EOT
             <h2 style="margin-top:60px; margin-bottom:20px;">Race Officer Reminders &hellip;&nbsp;&nbsp;&nbsp;<small> click topics to view</small></h2>
-            <h4>The club suggests checking these topics as they may be relevant to today's races</h4>
+            <h4>The club suggests checking the information below as they may be relevant to the races you are running today</h4>
             <h4 class="text-info">You can return to this page at any time by selecting "Today's Reminders" option from the 
                                   <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> menu</h4>
             <div class="row">
@@ -185,7 +199,7 @@ EOT;
 
 
 
-    public function render_help()
+    public function render_help($helpid = false)
     {
         // title
 
@@ -209,6 +223,7 @@ EOT;
                 $i++;
                 $panel_status = "";
                 //$i==1 ? $panel_status = "in" : $panel_status = "";
+                $helpid and $helpid == $topic['id'] ? $panel_status = "in" : $panel_status = "";    // open this item
                 $panel_bufr.= <<<EOT
                 <div class="panel panel-info">
                      <div class="panel-heading" role="tab" id="heading$i">                    

@@ -1,0 +1,56 @@
+{
+  "type": "update_package",
+  "rm_version": "11.1",
+  "author": "Mark Elkington",
+  "version": "1",
+  "install": "HTZ",
+  "target" : "C:\temp\rm_update_package_HTZ",
+
+  "dirs": {
+    "root": { "action": "all" },
+    "common": { "action": "all",  },
+    "config": { "action": "partial", "excludes" : { "file_types" : "ini" } },
+    "data": { "action": "ignore" },
+    "database": { "action": "all" },
+    "docs": { "action": "partial", "level" : "0" },
+    "logs": { "action": "partial", "level" : "1" },
+    "maintenance": { "action": "partial", "level" : "0" },
+    "results": { "action": "ignore" },
+    "rm_admin": { "action": "partial", "includes": { "dirs": "app" }},
+    "rm_coursefinder": { "action": "all" },
+    "rm_event": { "action": "all" },
+    "rm_racebox": { "action": "all" },
+    "rm_reports": { "action": "all" },
+    "rm_sailor": { "action": "all" },
+    "rm_utils": { "action": "all" },
+    "rm_web": { "action": "all" },
+    "testing": { "action": "partial", "level" : "0"},
+    "tmp": { "action": "partial", "level" : "0" }
+  }
+
+}
+
+
+Notes:
+Assumes OSS backup directory in htdocs/racemgr_archive/oss
+Assumes local results archive directory in htdocs/racemgr_archive/results_archive
+Assumes copy of local ini files in archive directory in htdocs/racemgr_archive/config
+
+
+Logic:
+
+create target directory - delete if exists
+read json into arr
+foreach (arr[dirs] as dir
+{
+  if (action = "all")
+      if (includes) - only include those
+      elseif (excludes) - do all except these
+      else - do everything
+
+  elseif (action = "partial")
+
+
+  elseif (action = "ignore")
+      do nothing
+}
