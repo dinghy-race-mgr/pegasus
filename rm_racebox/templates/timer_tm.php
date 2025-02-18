@@ -509,6 +509,7 @@ function timer_tabs($params = array())
 
 
     //echo "<pre>".print_r($_SESSION["e_$eventid"],true)."</pre>";
+    $shorten_reminder = "";
     for ($i = 1; $i <= $params['num-fleets']; $i++)   // loop for each fleet
     {
         // fixme - would be good not to use session variables
