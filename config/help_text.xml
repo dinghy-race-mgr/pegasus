@@ -273,27 +273,29 @@
             </p>
             <p>Once the race is abandoned you can then CLOSE the race - do NOT publish the partial results.</p>
         </answer>
-        <p>
+        <h4 style="color: darkblue;">
             <b>IMPORTANT ... at Starcross YC our Sailing Instructions allow us to CURTAIL a club race rather than
                 abandon it.
             </b>
-        </p>
-        <p>You SHOULD use this approach if all the boats still racing in a fleet have finished at least one lap as
-            this allows us to salvage a race result from a race that would otherwise be lost. It is most often used
+        </h4>
+        <p>You SHOULD use this approach if all the boats still racing in a fleet have <u>finished at least one lap</u> as
+            this allows us to get results from a race that would otherwise be lost. It is most often used
             if the wind dies to nothing towards the end of a race. To CURTAIL a race go to the results page and
-            use the Change Finish Lap option - this will have the following effect:
+            use the <b>Change Finish Lap</b> option to set a new finish lap - this will have the following effect:
         </p>
         <ul>
-            <li>average lap racing: set the finish lap to the last one that the leading boat in the fleet
-                completed
+            <li><b>average lap racing</b>: set the finish lap to the last one that the <u>leading boat</u> in each fleet
+                completed, and then give aggregate times to all the other boats based on the number of laps they completed.
             </li>
-            <li>handicap/class racing: set the finish lap to the one that all boats in the fleet have completed</li>
+            <li><b>handicap/class racing</b>: set the finish lap for each fleet to be the <u>highest lap number that all
+            boats still racing in the fleet have completed</u>. The results will then be calculated based on the lap times for that lap.
+            So if all boats have finished 2 laps and some boats have finished 3 - set the finish lap to 2.</li>
         </ul>
         ]]></answer>
         <notes><![CDATA[
         <p>Note: This function can also be useful if you have forgotten to shorten the race in raceManager, but have
-            signalled a finish to competitors. Once you have finished all boats in this way - go to the RESULTS page and
-             set the finish lap to the shortened number of laps.</p>
+            signalled a finish to all boats. Once you have finished all boats in this way - go to the RESULTS page and
+             set the finish lap to the shortened number of laps.  </p>
             ]]></notes>
     </page>
 
@@ -547,25 +549,19 @@
         <multirace></multirace>
         <question>I forgot to SHORTEN COURSE?</question>
         <answer><![CDATA[
-            <p>The most common OOD mistake in racemanager is to signal a shortened course with the strobe lights but forget to set the shortened the course in raceManager. You
-                signal the boats finishing the shortened course with the hooter, but they are not shown as finished by raceManager.
+            <p>The most common OOD mistake when using raceManager is to signal a shortened course with the beacon lights and hoot when the leading boat
+            crosses the finish line . . . BUT HAVE FORGOTTEN to reduce the no. of laps in raceManager.
             </p>
-            <p style="font-size: 1.2em"><b>Do Not Panic . . .</b></p>
-            <p>Continue finishing boats with the hooter and recording their finish on raceManager in the usual way</p>
+            <p style="font-size: 1.2em"><b>Do Not Panic . . .</b></p><br>
+            <p>Click the button labelled <b>Change Shorten Lap</b> on the right hand side of the screen</p>
+            <p>Now change the lap for each fleet you want to shorten and submit the form.  The system will then finish the boats that you have already finished in the shortened race,
+            and will correctly finish the boats that still have to complete the race as they cross the line.
 
-            <p>Once you <u>have finished ALL of the boats</u> in the fleet(s) affected, do the following:</p>
-            <p><ul>
-            <li>On the RESULTS page find the "Change Finish Lap" button on
-                the right hand side of the screen. Click this and it will show the finish lap currently set for each fleet. <br><br></li>
-            <li>Set the actual finish lap for the fleet(s) you forgot to shorten and raceManager will automatically set
-                the boats to finished.  For example if you had originally set the finish lap for fleet 1 to lap 4, but actually finished the
-                boats on lap 3 - just change the finish lap to 3</li>
-            </ul></p>
         ]]></answer>
         <notes><![CDATA[
             <p>Note:</p>
             <ul>
-                <li>Using the Change Finish Lap options works with average lap racing even if you have finished boats in that fleet on different laps</li>
+                <li>Using the <b>Change Shorten Lap</b> option works with average lap racing even if boats in that fleet will finish on different laps</li>
             </ul>
         ]]></notes>
     </page>

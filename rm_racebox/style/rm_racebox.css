@@ -154,4 +154,5 @@ body > .container { padding: 10px 0px 0px 0px; }
 .timer-sm { width: 120px; height: 36px; padding: 4px; font-weight: bold; text-align: center; color: var(--white);
             background-color: var(--black); font-size: 24px; border-radius: 4pt; }
 
+.timer-tt-lap { color: white; font-size: 2em; line-height: 1.5; background-color: var(--darkblue); }
 

@@ -144,6 +144,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "class"   => $entry['class'],
                         "sailnum" => $entry['sailnum'],
                         "boat"    => $entry['class']." - ".$entry['sailnum'],
+                        "helm"    => $entry['helm'],
                         "fleet"   => $entry['fleet'],
                         "start"   => $entry['start'],
                         "lap"     => $entry['lap'],
@@ -194,6 +195,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "class"   => $entry['class'],
                         "sailnum" => $entry['sailnum'],
                         "boat"    => "{$entry['class']} - {$entry['sailnum']}",
+                        "helm"    => $entry['helm'],
                         "fleet"   => $entry['fleet'],
                         "start"   => $entry['start'],
                         "lap"     => $entry['lap'],
@@ -242,6 +244,7 @@ function timer_list_view($eventid, $data, $view, $rows = 1)
                         "class"   => $entry['class'],
                         "sailnum" => $entry['sailnum'],
                         "boat"    => "{$entry['class']} - {$entry['sailnum']}",
+                        "helm"    => $entry['helm'],
                         "fleet"   => $entry['fleet'],
                         "start"   => $entry['start'],
                         "lap"     => $entry['lap'],
@@ -295,8 +298,6 @@ EOT;
             // boat buttons
             $data_bufr .= "<div class='col-md-2' style='padding: 0px 0px 0px 0px;'>";
             foreach ($dbufr[$i] as $entry) {
-
-
 
                 $boat = "{$entry['class']} - {$entry['sailnum']}";
                 $laps = $_SESSION["e_$eventid"]["fl_{$entry['fleet']}"]['maxlap'];
@@ -360,8 +361,15 @@ EOT;
 
                 // popover information
                 //$ptitle = "<b>{$entry['class']} - {$entry['sailnum']}</b> - ".strtoupper($state['val']);
-                $ptitle = "<h4><b><span class='text-info'>{$entry['class']} - {$entry['sailnum']}</span></b></h4> <i>{$state['val']}</i>";
-                $pcontent = "<h4>lap: {$entry['lap']} [ ".gmdate("H:i:s", $entry['etime'])." ]&nbsp;&nbsp;&nbsp;<span class='text-danger'><b>{$entry['code']}</b></span></h4>";
+                $ptitle = <<<EOT
+                    <h4><b><span class='text-info'>{$entry['class']} - {$entry['sailnum']}</span></b></h4> {$entry['helm']} - &nbsp;&nbsp;<i>{$state['val']}</i>
+EOT;
+                $etime = gmdate("H:i:s", $entry['etime']);
+                $pcontent = <<<EOT
+                    <p class='timer-tt-lap'>&nbsp;&nbsp;lap: &nbsp;{$entry['lap']}</p>
+                    <p>[ $etime ]&nbsp;&nbsp;&nbsp;<span class='lead text-danger'><b>{$entry['code']}</b></span></p>
+EOT;
+
 
                 // set params for link options
                 unset($entry['class']);
@@ -723,7 +731,7 @@ EOT;
                     <tr class="table-data {$cfg['row_style']}">
                         <td style="width: 1%;"><a href="$row_link" ></a></td>
                         <td class="$skip truncate" >{$r['class']}</td>
-                        <td class="$skip" >{$r['sailnum']}</td>
+                        <td class="$skip" ><span style="font-size: 1.1em; color: darkblue"><b>{$r['sailnum']}</b></span></td>
                         <td class="$skip truncate" style="padding-left:10px;">{$r['helm']}</td>
                         <td class="$skip" style="padding-left:15px;" >$laptimes_bufr</td>
                         <td class="rowlink-skip inline-button">$code_link</td>
@@ -1236,8 +1244,9 @@ function fm_timer_undoshorten($params = array())
     global $tmpl_o;
 
     $fields = array(
-        "instr_content" => "Set the finish lap you want for EACH fleet",
-        "footer_content" => "click the Set Laps button to make the changes",
+        "instr_content" => "<p>Set the shortened lap you want for EACH fleet</p><p style='font-size: 0.8em; color: steelblue;'>For example if you forgot to shorten a fleet 
+                            to 3 laps and you actually gave a finish signal to a boat on 3 laps - just set the shorten fleet to 3.</p>",
+        "footer_content" => "click the Change Shorten Laps button to make the changes",
         "reminder" => ""
     );
 

@@ -554,7 +554,7 @@ if ($eventid AND $pagestate)
 
     }
 
-    elseif ($pagestate == "undoshorten")   // FIXME - this code is the same as set all laps on race_sc - refactor accordingly
+    elseif ($pagestate == "undoshorten")
     {
         //echo "<pre>".print_r($_REQUEST,true)."</pre>";
 
@@ -567,7 +567,8 @@ if ($eventid AND $pagestate)
         {
             $fleetname = $_SESSION["e_$eventid"]["fl_$i"]['name'];
             $current_maxlap = $_SESSION["e_$eventid"]["fl_$i"]['maxlap'];
-            $rs = $race_o->race_laps_set("set", $i, $_SESSION["e_$eventid"]["fl_$i"]['scoring'], $_REQUEST['laps'][$i]);
+            //$rs = $race_o->race_laps_set("set", $i, $_SESSION["e_$eventid"]["fl_$i"]['scoring'], $_REQUEST['laps'][$i]);
+            $rs = $race_o->race_laps_set("shorten", $i, $_SESSION["e_$eventid"]["fl_$i"]['scoring'], $_REQUEST['laps'][$i]);
 
             $str = array(
                 "pursuit_race"      => "&nbsp;&nbsp;$fleetname is a pursuit race - laps cannot be set <br>",

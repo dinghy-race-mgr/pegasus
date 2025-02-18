@@ -642,8 +642,9 @@ class RACE
                     $boats = $this->race_getstarters(array("fleet"=>$fleetnum));
                     foreach ($boats as $boat)
                     {
-                        // update record to finish on next lap
-                        $new_finish_lap = $boat['lap'] + 1;
+                        // update record to finish on next lap (or this lap if it has already done that many laps
+                        $boat['lap'] >= $laps ? $new_finish_lap = $laps : $new_finish_lap = $boat['lap'] + 1;
+                        // $new_finish_lap = $boat['lap'] + 1;
                         $upd_race =  $this->entry_update($boat['id'], array("finishlap"=>$new_finish_lap));
                     }
                 }

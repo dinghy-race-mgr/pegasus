@@ -522,7 +522,7 @@ function fm_set_laps($params = array())
 {
     /* general purpose used for changing laps throughout race box application
          -  race_pg  [set laps]
-         -  timer_pg [shorten all, reset laps]
+         -  timer_pg [shorten all, change shorten laps]
          -  results_pg [change finish lap]
 
         has to deal with four race states

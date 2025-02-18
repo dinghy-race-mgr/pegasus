@@ -279,7 +279,7 @@ $mdl_shortenfleet = array(
     ),
 );
 
-// ---- change finish lap ----------------------------------------------------------------
+// ---- change shorten lap ----------------------------------------------------------------
 $btn_undoshorten = array(
     "label"     => true,
     "glyph"     => true,
@@ -289,9 +289,9 @@ $btn_undoshorten = array(
         "id"         => "undoshorten",
         "size"       => "lg",
         "style"      => "info",
-        "label"      => "Undo Shorten Course",
+        "label"      => "Change Shorten Lap",
         "glyph"      => "glyphicon-pencil",
-        "popover"    => "change the finishing lap - very useful if you shortened course incorrectly",
+        "popover"    => "VERY useful if you forgot to shorten course",
         "pop-pos"    => "left",
         "block"      => "btn-block",
         "disabled"   => "",
@@ -310,7 +310,7 @@ $mdl_undoshorten = array(
         "id"         => "undoshorten",
         "size"       => "lg",
         "style"      => "info",
-        "title"      => "Change Finish Lap",
+        "title"      => "Change Shorten Lap",
         "body"       => "",
         "script"     => "",
         "onsubmit"   => "",
@@ -318,11 +318,12 @@ $mdl_undoshorten = array(
         "target"     => "",
         "close-lbl"  => "changed my mind",
         "reset-lbl"  => "",
-        "submit-lbl" => "Change Finish lap(s)",
+        "submit-lbl" => "Change Shorten Lap(s)",
         "footer"     => ""
     ),
 );
 
+/*
 // ---- change finish lap ----------------------------------------------------------------
 $btn_forgotshorten = array(
     "label"     => true,
@@ -335,7 +336,7 @@ $btn_forgotshorten = array(
         "style"      => "success",
         "label"      => "Forgot to Shorten",
         "glyph"      => "glyphicon-pencil",
-        "popover"    => "This can help if you forgot to shorten course",
+        "popover"    => "VERY useful if you forgot to shorten course",
         "pop-pos"    => "left",
         "block"      => "btn-block",
         "disabled"   => "",
@@ -366,7 +367,7 @@ $mdl_forgotshorten = array(
         "footer"     => ""
     ),
 );
-
+*/
 
 
 
