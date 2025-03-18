@@ -474,7 +474,10 @@ EOT;
             // - to reflect OOD considers race is complete as they are producing the result
             if ($event['id'] == $this->eventid)
             {
-                $inventory["events"][$event['id']]['eventstatus'] = "completed";
+                if (strtolower($event['event_status']) == 'sailed')
+                {
+                    $inventory["events"][$event['id']]['eventstatus'] = "completed";
+                }
             }
 
             // get duties

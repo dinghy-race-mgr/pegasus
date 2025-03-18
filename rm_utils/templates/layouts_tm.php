@@ -154,6 +154,56 @@ EOT;
     return $bufr;
 }
 
+function upload_csv_file($params = array())
+{
+    $dbg = $params['debug'];
+
+    $bufr = <<<EOT
+    <div class="container">
+        <div class="jumbotron" style="margin-top: 40px;">
+            <h2 class="text-primary">Instructions:</h2>
+            <p class="text-primary">{instructions}</p>
+        </div>
+        <form class = "form-horizontal" enctype="multipart/form-data" id="selectfileForm" 
+              action="dutyman_synch.php?pagestate=submit" method="post">
+           
+            <div class="form-group margin-top-20">
+                <label for="csvfile" class="col-lg-2 control-label">{file-label}</label>
+                <div class="col-sm-10">
+                    <span class="file-input btn btn-default btn-lg btn-file">
+                        <input type="file" accept="{file-types}" style="width:400px !important" id="csvfile" name="csvfile" value="" required>
+                    </span> 
+                </div>
+            </div>
+        
+        <div class="row margin-top-20">
+            <div class="col-sm-8 col-sm-offset-1">
+                <div class="pull-left">
+                    <a class="btn btn-lg btn-warning" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
+                </div>
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-lg btn-primary"  style="min-width: 200px;" >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Upload File</b></button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <script language="javascript">
+    function quitBox(cmd)
+    {   
+        if (cmd=='quit')
+        {
+            open(location, '_self').close();
+        }   
+        return false;   
+    }
+    </script>
+EOT;
+    return $bufr;
+}
+
 
 
 

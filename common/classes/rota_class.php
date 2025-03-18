@@ -165,7 +165,7 @@ class ROTA
             $where.= implode(' AND ', $clause);
         }
 
-        $query = "SELECT a.`id`, `dutycode`, `person`, `phone`, `email`, `notes`, b.`event_name`, b.`event_date` FROM t_eventduty as a 
+        $query = "SELECT a.`id`, `dutycode`, `person`, `phone`, `email`, `notes`, b.`event_name`, b.`event_date`, b.id as eventid FROM t_eventduty as a 
                   JOIN t_event as b ON a.`eventid`=b.`id`  
                   WHERE $where ORDER BY `event_date` ASC, `event_order` ASC, `event_start` ASC  ";
 
@@ -176,9 +176,9 @@ class ROTA
         }
         else
         {
-            foreach ($detail as $k=>$row)
+            foreach ($detail as $k => $row)
             {
-                $detail[$k]['dutyname'] = $codes[$row['dutycode']];
+                empty($row['dutycode']) ? $detail[$k]['dutyname'] = "": $detail[$k]['dutyname'] = $codes[$row['dutycode']];
             }
         }
 

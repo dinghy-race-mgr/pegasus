@@ -234,7 +234,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
                         }
                         else
                         {
-                            if ($dbg) { u_writedbg("<pre>".print_r($$status,true)."</pre>", __FILE__,__FUNCTION__,__LINE__); }
+                            if ($dbg) { u_writedbg("<pre>".print_r($status,true)."</pre>", __FILE__,__FUNCTION__,__LINE__); }
 
                             // we have an error - process any detail information
                             $err_detail_txt = "";

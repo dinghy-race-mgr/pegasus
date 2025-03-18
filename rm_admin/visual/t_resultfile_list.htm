@@ -337,8 +337,8 @@
 	.bs-gridcell[data-field=status]:before {
 		content: "{$label t_resultfile status}";
 	}
-	.bs-gridcell[data-field=rank]:before {
-		content: "{$label t_resultfile rank}";
+	.bs-gridcell[data-field=listorder]:before {
+		content: "{$label t_resultfile listorder}";
 	}
 	.bs-gridcell[data-field=upload]:before {
 		content: "{$label t_resultfile upload}";
@@ -429,13 +429,13 @@
 									
 									
 									
-									{BEGIN rank_fieldheadercolumn}<th class="rnr-gridfieldlabel {$rank_class}" data-field=rank>
-									{BEGIN rank_fieldheader}<span {$rank_orderlinkattrs}>
-											{$label t_resultfile rank}
+									{BEGIN listorder_fieldheadercolumn}<th class="rnr-gridfieldlabel {$listorder_class}" data-field=listorder>
+									{BEGIN listorder_fieldheader}<span {$listorder_orderlinkattrs}>
+											{$label t_resultfile listorder}
 										</span>
-									{END rank_fieldheader}
+									{END listorder_fieldheader}
 									</th>
-									{END rank_fieldheadercolumn}
+									{END listorder_fieldheadercolumn}
 									
 									
 									
@@ -522,10 +522,10 @@
 {END status_fieldcolumn}
 
 
-	{BEGIN rank_fieldcolumn}<td class="bs-gridcell {$rank_class}"  data-field=rank {$rowstyle} {$recordattrs}>
-		{$rank_value}
+	{BEGIN listorder_fieldcolumn}<td class="bs-gridcell {$listorder_class}"  data-field=listorder {$rowstyle} {$recordattrs}>
+		{$listorder_value}
 	</td>
-{END rank_fieldcolumn}
+{END listorder_fieldcolumn}
 
 
 	{BEGIN upload_fieldcolumn}<td class="bs-gridcell {$upload_class}"  data-field=upload {$rowstyle} {$recordattrs}>

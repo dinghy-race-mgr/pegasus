@@ -85,19 +85,11 @@ EOT;
 
 function dtm_export_report($params = array())
 {
+    //echo "<pre>".print_r($params,true)."</pre>";
+    
     $bufr = "";
 
-    // heading
-    $bufr.= <<<EOT
-<div>
-     <h2>DUTYMAN: create DUTYMAN export file(s)</h2>
-     
-	 
-</div>
-EOT;
-
     // file download info / file errors
-
     if ($params['event_file_status'] != 0 or $params['duty_file_status'] != 0)            // report errors
     {
         $err = array(
@@ -127,6 +119,9 @@ EOT;
 
 
         $bufr.= <<<EOT
+<div>
+    <h2>DUTYMAN: creating DUTYMAN export file(s)</h2>	 
+</div>
 <div class="jumbotron" style="font-size: 60% !important">
     <h3>SORRY - we have an error in generating the output file(s)</h3>
     <p >Event export file: - <span class="rm-text-error">$event_status_msg</span></p>
@@ -139,65 +134,95 @@ EOT;
 
     else                                                                              // report inputs and download buttons
     {
-        $bufr.= <<<EOT
-<div class="jumbotron" style="font-size: 60% !important">
-    <p >Generating duty allocation details from raceManager as a csv file for import to dutyman</p>
-    <p >Start Date: <span class="rm-text-error">{start}</span> &nbsp;&nbsp;&nbsp;&nbsp;End Date: <span class="rm-text-error">{end}</span> </p>
-    <p >Rotas Requested: <span class="rm-text-error">{rotas}</span></p>
-    <br>
-    <p >Event Export: <span class="rm-text-error"><small>[{eventpath}]</small></span> . . . &nbsp;&nbsp;&nbsp;&nbsp;
+        $event_file_bufr = "";
+        if ($params['event_file'])
+        {
+            $event_file_bufr = <<<EOT
+<br>
+    <p >Event Export: <span class="text-muted"><small>[{eventpath}]</small></span> . . . &nbsp;&nbsp;&nbsp;&nbsp;
         <a href="{eventpath}" download><button type="button" class="btn btn-success pull-right">Download Events</button></a>
     </p>
-    <br><br>
-    <p >Duty Export: <span class="rm-text-error"><small>[{dutypath}]</small></span> . . . &nbsp;&nbsp;&nbsp;&nbsp;
+EOT;
+        }
+
+        $duty_file_bufr = "";
+        if ($params['duty_file'])
+        {
+            $duty_file_bufr = <<<EOT
+<br>
+    <p >Duty Export: <span class="text-muted"><small>[{dutypath}]</small></span> . . . &nbsp;&nbsp;&nbsp;&nbsp;
         <a href="{dutypath}" download><button type="button" class="btn btn-success pull-right">Download Duties</button></a>
     </p>
-    </br>
+EOT;
+        }
+
+        $rows_bufr = "";
+        if ($params['duty_file'])
+        {
+            $cols_bufr = <<<EOT
+            <th>Date</th>
+            <th>Time</th>
+            <th>Duty</th>
+            <th>Event</th>
+            <th>Name</th>
+            <th>Swappable</th>
+            <th>Rota Check</th>
+EOT;
+            foreach($params['duty_data'] as $row)
+            {
+                $row['exists'] ? $check = "<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>" : $check = "<span class='glyphicon glyphicon-remove text-danger' aria-hidden='true'></span>";
+                $rows_bufr .= <<<EOT
+                    <tr style="font-size: 0.8em;">
+                        <td>{$row['duty_date']}</td><td>{$row['duty_time']}</td><td>{$row['duty_type']}</td><td>{$row['event']}</td>
+                        <td>{$row['first_name']} {$row['last_name']}</td><td>{$row['swappable']}</td><td>$check</td>
+                    </tr>
+EOT;
+            }
+        }
+        else // only want event information
+        {
+            $cols_bufr = <<<EOT
+            <th>Date</th>
+            <th>Event</th>
+            <th>Start</th>
+            <th>Description</th>
+EOT;
+            foreach($params['event_data'] as $row)
+            {
+                 $rows_bufr .= <<<EOT
+                    <tr style="font-size: 0.8em;">
+                        <td>{$row['date']}</td><td>{$row['event']}</td><td>{$row['start']}</td><td>{$row['description']}</td>
+                    </tr>
+EOT;
+            }
+        }
+
+            $bufr .= <<<EOT
+<div>
+    <h2>DUTYMAN: creating DUTYMAN export file(s)</h2>	 
+</div>
+<div class="jumbotron" style="font-size: 60% !important">
+    <p >Generating duty allocation details from raceManager as a csv file for import to dutyman</p>
+    <p >Start Date: <span class="text-info">{start}</span> &nbsp;&nbsp;&nbsp;&nbsp;End Date: <span class="text-info">{end}</span> </p>
+    <p >Rotas Requested: <span class="text-info">{rotas}</span></p>
+    $event_file_bufr
+    <br>
+    $duty_file_bufr
+    <br>
 	<p class="pull-right"><small><i>Using database server [{host}/{database}]</i></small><p>
     </br>
 </div>
-EOT;
-    }
-
-    // create duty report content
-    $duty_rows_bufr = "";
-
-    foreach($params['duty_data'] as $row)
-    {
-        $row['exists'] ? $check = "<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>": $check = "<span class='glyphicon glyphicon-remove text-danger' aria-hidden='true'></span>";
-
-        $duty_rows_bufr.= <<<EOT
-<tr style="font-size: 0.8em;">
-    <td>{$row['duty_date']}</td>
-    <td>{$row['duty_time']}</td>
-    <td>{$row['duty_type']}</td>
-    <td>{$row['event']}</td>
-    <td>{$row['first_name']} {$row['last_name']}</td>
-    <td>{$row['swappable']}</td>
-    <td>$check</td>
-</tr>
-EOT;
-
-        $duty_bufr = <<<EOT
 <table class="table table-hover table-condensed">
     <thead><tr>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Duty</th>
-        <th>Event</th>
-        <th>Name</th>
-        <th>Swappable</th>
-        <th>Rota Check</th>
+        $cols_bufr
     </tr></thead>
     <tbody>
-        $duty_rows_bufr
+        $rows_bufr
     </tbody>
 </table>
 EOT;
 
     }
-
-    $bufr.= $duty_bufr;
 
     return $bufr;
 }
@@ -205,6 +230,9 @@ EOT;
 function dtm_export_err($params = array())
 {
     $bufr = "";
+
+    $params['event_file'] ? $event_req = "YES" : $event_req = "NO";
+    $params['duty_file'] ? $duty_req = "YES" : $duty_req = "NO";
 
     $error_bufr = "";
     foreach($params['errors'] as $error)
@@ -219,8 +247,8 @@ EOT;
         <h2 class="text-primary">Input Error(s) ....</h2>
         $error_bufr
         <br>
-        <p style="font-size: 0.9em;">INPUT VALUES: start-date: {start} | end-date: {end} | rotas: {rotas} | event export: {event_file} | duties export: {duty_file}</p>
-        <p style="font-size: 0.9em;">SYSTEM: server: {host} | database: {database}</p>
+        <p class = "text-info"><small>INPUT VALUES: start-date: {start} | end-date: {end} | rotas: {rotas} | event export: $event_req | duties export: $duty_req</small></p>
+        <p class = "text-info"><small>SYSTEM: server: {host} | database: {database}</small></p>
         <br>
         <p>Please use go back and check your inputs ...</p>
     </div>
@@ -267,6 +295,7 @@ function dtm_duty_import_form($params = array())
                     <input type="text" id="dutytype" name="dutytype" value="" >
                 </div>
             </div> -->
+            <!--
             <div class="form-group margin-top-20">
                 <label for="dryrun" class="col-sm-2 control-label">Operation</label>
                 <div class="col-sm-10">
@@ -274,6 +303,7 @@ function dtm_duty_import_form($params = array())
                     <label class="radio-inline"><input type="radio" name="action" value="off" >&nbsp;Make Changes&nbsp;&nbsp;&nbsp;</label>
                 </div>
             </div>
+            -->
         
         <div class="row margin-top-20">
             <div class="col-sm-8 col-sm-offset-1">
@@ -292,10 +322,7 @@ function dtm_duty_import_form($params = array())
     <script language="javascript">
     function quitBox(cmd)
     {   
-        if (cmd=='quit')
-        {
-            open(location, '_self').close();
-        }   
+        if (cmd=='quit') { open(location, '_self').close(); }   
         return false;   
     }
     </script>
@@ -306,31 +333,133 @@ EOT;
 function dtm_duty_import_report($params = array())
 {
     $bufr = "";
-    $mode = "";
-    if ($params['dryrun'])
+    $mode_bufr = "";
+
+    if ($params['numevents'] == 0)
     {
-        $mode = "[DRYRUN mode: changes not implemented]";
+        $mode_bufr = <<<EOT
+<div class="alert alert-danger" style="width: 50%;" role="alert">
+    <b>DUTY CHECK </b>: raceManager has no events for the selected period<br>
+    Please check the dates you specified<br>  
+</div>
+EOT;
+    }
+    else
+    {
+        $open_close_btn = <<<EOT
+<p class="text-right">
+    <b>click event for detail</b> or 
+    <a class="btn btn-success btn-xs openall" href="#">open all</a> <a class="btn btn-danger btn-xs closeall" href="#">close all</a>
+</p> 
+EOT;
+        if ($params['mode'] == "report")
+        {
+            $mode_bufr = <<<EOT
+<div class="alert alert-info" style="width: 50%;" role="alert">
+    <b>DUTY CHECK </b>: swaps are NOT implemented at this stage<br>
+    Planned changes and issues are reported below - events shown in red<br>
+    <dl class="dl-horizontal">
+        <dt>{$params['swaps']}</dt><dd>duties to be swapped</dd>
+        <dt>{$params['missing']}</dt><dd>duty missing in dutyman</dd>
+        <dt>{$params['crossswaps']}</dt><dd>requested swap of duty type</dd>
+    </dl>  
+    $open_close_btn    
+</div>
+EOT;
+        }
+        else
+        {
+            $mode_bufr = <<<EOT
+<div class="alert alert-success" style="width: 50%;" role="alert">
+    <b>DUTIES UPDATED </b>: swaps have been applied<br>
+    <dl class="dl-horizontal">
+        <dt>{$params['swaps']}</dt><dd>duties to be swapped - APPLIED</dd>
+        <dt>{$params['missing']}</dt><dd>duty missing in dutyman - NOT FIXED</dd>
+        <dt>{$params['crossswaps']}</dt><dd>requested swap of duty type - NOT APPLIED</dd>
+    </dl>
+    $open_close_btn
+</div>
+EOT;
+        }
     }
 
-    $bufr.= <<<EOT
-    <div class="alert alert-success" role="alert">
-        <h3>Dutyman Duty Update</h3> 
-        <h4>Updates checked for period {start} to {end}</h4>
-        <p>$mode</p>
-        <div class="row margin-top-20">
-            <div class="col-sm-12">
-                <div class="pull-right">
-                    <a class="btn btn-default" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
-                    <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a>
-                </div>
-            </div>
-        </div>   
-    </div> 
-    <div>
-        {report}
+    $buttons_bufr = "";
+    if ($params['numevents'] > 0)
+    {
+        $buttons_bufr = <<<EOT
+<div class="row margin-top-20">
+    <div class="col-sm-12">
+        <div class="pull-right">
+            <!--a class="btn btn-warning" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+            <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a -->
+            <a href="dtm_duty_import.php?pagestate=init" class="btn btn-warning btn-sm" style="min-width: 200px;" type="button" name="back" id="back"">
+            <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a>
+            <a href="dtm_duty_import.php?pagestate=apply" class="btn btn-primary" style="min-width: 200px; margin-left:50px;" type="button" name="submit" id="submit">
+            <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;<b>Apply Changes</b></a>
+        </div>
     </div>
-    
+</div> 
+EOT;
+    }
+    else
+    {
+        $buttons_bufr = <<<EOT
+<div class="row margin-top-20">
+    <div class="col-sm-12">
+        <div class="pull-right">
+            <a href="dtm_duty_import.php?pagestate=init" class="btn btn-warning btn-sm" style="min-width: 200px;" type="button" name="back" id="back"">
+            <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a>
+        </div>
+    </div>
+</div> 
 EOT;
 
+    }
+
+    $report_bufr = "";
+    if ($params['numevents'] > 0)
+    {
+        $report_bufr = <<<EOT
+<div>
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        {report}
+    </div>
+</div>
+EOT;
+
+    }
+
+
+
+
+    $bufr.= <<<EOT
+    <div class="alert alert-warning" role="alert">
+        <h3>Dutyman Duty Update</h3> 
+        <h4>Updates checked for period {start} to {end}</h4>       
+        $mode_bufr
+        $buttons_bufr              
+    </div> 
+    $report_bufr
+    
+    <script language="javascript">
+    function quitBox(cmd)
+    {   
+        if (cmd=='quit') { open(location, '_self').close(); }   
+        return false;   
+    }
+    </script>
+    
+    <script language="javascript">
+            $('.closeall').click(function () {
+$('.collapse').collapse('hide');
+});
+
+
+$('.openall').click(function () {
+        $('.collapse').collapse('show');
+})
+    </script> 
+EOT;
     return $bufr;
 }
+

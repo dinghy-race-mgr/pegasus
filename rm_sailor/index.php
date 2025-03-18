@@ -35,8 +35,8 @@ $closed = u_checkarg("closed", "set", "", "");
 
 //fixme - don't put args not used in string (use form url php command)
 $race_option = "rm_sailor.php?mode=race&demo=$demo&usage=$usage";
-$cruise_option = "rm_sailor.php?mode=cruise&demo=$demo&usage=$usage";
-//$cruise_option = "https://www.starcrossyc.org.uk/leisuresail/";  // fixme - need to configure link to external system
+//$cruise_option = "rm_sailor.php?mode=cruise&demo=$demo&usage=$usage";
+$cruise_option = "https://www.starcrossyc.org.uk/leisuresail/";  // fixme - need to configure link to external system as part of .ini or t_ini
 
 if ($event)
 {

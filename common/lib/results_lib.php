@@ -39,7 +39,7 @@ function process_result_file($loc, $result_status, $include_club, $result_notes,
         "label"     => "race results",
         "notes"     => $result_notes,
         "status"    => $result_status,
-        "rank"      => "1",
+        "listorder"      => "1",
     );
 
     // FIXME - remove use of $_SESSION here
@@ -125,7 +125,7 @@ function process_series_file($opts, $series_code, $series_status, $system_info, 
         "label"     => "series results",
         "notes"     => $series_notes,
         "status"    => $series_status,
-        "rank"      => "1",
+        "listorder" => "1",
     );
 
     $dbg = false;

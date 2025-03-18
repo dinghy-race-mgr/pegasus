@@ -566,7 +566,7 @@ class RACE
         //   - race has started and requested lap is less than current leaders lap
         //   - requested lap is already set
 
-        $dbg_on = true;
+        $dbg_on = false;
 
         $change_lap = false;  // default is for laps not to be changed
         $update = array("result" =>"", "finishlap" => 0, "currentlap" => 0 );

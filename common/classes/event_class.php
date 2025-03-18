@@ -232,7 +232,6 @@ class EVENT
         }
 
         $query = $select." WHERE $where $where_period $where_type $where_status $where_constraints ".$order;
-        //echo "<pre>$query</pre>";
 
         $detail = $this->db->db_get_rows( $query );
         

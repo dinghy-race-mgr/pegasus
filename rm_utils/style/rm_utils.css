@@ -30,6 +30,13 @@ body {
 }
 .rm-background {background-color: #2e6da4; color: white;}
 
+/* alerts bootstrap default (NOT _flatly colors) */
+.alert-primary { background-color: var(--primary) !important; color: var(--white) !important; border-color: #121a21 !important;}
+.alert-warning { background-color: #f8edba !important; color: #8a6d3b !important; border-color: #8a6d3b !important;}
+.alert-success { background-color: #dff0d8 !important; color: #3c763d !important; border-color: #3c763d !important;}
+.alert-info    { background-color: #d9edf7 !important; color: #31708f !important; border-color: #31708f !important;}
+.alert-danger  { background-color: #f2dede !important; color: #a94442 !important; border-color: #a94442 !important;}
+
 /* typographic styles */
 .rm-page { color: lightgrey; }
 .rm-pagebold { color: lightgrey; font-size:2.0em; font-weight: bold; }

@@ -163,7 +163,7 @@ class BUNCH
             $htm.= <<<EOT
             <div class="row" style="margin-left: 10px; margin-bottom: 10px">
                 <div class="col-md-8" style="padding: 0px 0px 0px 0px;">
-                    <a type="button" href="{$node['link']}" class="btn btn-block btn-$bcolor btn-sm bunch-text" >{$node['label']}</a>
+                    <a type="button" href="{$node['link']}" class="btn btn-block btn-$bcolor btn-sm bunch-text" ><span style="font-size: 0.8em">{$node['label']}</span></a>
                 </div>
                 
                 <div class="col-md-2" style="padding: 0px 0px 0px 0px;">

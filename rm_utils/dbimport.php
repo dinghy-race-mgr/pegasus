@@ -266,6 +266,7 @@ function get_typeoptions($importtype)
             "table" => "t_tide",
             "class" => "tide_class",
             "update" => true,
+
             "truncate" => false,
             "fieldmap" => array(
                 "date" => 'date',
