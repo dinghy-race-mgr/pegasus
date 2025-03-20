@@ -261,12 +261,12 @@ function dtm_duty_import_form($params = array())
 {
     $bufr = <<<EOT
     <div class="container">
-        <div class="jumbotron" style="margin-top: 40px;">
-            <h2 class="text-primary">Instructions:</h2>
-            <p class="text-primary">{instructions}</p>
+        <div class="jumbotron" style="margin-top: 30px;">
+            <h3 class="text-primary">Instructions:</h3>
+            <p class="text-primary"><small>{instructions}</small></p>
         </div>
         <form class = "form-horizontal" enctype="multipart/form-data" id="selectfileForm" 
-              action="dtm_duty_import.php?pagestate=submit" method="post">
+              action="dtm_import.php?pagestate=submit" method="post">
             <div class="form-inline">
                 <label class="col-sm-2 control-label">Period (from/to)</label>
                 <div class="form-group">                   
@@ -287,45 +287,21 @@ function dtm_duty_import_form($params = array())
                         <input type="file" accept="csv" style="width:400px !important" id="dutymanfile" name="dutymanfile" value="" required>
                     </span> 
                 </div>
-            </div>
-            <!--
-            <div class="form-group margin-top-20">
-                <label for="dutytype" class="col-sm-2 control-label">Duty Type</label>
-                <div class="col-sm-10">
-                    <input type="text" id="dutytype" name="dutytype" value="" >
-                </div>
-            </div> -->
-            <!--
-            <div class="form-group margin-top-20">
-                <label for="dryrun" class="col-sm-2 control-label">Operation</label>
-                <div class="col-sm-10">
-                    <label class="radio-inline"><input type="radio" name="action" value="on" checked>&nbsp;Dry Run&nbsp;&nbsp;&nbsp;</label>
-                    <label class="radio-inline"><input type="radio" name="action" value="off" >&nbsp;Make Changes&nbsp;&nbsp;&nbsp;</label>
+            </div>       
+            <div class="row margin-top-20">
+                <div class="col-sm-8 col-sm-offset-1">
+                    <div class="pull-left">
+                        <a class="btn btn-lg btn-warning" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="history.back()">
+                        <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a>
+                    </div>
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-lg btn-primary"  style="min-width: 200px;" >
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Synchronise</b></button>
+                    </div>
                 </div>
             </div>
-            -->
-        
-        <div class="row margin-top-20">
-            <div class="col-sm-8 col-sm-offset-1">
-                <div class="pull-left">
-                    <a class="btn btn-lg btn-warning" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
-                    <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
-                </div>
-                <div class="pull-right">
-                    <button type="submit" class="btn btn-lg btn-primary"  style="min-width: 200px;" >
-                    <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Synchronise</b></button>
-                </div>
-            </div>
-        </div>
         </div>
     </div>
-    <script language="javascript">
-    function quitBox(cmd)
-    {   
-        if (cmd=='quit') { open(location, '_self').close(); }   
-        return false;   
-    }
-    </script>
 EOT;
     return $bufr;
 }
@@ -355,7 +331,7 @@ EOT;
         if ($params['mode'] == "report")
         {
             $mode_bufr = <<<EOT
-<div class="alert alert-info" style="width: 50%;" role="alert">
+<div class="alert alert-info"  role="alert">
     <b>DUTY CHECK </b>: swaps are NOT implemented at this stage<br>
     Planned changes and issues are reported below - events shown in red<br>
     <dl class="dl-horizontal">
@@ -370,7 +346,7 @@ EOT;
         else
         {
             $mode_bufr = <<<EOT
-<div class="alert alert-success" style="width: 50%;" role="alert">
+<div class="alert alert-success" role="alert">
     <b>DUTIES UPDATED </b>: swaps have been applied<br>
     <dl class="dl-horizontal">
         <dt>{$params['swaps']}</dt><dd>duties to be swapped - APPLIED</dd>
@@ -384,37 +360,39 @@ EOT;
     }
 
     $buttons_bufr = "";
+    $reminder_bufr = "";
     if ($params['numevents'] > 0)
     {
-        $buttons_bufr = <<<EOT
-<div class="row margin-top-20">
-    <div class="col-sm-12">
+        if ($params['mode'] == "report" and $params['swaps'] > 0)
+        {
+            $buttons_bufr = <<<EOT
         <div class="pull-right">
-            <!--a class="btn btn-warning" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
-            <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a -->
-            <a href="dtm_duty_import.php?pagestate=init" class="btn btn-warning btn-sm" style="min-width: 200px;" type="button" name="back" id="back"">
+            <a href="dtm_import.php?pagestate=init" class="btn btn-warning btn-sm" style="min-width: 150px;" type="button" name="back" id="back" onclick="history.back()">
             <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a>
-            <a href="dtm_duty_import.php?pagestate=apply" class="btn btn-primary" style="min-width: 200px; margin-left:50px;" type="button" name="submit" id="submit">
+            <a href="dtm_import.php?pagestate=apply" class="btn btn-primary btn-sm" style="min-width: 150px; margin-left:50px;" type="button" name="submit" id="submit">
             <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;<b>Apply Changes</b></a>
         </div>
-    </div>
-</div> 
 EOT;
-    }
-    else
-    {
-        $buttons_bufr = <<<EOT
-<div class="row margin-top-20">
-    <div class="col-sm-12">
-        <div class="pull-right">
-            <a href="dtm_duty_import.php?pagestate=init" class="btn btn-warning btn-sm" style="min-width: 200px;" type="button" name="back" id="back"">
+        }
+        else
+        {
+            $buttons_bufr = <<<EOT
+        <div class="text-center">
+            <a href="dtm_import.php?pagestate=init" class="btn btn-warning btn-sm" style="min-width: 150px;" type="button" name="back" id="back"">
             <span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;<b>Back</b></a>
         </div>
-    </div>
-</div> 
 EOT;
-
+            if ($params['swaps'] > 0)
+            {
+                $reminder_bufr = <<<EOT
+                <div class="text-danger" style="padding: 20px;"><br>
+                    <b><span class="lead">Important!</span></b> to make these swaps visible on the website you must use the <b>Update Website</b> option in the racemanager ADMIN system
+                </div>
+EOT;
+            }
+        }
     }
+
 
     $report_bufr = "";
     if ($params['numevents'] > 0)
@@ -429,15 +407,20 @@ EOT;
 
     }
 
-
-
-
     $bufr.= <<<EOT
     <div class="alert alert-warning" role="alert">
         <h3>Dutyman Duty Update</h3> 
         <h4>Updates checked for period {start} to {end}</h4>       
-        $mode_bufr
-        $buttons_bufr              
+        <div class="row margin-top-20">
+            <div class="col-md-7">
+            $mode_bufr
+            </div>
+            <div class="col-md-5">
+            $buttons_bufr 
+            </div>
+            $reminder_bufr
+        </div>  
+                          
     </div> 
     $report_bufr
     
@@ -460,6 +443,7 @@ $('.openall').click(function () {
 })
     </script> 
 EOT;
+
     return $bufr;
 }
 

@@ -98,25 +98,25 @@ else
         <div class="row">      
         <div class="col-md-3" style="margin-left:10px; margin-top: 10px;">
             <div style="padding-left:20px;">
-                <h4>dutyman synchonisation</h4>
+                <h4>dutyman import</h4>
                 <p class="text-info">Synchronises duty swaps in dutyman into the t_eventduty table</p>
-                <a class="btn btn-primary btn-md btn-block" href="dutyman_synch_O.php?pagestate=init" role="button"><span style="font-size: 0.7em">dutyman_synch.php?pagestate=init</span></a>
+                <a class="btn btn-primary btn-md btn-block" href="dtm_import.php?pagestate=init" role="button"><span style="font-size: 0.8em">dtm_import.php?pagestate=init</span></a>
             </div>
         </div>
         <div class="col-md-3" style="margin-left:10px; margin-top: 10px;">
             <div style="padding-left:20px;">
                 <h4>dutyman export</h4>
                 <p class="text-info">Creates export files (events and/or duties) for import into dutyman</p>
-                <a class="btn btn-primary btn-md btn-block" href="dtm_export.php?pagestate=init" role="button"><span style="font-size: 0.7em">dutyman_export.php?pagestate=init</span></a>
+                <a class="btn btn-primary btn-md btn-block" href="dtm_export.php?pagestate=init" role="button"><span style="font-size: 0.8em">dutyman_export.php?pagestate=init</span></a>
             </div>
         </div>
-        <div class="col-md-3" style="margin-left:20px; margin-top: 20px;">
+        <!--div class="col-md-3" style="margin-left:20px; margin-top: 20px;">
             <div style="padding-left:20px;">
                 <h4>dutyman export</h4>
                 <p class="text-info">Compares dutyman data with programme data on duties</p>
                 <a class="btn btn-primary btn-md btn-block" href="dtm_import.php?pagestate=init" role="button"><span style="font-size: 0.7em">dtm_duty_import.php?pagestate=init</span></a>
             </div>
-        </div>
+        </div -->
     </div>
 EOT;
 }

@@ -147,8 +147,8 @@ if ($pagestate == "init" and $state == 0)        // display user parameter selec
 {
     $formfields = array(
         "instructions" => "Processes race results to produce data files in the format required by the RYA Portsmouth Yardstick System at 
-           <a href='https://www.pyonline.org.uk/'>https://www.pyonline.org.uk</a> </br></br>
-           If this is the first time using this process you should first read the <a href='../data/pyscheme/detailed_instructions.pdf'>Detailed Instructions</a>. 
+           <a href='https://www.pyonline.org.uk/'>PYOnline</a> </br></br>
+           See <a href='./documentation/pys_utils.pdf' target='_BLANK'>Detailed Instructions</a> for more details. 
            The process requires configuration files to be located in your racemanager installation directory on your server.",
         "script" => "pys_export.php?pagestate=submit",
     );

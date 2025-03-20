@@ -84,9 +84,9 @@ if ($_REQUEST['pagestate'] == "init")
 
     // present form to select json file for processing (general template)
     $formfields = array(
-        "instructions"  => "Downloads membership berth information from webcollect in a CSV file.  <br><br>
+        "instructions"  => "Exports membership berth information from webcollect in a CSV file.  <br><br>
                        <b>This may take a few minutes</b><br><br>
-                       Using server {$_SESSION['db_host']}/{$_SESSION['db_name']}<br>",
+                       <small>Using server {$_SESSION['db_host']}/{$_SESSION['db_name']}</small><br>",
         "script"        => "berth_synch_webcollect.php?pagestate=submit",
     );
     $pagefields['body'] =  $tmpl_o->get_template("script_confirm", $formfields, $params);

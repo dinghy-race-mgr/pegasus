@@ -58,7 +58,6 @@ else
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
-
 // arguments
 empty($_REQUEST['pagestate']) ?  $pagestate = "init" : $pagestate = $_REQUEST['pagestate'];
 if ($pagestate == "apply")
@@ -98,10 +97,10 @@ if ($pagestate == "init")
 
     // present form to select json file for processing (general template)
     $formfields = array(
-        "instructions"  => "Updates duty allocations in raceManager with information exported from dutyman in csv format.  
-                       This is used to reflect duty swaps made in dutyman in the racemanager programme <br><br>
-                       <b>You will need to republish the programme after it has been updated</b><br><br>
-                       Using server {$_SESSION['db_host']}/{$_SESSION['db_name']}<br>",
+        "instructions"  => "Updates duty allocations in raceManager with duty swaps exported from dutyman in csv format.  
+                       This is used to reflect duty swaps made in dutyman in the racemanager programme.  See <a href='./documentation/dutyman_utils.pdf' target='_BLANK'>Detailed Instructions</a> for more details<br><br>
+                       <span class='text-info'>After completing the update - use the Update Website option in the Administration application to make the changes visible on your website</span><br><br>
+                       <small>Using server {$_SESSION['db_host']}/{$_SESSION['db_name']}</small><br>",
     );
     $pagefields['body'] =  $tmpl_o->get_template("dtm_duty_import_form", $formfields, array());
 
@@ -192,6 +191,16 @@ elseif ($pagestate == "submit")
     $swap_list = "";       // list of ids that have been swapped
     if ($num_events > 0)
     {
+        if ($mode == "apply")  // take a backup copy of t_eventduty to provide rollback option
+        {
+            $cols = array("id", "eventid", "dutycode", "person", "swapable", "phone", "email", "notes", "memberid", "upddate", "updby", "creatdate");
+            $outfile = $_SESSION['basepath']."\data\dutyman\backups\\eventduty_".date("ymd-Hi").".csv";
+
+            $rows = $db_o->db_query("SELECT `id`, `eventid`, `dutycode`, `person`, `swapable`, `phone`, `email`, `notes`, `memberid`, `upddate`, `updby`, `createdate` FROM t_eventduty");
+            $err = create_csv_file($cols, $rows, $outfile);
+            $err == 0 ? $result = "file created" : $result = "file not created [$err]";
+        }
+
         foreach ($events as $k=>$event)
         {
             $event_bufr = "";
@@ -434,7 +443,33 @@ function create_dutymap()
 
     return $dutymap;
 }
+function create_csv_file($cols, $rows, $outfile)
+{
+   // create output file
+    $err = 0;
+    $fp = fopen($outfile, 'w');
+    if ($fp)
+    {
+        $r = fputcsv($fp, $cols, ',');
+        if (!$r) { $err = 2;}
 
+        if ($err == 0)
+        {
+            foreach ($rows as $row)
+            {
+                $r = fputcsv($fp, $row, ',');
+                if (!$r) {$err = 3; }
+                if ($err != 0) { break; }
+            }
+        }
+        fclose($fp);
+    }
+    else
+    {
+        $err = 1;
+    }
+    return $err;
+}
 
 function read_csv_file($file, $scriptname)
 {
@@ -494,7 +529,7 @@ function update_event_duty($id, $person, $swap, $duty)
     // changes person doing the duty in the raceManager programme
     global $db_o;
     $status = false;
-    $dbg = true;
+    $dbg = false;
 
     if ($dbg) { echo "<pre>update_event_duty : $id)</pre>"; }
 
@@ -524,7 +559,7 @@ function add_event_duties($eventid, $arr)
     // uses dutyman duty information to update programme - assumes no records exist for programme
     global $db_o;
     $status = false;
-    $dbg = true;
+    $dbg = false;
 
     if ($dbg) { echo "<pre>add_event_duties : $eventid)</pre>"; }
     $duty = array();
@@ -543,9 +578,9 @@ function add_event_duties($eventid, $arr)
     }
     if ($dbg) { echo $report; }
 
-    $status = true; // FIXME
+    if ($ins) { $status = true; }
 
-    return array("status"=>$status, "report" => $report);
+    return $status;
 }
 
 function check_duty_details($duty)

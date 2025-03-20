@@ -120,7 +120,7 @@ if (trim(strtolower($pagestate)) == "init")
         "instructions"  => "Creates DutyMan import CVS format files for EVENTS and/or DUTIES between specified start and end dates for selected rotas.  
                        These can be used to update DutyMan with new events and duty allocations when the programme is first published <br><br>
                        $doc_txt",
-        "script"        => "dutyman_export.php?pagestate=submit"
+        "script"        => "dtm_export.php?pagestate=submit"
     );
 
     $pagefields['body'] =  $tmpl_o->get_template("dtm_export_form", $fields, array("rotas" => $dutycode_map));
