@@ -25,6 +25,7 @@ $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
 $styletheme = "flatly_";
 $stylesheet = "./style/rm_utils.css";
+$documentation = "./documentation/dutyman_utils.pdf";
 
 session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
 session_start();
@@ -75,12 +76,13 @@ elseif ($pagestate == "submit")
 // connect to database
 $db_o = new DB();
 
+$server_txt = "{$_SESSION['db_host']}/{$_SESSION['db_name']}";
 $pagefields = array(
     "loc"           => $loc,
     "theme"         => $styletheme,
     "stylesheet"    => $stylesheet,
-    "title"         => "Duty Synchronisation",
-    "header-left"   => "raceManager",
+    "title"         => "Dutyman DUTY Import",
+    "header-left"   => $_SESSION['sys_name']." <span style='font-size: 0.4em;'>[$server_txt]</span>",
     "header-right"  => "synchronise duty info from dutyman ...",
     "body"          => "",
     "confirm"       => "Synchronise",
@@ -98,9 +100,10 @@ if ($pagestate == "init")
     // present form to select json file for processing (general template)
     $formfields = array(
         "instructions"  => "Updates duty allocations in raceManager with duty swaps exported from dutyman in csv format.  
-                       This is used to reflect duty swaps made in dutyman in the racemanager programme.  See <a href='./documentation/dutyman_utils.pdf' target='_BLANK'>Detailed Instructions</a> for more details<br><br>
-                       <span class='text-info'>After completing the update - use the Update Website option in the Administration application to make the changes visible on your website</span><br><br>
-                       <small>Using server {$_SESSION['db_host']}/{$_SESSION['db_name']}</small><br>",
+                       This is used to reflect duty swaps made in dutyman in the racemanager programme.  
+                       See <a href='$documentation' target='_BLANK'>Detailed Instructions</a> for more details<br><br>
+                       <span class='text-info'>After completing the update - use the Update Website option in the 
+                       Administration application to make the changes visible on your website</span><br>",
     );
     $pagefields['body'] =  $tmpl_o->get_template("dtm_duty_import_form", $formfields, array());
 
@@ -112,9 +115,16 @@ if ($pagestate == "init")
 
 elseif ($pagestate == "submit")
 {
+
+    // create dutymap
+    $dutymap = create_dutymap();
+
     // check arguments passed
     if (empty($_SESSION['args']))
     {
+        $start = "";
+        $end_date = "";
+
         // move file uploaded to raceManager tmp/uploads
         if ($_FILES["dutymanfile"]["error"] == 0)
         {
@@ -129,23 +139,21 @@ elseif ($pagestate == "submit")
                 array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
         }
 
-        $start = "";
-        $end = "";
-        $importfile = "";
-        check_arguments($_REQUEST, $scriptname);
         $_SESSION['args'] = array(
-            "set" => true,
-            "start" => $start,
-            "end" => $end,
-            "file" => "$uploads_dir/$name"
+            "set"   => true,
+            "start" => "",
+            "end"   => "",
+            "file"  => "$uploads_dir/$name"
         );
     }
 
-    // create dutymap
-    $dutymap = create_dutymap();
-
-    // read csv_file
+    // read csv_file - get start and end dates for processing from the dutyman file
+    $start_date = "";
+    $end_date = "";
     $dtm_arr = read_csv_file($_SESSION['args']['file'], $scriptname);
+    $_SESSION['args']['start'] = $start_date;
+    $_SESSION['args']['end'] = $end_date;
+    check_arguments($_REQUEST, $scriptname);
 
     /*
      * DTM array                      <-- data obtained from dutyman csv file
@@ -278,7 +286,7 @@ elseif ($pagestate == "submit")
                         // check #3 named duty person doesn't match
                         if ($continue)                                  // handle swap
                         {
-                            if ($prg['person'] != $dtm['person'])       // difference between raceManager and Dutyman
+                            if (strtolower($prg['person']) != strtolower($dtm['person']))       // difference between raceManager and Dutyman
                             {
                                 if ($dtm['person'] != "|no name|")
                                 {
@@ -312,7 +320,6 @@ elseif ($pagestate == "submit")
             }
 
             // create duty table
-
             $table_bufr = create_duty_table_rows($num_prg, $num_dtm, $prg_duty, $dtm_duty, $swap_list);
 
 
@@ -384,45 +391,40 @@ else
 
 function check_arguments($args, $scriptname)
 {
-    global $start, $end, $importfile;
+    global $importfile;
 
     // start/end date
-    if (empty($_REQUEST['start']) or empty($_REQUEST['end']))
+    if (empty($_SESSION['args']['start']) or empty($_SESSION['args']['end']))
     {
         u_exitnicely($scriptname, 0, "Form Error - Start and/or End date are missing", "resubmit script with valid date values",
             array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
-    elseif (strtotime($_REQUEST['start']) > strtotime($_REQUEST['end']))
+    elseif (strtotime($_SESSION['args']['start']) > strtotime($_SESSION['args']['end']))
     {
         u_exitnicely($scriptname, 0, "Form Error - Start date is after End date", "resubmit script with valid date values",
             array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
-    elseif (!strtotime($_REQUEST['start']))
+    elseif (!strtotime($_SESSION['args']['start']))
     {
         u_exitnicely($scriptname, 0, "Form Error - Start date is not a valid date", "resubmit script with valid date values",
             array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
-    elseif (!strtotime($_REQUEST['end']))
+    elseif (!strtotime($_SESSION['args']['end']))
     {
-
         u_exitnicely($scriptname, 0, "Form Error - End date is not a valid date", "resubmit script with valid date values",
             array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
-    else
-    {
-        $start = date("Y-m-d", strtotime($_REQUEST['start']));
-        $end = date("Y-m-d", strtotime($_REQUEST['end']));
-    }
+
 
     // csv file
-    if (empty($_FILES['dutymanfile']['tmp_name']))
+    if (empty($_SESSION['args']['file']))
     {
         u_exitnicely($scriptname, 0, "Argument Error - file supplied not present or invalid", "resubmit script with valid dutyman export file",
             array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
     }
     else
     {
-        $importfile = $_FILES['dutymanfile']['tmp_name'];
+        $importfile = $_SESSION['args']['file'];
     }
 
     return;
@@ -473,19 +475,22 @@ function create_csv_file($cols, $rows, $outfile)
 
 function read_csv_file($file, $scriptname)
 {
-    global $dutymap;
+    global $dutymap, $start_date, $end_date;
 
     ini_set('auto_detect_line_endings', true);
     $arr = array();
     $i = 0;
+
     if ($handle = fopen($file, "r"))
     {
         while (($data = fgetcsv($handle, 1000, ",")) !== FALSE)
         {
-            $i++;
+
             if (strtolower($data[0]) != "duty date")                             // ignore first line (fields) if present
             {
+                $i++;
                 $date = str_replace('/', '-', $data[0]);                         // set time to YYYY-MM-DD format
+                if ($i == 1) { $start_date = date("Y-m-d", strtotime($date)) ; } // get date for first record
 
                 $dutycode = array_search($data[2],$dutymap);                     // get dutycode - empty if not found
 
@@ -510,6 +515,8 @@ function read_csv_file($file, $scriptname)
 
                 $duty_chk = check_duty_details($duty);      // check to see if missing data prevents this record being included
                 if ($duty_chk == 0) { $arr[] = $duty; }
+
+                $end_date = date("Y-m-d", strtotime($date));                       // set end date to be last record processed
             }
         }
         fclose($handle);

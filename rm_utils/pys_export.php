@@ -86,12 +86,13 @@ foreach ($db_o->db_getinivalues(false) as $data) { $_SESSION["{$data['parameter'
 // set templates
 $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php", "./templates/pys_export_tm.php"));
 
+$server_txt = "{$_SESSION['db_host']}/{$_SESSION['db_name']}";
 $pagefields = array(
     "loc"           => $loc,
     "theme"         => $styletheme,
     "stylesheet"    => $stylesheet,
     "title"         => "PYS-export",
-    "header-left"   => $_SESSION['sys_name'],
+    "header-left"   => $_SESSION['sys_name']." <span style='font-size: 0.4em;'>[$server_txt]</span>",
     "header-right"  => "PYS Export",
     "body"          => "",
     "footer-left"   => "",

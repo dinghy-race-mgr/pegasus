@@ -26,7 +26,7 @@ $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
 $styletheme = "flatly_";
 $stylesheet = "./style/rm_utils.css";
-$documentation = "./documentation/dutyman_functions.pdf";
+$documentation = "./documentation/dutyman_utils.pdf";
 
 require_once ("{$loc}/common/lib/util_lib.php");
 
@@ -88,12 +88,13 @@ $event_path   = $target_dir.$event_fn;
 // get arguments
 $pagestate = u_checkarg("pagestate", "set", "", "init");
 
+$server_txt = "{$_SESSION['db_host']}/{$_SESSION['db_name']}";
 $pagefields = array(
     "loc"           => $loc,
     "theme"         => $styletheme,
     "stylesheet"    => $stylesheet,
     "title"         => "Dutyman DUTY Export",
-    "header-left"   => $_SESSION['sys_name'],
+    "header-left"   => $_SESSION['sys_name']." <span style='font-size: 0.4em;'>[$server_txt]</span>",
     "header-right"  => "Export Duties to CSV ...",
     "body"          => "",
     "confirm"       => "Create Export",
@@ -107,19 +108,10 @@ $pagefields = array(
 if (trim(strtolower($pagestate)) == "init")
 {
 
-    // present form to select json file for processing (general template)
-    if (empty($documentation))
-    {
-        $doc_txt = "";
-    }
-    else
-    {
-        $doc_txt = "If this is your first time using this process please read the <a href='$documentation'>Detailed Instructions</a>.";
-    }
     $fields = array(
-        "instructions"  => "Creates DutyMan import CVS format files for EVENTS and/or DUTIES between specified start and end dates for selected rotas.  
-                       These can be used to update DutyMan with new events and duty allocations when the programme is first published <br><br>
-                       $doc_txt",
+        "instructions"  => "Creates DutyMan import CVS format files for EVENTS and/or DUTIES between specified start and end dates for selected rotas. 
+                            See <a href='$documentation' target='_BLANK'>Detailed Instructions</a> for more details<br><br> 
+                            These can be used to update DutyMan with new events and duty allocations when the programme is first published <br>",
         "script"        => "dtm_export.php?pagestate=submit"
     );
 

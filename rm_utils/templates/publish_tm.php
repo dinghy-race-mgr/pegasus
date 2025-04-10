@@ -27,10 +27,10 @@ EOT;
     }
 
     $bufr = <<<EOT
-    <div class="container" style="margin-top: 40px;">
+    <div class="container" style="margin-top: 20px;">
         <div class="jumbotron">
             <h3 class="text-primary">Instructions:</h3>
-            <p class="text-primary">{instructions}</p>
+            <p class="text-primary"><small>{instructions}</small></p>
         </div>
         <form enctype="multipart/form-data" id="publishallForm" action="{script}" method="post">
         

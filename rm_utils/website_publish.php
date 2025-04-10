@@ -50,12 +50,13 @@ $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates
 
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
 
+$server_txt = "{$_SESSION['db_host']}/{$_SESSION['db_name']}";
 $pagefields = array(
     "loc" => $loc,
     "theme" => $styletheme,
     "stylesheet" => $stylesheet,
     "title" => "Programme Transfer",
-    "header-left" => $_SESSION['sys_name'],
+    "header-left" => $_SESSION['sys_name']." <span style='font-size: 0.4em;'>[$server_txt]</span>",
     "header-right" => "Website Publish",
     "body" => "",
     "footer-left" => "",
@@ -75,8 +76,8 @@ elseif ($_REQUEST['pagestate'] == "init")
     array_key_exists("debug", $_REQUEST) ? $params['debug'] = $_REQUEST['debug'] : $params['debug'] = "off" ;
 
     $formfields = array(
-        "instructions" => "Creates a file containing the currently published events in the programme and optionally transfers the file to the website </br>
-                       <small>Set the start and end date for the events to be included - if left blank all published events will be included.</small>",
+        "instructions" => "Creates a file containing the currently published events in the programme and optionally transfers the file to the website<br></br>
+                           Set the start and end date for the events to be included - if left blank all published events will be included.",
         "script"       => "website_publish.php?pagestate=submit",
     );
 
@@ -129,7 +130,6 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
             $targetfile = $_SESSION['publish']['transfer_loc']."/"."programme_latest.json";
 
             $transfer_status = transfer_programme($sourcefile, $targetfile);
-            $transfer_status = 3;
         }
     }
 
@@ -279,10 +279,7 @@ function transfer_programme($sourcefile, $targetfile)
         "pwd"    => $_SESSION['ftp_pwd'],
     );
 
-    //echo "<pre>ftp env:<br>".print_r($ftp_env,true)."</pre>";
-
     $status = u_sendfile_sftp($ftp_env, $sourcefile, $targetfile);
-    //echo "<pre>send status:<br>".print_r($status,true)."</pre>";
 
     if ($status['file_transferred'] === true) {
         $transfer_status = 1;

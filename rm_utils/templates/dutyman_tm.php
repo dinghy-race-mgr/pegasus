@@ -15,9 +15,9 @@ EOT;
 
     $bufr = <<<EOT
     <div class="container">
-        <div class="jumbotron" style="margin-top: 40px;">
-            <h2 class="text-primary">Instructions:</h2>
-            <p class="text-primary">{instructions}</p>
+        <div class="jumbotron" style="margin-top: 20px;">
+            <h3 class="text-primary">Instructions:</h3>
+            <p class="text-primary"><small>{instructions}</small></p>
         </div>
         <form class = "form-horizontal" enctype="multipart/form-data" id="dtmexportform" action="{script}" method="post">
         
@@ -120,7 +120,7 @@ function dtm_export_report($params = array())
 
         $bufr.= <<<EOT
 <div>
-    <h2>DUTYMAN: creating DUTYMAN export file(s)</h2>	 
+    <h3>DUTYMAN: creating DUTYMAN export file(s)</h3>	 
 </div>
 <div class="jumbotron" style="font-size: 60% !important">
     <h3>SORRY - we have an error in generating the output file(s)</h3>
@@ -199,7 +199,7 @@ EOT;
 
             $bufr .= <<<EOT
 <div>
-    <h2>DUTYMAN: creating DUTYMAN export file(s)</h2>	 
+    <h3>DUTYMAN: creating DUTYMAN export file(s)</h3>	 
 </div>
 <div class="jumbotron" style="font-size: 60% !important">
     <p >Generating duty allocation details from raceManager as a csv file for import to dutyman</p>
@@ -243,8 +243,8 @@ EOT;
     }
 
     $bufr.= <<<EOT
-    <div class="jumbotron" style="margin-top: 40px;">
-        <h2 class="text-primary">Input Error(s) ....</h2>
+    <div class="jumbotron" style="margin-top: 20px;">
+        <h3 class="text-primary">Input Error(s) ....</h3>
         $error_bufr
         <br>
         <p class = "text-info"><small>INPUT VALUES: start-date: {start} | end-date: {end} | rotas: {rotas} | event export: $event_req | duties export: $duty_req</small></p>
@@ -261,13 +261,13 @@ function dtm_duty_import_form($params = array())
 {
     $bufr = <<<EOT
     <div class="container">
-        <div class="jumbotron" style="margin-top: 30px;">
+        <div class="jumbotron" style="margin-top: 20px;">
             <h3 class="text-primary">Instructions:</h3>
             <p class="text-primary"><small>{instructions}</small></p>
         </div>
         <form class = "form-horizontal" enctype="multipart/form-data" id="selectfileForm" 
               action="dtm_import.php?pagestate=submit" method="post">
-            <div class="form-inline">
+            <!--div class="form-inline">
                 <label class="col-sm-2 control-label">Period (from/to)</label>
                 <div class="form-group">                   
                     <div class="col-sm-10">
@@ -279,7 +279,7 @@ function dtm_duty_import_form($params = array())
                         <input type="date" class="form-control" id="end" name="end" value="" required>
                     </div>
                 </div>
-            </div>
+            </div -->
             <div class="form-group margin-top-20">
                 <label for="dutymanfile" class="col-sm-2 control-label">Dutyman Export File</label>
                 <div class="col-sm-10">

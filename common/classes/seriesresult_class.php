@@ -775,7 +775,7 @@ class SERIES_RESULT
 
         // apply average scores
         if ($this->report) { u_writedbg(".... calc step 6 [apply average scores]",__FILE__,__FUNCTION__,__LINE__); }
-        //u_writedbg("<pre>RST BEFOE AVG: ".print_r($this->rst,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
+        //u_writedbg("<pre>RST BEFORE AVG: ".print_r($this->rst,true)."</pre>",__FILE__,__FUNCTION__,__LINE__);
         $this->score_avg();
         //if ($this->report) { echo "<pre>RST: ".print_r($this->rst,true)."</pre>";; }
 
@@ -1038,7 +1038,6 @@ class SERIES_RESULT
             );
         }
 
-
         // loop over fleets
         foreach($this->fleets as $k=>$v)
         {
@@ -1047,10 +1046,14 @@ class SERIES_RESULT
                 return ($ar['fleet'] == $k);
             });
 
-            // sort by net points ASC
+            //if ($k == 3) { echo "<pre>BEFORE FIRST SORT".print_r($this->sailor_fleet,true)."</pre>"; }
+
+            // sort by net points ASC  (note: multiplying by 10 to allow integer sort on points)
             uasort($this->sailor_fleet, function ($a, $b) {
-                return $a['net_pts'] - $b['net_pts'];
+                return $a['net_pts']*10 - $b['net_pts']*10;
             });
+
+            //if ($k == 3) { echo "<pre>AFTER FIRST SORT".print_r($this->sailor_fleet,true)."</pre>"; }
 
             // allocate position for each sailor (maintain ties)
             $posn = 0;
@@ -1059,6 +1062,8 @@ class SERIES_RESULT
                 $posn++;
                 $this->sailor_fleet[$i]['posn'] = $posn;
             }
+
+            //if ($k == 3) { echo "<pre>AFTER POSN APPLIED".print_r($this->sailor_fleet,true)."</pre>"; }
 
             //echo "<pre>BEFORE TIES".print_r($this->sailor_fleet,true)."</pre>";
 
@@ -1069,11 +1074,14 @@ class SERIES_RESULT
 
             if ($num_switches > 0)
             {
+                //if ($k == 3) { echo "<pre>RESORTING ------- </pre>"; }
                 // sort by position
                 uasort($this->sailor_fleet, function ($a, $b) {
                     return $a['posn'] - $b['posn'];
                 });
             }
+
+            //if ($k == 3) { echo "<pre>AFTER TIES RESORTING".print_r($this->sailor_fleet,true)."</pre>"; }
 
             // create output array (class, sailnum, helm/crew, club, r1 ... rn, total, net, posn, notes)
             $output['fleets'][$k] = array(
@@ -1102,7 +1110,6 @@ class SERIES_RESULT
                 );
                 if (!$this->opts['inc-club']) { unset($output['fleets'][$k]['sailors'][$rownum]['club']); }
 
-
                 foreach($this->rst[$i] as $j=>$result)
                 {
                     $output['fleets'][$k]['sailors'][$rownum]['rst'][$j]= array(
@@ -1111,10 +1118,9 @@ class SERIES_RESULT
                         "discard" => $result['discard'],
                     );
                 }
-
-
             }
         }
+
         return $output;
     }
 
