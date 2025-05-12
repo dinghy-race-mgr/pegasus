@@ -516,7 +516,7 @@ EOT;
                     "label"  => $file["label"],
                     "notes"  => $file["notes"],
                     "status" => $file["status"],
-                    "rank"   => $file["rank"],
+                    "rank"   => $file["listorder"],
                     "upload" => $file['upload'],
                     "update" => $file["upddate"]
                 );

@@ -817,9 +817,10 @@ function process_footer($params=array())
     if ($style == "success")
     {
         $close_reminder = <<<EOT
-        <div class="alert alert-info" role="alert">
-            <p class="">When the results have been saved and no more corrections are required ...<p>
-            <h4 class="text-center">Please CLOSE the race on the STATUS page</h4>
+        <div class="alert alert-danger" role="alert">
+            <h4 class="">Nearly done&nbsp; - &nbsp;before you complete your OOD duty ...</h4>
+            <h4 class="text-center" style="font-size: 1.5em"><b>IMPORTANT - close the race using the CLOSE RACE button</b></h4>
+            <p class="">Don't worry if you have issues with the results that you are unable to resolve - the results can be updated by your raceManager team. <u>Please CLOSE the race</u> </p>
         </div>
 EOT;
     }
@@ -833,7 +834,7 @@ EOT;
         <div class="alert alert-$style" role="alert">
             <h4><b>$title</b> - <span style="font-size: smaller;">$message</span></h4>
             <p>$action</p>
-            <p class="text-right"><b>You can save the results as many times as you need before you close the race</b><p>
+            <p class="text-right"><b>You can correct and save the results as many times as you need before closing the race</b><p>
         </div>
         $close_reminder
     </div>

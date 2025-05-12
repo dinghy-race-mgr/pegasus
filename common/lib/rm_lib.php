@@ -102,7 +102,7 @@ function r_initialiseevent($mode, $eventid, $current_event_status = "")
                     // add fleet information to session
                     $rs_sess = r_initfleetsession($eventid, $i, $fleet);
 
-                    if (!$rs_db or !$rs_sess) { $status = "fleetinit_error" ;}
+                    if (!$rs_db or !$rs_sess) { $status = "fleetinit_error (fleet: $i)" ;}
 
                 }
                 // now determine if timer has been started.

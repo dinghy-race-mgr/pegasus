@@ -4,17 +4,20 @@
 // initialise
 $msg = "";
 
+// make nickname lowercase
+$values['nickname'] = strtolower($values['nickname']);
+
 // check event end date is after or = to event start date
-$ev_start = strtotime($values['']);
-$ev_end = strtotime($values['']);
+$ev_start = strtotime($values['date-start']);
+$ev_end = strtotime($values['date-end']);
 if ($ev_end < $ev_start)
 {
     $msg.= "- event end date is before start date<br>";
 }
 
 // check entry end date is before or = to event start date AND after entry start date
-$en_start = strtotime($values['']);
-$en_end = strtotime($values['']);
+$en_start = strtotime($values['entry-start']);
+$en_end = strtotime($values['entry-end']);
 if ($en_end < $en_start)
 {
     $msg.= "- entry end date/time is before entry start date<br>";;
@@ -26,7 +29,7 @@ if ($en_end > $ev_start)
 }
 
 // check we only have one form defined
-if (!empty($values['xxx']) and !empty($values['yyy']))
+if (!empty($values['entry-form']) and !empty($values['entry-form-link']))
 {
     $msg.= "- an external AND internal entry form have been defined can only be one<br>";
 }
@@ -34,14 +37,10 @@ if (!empty($values['xxx']) and !empty($values['yyy']))
 // set entry required to boolean
 $values['entry-reqd'] == strtolower("yes") ? $values['entry-reqd'] = 1 : $values['entry-reqd'] = 0;
 
-
-// check
-
 // field checks complete
 if (empty($msg))
 {
     $commit = true;
-
 
     $values['updby']      = $_SESSION['UserID'];
     $values['upddate']    = NOW();

@@ -31,7 +31,7 @@ if ($init_status)
     if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
 
     // start log
-    error_log(date('H:i:s')." -- rm_util PUBLISH EVENTS ------- [session: ".session_id()."]".PHP_EOL, 3, $_SESSION['syslog']);
+    error_log(date('H:i:s')." -- COURSEFINDER ------- [session: ".session_id()."]".PHP_EOL, 3, $_SESSION['syslog']);
 
     // set initialisation flag
     $_SESSION['util_app_init'] = true;

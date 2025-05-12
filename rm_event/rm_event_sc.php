@@ -63,7 +63,7 @@ if ($pagestate == "newentry")
     $entry['e-racemanager'] = check_competitor_exists($class['id'], $_REQUEST['sailnumber'], $_REQUEST['helm-name']);
 
     // get boat handicap from t_class
-    $entry['b-pn'] = get_pn ($event['scoring-type'], $event['handicap-type'], $_REQUEST['class']);
+    $entry['b-pn'] = get_pn ($event['handicap-type'], $_REQUEST['class']);
 
     // if personal handicap racing get pn from t_competitor [0 means not required or not found]
     $entry['b-personalpn'] = get_personal_pn ($entry['e-racemanager'], $event['handicap-type']);

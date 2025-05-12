@@ -521,14 +521,11 @@ EOT;
  */
 function u_writelog($logmessage, $eventid)
 {
-    //echo "u_writelog: $logmessage|$eventid<br>";
-
-    $log = date('H:i:s')." -- ".$logmessage.PHP_EOL;
+    $log = date('d-M H:i:s')." -- ".$logmessage.PHP_EOL;
     if (empty($eventid))
         { error_log($log, 3, $_SESSION['syslog']); }
     else
         { error_log($log, 3, $_SESSION["e_$eventid"]['eventlog']); }
-
 }
 
 /**
@@ -544,7 +541,7 @@ function u_writelog($logmessage, $eventid)
  */
 function u_writedbg($dbgmessage, $script, $function, $line )
 {
-   $log = date('H:i:s')." -- [script: $script function: $function line: $line]".PHP_EOL.$dbgmessage.PHP_EOL;
+   $log = date('d-M H:i:s')." -- [script: $script function: $function line: $line]".PHP_EOL.$dbgmessage.PHP_EOL;
    error_log($log, 3, $_SESSION['dbglog']);
 }
 

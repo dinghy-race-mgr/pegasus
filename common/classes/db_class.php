@@ -86,6 +86,11 @@ class DB
 
     public function db_query($query)
     {
+        if (strpos($query, "t_result ") === true)
+        {
+            $this->db_log_warning( "db_query", $query );
+        }
+
         if ($_SESSION['sql_debug']) { u_writedbg("QUERY: $query",__FILE__,__FUNCTION__,__LINE__); }
         $results = $this->link->query( $query );
 
@@ -568,15 +573,15 @@ class DB
         if ($_SESSION['sql_debug']) { u_writedbg($message,__FILE__,__FUNCTION__,__LINE__); }
     }
     
-//    // Method: send debug messages to debug log
-//    public function db_log_debug( $method, $query )
-//    {
-//        $message = "DEBUG [".date('Y-m-d H:i:s')."]".PHP_EOL;
-//        $message.= "Method: $method".PHP_EOL;
-//        $message.= "Query: ". htmlentities( $query ).PHP_EOL;
-//        error_log($message, 3, $_SESSION['debuglog']);
-//    }
+    // Method: send debug messages to debug log
+    public function db_log_debug( $method, $query )
+    {
+        $message = "DEBUG [".date('Y-m-d H:i:s')."]".PHP_EOL;
+        $message.= "Method: $method".PHP_EOL;
+        $message.= "Query: ". htmlentities( $query ).PHP_EOL;
+        error_log($message, 3, $_SESSION['debuglog']);
+    }
     
 }
-
+//
 

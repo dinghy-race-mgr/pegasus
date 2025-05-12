@@ -25,6 +25,8 @@ require_once ("{$loc}/common/lib/util_lib.php");
 session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
 session_start();
 
+$_SESSION['sql_debug'] = true;  // FIXME - turn off after debugging
+
 $init_status = u_initialisation("$loc/config/rm_utils_cfg.php", $loc, $scriptname);
 
 if ($init_status)
@@ -206,7 +208,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
         else
         {
 
-            if ($dbg) { u_writedbg("<pre>".print_r($process_list,true)."</pre>", __FILE__,__FUNCTION__,__LINE__); }
+            if ($dbg) { u_writedbg("<pre>PROCESSES: ".print_r($process_list,true)."</pre>", __FILE__,__FUNCTION__,__LINE__); }
             
             foreach ($process_list as $k => $process)
             {
@@ -221,6 +223,8 @@ elseif ($_REQUEST['pagestate'] == "submit")
                         $fleet_msg = array();  // FIXME - future use
                         $status = process_result_file($loc, strtoupper($result_status), $include_club, $result_notes, $system_info, $fleet_msg);
 
+                        if ($dbg) { u_writedbg("<pre>process_result_file -> status".print_r($status,true)."</pre>", __FILE__,__FUNCTION__,__LINE__); }
+
                         if ($status['success'])
                         {
                             $report_arr['result'] = "success";
@@ -234,7 +238,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
                         }
                         else
                         {
-                            if ($dbg) { u_writedbg("<pre>".print_r($status,true)."</pre>", __FILE__,__FUNCTION__,__LINE__); }
+
 
                             // we have an error - process any detail information
                             $err_detail_txt = "";

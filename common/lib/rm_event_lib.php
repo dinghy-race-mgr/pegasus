@@ -442,9 +442,8 @@ function get_name($in_name)
      */
 }
 
-function get_pn($scoring, $handicap, $class)
+function get_pn($handicap, $class)
 {
-    // FIXME - first argument isn't used anymore
     global $db_o;
 
     $pn = 0;
@@ -552,13 +551,13 @@ function check_competitor_exists($classid, $sailno, $helm)  // FIXME - needs ret
 
     // check first on class, sailnum and helm
     $id = $db_o->run("SELECT id FROM t_competitor WHERE classid = ? and sailnum = ?
-                     (helm LIKE '%$helm%' or helm LIKE '%$surname%') 
+                     and (helm LIKE '%$helm%' or helm LIKE '%$surname%') 
                      ORDER BY createdate DESC LIMIT 1", array($classid, $sailno) )->fetchColumn();
     if (empty($id))
     {
         // check if we can find just a match on just class and helm
         $id = $db_o->run("SELECT id FROM t_competitor WHERE classid = ? 
-                     (helm LIKE '%$helm%' or helm LIKE '%$surname%') 
+                     and (helm LIKE '%$helm%' or helm LIKE '%$surname%') 
                      ORDER BY createdate DESC LIMIT 1", array($classid, $sailno) )->fetchColumn();
         if (!empty($id))
         {

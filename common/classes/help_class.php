@@ -58,7 +58,7 @@ class HELP
 
     public function get_help()
     {
-        $where = " FIND_IN_SET('".$this->page."',category) > 0  AND `active` = 1";
+        $where = " FIND_IN_SET('{$this->page}',category) > 0  AND `active` = 1";
         $sql = "SELECT * FROM t_help WHERE $where ORDER by `listorder` ASC";
         //echo "<pre>$sql</pre>";
         $topics = $this->db->db_get_rows($sql);
