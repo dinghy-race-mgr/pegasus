@@ -345,7 +345,7 @@ EOT;
     return $entry_btns;
 }
 
-function get_class_list($list)
+function get_class_list($eventcfgid)
     /*
      * Creates CVS list of eligible classes based on race format
      */
@@ -353,15 +353,13 @@ function get_class_list($list)
     // FIXME - sort out unused else statement below - also unused $num_class
     global $db_o;
 
-    // get event configuration
-    $eventcfgid = $db_o->run("SELECT id FROM t_cfgrace WHERE `race_name` = ?",array($list['format']))->fetchColumn();
-
-    // get fleet configurations for event
+    // get fleet configurations for race format
     $fleets = $db_o->run("SELECT * FROM t_cfgfleet WHERE `eventcfgid` = ? ORDER BY start_num, fleet_num", array($eventcfgid))->fetchAll();
 
     // get all classes
     $classes = $db_o->run("SELECT * FROM t_class WHERE `active` = 1 ORDER BY classname ASC", array())->fetchAll();
     $num_class = count($classes);
+    //echo "<pre>num classes: $num_class</pre>";
 
     // get list of classes eligible for the event
     $class_list = "";
@@ -380,7 +378,7 @@ function get_class_list($list)
             //echo "<pre>{$class['classname']} excluded</pre>";
         }
     }
-    //echo "<pre>{$list['format']} - $i classes<br>$class_list</pre>";exit();
+    //echo "<pre>classes: $class_list</pre>";exit();
 
     return $class_list;
 

@@ -111,9 +111,7 @@ EOT;
     }
 
     $bufr.=<<<EOT
-    <div class="container"></div>
-        <h1>Duty Check Report </h1>
-        
+    <div class="container"></div>        
         <div class="row margin-top-20">
             <div class="col-sm-5 col-sm-offset-1">
                 <h1>Duty Check Report </h1>

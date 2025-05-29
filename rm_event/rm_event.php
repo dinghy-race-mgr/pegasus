@@ -18,7 +18,13 @@ require_once("classes/template.php");
 require_once("include/rm_event_fields.php");
 
 // initialise application
-$cfg = set_config("../config/rm_event.ini", array("rm_event"), true);
+$cfg = set_config("../config/common.ini", array(), false);
+$cfg['rm_event'] = set_config("../config/rm_event.ini", array("rm_event"), true);
+foreach($cfg['rm_event'] as $k => $v)
+{
+    $cfg[$k] = $v;
+}
+unset($cfg['rm_event']);
 $cfg['logfile'] = str_replace("_date", date("_Y"), $cfg['logfile']);
 
 // check "view" status - allows user to ignore entry restrictions

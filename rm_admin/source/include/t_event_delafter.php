@@ -9,7 +9,7 @@ while ($data = db_fetch_array($rs))
     $i++;
     $del = db_query("DELETE FROM t_eventduty WHERE id = {$data['id']}", $conn);
 }
-$message = "deleted $i duty allocations associated wih the event";
+$message = "deleted $i duty allocations associated with the event";
 
 
 

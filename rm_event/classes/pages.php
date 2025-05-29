@@ -68,43 +68,62 @@ class PAGES
         // get event details
         $event = $db_o->run("SELECT * FROM e_event WHERE id = ?", array($eid) )->fetch();
 
+        //echo "<pre>".print_r($event,true)."</pre>";
+        // FIXME add error messages
         // decode class list definition
-        $invalid_class_spec = false;
-        $this->class_spec = json_decode($event['entry-classes'], true);
-        if (empty($this->class_spec))
+        if (empty($event['entry-classes']))
         {
-            $invalid_class_spec = true;
-            $class_spec_type = "unknown";
+            $valid_class_spec = false;
+            // error message
         }
         else
         {
-            //echo "<pre>{$event['entry-classes']} key:|".key($this->class_spec)."|</pre>";
-            if (key($this->class_spec) != "format" and key($this->class_spec) != "list")  // class spec is not of valid type
+            $valid_class_spec = true;
+            $this->class_spec['classlist'] = get_class_list($event['entry-classes']);
+            if (!empty($this->class_spec['classlist']))
             {
-                $invalid_class_spec = true;
+                $valid_class_spec = true;
             }
             else
             {
-                if (key($this->class_spec) == "format")  // if race format - convert to list of classes
-                {
-                    $class_spec_type = "format";
-                    $this->class_spec['format'] = get_class_list($this->class_spec);
-                }
-                else
-                {
-                    $class_spec_type = "list";
-                }
+                $valid_class_spec = false;
+                // error message
             }
         }
 
-        //echo "<pre>classes: {$this->class_spec[$class_spec_type]}</pre>";
-        if (empty($this->class_spec[$class_spec_type]))   // value for class spec is empty
-        {
-            $invalid_class_spec = true;
-        }
+
+
+
+//        $valid_class_spec = false;
+//        $this->class_spec = json_decode($event['entry-classes'], true);
+//        echo "<pre>".print_r($this->class_spec,true)."</pre>";
+//
+//        if (!empty($event['entry-classes']))
+//        {
+//            //echo "<pre>{$event['entry-classes']} key:|".key($this->class_spec)."|</pre>";
+//            if (key($this->class_spec) == "format" or key($this->class_spec) == "list")  // class spec is of valid type
+//            {
+//                $valid_class_spec = true;
+//
+//                if (key($this->class_spec) == "format")  // if race format - convert to list of classes
+//                {
+//                    $class_spec_type = "format";
+//                    $this->class_spec['classlist'] = get_class_list($this->class_spec);
+//                }
+//                else
+//                {
+//                    $class_spec_type = "list";
+//                    $this->class_spec['classlist'] = $this->class_spec;
+//                }
+//            }
+//        }
+
+        //echo "<pre>".print_r($this->class_spec,true)."</pre>";
+        //exit();
+
 
         // if class spec is not valid stop
-        if ($invalid_class_spec)
+        if (!$valid_class_spec)
         {
             $this->exitnicely($this->cfg['sys_name'], "The {$event['title']} does not have a valid definition for the eligible classes",
                 "rm_event/pages.php", "action", $this->cfg['system_admin_contact'],

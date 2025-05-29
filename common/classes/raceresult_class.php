@@ -231,7 +231,7 @@ class RACE_RESULT
                                    `helm`, `crew`, `club`, `lap`, `etime`, `ctime`, `atime`, `code`, `penalty`,
                                    `points`, `declaration`, `note`, `updby`) VALUES
 EOT;
-        // FIXME need to fix quotes in names (D'arcy should be D''arcy)
+        // FIXME need to fix quotes in names (D'arcy should be D''arcy   - could try foreach ($row as $k=$val) { $row[$k] = $this->db->real_escape_string($val)}
         foreach($select as $key=>$row)
         {
             $racetype = $this->fleet["{$row['fleet']}"]['scoring'];
@@ -241,7 +241,7 @@ EOT;
                      "{$row['penalty']}, {$row['points']}, '{$row['declaration']}', '{$row['note']}', 'race_copy_results'),";
         }
 
-        // u_writedbg("$query", __FILE__, __FUNCTION__, __LINE__); //debug:);
+        u_writedbg("$query", __FILE__, __FUNCTION__, __LINE__); //debug:);
         $status = $this->db->db_query(rtrim($query,","));
         $status ? $msg = "copied race data to results table" : $msg = "FAILED to copy race data to results table" ;
         u_writelog($msg, $this->eventid);

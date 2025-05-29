@@ -40,21 +40,48 @@
         <startdate></startdate>
         <enddate></enddate>
         <multirace></multirace>
-        <question>Some reminders on running a PURSUIT RACE</question>
+        <question>Quick Overview on running a club PURSUIT RACE</question>
         <answer><![CDATA[
-        <p><b>Under Development ... </b></p>
-        <p>Introduction - arrange briefing<p>
-        <p>Courses</p>
-        <p>Laps</p>
-        <p>Pursuit Start Times</p>
-        <p>Multihull / Junior Start<p>
-        <p>Pursuit Start</p>
-        <p>Lap Recording</p>
-        <p>Multihull / Junior Finish</p>
-        <p>Entering Pursuit Finishes</p>
-        <p> . . . and breathe - you are done for the day</p>
+        <p>Currently we have two \'club pursuit\' days - the Patrick Kelley Pursuit and the RNLI Pursuit.  The pursuit races are not sailed by the multihulls,
+        so separate trophy races are run for them at the same time.  These notes provide a guide on how to run the pursuit race and multihull race at the same time using racemanager</p>
+        <p><b>Step 1</b> - Set a course for the two fleets.  In general you want to sail the multihulls \'outside\' the pursuit course as far as possible.  Its also a good idea to have long laps -
+        the fewer laps there are to record the easier it is for the racebox crew.  Use a special start for the start line.  This will keep the boats starting separated from the
+        multihulls lapping round buoy 29.  Brief the safety boat teams on the course (a hand- drawn map can be useful) and give them the waterproof notebooks they will use to record finishers.
+         Agree who is going to be the primary finish boat (finishing the leading boats) and who will be the secondary finisher - finishing the back half of the fleet.  Check that they
+         have blue flags to indicate that they are the finishing boats</p>
+        <p><b>Step 2</b> - Check that the start numbers in the white box are in the right sequence to show \'00\', then \'01\', then \'02\' etc. Hang the box out of the racebox window - and tie it securely.
+        Agree who is going to be responsible for changing the start number at each minute</p>
+        <p><b>Step 3</b> - Set the lights box to 2 starts - multihulls will start on yellow light, the first start for the pursuit will start on the green light</p>
+        <p><b>Step 4</b> - On racemanager open the pursuit race and then go to the STATUS page and find the \'get start times\' button - click this and complete the form.  Normally the ILCA6 will be the slowest boat and
+        the RS800 will be the fastest boat allowed.  The race time will be 90 minutes and you will be starting at 1 minute intervals.  Print two copies of the start times and post them near the course board.
+        Go back to the racemanager \'programme\' page</p>
+        <p><b>Step 5</b> - Hold a competitor briefing - there are lots of differences from normal race days.</p>
+        <p><b>Step 6</b> - Open the multihull race in racemanager, set the no. of laps and then go to the START page.  Start the race sequence in the normal way
+        pressing the lights box green button and the start timer button in racemanager (which will also load the multihull entries).
+        Take a note of start time for the multihulls - i.e. start of sequence time +6 mins. Then go back to the racemanager \'programme\' page </p>
+        <p><b>Step 7</b> - Open the pursuit race in racemanager - go to the START page and click the start timer button <b>on the 3 minute gun</b> for the Multihulls.
+        Take a note of the time of the first pursuit start (i.e. +3  minutes from now and also the time of the end of the race i.e. +93 minutes from now).</p>
+        <p><b>Step 8</b> - Go to the ENTRIES page and use the Print Entries button (pursuit laps option) to get sheets to record laps crossings.</p>
+        <p><b>Step 9</b> - Check the start for the multihulls - take a note of any OCS boats (and signal them as required).</p?
+        <p><b>Step 10</b> - At the start for the pursuit race - change the start number in the white box to \'01\'.  The person managing the white box
+        should now focus on changing the start number <b>EVERY MINUTE</b> until all the starts are completed.  On the START page in racemanager you will get a list of which
+        boats are starting at each minute.  If there are boats starting on a particular minute you should sound the horn on their start.  If any boats are OCS you should sound the horn again
+        and display the orange beacon for thirty seconds.  If an OCS boat does not return you can score them as OCS directly on the start page.  Continue through all of the starts until they
+        are complete.  You should be aware that the multihulls may be completing their first lap and you will need to switch races in racemanager to time them - or you can simply record their lap times
+        on paper and then enter them when the pursuit starts are completed (click the boat and then edit the lap time).</p>
+        <p><b>Step 11</b> - Throughout the race, monitor where the leading boats in both races are on the race course.  You should be recording lap times for the multihulls in racemanager - use shorten course
+        as necessary to finish them after they have been sailing for 60 minutes.  The lap crossing for the pursuit race will be recorded on paper sheets - just a tick for a lap - no need to record times </p>
+        <p><b>Step 12</b> - About 10 minutes before the finish of the pursuit ask the primary RIB to start tracking the leading boat , and the secondary RIB to be tracking the middle of the fleet.
+        Give them a clear countdown to the end of the race.  In the racebox continue recording lap crossings for the pursuit boats until all boats have finished</p>
+        <p><b>Step 13</b> - The RIBs should be encouraged to get the on-the-water finishing records to the racebox as quickly as possible. Use the help button on the TIMER page to view
+        the topic: How to record FINISHES for a PURSUIT race.  This explains how to create the results and save them.</p>
+        <br></br>
+        <p> . . . and breathe - you are done for the day </p>
         ]]></answer>
-        <notes></notes>
+        <notes><![CDATA[
+            <p>Note:  If a suitably configured laptop is available it can be easier to run the multihull race on the laptop and the pursuit race on the main racebox PC.  Check with
+            your racemanager support folks to see if this can be arranged.</p>
+        ]]></notes>
     </page>
 
     <page>
@@ -598,38 +625,41 @@
     </page>
 
     <page>
-        <category>pursuit</category>
+        <category>timer</category>
         <author>Mark Elkington - SYC</author>
         <listorder>0</listorder>
-        <active>0</active>
+        <active>1</active>
         <pursuit>1</pursuit>
         <eventname></eventname>
         <format></format>
         <startdate></startdate>
         <enddate></enddate>
         <multirace></multirace>
-        <question>What is the PURSUIT PAGE for?</question>
+        <question>How to record FINISHES for a PURSUIT race</question>
         <answer><![CDATA[
-        <p>This page is used to record the finishing position for each boat as recorded on the typically two or three safety boat finishing lines </p>
-        <p>During the race you should have two people independently recording the no. of lap crossings for each boat.  Once the race finish signal has been made (DO WHAT) </p>
+        <p>Before you start recording finishes in the pursuit race, you should have the paper record of the no. of laps completed by each boat,
+        and the finish lists generated on the RIBs.  You should also check that the finish lists are legible and understandable - if not ask the
+        person who did the recording to interpret them for you.</p>
 
-        <p>Once all the boats are finished the safety boats will bring the individual finish order records ashore and you should do the following: </p>
-        <p>
+        <p>Then do the following: </p>
         <ul>
-        <li>Check the results are legible - if not work with the person who recorded them to create a legible version</li>
-        <li>Arrange the results books in order from the first finish (leaders) to last finish (back markers) - be careful it is surprisingly easy to make a mistake if you have more than two finishes</li>
-        <li>Starting with the last finish list (back markers) select the first boat recorded on this list - and on the right hand side of the screen and the
-        number of the finish line (e.g. 3 if it was the third finish line), and the position on that finish line (i.e. 1st).</li>
-        <li>Now pick the next boat finished - and again on the right hand side change the finish position to 2nd</li>
-        <li>Once you have completed this finish list - process the next one (e.g. line 2) in the same way - remembering their position should be relative to that line
+        <li><b>Step 1</b> - Arrange the results books in order from the first finish (leaders) to last finish (back markers) - be careful it is surprisingly easy to make a mistake if you have more than two finishes</li>
+        <li><b>Step 2</b> - Starting with the last finish list (back markers) <u>click the flag icon </u> next to the first boat recorded on this list - then on the right hand side of the screen add the
+        number of the finish line (e.g. 2 if it was the second finish line), the number of laps completed and the position of the boat on that finish line (i.e. 1st).  Click UPDATE to set the finish.</li>
+        <li><b>Step 3</b> - Now select the next boat on finish line 2  - the system will display the boat in the right hand panel and will update the finish position to the next
+        in sequence. Click UPDATE to set the finish</li>
+        <li><b>Step 4</b> - Once you have completed the finish list - process the next one (e.g. finish line 1) in the same way - remembering their position should be relative to that line
          not to the overall race.  You may find that a boat you have previously recorded as finishing is also recorded as finishing on the current line you are processing.
-         In this situation - you should ignore the boat on the finish line you are currently processing. </li>
-         <li>Once you have completed recording the finishes on each line - check if any boats have not been scored.  These boats will usually be DNF or RTD or missed
-         by the finish line recorders.  Try to resolve all of the unrecorded boats by either giving them a scoring code (e.g. DNF) or a position based on the recollection of the people sailing the boat</li>
-         <li>REVIEW</li>
-         <li>Go to the RESULTS page and SAVE them in the normal way.</li>
+         In this situation - you should ignore the boat on the finish line you are currently processing and move to the next one. </li>
+         <li><b>Step 5</b> - When you have completed recording the finishes on all lines - check if any boats have not been scored.  These boats will usually be DNF, RTD, NSC -
+         set the relevant scoring code using the black gearwheel icon.</li>
+         <li><b>Step 6</b> - Look for any boats that have not been finished or given a scoring code. Usually this is because they did not finish and were not spotted coming ashore early,
+          or were missed by the finishing boats (often boats between the two finish lines).  If you are unable to work out where they finished from the evidence you have the ask the crew where they finished
+          </li>
+         <li><b>Step 7</b> - On the TIMER page set the display mode to \'finish line\'.  Now do a boat by boat check of the position on the screen and the position in the finish line books.</li>
+         <li><b>Step 8</b> - Go to the RESULTS page and use \'Save Results\' to archive and publish the results.</li>
          </ul>
-         </p>
+
         ]]></answer>
         <notes><![CDATA[]]></notes>
     </page>
@@ -743,7 +773,7 @@
             <p>The bunch list has up/down arrows so that you can adjust the likely order that the boats will cross
                 the line to make it even easier.  You can also remove boats from the bunch list using the red delete icon.</p>
             ]]></answer>
-            <notes><![CDATA[
+        <notes><![CDATA[
             <p>Most OODs who have tried this feature find it MUCH easier and less stressful - give it a try.</p>
             ]]></notes>
     </page>

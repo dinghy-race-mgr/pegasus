@@ -4,6 +4,7 @@ include ("../../common/lib/rm_event_lib.php");
 
 // initialise
 $msg = "";
+$commit = true;
 
 // set eventid
 $values['eid'] = $_SESSION[$strTableName."_masterkey1"];
@@ -51,6 +52,7 @@ error_log("<pre>competitorid = {$entry['e-racemanager']}</pre>\n", 3, $_SESSION[
 if (empty($values['h-emergency']) and empty($values['c-emergency']))
 {
     $msg.="- must have at least one emergency contact phone number for helm or crew</br>";
+    $commit = false;
 }
 
 
@@ -66,18 +68,18 @@ if (empty($values['h-division']))
             $msg.="- WARNING - this class has fleet divisions defined ({$data['fleets']}) - do you need to specify one?</br>";
         }
     }
+
 }
 
 // set club name - switching to YC and SC as required
 $values['h-club'] = get_club($values['h-club']);
+$values['c-club'] = get_club($values['c-club']);
+
+// set helm and crew
+$values['h-name'] = ucwords(strtolower($values['h-name']));
+$values['c-name'] = ucwords(strtolower($values['c-name']));
 
 //------------------------------------------------------------------------------------------------------------------------------
-
-//$entry = array("eid" => $eid, "b-class" => get_class_name($values['b_class']), "updby" => "admin entry");
-
-// check if boat is known to raceManager
-//$class = get_class_detail($_REQUEST['class']);
-//$entry['e-racemanager'] = check_competitor_exists($class['id'], $_REQUEST['sailnumber'], $_REQUEST['helm-name']);
 
 // get boat handicap from t_class using handicap-type field ine_event
 $rs = DB::Query("select * from e_event where eid = '{$values['eid']}' LIMIT 1");
@@ -128,7 +130,6 @@ $rs = DB::Query("SELECT MAX(`e-entryno`) FROM e_entry WHERE `eid` = {$values['ei
 $values['e-entryno'] = $rs + 1;
 
 // determine if entry will be on waiting list
-
 $values['e-waiting'] = 0;
 if ($event['entry-limit'] > 0)
 {
@@ -147,17 +148,14 @@ $junior_chk = check_junior_consent( $entry['h-age'], $entry['c-age']);
 error_log("<pre>OUTPUT".print_r($values,true)."</pre>\n", 3, $_SESSION['dbglog']);
 
 // field checks complete
-if (empty($msg))
+if ($commit)
 {
-    $commit = true;
-
     $values['updby']      = $_SESSION['UserID'];
     $values['upddate']    = NOW();
-    $message = "";
+    $message = "<span style=\"white-space: normal\">ENTRY ADDED:<br>$msg</span>";;
 }
 else
 {
-    $commit = false;
     $message = "<span style=\"white-space: normal\">NOTICE ISSUES:<br>$msg </span>";
 }
 

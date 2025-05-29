@@ -172,7 +172,7 @@ elseif ($pagestate == "process")    // run through process workflow
         $status['copy'] ?  $msg1 = "results copied " : $msg1 = "results copy failed ";
         $status['archive'] ?  $msg2 = "results archived" : $msg2 = "archiving failed";
 
-        endProcess($step, $row_start[$step], "fail", "Archive race data", "", "FAILED<i>$msg1 : $msg2]</i>");
+        endProcess($step, $row_start[$step], "fail", "Archive race data", "", "FAILED<i> $msg1 : $msg2]</i>");
         u_writelog("FAILED to archive results [$msg1 : $msg2]", $eventid);
         $continue = false;
         $success[1] = false;

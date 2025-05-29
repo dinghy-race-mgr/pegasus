@@ -58,7 +58,7 @@ $_SESSION['app_start'] = $_SERVER['REQUEST_TIME'];
 $_SESSION['sys_type'] == "live" ? error_reporting(E_ERROR) : error_reporting(E_ALL);
 
 // start log
-error_log(date('H:i:s')." -- RM_SAILOR -------------------- [session: ".session_id()."]". PHP_EOL, 3, $_SESSION['syslog']);
+error_log(date('d-Y H:i:s')." -- RM_SAILOR -------------------- [session: ".session_id()."]". PHP_EOL, 3, $_SESSION['syslog']);
 
 // set database initialisation (t_ini) into SESSION
 $db_o = new DB();

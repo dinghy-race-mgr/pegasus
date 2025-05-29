@@ -35,7 +35,7 @@ if ($init_status)
     if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
 
     // start log
-    error_log(date('H:i:s')." -- rm_util PUBLISH RESULTS ------- [session: ".session_id()."]".PHP_EOL, 3, $_SESSION['syslog']);
+    error_log(date('d-M H:i:s')." -- rm_util PUBLISH RESULTS ------- [session: ".session_id()."]".PHP_EOL, 3, $_SESSION['syslog']);
 
     // set initialisation flag
     $_SESSION['util_app_init'] = true;
@@ -46,6 +46,8 @@ else
         "", array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
 }
 
+// log parameters
+u_writedbg(date('d-Y H:i:s')." -- rm_util PUBLISH RESULTS ---script parameters<br><pre>".print_r($_REQUEST)."</pre>", __FILE__,__FUNCTION__,__LINE__);
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");

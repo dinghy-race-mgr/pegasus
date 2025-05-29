@@ -31,7 +31,7 @@ if ($init_status)
     if (array_key_exists("timezone", $_SESSION)) { date_default_timezone_set($_SESSION['timezone']); }
 
     // start log
-    error_log(date('H:i:s')." -- COURSEFINDER ------- [session: ".session_id()."]".PHP_EOL, 3, $_SESSION['syslog']);
+    error_log(date('d-Y H:i:s')." -- COURSE FINDER ------- [session: ".session_id()."]".PHP_EOL, 3, $_SESSION['syslog']);
 
     // set initialisation flag
     $_SESSION['util_app_init'] = true;
@@ -55,6 +55,14 @@ $pagestate    = u_checkarg("pagestate", "set", "", "init");
 $valid_states = array("init", "courselist", "coursedetail", "courseprint");
 in_array($pagestate, $valid_states) ? $valid_state = true : $valid_state = false;
 
+// log arguments
+$args_txt = "";
+if (array_key_exists("eventid", $_REQUEST)) { $args_txt.= "eventid:{$_REQUEST['eventid']} | "; }
+if (array_key_exists("category", $_REQUEST)) { $args_txt.= "category:{$_REQUEST['category']} | "; }
+if (array_key_exists("courseid", $_REQUEST)) { $args_txt.= "courseid:{$_REQUEST['courseid']} | "; }
+if (array_key_exists("pagestate", $_REQUEST)) { $args_txt.= "pagestate:{$_REQUEST['pagestate']} | "; }
+
+error_log(date('d-Y H:i:s')." -- COURSE FINDER ------- [ARGS: $args_txt]".PHP_EOL, 3, $_SESSION['syslog']);
 
 // control params
 $check_event = u_checkarg("check_event", "set", "", "");
