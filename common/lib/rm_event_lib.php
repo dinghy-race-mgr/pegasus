@@ -84,7 +84,6 @@ function format_event_dates($start, $end)
         {
             $event_dates = date("jS M", strtotime($start))." / ".date("jS M", strtotime($end));
         }
-
     }
 
     return $event_dates;
@@ -276,14 +275,19 @@ function get_class_name($in_class)
 
 function get_class_entry_btns($eid, $class_list)
 {
+
+
     if (empty($class_list))
     {
         $classes = array();
     }
     else
     {
-        $classes = explode(",", $class_list[key($class_list)]);
+        //$classes = explode(",", $class_list[key($class_list)]);
+        $classes = explode(",", $class_list);
     }
+    //echo "<pre>$eid|$class_list|".count($classes)."</pre>";
+    //exit();
 
     if (count($classes) <= 0)                 // no classes defined - report error message
     {
@@ -350,7 +354,6 @@ function get_class_list($eventcfgid)
      * Creates CVS list of eligible classes based on race format
      */
 {
-    // FIXME - sort out unused else statement below - also unused $num_class
     global $db_o;
 
     // get fleet configurations for race format
@@ -358,8 +361,6 @@ function get_class_list($eventcfgid)
 
     // get all classes
     $classes = $db_o->run("SELECT * FROM t_class WHERE `active` = 1 ORDER BY classname ASC", array())->fetchAll();
-    $num_class = count($classes);
-    //echo "<pre>num classes: $num_class</pre>";
 
     // get list of classes eligible for the event
     $class_list = "";
@@ -373,15 +374,25 @@ function get_class_list($eventcfgid)
             $class_list.= trim($class['classname']).",";
             //echo "<pre>{$class['classname']} included</pre>";
         }
-        else
-        {
-            //echo "<pre>{$class['classname']} excluded</pre>";
-        }
     }
     //echo "<pre>classes: $class_list</pre>";exit();
 
     return $class_list;
+}
 
+function check_class_exists($classname)
+{
+    global $db_o;
+    $class = $db_o->run("SELECT * FROM t_class WHERE `classname` = '$classname' and active = 1 LIMIT 1");
+
+    if ($class)
+    {
+        return $class;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 function get_category($in_category)

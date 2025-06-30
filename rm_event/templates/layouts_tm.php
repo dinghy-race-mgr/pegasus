@@ -55,6 +55,8 @@ EOT;
 
 function navbar ($params = array())
 {
+    global $cfg;
+
     // setup page link options
     $htm_options = "";
     if ($params['page'] != "list")
@@ -200,7 +202,99 @@ EOT;
     return $htm;
 }
 
-function list_body ($params = array())
+function list_body_1 ($params = array())
+{
+    $events = $params['events'];
+
+    // set up page title
+    $lead_txt = "";
+    $year = $params['year'];
+
+    $panels_htm = "";
+    foreach ($events as $event)
+    {
+        // prep data
+        $event_status = get_event_list_status($event);
+        $panel_style  = get_event_list_style($event_status);
+        $event_dates  = format_event_dates($event['date-start'], $event['date-end']);
+
+        // get link
+        $link = "";
+        if ($event_status == "open" or $event_status == "complete" or $event_status == "review")
+        {
+            if ($event_status == "open" or $event_status == "review")
+            {
+                $link = "rm_event.php?page=details&eid={$event['id']}";
+                $link_icon = "bi-box-arrow-right";
+                $link_title = "Get details, documents and enter online";
+            }
+            elseif ($event_status == "complete")
+            {
+                $link = "rm_event.php?page=results&eid={$event['id']}";
+                $link_icon = "bi-collection-play";
+                //$link_icon = "bi-file-ruled-fill";
+                $link_title = "Get Results, Reports, Photos, etc";
+            }
+
+            $link_htm = <<<EOT
+            <div class="position-absolute top-0 end-0">
+                <a class="icon-link fs-4 " data-bs-toggle="tooltip" data-bs-placement="top"
+                   data-bs-custom-class="list-tooltip" data-bs-title="$link_title" 
+                   href="$link" title="$link_title" >
+                    <i class="$link_icon" style="font-size: 3rem; color: black;"></i>
+                </a>                                 
+            </div>
+EOT;
+        }
+        elseif ($event_status == "list" or $event_status == "cancel")
+        {
+            $link_htm = "&nbsp;";
+        }
+
+        // get text for event panel
+        $title_htm = "$event_dates - <b>{$event['title']}</b><br>";
+        if ($event['sub-title'])
+        {
+            $title_htm .= "<p class='fs-5 mb-0'>{$event['sub-title']}</p>";
+        }
+
+        !empty($event['list-status-txt']) ? $status_htm = $event['list-status-txt'] : $status_htm = "&nbsp;";
+
+        // event panel
+        $panels_htm .= <<<EOT
+          
+        <div class="col-12"> 
+            <div class="alert $panel_style mb-3" role="alert"> 
+            <div class="row">                 
+                <div class="col-7">               
+                    <div class="fs-4"> $title_htm </div>
+                </div>
+                <div class="col-4">
+                    <div class="fs-6"> $status_htm </div>
+                </div>
+                <div class="col-1">
+                    <div class="position-relative"> $link_htm </div>
+                </div>
+            </div>
+            </div>
+        </div>
+EOT;
+    }
+
+    $params['layout'] == "wide" ? $container = "container-fluid" : $container = "container";
+    $htm = <<<EOT
+    <main class="" >
+        <div class="$container nav-margin">
+            <p class="display-6 text-info mb-3"><b>$year Events Schedule</b></p>   
+            $panels_htm
+        </div>
+    </main>
+EOT;
+
+    return $htm;
+}
+
+function list_body_2 ($params = array())
 {
     $events = $params['events'];
 
@@ -470,8 +564,9 @@ EOT;
                         </tbody>
                     </table>
                     </div>
+                    $waiting_htm
                 </div>
-                $waiting_htm
+                
             </div>    
         </main>
 EOT;
@@ -611,6 +706,8 @@ EOT;
 function newentry_body ($params = array())
 {
     // include specific form for this event - defines instructions, form and validation html/js
+//    echo "<pre>FORM - {$params['form-name']}</pre>";
+//    exit();
     require_once("include/{$params['form-name']}");
 
     // standard entry form layout
@@ -630,8 +727,7 @@ EOT;
     return $htm;
 }
 
-function
-juniorconsent_body ($params = array())
+function juniorconsent_body ($params = array())
 {
     // include specific form for this event - returns instructions, form and validation html/js
     require_once("include/{$params['form-name']}");
@@ -656,6 +752,7 @@ EOT;
 
 function documents_body ($params = array())
 {
+    global $cfg;
     $today = date("Y-m-d H:i:s");
     $format_icon = array(
         "pdf"      => "bi-filetype-pdf",
@@ -705,10 +802,10 @@ function documents_body ($params = array())
             }
             else
             {
-                !empty($document['version']) ? $version = "version " . $document['version'] : $version = "";
+                !empty($document['version']) ? $version = "version: " . $document['version'] : $version = "";
             }
 
-            if (empty($document['filename']) or empty($document['file-loc']))
+            if (empty($document['filename']) and empty($document['file']))
             {
                 $link = "available soon ";
             }
@@ -723,9 +820,29 @@ function documents_body ($params = array())
                 {
                     $anchor = $document['filename'];
                 }
-                elseif ($document['file-loc'] == "local-relative")
+                elseif ($document['file-loc'] == "local")
                 {
-                    $anchor = "../data/events/{$document['filename']}";
+                    if (empty($document['filename']))
+                    {
+                        // decode json content
+                        $files = json_decode($document['file'], true);
+                        $file_link = $cfg['baseurl'].strstr($files[0]['name'], '/data');
+                        //$bit = strstr($files[0]['name'], '/data');
+                        //echo "<pre>".$file_link."</pre>";
+                        //exit();
+                        if (!empty($file_link))
+                        {
+                            $anchor = $file_link;
+                        }
+                        else
+                        {
+                            $anchor = "file not found";
+                        }
+                    }
+                    else
+                    {
+                        $anchor = "../data/events/{$document['filename']}";
+                    }
                 }
                 else
                 {
@@ -772,7 +889,6 @@ EOT;
 
     return $htm;
 }
-
 
 
 function no_records ($params = array())
@@ -1035,27 +1151,28 @@ EOT;
     }
 
     $html = <<<EOT
-<header>
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand text-info" href="rm_event.php?page=list">raceManager EVENTS</a>
-            <ul class="nav navbar-nav text-info fs-4 navbar-right"><li>FATAL SYSTEM ERROR</li></ul>
-        </div>
-    </nav>
-</header>
-<main class="container text-center nav-margin" >
-<div class="row">
-    <div class="col">
-        <div class="p-5 text-bg-dark border rounded-3">
-            <p class="fs-3 text-warning fw-bold">Oops sorry&nbsp;.&nbsp;.&nbsp;. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;we have an unexpected error</p>
-            <p class="fs-4">{error}</p>
-            $contact_htm
-            <hr>
-            <p class="text-info text-end">Error Details --- script: {script} &nbsp;&nbsp; function: {function} &nbsp;&nbsp; line: {line}</p>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand text-info" href="rm_event.php?page=list">raceManager EVENTS</a>
+                <ul class="nav navbar-nav text-info fs-4 navbar-right"><li>SYSTEM ERROR</li></ul>
+            </div>
+        </nav>
+    </header>
+    <main class="container text-center nav-margin" >
+    <div class="row">
+        <div class="col">
+            <div class="p-5 text-bg-dark border rounded-3">
+                <p class="fs-3 text-warning fw-bold">Oops sorry&nbsp;.&nbsp;.&nbsp;. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;we have an unexpected error</p>
+                <p class="fs-4">{error}</p>
+                $contact_htm
+                <hr>
+                <p class="text-info text-end">Error Details --- script: {script} &nbsp;&nbsp; function: {function} &nbsp;&nbsp; line: {line}</p>
+            </div>
         </div>
     </div>
-</div>
-</main>
+    </main>
 EOT;
+
     return $html;
 }

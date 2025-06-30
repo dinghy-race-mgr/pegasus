@@ -14,8 +14,14 @@ require_once("../common/classes/db.php");
 require_once("../common/lib/rm_event_lib.php");
 
 // initialise application
-$cfg = set_config("../config/rm_event.ini", array("rm_event"), true);
-$cfg['logfile'] = str_replace("<date>", date("Y"), $cfg['logfile']);
+$cfg = set_config("../config/common.ini", array(), false);
+$cfg['rm_event'] = set_config("../config/rm_event.ini", array("rm_event"), true);
+foreach($cfg['rm_event'] as $k => $v)
+{
+    $cfg[$k] = $v;
+}
+unset($cfg['rm_event']);
+$cfg['logfile'] = str_replace("_date", date("_Y"), $cfg['logfile']);
 
 // get required arguments
 $eid       = $_REQUEST['eid'];
@@ -88,8 +94,7 @@ if ($pagestate == "newentry")
     $insertid = $db_o->insert("e_entry", $entry );
 //    $insertid = $db_o->insert2("e_entry", $entry );
     $insertid ? $status = "success": $status = "fail";
-//    echo "<pre>INSERT [$status]: ".print_r($entry,true)."</pre>";
-//    exit();
+//    echo "<pre>INSERT [$status]: ".print_r($entry,true)."</pre>"; exit();
 
     // go directly to parental consent form if a junior event
     if ($junior_chk and $_REQUEST['formname'] == "junior_class_open_fm.php")    // go directly to parental consent form

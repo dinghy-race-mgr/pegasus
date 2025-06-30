@@ -44,7 +44,7 @@ class PAGES
             "events" => $events,
             "layout" => $this->cfg["layout"]
         );
-        $body =$this->tmpl_o->get_template("list_body", $fields, $params);
+        $body =$this->tmpl_o->get_template("list_body_1", $fields, $params);  // currently set to 1 event per row
 
         // create footer
         $fields = array('version' => $this->cfg['sys_version'], 'year' => date("Y"));
@@ -66,67 +66,70 @@ class PAGES
     public function pg_event($db_o, $page, $eid, $entryupdate)
     {
         // get event details
-        $event = $db_o->run("SELECT * FROM e_event WHERE id = ?", array($eid) )->fetch();
+        $event = $db_o->run("SELECT * FROM e_event WHERE id = ?", array($eid))->fetch();
 
-        //echo "<pre>".print_r($event,true)."</pre>";
-        // FIXME add error messages
+        // set default classes definition
+        $valid_class_spec = false;
+        $this->class_spec = array(
+            "type"      => "unknown",
+            "classlist" => "",
+            "err"       => "no class definition provided - list or race format"
+        );
+
         // decode class list definition
-        if (empty($event['entry-classes']))
+        if (is_numeric($event['entry-classes']))
+            // classes are defined using racemanager race format configuration
         {
-            $valid_class_spec = false;
-            // error message
-        }
-        else
-        {
-            $valid_class_spec = true;
+            //echo "<pre>ENTER 1</pre>";
+            $this->class_spec = array(
+                "type"      => "format",
+            );
             $this->class_spec['classlist'] = get_class_list($event['entry-classes']);
             if (!empty($this->class_spec['classlist']))
             {
                 $valid_class_spec = true;
+                $this->class_spec['err'] = "";
             }
             else
             {
                 $valid_class_spec = false;
-                // error message
+                $this->class_spec['err'] = "no eligible classes have been defined";
             }
         }
+        else
+            // check if classes are defined by a csv string in e_event.entry-classes
+        {
+            //echo "<pre>ENTER 2</pre>";
+            $this->class_spec = array("type" => "list");
+            $valid_class_spec = true;
+            $classes = explode(",",$event['entry-classes']);
+            $err_classes = "";
+            foreach ($classes as $class)
+            {
+                if (!check_class_exists(trim($class)))
+                {
+                    $err_classes.= $class['classname'].",";
+                }
+            }
 
-
-
-
-//        $valid_class_spec = false;
-//        $this->class_spec = json_decode($event['entry-classes'], true);
-//        echo "<pre>".print_r($this->class_spec,true)."</pre>";
-//
-//        if (!empty($event['entry-classes']))
-//        {
-//            //echo "<pre>{$event['entry-classes']} key:|".key($this->class_spec)."|</pre>";
-//            if (key($this->class_spec) == "format" or key($this->class_spec) == "list")  // class spec is of valid type
-//            {
-//                $valid_class_spec = true;
-//
-//                if (key($this->class_spec) == "format")  // if race format - convert to list of classes
-//                {
-//                    $class_spec_type = "format";
-//                    $this->class_spec['classlist'] = get_class_list($this->class_spec);
-//                }
-//                else
-//                {
-//                    $class_spec_type = "list";
-//                    $this->class_spec['classlist'] = $this->class_spec;
-//                }
-//            }
-//        }
-
-        //echo "<pre>".print_r($this->class_spec,true)."</pre>";
-        //exit();
+            if (!empty($err_classes))
+            {
+                $valid_class_spec = false;
+                $this->class_spec = array(
+                    "type"      => "list",
+                    "classlist" => "",
+                    "err"       => "$err_classes - not recognised by raceManager"
+                );
+            }
+        }
 
 
         // if class spec is not valid stop
         if (!$valid_class_spec)
         {
-            $this->exitnicely($this->cfg['sys_name'], "The {$event['title']} does not have a valid definition for the eligible classes",
-                "rm_event/pages.php", "action", $this->cfg['system_admin_contact'],
+            $error_msg = "The {$event['title']} does not have a valid definition for the eligible classes";
+            if (!empty($this->class_spec['err'])) { $error_msg.= "[ {$this->class_spec['err']} ]"; }
+            $this->exitnicely($this->cfg['sys_name'], $error_msg, "rm_event/pages.php", "", $this->cfg['system_admin_contact'],
                 array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
             exit();
         }
@@ -223,7 +226,9 @@ class PAGES
                     }
 
                     // add consent form detail to $entries array
+                    echo "<pre>BEFORE".print_r($entries,true)."</pre>";
                     $entries = $this->mark_entries_requiring_consent($entries);
+                    echo "<pre>AFTER".print_r($entries,true)."</pre>";
 
                     // check if entry_state and construct entry state block
                     $entry_state = check_entry_open($event['entry-start'], $event['entry-end']);  // returns before|after|open
@@ -247,7 +252,9 @@ class PAGES
                     {
                         $fields = array();
                         $params = array("eid" => $eid, "entry-count" => count($entries), "entry-limit" => $event['entry-limit'],
-                            "classes" => $this->class_spec, "waiting" => $waiting);
+                            "classes" => $this->class_spec['classlist'], "waiting" => $waiting);
+                        //echo "<pre>".print_r($params,true)."</pre>";
+                        //exit();
                         $entry_status_block = $this->tmpl_o->get_template("entry_status_open", $fields, $params);
                     }
 
@@ -291,13 +298,14 @@ class PAGES
             {
                 if (!empty($event['entry-form']))    // check internal entry form
                 {
-                    $form_detail = $db_o->run("SELECT * FROM e_form WHERE `form-label` = '{$event['entry-form']}'", array() )->fetch();
+                    $form_detail = $db_o->run("SELECT * FROM e_form WHERE `form-file` = '{$event['entry-form']}'", array() )->fetch();
 
                     empty($_REQUEST['class']) ? $class_name = "none" : $class_name = $_REQUEST['class'];
 
                     if ($class_name == "none")                   // class will be selected from drop down list on form
                     {
-                        key($this->class_spec) == "list" ? $class_list = $this->class_spec['list'] : $class_list = $this->class_spec['format'];
+                        //key($this->class_spec) == "list" ? $class_list = $this->class_spec['list'] : $class_list = $this->class_spec['format'];
+                        $class_list = $this->class_spec['classlist'];
                         $class_fleets = "";
                         $include_crew = true;
                     }
@@ -324,12 +332,13 @@ class PAGES
                         "inc_fleets"   => $class_fleets,
                         "inc_crew"     => $include_crew
                     );
+//                    echo "<pre>".print_r($params,true)."</pre>";
+//                    exit();
                     $body = $this->tmpl_o->get_template("newentry_body", $fields, $params);
                 }
                 else                                     // no entry form report error
                 {
                     // FIXME - replace with an exitnicely
-
                     $fields = array(
                         "page" => $page,
                         "problem" => "The requested entry form is not recognised.",
@@ -461,12 +470,12 @@ private function get_documents_htm($eid, $mode, $event, $content, $documents)
         empty($content['documents-intro']['content']) ? $fields['documents-intro'] = "" : $fields['documents-intro'] = $content['documents-intro']['content'];
 
         $params = array(
-            "eventid" => $eid,
-            "mode" => $mode,
-            "content" => $content,
-            "doc_dir" => $this->cfg['document_dir'],
+            "eventid"   => $eid,
+            "mode"      => $mode,
+            "content"   => $content,
+            "doc_dir"   => $this->cfg['document_dir'],
             "documents" => $documents,
-            "layout" => $this->cfg["layout"]
+            "layout"    => $this->cfg["layout"]
         );
         $body = $this->tmpl_o->get_template("documents_body", $fields, $params);
     }

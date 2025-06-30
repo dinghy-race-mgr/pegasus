@@ -45,15 +45,15 @@
 input[type="checkbox"] { width: 1.5em; height: 1.5em; border: solid 2px dodgerblue; }
 
 /* list page styling */
-.event-list {background-color: rgba(17,122,101,0.8); color: var(--white); font-size: 1.2em;}
-.event-open {background-color: rgba(255,165,0,1.0); color: var(--primary); font-size: 1.2em;}
+.event-list {background-color: rgba(17,122,101,0.6); color: var(--white); font-size: 1.2em;}
+.event-open {background-color: rgba(255,165,0,0.6); color: var(--primary); font-size: 1.2em;}
 .event-complete {background-color: rgba(24,88,131,0.6); color: var(--white); font-size: 1.2em;}
-.event-cancel {background-color: rgba(205,92,92,0.8); color: var(--white); font-size: 1.2em;}
+.event-cancel {background-color: rgba(205,92,92,0.6); color: var(--white); font-size: 1.2em;}
 .event-review {background-color: rgba(17,122,101,0.6); color: var(--white); font-size: 1.2em;}
 
 /* tooltips */
 .list-tooltip {
-    font-size: 1.5em;
-    --bs-tooltip-bg: var(--violet);
-    --bs-tooltip-color: var(--white);
+    font-size: 1.0em;
+    --bs-tooltip-bg: var(--lightblue);
+    --bs-tooltip-color: var(--black);
 }
