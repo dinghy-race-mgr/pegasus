@@ -16,7 +16,7 @@ function page ($params = array())
         <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sticky-footer-navbar/">
     
         <!-- Bootstrap core CSS -->
-        <link href="../common/oss/bootstrap532/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../common/oss/bootstrap532/css/{page-theme}bootstrap.min.css" rel="stylesheet">
         <link href="../common/oss/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
         
         <!-- Bootstrap core js -->
@@ -191,7 +191,7 @@ EOT;
     else
     {
         $htm = <<<EOT
-        <footer class="footer ">
+        <footer class="footer pt-5">
             <div class="container-fluid py-2 text-bg-secondary text-end">
                 raceManager {version} - copyright Elmswood Software {year}
             </div>
@@ -255,7 +255,7 @@ EOT;
         $title_htm = "$event_dates - <b>{$event['title']}</b><br>";
         if ($event['sub-title'])
         {
-            $title_htm .= "<p class='fs-5 mb-0'>{$event['sub-title']}</p>";
+            $title_htm .= "<p class='fs-6 mb-0'>{$event['sub-title']}</p>";
         }
 
         !empty($event['list-status-txt']) ? $status_htm = $event['list-status-txt'] : $status_htm = "&nbsp;";
@@ -266,8 +266,8 @@ EOT;
         <div class="col-12"> 
             <div class="alert $panel_style mb-3" role="alert"> 
             <div class="row">                 
-                <div class="col-7">               
-                    <div class="fs-4"> $title_htm </div>
+                <div class="col-7" style="border-right: solid 1pt white !important;">               
+                    <div class="fs-5"> $title_htm </div>
                 </div>
                 <div class="col-4">
                     <div class="fs-6"> $status_htm </div>
@@ -415,7 +415,7 @@ function details_body ($params = array())
         $htm_topics_buttons.= <<<EOT
         <a class="btn btn-info fs-4" style="width: 300px" data-bs-toggle="collapse" href="#collapsetopic$i" 
            role="button" aria-expanded="false" aria-controls="collapsetopic$i">
-            {$topic['label']} &hellip;
+            {$topic['content-label']} &hellip;
         </a>       
 EOT;
 
@@ -423,7 +423,7 @@ EOT;
         $htm_topics_content.= <<<EOT
         <div class="collapse" id="collapsetopic$i">
             <div class="card card-body fs-6" style="background-color: lightyellow">
-                <p class="lead"><b>{$topic['label']} &hellip;</b> </p>
+                <p class="lead"><b>{$topic['content-label']} &hellip;</b> </p>
                 $htm_topic
             </div>
         </div>
@@ -436,7 +436,7 @@ EOT;
     <main class="" >
         <div class="$container nav-margin">
             <p class="display-6 text-info mb-0"><b>{event-title}</b></p>
-            <p class="fs-3 mb-0">{event-dates} | {event-subtitle}</p>
+            <p class="fs-5 mb-0">{event-dates} | {event-subtitle}</p>
             <p class="lead mt-2">$htm_leadtext</p>
             <div>$htm_subtext</div>
             <div class="container py-3">
@@ -470,8 +470,8 @@ function entries_body ($params = array())
         $entry['id'] == $params['process']['recordid'] ? $highlight = "fw-bold text-dark table-warning" : $highlight = "" ; // set row styling to highlight new entry
 
         // setup team names and clubs
-        empty($entry['c-name']) ? $people = $entry['h-name'] : $people = u_truncatestring($entry['h-name']." / ".$entry['c-name'], 40);
-        empty($entry['c-club']) ? $clubs = $entry['h-club'] : $clubs = u_truncatestring($entry['h-club']." / ".$entry['c-club'], 40);
+        empty($entry['c-name']) ? $people = $entry['h-name'] : $people = truncatestring($entry['h-name']." / ".$entry['c-name'], 40);
+        empty($entry['c-club']) ? $clubs = $entry['h-club'] : $clubs = truncatestring($entry['h-club']." / ".$entry['c-club'], 40);
 
         // setup notes field
         $notes_htm = "";
@@ -513,7 +513,7 @@ EOT;
         foreach ($params['waiting'] as $row)
         {
             $i++;
-            $order = u_numordinal($i);
+            $order = numordinal($i);
             $waiting_rows .= <<<EOT
         <tr>
             <td>$order</td>
@@ -794,7 +794,7 @@ function documents_body ($params = array())
 
         if ($publish)   // we can publish the document
         {
-            $release = date("d-M-Y H:i", strtotime($document['upddate']));
+            $release = date("d-M-Y", strtotime($document['upddate']));
 
             if ($params['mode'] == "results")
             {
@@ -802,7 +802,8 @@ function documents_body ($params = array())
             }
             else
             {
-                !empty($document['version']) ? $version = "version: " . $document['version'] : $version = "";
+                //!empty($document['version']) ? $version = "version: " . $document['version'] : $version = "";
+                !empty($document['version']) ? $version = "version: " . $release : $version = "";
             }
 
             if (empty($document['filename']) and empty($document['file']))
@@ -859,7 +860,8 @@ EOT;
             $table_rows.= <<<EOT
             <tr>
                 <td style="width: 60%"><span class="text-danger fs-3">{$document['title']}</span><br>{$document['infotxt']}</td>
-                <td style="width: 20%">$release<br><b>$version</b></td></td>
+                <!-- td style="width: 20%">$release<br><b>$version</b></td></td -->
+                <td style="width: 20%">$version</td></td>
                 <td style="width: 20%">$link</td>
             </tr>
 EOT;
@@ -898,9 +900,9 @@ function no_records ($params = array())
     <main class="" >
         <div class="$container nav-margin">
             <p class="display-6 text-info mb-6"><b>{event-title}</b></p>
-            <div class="alert alert-info fs-3" role="alert">
+            <div class="alert alert-info" role="alert">
                 <div class="row">
-                    <div class="col-6 fs-3">No {record-type} have been published yet!</div>
+                    <div class="col-6 fs-5">No {record-type} have been published yet!</div>
                 </div> 
             </div>               
         </div>    

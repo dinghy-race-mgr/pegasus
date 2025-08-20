@@ -1359,4 +1359,41 @@ function u_get_result_codes_info($result_codes, $codes_used = array())
     return $output;
 }
 
+// create a CSV file
+
+function u_create_csv_file($file, $cols, $rows, $excludes = array())
+{
+    // FIXME - this function is used elsewhere in rm_utils (create_csv_file)
+
+    // remove any fields not required in CSV file
+    foreach ($rows as $k => $row) {
+        foreach ($excludes as $exclude) {
+
+            if (key_exists($exclude, $row)) {
+                unset($rows[$k][$exclude]);
+            }
+        }
+    }
+
+    $status = "0";
+    $fp = fopen($file, 'w');
+    if (!$fp) { $status = "1"; }
+
+    if ($fp)
+    {
+        $r = fputcsv($fp, $cols, ',');
+        if (!$r) { $status = "2"; }
+
+        foreach ($rows as $row)
+        {
+            if ($status != "0") { break; }
+            $r = fputcsv($fp, $row, ',');
+            if (!$r) {$status = "3"; }
+        }
+        fclose($fp);
+    }
+
+    return $status;
+}
+
 

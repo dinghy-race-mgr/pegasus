@@ -2,6 +2,8 @@
 
 class PAGES
 {
+
+
     public function __construct($cfg)
     {
         $this->tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php"));
@@ -53,6 +55,7 @@ class PAGES
 
         // assemble page
         $fields = array(
+            'page-theme'=> $this->cfg['theme'],
             'page-title'=>$this->cfg['sys_name'],
             'page-navbar'=>$nav,
             'page-main'=>$body,
@@ -226,9 +229,7 @@ class PAGES
                     }
 
                     // add consent form detail to $entries array
-                    echo "<pre>BEFORE".print_r($entries,true)."</pre>";
                     $entries = $this->mark_entries_requiring_consent($entries);
-                    echo "<pre>AFTER".print_r($entries,true)."</pre>";
 
                     // check if entry_state and construct entry state block
                     $entry_state = check_entry_open($event['entry-start'], $event['entry-end']);  // returns before|after|open
@@ -431,8 +432,9 @@ class PAGES
 
         // create javascript
 
-        // assemble page
+        // assemble whole page
         $fields = array(
+            'page-theme'=> $this->cfg['theme'],
             'page-title'=>$this->cfg['sys_name'],
             'page-navbar'=>$nav,
             'page-main'=>$body,

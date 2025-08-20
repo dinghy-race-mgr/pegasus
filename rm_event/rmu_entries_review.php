@@ -7,16 +7,14 @@
 session_id('sess-rmuevent');
 session_start();
 
-error_reporting(E_ALL);  //set for live operation to E_ERROR
-
-require_once("../common/classes/db.php");
-require_once("../common/lib/rm_event_lib.php");
-require_once("classes/template.php");
+error_reporting(E_ALL);  //set for live operation to E150
+//require_once ("../common/classes/db.php");
 
 
 // initialise application
 $cfg = set_config("../config/rm_event.ini", array("rm_event"), true);
 $cfg['logfile'] = str_replace("_date", date("_Y"), $cfg['logfile']);
+
 
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
 $tmpl_o = new TEMPLATE(array( "./templates/util_layouts_tm.php"));
@@ -25,7 +23,6 @@ if (empty($_REQUEST['access']) OR $_REQUEST['access'] != $cfg['access_key'])
 {
     exit("Sorry - you are not authorised to use this script ... ");  // FIXME -  change to exit_nicely
 }
-
 
 // arguments
 if (key_exists("event", $_REQUEST))   // requesting single nicknamed event

@@ -28,4 +28,5 @@ $_SESSION['timer_options'] = array(
    );
 
 
-$_SESSION['sql_debug']    = false;                                        // set to true to turn on debugging of sql commands - otherwise false
+$_SESSION['sql_debug']    =
+     false;                                        // set to true to turn on debugging of sql commands - otherwise false

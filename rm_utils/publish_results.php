@@ -47,7 +47,7 @@ else
 }
 
 // log parameters
-u_writedbg(date('d-Y H:i:s')." -- rm_util PUBLISH RESULTS ---script parameters<br><pre>".print_r($_REQUEST)."</pre>", __FILE__,__FUNCTION__,__LINE__);
+u_writedbg(date('d-Y H:i:s')." -- rm_util PUBLISH RESULTS ---script parameters<br><pre>".print_r($_REQUEST,true)."</pre>", __FILE__,__FUNCTION__,__LINE__);
 
 // classes
 require_once ("{$loc}/common/classes/db_class.php");

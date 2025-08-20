@@ -150,8 +150,8 @@ $crewname_input_htm
     <div class="col-md-8 gx-5">
         <div class="form-floating">
             <input type="text" class="form-control" id="ph-emer" name="ph-emer" placeholder="" value="" required>
-            <label for="floatingInput" class="label-style">Emergency Telephone Contact (during event)<span class="field-reqd"> *</span></label>
-            <div class="invalid-feedback">enter name and phone number (e.g. Jenny Smith 07804555666).</div>
+            <label for="floatingInput" class="label-style">Emergency Contact (during event)<span class="field-reqd"> *</span></label>
+            <div class="text-primary mx-5">enter name and phone number (e.g. Jenny Smith 07804555666).</div>
         </div>
     </div> 
 </div>

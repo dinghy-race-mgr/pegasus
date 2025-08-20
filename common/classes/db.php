@@ -76,6 +76,35 @@ class DB
         return $stmt;
     }
 
+    public function getinivalues($process_bool, $category="")
+    {
+        $code = array();
+
+        $query = "SELECT `parameter`, `value` FROM t_ini ";
+        if (!empty($category)) { $query.= " WHERE `category` = '$category'"; }
+        $rs = $this->run("$query", array() )->fetchall();
+
+        if ($process_bool)
+        {
+            foreach ($rs as $data)
+            {
+                if ($data['value'] == "on" or $data['value'] == "off")
+                {
+                    $data['value']=="on" ? $code["{$data['parameter']}"] = true : $code["{$data['parameter']}"] = false;
+                }
+                else
+                {
+                    $code["{$data['parameter']}"] = $data['value'];
+                }
+            }
+        }
+        else
+        {
+            $code = $rs;
+        }
+        return $code;
+    }
+
     public function insert($table, $args)
     {
         $params = array();

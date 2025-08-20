@@ -27,6 +27,10 @@ if (!empty($values['series_root_extra']))
     }
     $values['series_code_extra'] = rtrim($field_txt, ",");
 }
+else
+{
+    $values['series_code_extra'] = "";
+}
 unset($values['series_root_extra']);
 
 

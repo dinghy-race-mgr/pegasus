@@ -21,7 +21,8 @@ function set_config($cfgfile, $sections, $flatten = true)
     return $cfg;
 }
 
-function u_numordinal ($number)
+function numordinal ($number)
+    // FIXME - this is a copy of u_numordinal - need to add util_lib to the includes in rm_event.php and retest
 {
     if (key_exists("lang", $_SESSION))
     {
@@ -55,7 +56,8 @@ function u_numordinal ($number)
     return $abbreviation;
 }
 
-function u_truncatestring ($string, $length, $dots = "...")
+function truncatestring ($string, $length, $dots = "...")
+    // FIXME - this is a copy of u_truncatestring - need to add util_lib to the includes in rm_event.php and retest
 {
     if ($length == 0)
     {
@@ -262,7 +264,6 @@ function get_guid()
 
 function get_class_name($in_class)
 {
-
     /*
     Two options - classes defined in e_event as a list or defined as fleets with PY limits (not currently supported)
     Need to be sure that entered class have same (case sensitive) name as in racemanager
@@ -275,19 +276,15 @@ function get_class_name($in_class)
 
 function get_class_entry_btns($eid, $class_list)
 {
-
-
     if (empty($class_list))
     {
         $classes = array();
     }
     else
     {
-        //$classes = explode(",", $class_list[key($class_list)]);
         $classes = explode(",", $class_list);
     }
-    //echo "<pre>$eid|$class_list|".count($classes)."</pre>";
-    //exit();
+
 
     if (count($classes) <= 0)                 // no classes defined - report error message
     {

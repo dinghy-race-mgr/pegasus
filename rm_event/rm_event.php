@@ -55,12 +55,11 @@ else
 {
     empty($_REQUEST['eid']) ? $eid = 0 : $eid = $_REQUEST['eid'];
     empty($_REQUEST['page']) ? $page = "list" : $page = $_REQUEST['page'];
-
     empty($_REQUEST['view']) ? $view = "0" : $view = $_REQUEST['view'];
-
 }
 empty($_REQUEST['year']) ? $year = date("Y") : $year = $_REQUEST['year'];
 
+// create array if an entry record has been added
 $entryupdate = array();
 empty($_REQUEST['action'])   ? $entryupdate['action']   = false : $entryupdate['action'] = $_REQUEST['action'];
 empty($_REQUEST['status'])   ? $entryupdate['status']   = false : $entryupdate['status'] = $_REQUEST['status'];

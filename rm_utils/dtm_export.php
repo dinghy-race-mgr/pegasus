@@ -437,7 +437,7 @@ function get_duty_instructions()
 
 function create_csv_file($file, $cols, $rows, $excludes = array())
 {
-    // FIXME - this function is used elsewhere in rm_utils
+    // FIXME - this function is used elsewhere in rm_utils and is also in util_lib
 
     // remove any fields not required in CSV file
     foreach ($rows as $k => $row) {
