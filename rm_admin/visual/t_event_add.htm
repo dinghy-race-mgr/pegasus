@@ -1,165 +1,196 @@
-<!DOCTYPE html>
-<HTML {$html_attrs}>
-  <HEAD>
-    <META http-equiv="X-UA-Compatible" content="IE=Edge">
-    <META name="viewport" content="width=device-width, initial-scale=1.0">
-    <TITLE>
-      {$pagetitle}
-    </TITLE>
-    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <LINK href="styles/default.css" rel="stylesheet" type="text/css">
-    {BEGIN rtlCSS}
-      <LINK href="styles/defaultRTL.css" rel="stylesheet" type="text/css">
-    {END rtlCSS}
-    {BEGIN styleCSSFiles}
-      <LINK href="{$stylepath}" rel="stylesheet" type="text/css">
-    {END styleCSSFiles}
-    <META name="GENERATOR" content="MSHTML 11.00.10570.1001">
-  </HEAD>
-  <BODY class="{$stylename} function-add" {$bodyattrs}>
-    {BEGIN body}
-      {$header}
-      <STYLE>
-        {$containerCss}
-      </STYLE>
-      <DIV class="bs-top">
-        {BEGIN container_editpage}
-          <DIV class="container" data-container="editpage" data-pageid="{$pageid}" {$editpage_chiddenattr}>
-            {BEGIN container_header}
-              <DIV class="col-md-9 col-md-offset-3" data-container="header" data-pageid="{$pageid}" {$header_chiddenattr}>
-                {BEGIN addheader}
-                  <H2 data-brick="addheader" data-pageid="{$pageid}" {$addheader_hiddenattr}>
-                    {$pagetitlelabel t_event add}
-                  </H2>
-                  {BEGIN printtabheader}
-                    <H4>
-                      {$printtabheader_text}
-                    </H4>
-                  {END printtabheader}
-                {END addheader}
-              </DIV>
-            {END container_header}
-            {BEGIN container_message}
-              <DIV class="col-md-6 col-md-offset-3" data-container="message" data-pageid="{$pageid}" {$message_chiddenattr}>
-                {BEGIN message_block}
-                  <DIV class="alert {$message_class}" role="alert" data-brick="message" data-pageid="{$pageid}" {$message_hiddenattr}>
-                    <H5>
-                      {$message}
-                    </H5>
-                    <DIV>
-                      {BEGIN back_button}
-                        <BUTTON class="btn btn-sm btn-default" {$backbutton_attrs}>
-                          Back to list
-                        </BUTTON>
-                      {END back_button}
-                      {BEGIN view_page_button}
-                        <BUTTON class="btn btn-sm btn-default" {$view_page_button_attrs}>
-                          View
-                        </BUTTON>
-                      {END view_page_button}
-                      {BEGIN edit_page_button}
-                        <BUTTON class="btn btn-sm btn-default" {$edit_page_button_attrs}>
-                          Edit
-                        </BUTTON>
-                      {END edit_page_button}
-                    </DIV>
-                  </DIV>
-                {END message_block}
-              </DIV>
-            {END container_message}
-            {BEGIN container_steps}
-              <DIV class="col-md-8 col-md-offset-2" data-container="steps" data-pageid="{$pageid}" {$steps_chiddenattr}>
-                <UL class="nav nav-pills nav-justified" data-brick="multistep_nav_add" data-stepcontrol data-pageid="{$pageid}" {$multistep_nav_add_hiddenattr} {$stepnav_attrs}>
-                  <LI role="presentation">
-                    <A href="#">
-                      Event/Series
-                    </A>
-                  </LI>
-                  <LI role="presentation">
-                    <A href="#">
-                      Date/Tide
-                    </A>
-                  </LI>
-                  <LI role="presentation">
-                    <A href="#">
-                      Race Format
-                    </A>
-                  </LI>
-                  <LI role="presentation">
-                    <A href="#">
-                      Related Information
-                    </A>
-                  </LI>
-                </UL>
-              </DIV>
-            {END container_steps}
-          </DIV>
-        {END container_editpage}
-        {BEGIN container_fields}
-          <DIV class="col-md-12" data-container="fields" data-pageid="{$pageid}" {$fields_chiddenattr}>
-            <DIV class="form-horizontal" role="form" data-brick="addfields" data-pageid="{$pageid}" {$addfields_hiddenattr}>
-              <DIV>
-                {$Step Step1}
-                {$Step Step2}
-                {$Step Race_Format1}
-                {$Step Rekated_Information1}
-              </DIV>
-            </DIV>
-          </DIV>
-        {END container_fields}
-        {BEGIN container_bottombuttons}
-          <DIV class="container" data-container="bottombuttons" data-pageid="{$pageid}" {$bottombuttons_chiddenattr}>
-            {BEGIN container_buttons}
-              <DIV class="form-group" data-container="buttons" data-pageid="{$pageid}" {$buttons_chiddenattr}>
-                {BEGIN container_leftbuttons}
-                  <DIV class="col-md-3 col-md-offset-3" data-container="leftbuttons" data-pageid="{$pageid}" {$leftbuttons_chiddenattr}>
-                    {BEGIN addbuttons}
-                      {BEGIN nextStepButton}
-                        <BUTTON class="btn btn-primary" {$nextstep_button_attrs}>
-                          Next
-                        </BUTTON>
-                      {END nextStepButton}
-                      {BEGIN save_button}
-                        <BUTTON class="btn btn-primary" {$savebutton_attrs}>
-                          Save
-                        </BUTTON>
-                      {END save_button}
-                      {BEGIN reset_button}
-                        <BUTTON class="btn btn-default" id="resetButton{$id}">
-                          Reset
-                        </BUTTON>
-                      {END reset_button}
-                      {BEGIN back_button}
-                        <BUTTON class="btn btn-default" id="backButton{$id}">
-                          Back to list
-                        </BUTTON>
-                      {END back_button}
-                      {BEGIN cancel_button}
-                        <A class="btn btn-default" id="cancelButton{$id}" href="#">
-                          Cancel
-                        </A>
-                      {END cancel_button}
-                    {END addbuttons}
-                  </DIV>
-                {END container_leftbuttons}
-              </DIV>
-            {END container_buttons}
-          </DIV>
-        {END container_bottombuttons}
-      </DIV>
-      <DIV class="bs-middle">
-        <DIV class="bs-topmiddle">
-        </DIV>
-        <DIV class="bs-left" {$blockattr_left}>
-        </DIV>
-        <DIV class="bs-center">
-        </DIV>
-        <DIV class="bs-right">
-        </DIV>
-      </DIV>
-      <DIV class="bs-bottom">
-      </DIV>
-      {$footer}
-    {END body}
-  </BODY>
-</HTML>
+<!doctype html>
+<html  {$html_attrs}>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{$pagetitle}</title>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link REL="stylesheet" href="styles/default.css" type="text/css">
+		{BEGIN rtlCSS}<link REL="stylesheet" href="styles/defaultRTL.css" type="text/css">
+		{END rtlCSS}
+		{BEGIN styleCSSFiles}<link REL="stylesheet" href="{$stylepath}" type="text/css">
+		{END styleCSSFiles}
+	</head>
+
+	<body class="{$stylename} function-add" {$bodyattrs}>
+	{BEGIN body}{$header}
+		<style>
+			{$containerCss}
+		</style>
+		<DIV class="bs-top">
+        
+
+{BEGIN container_editpage}<div {$editpage_chiddenattr} data-pageid="{$pageid}" data-container="editpage" class="container    "> 
+
+
+
+
+{BEGIN container_header}<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-9 col-md-offset-3"> 
+
+{BEGIN addheader}<h2 {$addheader_hiddenattr} data-pageid="{$pageid}" data-brick="addheader" >{$pagetitlelabel t_event add}</h2>
+	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
+
+{END addheader}
+
+
+
+</div>
+{END container_header}
+
+
+
+
+
+
+
+
+{BEGIN container_message}<div {$message_chiddenattr} data-pageid="{$pageid}" data-container="message" class="   col-md-6 col-md-offset-3"> 
+
+{BEGIN message_block}<div {$message_hiddenattr} data-pageid="{$pageid}" data-brick="message" class="alert {$message_class}" role="alert">
+<h5>{$message}</h5>
+<div>
+{BEGIN back_button}<button class="btn btn-sm btn-default" {$backbutton_attrs}>Back to list</button>
+{END back_button}
+{BEGIN view_page_button}<button class="btn btn-sm btn-default" {$view_page_button_attrs}>View</button>
+{END view_page_button}
+{BEGIN edit_page_button}<button class="btn btn-sm btn-default" {$edit_page_button_attrs}>Edit</button>
+{END edit_page_button}
+</div>
+</div>
+
+{END message_block}
+
+
+
+</div>
+{END container_message}
+
+
+
+
+
+
+
+
+{BEGIN container_steps}<div {$steps_chiddenattr} data-pageid="{$pageid}" data-container="steps" class="   col-md-6 col-md-offset-3"> 
+
+
+<ul {$multistep_nav_add_hiddenattr} data-pageid="{$pageid}" data-brick="multistep_nav_add" class="nav nav-pills nav-justified" {$stepnav_attrs} data-stepcontrol>
+	<li role="presentation"><a href="#">Event/Series
+</a></li>
+	<li role="presentation"><a href="#">Date/Tide
+</a></li>
+	<li role="presentation"><a href="#">Race Format
+</a></li>
+	<li role="presentation"><a href="#">Related Information
+</a></li>
+</ul>
+
+
+
+
+</div>
+{END container_steps}
+
+
+
+
+
+
+</div>
+{END container_editpage}
+
+
+
+{BEGIN container_fields}<div {$fields_chiddenattr} data-pageid="{$pageid}" data-container="fields" class="   col-md-12 "> 
+
+
+<div {$addfields_hiddenattr} data-pageid="{$pageid}" data-brick="addfields" class="form-horizontal" role="form">
+	<div>
+				
+		{$Step Step1}
+		{$Step Step2}
+		{$Step Race_Format1}
+		{$Step Rekated_Information1}
+</div>
+
+</div>
+
+
+
+
+</div>
+{END container_fields}
+
+
+
+{BEGIN container_bottombuttons}<div {$bottombuttons_chiddenattr} data-pageid="{$pageid}" data-container="bottombuttons" class="container    "> 
+
+
+
+
+{BEGIN container_buttons}<div {$buttons_chiddenattr} data-pageid="{$pageid}" data-container="buttons" class=" form-group   "> 
+
+
+
+
+{BEGIN container_leftbuttons}<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
+
+{BEGIN addbuttons}{BEGIN nextStepButton}<button class="btn btn-primary" {$nextstep_button_attrs}>Next</button>
+	{END nextStepButton}
+	{BEGIN save_button}<button class="btn btn-primary" {$savebutton_attrs}>Save</button>
+	{END save_button}
+	{BEGIN reset_button}<button class="btn btn-default" id="resetButton{$id}">Reset</button>
+	{END reset_button}
+	{BEGIN back_button}<button class="btn btn-default" id="backButton{$id}">Back to list</button>
+	{END back_button}
+	{BEGIN cancel_button}<a href="#" class="btn btn-default" id="cancelButton{$id}">Cancel</a>
+	{END cancel_button}
+
+{END addbuttons}
+
+
+
+</div>
+{END container_leftbuttons}
+
+
+
+
+
+
+</div>
+{END container_buttons}
+
+
+
+
+
+
+</div>
+{END container_bottombuttons}
+
+
+		</div>
+		<div class="bs-middle ">
+			<div class="bs-topmiddle">
+				
+			</div>
+			<div class="bs-left" {$blockattr_left}>
+				
+			</div>
+			<div class="bs-center">
+				
+			</div>
+			<div class="bs-right">
+				
+			</div>
+		</div>
+		<DIV class="bs-bottom">
+        
+		</div>
+		{$footer}
+	{END body}
+	</body>
+</html>

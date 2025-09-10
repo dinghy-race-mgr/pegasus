@@ -26,7 +26,7 @@
 
 
 
-{BEGIN container_header}<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-12 "> 
+{BEGIN container_header}<div {$header_chiddenattr} data-pageid="{$pageid}" data-container="header" class="   col-md-9 col-md-offset-3"> 
 
 {BEGIN viewheader}<h2 {$viewheader_hiddenattr} data-pageid="{$pageid}" data-brick="viewheader" >{$pagetitlelabel t_help view}</h2>
 	{BEGIN printtabheader}<h4>{$printtabheader_text}</h4>{END printtabheader}
@@ -52,28 +52,30 @@
 
 
 <div {$viewfields_hiddenattr} data-pageid="{$pageid}" data-brick="viewfields" >
-
-	<div class="container">
-					{BEGIN listorder_fieldblock}<div class="{$fielddispclass_listorder} col-md-6 bs-viewcontrolgroup" data-fieldname="listorder">
-		<label class="control-label" for="{$labelfor_listorder}">
+	{BEGIN listorder_fieldblock}<div class="container">
+	<div class="{$fielddispclass_listorder} bs-viewform-group" data-fieldname="listorder">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_listorder}">
 			{$label t_help listorder}
 		</label>
-		<div class="" >
+		<div class="col-md-6 bs-horizontal-value" >
 			{$listorder_value}&nbsp;
 		</div>
 	</div>
+</div>
 {END listorder_fieldblock}
-					{BEGIN createdate_fieldblock}<div class="{$fielddispclass_createdate} col-md-6 bs-viewcontrolgroup" data-fieldname="createdate">
-		<label class="control-label" for="{$labelfor_createdate}">
+	{BEGIN createdate_fieldblock}<div class="container">
+	<div class="{$fielddispclass_createdate} bs-viewform-group" data-fieldname="createdate">
+		<label class="bs-view-label col-md-4 text-right" for="{$labelfor_createdate}">
 			{$label t_help createdate}
 		</label>
-		<div class="" >
+		<div class="col-md-6 bs-horizontal-value" >
 			{$createdate_value}&nbsp;
 		</div>
 	</div>
+</div>
 {END createdate_fieldblock}
-				<div class="col-md-12">
-				<div class="panel panel-default form-section">
+	<div class="container">	
+			<div class="panel panel-default form-section">
 		<div class="panel-heading" role="tab" {$section_Details1_headattrs} data-toggle="collapse"   >
 		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
 		  <h4 class="panel-title">
@@ -90,9 +92,9 @@
 		</div>
 	</div>
 
-		</div>
-				<div class="col-md-12">
-				<div class="panel panel-default form-section">
+	</div>
+	<div class="container">	
+			<div class="panel panel-default form-section">
 		<div class="panel-heading" role="tab" {$section_Controls_on_when_topic_appears____1_headattrs} data-toggle="collapse"   >
 		<!-- href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" -->
 		  <h4 class="panel-title">
@@ -109,7 +111,6 @@
 		</div>
 	</div>
 
-		</div>
 	</div>
 </div>
 
@@ -131,7 +132,7 @@
 
 
 
-{BEGIN container_leftbuttons}<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-6 "> 
+{BEGIN container_leftbuttons}<div {$leftbuttons_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons" class="   col-md-3 col-md-offset-3"> 
 
 {BEGIN viewbuttons}{BEGIN back_button}<button class="btn btn-primary" {$backbutton_attrs}>Back to list</button>
 {END back_button}
@@ -151,7 +152,7 @@
 
 
 
-{BEGIN container_leftbuttons_1}<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="   col-md-4 "> 
+{BEGIN container_leftbuttons_1}<div {$leftbuttons_1_chiddenattr} data-pageid="{$pageid}" data-container="leftbuttons_1" class="  text-right col-md-3 "> 
 
 {BEGIN rightviewbuttons}<div class="btn-group" role="group">
 		{BEGIN prev_button}<button class="btn btn-default {$prevbutton_class}" {$prevbutton_attrs}><span class="glyphicon glyphicon-chevron-left"></span></button>

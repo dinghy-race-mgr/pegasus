@@ -4,7 +4,7 @@
  *
  * script to export event entries from racemanager to the sailwave csv import format
  *
- * usage: sailwave_entry_export.php?eid=<event id from e_event>
+ * usage: rmu_sailwave_entry_export.php?eid=<event id from e_event>
  *
  * Arguments (* required)
  *    eid       -   id for event in e_event *
@@ -28,7 +28,7 @@ error_reporting(E_ERROR);
 require_once ("{$loc}/common/classes/db.php");
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once("{$loc}/common/lib/rm_event_lib.php");
-require_once("classes/template.php");
+require_once("./classes/template.php");
 
 // initialise utility application
 $cfg = set_config("../config/common.ini", array(), false);

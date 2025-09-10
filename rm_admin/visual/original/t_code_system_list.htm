@@ -155,26 +155,6 @@
 {BEGIN searchform_block}
 <span {$search_hiddenattr} data-pageid="{$pageid}" data-brick="search" class="form-group">
 
-	{$simpleSearchFieldCombo}
-	
-	{$simpleSearchTypeCombo}
- <div  class="input-group">
-{BEGIN searchform_text}
-	<input type="search" class="form-control" {$searchfor_attrs} size="25">
-{END searchform_text}
-	<span class="input-group-btn">
-	{BEGIN searchform_showall}
-		<button class="btn btn-default" {$showAllCont_attrs} {$showallbutton_attrs} title="Show all">
-			<span class="glyphicon glyphicon-remove"></span>
-		</button>
-	{END searchform_showall}
-	{BEGIN searchform_search}
-	<button {$searchbutton_attrs} class="btn btn-primary" >
-		<span class="glyphicon glyphicon-search"></span>
-	</button>
-	{END searchform_search}
-	</span>
-</div>
 		
 </span>
 {END searchform_block}
@@ -469,6 +449,19 @@
 									
 									
 									
+									{BEGIN listorder_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$listorder_class}" data-field=listorder>
+									{BEGIN listorder_fieldheader}
+																				<span {$listorder_orderlinkattrs}>
+											{$label t_code_system listorder}
+										</span>
+									{END listorder_fieldheader}
+									</th>
+									{END listorder_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN defaultval_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$defaultval_class}" data-field=defaultval>
 									{BEGIN defaultval_fieldheader}
@@ -547,6 +540,13 @@
 		{$label_value}
 	</td>
 {END label_fieldcolumn}
+
+
+	{BEGIN listorder_fieldcolumn}
+	<td class="bs-gridcell {$listorder_class}"  data-field=listorder {$rowstyle} {$recordattrs}>
+		{$listorder_value}
+	</td>
+{END listorder_fieldcolumn}
 
 
 	{BEGIN defaultval_fieldcolumn}

@@ -454,45 +454,6 @@
 									
 									
 									
-									{BEGIN upddate_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$upddate_class}" data-field=upddate>
-									{BEGIN upddate_fieldheader}
-																				<span {$upddate_orderlinkattrs}>
-											{$label t_code_type upddate}
-										</span>
-									{END upddate_fieldheader}
-									</th>
-									{END upddate_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN updby_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$updby_class}" data-field=updby>
-									{BEGIN updby_fieldheader}
-																				<span {$updby_orderlinkattrs}>
-											{$label t_code_type updby}
-										</span>
-									{END updby_fieldheader}
-									</th>
-									{END updby_fieldheadercolumn}
-									
-									
-									
-									
-									{BEGIN createdate_fieldheadercolumn}
-									<th class="rnr-gridfieldlabel {$createdate_class}" data-field=createdate>
-									{BEGIN createdate_fieldheader}
-																				<span {$createdate_orderlinkattrs}>
-											{$label t_code_type createdate}
-										</span>
-									{END createdate_fieldheader}
-									</th>
-									{END createdate_fieldheadercolumn}
-									
-									
-									
-									
 									{BEGIN label_fieldheadercolumn}
 									<th class="rnr-gridfieldlabel {$label_class}" data-field=label>
 									{BEGIN label_fieldheader}
@@ -602,27 +563,6 @@
 		{$type_value}
 	</td>
 {END type_fieldcolumn}
-
-
-	{BEGIN upddate_fieldcolumn}
-	<td class="bs-gridcell {$upddate_class}"  data-field=upddate {$rowstyle} {$recordattrs}>
-		{$upddate_value}
-	</td>
-{END upddate_fieldcolumn}
-
-
-	{BEGIN updby_fieldcolumn}
-	<td class="bs-gridcell {$updby_class}"  data-field=updby {$rowstyle} {$recordattrs}>
-		{$updby_value}
-	</td>
-{END updby_fieldcolumn}
-
-
-	{BEGIN createdate_fieldcolumn}
-	<td class="bs-gridcell {$createdate_class}"  data-field=createdate {$rowstyle} {$recordattrs}>
-		{$createdate_value}
-	</td>
-{END createdate_fieldcolumn}
 
 
 	{BEGIN label_fieldcolumn}
