@@ -18,15 +18,15 @@ TO DO
 
         status     - programmed status (X - not programmed, S - scheduled event, P - protected date (not schedule-able), U - not scheduled
         start_time - start time (hh:mm)
-        event_name" => $series['name'],
-        series_code" => $series['type']['code']."-".year
+        event_name - name of event / series,
+        series_code- code to link events into a series - set in cfg.json file (without date)
         type       - type of event - must match one of racemanager even codes - set in cfg.json file
         format     - event format - typically the race format defined in racemanager - set in cfg.json file
         entry_type - how do people enter the event (<blank>|on/retire|ood) - set in cfg.json file
         restricted - who is the event accessible to (club|open) - currently not used
-        notes      - notes that will appear in programme - currently not used
+        notes      - notes that will appear in programme
         code       - index code for this event
-        weblink    - url associated with event - currently not used
+        weblink    - url associated with event
 
 Assumes that tidal data is held in table t_tide and HW times have been converted to local time
 
@@ -585,6 +585,7 @@ function pg_get_days($start_date, $end_date, $days)
         "tidal_height"=> "",
         "tidal_num"   => "",
         "series_code" => "",
+        "series_code_extra" => "",
         "type"        => "",
         "format"      => "",
         "entry_type"  => "",
@@ -778,7 +779,8 @@ function pg_allocate_fixed_nonracing()
         if (strtolower($event['status'] == "schedule") and
             ( $event['type']['category'] == "social" or
               $event['type']['category'] == "training" or
-              $event['type']['category'] == "cruise")
+              $event['type']['category'] == "dcruise" or
+              $event['type']['category'] == "yracing")
             )
         {
             $date = $event['date']['value'];
@@ -973,7 +975,7 @@ function pg_create_csv($out_file)
     // write header
 //    $hdr_arr = array("id","date","time","name","series","type","format","entry_type",
 //        "restricted","tide_time","tide_height","notes","weblink");
-    $hdr_arr = array("id","event_date","event_start","event_name","series_code","event_type",
+    $hdr_arr = array("id","event_date","event_start","event_name","series_code","series_code_extra","event_type",
                       "event_format","event_entry","event_open","tide_time","tide_height","event_notes","weblink");
     $write = fputcsv($file, $hdr_arr);
     if ( $write === false ) { $status ="2"; }  // header error
@@ -992,6 +994,7 @@ function pg_create_csv($out_file)
                 "time"       => $event['start_time'],
                 "name"       => $event['event_name'],
                 "series"     => $event['series_code'],
+                "series_code_extra" => $event['series_code_extra'],
                 "type"       => $type,
                 "format"     => $event['format'],
                 "entry_type" => $event['entry_type'],
@@ -1164,6 +1167,7 @@ function pg_get_fixed_dates($start_date, $end_date, $cfg)
                     "tidal_time"=> "",
                     "tidal_height"=> "",
                     "series_code"=> "",
+                    "series_code_extra"=> "",
                     "type"=> "",
                     "format"=> "",
                     "entry_type"=> "",
@@ -1190,6 +1194,7 @@ function pg_get_fixed_dates($start_date, $end_date, $cfg)
                     "tidal_time"=> "",
                     "tidal_height"=> "",
                     "series_code"=> "",
+                    "series_code_extra"=> "",
                     "type"=> "",
                     "format"=> "",
                     "entry_type"=> "",
@@ -1469,6 +1474,7 @@ function allocate_event($type, $data, $tidal, $event_code, $start_delta = "")
 
     $state = "S";
     $series_code = "";
+    $series_extra = "";
 
     if (empty($tidal))
     {
@@ -1493,7 +1499,15 @@ function allocate_event($type, $data, $tidal, $event_code, $start_delta = "")
 
     if (!empty($data['type']['code']))
     {
-        $series_code = $data['type']['code']."-".substr($cfg['settings']['year'], -2);
+        $arr = explode("|", trim($data['type']['code'], "| "));
+        $num_codes = count($arr);
+        foreach ($arr as $k=>$codeval)
+        {
+            $arr[$k] = $codeval."-".substr($cfg['settings']['year'], -2);
+        }
+        $series_code = $arr[0];
+        unset($arr[0]);
+        $series_extra = implode(",",$arr);
     }
 
     $event = array(
@@ -1506,6 +1520,7 @@ function allocate_event($type, $data, $tidal, $event_code, $start_delta = "")
         "entry_type"  => $cfg['settings']['signon'],
         "restricted"  => $data['type']['access'],
         "series_code" => $series_code,
+        "series_code_extra" => $series_extra,
         "notes"       => "",
         "weblink"     => "",
         "code"        => $event_code

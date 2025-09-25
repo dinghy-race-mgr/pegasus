@@ -610,7 +610,27 @@ function u_sessionstate($scriptname, $reference, $file_dir, $eventid)
 
 
 // ------ INITIALISATION FUNCTIONS ----------------------------------------------------------------------------------
+function u_set_config($cfgfile, $sections, $flatten = true)
+{
+    $arr = parse_ini_file($cfgfile, true);
 
+    if ($flatten) {
+        $cfg = array();
+        foreach ($arr as $k => $v) {
+            if (is_array($v) and in_array($k, $sections)) {
+                foreach ($v as $l => $m) {
+                    $cfg[$l] = $m;
+                }
+            } else {
+                $cfg[$k] = $v;
+            }
+        }
+    } else {
+        $cfg = $arr;
+    }
+
+    return $cfg;
+}
 function u_initialisation($app_cfg_file, $loc, $scriptname)
 {
     $status = true;
