@@ -17,7 +17,7 @@ $loc  = "..";
 $page = "display_trophy_winners";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
-$styletheme = "flatly_";
+$styletheme = "";
 $stylesheet = "./style/rm_utils.css";
 
 require_once ("{$loc}/common/lib/util_lib.php");
@@ -43,20 +43,30 @@ if (array_key_exists("timezone", $cfg)) { date_default_timezone_set($cfg['timezo
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
 
 // get club specific values
-foreach ($db_o->getinivalues(true) as $k => $v) { $cfg[$k] = $v; }
+foreach ($db_o->getinivalues(true) as $k => $v) { $cfg[$k] = $v; }  // FIXME not working on HTZ
 
 // set templates
 $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/trophies_tm.php"));
 
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "submit"; }   // FIXME temporary fix for testing
 
+
 /* ------------ file selection page ---------------------------------------------*/
 $state = 0;
 
 if ($_REQUEST['pagestate'] != "init" AND $_REQUEST['pagestate'] != "submit")
 {
-    $pagefields['body'] = $tmpl_o->get_template("publishresults_error", array(), array("state"=>2, "eventid"=>$_REQUEST['eventid']));
-    echo $tmpl_o->get_template("basic_page", $pagefields );
+    $pagefields = array(
+        "theme" => $styletheme,
+        "stylesheet" => $stylesheet,
+        "tab-title" => "Trophy Winners",
+        "page-theme" => "",
+        "page-title" => "Trophy Winners Display",
+        "page-main" => $tmpl_o->get_template("trophies_error", array(), array("state"=>2, "pagestate"=>$_REQUEST['pagestate'])),
+        "page-footer" => "",
+    );
+
+    echo $tmpl_o->get_template("print_page", $pagefields );
 }
 
 /* ------------ get user input page ---------------------------------------------*/
@@ -86,7 +96,7 @@ elseif ($_REQUEST['pagestate'] == "init")
     }
 
     // display page
-    echo $tmpl_o->get_template("basic_page", $pagefields );
+    echo $tmpl_o->get_template("print_page", $pagefields );
 
 }
 
@@ -96,9 +106,10 @@ elseif ($_REQUEST['pagestate'] == "submit")
 {
     // set up arguments
     $_REQUEST = array(
-        "year-label" => '2024/2025',
+        "year-label" => '2023-2024',
         "mode"       => 'standard',
     );
+    $today = date("jS F Y H:i");
 
     $section_cfg = array(
         'trophy_series' => array(
@@ -108,53 +119,53 @@ elseif ($_REQUEST['pagestate'] == "submit")
             'decode_type' => "class"
         ),
         'open_event' => array(
-            'heading'   => "exe regatta",
-            'description' => "",
+            'heading'   => "exe open regattas",
+            'description' => "races and events that are open to non-SYC members",
             'num_winners' => 1,
             'decode_type' => "class"
         ),
         'club_series' => array(
-            'heading'   => "seasonal club series",
-            'description' => "",
+            'heading'   => "club series",
+            'description' => "sunday and evening series throughout the season",
             'num_winners' => 3,
             'decode_type' => "class"
         ),
         'trophy_race' => array(
             'heading'   => "trophy races",
-            'description' => "",
+            'description' => "individual races for which a trophy is awarded",
             'num_winners' => 1,
             'decode_type' => "class"
         ),
         'cruiser_race' => array(
             'heading'   => "yacht racing",
-            'description' => "",
+            'description' => "passage racing for yachts",
             'num_winners' => 1,
             'decode_type' => "name"
         ),
         'achievement' => array(
             'heading'   => "achievement awards",
-            'description' => "",
+            'description' => "awards for specific achievements",
             'num_winners' => 1,
             'decode_type' => "class"
         ),
         'junior_regatta' => array(
             'heading'   => "junior regatta",
-            'description' => "",
+            'description' => "prizes awarded during the junior regatta",
             'num_winners' => 1,
             'decode_type' => "class"
         ),
         'junior_training' => array(
-            'heading'   => "junior training awards",
-            'description' => "",
+            'heading'   => "junior training ",
+            'description' => "training achievement awards",
             'num_winners' => 1,
             'decode_type' => "class"
         ),
     );
 
     // get events in defined order (group, then internal order)
-    $query = "SELECT a.id, a.name, a.notes, a.picture, a.group_sort, a.individual_sort, 
+    $query = "SELECT a.id, a.name, a.sname, a.notes, a.allocation_notes, a.picture, a.group_sort, a.individual_sort, 
               b.period, b.award_category, b.award_division, b.winner_1, b.winner_2, b.winner_3, b.notes 
-              FROM t_trophy as a JOIN t_trophyaward as b ON a.id=b.trophyid
+              FROM t_trophy as a JOIN t_trophyaward as b ON a.id=b.trophyid  WHERE b.period = '{$_REQUEST['year-label']}'
               ORDER BY FIELD(group_sort, 'trophy_series', 'open_event', 'club_series', 'trophy_race', 'cruiser_race', 'achievement', 'junior_regatta', 'junior_training', ''), individual_sort ASC";
     $winners = $db_o->run($query, array() )->fetchall();
 
@@ -163,8 +174,6 @@ elseif ($_REQUEST['pagestate'] == "submit")
     foreach ($winners as $k => $winner)
     {
         $i++;
-//        $i <= 10 ? $flag = true : $flag = false;
-//        if ($flag) { echo "<pre>".print_r($winner,true)."</pre>";}
 
         $section = $winner['group_sort'];
 
@@ -173,9 +182,6 @@ elseif ($_REQUEST['pagestate'] == "submit")
         {
             $winners[$k]["winner_".$i."_arr"] = decode_winner($i, $winner["winner_".$i], $section, $section_cfg[$section]['decode_type']);
         }
-//        if ($flag) { echo "<pre>".print_r($winners[$k]["winner_1_arr"],true)."</pre>";
-//            echo "<pre>".print_r($winners[$k]["winner_2_arr"],true)."</pre>";
-//            echo "<pre>".print_r($winners[$k]["winner_3_arr"],true)."</pre>";}
     }
 
     // pass data to template for display
@@ -183,14 +189,15 @@ elseif ($_REQUEST['pagestate'] == "submit")
      "section" => $section_cfg,
      "data"    => $winners
     );
+
     $pagefields = array(
         "theme" => $styletheme,
-        "stylesheet" => $stylesheet,
-        "tab-title" => "Trophy Display",
-        "page-theme" => "cerulean_",
-        "page-title" => "Title Text",
+        "stylesheet" => "",
+        "tab-title" => "Trophy Winners",
+        "page-theme" => "",
+        "page-title" => "Starcross YC Trophy Winners {$_REQUEST['year-label']}",
         "page-main" => $tmpl_o->get_template("trophy_display_content", array(), $params ),
-        "page-footer" => "footer here",
+        "page-footer" => "<p><small>printed on $today</small></p>",
     );
 
     echo $tmpl_o->get_template("print_page", $pagefields, array() );
@@ -206,14 +213,12 @@ function decode_winner($i, $winner_str, $section, $decode_type = 'class')
     $position = array("1"=>"1st","2"=>"2nd","3"=>"3rd");
 
     $winner_arr = array();
-//    echo "<pre> START string ".print_r($winner_str,true)."</pre>";
     $arr = array_filter(explode("|", $winner_str));  /// array_filter ensures null array
-//    echo "<pre>after explode $winner_str<br> ".print_r($arr,true)."</pre>";
+
     empty($arr) ? $winner_arr['exists'] = false : $winner_arr['exists'] = true;
-//    echo "<pre>before if ".print_r($winner_arr,true)."</pre>";
+
     if ($winner_arr['exists'] === true)
     {
-//        echo "exists so adding data<br>";
         $winner_arr['type']    = $decode_type;
         $winner_arr['section'] = $section;
         $winner_arr['posn']    = $position[$i];
@@ -223,8 +228,6 @@ function decode_winner($i, $winner_str, $section, $decode_type = 'class')
         !empty($arr[3]) ? $winner_arr['crew'] = $arr[3] : $winner_arr['crew'] = '';
         !empty($arr[4]) ? $winner_arr['info'] = $arr[4] : $winner_arr['info'] = '';
     }
-
-//    echo "<pre>after setting".print_r($winner_arr,true)."</pre>";
 
     return $winner_arr;
 }

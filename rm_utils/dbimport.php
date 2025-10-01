@@ -325,6 +325,7 @@ function get_typeoptions($importtype)
                 "event_start"  => 'event_start',
                 "event_name"   => 'event_name',
                 "series_code"  => 'series_code',
+                "series_code_extra" => 'series_code_extra',
                 "event_type"   => 'event_type',
                 "event_format" => 'event_format',
                 "event_entry"  => 'event_entry',
@@ -590,6 +591,7 @@ function val_event($i, $key, $row, $table, $fields)
     $import[$key]['event_start']  = $row['event_start'];
     $import[$key]['event_name']   = addslashes($row['event_name']);
     $import[$key]['series_code']  = addslashes(strtoupper($row['series_code']));
+    $import[$key]['series_code_extra']  = addslashes(strtoupper($row['series_code_extra']));
     $import[$key]['event_type']   = addslashes($row['event_type']);
     !$racecfg ? $import[$key]['event_format'] = 0 : $import[$key]['event_format'] = $racecfg['id'];
     $import[$key]['event_entry']  = addslashes($row['event_entry']);

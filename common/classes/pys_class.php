@@ -133,7 +133,14 @@ class PYS
         $this->outurl = $this->baseurl."/".$admin['data-year']."/".$this->outfile;
 
 //        echo "<pre>base: {$this->baseurl}| file: {$this->outfile}| url:{$this->outurl}|path: {$this->outpath}|dir: $dirname|</pre>";
-//        exit();
+//       exit();
+        /*
+         * 	base: http://localhost/pegasus/data/pyscheme
+         *  file: SYC_20251001_SYCtrophyraces2025_8111325
+         *  url:http://localhost/pegasus/data/pyscheme/2025/SYC_20251001_SYCtrophyraces2025_8111325
+         *  path: C://xampp/htdocs/pegasus/data/pyscheme/2025/SYC_20251001_SYCtrophyraces2025_8111325
+         *  dir: C://xampp/htdocs/pegasus/data/pyscheme/2025/SYC_20251001_SYCtrophyraces2025_8111325
+         */
 
         return $this->outpath;
     }
@@ -175,7 +182,7 @@ class PYS
         // get event details for command
         $status = 0;
         $field_list  = "a.`id`, `event_name`, `event_date`, `event_start`, `event_order`, `event_format`, `tide_time`, `tide_height`, 
-                        `ws_start`,` wd_start`, `ws_end`, `wd_end`";
+                        `ws_start`,`wd_start`, `ws_end`, `wd_end`";
         $order_list  = "`event_date` ASC, `event_start` ASC";
 
         // set selection where and join constraints
@@ -214,8 +221,11 @@ class PYS
 
             if ($status == 0)
             {
+
+
                 // get list of events to process for this command
                 $sql = "SELECT a.`id` FROM t_event as a $join WHERE $where and $subwhere ORDER BY `id` ASC";
+                // echo "<pre>GET LIST OF EVENTS<br> $sql</pre>";
                 $rs = $this->db->db_get_rows($sql);
                 $list = "";
 
@@ -227,6 +237,7 @@ class PYS
 
                 // now get event fields for all requested events
                 $sql = "SELECT $field_list FROM t_event as a WHERE `id` in ($list) ORDER BY $order_list";
+                echo "<pre>GET EVENT DATA<br> $sql</pre>";
                 $rs = $this->db->db_get_rows($sql);
 
                 if ($rs)
