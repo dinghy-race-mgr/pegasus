@@ -118,20 +118,49 @@ class PAGES
 
                 $duty_info = "";
                 $duty_count = count($event['duties']);
-                if ($this->cfg['programme']['fields']['inc_duty_ood_only'])
+                if ($duty_count == 0)
                 {
-                    if (array_key_exists("Race Officer", $event['duties']))
-                    {
-                        $duty_info = $event['duties']["Race Officer"];
-                    }
+                    $duty_present = false;
+                    $duty_info = "";
                 }
                 else
                 {
-                    foreach ($event['duties'] as $k => $duty)
+                    $duty_present = true;
+                    if ($this->cfg['programme']['fields']['inc_duty'] == "ood")
                     {
-                         $duty_info .= $this->get_template("tb_prg_duty", array("duty" => $duty['duty'], "person" => $duty['person']), array());
+                        if (array_key_exists("Race Officer", $event['duties'])) {
+                            $duty_info = $event['duties']["Race Officer"];
+                        } else {
+                            $duty_info = "not allocated yet";
+                        }
+                    }
+                    else
+                    {
+                        $params = array(
+                            "inc_dutyconfirm_status" => $this->cfg['programme']['fields']["inc_dutyconfirm_status"],
+                            "inc_dutyswap_status" => $this->cfg['programme']['fields']["inc_dutyswap_status"]
+                        );
+                        $i = 0;
+                        foreach ($event['duties'] as $k => $duty)
+                        {
+                            // FIXME have to get this from the t_eventduty record
+                            $i++;
+                            if ($i % 2 == 0) //even
+                            {
+                                $params['duty_confirm_status'] = "confirmed";
+                                $params['duty_swap_status'] = false;
+                            }
+                            else
+                            {
+                                $params['duty_confirm_status'] = "unconfirmed";
+                                $params['duty_swap_status'] = true;
+                            }
+
+                            $duty_info .= $this->get_template("tb_prg_duty", array("duty" => $duty['duty'], "person" => $duty['person']), $params);
+                        }
                     }
                 }
+
 
                 $format = "";
                 if ($event['category'] == "racing")
@@ -175,7 +204,7 @@ class PAGES
                 $this->cfg["programme"]['duty_display'] ? $evt_fields['duty_show'] = ".in" : $evt_fields['duty_show'] = "";
 
                 $table_data.= $this->get_template("tb_prg_data", $evt_fields,
-                    array("fields" => $this->cfg["programme"]['fields'], "state" => $event['state'], "info" => $info_present));
+                    array("fields" => $this->cfg["programme"]['fields'], "state" => $event['state'], "info" => $info_present, "duty" => $duty_present));
             }
             $table_head = "";
             if ($this->cfg['programme']['table_hdr'])

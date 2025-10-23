@@ -39,6 +39,189 @@ EOT;
 }
 
 
+function trophies_display_form($params = array())
+{
+    $bufr = "";
+
+    $select_opts = "";
+    foreach($params['periods'] as $period) {
+        $select_opts.= "<option value='{$period['period']}'>{$period['period']}</option>";
+    }
+
+    $bufr.= <<<EOT
+    <div class="container" style="margin-top: 40px;">
+        <div class="col-md-8">
+            <div class="p-3 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-3">
+                <!--h3>{function}</h3-->
+                <p class="lead">{instructions}</p>
+                <!-- div class="text-end">
+                    <a class="btn btn-info float-right" href="./documents/RM_EVENT_documentation.pdf" target="_BLANK" type="button" role="button">get help ...</a>
+                </div -->               
+            </div>
+        </div>
+
+        <form class="row g-3" enctype="multipart/form-data" id="trophyForm" action="{script}" method="post">
+        
+            <!-- period argument -->           
+            <div class="row g-5 align-items-center">
+                <div class="col-auto">
+                    <label for="period" class="col-form-label"><strong>Report Period</strong></label>
+                </div>
+                <div class="col-auto">
+                    <select class="form-select mb-3" id="period" name="period">
+                      $select_opts
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <span id="periodHelpInline" class="form-text">Select period you want to be represented in your report</span>
+                </div>
+            </div>
+                                
+            <!-- style argument-->
+            <div class="row g-5 align-items-center">
+                <div class="col-auto">
+                    <label for="report_style"class="col-form-label"><strong>Report Style</strong></label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="report_style" value="standard" id="report_style1" checked>
+                        <label class="form-check-label" for="report_style1">Standard</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="report_style" value="cerulean_" id="report_style2">
+                        <label class="form-check-label" for="report_style2">Cerulean</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="report_style" value="flatly_" id="report_style3">
+                        <label class="form-check-label" for="report_style3">Flatly</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="report_style" value="united_"id="report_style4" checked>
+                        <label class="form-check-label" for="report_style4">United</label>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <span id="styleHelpInline" class="form-text">Select format for your report</span>
+                </div>
+            </div>           
+
+            <!-- buttons -->
+            <div class="mt-5">
+                    <div class="text-end">
+                        <a class="btn btn-lg btn-warning mx-5" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+                        <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
+
+                        <button type="submit" class="btn btn-lg btn-primary mx-5"  style="min-width: 200px;" >
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Create Report</b></button>
+                    </div>
+            </div>
+            
+        </form>
+    </div>
+    <script language="javascript">
+    function quitBox(cmd)
+    {   
+        if (cmd=='quit') { open(location, '_self').close(); }   
+        return false;   
+    }
+    </script>
+EOT;
+    return $bufr;
+
+}
+
+function trophies_presentation_list_form($params = array())
+{
+    $bufr = "";
+
+    $select_opts = "";
+    foreach($params['periods'] as $period) {
+        $select_opts.= "<option value='{$period['period']}'>{$period['period']}</option>";
+    }
+
+    $bufr.= <<<EOT
+    <div class="container" style="margin-top: 40px;">
+        <div class="col-md-8">
+            <div class="p-3 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-3">
+                <!--h3>{function}</h3-->
+                <p class="lead">{instructions}</p>
+                <!-- div class="text-end">
+                    <a class="btn btn-info float-right" href="./documents/RM_EVENT_documentation.pdf" target="_BLANK" type="button" role="button">get help ...</a>
+                </div -->               
+            </div>
+        </div>
+
+        <form class="row g-3" enctype="multipart/form-data" id="trophyForm" action="{script}" method="post">
+        
+            <!-- period argument -->           
+            <div class="row g-5 align-items-center">
+                <div class="col-auto">
+                    <label for="period" class="col-form-label"><strong>Report Period</strong></label>
+                </div>
+                <div class="col-auto">
+                    <select class="form-select mb-3" id="period" name="period">
+                      $select_opts
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <span id="periodHelpInline" class="form-text">Select period you want to be represented in your report</span>
+                </div>
+            </div>
+                                
+            <!-- style argument-->
+            <!--div class="row g-5 align-items-center">
+                <div class="col-auto">
+                    <label for="report_style"class="col-form-label"><strong>Report Style</strong></label>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="report_style" value="standard" id="report_style1" checked>
+                        <label class="form-check-label" for="report_style1">Standard</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="report_style" value="cerulean_" id="report_style2">
+                        <label class="form-check-label" for="report_style2">Cerulean</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="report_style" value="flatly_" id="report_style3">
+                        <label class="form-check-label" for="report_style3">Flatly</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="report_style" value="united_"id="report_style4" checked>
+                        <label class="form-check-label" for="report_style4">United</label>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <span id="styleHelpInline" class="form-text">Select format for your report</span>
+                </div>
+            </div -->           
+
+            <!-- buttons -->
+            <div class="mt-5">
+                    <div class="text-end">
+                        <a class="btn btn-lg btn-warning mx-5" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+                        <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
+
+                        <button type="submit" class="btn btn-lg btn-primary mx-5"  style="min-width: 200px;" >
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Create List</b></button>
+                    </div>
+            </div>
+            
+        </form>
+    </div>
+    <script language="javascript">
+    function quitBox(cmd)
+    {   
+        if (cmd=='quit') { open(location, '_self').close(); }   
+        return false;   
+    }
+    </script>
+EOT;
+    return $bufr;
+
+}
+
+
 function trophy_display_content($params = array())
 {
     $data = $params['data'];
@@ -60,6 +243,70 @@ function trophy_display_content($params = array())
 
         $bufr.= get_trophy_report ($row, $section_cfg["{$row['group_sort']}"]);
     }
+
+    return $bufr;
+}
+
+function trophy_presentation_list($params = array())
+{
+    $data = $params['data'];
+    //echo "<pre>".print_r($data,true)."</pre>";
+
+    // loop over each trophy/winners - creating an array for each winner with all the trophies they won
+    $tbufr = "";        // temporary buffer
+    $i = 0;             // counter for records procesed
+    $j = 0;             // counter for records won by winner
+    $winner = "";       // initial winner value
+    $name = "";         // initial winner name
+    $names = array();   // output data array with winners name, count of no. of trophies, and html for trophies won
+    foreach ($data as $k=>$row)
+    {
+        $i++;
+
+        if ($row['sortstr'] != $winner or $i == 1)     // we have a change of winner
+        {
+            if ($i != 1 )  // set previous name and count
+            {
+                $names[$name]['name'] = $name;
+                $names[$name]['htm'] = $tbufr;
+                $names[$name]['count'] = $j;
+            }
+            //echo "<pre>{$names[$name]['name']} {$names[$name]['count']}</pre>";
+
+            // start new person
+            $j=0;
+            $tbufr = "";
+            $tbufr.= "<tr><td><b>{$row['helm']}</b></td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+        }
+        $tbufr.= <<<EOT
+        <tr>
+            <td style="padding-left: 20px;">{$row['event']}</td>
+            <td>{$row['trophy']}</td>
+            <td>{$row['posn']}</td>
+            <td>{$row['helm']} / {$row['crew']}</td>
+            <td>{$row['boat']} / {$row['number']}</td>           
+        </tr>          
+EOT;
+        $winner = $row['sortstr'];
+        $name = $row['sortstr'];
+        $j++;
+    }
+
+    // sort names array by the number of trophies won
+    $count  = array_column($names, 'count');
+    array_multisort($count, SORT_ASC, $names);
+
+    // create html buffer with winners data - in order of no. of trophies won
+    $tbufr = "";
+    foreach ($names as $name) { $tbufr.=$name['htm']; }
+
+    $bufr = <<<EOT
+    <div>
+    <table class="table table-condensed">
+        $tbufr
+    </table>
+    </div>
+EOT;
 
     return $bufr;
 }

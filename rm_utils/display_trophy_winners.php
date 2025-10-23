@@ -12,6 +12,12 @@
  *
  *
  */
+
+// TODO - build period select from data in tables
+// TODO - get output to reflect report_style selected
+// TODO - sort out error reporting form
+
+
 $dbg = true;
 $loc  = "..";
 $page = "display_trophy_winners";     //
@@ -42,60 +48,46 @@ if (array_key_exists("timezone", $cfg)) { date_default_timezone_set($cfg['timezo
 // connect to database  (using PDO)
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
 
+// find out in trophy_award what period values are currently used
+$query = "SELECT period FROM t_trophyaward GROUP BY period ORDER BY period ASC";
+$periods = $db_o->run($query, array() )->fetchall();
+
 // get club specific values
-foreach ($db_o->getinivalues(true) as $k => $v) { $cfg[$k] = $v; }  // FIXME not working on HTZ
+//foreach ($db_o->getinivalues(true) as $k => $v) { $cfg[$k] = $v; }  // FIXME not working on HTZ
 
 // set templates
 $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/trophies_tm.php"));
 
-if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "submit"; }   // FIXME temporary fix for testing
+// common template parameters
+$pagefields = array(
+    "stylesheet"  => $stylesheet,
+    "tab-title"   => "Trophy Winners",
+    "page-theme"  => $styletheme,
+    "page-title"  => "Trophy Winners Display",
+    "page-footer" => "",
+);
 
+/* ------------ check pagestate ---------------------------------------------*/
+if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }   // FIXME temporary fix for testing
 
-/* ------------ file selection page ---------------------------------------------*/
-$state = 0;
-
+//echo "<pre>".print_r($_REQUEST,true)."</pre>";
 if ($_REQUEST['pagestate'] != "init" AND $_REQUEST['pagestate'] != "submit")
 {
-    $pagefields = array(
-        "theme" => $styletheme,
-        "stylesheet" => $stylesheet,
-        "tab-title" => "Trophy Winners",
-        "page-theme" => "",
-        "page-title" => "Trophy Winners Display",
-        "page-main" => $tmpl_o->get_template("trophies_error", array(), array("state"=>2, "pagestate"=>$_REQUEST['pagestate'])),
-        "page-footer" => "",
-    );
-
-    echo $tmpl_o->get_template("print_page", $pagefields );
+    $pagefields['page-main'] = $tmpl_o->get_template("trophies_error", array(), array("state"=>2, "pagestate"=>$_REQUEST['pagestate']));
+    echo $tmpl_o->get_template("print_page", $pagefields, array() );
 }
 
 /* ------------ get user input page ---------------------------------------------*/
 elseif ($_REQUEST['pagestate'] == "init")
 {
-//    // if event exists create options page
-//    if ($event)
-//    {
-//        $formfields = array(
-//            "instructions" => "Creates a display of trophy winners for the selected year</br>
-//           <span class=' rm-text-xs'>Please set the options below.</br>",
-//            "script" => "display_trophy_winners.php?pagestate=submit",
-//        );
-//
-//        $pagefields['header-right'] = "{$event['event_name']} - {$event['event_date']}  (". substr($event['event_start'], 0, 5) . ")";
-//        $pagefields['body'] = $tmpl_o->get_template("publishresults_form", $formfields,
-//                              array("list" => $process_list, "series"=>$series_arr, "upload" => $_SESSION['result_upload']));
-//    }
-//    else
-//    {
-//        $state = 3;  // report missing event
-//    }
 
-    if ($state != 0 )  // reset page to deal with error conditions
-    {
-        $pagefields['body'] = $tmpl_o->get_template("publishresults_error", array(), array("state"=>$state, "eventid"=>$_REQUEST['eventid']));
-    }
+    $formfields = array(
+        "function"     => "Trophy Display Report",
+        "instructions" => "Creates a display of trophy winners for the selected year/period</br>Please set the options below.",
+        "script"       => "display_trophy_winners.php?pagestate=submit",
+    );
 
-    // display page
+    $pagefields['page-main'] = $tmpl_o->get_template("trophies_display_form", $formfields, array("periods" => $periods));
     echo $tmpl_o->get_template("print_page", $pagefields );
 
 }
@@ -104,11 +96,6 @@ elseif ($_REQUEST['pagestate'] == "init")
 
 elseif ($_REQUEST['pagestate'] == "submit")
 {
-    // set up arguments
-    $_REQUEST = array(
-        "year-label" => '2023-2024',
-        "mode"       => 'standard',
-    );
     $today = date("jS F Y H:i");
 
     $section_cfg = array(
@@ -162,10 +149,11 @@ elseif ($_REQUEST['pagestate'] == "submit")
         ),
     );
 
+
     // get events in defined order (group, then internal order)
     $query = "SELECT a.id, a.name, a.sname, a.notes, a.allocation_notes, a.picture, a.group_sort, a.individual_sort, 
               b.period, b.award_category, b.award_division, b.winner_1, b.winner_2, b.winner_3, b.notes 
-              FROM t_trophy as a JOIN t_trophyaward as b ON a.id=b.trophyid  WHERE b.period = '{$_REQUEST['year-label']}'
+              FROM t_trophy as a JOIN t_trophyaward as b ON a.id=b.trophyid  WHERE b.period = '{$_REQUEST['period']}'
               ORDER BY FIELD(group_sort, 'trophy_series', 'open_event', 'club_series', 'trophy_race', 'cruiser_race', 'achievement', 'junior_regatta', 'junior_training', ''), individual_sort ASC";
     $winners = $db_o->run($query, array() )->fetchall();
 
@@ -187,15 +175,14 @@ elseif ($_REQUEST['pagestate'] == "submit")
     // pass data to template for display
     $params = array(
      "section" => $section_cfg,
-     "data"    => $winners
+     "data"    => $winners,
     );
 
     $pagefields = array(
-        "theme" => $styletheme,
         "stylesheet" => "",
         "tab-title" => "Trophy Winners",
-        "page-theme" => "",
-        "page-title" => "Starcross YC Trophy Winners {$_REQUEST['year-label']}",
+        "page-theme" => $_REQUEST['report_style'],
+        "page-title" => "Starcross YC Trophy Winners {$_REQUEST['period']}",
         "page-main" => $tmpl_o->get_template("trophy_display_content", array(), $params ),
         "page-footer" => "<p><small>printed on $today</small></p>",
     );

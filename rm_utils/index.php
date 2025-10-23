@@ -139,16 +139,16 @@ else
                 <div style="padding-left:20px;">
                     <h4>trophy display report</h4>
                     <p class="text-info">Creates display output for trophies</p>
-                    <a class="btn btn-primary btn-md btn-block" href="display_trophy_winners.php?pagestate=submit" role="button"><span style="font-size: 0.8em">display_trophy_winners.php?pagestate=submit</span></a>
+                    <a class="btn btn-primary btn-md btn-block" href="display_trophy_winners.php?" role="button"><span style="font-size: 0.8em">display_trophy_winners.php?</span></a>
                 </div>
             </div>
-            <!-- div class="col-md-3" style="margin-left:10px; margin-top: 10px;">
+            <div class="col-md-3" style="margin-left:10px; margin-top: 10px;">
                 <div style="padding-left:20px;">
-                    <h4>dutyman export</h4>
-                    <p class="text-info">Creates export files (events and/or duties) for import into dutyman</p>
-                    <a class="btn btn-primary btn-md btn-block" href="dtm_export.php?pagestate=init" role="button"><span style="font-size: 0.8em">dutyman_export.php?pagestate=init</span></a>
+                    <h4>trophy winners list</h4>
+                    <p class="text-info">Creates winners list for presentation</p>
+                    <a class="btn btn-primary btn-md btn-block" href="trophy_winners_list.php" role="button"><span style="font-size: 0.8em">trophy_winners_list.php</span></a>
                 </div>
-            </div -->
+            </div>
         </div>
 EOT;
 }

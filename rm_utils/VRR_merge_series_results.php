@@ -57,6 +57,7 @@ EOT;
 $db_o = new DB;
 
 echo "<pre>AGGREGATING SUB-SERIES RESULTS ... </pre>";
+
 echo "<pre><h2>$name [$new_eventid]</h2></pre>";
 
 // options for series result display

@@ -290,6 +290,26 @@
 		<a>
 		  <div class="checkbox">
 			<label>
+			  <input type="checkbox" id="hide_icon" checked="checked" value="1" data-field="icon">
+			  <span>{$label t_link icon}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
+			  <input type="checkbox" id="hide_style" checked="checked" value="1" data-field="style">
+			  <span>{$label t_link style}</span>
+			</label>
+		</div>
+		</a>
+		</li>
+		<li>
+		<a>
+		  <div class="checkbox">
+			<label>
 			  <input type="checkbox" id="hide_listorder" checked="checked" value="1" data-field="listorder">
 			  <span>{$label t_link listorder}</span>
 			</label>
@@ -379,6 +399,12 @@
 	.bs-gridcell[data-field=category]:before {
 		content: "{$label t_link category}";
 	}
+	.bs-gridcell[data-field=icon]:before {
+		content: "{$label t_link icon}";
+	}
+	.bs-gridcell[data-field=style]:before {
+		content: "{$label t_link style}";
+	}
 	.bs-gridcell[data-field=listorder]:before {
 		content: "{$label t_link listorder}";
 	}
@@ -432,6 +458,28 @@
 									{END category_fieldheader}
 									</th>
 									{END category_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN icon_fieldheadercolumn}<th class="rnr-gridfieldlabel {$icon_class}" data-field=icon>
+									{BEGIN icon_fieldheader}<span {$icon_orderlinkattrs}>
+											{$label t_link icon}
+										</span>
+									{END icon_fieldheader}
+									</th>
+									{END icon_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN style_fieldheadercolumn}<th class="rnr-gridfieldlabel {$style_class}" data-field=style>
+									{BEGIN style_fieldheader}<span {$style_orderlinkattrs}>
+											{$label t_link style}
+										</span>
+									{END style_fieldheader}
+									</th>
+									{END style_fieldheadercolumn}
 									
 									
 									
@@ -497,6 +545,18 @@
 		{$category_value}
 	</td>
 {END category_fieldcolumn}
+
+
+	{BEGIN icon_fieldcolumn}<td class="bs-gridcell {$icon_class}"  data-field=icon {$rowstyle} {$recordattrs}>
+		{$icon_value}
+	</td>
+{END icon_fieldcolumn}
+
+
+	{BEGIN style_fieldcolumn}<td class="bs-gridcell {$style_class}"  data-field=style {$rowstyle} {$recordattrs}>
+		{$style_value}
+	</td>
+{END style_fieldcolumn}
 
 
 	{BEGIN listorder_fieldcolumn}<td class="bs-gridcell {$listorder_class}"  data-field=listorder {$rowstyle} {$recordattrs}>

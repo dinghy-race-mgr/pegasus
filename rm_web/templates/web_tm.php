@@ -172,15 +172,26 @@ EOT;
        if ($params['inc_type']) { $category = "<th width=\"15%\">Type/Format</th>"; }
        if ($params['inc_duty'])
        {
-           if ($params['inc_duty_ood_only'])
-           {
-               $duty = "<th width=\"25%\">Race Officer</th>";
-           }
-           else
-           {
-               $duty = "<th width=\"25%\">Duties</th>";
-           }
-
+//           if ($params['inc_duty_ood_only'])
+//           {
+//               $duty = "<th width=\"25%\">Race Officer</th>";
+//           }
+//           else
+//           {
+//               $duty = "<th width=\"25%\">Duties</th>";
+//           }
+            if ($params['inc_duty'] == "all")
+            {
+                $duty = "<th width=\"25%\">Duties</th>";
+            }
+            elseif ($params['inc_duty'] == "ood")
+            {
+                $duty = "<th width=\"25%\">Race Officer</th>";
+            }
+            else
+            {
+                $duty = "<th width=\"25%\">&nbsp;</th>";
+            }
        }
               
        $html = <<<EOT
@@ -237,31 +248,35 @@ EOT;
        if ($params['info'])
        {
            $info = <<<EOT
-                <a href="{info}" target="_blank">{infolbl}</a>
+            <a href="{info}" target="_blank">{infolbl}</a>
 EOT;
        }
 
+
+       $duty = "";
        if ($params['fields']['inc_duty'] and $params['state']!="noevent")
        {
-           if ($params['fields']['inc_duty_ood_only'])
+           if ($params['fields']['inc_duty'] == "ood")
            {
-               $duty = <<<EOT
-                {duties}
-EOT;
+               $duty = "{duties}";
            }
            else
            {
-               $duty = <<<EOT
-                    <a  data-toggle="collapse" data-target="#duty{id}" 
-                    aria-expanded="false" aria-controls="duty{id}" ><b>Duties [{duty_num}]</b></a>
-                    <div class="collapse{duty_show}" id="duty{id}">
-                       <div class="well" style="padding: 0px 0px 0px 0px !important; bottom-margin: 0px !important">
-                             <table class="table condensed" style="padding: 0px 0px 0px 0px !important">
-                             {duties} 
-                             </table>
-                       </div>
-                    </div>
+               if ($params['duty'])
+               {
+                   $duty = <<<EOT
+                <a  data-toggle="collapse" data-target="#duty{id}" aria-expanded="false" aria-controls="duty{id}" ><b>Duties [{duty_num}]</b></a>
+                <div class="collapse{duty_show}" id="duty{id}">
+                   <div style="margin: 0px; padding: 0px; ">
+                         <table class="table table-condensed" >{duties} </table>
+                   </div>
+                </div>
 EOT;
+               }
+               else
+               {
+                   $duty = " - ";
+               }
            }
        }
 
@@ -296,12 +311,34 @@ EOT;
     
     public function tb_prg_duty($params=array())
     {
-       $html = <<<EOT
-         <tr>
-            <td class="duty_type">{duty}</td>
-            <td class="duty_person">{person}</td>
-         </tr>
+        
+        $icons = array(
+            "confirmed"   => "<span class='glyphicon glyphicon-ok text-success' aria-hidden='true' style='font-size: 1.0em'></span>",
+            "unconfirmed" => "<span class='text-danger'><strong>O</strong></span>", //"<span class='glyphicon glyphicon-remove text-danger' aria-hidden='true' style='font-size: 1.0em'></span>",
+            "unknown"     => "",
+            "requested"   => "<span class='glyphicon glyphicon-transfer text-danger' aria-hidden='true' style='font-size: 1.2em'></span>",
+        );
+
+        $duty_status = "";
+        if ($params['inc_dutyconfirm_status'])
+        {
+            $duty_status = $icons["{$params['duty_confirm_status']}"];
+        }
+
+        $swap_status = "";
+        if ($params['inc_dutyswap_status'])
+        {
+            $params['duty_swap_status'] ? $swap_status = $icons['requested'] : "" ;
+        }
+
+        $html = <<<EOT
+     <tr>
+        <td class="duty_type">{duty}</td>
+        <td class="duty_person">{person}</td>
+        <td>$duty_status &nbsp; $swap_status</td>
+     </tr>
 EOT;
+       //exit();
        return $html;
     }
     
