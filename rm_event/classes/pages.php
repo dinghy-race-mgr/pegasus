@@ -66,7 +66,7 @@ class PAGES
         echo $this->tmpl_o->get_template("page", $fields, $params);
     }
 
-    public function pg_event($db_o, $page, $eid, $entryupdate)
+    public function pg_event($db_o, $page, $eid, $entryupdate, $view = "standard")
     {
         // get event details
         $event = $db_o->run("SELECT * FROM e_event WHERE id = ?", array($eid))->fetch();
@@ -172,7 +172,7 @@ class PAGES
             "brand-label" => $this->cfg['brand']);
         $params = array("page" => $page, "active" => $page, 'eid' => $eid,
             "start-year"=> $this->cfg['start_year'], "options"=>$this->cfg['options'],
-            "contact"=> $contacts, "counts" => $counts, "complete" => $complete);
+            "contact"=> $contacts, "counts" => $counts, "complete" => $complete, "view" => $this->cfg['view_status']);
         $nav =$this->tmpl_o->get_template("navbar", $fields, $params);
 
         // create body
@@ -187,7 +187,7 @@ class PAGES
                 {
                     $event_topics = $db_o->run("SELECT * FROM e_content WHERE id IN ({$event['topics']}) and page = ?", array($page))->fetchall();
                     $topics = array();
-                    foreach ($event_topics as $rs) { $topics[$rs['label']] = $rs; }
+                    foreach ($event_topics as $rs) { $topics[$rs['content-label']] = $rs; }
                 }
 
                 $fields = array(
@@ -235,7 +235,7 @@ class PAGES
                     $entry_state = check_entry_open($event['entry-start'], $event['entry-end']);  // returns before|after|open
 
                     // allow users with valid view code to enter anyway
-                    if ($this->cfg['view_status']) { $entry_state = "open"; }
+                    if ($this->cfg['view_status'] == "preview") { $entry_state = "open"; }
 
                     if ($entry_state == "before")
                     {

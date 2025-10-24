@@ -7,7 +7,7 @@
     eid   - id for event record in e_event  (set to 0 if not set)
     event - event nickname - optional mechanism to select event                                // fixme - do I need this
     page  - page to be displayed (set to 'list' if not set)
-//    view  - code used to give access to user overriding entry restrictions - set in ini file    // fixme - do I need this
+    view  - code used to give access to user overriding entry restrictions - (set to 'standard' by default) - use 'preview' to get access // fixme needs more security
     year  - event year to display on list page (set to current year if not supplied)
     view  - sets viewing mode - standard or preview. Preview allows direct viewing of site even if it is currently only listed
             primarily for use by the event page developer. In preview mode the eid value must be set
@@ -52,7 +52,7 @@ $cfg['logfile'] = str_replace("_date", date("_Y"), $cfg['logfile']);
 //}
 
 
-$if_o = new PAGES($cfg);
+
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
 
 // arguments
@@ -73,7 +73,8 @@ else
 {
     empty($_REQUEST['eid'])  ? $eid = 0 : $eid = $_REQUEST['eid'];
     empty($_REQUEST['page']) ? $page = "list" : $page = $_REQUEST['page'];
-    empty($_REQUEST['view']) ? $view = "0" : $view = $_REQUEST['view'];
+    empty($_REQUEST['view']) ? $view = "standard" : $view = $_REQUEST['view'];
+    $cfg['view_status'] = $view;
 }
 empty($_REQUEST['year']) ? $year = date("Y") : $year = $_REQUEST['year'];
 
@@ -85,11 +86,12 @@ empty($_REQUEST['recordid']) ? $entryupdate['recordid'] = false : $entryupdate['
 empty($_REQUEST['junior'])   ? $entryupdate['junior']   = false : $entryupdate['junior'] = $_REQUEST['junior'];
 empty($_REQUEST['waiting'])  ? $entryupdate['waiting']  = false : $entryupdate['waiting'] = $_REQUEST['waiting'];
 
+$if_o = new PAGES($cfg);
 if ($page == "list")                        // events list page
 {
     $if_o->pg_list($db_o, $year);
 }
 else                                        // specific event page
 {
-    $if_o->pg_event($db_o, $page, $eid, $entryupdate);
+    $if_o->pg_event($db_o, $page, $eid, $entryupdate, $view);
 }

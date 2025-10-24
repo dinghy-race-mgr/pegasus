@@ -55,7 +55,9 @@ EOT;
 
 function navbar ($params = array())
 {
-    global $cfg;
+//    echo "<pre>".print_r($params,true)."</pre>";
+//    exit();
+
 
     // setup page link options
     $htm_options = "";
@@ -63,8 +65,9 @@ function navbar ($params = array())
     {
         foreach ($params['options'] as $option)
         {
-            // don't include page if event is complete unless its the results page
-            if ($option['page'] != "results" and $params['complete']) { continue; }
+            // don't include page if event is complete unless its the results page or view mode id "preview"
+            //if ($option['page'] != "results" and $params['complete']) { continue; }
+            if ($params['view'] != "preview" and $params['complete'] and $option['page'] != "results") { continue; }
 
             $inc_count = "";
             if ($option['page'] == "documents" or $option['page'] == "entries" or
@@ -77,7 +80,7 @@ function navbar ($params = array())
             {
                 $htm_options.=<<<EOT
                 <li class="nav-item px-2 lead active active-option">
-                    <a class="nav-link text-black fw-bold" href="{$option['script']}{$params['eid']}">{$option['label']}&nbsp;$inc_count</a>
+                    <a class="nav-link text-black fw-bold" href="{$option['script']}{$params['eid']}&view={$params['view']}">{$option['label']}&nbsp;$inc_count</a>
                 </li>
 EOT;
             }
@@ -85,7 +88,7 @@ EOT;
             {
                 $htm_options.=<<<EOT
                 <li class="nav-item px-2 lead">
-                    <a class="nav-link" href="{$option['script']}{$params['eid']}">{$option['label']}&nbsp;$inc_count</a>
+                    <a class="nav-link" href="{$option['script']}{$params['eid']}&view={$params['view']}">{$option['label']}&nbsp;$inc_count</a>
                 </li>
 EOT;
             }
