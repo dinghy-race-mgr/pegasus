@@ -497,6 +497,15 @@
 	.bs-gridcell[data-field=active]:before {
 		content: "{$label t_rotamember active}";
 	}
+	.bs-gridcell[data-field=memberid]:before {
+		content: "{$label t_rotamember memberid}";
+	}
+	.bs-gridcell[data-field=dtm_login]:before {
+		content: "{$label t_rotamember dtm_login}";
+	}
+	.bs-gridcell[data-field=createdate]:before {
+		content: "{$label t_rotamember createdate}";
+	}
 </style>
 <TABLE class="table {$grid_classes} bs-flexgrid rnr-b-grid rnr-gridtable" style="width: 95%;" cellpadding="0" data-brick="grid" data-pageid="{$pageid}" {$grid_hiddenattr}>
                       <thead>
@@ -611,7 +620,10 @@
 	<span data-hidden {$ieditbuttonsholder_attrs}></span>
 
 	
-		</td>	
+		{BEGIN view_column}{BEGIN view_link}<a class="glyphicon glyphicon-search" {$viewlink_attrs} title="View"></a>
+	{END view_link}
+	{END view_column}
+	</td>	
 	{END listIcons_column}	
 
 		{BEGIN checkbox_column}<TD class="bs-gridcheckbox" style="width: 30px;" ieditcont="checkBox" {$rowstyle} {$recordattrs}>

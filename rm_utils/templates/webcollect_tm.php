@@ -49,6 +49,22 @@ EOT;
 
 function rota_synch_totals($params = array())
 {
+    if ($params['dryrun'] == "true")
+    {
+        $txt = <<<EOT
+<div class="alert alert-success" role="alert"><b>DRYRUN selected -  no records transferred </b><br>
+    Table below lists rota details that would have been transferred </div>
+EOT;
+    }
+    else
+    {
+        $txt = <<<EOT
+<div class="alert alert-success" role="alert"><b>{$params['num_records']} Records Transferred </b> <br>
+    Table below summarises the rota details that have been transferred  </div>
+EOT;
+    }
+
+
     $bufr = <<<EOT
     <div class="jumbotron" style="margin-top: 40px;">
         <h3>Synchronisation Summary</h3>
@@ -61,28 +77,61 @@ function rota_synch_totals($params = array())
             </dl>        
         </p>        
     </div>
+
+    $txt
+    
 EOT;
 
     return $bufr;
 }
 
-function rota_synch_dryrun($params = array())
+function rota_synch_records($params = array())
 {
+    $data = $params['rota_data'];
+    $rota = array_column($data, 'rota');
+    $name = array_column($data, 'familyname');
+    array_multisort($rota, SORT_ASC, $name, SORT_ASC, $data);
+
+    $rows = "";
+    foreach ($data as $row)
+    {
+        $txt = "";
+        if (!empty($row['note']))
+        {
+            $txt = <<<EOT
+            <tr>
+                <td colspan="5" class="text-info" style="text-align: right" ><i>{$row['note']}</i></td>
+            </tr>
+EOT;
+        }
+
+        $rows.= <<<EOT
+        <tr>
+            <td>{$row['name']}</td>
+            <td>{$row['rota']}</td>
+            <td>{$row['phone']}</td>
+            <td>{$row['email']}</td>
+            <td>{$row['memberid']}</td>
+            $txt
+        </tr>
+EOT;
+
+    }
 
     // get data rows
     $bufr = <<<EOT
-    <div class="alert alert-success" role="alert"><b>DRYRUN selected!</b> no records transferred <br>
-    Table below lists rota details that would have been transferred </div>
     <table class="table table-condensed">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Rota</th>
-                <th>Notes</th>
+                <th>Phone</th>
+                <th>email</th>
+                <th>Member ID</th>
             </tr>
         </thead>
         <tbody
-            {rota_data}
+            $rows
         </tbody>
     </table>
 EOT;

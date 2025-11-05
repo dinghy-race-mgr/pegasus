@@ -26,25 +26,34 @@ $_SESSION['daylight_saving']= array(
 );
 
 $_SESSION['webcollect']= array(
-    "firstname_fld"           => "firstname",
-    "familyname_fld"          => "lastname",
-    "phone_fld"               => "mobile_phone",
-    "email_fld"               => "email",
-    "rota_fld"                => "Allocated_Duties_Club_use_only",
-    "duty_restriction_fld"    => "Duty_Restrictions_Club_use_only",
-    "duty_availability_fld"   => "Duty_Non_Availability_Club_use_only",
-    "rota_status_fld"         => "Rota_status_Club_Use_Only",
+    "field_map" => array(
+        "memberid"            => "id",                // note held in Address_1 field in dutyman
+        "firstname"           => "firstname",
+        "familyname"          => "lastname",
+        "phone_1"             => "mobile_phone",
+        "phone_2"             => "home_phone",
+        "email"               => "email",
+        "rota"                => "Allocated_Duties_Club_use_only",
+        "dtm_login"            => "",                  // have to get this from dutyman
+        "duty_restriction"    => "Duty_Restrictions_Club_use_only",
+        "duty_availability"   => "Duty_Non_Availability_Club_use_only",
+        "rota_status"         => "Rota_status_Club_Use_Only",
+    ),
+
     "rota_ignore_values"      => array("resigning", "exempt", "opted out"),
+
     "rota_code_map"           => array(
-        "ood cruising"       => "ood_c",
-        "beachmaster"        => "ood_b",
-        "safety boat driver" => "safety_d",
-        "safety boat crew"   => "safety_c",
-        "ood racing"         => "ood_p",
-        "aood"               => "ood_a",
-        "galley"             => "galley",
-        "bar"                => "bar"
-    )
+            "ood cruising"       => "ood_c",
+            "beachmaster"        => "ood_b",
+            "safety boat driver" => "safety_d",
+            "safety boat crew"   => "safety_c",
+            "ood racing"         => "ood_p",
+            "aood"               => "ood_a",
+            "galley"             => "galley",
+            "bar"                => "bar"
+    ),
+    "include_contacts"       => "true",
+    "include_notes"          => "true"
 );
 
 $_SESSION['rotamap'] = array(

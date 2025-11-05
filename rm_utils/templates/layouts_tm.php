@@ -118,13 +118,31 @@ EOT;
 
 function script_confirm($params = array())
 {
+
+    $dry_run_htm = "";
+    if ($params['dryrun'])
+    {
+        $dry_run_htm = <<<EOT
+        <div class="row margin-top-20">
+            <label class="col-sm-3 control-label text-right" style="font-size: 1.5em">Trial Run ?</label>                         
+            <div class="col-sm-8">
+                <label class="radio-inline"><input type="checkbox" name="dryrun" value="true" >&nbsp;&nbsp;&nbsp;&nbsp;tick for trial run - no changes made</label>                                         
+            </div>             
+        </div>  
+
+EOT;
+    }
+
     $bufr = <<<EOT
     <div class="container" style="margin-top: 40px;">
         <div class="jumbotron" style="margin-top: 40px;">
             <h2 class="text-primary">Instructions:</h2>
             <p class="text-primary">{instructions}</p>
         </div>
+        
         <form enctype="multipart/form-data" id="confirmScript" action="{script}" method="post">
+        
+        $dry_run_htm      
 
         <div class="row margin-top-40">
             <div class="col-sm-8 col-sm-offset-1">

@@ -139,7 +139,7 @@ else
                 <div style="padding-left:20px;">
                     <h4>trophy display report</h4>
                     <p class="text-info">Creates display output for trophies</p>
-                    <a class="btn btn-primary btn-md btn-block" href="display_trophy_winners.php?" role="button"><span style="font-size: 0.8em">display_trophy_winners.php?</span></a>
+                    <a class="btn btn-primary btn-md btn-block" href="trophy_winners_display.php?" role="button"><span style="font-size: 0.8em">display_trophy_winners.php?</span></a>
                 </div>
             </div>
             <div class="col-md-3" style="margin-left:10px; margin-top: 10px;">

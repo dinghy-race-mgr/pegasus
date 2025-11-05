@@ -444,6 +444,22 @@ EOT;
         return $html;    
     }
 
+    private function trophy_switch()
+    {
+        $htm = <<<EOT
+            <div class="btn-group" style="margin-top: 20px;">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" 
+                aria-expanded="false" style="font-size: 1em">
+                    Trophy Winners &hellip; <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="https://www.starcrossyc.org.uk/images/sailing_committee/results/trophy_winners_2025.pdf" target="_blank">2024-24</a></li>
+                    <li><a href="https://www.starcrossyc.org.uk/images/sailing_committee/results/trophy_winners_2024.pdf" target="_blank">2023-24</a></li>
+                </ul>
+            </div>
+EOT;
+        return $htm;
+    }
 
     private function year_switch($start, $end, $searchstr)
     {
@@ -458,7 +474,7 @@ EOT;
         $htm = <<<EOT
             <div class="btn-group" style="margin-top: 20px;">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" 
-                aria-expanded="false" style="font-size: 1.2em">
+                aria-expanded="false" style="font-size: 1em">
                     Change Year &hellip; <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
@@ -490,15 +506,18 @@ EOT;
 
     public function results_content($params=array())
     {
+        $trophy_control = $this->trophy_switch();
         $year_control = $this->year_switch($params['start_year'], $params['end_year'], $params['searchstr']);
         $search_control = $this->search_event($params['year'], $params['searchstr']);
 
         $html = <<<EOT
         <div class="container-fluid">
             <div class="row no-print">                   
-                <div class="col-sm-6 col-md-6"><h1 class="text-primary">{page-title}</h1></div>
+                <div class="col-sm-5 col-md-5"><h1 class="text-primary">{page-title}</h1></div>
+                
+                <div class="col-sm-2 col-md-2">$trophy_control</div>
     
-                <div class="col-sm-3 col-md-3">$year_control</div>
+                <div class="col-sm-2 col-md-2">$year_control</div>
                 
                 <div class="col-sm-3 col-md-3">$search_control</div>
             </div>
@@ -517,15 +536,18 @@ EOT;
 
     public function no_results_content($params=array())
     {
+        $trophy_control = $this->trophy_switch();
         $year_control = $this->year_switch($params['start_year'], $params['end_year'], $params['searchstr']);
         $search_control = $this->search_event($params['year'], $params['searchstr']);
 
         $html = <<<EOT
         <div class="container-fluid">
             <div class="row no-print">                   
-                <div class="col-sm-6 col-md-6"><h1 class="text-primary">{page-title}</h1></div>
+                <div class="col-sm-4 col-md-4"><h2 class="text-primary">{page-title}</h2></div>
+                
+                <div class="col-sm-2 col-md-2">$trophy_control</div>
     
-                <div class="col-sm-3 col-md-3">$year_control</div>
+                <div class="col-sm-2 col-md-2">$year_control</div>
                 
                 <div class="col-sm-3 col-md-3">$search_control</div>
             </div>

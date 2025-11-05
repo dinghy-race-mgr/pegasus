@@ -87,6 +87,14 @@
 				{$label t_rotamember active}
 			</th>
 			{END active_fieldheadercolumn}
+			{BEGIN memberid_fieldheadercolumn}<th class="{$memberid_class}" {$memberid_style}  data-field="memberid">
+				{$label t_rotamember memberid}
+			</th>
+			{END memberid_fieldheadercolumn}
+			{BEGIN createdate_fieldheadercolumn}<th class="{$createdate_class}" {$createdate_style}  data-field="createdate">
+				{$label t_rotamember createdate}
+			</th>
+			{END createdate_fieldheadercolumn}
 			{BEGIN endrecordheader_block}<TH class="rnr-cs" style="width: 20px;">
                               &nbsp;
                             </th>
@@ -130,6 +138,14 @@
 				{$active_value}
 			</td>
 			{END active_fieldcolumn}
+			{BEGIN memberid_fieldcolumn}<td  class="{$memberid_class}" {$memberid_style} {$recordattrs}>
+				{$memberid_value}
+			</td>
+			{END memberid_fieldcolumn}
+			{BEGIN createdate_fieldcolumn}<td  class="{$createdate_class}" {$createdate_style} {$recordattrs}>
+				{$createdate_value}
+			</td>
+			{END createdate_fieldcolumn}
 			{BEGIN endrecord_block}<TD class="rnr-cs" style="width: 20px;" {$endrecordblock_attrs}>
                               &nbsp;
                             </td>

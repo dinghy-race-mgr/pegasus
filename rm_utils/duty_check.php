@@ -111,7 +111,8 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
     }
 
     // check we have events in specified period
-    $events = $event_o->get_events_inperiod(array(), $_REQUEST['date-start'], $_REQUEST['date-end'], "live", false);
+    //$events = $event_o->get_events_inperiod(array(), $_REQUEST['date-start'], $_REQUEST['date-end'], "live", false);
+    $events = $event_o->get_events("not_noevent", "all", $period = array("start" => $_REQUEST['date-start'], "end" => $_REQUEST['date-end']), $constraints = array());
     if (!$events)
     {
         $state = 1;   // no events in selected period

@@ -267,8 +267,8 @@ function trophy_presentation_list($params = array())
         {
             if ($i != 1 )  // set previous name and count
             {
-                $names[$name]['name'] = $name;
-                $names[$name]['htm'] = $tbufr;
+                $names[$name]['name']  = $name;
+                $names[$name]['htm']   = $tbufr;
                 $names[$name]['count'] = $j;
             }
             //echo "<pre>{$names[$name]['name']} {$names[$name]['count']}</pre>";
@@ -291,6 +291,11 @@ EOT;
         $name = $row['sortstr'];
         $j++;
     }
+    // deal with final name
+    $names[$name]['name']  = $name;
+    $names[$name]['htm']   = $tbufr;
+    $names[$name]['count'] = $j;
+
 
     // sort names array by the number of trophies won
     $count  = array_column($names, 'count');

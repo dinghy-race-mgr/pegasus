@@ -43,7 +43,7 @@ if (array_key_exists("timezone", $cfg)) { date_default_timezone_set($cfg['timezo
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
 
 // find out in trophy_award what period values are currently used
-$query = "SELECT period FROM t_trophyaward GROUP BY period ORDER BY period ASC";
+$query = "SELECT period FROM t_trophyaward GROUP BY period ORDER BY period DESC";
 $periods = $db_o->run($query, array() )->fetchall();
 
 // get club specific values
