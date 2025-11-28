@@ -1,21 +1,21 @@
 {
   "name": "daily cron processes",
   "version": "1",
-  "control": {
+  "controls": {
     "1": {
       "description": "test cron job to run every day",
       "type":"all",
       "value": "",
-      "run_script": "hello_world.php",
-      "log_text": "running - hello world script"
+      "run_script": "helloworld.php",
+      "log_text": "hello world script"
       },
 
     "2": {
       "description": "dummy email job to run every monday",
       "type":"weekday",
       "value": "",
-      "run_script": "send_email.php",
-      "log_text": "running - send email script"
+      "run_script": "../sendemail.php",
+      "log_text": "send email script"
     }
   }
 }

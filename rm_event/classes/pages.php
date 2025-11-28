@@ -2,8 +2,7 @@
 
 class PAGES
 {
-
-
+    
     public function __construct($cfg)
     {
         $this->tmpl_o = new TEMPLATE(array( "./templates/layouts_tm.php"));
@@ -23,10 +22,25 @@ class PAGES
 
     public function pg_list($db_o, $year = "")
     {
-        // FIXME : needs to handle "review" and "cancel" status - only available with password
 
-        // get events for selected year
-        if (empty($year)) { $year = date("Y"); }
+//        echo "<pre>$year</pre>";
+//        exit;
+        // if year not set - get next event and set list year to be display accordingly
+        if (empty($year))
+        {
+            $next_date = $db_o->run("SELECT `date-start` FROM e_event ORDER BY `date-start` DESC LIMIT 1", array() )->fetchColumn();
+
+            if ($next_date)
+            {
+                $year = date("Y", strtotime($next_date));
+            }
+            else
+            {
+                $year = date("Y");
+            }
+        }
+
+        // get all events for selected year - or next year if we are close to the nd of this year
         $events = $db_o->run("SELECT * FROM e_event WHERE `date-start` >= ? and `date-end` <= ? ORDER BY `date-start` ASC", array("$year-01-01","$year-12-31") )->fetchall();
 
         // get club contact

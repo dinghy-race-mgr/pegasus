@@ -42,17 +42,6 @@ foreach($cfg['rm_event'] as $k => $v) {$cfg[$k] = $v;}
 unset($cfg['rm_event']);
 $cfg['logfile'] = str_replace("_date", date("_Y"), $cfg['logfile']);
 
-//   // need to send 19821 if preview
-///
-///  // check "view" status - allows user to ignore entry restrictions  // fixme make this preview - put previow in header
-//$cfg['view_status'] = false;
-//if (!empty($_REQUEST['view']))
-//{
-//    if ($_REQUEST['view'] == $cfg['view_code']) { $cfg['view_status'] = true; }
-//}
-
-
-
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
 
 // arguments
@@ -76,7 +65,7 @@ else
     empty($_REQUEST['view']) ? $view = "standard" : $view = $_REQUEST['view'];
     $cfg['view_status'] = $view;
 }
-empty($_REQUEST['year']) ? $year = date("Y") : $year = $_REQUEST['year'];
+empty($_REQUEST['year']) ? $year = "" : $year = $_REQUEST['year'];
 
 // create array if an entry record has been added
 $entryupdate = array();

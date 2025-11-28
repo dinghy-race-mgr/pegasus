@@ -53,7 +53,7 @@ $query = "SELECT period FROM t_trophyaward GROUP BY period ORDER BY period DESC"
 $periods = $db_o->run($query, array() )->fetchall();
 
 // get club specific values
-//foreach ($db_o->getinivalues(true) as $k => $v) { $cfg[$k] = $v; }  // FIXME not working on HTZ
+foreach ($db_o->getinivalues(true) as $k => $v) { $cfg[$k] = $v; }  // FIXME not working on HTZ
 
 // set templates
 $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/trophies_tm.php"));
@@ -84,7 +84,7 @@ elseif ($_REQUEST['pagestate'] == "init")
     $formfields = array(
         "function"     => "Trophy Display Report",
         "instructions" => "Creates a display of trophy winners for the selected year/period</br>Please set the options below.",
-        "script"       => "display_trophy_winners.php?pagestate=submit",
+        "script"       => "trophy_winners_display.php?pagestate=submit",
     );
 
     $pagefields['page-main'] = $tmpl_o->get_template("trophies_display_form", $formfields, array("periods" => $periods));
@@ -182,7 +182,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
         "stylesheet" => "",
         "tab-title" => "Trophy Winners",
         "page-theme" => $_REQUEST['report_style'],
-        "page-title" => "Starcross YC Trophy Winners {$_REQUEST['period']}",
+        "page-title" => "<div class='text-center text-info'><h1>{$cfg['clubname']} - Trophies {$_REQUEST['period']}</h1></div>",
         "page-main" => $tmpl_o->get_template("trophy_display_content", array(), $params ),
         "page-footer" => "<p><small>printed on $today</small></p>",
     );

@@ -141,7 +141,7 @@ elseif (trim(strtolower($pagestate)) == "submit")
 
     $rota_list = "";
     $rota_list_quote = "";
-    if ($duty_file)
+    if ($duty_file)   // duty file requested
     {
         // handle $rota information - if "all" selected
         if (in_array("all", $rotas))
@@ -223,7 +223,7 @@ elseif (trim(strtolower($pagestate)) == "submit")
                 {
                     $duty_total++;
 
-                    $name_out = get_name($duty['person']);
+                    $name_out = u_split_name($duty['person']);
 
                     $duty_type = $dutycode_map["{$duty['dutycode']}"];
 
@@ -239,7 +239,7 @@ elseif (trim(strtolower($pagestate)) == "submit")
                         "duty_notify" => "",
                         "duty_instructions" => $duty_instruction["{$duty['dutycode']}"],
                         "duty_dbid"   => "",
-                        "notes"       => "",
+                        "notes"       => "eid={$event['id']}&start={$event['event_start']}&order={$event['event_order']}",
                         "confirmed"   => "No",
                         "first_name"  => $name_out["fn"],
                         "last_name"   => $name_out["fm"],
@@ -366,7 +366,7 @@ function get_duties($eventid, $rota_list)
 {
     global $db_o;
 
-    $sql = "SELECT `eventid`, `dutycode`, `person`, `swapable`  FROM t_eventduty WHERE `eventid` = $eventid AND `dutycode` IN ($rota_list) ORDER BY FIELD(`dutycode`, $rota_list)";
+    $sql = "SELECT `id`, `eventid`, `dutycode`, `person`, `swapable`  FROM t_eventduty WHERE `eventid` = $eventid AND `dutycode` IN ($rota_list) ORDER BY FIELD(`dutycode`, $rota_list)";
     //echo "<pre>$sql</pre>";
     $duty_rs = $db_o->db_get_rows($sql);
 
@@ -380,29 +380,29 @@ function html_flush()
     flush();
 }
 
-function get_name($name)
-{
-    // extract name into first and last name
-    // works for John Allen MBE, Fred van Tam, Sir Paul McCartney OBE, Marie Anne Beard etc.
-    $name_arr = explode(' ', $name);
-    $count = count($name_arr);
-    $last = end($name_arr);
-    if (strtolower($last) == "mbe" or strtolower($last) == "cbe" or strtolower($last) == "obe")
-    {
-        $lastname = $name_arr[$count-2]." ".$last;
-        $pointer = $count - 2;
-    }
-    else
-    {
-        $lastname = $name_arr[$count-1];
-        $pointer = $count - 1;
-    }
-    $firstname = implode(" ", array_slice($name_arr, 0, $pointer));
-
-    $name_out = array("fn"=>$firstname, "fm"=>$lastname);
-
-    return $name_out;
-}
+//function get_name($name)   -> moved to util_lib as split_name
+//{
+//    // extract name into first and last name
+//    // works for John Allen MBE, Fred van Tam, Sir Paul McCartney OBE, Marie Anne Beard etc.
+//    $name_arr = explode(' ', $name);
+//    $count = count($name_arr);
+//    $last = end($name_arr);
+//    if (strtolower($last) == "mbe" or strtolower($last) == "cbe" or strtolower($last) == "obe")
+//    {
+//        $lastname = $name_arr[$count-2]." ".$last;
+//        $pointer = $count - 2;
+//    }
+//    else
+//    {
+//        $lastname = $name_arr[$count-1];
+//        $pointer = $count - 1;
+//    }
+//    $firstname = implode(" ", array_slice($name_arr, 0, $pointer));
+//
+//    $name_out = array("fn"=>$firstname, "fm"=>$lastname);
+//
+//    return $name_out;
+//}
 
 function check_member($name)
 {

@@ -7,47 +7,49 @@
 // setup
 //$cfg = ....
 
+require_once("../common/lib/util_lib.php");
+
 // logging - start process - date and time - controls file
-u_cronlog("running racemanager daily cron job", "start");    // annual cron logs
+u_cronlog("\n******raceManager daily cron job - start");    // annual cron logs
 
 // today
 $today = date("Y-m-d");
 
 // decode control file
-$controls = json_decode("../config/cron_controls_daily.json",true);  // fixme where should cron controls be kept
-$process_count = count($controls);
+$list = json_decode(file_get_contents("../data/cron/daily.json"),true);  // fixme where should cron controls be kept
+$process_count = count($list['controls']);
+
+echo "<pre>".print_r($list,true)."</pre>";
 
 $i = 0;
-foreach ($controls['process'] as $control)
+foreach ($list['controls'] as $control)
 {
     // check for date hit
-    $process = check_process_run ($control);
+    $process = check_process_run ($control, $today);
     if ($process['action'] == "run")
     {
         $i++;
-        // FIXME logging - confirm running of this process but all in process
-        u_cronlog($process['log_text'], "start_process");
+        u_cronlog("process ". $process['log_text'] ."- start process");
 
-        // run process
-        $status = run_process($control);   // fixme - should this be running a PHP script via webserver or exec
+        require_once($control['run_script']);   // this will write to cronlog + set true/false success value
 
-        // logging end of process
-        u_cronlog("process {$control['run_script']} completed - $status", "end_process");  // fixme - pick bits from $status array
+        $status ? $status_txt = "completed" : $status_txt = "failed" ;
+        u_cronlog("process {$process['log_text']} [{$control['run_script']}] $status_txt ");
     }
     elseif ($process['action'] == "" or $process['action'] == "norun")
     {
         // logging - confirm not running this process
-        u_cronlog("process {$control['run_script']} not scheduled to run");
+        u_cronlog("process {$process['log_text']} [{$control['run_script']}] - not scheduled to run");
     }
     else
     {
         // logging - confirm process action not recognised
-        u_cronlog("process {$control['run_script']} not recognised");
+        u_cronlog("process {$process['log_text']} - action request not recognised");
     }
 }
 
 // logging - end of all processes
-u_cronlog("completed running racemanager daily cron job - $i processes run from $process_count", "end");
+u_cronlog("raceManager daily cron job - completed [$i processes run from $process_count submitted]");
 
 function check_process_run($control, $today)
 {
@@ -60,14 +62,14 @@ function check_process_run($control, $today)
     }
     elseif ($control['type'] == "monthday")
     {
-        if (date("j", strtodate($today) == $control['value']))
+        if (date("j", strtotime($today) == $control['value']))
         {
             $action = "run";
         }
     }
     elseif ($control['type'] == "weekday")
     {
-        if (date("N", strtodate($today) == $control['value']))     // value of N - 1 = Monday, 7 = Sunday
+        if (date("N", strtotime($today) == $control['value']))     // value of N - 1 = Monday, 7 = Sunday
         {
             $action = "run";
         }
@@ -80,18 +82,19 @@ function check_process_run($control, $today)
             $action = "run";
         }
 	}
-    else
-    {
-        $process['action'] = "norun";
-        $process['script'] = "";
-        $process['log_text'] = "process type [{$control['type']}] not recognised - not run";
-    }
+
 
 	if ($action == "run")
     {
         $process['action'] = "run";
         $process['script'] = $control['run_script'];
-        $process['log_text'] = $control['log_text']." - started";
+        $process['log_text'] = $control['log_text'];
+    }
+    else
+    {
+        $process['action'] = "norun";
+        $process['script'] = "";
+        $process['log_text'] = "process type [{$control['type']}] not recognised - not run";
     }
 
 	return $process;

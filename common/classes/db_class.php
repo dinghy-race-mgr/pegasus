@@ -70,7 +70,7 @@ class DB
         {
             $this->db_log_errors( "Connect failed", $this->link->connect_error );
             u_exitnicely("db_class.php",0,"database connection error - host: {$_SESSION['db_host']}, user: {$_SESSION['db_user']}, dbase: {$_SESSION['db_name']}",
-                "Likely reason - the browser session has timed out - close the browser and restar the application<br>
+                "Likely reason - the browser session has timed out - close the browser and restart the application<br>
                  Possible reason - database configuration is wrong",
                 array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__,
                     "calledby" => print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], true), "args" => func_get_args()));

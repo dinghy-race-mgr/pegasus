@@ -36,6 +36,7 @@ EOT;
 }
 else
 {
+
     $application_block = <<<EOT
     <div class="container mb-5">
         <div class="row">
@@ -82,19 +83,19 @@ EOT;
             foreach ($local_links as $link)
             {
                 $local_links_htm.= <<<EOT
-                    <a class="icon-link fs-5 px-3 mx-3" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="list-tooltip" data-bs-title="{$link['tip']}"
-                       href="{$link['url_link']}" title="{$link['tip']}" >
-                       <span class="badge text-bg-{$link['style']}" style="min-width: 200px">{$link['label']}&nbsp;&nbsp;<i class="{$link['icon']}"></i></span>
-                    </a>
+                <a type="button" class="btn btn-lg btn-outline-{$link['style']} mx-3 my-2 icon-link"
+                      data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="list-tooltip" data-bs-title="{$link['tip']}"
+                      href="{$link['url_link']}" target="_blank">
+                    {$link['label']}&nbsp;&nbsp;<i class="{$link['icon']}"></i>
+                </a>
 EOT;
             }
 
             $links_block = <<<EOT
             <div class="container text-left">
                 <div class="row pt-5">
-                    <div class="col">&nbsp;</div>
-                    <div class="col-10 border border-info p-3">
-                    <span class="text-info">Info Links&hellip;</span>
+                    <div class="col"><span class="text-info fs-5">Info Links&hellip;</span></div>
+                    <div class="col-10 border border-info p-3">                   
                         $local_links_htm
                     </div>
                     <div class="col">&nbsp;</div>

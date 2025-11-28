@@ -145,6 +145,9 @@
 {BEGIN searchform_block}
 <span {$search_hiddenattr} data-pageid="{$pageid}" data-brick="search" class="form-group">
 
+	{$simpleSearchFieldCombo}
+	
+	{$simpleSearchTypeCombo}
  <div  class="input-group">
 {BEGIN searchform_text}
 	<input type="search" class="form-control" {$searchfor_attrs} size="25">
@@ -227,7 +230,7 @@
 <div {$masterinfo_chiddenattr} data-pageid="{$pageid}" data-container="masterinfo" class="    "> 
 
 {BEGIN mastertable_block}
-<div class="panel panel-default table-panel">
+<div class="panel panel-info table-panel">
 	<div class="panel-heading">
 		{$master_heading}
 	</div>
@@ -236,7 +239,7 @@
 		
 	</div>
 </div>
-<br>
+
 {END mastertable_block}
 
 
@@ -248,116 +251,6 @@
 			</div>
 			<div class="bs-left" {$blockattr_left}>
 				
-
-{BEGIN container_left}
-<div {$left_chiddenattr} data-pageid="{$pageid}" data-container="left" class="    "> 
-
-{BEGIN searchPanel}
-<div {$searchpanel_hiddenattr} data-pageid="{$pageid}" data-brick="searchpanel" class="searchOptions panel panel-primary searchPanelContainer " {$srchOpt_attrs} >
-	<!-- Search panel content -->
-	
-	<div class="panel-heading">
-		<div class="btn-group" id="addSearchFieldButton{$id}">
-			<button id="showHideControlChooseMenu{$id}" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			Search in
-			<span class="caret"></span>
-			</button>
-		</div>
-
-		
-		<div class="btn-group searchpanel-options" id="searchPanelOptions{$id}">
-			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				<span class="glyphicon glyphicon glyphicon-option-vertical"></span>
-			</button>
-			<ul class="dropdown-menu dropdown-left">
-				<li id="showHideSearchType{$id}" {$showHideCtrlsOpt_attrs}><a>Show options</a></li>
-				<li role="separator" class="divider"></li>
-				<li class="srchCritTop" style="display: none;"><a><input type="radio" name="srchType{$id}" id="radioAll" {$all_checkbox}><label for="radioAll"><span class="glyphicon">&nbsp;</span>all conditions</label></a></li>
-				<li class="srchCritTop" style="display: none;"><a><input type="radio" name="srchType{$id}" id="radioAny" {$any_checkbox}><label for="radioAny"><span class="glyphicon">&nbsp;</span>any condition</label></a></li>
-				<li role="separator" class="divider"></li>
-				<li><a class="close-button"><span class="glyphicon glyphicon-remove">&nbsp;</span>hide</a></li>
-			</ul>
-		</div>
-	
-		
-		</div>
-	<div class="panel-body controlsBlock" {$bottomSearchButt_attrs} >
-
-
-		
-		{BEGIN searchCtrlBlock}
-		<div class="srchPanelRow form-group" {$filterRow_attrs}>
-			<label>{$fLabel}</label>	{$delCtrlButt}
-				<span class="rnr-searchtype">{$searchtype}</span>
-				<span class="rnr-searchcontrol">{$searchcontrol}</span>
-				<span class="rnr-searchcontrol">{$searchcontrol1}</span>
-		</div>
-		{END searchCtrlBlock}
-		 
-		{BEGIN searchCtrlBlock_dutycode}
-		
-		
-		<div class="form-group srchPanelRow {$filterRow_class_dutycode}" {$filterRow_attrs_dutycode}>
-			<label>
-			
-			{$label t_eventduty dutycode}</label>
-							{$delCtrlButt}
-
-								<span class="rnr-searchtype">{$searchtype_dutycode}</span>
-				<span class="rnr-searchcontrol">{$searchcontrol_dutycode}</span>
-								<span class="rnr-searchcontrol">{$searchcontrol1_dutycode}</span>
-		</div>
-		{END searchCtrlBlock_dutycode}
-		 
-		{BEGIN searchCtrlBlock_person}
-		
-		
-		<div class="form-group srchPanelRow {$filterRow_class_person}" {$filterRow_attrs_person}>
-			<label>
-			
-			{$label t_eventduty person}</label>
-							{$delCtrlButt}
-
-								<span class="rnr-searchtype">{$searchtype_person}</span>
-				<span class="rnr-searchcontrol">{$searchcontrol_person}</span>
-								<span class="rnr-searchcontrol">{$searchcontrol1_person}</span>
-		</div>
-		{END searchCtrlBlock_person}
-		 
-		{BEGIN searchCtrlBlock_notes}
-		
-		
-		<div class="form-group srchPanelRow {$filterRow_class_notes}" {$filterRow_attrs_notes}>
-			<label>
-			
-			{$label t_eventduty notes}</label>
-							{$delCtrlButt}
-
-								<span class="rnr-searchtype">{$searchtype_notes}</span>
-				<span class="rnr-searchcontrol">{$searchcontrol_notes}</span>
-								<span class="rnr-searchcontrol">{$searchcontrol1_notes}</span>
-		</div>
-		{END searchCtrlBlock_notes}
-
-
-	</div>
-	
-	<div class="panel-footer bottomSearchButt" {$bottomSearchButt_attrs}>
-		<button class="btn btn-primary" id="searchButton{$id}" {$searchbutton_attrs}>Search</button>
-		<button class="btn btn-default" {$showAllCont_attrs} {$showallbutton_attrs}>
-		Show all
-		</button>
-	</div>
-</div>
-
-
-{END searchPanel}
-
-
-
-
-</div>
-{END container_left}
 
 
 			</div>
@@ -520,6 +413,21 @@
 	.bs-gridcell[data-field=notes]:before {
 		content: "{$label t_eventduty notes}";
 	}
+	.bs-gridcell[data-field=confirmed]:before {
+		content: "{$label t_eventduty confirmed}";
+	}
+	.bs-gridcell[data-field=confirmed_date]:before {
+		content: "{$label t_eventduty confirmed_date}";
+	}
+	.bs-gridcell[data-field=confirmed_reminders]:before {
+		content: "{$label t_eventduty confirmed_reminders}";
+	}
+	.bs-gridcell[data-field=swap_requested]:before {
+		content: "{$label t_eventduty swap_requested}";
+	}
+	.bs-gridcell[data-field=swap_request_date]:before {
+		content: "{$label t_eventduty swap_request_date}";
+	}
 	.bs-gridcell[data-field=memberid]:before {
 		content: "{$label t_eventduty memberid}";
 	}
@@ -627,6 +535,32 @@
 									
 									
 									
+									{BEGIN confirmed_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$confirmed_class}" data-field=confirmed>
+									{BEGIN confirmed_fieldheader}
+																				<span {$confirmed_orderlinkattrs}>
+											{$label t_eventduty confirmed}
+										</span>
+									{END confirmed_fieldheader}
+									</th>
+									{END confirmed_fieldheadercolumn}
+									
+									
+									
+									
+									{BEGIN swap_requested_fieldheadercolumn}
+									<th class="rnr-gridfieldlabel {$swap_requested_class}" data-field=swap_requested>
+									{BEGIN swap_requested_fieldheader}
+																				<span {$swap_requested_orderlinkattrs}>
+											{$label t_eventduty swap_requested}
+										</span>
+									{END swap_requested_fieldheader}
+									</th>
+									{END swap_requested_fieldheadercolumn}
+									
+									
+									
+									
 									{BEGIN endrecordheader_block}
 									<th class="rnr-cs">&nbsp;</th>
 									
@@ -707,6 +641,20 @@
 		{$email_value}
 	</td>
 {END email_fieldcolumn}
+
+
+	{BEGIN confirmed_fieldcolumn}
+	<td class="bs-gridcell {$confirmed_class}"  data-field=confirmed {$rowstyle} {$recordattrs}>
+		{$confirmed_value}
+	</td>
+{END confirmed_fieldcolumn}
+
+
+	{BEGIN swap_requested_fieldcolumn}
+	<td class="bs-gridcell {$swap_requested_class}"  data-field=swap_requested {$rowstyle} {$recordattrs}>
+		{$swap_requested_value}
+	</td>
+{END swap_requested_fieldcolumn}
 
 	{BEGIN endrecord_block}
 	<td class="rnr-cs" {$endrecordblock_attrs}>&nbsp;</td>

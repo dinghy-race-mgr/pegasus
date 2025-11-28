@@ -67,8 +67,10 @@ function navbar ($params = array())
         {
             // don't include page if event is complete unless its the results page or view mode id "preview"
             //if ($option['page'] != "results" and $params['complete']) { continue; }
+            //echo "<pre>{$params['view']} {$params['complete']} {$option['page']}</pre>";
             if ($params['view'] != "preview" and $params['complete'] and $option['page'] != "results") { continue; }
 
+            //echo "<pre>continuing</pre>";
             $inc_count = "";
             if ($option['page'] == "documents" or $option['page'] == "entries" or
                 $option['page'] == "notices" or $option['page'] == "results")
@@ -95,6 +97,8 @@ EOT;
         }
     }
 
+
+
     // setup contact drop down
     $htm_contacts = "";
     foreach ($params['contact'] as $contact)
@@ -107,11 +111,21 @@ EOT;
     // setup previous years drop down for list page
     $current_year = date("Y");
     $htm_year_select = "";
-    for ($i = $current_year - 1; $i >= $params['start-year']; $i--)
+    for ($i = $current_year; $i >= $params['start-year']; $i--)
     {
         $htm_year_select.= <<<EOT
             <li><a class="dropdown-item text-info fs-5" href="rm_event.php?page=list&year=$i&view={view}">$i</a></li>
 EOT;
+    }
+
+    // if we are past 1 Sept in current year - allow option to see next year's events
+    if (strtotime(date("Y-m-d")) > strtotime(date("Y-m-d", mktime(0, 0, 0, 9, 1, $current_year))))
+    {
+        $k = $current_year + 1;
+        $add = <<<EOT
+            <li><a class="dropdown-item text-info fs-5" href="rm_event.php?page=list&year=$k&view={view}">next year</a></li>
+EOT;
+        $htm_year_select = $add.$htm_year_select;
     }
 
     $htm_years = "";
@@ -120,7 +134,7 @@ EOT;
         $htm_years = <<<EOT
         <div class="navbar-text dropdown-center" style="min-width: 300px;">
             <a class="btn btn-info dropdown-center btn-lg dropdown-toggle " href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Previous Years
+                    Change Year
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark">
                     $htm_year_select

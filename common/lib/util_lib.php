@@ -230,6 +230,30 @@ function u_conv_team($helm, $crew, $length=0)
     return $team;
 }
 
+function u_split_name($name)
+{
+    // extract name into first and last name
+    // works for John Allen MBE, Fred van Tam, Sir Paul McCartney OBE, Marie Anne Beard etc.
+    $name_arr = explode(' ', $name);
+    $count = count($name_arr);
+    $last = end($name_arr);
+    if (strtolower($last) == "mbe" or strtolower($last) == "cbe" or strtolower($last) == "obe")
+    {
+        $lastname = $name_arr[$count-2]." ".$last;
+        $pointer = $count - 2;
+    }
+    else
+    {
+        $lastname = $name_arr[$count-1];
+        $pointer = $count - 1;
+    }
+    $firstname = implode(" ", array_slice($name_arr, 0, $pointer));
+
+    $name_out = array("fn"=>$firstname, "fm"=>$lastname);
+
+    return $name_out;
+}
+
 function u_conv_eventname($eventname)
 {
     $words = explode(" ",$eventname);
@@ -526,6 +550,13 @@ function u_writelog($logmessage, $eventid)
         { error_log($log, 3, $_SESSION['syslog']); }
     else
         { error_log($log, 3, $_SESSION["e_$eventid"]['eventlog']); }
+}
+
+function u_cronlog($logtext)
+{
+    $logfile = "../logs/sys/cronlog_" . date("Y");
+    $log = date('d-M H:i:s')." -- ".$logtext.PHP_EOL;
+    error_log($log,3,$logfile);
 }
 
 /**

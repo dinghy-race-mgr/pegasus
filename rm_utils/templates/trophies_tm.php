@@ -24,10 +24,10 @@ function print_page($params = array())
     </head>
     <body class="d-flex flex-column h-100">
     
-        <h2>{page-title}</h2>
+        {page-title}
         
         {page-main}
-        
+             
         {page-footer}
     
     </body>
@@ -37,7 +37,185 @@ EOT;
 
     return $htm;
 }
+function trophy_search_form($params = array())
+{
+    // not currently used, retained for future use
+    $start_year = $params['start_year'];
+    $end_year = $params['end_year'];
 
+    // set up dropdown for full year prize lists
+    $year_options = "";
+    foreach($params['periods'] as $period)
+    {
+        $year_options.= "<li><a class='dropdown-item' 
+        href='./trophy_winners_display.php?pagestate=submit&period={$period['period']}&report_style=slate_' 
+        target='_BLANK'>{$period['period']}</a></li>";
+    }
+
+    // create datalist for all trophies
+    $trophylist = "";
+    foreach($params["trophies"] as $trophy){
+        if(strtolower($trophy["sname"]) == "glassware"){
+            continue;
+        }
+        else{
+            $trophylist.= "<option value='{$trophy["name"]}'><b>{$trophy["name"]}</b></option>";
+        }
+    }
+
+    // create error report if required
+    $err_txt = "";
+    foreach ($params["error"] as $k => $error){
+        if ($error)
+        {
+            if ($k == 1){$err_txt.= "&nbsp;&nbsp; the start period cannot be later than end period</br>";}
+            if ($k == 2){$err_txt.= "&nbsp;&nbsp; please provide either trophy name or person's name</br>";}
+        }
+    }
+
+    if (empty($err_txt)){
+        $error_html = "";
+    }
+    else {
+        $error_html = <<<EOT
+        <div class="row">
+            <div class="col-3">&nbsp;</div>
+            <div class="col-6 alert alert-danger lead" role="alert"><i class="bi bi-exclamation-triangle-fill">&nbsp;</i>$err_txt</div>
+        </div>
+EOT;
+    }
+
+
+    $bufr = "";
+    $bufr.= <<<EOT
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2">&nbsp;</div>
+            <div class="col-7 text-info lead">{instructions}</div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-2">&nbsp;</div>
+            <div class="col-7">
+                <p class="lead">{lower-instructions}</p>
+            </div>
+        </div>
+       
+        <form class="" enctype="multipart/form-data" id="trophysearchform" action="{script}" method="post">
+                    
+        <div class="row g-5 align-items-center">
+            <div class="col-2">&nbsp;</div>
+            <div class="col-3">
+                     <div class="form-floating">          
+                        <input class="form-control form-control-lg" list="trophyopts" id="trophy" name="trophy" placeholder="" value="" autofocus />
+                        <datalist id="trophyopts">$trophylist</datalist>
+                        <label for="trophy" class="label-style" style="color: darkslategray; ! important">Trophy Name</label>                       
+                        <!-- div class="text-primary mx-5">start typing  &hellip;</div-->          
+                    </div>                  
+            </div>
+            
+            <div class="col-1"><b>AND / OR</b></div>
+            
+            <div class="col-3">
+                <div class="form-floating">          
+                    <input class="form-control form-control-lg" type="text" id="class" name="person" placeholder="Person (First Last preferred)" value=""/>
+                    <label for="floatingInput" class="label-style" style="color: darkslategray; ! important">Person Name (e,g Ben Ainslie)</label>                           
+                </div>  
+            </div>
+        </div>
+        
+        <input type="hidden" id="start_year" name="start_year" value="$start_year"/>
+        <input type="hidden" id="end_year" name="end_year" value="$end_year"/>
+        <!-- div class="row g-5 align-items-center mt-3" >
+            <div class="col-1">&nbsp;</div>
+            <div class="col-3 ms-5">
+                    <input type="hidden" id="start_year" name="start_year" value="$start_year"/>
+                    <select class="form-control" name="start_year">
+                    </select>               
+            </div>
+            <div class="col-2"><b>- - to - -</b></div>
+            <div class="col-3">
+                    <input type="hidden" id="end_year" name="end_year" value="$end_year"/>
+                    <select class="form-control" name="end_year">
+                    </select>               
+            </div>
+        </div -->      
+        
+        <!-- buttons -->
+        <div class="row g-5 align-items-center mt-3" >
+            <div class="col-2">&nbsp;</div>
+            <div class="col-6">
+                <div class="text-end">             
+                    <button class="btn btn-lg btn-info dropdown-toggle" style="min-width: 250px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-file-earmark-text-fill">&nbsp;</i><b>Whole Year</b></button>
+                    <ul class="dropdown-menu">$year_options</ul>
+                              
+                    <a class="btn btn-lg btn-warning ms-3" style="min-width: 250px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+                    <i class="bi bi-arrow-left-square">&nbsp;</i>&nbsp;<b>Back to Results</b></a>
+
+                    <button type="submit" class="btn btn-lg btn-success ms-3"  style="min-width: 250px;" >
+                    <i class="bi bi-search">&nbsp;&nbsp;</i><b>Search</b></button>
+                </div>
+            </div>
+        </div>
+        </form>
+                
+        <div class="mt-5">
+            $error_html
+        </div>
+        
+    </div>
+
+EOT;
+
+    return $bufr;
+}
+
+function trophy_search_results($params = array())
+{
+    //create no results found message
+    $noresults_html = "";
+    if($params['data_num'] <= 0)
+    {
+        $noresults_html = <<<EOT
+        <div class="row mt-5">
+            <div class="col-3">&nbsp;</div>
+            <div class="col-6 alert alert-danger lead" role="alert">
+            <i class="bi bi-exclamation-triangle-fill">&nbsp;</i>
+            <span style="font-size:1.2em"><b>Sorry</b></span>&nbsp;&nbsp;&nbsp;&nbsp;no data found to match your search - please try again.</div>
+        </div>
+EOT;
+    }
+
+    // format table with data
+    $rows_htm = "";
+    foreach ($params['data'] as $data)
+    {
+        $rows_htm.= <<<EOT
+        <tr>
+          <td>{$data["place"]}</td>
+          <td>{$data["period"]}</td>
+          <td><b>{$data["team"]}</b></td>
+          <td>{$data["trophy"]}</td>
+          <td>{$data["category"]}</td>
+          <td>{$data["division"]}</td>
+          <td>{$data["boat"]}</td>
+        </tr>
+EOT;
+    }
+
+    $bufr = <<<EOT
+<div class="container container-fluid" style="margin-top: 20px;">
+    <hr class="divider-line" style="background-color: steelblue;"> 
+        $noresults_html
+    <table class="table table-hover">
+        <tbody>
+        $rows_htm
+        </tbody>
+    </table>
+    </div>
+EOT;
+    return $bufr;
+}
 
 function trophies_display_form($params = array())
 {
@@ -318,7 +496,7 @@ EOT;
 
 function get_section_header($row, $cfg)
 {
-    $htm = "<div><h4 class='text-primary'>".ucwords($cfg['heading']).
+    $htm = "<div class='ps-2'><h4 class='text-info'>".ucwords($cfg['heading']).
            "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='font-size: 0.7em; font-style: italic'>- ".
            ucfirst($cfg['description'])."</span></h4></div>";
 
@@ -387,33 +565,13 @@ EOT;
 function trophies_error($params = array())
 {
 
-//    if ($params['state'] == 1)
-//    {
-//        $bufr = <<<EOT
-//        <div class="alert alert-warning" role="alert"><h3>Problem!</h3> <h4>error state not recognised</h4>
-//EOT;
-//    }
-//    elseif ($params['state'] == 2)
-//    {
-//        $bufr = <<<EOT
-//        <div class="alert alert-danger" role="alert"><h3>Failed!</h3> <h4> page status not recognised - please contact System Manager </h4>
-//EOT;
-//    }
-//    else
-//    {
-//        $bufr = <<<EOT
-//        <div class="alert alert-warning" role="alert"><h3>Warning!</h3> <h4> Unrecognised completion state - please contact System Manager </h4>
-//EOT;
-//   }
-
-    // add button into div
     $bufr = <<<EOT
     <div class="container text-center">
       <div class="row justify-content-md-center">
         
         <div class="col-lg-6">
           <div class="alert alert-warning" role="alert">
-            A simple warning alert—check it out!
+            Sorry - we seem to have a system problem. Please contact the system administrator.
           </div>
         </div>
         
