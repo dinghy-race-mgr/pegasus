@@ -23,7 +23,7 @@ $loc  = "..";
 $page = "display_trophy_winners";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
-$styletheme = "";
+$styletheme = "cerulean_";
 $stylesheet = "./style/rm_utils.css";
 
 require_once ("{$loc}/common/lib/util_lib.php");
@@ -61,10 +61,10 @@ $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./template
 // common template parameters
 $pagefields = array(
     "stylesheet"  => $stylesheet,
-    "tab-title"   => "Trophy Winners",
+    "tab-title"   => "Trophies",
     "page-theme"  => $styletheme,
-    "page-title"  => "Trophy Winners Display",
-    "page-footer" => "",
+    "page-title"  => "<h2>Trophy Winners Display</h2>",
+    "page-footer" => "<div class='text-end mt-4 pe-5'> &copy; Elmswood Software ".date("Y")."</div>",
 );
 
 /* ------------ check pagestate ---------------------------------------------*/
@@ -181,7 +181,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
     $pagefields = array(
         "stylesheet" => "",
         "tab-title" => "Trophy Winners",
-        "page-theme" => $_REQUEST['report_style'],
+        "page-theme" => "litera_",
         "page-title" => "<div class='text-center text-info'><h1>{$cfg['clubname']} - Trophies {$_REQUEST['period']}</h1></div>",
         "page-main" => $tmpl_o->get_template("trophy_display_content", array(), $params ),
         "page-footer" => "<p><small>printed on $today</small></p>",

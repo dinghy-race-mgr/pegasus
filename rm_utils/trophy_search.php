@@ -8,12 +8,7 @@
  *
  */
 
-// TODO - add processing of 2nd and 3rd to output results
-// TODO - change search button to search again when results are already displayed
-// TODO - sort results in date order - latest first
-// TODO - trophy only add picture - and description notes
-// TODO - add print friendly output for whole year (sandstone)
-// TODO - integrate into results application
+// TODO - integrate into results application, send to Simon
 // TODO - set up return to results button
 
 $dbg = false;
@@ -21,13 +16,16 @@ $loc  = "..";
 $page = "trophy_search";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
+$year = date("Y");
+$styletheme = "morph_";
 
 $stylesheet = "./style/rm_utils.css";
 
-session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
-session_start();
-if (key_exists('theme', $_REQUEST)) { $_SESSION['theme'] = $_REQUEST['theme']."_"; }
-$styletheme = $_SESSION['theme'];
+// uncomment if you want to make bootstrap theme selectable
+//session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
+//session_start();
+//if (key_exists('theme', $_REQUEST)) { $_SESSION['theme'] = $_REQUEST['theme']."_"; }
+//$styletheme = $_SESSION['theme'];
 
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/classes/db.php");
@@ -48,16 +46,25 @@ $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host'
 $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/trophies_tm.php"));
 
 // common template parameters
+$footer = <<<EOT
+<!--div class='text-start ps-5'>
+    <a class="btn btn-sm btn-warning border border-warning ms-3" style="min-width: 150px;" "type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+    <span class="fs-6"><i class="bi bi-arrow-left-square">&nbsp;</i>&nbsp;Exit</span></a>
+</div-->
+<div class='text-end pe-5'> &copy; Robert Elkington $year</div>
+EOT;
+
+
 $pagefields = array(
     "stylesheet"  => $stylesheet,
     "tab-title"   => "Trophy Search",
     "page-theme"  => $styletheme,
-    "page-title"  => "<h2 class='ps-5'>Trophy Search</h2>",
-    "page-footer" => "<div class='text-end mt-4 pe-5'> &copy; Robert Elkington ".date("Y")."</div>",
+    "page-title"  => "<h2 class='text-primary ps-5 mt-5'>Trophy Search</h2>",
+    "page-footer" => $footer,
 );
 
 // get list of all trophies "SELECT id, name, sname FROM `t_trophy`";
-$query = "SELECT id, name, sname FROM `t_trophy` ORDER BY name ASC";
+$query = "SELECT id, name, sname, picture, donor, notes, date_acquired, location, current_allocation, current_division FROM `t_trophy` ORDER BY name ASC";
 $trophies = $db_o->run($query, array() )->fetchall();
 
 // get list of periods covered by data
@@ -75,9 +82,9 @@ foreach($periods as $period)
 
 $formfields = array(
     "form-title"     => "Trophy Search",
-    "instructions" => "Search for trophy winners over the years - <i>currently we have trophy data from 2023-2025, 
-                        but we plan to add data going back at least 10 years.</i></br>",
-    "lower-instructions" => "Please enter either the trophy name or person name to search &hellip;",
+    "search_label" => "Search",
+    "instructions" => "",
+    "lower-instructions" => "To search -  enter either the trophy name and/or a person name &hellip;",
     "script"       => "trophy_search.php?pagestate=submit",
 );
 
@@ -141,7 +148,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
               a.period, a.award_category, a.award_division, a.winner_1, a.winner_2, a.winner_3, a.notes
               FROM t_trophyaward as a JOIN t_trophy as b ON a.trophyid=b.id 
               WHERE (b.name = '{$_REQUEST['trophy']}' or b.sname = '{$_REQUEST['trophy']}') 
-              ORDER BY name ASC";
+              ORDER BY name ASC, a.period DESC";
         }
         elseif (check_search_criteria($_REQUEST['trophy'], $_REQUEST['person']) == "person") // user only supplied person criteria
         {
@@ -150,7 +157,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
               FROM t_trophyaward as a JOIN t_trophy as b ON a.trophyid=b.id 
               WHERE (a.winner_1 LIKE '%{$_REQUEST['person']}%' or a.winner_2 LIKE '%{$_REQUEST['person']}%' 
               or a.winner_3 LIKE '%{$_REQUEST['person']}%')
-              ORDER BY name ASC";
+              ORDER BY name ASC, a.period DESC";
         }
         elseif (check_search_criteria($_REQUEST['trophy'], $_REQUEST['person']) == "both") // user supplied both criteria
         {
@@ -158,7 +165,7 @@ elseif ($_REQUEST['pagestate'] == "submit")
               a.period, a.award_category, a.award_division, a.winner_1, a.winner_2, a.winner_3, a.notes
               FROM t_trophyaward as a JOIN t_trophy as b ON a.trophyid=b.id 
               WHERE (b.name = '{$_REQUEST['trophy']}' or b.sname = '{$_REQUEST['trophy']}') 
-              ORDER BY name ASC";
+              ORDER BY name ASC, a.period DESC";
         }
 
         $records = $db_o->run($query, array())->fetchall();
@@ -167,30 +174,34 @@ elseif ($_REQUEST['pagestate'] == "submit")
         $data = array();
         foreach ($records as $k => $record)
         {
-            $arr = decode_winner(1, $record['winner_1'], "", $decode_type = 'class');
-            if ($arr['exists'])
+            for ($i = 1; $i <= 3; $i++)
             {
-                // check if we need this data
-                $include_data = true;
-                if (check_search_criteria($_REQUEST['trophy'], $_REQUEST['person']) == "both")
+                $arr = decode_winner($i, $record["winner_$i"], "", $decode_type = 'class');
+                if ($arr['exists'])
                 {
-                    if (stripos($arr['helm'], $_REQUEST['person']) === false and stripos($arr['crew'], $_REQUEST['person']) === false)
+                    // check if we need this data
+                    $include_data = true;
+                    if (check_search_criteria($_REQUEST['trophy'], $_REQUEST['person']) == "both" or
+                        check_search_criteria($_REQUEST['trophy'], $_REQUEST['person']) == "person")
                     {
-                        $include_data = false;
+                        if (stripos($arr['helm'], $_REQUEST['person']) === false and stripos($arr['crew'], $_REQUEST['person']) === false)
+                        {
+                            $include_data = false;
+                        }
                     }
-                }
 
-                if ($include_data)
-                {
-                    empty($arr['crew']) ? $team = $arr['helm'] : $team = $arr['helm']." / ".$arr['crew'];
-                    $data[] = array(
-                        "place"    => $arr['posn'],
-                        "period"   => $record['period'],
-                        "team"     => $team,
-                        "trophy"   => $record['name'],
-                        "category" => $record['award_category'],
-                        "division" => $record['award_division'],
-                        "boat"     => $arr['boat']." ".$arr['number']);
+                    if ($include_data)
+                    {
+                        empty($arr['crew']) ? $team = $arr['helm'] : $team = $arr['helm']." / ".$arr['crew'];
+                        $data[] = array(
+                            "place"    => $arr['posn'],
+                            "period"   => $record['period'],
+                            "team"     => $team,
+                            "trophy"   => $record['name'],
+                            "category" => $record['award_category'],
+                            "division" => $record['award_division'],
+                            "boat"     => $arr['boat']." ".$arr['number']);
+                    }
                 }
             }
         }
@@ -199,11 +210,23 @@ elseif ($_REQUEST['pagestate'] == "submit")
         $data_num = count($data);
 
         // form
+        $formfields["search_label"] = "Search Again";
+
         $pagefields['page-main'] = $tmpl_o->get_template("trophy_search_form", $formfields,
             array("start_year" => $min, "end_year" => $max, "periods" => $periods, "trophies" => $trophies, "error" => $err));
         //
+
+        $display_trophy = false;
+        if (check_search_criteria($_REQUEST['trophy'], $_REQUEST['person']) == "trophy")
+        {
+            $display_trophy = true;
+        }
+
+        $trophy_key = array_search($_REQUEST["trophy"], array_column($trophies, 'name'));
+        $trophy = $trophies[$trophy_key];
+
         $pagefields['page-main'].= $tmpl_o->get_template("trophy_search_results", $formfields,
-            array("data" => $data, "data_num" => $data_num));
+            array("data" => $data, "data_num" => $data_num, "trophy" => $trophy, "display_trophy" => $display_trophy));
 
         echo $tmpl_o->get_template("print_page", $pagefields );
     }

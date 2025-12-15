@@ -17,7 +17,7 @@ $loc  = "..";
 $page = "trophy_winners_list";     //
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
-$styletheme = "";
+$styletheme = "cerulean_";
 $stylesheet = "./style/rm_utils.css";
 
 require_once ("{$loc}/common/lib/util_lib.php");
@@ -55,10 +55,10 @@ $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./template
 // common template parameters
 $pagefields = array(
     "stylesheet"  => $stylesheet,
-    "tab-title"   => "Trophy Winners",
+    "tab-title"   => "Trophies",
     "page-theme"  => $styletheme,
-    "page-title"  => "Trophy Winners Display",
-    "page-footer" => "",
+    "page-title"  => "<h2 class='ps-5'>Trophy Presentation List</h2>",
+    "page-footer" => "<div class='text-end mt-4 pe-5'> &copy; Elmswood Software ".date("Y")."</div>",
 );
 
 /* ------------ check pagestate ---------------------------------------------*/
@@ -154,11 +154,11 @@ elseif ($_REQUEST['pagestate'] == "submit") {
 
     $pagefields = array(
         "stylesheet" => "",
-        "tab-title" => "Trophy Winners List",
-        "page-theme" => "",
-        "page-title" => "Starcross YC Trophy Winners {$_REQUEST['period']}<br>PRESENTATION LIST",
+        "tab-title" => "Trophies",
+        "page-theme" => $styletheme,
+        "page-title" => "<h2>Starcross YC Trophy Winners {$_REQUEST['period']}<br>PRESENTATION LIST</h2><hr>",
         "page-main" => $tmpl_o->get_template("trophy_presentation_list", array(), $params),
-        "page-footer" => "<p><small>printed on $today</small></p>",
+        "page-footer" => "<div class='text-end mt-4 pe-5'> &copy; Elmswood Software ".date("Y")."</div>",
     );
 
     echo $tmpl_o->get_template("print_page", $pagefields, array());

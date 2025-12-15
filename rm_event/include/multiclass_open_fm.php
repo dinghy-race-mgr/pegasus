@@ -33,7 +33,7 @@ if (!empty($params['instructions']))
     $instructions_htm = <<<EOT
 <!-- instructions -->
 <div class="">
-    <div class="alert alert-warning alert-dismissible fade show fs-6 " role="alert">
+    <div class="alert alert-light alert-dismissible fade show fs-6 " role="alert">
         {$params['instructions']}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>

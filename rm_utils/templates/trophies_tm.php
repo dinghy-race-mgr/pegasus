@@ -32,6 +32,16 @@ function print_page($params = array())
     
     </body>
     </html>
+    
+    <script type="text/javascript">
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    this.addEventListener('hide.bs.tooltip', function () {
+        new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+});
+</script>
 
 EOT;
 
@@ -48,7 +58,7 @@ function trophy_search_form($params = array())
     foreach($params['periods'] as $period)
     {
         $year_options.= "<li><a class='dropdown-item' 
-        href='./trophy_winners_display.php?pagestate=submit&period={$period['period']}&report_style=slate_' 
+        href='./trophy_winners_display.php?pagestate=submit&period={$period['period']}&report_style=sandstone_' 
         target='_BLANK'>{$period['period']}</a></li>";
     }
 
@@ -85,15 +95,14 @@ function trophy_search_form($params = array())
 EOT;
     }
 
-
     $bufr = "";
     $bufr.= <<<EOT
     <div class="container-fluid">
-        <div class="row">
+        <!--div class="row mt-4">
             <div class="col-2">&nbsp;</div>
-            <div class="col-7 text-info lead">{instructions}</div>
-        </div>
-        <div class="row mt-2">
+            <div class="col-7 lead">{instructions}</div>
+        </div-->
+        <div class="row mt-4">
             <div class="col-2">&nbsp;</div>
             <div class="col-7">
                 <p class="lead">{lower-instructions}</p>
@@ -103,60 +112,52 @@ EOT;
         <form class="" enctype="multipart/form-data" id="trophysearchform" action="{script}" method="post">
                     
         <div class="row g-5 align-items-center">
-            <div class="col-2">&nbsp;</div>
-            <div class="col-3">
+            <div class="col-sm-2">&nbsp;</div>
+            <div class="col-sm-3">
                      <div class="form-floating">          
-                        <input class="form-control form-control-lg" list="trophyopts" id="trophy" name="trophy" placeholder="" value="" autofocus />
+                        <input class="form-control form-control-lg" style="min-width: 250px; background-color:  lightsteelblue!important; " list="trophyopts" id="trophy" name="trophy" placeholder="" value="" />
                         <datalist id="trophyopts">$trophylist</datalist>
                         <label for="trophy" class="label-style" style="color: darkslategray; ! important">Trophy Name</label>                       
                         <!-- div class="text-primary mx-5">start typing  &hellip;</div-->          
                     </div>                  
             </div>
             
-            <div class="col-1"><b>AND / OR</b></div>
+            <div class="col-sm-1">and/or</div>
             
-            <div class="col-3">
+            <div class="col-sm-3">
                 <div class="form-floating">          
-                    <input class="form-control form-control-lg" type="text" id="class" name="person" placeholder="Person (First Last preferred)" value=""/>
+                    <input class="form-control form-control-lg" style="min-width: 250px; background-color:  lightsteelblue!important; " type="text" id="class" name="person" placeholder="Person (First Last preferred)" value=""/>
                     <label for="floatingInput" class="label-style" style="color: darkslategray; ! important">Person Name (e,g Ben Ainslie)</label>                           
                 </div>  
             </div>
+            
         </div>
         
+        <!-- start and end years/periods entered automatically as hidden fields -->
         <input type="hidden" id="start_year" name="start_year" value="$start_year"/>
         <input type="hidden" id="end_year" name="end_year" value="$end_year"/>
-        <!-- div class="row g-5 align-items-center mt-3" >
-            <div class="col-1">&nbsp;</div>
-            <div class="col-3 ms-5">
-                    <input type="hidden" id="start_year" name="start_year" value="$start_year"/>
-                    <select class="form-control" name="start_year">
-                    </select>               
-            </div>
-            <div class="col-2"><b>- - to - -</b></div>
-            <div class="col-3">
-                    <input type="hidden" id="end_year" name="end_year" value="$end_year"/>
-                    <select class="form-control" name="end_year">
-                    </select>               
-            </div>
-        </div -->      
+          
         
         <!-- buttons -->
-        <div class="row g-5 align-items-center mt-3" >
-            <div class="col-2">&nbsp;</div>
-            <div class="col-6">
-                <div class="text-end">             
-                    <button class="btn btn-lg btn-info dropdown-toggle" style="min-width: 250px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-file-earmark-text-fill">&nbsp;</i><b>Whole Year</b></button>
+        <div class="row mt-5">
+            <div class="row"> 
+                <div class="col-sm-2">&nbsp;</div> 
+                <div class="col-sm-3">        
+                    <button class="btn btn-sm btn-outline-primary border border-info dropdown-toggle" 
+                      style="min-width: 250px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="fs-5" data-bs-toggle="tooltip" data-bs-placement="top"
+                      data-bs-custom-class="custom-tooltip" data-bs-title="Select year for report">
+                      <i class="bi bi-file-earmark-text-fill" >&nbsp;</i> Winner List &nbsp;&nbsp;</span></button>
                     <ul class="dropdown-menu">$year_options</ul>
-                              
-                    <a class="btn btn-lg btn-warning ms-3" style="min-width: 250px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
-                    <i class="bi bi-arrow-left-square">&nbsp;</i>&nbsp;<b>Back to Results</b></a>
-
-                    <button type="submit" class="btn btn-lg btn-success ms-3"  style="min-width: 250px;" >
-                    <i class="bi bi-search">&nbsp;&nbsp;</i><b>Search</b></button>
+                </div> 
+                <div class="col-sm-1">&nbsp;</div>
+                <div class="col-sm-3">
+                    <button type="submit" class="btn btn-sm btn-outline-primary border border-success ms-3"  style="min-width: 250px;" >
+                    <span class="fs-5"><i class="bi bi-search">&nbsp;&nbsp;</i>{search_label}</span></button>
                 </div>
-            </div>
+            </div> 
         </div>
+        
         </form>
                 
         <div class="mt-5">
@@ -164,6 +165,13 @@ EOT;
         </div>
         
     </div>
+    <script language="javascript">
+    function quitBox(cmd)
+    {   
+        if (cmd=='quit') { open(location, '_self').close(); }   
+        return false;   
+    }
+    </script>
 
 EOT;
 
@@ -178,10 +186,89 @@ function trophy_search_results($params = array())
     {
         $noresults_html = <<<EOT
         <div class="row mt-5">
-            <div class="col-3">&nbsp;</div>
-            <div class="col-6 alert alert-danger lead" role="alert">
+            <div class="col-2">&nbsp;</div>
+            <div class="col-8 alert alert-danger lead" role="alert">
             <i class="bi bi-exclamation-triangle-fill">&nbsp;</i>
-            <span style="font-size:1.2em"><b>Sorry</b></span>&nbsp;&nbsp;&nbsp;&nbsp;no data found to match your search - please try again.</div>
+            &nbsp;&nbsp;&nbsp;&nbsp;No data found to match your search - please try again.</div>
+        </div>
+EOT;
+    }
+
+    //create trophy description if the request includes a trophy name
+    $trophy = $params['trophy'];
+    $display_trophy_html = "";
+    if ($params["display_trophy"])
+    {
+        $thumbnail = "awaiting photo &hellip;";
+        if (!empty($trophy['picture']))
+        {
+
+           $thumbnail = <<<EOT
+<div>
+  <!-- thumbnail link part -->
+  <a data-bs-toggle="modal" data-bs-target="#full_size_image_dialog">
+    <img src="../data/trophy_images/th{$trophy['picture']}" class="figure-img img-fluid border border-dark">
+  </a>
+
+  <!-- model display of full image-->
+  <div id="full_size_image_dialog" class="modal">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>{$trophy['name']}</h5>
+        </div>
+        <div class="modal-body">
+          <img src="../data/trophy_images/{$trophy['picture']}" class="img-fluid border border-dark">
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+EOT;
+        }
+
+        $notes = "<br>";
+        if (!empty($trophy['notes'])) { $notes = "{$trophy['notes']}<br>";}
+
+        $donor = "donated by - ?<br>";
+        if (!empty($trophy['donor']))  { $donor = "donated by - {$trophy['donor']}<br>"; }
+
+        $date_acquired = "date acquired - ?<br>";
+        if (!empty($trophy['date_acquired']))  { $date_acquired = "date acquired - {$trophy['date_acquired']}<br>"; }
+
+        $location = "location - ?<br>";
+        if (!empty($trophy['location']))  { $location = "location - {$trophy['location']}<br>"; }
+
+        $allocation = "awarded for - ?<br>";
+        if (!empty($trophy['current_allocation']))
+        {
+            $allocation = "awarded for: - {$trophy['current_allocation']}";
+            if (!empty($trophy['current_division']))  { $allocation.= " / {$trophy['current_division']}"; }
+            $allocation.= "<br>";
+        }
+
+        $display_trophy_html = <<<EOT
+        <div class="row border border-info-subtle pt-5 pb-5" >
+            <div class="col-2 text-center">
+                $thumbnail
+            </div>
+            <div class="col-5">
+                <span class="lead"><b>{$trophy['name']}</b></span><br>
+                $notes
+                $donor
+            </div>
+            <div class="col-5">
+                $allocation
+                $date_acquired
+                $location              
+            </div>
+        </div>
+        <div class="row>"
+            <div class="col-2">&nbsp;</div>
+            <div class="col-8 text-secondary">
+                <i>If you have any additional information about this trophy please pass it on to the sailing committee</i>
+            </div>
         </div>
 EOT;
     }
@@ -195,7 +282,7 @@ EOT;
           <td>{$data["place"]}</td>
           <td>{$data["period"]}</td>
           <td><b>{$data["team"]}</b></td>
-          <td>{$data["trophy"]}</td>
+          <td><b><span style="color:steelblue;">{$data["trophy"]}</span></b></td>
           <td>{$data["category"]}</td>
           <td>{$data["division"]}</td>
           <td>{$data["boat"]}</td>
@@ -207,12 +294,15 @@ EOT;
 <div class="container container-fluid" style="margin-top: 20px;">
     <hr class="divider-line" style="background-color: steelblue;"> 
         $noresults_html
-    <table class="table table-hover">
+    <table class="table table-hover" style="font-size: 0.9em;">
         <tbody>
         $rows_htm
         </tbody>
     </table>
-    </div>
+    <hr class="divider-line" style="background-color: steelblue;"> 
+    $display_trophy_html
+</div>
+    
 EOT;
     return $bufr;
 }
@@ -243,10 +333,10 @@ function trophies_display_form($params = array())
             <!-- period argument -->           
             <div class="row g-5 align-items-center">
                 <div class="col-auto">
-                    <label for="period" class="col-form-label"><strong>Report Period</strong></label>
+                    <label for="period" class="col-form-label fs-3">Report Period</label>
                 </div>
                 <div class="col-auto">
-                    <select class="form-select mb-3" id="period" name="period">
+                    <select class="form-select form-select-lg mb-3" id="period" name="period">
                       $select_opts
                     </select>
                 </div>
@@ -256,7 +346,7 @@ function trophies_display_form($params = array())
             </div>
                                 
             <!-- style argument-->
-            <div class="row g-5 align-items-center">
+            <!--div class="row g-5 align-items-center">
                 <div class="col-auto">
                     <label for="report_style"class="col-form-label"><strong>Report Style</strong></label>
                 </div>
@@ -281,7 +371,7 @@ function trophies_display_form($params = array())
                 <div class="col-auto">
                     <span id="styleHelpInline" class="form-text">Select format for your report</span>
                 </div>
-            </div>           
+            </div-->           
 
             <!-- buttons -->
             <div class="mt-5">
@@ -334,10 +424,10 @@ function trophies_presentation_list_form($params = array())
             <!-- period argument -->           
             <div class="row g-5 align-items-center">
                 <div class="col-auto">
-                    <label for="period" class="col-form-label"><strong>Report Period</strong></label>
+                    <label for="period" class="col-form-label fs-3">Report Period</label>
                 </div>
                 <div class="col-auto">
-                    <select class="form-select mb-3" id="period" name="period">
+                    <select class="form-select form-select-lg mb-3" id="period" name="period">
                       $select_opts
                     </select>
                 </div>
@@ -427,6 +517,7 @@ function trophy_display_content($params = array())
 
 function trophy_presentation_list($params = array())
 {
+    $today = date("Y-m-d");
     $data = $params['data'];
     //echo "<pre>".print_r($data,true)."</pre>";
 
@@ -485,6 +576,7 @@ EOT;
 
     $bufr = <<<EOT
     <div>
+    <div class="text-end pe-5">created on $today</div>
     <table class="table table-condensed">
         $tbufr
     </table>
@@ -505,6 +597,7 @@ function get_section_header($row, $cfg)
 
 function get_trophy_report($row, $cfg)
 {
+
     // table field widths
     $col1 = "50px";
     $col2 = "200px";
@@ -549,6 +642,7 @@ function get_trophy_report($row, $cfg)
 
     $htm = <<<EOT
     <div>
+    
     <table class="table table-condensed">
     <tr>
         <td width='20%'><b>$trophy_name</b></td>

@@ -211,6 +211,20 @@ function u_conv_boat($class, $sailnum, $code, $length=0)
     return $boat;
 }
 
+
+function u_ucname($string)           // replaces ucwords - dealing with various name types
+{
+    $string =ucwords(strtolower($string));
+
+    foreach (array('-', '\'','Mc','Mac', "D\'") as $delimiter) {
+        if (strpos($string, $delimiter)!==false) {
+            $string =implode($delimiter, array_map('ucfirst', explode($delimiter, $string)));
+        }
+    }
+    return $string;
+}
+
+
 function u_conv_team($helm, $crew, $length=0)
 {
     $team = $helm;

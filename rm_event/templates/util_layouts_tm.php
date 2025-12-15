@@ -13,12 +13,12 @@ function utils_page ($params = array())
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="Mark Elkington">
-        <title>{page-title}</title>
+        <title>{tab-title}</title>
     
         <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sticky-footer-navbar/">
     
         <!-- Bootstrap core CSS -->
-        <link href="../common/oss/bootstrap532/css/{page-theme-utils}bootstrap.min.css" rel="stylesheet">
+        <link href="../common/oss/bootstrap532/css/{styletheme}bootstrap.min.css" rel="stylesheet">
         <link href="../common/oss/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
         
         <!-- Bootstrap core js -->
@@ -125,19 +125,20 @@ function navbar_utils ($params = array())
         <nav class="navbar bg-primary navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
             <div class="container-fluid">
                 <a class="navbar-brand fs-2" href="#">{util-name}</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" 
+                               aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarText">
                     <div class="col text-end">
-                    <span class="navbar-text fs-5 ">raceManager {version} - &copy; Elmswood Software {year}</span>
+                        <span class="navbar-text fs-5 ">raceManager {version}</span><br>
+                        <span class="navbar-text fs-6"> &copy; Elmswood Software {year}</span>
                     </div>
                 </div>
            </div>
         </nav>
     </header>
 EOT;
-
 
     return $htm;
 }
@@ -169,81 +170,98 @@ EOT;
     return $htm;
 }
 
-function entries_review_body ($params = array())
+function format_entry_counts($arr, $field)
 {
-    $htm = "";
+    $str = false;
+    if ($arr)
+    {
+        $str = "";
+        foreach ($arr as $row)
+        {
+            $str.= $row[$field].": ".$row['number']." , ";
+        }
+        $str = rtrim($str,", ");
+    }
+    return $str;
+}
 
+function reception_rept ($params = array())
+{
     // title details
     $timestamp = date("d-M-Y H:i");
-    $title = "Entry Review: {event-title}";
+    $title = "{event-title}";
 
-    // options
-    $option_txt = "[ OPTIONS: ";
-    foreach ($params['options'] as $k=>$v)
-    {
-        $option_txt.= "$k - $v, ";
-    }
-    $option_txt = rtrim($option_txt, ',' )." ]";
+    // format counts
+    $entry_count = "TOTAL ENTRIES : - ".count($params['entries']);
+    $count_str = format_entry_counts($params['counts']['class'], "b-class");
+    empty($count_str) ? $class_count = "": $class_count = "CLASSES :- $count_str";
+    $count_str = format_entry_counts($params['counts']['fleet'], "b-fleet");
+    empty($count_str) ? $fleet_count = "": $fleet_count = "FLEETS :- $count_str";
+    $count_str = format_entry_counts($params['counts']['division'], "b-division");
+    empty($count_str) ? $group_count = "": $group_count = "GROUPS :- $count_str";
 
     // table columns
-    $cols = "<thead><tr>";
-    foreach ($params['cols'] as $k => $v)
-    {
-        $cols.= "<th>".ucwords($k)."</th>";
-    }
-
-    if ($params['checks']) { $cols.= "<th>Entry Checks</th>"; }
-    $cols.= "</tr></thead>";
+    $cols = <<<EOT
+<thead><tr>
+    <th width="12%">Boat</th>
+    <th width="20%">Crew</th>
+    <th width="12%">Club</th>
+    <th width="12%">Fleet/Group</th>
+    <th width="28%">Entry Changes</th>
+    <th width="8%">Paid</th>
+    <th width="5%">Tally</th>
+</tr></thead>
+EOT;
 
     // table rows
     $rows = "";
-    foreach ($params['entries'] as $key => $data)               // loop over rows
+    foreach ($params['entries'] as $key => $data)
     {
-        $rows.= "<tr>";
-        foreach ($params['cols'] as $k => $f)                   // loop to get required field data
-        {
-            if (array_key_exists($f, $data)) { $rows.= "<td>{$data["$f"]}</td>"; }  // add field
-        }
+        $helmname = $data['h-name'];
+        if (!empty($data['h-age']) and $data['h-age'] < 18) { $helmname = $helmname . " [J]";}
 
-        // add record check information
-        if ($params['checks'])
-        {
-            $checks = "";
-            for ($i = 1; $i <= 8; $i++)
-            {
-                if ($i == 1) {
-                    $checks .= "juniors: {$data["chk$i"]} issues: ";
-                } elseif ($data["chk$i"]) {
-                    $checks .= "$i | ";
-                }
-            }
-            $rows.= "<td>".rtrim($checks, "| ")."</td>";
-        }
+        $crewname = $data['c-name'];
+        if (!empty($data['c-age']) and $data['c-age'] < 18) { $crewname = $crewname . " [J]"; }
 
-        $rows.= "</tr>";
-    }
-    echo "<pre>$rows</pre>";
+        empty($data['c-name']) ? $team = ucwords($helmname) : $team = ucwords($helmname) . "<br>" . ucwords($crewname);
 
-    // legend for checks
-    if ($params['checks'])
-    {
-        $key = "ISSUES KEY: 2 - missing junior consents, 3 - missing emergency contact, 4 - missing crew name, 
-        5 - missing gender info, 6 - missing sailno, 7 - class not known to RM, 8 - competitor not known to RM";
+        empty($data['b-fleet']) ? $fleet_div = $data['b-division'] : $fleet_div = $data['b-fleet'] . "<br>" . $data['b-division'];
+
+        $rows .= <<<EOT
+<tr>
+    <td width="">{$data['b-class']} {$data['b-sailno']}<br>&nbsp;</td>
+    <td>$team</td>
+    <td>{$data['h-club']}</td>
+    <td>$fleet_div</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td> 
+    <td>{$data['e-tally']}</td>  
+</tr>
+EOT;
     }
 
-
+    // render report
     $htm = <<<EOT
     <main class="" >
         <div class="container-fluid">
-            <p class='fs-3'><b>$title</b><span class="fs-6">[created at $timestamp]</span></p>    
-            <p><i>$option_txt</i></p>
-            <div style="padding-left: 30px; width: 75%">   
-                <table class="table table-success table-striped table-hover">
+            <p class='fs-3'>
+                $title<br>
+                <span class="fs-6">[created at $timestamp]</span> 
+            </p>
+               
+            <div >   
+                <table class="table table-success table-striped table-hover table-bordered" style="padding-left: 30px; width: 95%">
                     $cols
                     $rows           
-                </table> 
-                <p>$key</p> 
-            </div>    
+                </table>
+                <div>
+                    <p>$entry_count</p>  
+                    <p>$class_count</p>
+                    <p>$fleet_count</p>  
+                    <p>$group_count</p>
+                </div> 
+                
+            </div>   
         </div>    
     </main>
 
@@ -252,6 +270,404 @@ EOT;
     return $htm;
 }
 
+function entrycheck_rept ($params = array())
+{
+    // title details
+    $timestamp = date("d-M-Y H:i");
+    $title = "{event-title}";
+
+    // table columns
+    $cols = <<<EOT
+<thead><tr>
+    <th width="10%">Boat</th>
+    <th width="15%">Crew</th>
+    <th width="10%">Club</th>
+    <th width="10%">Fleet / Group</th>
+    <th width="25%">Checks</th>
+    <th width="5%">Known Class</th>
+    <th width="6%">Known Comp.</th>   
+</tr></thead>
+EOT;
+
+    // table rows
+    $rows = "";
+    foreach ($params['entries'] as $key => $data)
+    {
+        $helmname = $data['h-name'];
+        if (!empty($data['h-age']) and $data['h-age'] < 18) { $helmname = $helmname." [J]"; }
+
+        $crewname = $data['c-name'];
+        if (!empty($data['c-age']) and $data['c-age'] < 18) { $crewname = $crewname." [J]"; }
+
+        empty($data['c-name']) ? $team = ucwords($helmname) : $team = ucwords($helmname)."<br>".ucwords($crewname);
+
+        $data['chk7'] ? $known_class = "<span class='text-danger'><i class='bi x-square-fill'></i></span>": $known_class = "<span class='text-success'><i class='bi bi-check-square-fill'></i></span>";
+        $data['chk7'] ? $known_comp = "<span class='text-danger'><i class='bi x-square-fill'></i></span>": $known_comp = "<span class='text-success'><i class='bi bi-check-square-fill'></i></span>";
+
+        empty($data['b-fleet']) ? $fleet_div = $data['b-division'] : $fleet_div = $data['b-fleet']."<br>".$data['b-division'];
+
+        $checks = "no checks made";
+        if ($params['checks'])
+        {
+            $checks = "";
+            for ($i = 1; $i <= 6; $i++)
+            {
+                if ($data["chk$i"]) { $checks.= $data["chk$i"]." | "; }
+            }
+            $checks= rtrim($checks, "| ");
+        }
+
+        $rows.= <<<EOT
+<tr>
+    <td width="">{$data['b-class']} {$data['b-sailno']}<br>&nbsp;</td>
+    <td>$team</td>
+    <td>{$data['h-club']}</td>
+    <td>$fleet_div</td>
+    <td>$checks</td>  
+    <td>$known_class</td> 
+    <td>$known_comp</td> 
+</tr>
+EOT;
+    }
+
+    $key = count($params['entries'])." entries <br>{key}";
+
+    $htm = <<<EOT
+    <main class="" >
+        <div class="container-fluid">
+            <p class='fs-3'>
+                $title<br>
+                <span class="fs-6">[created at $timestamp]</span> 
+            </p>
+               
+            <div >   
+                <table class="table table-success table-striped table-hover table-bordered" style="padding-left: 30px; width: 95%">
+                    $cols
+                    $rows           
+                </table> 
+            </div>   
+        </div>    
+    </main>
+
+EOT;
+
+    return $htm;
+}
+
+
+function tallylist_rept ($params = array())
+{
+//    echo "<pre>".print_r($params['counts'],true)."</pre>";
+//    exit();
+
+    // title details
+    $timestamp = date("d-M-Y H:i");
+    $title = "{event-title}";
+
+    // format counts
+    $entry_count = "TOTAL ENTRIES : - ".count($params['entries']);
+    $count_str = format_entry_counts($params['counts']['class'], "b-class");
+    empty($count_str) ? $class_count = "": $class_count = "CLASSES :- $count_str";
+    $count_str = format_entry_counts($params['counts']['fleet'], "b-fleet");
+    empty($count_str) ? $fleet_count = "": $fleet_count = "FLEETS :- $count_str";
+    $count_str = format_entry_counts($params['counts']['division'], "b-division");
+    empty($count_str) ? $group_count = "": $group_count = "GROUPS :- $count_str";
+
+    // table columns
+    $cols = <<<EOT
+<thead><tr>
+    <th width="5%">Tally</th>
+    <th width="12%">Boat / Sail No.</th>
+    <th width="20%">Helm / Crew</th>
+    <th width="12%">Club</th>
+    <th width="12%">Fleet / Group</th>  
+</tr></thead>
+EOT;
+
+    // table rows
+    $rows = "";
+    foreach ($params['entries'] as $key => $data)
+    {
+        $helmname = $data['h-name'];
+        if (!empty($data['h-age']) and $data['h-age'] < 18) { $helmname = $helmname . " [J]";}
+
+        $crewname = $data['c-name'];
+        if (!empty($data['c-age']) and $data['c-age'] < 18) { $crewname = $crewname . " [J]"; }
+
+        empty($data['c-name']) ? $team = ucwords($helmname) : $team = ucwords($helmname) . " / " . ucwords($crewname);
+
+        empty($data['b-fleet']) ? $fleet_div = $data['b-division'] : $fleet_div = $data['b-fleet'] . "    " . $data['b-division'];
+
+        $rows .= <<<EOT
+<tr>
+    <td class='fs-4'>{$data['e-tally']}</td> 
+    <td>{$data['b-class']} {$data['b-sailno']}</td>
+    <td>$team</td>
+    <td>{$data['h-club']}</td>
+    <td>$fleet_div</td>
+</tr>
+EOT;
+    }
+
+    // render report
+    $htm = <<<EOT
+    <main class="" >
+        <div class="container-fluid">
+            <p class='fs-3'>
+                $title<br>
+                <span class="fs-6">[created at $timestamp]</span> 
+            </p>
+               
+            <div >   
+                <table class="table table-success table-striped table-hover table-bordered" style="padding-left: 30px; width: 95%">
+                    $cols
+                    $rows           
+                </table>
+                <div>
+                    <p>$entry_count</p>  
+                </div>               
+            </div>   
+        </div>    
+    </main>
+
+EOT;
+
+    return $htm;
+}
+
+
+
+function fleetlist_rept ($params = array())
+{
+    // title details
+    $timestamp = date("d-M-Y H:i");
+    $title = "{event-title}";
+
+    // format counts
+    $entry_count = "TOTAL ENTRIES : - ".count($params['entries']);
+    $count_str = format_entry_counts($params['counts']['class'], "b-class");
+    empty($count_str) ? $class_count = "": $class_count = "CLASSES :- $count_str";
+    $count_str = format_entry_counts($params['counts']['fleet'], "b-fleet");
+    empty($count_str) ? $fleet_count = "": $fleet_count = "FLEETS :- $count_str";
+
+    // table columns
+    $cols = <<<EOT
+<thead><tr>
+    <th width="12%">Fleet</th>
+    <th width="12%">Boat</th>
+    <th width="20%">Crew</th>
+    <th width="12%">Club</th>    
+    <th width="5%">Tally</th>
+</tr></thead>
+EOT;
+
+    // table rows
+    $rows = "";
+    $fleet_div = "";
+    foreach ($params['entries'] as $key => $data)
+    {
+        if ($fleet_div != ucwords(strtolower($data['b-fleet'])))  // add blank row divider
+        {
+            $fleet_div = ucwords(strtolower($data['b-fleet']));
+            $rows .= <<<EOT
+<tr>
+    <td colspan="5" class="text-center fs-4"><b>$fleet_div</b></td>  
+</tr>
+EOT;
+        }
+
+        $helmname = $data['h-name'];
+        if (!empty($data['h-age']) and $data['h-age'] < 18) { $helmname = $helmname . " [J]"; }
+
+        $crewname = $data['c-name'];
+        if (!empty($data['c-age']) and $data['c-age'] < 18) { $crewname = $crewname . " [J]"; }
+
+        empty($data['c-name']) ? $team = ucwords($helmname) : $team = ucwords($helmname) . " / " . ucwords($crewname);
+
+        //empty($data['b-fleet']) ? $fleet_div = $data['b-division'] : $fleet_div = $data['b-fleet'] . "<br>" . $data['b-division'];
+        $fleet_div = ucwords(strtolower($data['b-fleet']));
+
+        $rows .= <<<EOT
+<tr>
+    <td>$fleet_div</td>
+    <td>{$data['b-class']} {$data['b-sailno']}</td>
+    <td>$team</td>
+    <td>{$data['h-club']}</td>
+    <td>{$data['e-tally']}</td>  
+</tr>
+EOT;
+    }
+
+    // render report
+    $htm = <<<EOT
+    <main class="" >
+        <div class="container-fluid">
+            <p class='fs-3'>
+                $title<br>
+                <span class="fs-6">[created at $timestamp]</span> 
+            </p>
+               
+            <div >   
+                <table class="table table-success table-striped table-hover table-bordered" style="padding-left: 30px; width: 95%">
+                    $cols
+                    $rows           
+                </table>
+                <div>
+                    <p>$entry_count</p>  
+                    <p>$class_count</p>
+                    <p>$fleet_count</p>  
+                </div>                
+            </div>   
+        </div>    
+    </main>
+
+EOT;
+
+    return $htm;
+}
+
+
+function set_tally_info($params = array())
+{
+    $button = "";
+    $report = "";
+    if ($params['state'] == "instructions")
+    {
+        $button = "<a href='./rmu_set_tally.php?eid={$params['eid']}&pagestate=submit' class='btn btn-warning btn-lg' 
+                      type='button' target='_parent'>
+                      Set Tallies
+                   </a>";
+    }
+    elseif ($params['state'] == "results")
+    {
+        $button = "<a href='./rmu_entries_reports.php?eid={$params['eid']}&output=tallylist' class='btn btn-info btn-lg'
+                      type='button' target='_blank'>
+                      Print Tally List
+                   </a>";
+        $report = "<p class='lead'>{$params['count']} tallies allocated</p>";
+    }
+
+
+    $htm = <<<EOT
+    <div class="container d-flex align-items-center justify-content-center">
+    <div class="col-8 justify-content-center mt-4 p-5 bg-primary text-white rounded">
+        <h2>Adding tally numbers to entry list&hellip;</h2>
+        <p>This should be done when entries have closed - <u>typically the day before the event</u>.  Tallies will be 
+           allocated to confirmed entries sorted on class name, and sail number.  Tallies for boats that enter at 
+           the event or are introduced from the waiting list should be allocated at reception</p>
+        <p>Once the tally numbers have been allocated you will be able to print a tally list.</p>
+        $report
+        $button
+    </div>
+    </div>
+EOT;
+
+
+    return $htm;
+}
+
+
+function rm_export_form($params = array())
+{
+    $num_entries = count($params['entries']);
+
+    $fixable  = true;
+    $problem_count = 0;
+    $problem_htm = "";
+    foreach ($params['entries'] as $entry)
+    {
+        empty($entry['c-name']) ? $team = ucwords($entry['h-name']) : $team = ucwords($entry['h-name']) . " / " . ucwords($entry['c-name']);
+
+        $txt_1 = "club ok";
+        if ($entry['rm_club'])
+        {
+            $entry['rm_comp'] ? $txt_1 = "<span class='text-info'>n/a</span>" : $txt_1 = "<span class='text-info'>different club</span>";
+        }
+
+        $txt_2 = "known competitor";
+        if ($entry['rm_comp'])
+        {
+            $txt_2 = "<span class='text-warning'>unknown competitor</span>";
+        }
+
+        $txt_3 = "class ok";
+        if ($entry['rm_class'] )
+        {
+            $txt_3 = "<span class='text-danger'><b>unknown class</b></span>";
+            $fixable = false;
+            $problem_count++;
+        }
+
+        $problem_htm.=<<<EOT
+        <tr>
+            <td class="px-3">{$entry['b-class']} {$entry['b-sailno']}</td>
+            <td class="px-3">$team</td>
+            <td class="px-3">{$entry['h-club']}</td>
+            <td class="px-3">$txt_1</td>  
+            <td class="px-3">$txt_2</td>  
+            <td class="px-5">$txt_3</td>          
+        </tr>
+EOT;
+    }
+
+    if ($fixable)
+    {
+        $warning = " This application should be able to resolve these issues as part of the transfer process.";
+        $button  = <<<EOT
+<a type="button" class="btn btn-lg btn-primary mx-5 fs-4"  style="min-width: 200px;" href="./rmu_racemgr_entry_export.php?eid={$params['eid']}&pagestate=submit">
+<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Transfer Entries</b></a>
+EOT;
+   }
+    else
+    {
+        $warning = " This application cannot fix the issues shown in red below - please use the raceManager administration functions to resolve them before trying again.";
+        $button  = "";
+    }
+
+    $htm = <<<EOT
+<div class="container align-items-center justify-content-center" >
+    <!-- instructions -->
+    <div class="row mt-4 p-5 fs-4 bg-primary text-white rounded">
+        <h2>Transferring entries to raceManager&hellip;</h2>
+        <p>This should be done when when all entries have been confirmed - <u>typically after reception has closed</u>.</p>
+        <p>There are currently $num_entries entries - potential problems with these entries are listed below.</p>
+        <p>Some of the issues might be resolvable automatically by this application - but there may be other problems which you must resolve before this script can complete the transfer</p>
+    </div>
+    
+    <div class="mt-5">
+        <div class="text-end">
+            <a class="btn btn-lg btn-warning mx-5 fs-4" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+            <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
+            $button              
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <p class="lead pt-5 text-center">There are $num_entries entries for this event and $problem_count unresolvable issue(s) have been detected - as shown below.</p>
+        <p class="lead text-center">$warning</p>
+        <div class="col-auto">
+            <table class="table table-responsive table-bordered" >
+                $problem_htm
+            </table>
+        </div>
+    </div>
+   
+</div>
+
+<script language="javascript">
+    function quitBox(cmd)
+    {   
+        if (cmd=='quit')
+        {
+            open(location, '_self').close();
+        }   
+        return false;   
+    }
+    </script>
+EOT;
+    
+    return $htm;
+}
 
 function sailwave_export_form($params = array())
 {
@@ -296,7 +712,7 @@ function sailwave_export_form($params = array())
                         <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
 
                         <button type="submit" class="btn btn-lg btn-primary mx-5"  style="min-width: 200px;" >
-                        <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Create</b></button>
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Create Export File</b></button>
                     </div>
             </div>
         </form>

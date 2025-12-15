@@ -94,6 +94,11 @@ input[type=radio] {
   -webkit-transform: scale(1.7); /* Webkit browsers*/
 }
 
+.custom-tooltip {
+  --bs-tooltip-bg: var(--grey);
+  --bs-tooltip-color: var(--lightgrey);
+}
+
 .hover:hover{background-color: lightyellow; color: black;}
 
 .print a:hover {color: white;}

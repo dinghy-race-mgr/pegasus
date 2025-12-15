@@ -10,6 +10,9 @@
  */
 //TODO - sort out dryrun (collects differences - does not apply to Rm database - reports them as a batch in logging)
 //DONE - add logging in duty_compare - just changes
+//TODO - fix database connections to use both dutyman and racemanager databases
+//TODO - switch sql in get_member_lookup
+//TODO - switch sql in get_dtm_duty_arr
 //TODO - add status return to duty_compare
 //TODO - add logging in apply_changes
 //TODO - add status return to apply_changes
@@ -176,7 +179,7 @@ function get_member_lookup()
 
     $arr = array();
 
-    // get member info - fixme change SQL
+    // get member info - fixme change SQL to look in t_rotamember
     $members = $dbt_o->run("select * from z_members ORDER BY `Last Name` ASC", array() )->fetchall();
     $i = 0;
     foreach($members as $member)
@@ -202,7 +205,7 @@ function get_dtm_duty_arr($today)
     global $dbt_o;
     global $rota, $members;
 
-    // get duty data - fixme change SQL
+    // get duty data - fixme change SQL to use t_eventduty
     $arr = array();
     $err = array();
     

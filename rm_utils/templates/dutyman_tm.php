@@ -447,3 +447,37 @@ EOT;
     return $bufr;
 }
 
+
+
+function dtm_confirm_email_1($params=array())
+{
+    $htm = <<<EOT
+<!-- first dutyman confirmation reminder email -->
+<p>Hi</p>
+
+<p>You should have received an email from SYC's Dutyman system with details of the duties you have been allocated
+this year with a request to either confirm that you can do the duty OR organise a duty swap by accessing
+the Dutyman system  <i>(which can be accessed from the SYC website - essentials menu)</i>.</p>
+
+<p>Currently {num_unconfirmed} of your allocated duties are <b>not confirmed</b> - as listed below</p>
+<p>{txt_unconfirmed}</p>
+
+<p>It would really help the rota managers to be sure sure that each race and event can take place, if you
+could take a couple of minutes to confirm those duties through the link below which will automatically 
+log you in to your Dutyman account.
+</p>
+
+<a href="{dutyman_link}" target="_blank">Your Dutyman Account</a>
+
+<p>Thanks for your help</p>
+<p>{signatory}</p>
+
+<p>If you are having difficultly using Dutyman or organising a swap, please contact the relevant rota manager for your duty
+<i>(using the contact links on the website)</i>:<br>
+{rota_mgr_list}
+</p>
+EOT;
+
+    return $htm;
+}
+
