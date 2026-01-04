@@ -23,16 +23,19 @@
 
 */
 
+$loc = "..";
+
 // start session
 session_id('sess-rmevent');
 session_start();
 error_reporting(E_ALL);
 // error_reporting(E_ERROR);  // turn off warnings for live operation
-require_once("../common/classes/db.php");
-require_once("../common/lib/rm_lib.php");
-require_once("../common/lib/rm_event_lib.php");
+require_once("{$loc}/common/classes/db.php");
+require_once("{$loc}/common/lib/rm_lib.php");
+require_once("{$loc}/common/lib/rm_event_lib.php");
+require_once("{$loc}/common/classes/template_class.php");
 require_once("classes/pages.php");
-require_once("classes/template.php");
+
 require_once("include/rm_event_fields.php");
 
 // initialise application

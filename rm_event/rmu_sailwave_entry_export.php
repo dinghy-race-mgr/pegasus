@@ -27,8 +27,8 @@ error_reporting(E_ERROR);
 
 require_once ("{$loc}/common/classes/db.php");
 require_once ("{$loc}/common/lib/util_lib.php");
-require_once("{$loc}/common/lib/rm_event_lib.php");
-require_once("./classes/template.php");
+require_once ("{$loc}/common/lib/rm_event_lib.php");
+require_once ("{$loc}/common/classes/template_class.php");
 
 // initialise utility application
 $cfg = set_config("../config/common.ini", array(), false);
@@ -55,7 +55,8 @@ $tmpl_o = new TEMPLATE(array("./templates/util_layouts_tm.php"));
 // standard page fields
 $pagefields = array(
     "loc"         => $loc,
-    "page-theme-utils" => $cfg['theme_utils'],
+    "tab-title"   => "Sailwave Transfer",
+    "styletheme"  => $cfg['theme_utils'],
     "stylesheet"  => $stylesheet,
     "page-title"  => $cfg['sys_name'],
     "page-navbar" => $tmpl_o->get_template("navbar_utils", array("util-name"=>$page, "version"=>$cfg['sys_version'], "year" => date("Y")), array()),
@@ -66,6 +67,10 @@ $pagefields = array(
 
 // get pagestate
 $pagestate = u_checkarg("pagestate", "set", "", "init");
+$eid = u_checkarg("eid", "checkint", "", "");
+
+// get event record
+$event = $db_o->run("SELECT * FROM e_event WHERE `id` = ?", array($eid) )->fetch();
 
 if ($pagestate == "init") {
     $eid = u_checkarg("eid", "set", "", "");
@@ -76,6 +81,7 @@ if ($pagestate == "init") {
         "function" => "Creates CSV file for import of entries into SAILWAVE",
         "instructions" => "Please select the field set you need and the entry records to include.",
         "script" => "rmu_sailwave_entry_export.php?pagestate=submit&eid=$eid",
+        "event-title" => $event['event-title']
     );
 
     $pagefields['page-main'] = $tmpl_o->get_template("sailwave_export_form", $formfields, array("action" => true, "mode" => $mode, "include" => $include));
@@ -87,8 +93,7 @@ elseif ($pagestate == "submit")
     $mode      = u_checkarg("mode", "set", "", "standard");
     $include   = u_checkarg("include", "set", "", "excluded");
 
-    // get event record
-    $event = $db_o->run("SELECT * FROM e_event WHERE `id` = ?", array($eid) )->fetch();
+
     if (!empty($event))
     {
         // get entries associated with event

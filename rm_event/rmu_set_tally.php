@@ -4,9 +4,9 @@
  * Tallies are assigned numerically in class/sail number order
  *
  */
-require_once ("../common/lib/util_lib.php");
-require_once ("../common/classes/db.php");
-require_once ("../common/classes/template_class.php");
+require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("{$loc}/common/classes/db.php");
+require_once ("{$loc}/common/classes/template_class.php");
 
 // start session
 session_id('sess-rmuevent');

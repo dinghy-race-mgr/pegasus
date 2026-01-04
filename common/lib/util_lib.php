@@ -568,8 +568,8 @@ function u_writelog($logmessage, $eventid)
 
 function u_cronlog($logtext)
 {
-    $logfile = "../logs/sys/cronlog_" . date("Y");
-    $log = date('d-M H:i:s')." -- ".$logtext.PHP_EOL;
+    $logfile = "../logs/sys/cronlog_" . date("Y") .".log";
+    $log = date('d-M H:i:s')."| ".$logtext.PHP_EOL;
     error_log($log,3,$logfile);
 }
 

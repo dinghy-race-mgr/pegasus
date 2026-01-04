@@ -91,6 +91,9 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
     $state = 0;
     $count = 0;
 
+    if (key_exists("report", $_REQUEST)) { $report = filter_var($_REQUEST['report'], FILTER_VALIDATE_BOOLEAN); }
+    else { $report = true; }
+
     require_once("{$loc}/common/classes/event_class.php");
     require_once("{$loc}/common/classes/rota_class.php");
     $event_o = new EVENT($db_o);
@@ -101,13 +104,13 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
 
     // set dates for programme content
     if (empty($_REQUEST['date-start']) OR strtotime($_REQUEST['date-start']) === false) {
-        $first = date("Y-m-d", strtotime("-30 days"));   // start from previous month if no start date set
+        $first = date("Y-m-01", strtotime("-2 months"));   // start from first day two months ago if no start date set
     } else {
         $first = date("Y-m-d", strtotime($_REQUEST['date-start']));  // use specified start month        
     }
 
     if (empty($_REQUEST['date-end']) OR strtotime($_REQUEST['date-end']) === false) {
-        $last = date("Y-m-d", strtotime("+13 months"));    // a year from now if no end date set
+        $last = date("Y-m-t", strtotime("+13 months"));    // a year from now if no end date set
     } else {
         $last = date("Y-m-d", strtotime($_REQUEST['date-end']));      // use specified end date
     }
@@ -133,16 +136,20 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
         }
     }
 
-    $params = array(
-        "display" => true,
-        "state" => $state,
-        "start" => $first,
-        "end"   => $last,
-        "count" => count($display_data),
-        "file" => $file_status,
-        "transfer" => $transfer_status,
-        "data" => $display_data);
-    $pagefields['body'] = $tmpl_o->get_template("publish_file_report", array(),$params);
+    if ($report)
+    {
+        $params = array(
+            "display" => true,
+            "state" => $state,
+            "start" => $first,
+            "end"   => $last,
+            "count" => count($display_data),
+            "file" => $file_status,
+            "transfer" => $transfer_status,
+            "data" => $display_data);
+        $pagefields['body'] = $tmpl_o->get_template("publish_file_report", array(),$params);
+    }
+
 }
 
 if ($state == 2 OR $state == 3 )  // deal with error conditions

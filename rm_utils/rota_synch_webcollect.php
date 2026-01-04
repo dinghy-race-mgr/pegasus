@@ -321,14 +321,13 @@ function process_member(WebCollectResource $resource)
             }
             else
             {
-                $no_dtmlogin = true;
                 $num_missing++;
-                $member['dtm_login'] = "XXXXXXXXX";
+                $member['dtm_login'] = "--missing--";
             }
         }
         else
         {
-            $member['dtm_login'] = "XXXXXXXXX";
+            $member['dtm_login'] = "--missing--";
         }
 
     }
@@ -362,7 +361,6 @@ function process_member(WebCollectResource $resource)
 	        ("{$member['firstname']}", "{$member['familyname']}", "$rota", "{$member['phone']}", "{$member['email']}", 
 	         "{$member['note']}", "{$member['memberid']}", "{$member['dtm_login']}","1", "rota_synch_wc"),
 EOT;
-
         }
     }
 }

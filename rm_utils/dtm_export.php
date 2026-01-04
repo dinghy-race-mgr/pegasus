@@ -218,7 +218,7 @@ elseif (trim(strtolower($pagestate)) == "submit")
             {
                 $duty_rs = get_duties($event['id'], $rota_list_quote);
 
-                // process duties
+                // process each duty
                 foreach ($duty_rs as $j=>$duty)
                 {
                     $duty_total++;
@@ -235,11 +235,11 @@ elseif (trim(strtolower($pagestate)) == "submit")
                         "duty_type"   => $duty_type,
                         "event"       => $event_name,
                         "swappable"   => $swapable,
-                        "reminders"   => "Yes",
+                        "reminders"   => "Yes",     // fixme this should be set from t_rotamember
                         "duty_notify" => "",
                         "duty_instructions" => $duty_instruction["{$duty['dutycode']}"],
                         "duty_dbid"   => "",
-                        "notes"       => "eid={$event['id']}&start={$event['event_start']}&order={$event['event_order']}",
+                        "notes"       => "eid={$event['id']}&start={$event['event_start']}&order={$event['event_order']}&type={$event['event_type']}",
                         "confirmed"   => "No",
                         "first_name"  => $name_out["fn"],
                         "last_name"   => $name_out["fm"],
@@ -366,9 +366,26 @@ function get_duties($eventid, $rota_list)
 {
     global $db_o;
 
-    $sql = "SELECT `id`, `eventid`, `dutycode`, `person`, `swapable`  FROM t_eventduty WHERE `eventid` = $eventid AND `dutycode` IN ($rota_list) ORDER BY FIELD(`dutycode`, $rota_list)";
-    //echo "<pre>$sql</pre>";
+    // get rotamember data to generate a array of person, memberid
+    $sql = "SELECT `id`, `firstname`, `familyname`, memberid FROM t_rotamember";
+    $rotam_rs = $db_o->db_get_rows($sql);
+
+    $arr = array();
+    foreach ($rotam_rs as $k=>$rotam)
+    {
+        $arr[] = array("person"=>"{$rotam['firstname']} {$rotam['familyname']}", "memberid"=>$rotam['memberid']);
+    }
+
+    $sql = "SELECT `id`, `eventid`, `dutycode`, `person`, `swapable`  FROM t_eventduty 
+            WHERE `eventid` = $eventid AND `dutycode` IN ($rota_list) ORDER BY FIELD(`dutycode`, $rota_list)";
     $duty_rs = $db_o->db_get_rows($sql);
+
+    // set memberid in t_eventduty
+    foreach ($duty_rs as $k=>$row)
+    {
+        $key = array_search($row['person'], array_column($arr, 'person'));
+        $upd = $db_o->db_update("t_eventduty", array("memberid"=>$arr[$key]['memberid']), array("id"=>$row['id']));
+    }
 
     return $duty_rs;
 }
@@ -379,30 +396,6 @@ function html_flush()
     ob_flush();
     flush();
 }
-
-//function get_name($name)   -> moved to util_lib as split_name
-//{
-//    // extract name into first and last name
-//    // works for John Allen MBE, Fred van Tam, Sir Paul McCartney OBE, Marie Anne Beard etc.
-//    $name_arr = explode(' ', $name);
-//    $count = count($name_arr);
-//    $last = end($name_arr);
-//    if (strtolower($last) == "mbe" or strtolower($last) == "cbe" or strtolower($last) == "obe")
-//    {
-//        $lastname = $name_arr[$count-2]." ".$last;
-//        $pointer = $count - 2;
-//    }
-//    else
-//    {
-//        $lastname = $name_arr[$count-1];
-//        $pointer = $count - 1;
-//    }
-//    $firstname = implode(" ", array_slice($name_arr, 0, $pointer));
-//
-//    $name_out = array("fn"=>$firstname, "fm"=>$lastname);
-//
-//    return $name_out;
-//}
 
 function check_member($name)
 {

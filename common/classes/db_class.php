@@ -50,12 +50,6 @@ class DB
 {
     private $link;
 
-    // FIXME
-    // provide a method to get the last query used - write query to the object with an private put_last_query
-    // then a simple get_last_query which can be called from app to help with debugging
-    // could include an object to print it
-    // query would in array with fields of sql, type, rows affected, status
-
     public function __construct()
 	{
 	    //echo "<pre>".print_r($_SESSION,true)."</pre>";

@@ -301,8 +301,23 @@ EOT;
 
         empty($data['c-name']) ? $team = ucwords($helmname) : $team = ucwords($helmname)."<br>".ucwords($crewname);
 
-        $data['chk7'] ? $known_class = "<span class='text-danger'><i class='bi x-square-fill'></i></span>": $known_class = "<span class='text-success'><i class='bi bi-check-square-fill'></i></span>";
-        $data['chk7'] ? $known_comp = "<span class='text-danger'><i class='bi x-square-fill'></i></span>": $known_comp = "<span class='text-success'><i class='bi bi-check-square-fill'></i></span>";
+        if ($data['rm_class'])
+        {
+            $known_class = "<i class='bi bi-x-square-fill' style='font-size: 2rem; color: red;'></i>";
+        }
+        else
+        {
+            $known_class = "<i class='bi bi-check-square-fill' style='font-size: 2rem; color: green;'></i>";
+        }
+
+        if ($data['rm_comp'])
+        {
+            $known_comp = "<i class='bi bi-x-square-fill' style='font-size: 2rem; color: red;'></i>";
+        }
+        else
+        {
+            $known_comp = "<i class='bi bi-check-square-fill' style='font-size: 2rem; color: green;'></i>";
+        }
 
         empty($data['b-fleet']) ? $fleet_div = $data['b-division'] : $fleet_div = $data['b-fleet']."<br>".$data['b-division'];
 
@@ -574,14 +589,17 @@ function rm_export_form($params = array())
     $fixable  = true;
     $problem_count = 0;
     $problem_htm = "";
+    $i = 0;
     foreach ($params['entries'] as $entry)
     {
+        $i++;
+
         empty($entry['c-name']) ? $team = ucwords($entry['h-name']) : $team = ucwords($entry['h-name']) . " / " . ucwords($entry['c-name']);
 
-        $txt_1 = "club ok";
+        $txt_1 = " ";
         if ($entry['rm_club'])
         {
-            $entry['rm_comp'] ? $txt_1 = "<span class='text-info'>n/a</span>" : $txt_1 = "<span class='text-info'>different club</span>";
+            $entry['rm_comp'] ? $txt_1 = "<span class='text-info'> </span>" : $txt_1 = "<span class='text-info'>different club</span>";
         }
 
         $txt_2 = "known competitor";
@@ -600,6 +618,7 @@ function rm_export_form($params = array())
 
         $problem_htm.=<<<EOT
         <tr>
+            <td class="px-3">$i</td>
             <td class="px-3">{$entry['b-class']} {$entry['b-sailno']}</td>
             <td class="px-3">$team</td>
             <td class="px-3">{$entry['h-club']}</td>
@@ -615,7 +634,7 @@ EOT;
         $warning = " This application should be able to resolve these issues as part of the transfer process.";
         $button  = <<<EOT
 <a type="button" class="btn btn-lg btn-primary mx-5 fs-4"  style="min-width: 200px;" href="./rmu_racemgr_entry_export.php?eid={$params['eid']}&pagestate=submit">
-<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Transfer Entries</b></a>
+<span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Prepare Transfer</b></a>
 EOT;
    }
     else
@@ -628,7 +647,7 @@ EOT;
 <div class="container align-items-center justify-content-center" >
     <!-- instructions -->
     <div class="row mt-4 p-5 fs-4 bg-primary text-white rounded">
-        <h2>Transferring entries to raceManager&hellip;</h2>
+        <h2>Transferring entries to raceManager&hellip; for {event-title}</h2>
         <p>This should be done when when all entries have been confirmed - <u>typically after reception has closed</u>.</p>
         <p>There are currently $num_entries entries - potential problems with these entries are listed below.</p>
         <p>Some of the issues might be resolvable automatically by this application - but there may be other problems which you must resolve before this script can complete the transfer</p>
@@ -669,55 +688,79 @@ EOT;
     return $htm;
 }
 
-function sailwave_export_form($params = array())
+function rm_export_report($params = array())
 {
-    $bufr = <<<EOT
-    <div class="container" style="margin-top: 40px;">
-        <div class="col-md-8">
-            <div class="h-100 p-5 bg-dark-subtle border rounded-3">
-                <h3>{function}</h3>
-                <p class="lead">{instructions}</p>
-                <div class="text-end">
-                    <a class="btn btn-info float-right" href="./documents/RM_EVENT_documentation.pdf" target="_BLANK" type="button" role="button">get help ...</a>
-                </div>               
-            </div>
-        </div>
+    $audit = $params['audit'];
+    $totals = $params['totals'];
+    
+    echo "<pre>".print_r($audit,true)."</pre>";
 
-        <form class="row g-3" enctype="multipart/form-data" id="sailwaveexportForm" action="{script}" method="post">
-        
-            <!-- mode argument -->
-            <div class="col-md-3 mx-5 pt-5">
-                <label for="fieldSet"><h5>Field Set<h5></label>
-                <select class="form-select form-select-lg mb-3" size="4" id="mode" name="mode">
-                  <option selected value="standard">standard</option>
-                  <option value="extended">extended</option>
-                </select>
-            </div>
-            
-            <!-- include argument -->
-            <div class="col-md-4 pt-5">
-                <label for="include"><h5>Included Fields<h5></label>
-                <select class="form-select form-select-lg mb-3" size="5" id="include" name="include" >
-                  <option selected value="none">only entered boats</option>
-                  <option value="waiting">+ boats on waiting list</option>
-                  <option value="excluded">+ excluded boats</option>
-                  <option value="all">+ waiting list and excluded boats</option>
-                </select>
-            </div>           
+    // confirmation html
+    $summary = "";
+    $i = 0;
+    foreach ($audit as $data)
+    {
+        $i++;
+        $comp_info = "";
+        $entry_info = "";
+        if ($data['class'])
+        {
+            $comp_info.= "<span class='text-danger'><b>UNKNOWN CLASS - needs manual configuration in raceManager</b></span>";
+        }
+        else
+        {
+            if ($data['comp'])
+            {
+                $data['comp_Y'] == 0 ? $comp_info.= "<span class='text-danger'>FAILED to register new competitor in raceManager</span>" :
+                    $comp_info.= "New competitor registered in racemanager [id: {$data['comp_Y']}] ";
+            }
+            else
+            {
+                if ($data['club']) { $comp_info.= " - club information updated"; };
+            }
+            $data['entry_Y'] == 0 ? $entry_info.= $data['info'] : $entry_info.= $data['info']." [ id: {$data['entry_Y']} ]";
+        }
+        $summary.= <<<EOT
+<tr>
+    <td class="px-3">$i</td>
+    <td class="px-3">{$data['boat']}</td>
+    <td class="px-3">$comp_info</td>
+    <td class="px-3">$entry_info</td>         
+</tr>
 
-            <!-- buttons -->
-            <div class="mt-5">
-                    <div class="text-end">
-                        <a class="btn btn-lg btn-warning mx-5" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
-                        <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
+EOT;
+    }
 
-                        <button type="submit" class="btn btn-lg btn-primary mx-5"  style="min-width: 200px;" >
-                        <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Create Export File</b></button>
-                    </div>
-            </div>
-        </form>
+    $htm = <<<EOT
+<div class="container align-items-center justify-content-center" >
+    <div class="row mt-4 p-5 fs-4 bg-primary text-white rounded">
+        <h2>{event-title}</h2>
+        <p>Entries prepared for transfer to raceManager&hellip; </p>
+        <p>Please check the audit information below for any reported problems.  If none reported use the Commit button below to complete the transfer</p>
     </div>
-    <script language="javascript">
+    
+    <div class="mt-5">
+        <div class="text-end">
+            <a class="btn btn-lg btn-warning mx-5 fs-4" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+            <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
+            <a type="button" class="btn btn-lg btn-primary mx-5 fs-4"  style="min-width: 200px;" href="./rmu_racemgr_entry_export.php?eid={$params['eid']}&pagestate=commit&entered={$totals['entered']}">
+            <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Commit Transfer</b></a>              
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <p class="lead text-center">Entry audit information ...</p>
+        <p class="lead text-center">[new boats registered: <b>{$totals['registered']}</b> , total boats entered: <b>{$totals['entered']}</b>]</p>
+        <div class="col-auto">
+            <table class="table table-responsive table-bordered" >
+                $summary
+            </table>
+        </div>
+    </div>
+   
+</div>
+
+<script language="javascript">
     function quitBox(cmd)
     {   
         if (cmd=='quit')
@@ -728,7 +771,87 @@ function sailwave_export_form($params = array())
     }
     </script>
 EOT;
-    return $bufr;
+
+    return $htm;
+}
+
+function rm_export_confirm($params = array())
+{
+    $htm = <<<EOT
+<div class="container align-items-center justify-content-center" >
+    <!-- instructions -->
+    <div class="row mt-4 p-5 fs-4 bg-primary text-white rounded">
+        <p>Completed - {num_entered} entries transferred to raceManager&hellip; for {event-title}</p>       
+    </div>
+</div>
+EOT;
+
+    return $htm;
+}
+
+function sailwave_export_form($params = array())
+{
+    $htm = <<<EOT
+<div class="container align-items-center justify-content-center" >
+    <!-- instructions -->
+    <div class="row mt-4 p-5 fs-4 bg-primary text-white rounded">
+        <h2>Transferring entries to Sailwave&hellip; for {event-title}</h2>
+        <p>This should be done when when all entries have been confirmed - <u>typically after reception has closed</u>.</p>
+        <p>Please select the field set you need and the categories of entry records to include in your transfer.</p>
+        <div class="text-end">
+            <a class="btn btn-info float-right" href="./documents/RM_EVENT_documentation.pdf" target="_BLANK" type="button" role="button">get help ...</a>
+        </div>
+    </div>
+    
+    <form class="row g-3" enctype="multipart/form-data" id="sailwaveexportForm" action="{script}" method="post">
+        
+        <!-- mode argument -->
+        <div class="col-md-3 mx-5 pt-5">
+            <label for="fieldSet"><h5>Field Set<h5></label>
+            <select class="form-select form-select-lg mb-3" size="4" id="mode" name="mode">
+              <option selected value="standard">standard</option>
+              <option value="extended">extended</option>
+            </select>
+        </div>
+        
+        <!-- include argument -->
+        <div class="col-md-4 pt-5">
+            <label for="include"><h5>Included Fields<h5></label>
+            <select class="form-select form-select-lg mb-3" size="5" id="include" name="include" >
+              <option selected value="none">only entered boats</option>
+              <option value="waiting">+ boats on waiting list</option>
+              <option value="excluded">+ excluded boats</option>
+              <option value="all">+ waiting list and excluded boats</option>
+            </select>
+        </div>           
+
+        <!-- buttons -->
+        <div class="mt-5">
+                <div class="text-end">
+                    <a class="btn btn-lg btn-warning mx-5" style="min-width: 200px;" type="button" name="Quit" id="Quit" onclick="return quitBox('quit');">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;<b>Cancel</b></a>
+
+                    <button type="submit" class="btn btn-lg btn-primary mx-5"  style="min-width: 200px;" >
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;&nbsp;<b>Create Export File</b></button>
+                </div>
+        </div>
+    </form>
+    
+    <script language="javascript">
+    function quitBox(cmd)
+    {   
+        if (cmd=='quit')
+        {
+            open(location, '_self').close();
+        }   
+        return false;   
+    }
+    </script>
+   
+</div>
+EOT;
+
+    return $htm;
 }
 
 

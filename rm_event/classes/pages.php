@@ -23,8 +23,6 @@ class PAGES
     public function pg_list($db_o, $year = "")
     {
 
-//        echo "<pre>$year</pre>";
-//        exit;
         // if year not set - get next event and set list year to be display accordingly
         if (empty($year))
         {

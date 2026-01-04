@@ -4,14 +4,17 @@
     Processing script for rm_event form processing etc.
 */
 
+$loc = "..";
+
 // start session
 session_id('sess-rmevent');
 session_start();
 
 // error_reporting(E_ERROR);  // FIXME turn off warnings for live operation
 
-require_once("../common/classes/db.php");
-require_once("../common/lib/rm_event_lib.php");
+require_once("{$loc}/common/classes/db.php");
+require_once("{$loc}/common/lib/rm_event_lib.php");
+require_once("{$loc}/common/lib/util_lib.php");
 
 // initialise application
 $cfg = set_config("../config/common.ini", array(), false);
@@ -39,6 +42,21 @@ $event = $db_o->run("SELECT * FROM e_event WHERE id = ?", array($eid) )->fetch()
 
 if ($pagestate == "newentry")
 {
+    /*
+     * FIXME - class entry issues
+     * There is an issue with using datalist for selecting class in the multi_class open form.  It has advantages in that classes
+     * we don't have in RM can be added, but as they are only suggestions it means users can add classnames that don't match what
+     * we use in RM.  A foolproof fix would be to use a SELECT instead of a datalist - but allow another field for classes not includes
+     * Other options might be
+     *  - trim the submitted class name to avoid unwanted spaces - DONE (get_class_name)
+     *  - convert Topper RS100 RS Aero and ILCA without rig to RS Aero 7 / ILCA 7 RS100 8.4 / Topper 5.3
+     *  - remove all spaces for both the supplied class name and the RM class name before doing the compare (would work for RS 300 vss RS300)
+     *  - search on individual words for a single hit on t_class (e.g. FIRE would find Blaze Fire)
+     * These changes would fix all issues we saw on the Steamer
+     * Also look at using the levenstein function
+     */
+
+
     $action = "newentry";
 
     $entry = array("eid" => $eid, "b-class" => get_class_name($_REQUEST['class']), "updby" => "online entry");

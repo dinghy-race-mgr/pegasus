@@ -5,16 +5,17 @@
  */
 
 // initialise
+$loc = "..";
+
 // start session
 session_id('sess-rmuevent');
 session_start();
 
 // error_reporting(E_ERROR);  set for live operation
 
-require_once("../common/classes/db.php");
-require_once("../common/lib/rm_event_lib.php");
-require_once("classes/template.php");
-
+require_once("{$loc}/common/classes/db.php");
+require_once("{$loc}/common/lib/rm_event_lib.php");
+require_once("{$loc}/common/classes/template_class.php");
 
 // initialise application
 $cfg = set_config("../config/rm_event.ini", array("rm_event"), true);

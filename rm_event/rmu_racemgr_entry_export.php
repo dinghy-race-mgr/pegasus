@@ -34,10 +34,10 @@ $stylesheet = "./style/rm_utils.css";
 
 error_reporting(E_ERROR);  //set for live operation to E_ERROR
 
-require_once("../common/classes/db.php");
-require_once("../common/lib/util_lib.php");
-require_once("./include/rm_event_lib.php");
-require_once("classes/template.php");
+require_once ("{$loc}/common/classes/db.php");
+require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("{$loc}/common/lib/rm_event_lib.php");
+require_once ("{$loc}/common/classes/template_class.php");
 
 // initialise utility application
 $cfg = u_set_config("../config/common.ini", array("rm_event"), true);
@@ -64,6 +64,14 @@ if (key_exists("eid", $_REQUEST))
 {
     $eid = $_REQUEST['eid'];
     $event = $db_o->run("SELECT * FROM e_event WHERE id = ?", array($_REQUEST['eid']) )->fetch();
+    $races = explode(",", $event['races']);
+    $num_races = count($races);
+}
+
+// check waiting argument
+if (key_exists("waiting", $_REQUEST))
+{
+    $inc_waiting = filter_var($_REQUEST['waiting'], FILTER_VALIDATE_BOOLEAN);
 }
 
 if (!isset($eid) or empty($event))
@@ -73,9 +81,12 @@ if (!isset($eid) or empty($event))
 }
 
 // setup common fields for templates
+$navbar = $tmpl_o->get_template("navbar_utils", array("util-name"=> "Transfer Entries to raceManager",
+    "release" => $cfg['sys_release'], "version" =>$cfg['sys_version'], "year"=>date("Y") ), array());
+
 $fields = array(
-    'tab-title'   => "Transfer Entries to raceManager",
-    'styletheme'  => "sandstone_",
+    'tab-title'   => "raceMgr Transfer",
+    'styletheme'  => $cfg['theme_utils'],
     'page-navbar' => $navbar,
     'page-title'  => $event['title'],
     'page-footer' => "&nbsp;",
@@ -83,23 +94,17 @@ $fields = array(
     'page-js'     => "&nbsp;"
 );
 
-// setup navbar for output
-$navbar = $tmpl_o->get_template("navbar_utils", array("util-name"=> "Transfer Entries to raceManager",
-    "release" => $cfg['sys_release'], "version" =>$cfg['sys_version'], "year"=>date("Y") ), array());
-
-$entries = get_confirmed_entries($eid);
+// get and validate entry data
+$entries = get_required_entries($eid, $inc_waiting);
 $num_entries = count($entries);
-
 $entries = validate_entries();
-
-//$problems = mark_problem_records();
-
 
 if($pagestate == "init")
 {
 
 // setup top level description
-    $fields['page-main'] = $tmpl_o->get_template("rm_export_form", array(), array("eid" => $eid, "entries" => $entries, "problems" => $problems));
+    $fields['page-main'] = $tmpl_o->get_template("rm_export_form", array("event-title"=>$event['title']),
+        array("eid" => $eid, "entries" => $entries));
 
 // assemble page
     echo $tmpl_o->get_template("utils_page", $fields, array());
@@ -107,76 +112,100 @@ if($pagestate == "init")
 
 elseif ($pagestate == "submit")
 {
+    $audit = array();
+    $totals = array("entries" => $num_entries, "races" => $num_races, "registered" => 0, "entered" => 0, "updated" => 0 );
+
     if ($num_entries > 0)
     {
         // empty temporary data table z_entry
         $trunc = $db_o->run("TRUNCATE z_entry", array() );
 
+        $num_registered = 0;
         $num_entered = 0;
-        $rept = "";
+        $num_club_update = 0;
+        $error = false;
+
         foreach ($entries as $k=>$entry)
         {
+            //$icount++;
+            //echo "<pre>START".print_r($entry,true)."</pre>";
             $boat = $entry['b-class']." ".$entry['b-sailno'];
+            $audit[$k] = array(
+                "boat"    => $boat,
+                "class"   => $entry['rm_class'],          // unknown class - needs manually correcting
+                "comp"    => $entry['rm_comp'],           // unknown competitor - needs new competitor record creating
+                "club"    => "",                          // club update needed
+                "comp_Y"  => 0,                           // id for new competitor record - 0 if not set/failed
+                "entry_Y" => 0,                           // competitor id added to e_entry table (e-racemanager] - 0 not set/failed
+                "info"    => "",                          // info confirming entry
+            );
 
-            if ($entry['rs_class'])
+            if ($entry['rm_class'])                            // don't know class - can't add entry to RM
             {
-                $rept.= "$boat - NOT ENTERED - class not known to raceManager<br>";
+                $error = true;
             }
-            else
+            else                                               // we can add entry to RM - creating new competitor record if required
             {
-                $chg_club = false;
-                if ($entry['rs_club'])  // we have a mismatch on club name for this competitor  - so we should update it
+                if ($entry['rm_comp'])     // we don't have a competitor record - so we need to create one
                 {
-                    $query = "UPDATE t_competitor SET club = ? WHERE `id` = XXXX";
-                    $upd = $db_o->run($query, array($xxx));    // fixme - only use club up to a / delimiter
-                    $chg_club = true
-                }
+                    $comp = create_competitor_record($boat, $entry);
 
-                if ($entry['rs_comp'])     // we don't have a competitor record - so we only need to create an entry record
-                {
-                    $query = create_competitor_record($entry);
-                    $add_comp = $db_o->run($query, array()); // fixme  - maybe do this in the function
-
-                    if ($add_comp)
+                    if ($comp['compid'])      // we have a RM competitor id - update the e_entry record
                     {
-                        $query = create_entry_record($entry);
-                        $add = $db_o->run($query, array());    // fixme  - maybe do this in the function
+                        $num_registered++;
+                        $audit[$k]['comp_Y'] = $comp['compid'];
 
-                        if ($add)
-                        {
-                            $num_entered++;
-                            $chg_club ? $rept.= "$boat - ENTERED - club name updated<br>" : $rept.= "$boat - ENTERED<br>";
-                        }
-                        else
-                        {
-                            // not entered message
-                        }
-                    }
-                }
-                else                         // we only need to create the entry record
-                {
-                    $query = create_entry_record($entry);
-                    $add = $db_o->run($query, array());    // fixme  - maybe do this in the function
-                    // error handling
-
-                    if ($add)
-                    {
-                        $num_entered++;
-                        $chg_club ? $rept.= "$boat - ENTERED - club name updated<br>" : $rept.= "$boat - ENTERED<br>";
+                        // add competitor id to e_entry record
+                        $upd = add_rmid_to_entrytable($entry['id'], $comp['compid']);
+                        $entry['e-racemanager'] = $comp['compid'];
+                        $audit[$k]['entry_Y'] = $comp['compid'];
                     }
                     else
                     {
-                        // not entered message
+                        $error = true;
                     }
                 }
+                else                                             // we have an existing record - so just check if club needs to be updated
+                {
+                    $status = update_club_name($entry);
+                    if ($status) { $num_club_update++; }
+                }
 
+                if (!$error)
+                {
+                    // we have a complete competitor record  - now create the record(s) for entry into the event race(s)
+                    $rst = create_entry_record($boat, $entry, $races);
+                    if ($rst['success']) { $num_entered++; }
+                    $audit[$k]['entry_Y'] = $rst['id'];
+                    $audit[$k]['info'] = $rst['info'];
+                }
             }
         }
     }
 
+    // Summary reporting
+    $totals["registered"] = $num_registered;
+    $totals["entered"] = $num_entered;
+    $totals["updated"] = $num_club_update;
 
+    // setup top level description
+    $fields['page-main'] = $tmpl_o->get_template("rm_export_report", array("event-title"=>$event['title']),
+        array("eid" => $eid, "audit" => $audit, "totals" => $totals));
 
+    // assemble page
+    echo $tmpl_o->get_template("utils_page", $fields, array());
+}
+elseif ($pagestate == "commit")
+{
+    $num_entered = $_REQUEST['entered'];
 
+    copy_entries($races);
+
+    // setup top level description
+    $fields['page-main'] = $tmpl_o->get_template("rm_export_confirm", array("event-title"=>$event['title'], "num_entered" =>$num_entered), array());
+
+    // assemble page
+    echo $tmpl_o->get_template("utils_page", $fields, array());
 }
 
 else
@@ -185,493 +214,167 @@ else
     exit("script stopped");
 }
 
-function get_confirmed_entries($eid)
+function get_required_entries($eid, $inc_waiting)
 {
     global $db_o;
-    $sql = "SELECT a.`id`, `b-class`, `b-sailno`, `b-altno`, `b-pn`, `b-fleet`, `b-division`, 
-               `h-name`, `h-club`, `h-age`, `h-gender`, `h-emergency`,
-               `c-name`, `c-age`, `c-gender`, `c-emergency`, 
-               `e-tally`, `e-racemanager`, `e-waiting`, b.crew as crewnum 
-               FROM e_entry as a LEFT JOIN t_class as b ON a.`b-class`= b.classname 
-               WHERE eid = ? and `e-exclude` = 0 and `e-waiting` = 0 
+
+    $inc_waiting ? $waiting = "" : $waiting = "and `e-waiting` = 0 " ;
+
+    $sql = "SELECT a.id, `b-class`, `b-sailno`, `b-altno`, `b-pn`, `b-fleet`, `b-division`, `h-name`, `h-club`, 
+               `h-age`, `h-gender`, `h-emergency`, `c-name`, `c-age`, `c-gender`, `c-emergency`, `e-tally`, 
+               `e-racemanager`, `e-waiting`, b.crew as crewnum
+               FROM e_entry as a LEFT JOIN t_class as b ON a.`b-class`= b.classname
+               WHERE a.eid = ? AND `e-exclude` = 0 $waiting
                ORDER BY `b-fleet` ASC, `b-class` ASC, `b-sailno` * 1 ASC";
-
     $entries = $db_o->run($sql, array($eid) )->fetchall();
-
     return $entries;
 }
 
-//function mark_problem_records()
-//{
-//    global $db_o, $entries;
-//
-//    $problems = array();
-//
-//    foreach ($entries as $k=>$entry)
-//    {
-//        $boat = $entry['b-class']." ".$entry['b-sailno'];
-//        $team = $entry['h-name']." / ".$entry['c-name']." ".$entry['h-club'];
-//
-//        // if no matching class in racemanager   (cannot fix - needs manual fix)
-//        if ($entry['rm_class'])
-//        {
-//            $entries[$k]['problem'][] = array("id" => $k, "type"=> "class", "boat"=>$boat, "team"=>$team, "fixable"=>false);
-//        }
-//
-//        // if there is no matching competitor in racemanager (can fix - create record)
-//        if ($entry['rm_comp'])
-//        {
-//            $entries[$k]['problem'][] = array("id" => $k, "type"=> "comp", "boat"=>$boat, "team"=>$team, "fixable"=>true);
-//        }
-//        else   // if club does not match competitor record (can fix - change club name)
-//        {
-//            $comp = $db_o->run("SELECT * FROM t_competitor WHERE id = ?", array($entry['e-racemanager']) )->fetch();
-//
-//            if ($entry['h-club'] != $comp['club'])
-//            {
-//                $entries[$k]['problem'][] = array("id" => $k, "type"=> "club", "boat"=>$boat, "team"=>$team, "fixable"=>true);
-//            }
-//        }
-//    }
-//
-//    return $problems;
-//}
+function create_competitor_record($boat, $entry)
+{
+    global $db_o;
+
+    $status = array("success"=>false, "err"=> 0, "compid" => 0, "info" => "");
+
+    // get class id
+    $classname = trim($entry['b-class']);
+    $query = "SELECT id FROM t_class WHERE classname = ? ";
+    $classid = $db_o->run($query, array($classname))->fetchColumn();
+
+    if ($classid)
+    {
+        $arr = array(
+            "classid"  => $classid,
+            "boatnum"  => $entry['b-sailno'],
+            "sailnum"  => $entry['b-sailno'],
+            "boatname" => $entry['b-name'],
+            "helm"     => $entry['h-name'],
+            "crew"     => $entry['c-name'],
+            "club"     => $entry['h-club'],
+            "personal_py" => 0,
+            "active"   => 1,
+            "updby"    => "rm_event"
+        );
+        $compid = $db_o->insert("t_competitor", $arr);
+        $compid ? $status['compid'] = $compid : $status['err'] = -1;      // could not get id of last record inserted
+    }
+
+    else
+    {
+        $status['err'] = -2;                                                   // could not find class id to match classname
+    }
+
+    if ($status['err'] >= 0) { $status['success'] = true; }
+
+    return $status;
+}
+
+function create_entry_record($boat, $entry, $races)
+{
+    global $db_o;
+
+    $num_races = count($races);
+    $status = array("success"=>false, "id"=> 0, "err"=> 0, "races" => 0, "info" => "");
+
+    // check if we have an event list and convert to an array
+    if (empty($races)) {
+        $status['err'] = -1 ;                              // event list is empty
+    }
+
+    // check if we have a competitor record
+    if (empty($entry['e-racemanager'])) {                  // competitor id is empty
+        $status['err'] = -2 ;
+    }
+
+    if ($status['err'] >= 0)
+    {
+        foreach ($races as $race)
+        {
+            $arr = array(
+                "action"       => "enter",
+                "protest"      => 0,
+                "status"       => "N",
+                "eventid"      => $race,
+                "competitorid" => $entry['e-racemanager'],
+                "chg-crew"     => $entry['c-name'],
+                "chg-sailnum"  => $entry['b-sailno'],
+                "updby"        => "rm_event"
+            );
+
+            $ins = $db_o->insert("z_entry", $arr);
+            if ($ins) {
+                $status['races']++;
+            } else {
+                $status['err'] = -3;                         // at least one race not entered
+            }
+        }
+
+        if ($status['races'] == 0) { $status['err'] = -4; }  // no races entered
+
+        if ($status['races'] == $num_races) { $status['success'] = true; }
+
+        if ($status['success'])
+        {
+            $status['info'] = "ENTERED {$status['races']} race(s)";
+            $status['id'] = $ins;
+        }
+        else
+        {
+            if ($status['err'] = -4) { $status['info'] = "ENTRY FAILED (for all race(s))"; }
+            elseif ($status['err'] = -3) { $status['info'] = "ENTRY FAILED (for at least one race)"; }
+            elseif ($status['err'] = -2) { $status['info'] = "ENTRY FAILED (no competitor record exists)"; }
+            elseif ($status['err'] = -1) { $status['info'] = "ENTRY FAILED (no event defined)"; }
+            else { $status['info'] = "ENTRY FAILED (unknown reason)"; }
+        }
+    }
+
+    return $status;
+}
+
+function update_club_name($entry)
+{
+    global $db_o;
+
+    if (!empty($entry['e-racemanager']))
+    {
+        // remove club names concatenated with a /
+        $club = substr($entry['h-club'], 0, strpos($entry['h-club'], '/'));
+
+        $upd = $db_o->run("UPDATE t_competitor SET `club` = ? WHERE id = ?", array($club, $entry['e-racemanager']));
+
+        $status = true;
+    }
+    else
+    {
+        $status = false;
+    }
+    
+    return $status;
+}
+
+function add_rmid_to_entrytable($id, $competitorid)
+{
+    global $db_o;
+    $upd = $db_o->run("UPDATE e_entry SET `e-racemanager` = ? WHERE id = ?", array($competitorid, $id))->fetchAll();
+
+    return $upd;
+}
+
+function copy_entries($races)
+{
+    // copies the entries from the temporary table z_entry to t_entry
+    global $db_o;
+
+    // clear t_entry of existing entries for the this event - then records from z_entry for each race in event
+    foreach ($races as $race)
+    {
+        $del = $db_o->run("DELETE FROM t_entry WHERE `eventid` = ?", array($race));
+
+        $ins = $db_o->run("INSERT INTO t_entry SELECT * FROM z_entry WHERE `eventid` = ?", array($race));
+    }
+
+    return;
+
+}
 
 
-
-
-
-    // ----------------------------------------------------------------------------------------------------------------------
-    // ----------------------------------------------------------------------------------------------------------------------
-
-//$pagefields = array(
-//    "loc"         => $loc,
-//    "page-theme-utils" => $cfg['theme_utils'],
-//    "stylesheet"  => $stylesheet,
-//    "page-title"  => $cfg['sys_name'],
-//    "page-navbar" => $tmpl_o->get_template("navbar_utils", array("util-name"=>$page, "version"=>$cfg['sys_version'], "year" => date("Y")), array()),
-//    "page-footer" => "",
-//    "page-modals" => "",
-//    "page-js" => "",
-//);
-//
-//
-//
-//
-//if ($pagestate == "init")
-//{
-//    // this state will provide instructions and then list any issues with the confirmed entries
-//    // the user can choose to sort the issues manually or try to do them automatically
-//
-//
-//
-//    if (!$eid)
-//    {
-//
-//    }
-//    else
-//    {
-//        $formfields = array(
-//            "function"     => "Imports event entries into the RACEMANAGER entries table",
-//            "instructions" => "Select mode (recommended to use dryrun first), and reporting level",
-//            "script"       => "rmu_racemanager_entry_export.php?pagestate=submit&eid=$eid",
-//        );
-//
-//        $pagefields['page-main'] = $tmpl_o->get_template("racemgr_export_form", $formfields, array("action" => true, "mode" => $mode, "include" => $include));
-//        $pagefields['page-footer'] = $tmpl_o->get_template("footer_utils", array("footer-left"=>"Select options, and click Transfer Entries button ...", "footer-center"=>"", "footer-right"=>""), array("footer"=>true));
-//
-//    }
-//}
-//elseif ($pagestate == "submit")
-//{
-//
-//}
-//else // pagestate not recognised
-//{
-//    $formfields = array(
-//        "problem"  => "pagestate not recognised",
-//        "file"     => __FILE__,
-//        "line"     => __LINE__,
-//        "evidence" => "pagestate = |$pagestate|",
-//    );
-//    $params['action'] = "close browser window and try again";
-//    $pagefields['page-main'] = $tmpl_o->get_template("error_report", $formfields, array());
-//    $pagefields['page-footer'] = $tmpl_o->get_template("footer_utils", array("footer-left"=>"", "footer-center"=>"",
-//        "footer-right"=>"close this browser tab to return"), array("footer"=>true));
-//}
-//
-//
-//
-//
-//
-//
-//
-//// arguments
-//$eid = set_eventid($_REQUEST);                         // gets event id in e_event
-//$mode = set_mode($_REQUEST);                           // mode - dryrun or process
-//$report_level = set_report_level($_REQUEST);           // reporting summary = 1, newcomp = 2, detail = 3
-//
-//// ---------------------- get event record ----------------------
-//$sql = "SELECT * FROM e_event WHERE id = ?";
-//$event = $db_o->run($sql, array($eid, ) )->fetch();
-//$races = set_target_races ($event['races']);           // returns list of racemanager event ids as an array
-//
-//if (!$event)
-//{
-//    exit("Sorry - could not find the specified event in rm_event ... STOPPING");  // FIXME -  change to exit_nicely
-//}
-//
-//// ---------------------- get entries ------------------------------
-//
-//$sql = "SELECT * FROM e_entry WHERE eid = ? and `e-exclude` = 0 and `e-waiting` = 0 ORDER BY `b-class` ASC, `b-sailno` * 0 ASC";
-//$entries = $db_o->run($sql, array($eid, ) )->fetchall();
-//
-//if (count($entries) <= 0)
-//{
-//    exit("Sorry - no entries found for specified event ... STOPPING ");  // FIXME -  change to exit_nicely
-//}
-//
-//// clear z_entry_draft table
-//if ($mode == "process")
-//{
-//    foreach ($races as $race)
-//    {
-//        // empty database table for entries
-//        $trunc = $db_o->run("TRUNCATE z_entry_draft", array());
-//        if (!$trunc)
-//        {
-//            exit("Sorry - failed to empty table z_entry_draft ... STOPPING");
-//        }
-//    }
-//}
-//
-//// ----------------------- process entries-------------------------------
-//
-//$entry_num = 0;
-//$entries_made = 0;
-//report(1,"<h2>Entry Transfer Report - {$event['title']}</h2>");
-//foreach ($entries as $k => $entry)
-//{
-//    //entry delimiter
-//    $boat = "{$entry['b-class']} {$entry['b-sailno']} {$entry['h-name']} (id: {$entry['id']})";
-//    $entry_num++;
-//    report(1,"-------------------------------------------------------------------------ENTRY $entry_num <b>[$boat]</b>");
-//
-//    // check we have minimum info to process entry record
-//    $val = validate_entry($entry);
-//
-//
-//        if (!$val['class']) {
-//            $missing .= "class | ";
-//        }
-//        if (!$val['sailno']) {
-//            $missing .= "sail no. | ";
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//        }
-//        if (!$val['helm']) {
-//            $missing .= "helm name | ";
-//        }
-//        rtrim($missing, "|");
-//        report(1, "$boat - insufficient data to process [missing: $missing] ... moving to next entry");
-//        continue;
-//    }
-//
-//    // check class  - query tests match with no spaces;
-//    $class = get_class_detail($entry['b-class']);
-//    if ($class)
-//    {
-//        $entries[$k]['b-class'] = $class['classname'];
-//    }
-//    else
-//    {
-//        // can't proceed no match for class - stop processing
-//        exit("Sorry - can't find matching class - stopping processing ");
-//    }
-//
-//
-//    // get competitor record for entry (either existing record or new record
-//    $entry['e-racemanager'] ? $compid = $entry['e-racemanager'] : $compid = 0;
-//    {
-//        $competitor = get_competitor($compid, $entry, $class);
-//
-//        if ($competitor)
-//        {
-//            // set entry record for each race
-//            $entry_id = set_entry_record($event['id'], $races, $competitor);
-//
-//            if ($entry_id)
-//            {
-//                $entries_made++;
-//                report(3, "entry created - {$class['classname']} {$entry['b-sailno']} {$entry['h-name']} / {$entry['c-name']}");
-//            }
-//            else
-//            {
-//                exit("Sorry - unable to create record - - [ $boat ] ...  STOPPING");
-//            }
-//        }
-//        else
-//        {
-//            exit("Sorry - finding/creating competitor record failed - [ $boat ] ...  STOPPING");
-//        }
-//    }
-//
-//}
-//
-//report(2,"<br><br>========================== PROCESSING COMPLETE - $entries_made entries added =====================");
-//
-//
-//
-//
-//
-//
-//
-//function report($level, $txt)
-//{
-//    global $report_level;
-//
-//    if ($level <= $report_level) { echo $txt."<br>"; }
-//}
-//
-//function validate_entry($entry)
-//{
-//    /*
-//     *  Runs following checks
-//
-//     */
-//    global $db_o;
-//
-//    $val = array("data_complete" => false, "class" => true, "sailno" => true, "helm" => true);
-//    // check 1 - we have data for class, sailno and helm name
-//    if (empty($entry['b-class'])) { $val['class'] = false; }
-//    if (empty($entry['b-sailno'])) { $val['sailno'] = false; }
-//    if (empty($entry['h-name'])) { $val['helm'] = false; }
-//
-//    if ($val['class'] and $val['sailno'] and $val['helm']) { $val['data_complete'] = true;}
-//
-//    return $val;
-//}
-
-//function set_report_level()
-//{
-//    if (key_exists('report', $_REQUEST))          // summary|newcomp|detail
-//    {
-//        if ($_REQUEST['report'] != "summary" and $_REQUEST['mode'] != "newcomp" and $_REQUEST['mode'] != "detail" )
-//        {
-//            $report = "3";
-//        }
-//        else
-//        {
-//            if ($_REQUEST['report'] == "summary")
-//            {
-//                $report = 1;
-//            }
-//            elseif ($_REQUEST['report'] == "newcomp")
-//            {
-//                $report = 2;
-//            }
-//            elseif ($_REQUEST['report'] == "detail")
-//            {
-//                $report = 3;
-//            }
-//        }
-//    }
-//    else
-//    {
-//        $report = "3";
-//    }
-//
-//    return $report;
-//}
-
-//function set_mode()
-//{
-//    if (key_exists('mode', $_REQUEST))
-//    {
-//        if ($_REQUEST['mode'] != "dryrun" and $_REQUEST['mode'] != "process")
-//        {
-//            $mode = "dryrun";
-//        }
-//        else
-//        {
-//            $mode = $_REQUEST['mode'];
-//        }
-//    }
-//    else
-//    {
-//        $mode = "dryrun";
-//    }
-//    return $mode;
-//}
-
-//function set_eventid()
-//{
-//    global $db_o;
-//
-//    $eid = 0;
-//    if (key_exists("eid", $_REQUEST))
-//    {
-//        $eid = $_REQUEST['eid'];
-//        $event = $db_o->run("SELECT * FROM e_event WHERE id = ?", array($_REQUEST['eid']) )->fetch();
-//        if ($event) { $eid = $event['id']; }
-//    }
-//    elseif (key_exists("event", $_REQUEST))
-//    {
-//        $event = $db_o->run("SELECT * FROM e_event WHERE nickname = ?", array($_REQUEST['event']) )->fetch();
-//        if ($event) { $eid = $event['id']; }
-//    }
-//
-//
-//    return $eid;
-//}
-//
-//function set_target_races($races)
-//{
-//    if ($races)
-//    {
-//        $target_list = explode(",",str_replace(' ', '', $races));
-//    }
-//    else
-//    {
-//        exit("Sorry - no raceManager races have been associated with this event ... STOPPING");
-//    }
-//
-//    return $target_list;
-//}
-//
-//function get_competitor($compid, $entry, $class)
-//{
-//    global $db_o;
-//    global $entry_num;
-//
-//    $comp_out = array();
-//    if ($compid > 0)          // we have a racemanager competitor id
-//    {
-//        $sql = "SELECT * FROM `t_competitor` WHERE `id` = ? and `active` = 1";
-//        $comp = $db_o->run($sql, array($compid))->fetch();
-//        if ($comp)
-//        {
-//            report(2,"Competitor found via e-racemanager value - {$comp['id']}");
-//            $match = check_comp_match($comp, $entry, $class);
-//
-//            if ($match['class'] and $match['helm'])
-//            {
-//                $comp_out = $comp;
-//                $comp_out['sailnum'] = $entry['b-sailno'];
-//                $comp_out['crew'] = $entry['c-name'];
-//            }
-//        }
-//    }
-//
-//    if (empty($comp_out))            // check classname, sail no, helm name and
-//    {
-//        $name = preg_replace('/\s+/', ' ', $entry['h-name']);   // remove multiple spaces
-//        $names = explode(" ", $name);
-//        $surname = $names[1];
-//        $comp = $db_o->run("SELECT * FROM t_competitor WHERE `classid` = ? AND (`helm` LIKE ? or `helm` LIKE ?)
-//                     ORDER BY `createdate` DESC LIMIT 1", array($class['id'],"%{$entry['h-name']}%", "%$surname%") )->fetch();
-//
-//        if ($comp)
-//        {
-//            report(2,"Competitor found via search on transfer - {$comp['id']}");
-//            $match = check_comp_match($comp, $entry, $class);
-//
-//            if ($match['class'] and $match['helm'])
-//            {
-//                $comp_out = $comp;
-//                $comp_out['sailnum'] = $entry['b-sailno'];
-//                $comp_out['crew'] = $entry['c-name'];
-//            }
-//
-//        }
-//        else // need to create a new competitor record from entry
-//        {
-//            $args = array("classid" => $class['id'], "boatnum" => $entry['b-sailno'], "sailnum" => $entry['b-sailno'],
-//                "boatname" => $entry['b-name'], "helm" => $entry['h-name'], "crew" => $entry['c-name'],
-//                "club" => $entry['h-club'], "regular" => 0, "active" => 1, "updby" => "event-".$entry['eid']);
-//
-//            $new_comp_id = $db_o->insert("t_competitor", $args);
-//            report(2,"New competitor record created - $new_comp_id");
-//
-//            if ($new_comp_id)
-//            {
-//                $comp_out = $db_o->run("SELECT * FROM t_competitor WHERE `id` = ?", array($new_comp_id))->fetch();
-//            }
-//            else
-//            {
-//                report(2,"New competitor record  - insert FAILED");
-//                exit("Sorry - unable to create competitor record [{$class['classname']} {$entry['b-sailno']} {$entry['h-name']}] - stopping");
-//            }
-//        }
-//    }
-//
-//    return $comp_out;
-//}
-//
-//function set_entry_record($eventid, $races, $competitor)
-//{
-//    global $db_o;
-//
-//    $status = true;
-//    foreach ($races as $race)
-//    {
-//        $args = array("action"=>'enter',"protest"=>0,"status"=>'N',"eventid"=>$race,"competitorid"=>$competitor['id'],
-//            "chg-crew"=>$competitor['crew'],"chg-sailnum"=>$competitor['sailnum'],"updby"=>"rm_event_$eventid");
-//
-//        $entryid = $db_o->insert("z_entry_draft", $args);
-//
-//        if(!$entryid)
-//        {
-//            report(2,"New event entry  - insert FAILED");
-//            exit("Sorry - failed to create entry for race $race: competitor {$competitor['id']} - stopping processing");
-//        }
-//        else
-//        {
-//            report(2,"New event entry created - $entryid");
-//        }
-//    }
-//
-//    return $status;
-//}
-//
-//function check_comp_match($comp, $entry, $class)
-//{
-//    $match = array("class" => true, "sailno" => true, "helm" => true, "crew" => true );
-//    if (strtolower(str_replace(' ', '', $class['classname'])) != strtolower(str_replace(' ', '', $entry['b-class'])))
-//    {
-//        $match['class'] = false;
-//    }
-//
-//    if (strtolower(str_replace(' ', '', $comp['sailnum'])) != strtolower(str_replace(' ', '', $entry['b-sailno'])))
-//    {
-//        $match['b-sailno'] = false;
-//    }
-//
-//    $lastword_comp = strtolower(array_slice(explode(' ', rtrim($comp['helm'])), -1)[0]);
-//    $lastword_entry = strtolower(array_slice(explode(' ', rtrim($entry['h-name'])), -1)[0]);
-//
-//    if ($lastword_comp != $lastword_entry)
-//    {
-//        $match['helm'] = false;
-//    }
-//
-//    if ($class['crew'] > 1)
-//    {
-//        $lastword_comp = strtolower(array_slice(explode(' ', rtrim($comp['crew'])), -1)[0]);
-//        $lastword_entry = strtolower(array_slice(explode(' ', rtrim($entry['c-name'])), -1)[0]);
-//
-//        if ($lastword_comp != $lastword_entry)
-//        {
-//            $match['crew'] = false;
-//        }
-//    }
-//    return $match;
-//}
