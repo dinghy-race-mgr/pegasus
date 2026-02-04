@@ -337,11 +337,9 @@ function update_club_name($entry)
 
     if (!empty($entry['e-racemanager']))
     {
-        // remove club names concatenated with a /
-        $club = substr($entry['h-club'], 0, strpos($entry['h-club'], '/'));
-
+        // remove club names concatenated with a / - just takes the first club
+        $club = strstr($entry['h-club'].'/', '/', true);
         $upd = $db_o->run("UPDATE t_competitor SET `club` = ? WHERE id = ?", array($club, $entry['e-racemanager']));
-
         $status = true;
     }
     else

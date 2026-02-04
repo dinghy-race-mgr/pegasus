@@ -1,21 +1,28 @@
 {
-  "name": "daily cron processes",
+  "name": "RM daily cron processes",
   "version": "1",
   "controls": {
     "1": {
-      "description": "test cron job to run every day",
+      "description": "dutyman to racemanager event duty comparison and synchronisation",
       "type":"all",
       "value": "",
-      "run_script": "helloworld.php",
-      "log_text": "hello world script"
-      },
-
+      "params": "",
+      "run_script": "https://www.starcrossyc.org.uk/pegasus_stx/rm_utils/dtm_status_synch.php",
+      "log_text": "dtm_status_synch.php"  },
     "2": {
-      "description": "dummy email job to run every monday",
-      "type":"weekday",
-      "value": "",
-      "run_script": "../sendemail.php",
-      "log_text": "send email script"
-    }
+      "description": "test cron job to run every day",
+      "type":"monthday",
+      "value": "4,5,6",
+      "params": "",
+      "run_script": "https://www.starcrossyc.org.uk/pegasus_stx/helloworld.php",
+      "log_text": "hello world script"    },
+    "3": {
+      "description": "send email reminders to confirm dutyman duties",
+      "type":"monthday",
+      "value": "4,5,6",
+      "params": "",
+      "run_script": "https://www.starcrossyc.org.uk/pegasus_stx/rm_utils/dtm_confirm_check.php",
+      "log_text": "dtm_confirm_check.php"  }
   }
 }
+

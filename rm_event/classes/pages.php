@@ -171,10 +171,10 @@ class PAGES
         }
 
         // get info counts
-        $counts["entries"]   = $db_o->run("SELECT count(*) FROM e_entry WHERE eid=? and `e-exclude` = 0", array($eid) )->fetchColumn();
-        $counts["documents"] = $db_o->run("SELECT count(*) FROM e_document WHERE eid=? and category != 'results'", array($eid) )->fetchColumn();
-        $counts["notices"]   = $db_o->run("SELECT count(*) FROM e_notice WHERE eid=?", array($eid) )->fetchColumn();
-        $counts["results"]   = $db_o->run("SELECT count(*) FROM e_document WHERE eid=? AND category = 'results'", array($eid) )->fetchColumn();
+        $counts["entries"]   = $db_o->run("SELECT count(*) FROM e_entry WHERE `eid`=? and `e-exclude` = 0", array($eid) )->fetchColumn();
+        $counts["documents"] = $db_o->run("SELECT count(*) FROM e_document WHERE `eid`=? and `category` != 'results' and `status`!='embargoed'", array($eid) )->fetchColumn();
+        $counts["notices"]   = $db_o->run("SELECT count(*) FROM e_notice WHERE `eid`=?", array($eid) )->fetchColumn();
+        $counts["results"]   = $db_o->run("SELECT count(*) FROM e_document WHERE `eid`=? AND `category` = 'results' and `status`!='embargoed'", array($eid) )->fetchColumn();
 
         // check if complete
         strtotime($event['date-end']) < strtotime(date("Y-m-d")) ? $complete = true : $complete = false;

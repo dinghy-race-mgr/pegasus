@@ -168,8 +168,8 @@ EOT;
        $tide = "";
        $category = "";
        $duty = "";
-       if ($params['inc_tide']) { $tide = "<th width=\"15%\">Tide</th>"; }
-       if ($params['inc_type']) { $category = "<th width=\"15%\">Type/Format</th>"; }
+       if ($params['inc_tide']) { $tide = "<th width=\"12%\">Tide</th>"; }
+       if ($params['inc_type']) { $category = "<th width=\"12%\">Type/Format</th>"; }
        if ($params['inc_duty'])
        {
 //           if ($params['inc_duty_ood_only'])
@@ -182,23 +182,23 @@ EOT;
 //           }
             if ($params['inc_duty'] == "all")
             {
-                $duty = "<th width=\"25%\">Duties</th>";
+                $duty = "<th width='32%'>Duties</th>";
             }
             elseif ($params['inc_duty'] == "ood")
             {
-                $duty = "<th width=\"25%\">Race Officer</th>";
+                $duty = "<th width='32%'>Race Officer</th>";
             }
             else
             {
-                $duty = "<th width=\"25%\">&nbsp;</th>";
+                $duty = "<th width='32%'>&nbsp;</th>";
             }
        }
               
        $html = <<<EOT
        <thead>
           <tr class="bg-primary" style="font-size: 0.8em;"> 
-             <th width="10%">Date</th> 
-             <th width="10%">Time</th> 
+             <th width="8%">Date</th> 
+             <th width="6%">Time</th> 
              <th width="25%">Event</th> 
              $category
              $tide
@@ -287,7 +287,7 @@ EOT;
              $name
              $category
              $tide
-             <td class="" style="width: 20%">
+             <td class="" style="width: 25%">
                 $duty<br>
                 $info
              </td>
@@ -311,25 +311,19 @@ EOT;
     
     public function tb_prg_duty($params=array())
     {
-        
         $icons = array(
-            "confirmed"   => "<span class='glyphicon glyphicon-ok text-success' aria-hidden='true' style='font-size: 1.0em'></span>",
-            "unconfirmed" => "<span class='text-danger'><strong>O</strong></span>", //"<span class='glyphicon glyphicon-remove text-danger' aria-hidden='true' style='font-size: 1.0em'></span>",
-            "unknown"     => "",
-            "requested"   => "<span class='glyphicon glyphicon-transfer text-danger' aria-hidden='true' style='font-size: 1.2em'></span>",
+            "confirmed"     => "<span class='glyphicon glyphicon-ok' aria-hidden='true' style='font-size: 1.0em; color: limegreen;'></span>",
+            //"unconfirmed"   => "<span class='glyphicon glyphicon-minus' aria-hidden='true' style='font-size: 1.0em'></span>",
+            "unconfirmed"   => "<span class='' aria-hidden='true' style='font-size: 1.0em; color: darkorange;'>-</span>",
+            "requested"     => "<span class='glyphicon glyphicon-transfer' aria-hidden='true' style='font-size: 1.2em; color: darkred;'></span>",
+            "not_requested" => "",
         );
 
         $duty_status = "";
-        if ($params['inc_dutyconfirm_status'])
-        {
-            $duty_status = $icons["{$params['duty_confirm_status']}"];
-        }
+        if ($params['inc_dutyconfirm_status']) { $duty_status = $icons["{$params['duty_confirm_status']}"]; }
 
         $swap_status = "";
-        if ($params['inc_dutyswap_status'])
-        {
-            $params['duty_swap_status'] ? $swap_status = $icons['requested'] : "" ;
-        }
+        if ($params['inc_dutyswap_status']) { $swap_status = $icons["{$params['duty_swap_status']}"]; }
 
         $html = <<<EOT
      <tr>
@@ -338,7 +332,6 @@ EOT;
         <td>$duty_status &nbsp; $swap_status</td>
      </tr>
 EOT;
-       //exit();
        return $html;
     }
     

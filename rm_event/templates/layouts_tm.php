@@ -58,7 +58,6 @@ function navbar ($params = array())
 //    echo "<pre>".print_r($params,true)."</pre>";
 //    exit();
 
-
     // setup page link options
     $htm_options = "";
     if ($params['page'] != "list")
@@ -658,7 +657,7 @@ function entry_status_after_close($params = array())
 
     if ($params['entry-reqd'])
     {
-        $txt.= "<p class='text-danger'>An entry is required for this event - apologies but we cannot accept entries on the day of the event</p>";
+        $txt.= "<p>An entry is required for this event - apologies but we cannot accept entries on the day of the event</p>";
     }
     else
     {
@@ -803,8 +802,8 @@ function documents_body ($params = array())
         {
             $publish = false;
         }
-        // must not be published unless document is final (i.e. not draft or embargoed)
-        if ($document['status'] != "final")
+        // must not be published if document is embargoed
+        if ($document['status'] == "embargoed")
         {
             $publish = false;
         }

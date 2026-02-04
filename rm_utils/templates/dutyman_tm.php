@@ -451,33 +451,127 @@ EOT;
 
 function dtm_confirm_email_1($params=array())
 {
+
+    if ($params['num_unconfirmed'] == 1)
+    {
+        $txt1 = "Currently {num_unconfirmed} duty has not been confirmed : ";
+        $txt2 = "Please could you take a minute now to confirm this duty or request a swap using this link - ";
+    }
+    else
+    {
+        $txt1 = "Currently {num_unconfirmed} of your duties have not been confirmed : ";
+        $txt2 = "Please could you take a minute now to confirm these duties or request swaps using this link - ";
+    }
+
     $htm = <<<EOT
 <!-- first dutyman confirmation reminder email -->
-<p>Hi</p>
-
-<p>You should have received an email from SYC's Dutyman system with details of the duties you have been allocated
-this year with a request to either confirm that you can do the duty OR organise a duty swap by accessing
-the Dutyman system  <i>(which can be accessed from the SYC website - essentials menu)</i>.</p>
-
-<p>Currently {num_unconfirmed} of your allocated duties are <b>not confirmed</b> - as listed below</p>
-<p>{txt_unconfirmed}</p>
-
-<p>It would really help the rota managers to be sure sure that each race and event can take place, if you
-could take a couple of minutes to confirm those duties through the link below which will automatically 
-log you in to your Dutyman account.
+<p>Dear {firstname}</p>
+<p>In January we sent an email with details of the duties you have been allocated in {year}, 
+with a request to EITHER confirm that you can do the duty OR request a duty swap through
+the Dutyman system.  This confirmation process is important to enable our volunteer rota managers to ensure that each race / cruise / event can take place. </p>
+<p>$txt1</p>
+<p style="padding-left: 30px;"><b>{txt_unconfirmed}</b></p>
+<p>$txt2<a href="{dtm_login}" target="_blank"> your Dutyman link</a>. <p>
+<p style="padding-left: 30px;">
+- the calendar view will underline in red the month(s) you have a duty.<br>  
+- click on each underlined month and expand your duty on the day(s) underlined in red. <br> 
+- then choose one of the options: to CONFIRM - or request a SWAP.
 </p>
 
-<a href="{dutyman_link}" target="_blank">Your Dutyman Account</a>
-
 <p>Thanks for your help</p>
-<p>{signatory}</p>
-
-<p>If you are having difficultly using Dutyman or organising a swap, please contact the relevant rota manager for your duty
-<i>(using the contact links on the website)</i>:<br>
-{rota_mgr_list}
+<p>Simon Greenslade - Commodore</p>
+<hr>
+<p>If you are having difficultly using Dutyman or organising a swap, please contact the relevant rota manager for your duty<br>
+<ul>
+    <li>Racebox duties - <a href="https://www.starcrossyc.org.uk/all-club-officers/149-flag-captain" target="_BLANK">Matthew Holmes</a></li>
+    <li>Safety Boat/Dinghy Cruise duties - <a href="https://www.starcrossyc.org.uk/all-club-officers/110-training-officer" target="_BLANK">John Allen</a></li>
+    <li>Clubhouse Duties - <a href="https://www.starcrossyc.org.uk/all-club-officers/129-galley-bar-duty-coordinator" target="_BLANK">Matthew Tanner</a></li>
+</ul>
 </p>
 EOT;
 
     return $htm;
+}
+
+function dtm_confirm_email_2($params=array())
+{
+
+    if ($params['num_unconfirmed'] == 1)
+    {
+        $txt1 = "Currently {num_unconfirmed} of your duties has not been confirmed : ";
+        $txt2 = "Please could you take a minute now to confirm this duty or request a swap using this link - ";
+    }
+    else
+    {
+        $txt1 = "Currently {num_unconfirmed} of your duties have not been confirmed : ";
+        $txt2 = "Please could you take a minute now to confirm these duties or request swaps using this link - ";
+    }
+    $htm = <<<EOT
+<!-- second dutyman confirmation reminder email -->
+<p>Dear  {firstname} </p>
+<p>We have sent you a number of reminders regarding the need to review and confirm the duties that you have been allocated.
+We need you to access the Dutyman system to EITHER confirm that you can do the duty OR request a duty swap through
+the Dutyman system.  Completing this process is essential to enable our volunteer rota managers to ensure that each race / cruise / event can take place. </p>
+<p>$txt1</p>
+<p style="padding-left: 30px;"><b>{txt_unconfirmed}</b></p>
+<p>$txt2<a href="{dtm_login}" target="_blank"> your Dutyman link</a>. <br>
+- the calendar view will underline in red the month(s) you have a duty.<br>  
+- click on each underlined month and expand your duty on the day(s) underlined in red. <br> 
+- then choose one of the options to confirm - OR request a swap.
+</p>
+
+<p>Thanks for your help</p>
+<p>Simon Greenslade - Commodore</p>
+
+<p>If you are having difficultly using Dutyman or organising a swap, please contact the relevant rota manager for your duty<br>
+<ul>
+    <li>Racebox duties - <a href="https://www.starcrossyc.org.uk/all-club-officers/149-flag-captain" target="_BLANK">Matthew Holmes</a></li>
+    <li>Safety Boat/Dinghy Cruise duties - <a href="https://www.starcrossyc.org.uk/all-club-officers/110-training-officer" target="_BLANK">John Allen</a></li>
+    <li>Clubhouse Duties - <a href="https://www.starcrossyc.org.uk/all-club-officers/129-galley-bar-duty-coordinator" target="_BLANK">Matthew Tanner</a></li>
+</ul>
+</p>
+EOT;
+
+    return $htm;
+}
+
+function dtm_confirm_rept($params = array())
+{
+    $num_emails = count($params['data']);
+
+    $data_rows = "";
+    foreach ($params['data'] as $k=>$row)
+    {
+        empty($row['email']['emailto']) ? $email_text = "<span style='color: darkred;'>no email address</span>" : $email_text = $row['email']['emailto'];
+
+        $data_rows.=<<<EOT
+        <tr><td style="vertical-align: top;">$k</td>
+        <td style="vertical-align: top;">$email_text</td>
+        <td style="vertical-align: top; padding-left: 15px;">{$row['detail']}</td></tr>
+EOT;
+    }
+
+    $htm = <<<EOT
+    <h2>Dutyman Confirm Check - Dryrun report</h2>
+    <p class="lead">This would generate $num_emails emails</p>
+    <hr>
+    
+    <table class="table-condensed table-bordered table-hover">
+    <thead>
+    <tr>
+        <th>recipient</th>
+        <th>email</th>
+        <th>duties</th>
+    </tr>
+    </thead>
+    <tbody>
+        $data_rows
+    </tbody>   
+    </table>
+    
+EOT;
+
+    return $htm;
+
 }
 

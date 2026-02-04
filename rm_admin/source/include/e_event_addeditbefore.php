@@ -44,10 +44,6 @@ elseif (empty($values['entry-form']) and empty($values['entry-form-link']))
     $commit = false;
 }
 
-// set entry required to boolean
-$values['entry-reqd'] == strtolower("yes") ? $values['entry-reqd'] = 1 : $values['entry-reqd'] = 0;
-
-
 // field checks complete
 if ($commit)
 {

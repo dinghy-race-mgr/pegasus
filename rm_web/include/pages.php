@@ -138,23 +138,13 @@ class PAGES
                     {
                         $params = array(
                             "inc_dutyconfirm_status" => $this->cfg['programme']['fields']["inc_dutyconfirm_status"],
-                            "inc_dutyswap_status" => $this->cfg['programme']['fields']["inc_dutyswap_status"]
+                            "inc_dutyswap_status"    => $this->cfg['programme']['fields']["inc_dutyswap_status"]
                         );
                         $i = 0;
                         foreach ($event['duties'] as $k => $duty)
                         {
-                            // FIXME have to get this from the t_eventduty record
-                            $i++;
-                            if ($i % 2 == 0) //even
-                            {
-                                $params['duty_confirm_status'] = "confirmed";
-                                $params['duty_swap_status'] = false;
-                            }
-                            else
-                            {
-                                $params['duty_confirm_status'] = "unconfirmed";
-                                $params['duty_swap_status'] = true;
-                            }
+                            $duty['confirmed'] ? $params['duty_confirm_status'] = "confirmed" : $params['duty_confirm_status'] = "unconfirmed" ;
+                            $duty['swap_requested'] ? $params['duty_swap_status'] = "requested"  : $params['duty_swap_status'] = "not_requested" ;
 
                             $duty_info .= $this->get_template("tb_prg_duty", array("duty" => $duty['duty'], "person" => $duty['person']), $params);
                         }

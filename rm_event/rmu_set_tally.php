@@ -4,6 +4,10 @@
  * Tallies are assigned numerically in class/sail number order
  *
  */
+
+$loc = "..";
+$today = date("Y-m-d");
+
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/classes/db.php");
 require_once ("{$loc}/common/classes/template_class.php");

@@ -380,11 +380,17 @@ function get_duties($eventid, $rota_list)
             WHERE `eventid` = $eventid AND `dutycode` IN ($rota_list) ORDER BY FIELD(`dutycode`, $rota_list)";
     $duty_rs = $db_o->db_get_rows($sql);
 
-    // set memberid in t_eventduty
+    // set memberid in t_eventduty and also confirmed and swap_requested to 0
     foreach ($duty_rs as $k=>$row)
     {
         $key = array_search($row['person'], array_column($arr, 'person'));
-        $upd = $db_o->db_update("t_eventduty", array("memberid"=>$arr[$key]['memberid']), array("id"=>$row['id']));
+        $updates = array(
+            "memberid"=>$arr[$key]['memberid'],
+            "confirmed"=>0,
+            "swap_requested"=>0
+        );
+        $query = "UPDATE t_eventduty SET `memberid` = {$arr[$key]['memberid']}, `confirmed` = 0, `swap_requested` = 0 WHERE `id` = {$row['id']}";
+        $upd = $db_o->db_query($query);
     }
 
     return $duty_rs;

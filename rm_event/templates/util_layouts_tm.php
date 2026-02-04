@@ -434,7 +434,7 @@ EOT;
             </p>
                
             <div >   
-                <table class="table table-success table-striped table-hover table-bordered" style="padding-left: 30px; width: 95%">
+                <table class="table table-success table-hover table-bordered" style="padding-left: 30px; width: 95%">
                     $cols
                     $rows           
                 </table>

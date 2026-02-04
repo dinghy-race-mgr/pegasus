@@ -48,7 +48,18 @@ foreach ($db_o->db_getinivalues(false) as $data)
 // set templates
 $tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php","./templates/layouts_tm.php","./templates/publish_tm.php"));
 
+// check pagestate is set
 if (empty($_REQUEST['pagestate'])) { $_REQUEST['pagestate'] = "init"; }
+
+// check if output is turned on or off
+if (key_exists("report", $_REQUEST))
+{
+    $report = filter_var($_REQUEST['report'], FILTER_VALIDATE_BOOLEAN);
+}
+else
+{
+    $report = true;
+}
 
 $server_txt = "{$_SESSION['db_host']}/{$_SESSION['db_name']}";
 $pagefields = array(
@@ -91,9 +102,6 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
     $state = 0;
     $count = 0;
 
-    if (key_exists("report", $_REQUEST)) { $report = filter_var($_REQUEST['report'], FILTER_VALIDATE_BOOLEAN); }
-    else { $report = true; }
-
     require_once("{$loc}/common/classes/event_class.php");
     require_once("{$loc}/common/classes/rota_class.php");
     $event_o = new EVENT($db_o);
@@ -103,23 +111,35 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
     $transfer_status = false;
 
     // set dates for programme content
-    if (empty($_REQUEST['date-start']) OR strtotime($_REQUEST['date-start']) === false) {
-        $first = date("Y-m-01", strtotime("-2 months"));   // start from first day two months ago if no start date set
-    } else {
+    // send from 1/1/<current_year to 31/12/<current_year> - unless today is > 1/9/<current_year> - add three months of next year
+    if (empty($_REQUEST['date-start']) OR strtotime($_REQUEST['date-start']) === false)
+    {
+        if ($today < date("Y-02-01"))
+        {
+            $first = date("Y-12-01", strtotime("-6 weeks", strtotime($today)));
+        }
+        else
+        {
+            $first = date("Y-01-01");
+        }
+    }
+    else
+    {
         $first = date("Y-m-d", strtotime($_REQUEST['date-start']));  // use specified start month        
     }
 
-    if (empty($_REQUEST['date-end']) OR strtotime($_REQUEST['date-end']) === false) {
-        $last = date("Y-m-t", strtotime("+13 months"));    // a year from now if no end date set
-    } else {
+    if (empty($_REQUEST['date-end']) OR strtotime($_REQUEST['date-end']) === false)
+    {
+        $last = date("Y-m-01", strtotime("+14 months", strtotime($first)));
+    }
+    else
+    {
         $last = date("Y-m-d", strtotime($_REQUEST['date-end']));      // use specified end date
     }
 
     $display_data = array();
     $file_status = create_programme_file($first, $last);
     if ($file_status === false) { $state = 4; }
-
-    //echo "<pre>DBG $file_status|$state|{$_SESSION['publish']['transfer_loc']}|$sourcefile|$targetfile|</pre>";
 
     if (empty($_SESSION['publish']['transfer_loc']))
     {
@@ -136,20 +156,18 @@ elseif (strtolower($_REQUEST['pagestate']) == "submit")
         }
     }
 
-    if ($report)
-    {
-        $params = array(
-            "display" => true,
-            "state" => $state,
-            "start" => $first,
-            "end"   => $last,
-            "count" => count($display_data),
-            "file" => $file_status,
-            "transfer" => $transfer_status,
-            "data" => $display_data);
-        $pagefields['body'] = $tmpl_o->get_template("publish_file_report", array(),$params);
-    }
+    $params = array(
+        "display"  => true,
+        "state"    => $state,
+        "start"    => $first,
+        "end"      => $last,
+        "count"    => count($display_data),
+        "file"     => $file_status,
+        "transfer" => $transfer_status,
+        "data"     => $display_data);
+    $pagefields['body'] = $tmpl_o->get_template("publish_file_report", array(),$params);
 
+    if (!$report)  { echo "file=$file_status&transfer=$transfer_status&start=$first&last=$last"; }
 }
 
 if ($state == 2 OR $state == 3 )  // deal with error conditions
@@ -157,8 +175,7 @@ if ($state == 2 OR $state == 3 )  // deal with error conditions
     $pagefields['body'] = $tmpl_o->get_template("publish_state", array(), array("state"=>$state, "args"=>$_REQUEST));
 }
 
-echo $tmpl_o->get_template("basic_page", $pagefields );
-
+if ($report) { echo $tmpl_o->get_template("basic_page", $pagefields ); }
 
 
 function create_programme_file($start_date, $end_date)
@@ -245,7 +262,12 @@ function create_programme_file($start_date, $end_date)
             $duties = $rota_o->get_event_duties($event['id']);
             if ($duties) {
                 foreach ($duties as $j => $duty) {
-                    $out['events']["evt_{$event['id']}"]['duties'][] = array("duty" => $duty['dutyname'], "person" => $duty['person']);
+                    $out['events']["evt_{$event['id']}"]['duties'][] = array(
+                        "duty" => $duty['dutyname'],
+                        "person" => $duty['person'],
+                        "confirmed" => $duty['confirmed'],
+                        "swap_requested" => $duty['swap_requested']
+                    );
                 }
             }
         }
