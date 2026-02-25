@@ -26,7 +26,7 @@ foreach ($list['controls'] as $control)
         cronlog("process ". $process['log_text'] ."- start process");
 
         $status_arr = curl_get($control['run_script'], $control['params'], array());
-        cronlog("<pre>process status: ".print_r($status_arr,true)."</pre>");
+        cronlog("<pre>process status: ".print_r($status_arr,true)."</pre>");  // FIXME - better return message required from both scripts   - use 'return' array element
 
         $status_arr['success'] ? $status_txt = "completed" : $status_txt = "failed" ;
         cronlog("process {$process['log_text']} [{$control['run_script']}] $status_txt ");

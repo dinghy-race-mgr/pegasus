@@ -1,0 +1,8 @@
+{
+  "title": "util apps configuration",
+  "version": "2026-02-16",
+  "apps": {
+    "dtm_export": {"category": "dutyman", "title": "dutyman export", "description":  "", "url": "dtm_export.php?pagestate=init", "dryrun": "false", "status": "current"},
+    "dtm_status_synch": {"category": "dutyman", "title": "dutyman status synchronisation", "description":  "", "url": "dtm_status_synch.php?pagestate=init", "dryrun": "true", "status": "current"},
+  }
+}

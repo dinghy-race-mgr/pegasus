@@ -137,8 +137,8 @@ echo <<<EOT
                <p><small>Release: {$cfg['sys_release']} - {$cfg['sys_version']} &nbsp; &nbsp;Copyright {$cfg['sys_copyright']}</small></p>
            </div>
            <div class="col-md-6">
-               <div class="" >
-                   <img src="config/images/club_banner.png" alt="club specific image" class="img-responsive img-rounded"  style="max-height:120px !important;"></img>
+               <div class="text-end" >
+                   <img src="config/images/club_banner.png" alt="club specific image" class="img-responsive img-rounded"  style="max-height:150px !important;"></img>
                </div>
            </div>
         </div>

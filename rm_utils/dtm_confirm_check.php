@@ -2,20 +2,10 @@
 /*
  * dtm_confirm_check
  *
- * Design
- *  - loop through t_rotamember (or should we use dtm members) = alphabetically
- *  - for each member find duties for future events that have not been confirmed or not had a swap requested
- *  - create array for each members with unconfirmed message (but note if some have been confirmed) and brevo information for that member
- *  - send emails - content:
- *      - info on missing confirmations
- *      - reason we need them
- *      - how to do the confirm
- *      - who to contact
+ * Finds unconfirmed duties for each rotamember and sends an email reminder to that member.
+ * There are two different reminders - currently configured to send the first reminder type on three occasions and then send the second reminder type
  *
- *  - dryrun option - doesn't send the emails - but provides a summary of unconfirmed numbers for each member
  */
-
-
 
 $loc  = "..";
 $page = "duty_confirm_check";
@@ -43,7 +33,6 @@ $cfg = u_set_config("../config/common.ini", array(), false);
 $email_props_arr = array(
     "credential" => $cfg['BREVO_API'],
     "email_from" => array("email" => "noreply@starcrossyc.org.uk", "name"=> "Starcross YC no reply"),
-
 );
 
 // logging - start process (appending to cronlog)
@@ -72,11 +61,12 @@ u_cronlog(" - Found ".count($rota_members)." unique rota members");
 
 // get unconfirmed duties for future events from t_eventduty
 $reminders = get_unconfirmed_duties($start_date, $end_date, $rotas, $types);
-u_cronlog(" - Found ".count($reminders)." members to get reminder email");
+u_cronlog(" - Found ".count($reminders)." members with unconfirmed duties");
 //echo "<pre>Found ".count($reminders)." members to be reminded</pre>";
 
 if ($dryrun)                                               // create report
 {
+    u_cronlog(" - dryrun specified - not producing emails");
     $server_txt = "{$cfg['db_host']}/{$cfg['db_name']}";
     $pagefields = array(
         "loc"           => $loc,
@@ -101,6 +91,7 @@ else
     }
     else
     {
+        u_cronlog(" - PROCESSING - sending emails");
         $i = 0;
         $j = 0;
         foreach ($reminders as $k => $reminder)
@@ -119,11 +110,11 @@ else
                 }
 
                 $status_arr = send_email_reminder($reminder, "Starcross YC - reminder to confirm your duties", $template, $cfg['BREVO_API']);
-
+                u_cronlog(" - EMAIL - sending emails $k  {$reminder['email']['emailto']}   {$status_arr['success']}");
                 if ($status_arr['success'])
                 {
                     $i++;
-                    // update no. of reminders sent  // fixme - this needs to update t_eventduty for each duty that is being reminded
+                    // update no. of reminders sent
                     $tmp_arr = explode(",",rtrim($reminder['ids'], ","));
                     foreach ($tmp_arr as $id)
                     {
@@ -202,19 +193,21 @@ function get_unconfirmed_duties($start, $end, $rotas, $types)
               swapable, confirmed, confirmed_date, confirmed_reminders, swap_requested, swap_request_date, email
               FROM `t_eventduty` as a JOIN t_event as b on a.eventid=b.id
               WHERE substring_index(person, ' ', -1) NOT IN ('MBE', 'OBE') AND `confirmed` = 0 AND `swap_requested` != 1 AND b.event_date >= '$start' AND b.event_date <= '$end'
-              ORDER BY lastname LIMIT 20";
+              ORDER BY lastname";
 
     $duties = $db_o->run($query, array())->fetchall();
+    u_cronlog("-------- No. of unconfirmed duties to be processed - ".count($duties));
 
     $output = array();
     $person = "";
     foreach ($duties as $duty)
     {
+        u_cronlog("-------- PROCESSING: {$duty['person']} {$duty['event_date']} {$duty['dutycode']} {$duty['email']}");
         // first check that we have a rota_member record for this person - if we don't skip this duty as we can't send email
         $rota_key = array_search($duty['person'], array_column($rota_members, 'person'));
         if ($rota_key === false)
         {
-            u_cronlog(" - email for {$duty['person']} not found - reminder FAILED");
+            u_cronlog(" - email for {$duty['person']} not found - reminder will not be sent");
         }
         else
         {
@@ -222,6 +215,7 @@ function get_unconfirmed_duties($start, $end, $rotas, $types)
             if (strtolower($person) != strtolower($duty['person']))                    // new person
             {
                 // create new element
+                u_cronlog("-------- PROCESSING: {$duty['person']} {$duty['event_date']} {$duty['dutycode']} {$duty['email']}");
                 $output[$duty['person']] = array();
                 $rota_mbr_data = $rota_members[$rota_key];
 
@@ -242,7 +236,6 @@ function get_unconfirmed_duties($start, $end, $rotas, $types)
                 $output[$duty['person']]['unconfirmed'] = $output[$duty['person']]['unconfirmed'] + 1;
                 $output[$duty['person']]['ids'] = $output[$duty['person']]['ids'].$duty['id'].",";
 
-
                 // reset current person
                 $person = $duty['person'];
             }
@@ -253,9 +246,12 @@ function get_unconfirmed_duties($start, $end, $rotas, $types)
                 $output[$duty['person']]['detail'].= "$displaydate : {$duty['event_name']} ($eventtype)  ".strtoupper($dutyname)."<br>";
                 $output[$duty['person']]['unconfirmed'] = $output[$duty['person']]['unconfirmed'] + 1;
                 $output[$duty['person']]['ids'] = $output[$duty['person']]['ids'].$duty['id'].",";
+                u_cronlog("-------- + event: {$duty['event_date']} {$duty['dutycode']} ");
             }
         }
     }
+
+    u_cronlog("-------- COMPLETED: unconfirmed duty processing");
 
     return $output;
 }
@@ -271,27 +267,22 @@ function send_email_reminder($arr, $subject, $template, $api_key)
     $fields = array("firstname"=>$arr['firstname'], "year"=>date("Y"), "num_unconfirmed"=>$arr['unconfirmed'], "txt_unconfirmed"=>$arr['detail'], "dtm_login"=>$arr['login']);
     $params = array("num_unconfirmed"=>$arr['unconfirmed']);
 
-
     $htm = $tmpl_o->get_template($template, $fields, $params);
 
     $data = array(
         "sender"      => array("email" => "noreply@starcrossyc.org.uk", "name"=> "Starcross YC no reply"),
-//        "to"          => array("email" => $arr['email']['emailto'], "name"=> $person),                      // fixme to be tested
-        "to"          => array(
-                          "0" => array("email" => "markelkington640@gmail.com", "name"=> "Mark Elkington"),
-        ),
+        "to"          => array("0" => array("email" => $arr['email']['emailto'], "name"=> $arr['email']['name'])),
         "subject"     => $subject,
         "htmlContent" => "<html><head></head><body>$htm</body></html>"
     );
-//    echo "<pre>".print_r($arr,true)."</pre>";
-//    echo "<pre>".print_r($data,true)."</pre>";
-//    echo $htm;
 
     // do not send if email is empty
     if (!empty($data['to']))
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://api.sendinblue.com/v3/smtp/email');
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
@@ -329,8 +320,8 @@ function get_dtm_login($person)
 
     $names = explode(" ",$person);
     if (count($names) > 2) { echo "<pre>$person - ".count($names)." names</pre>";}
-    $query = "SELECT dtm_login FROM t_rotamember WHERE firstname ='{$names[0]}' and familyname = '{$names[1]}'";
-    $dtm_login = $db_o->run($query, array())->fetchColumn();
+    $query = "SELECT dtm_login FROM t_rotamember WHERE firstname = ? and familyname = ?";
+    $dtm_login = $db_o->run($query, array($names[0], $names[1]))->fetchColumn();
     return $dtm_login;
 }
 
