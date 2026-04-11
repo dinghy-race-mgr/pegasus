@@ -1,274 +1,276 @@
 <?php
 
-
 function risk_form($params = array())     // fixme this is from rm_event
 {
+//    echo "<pre>".print_r($params,true)."</pre>";
+//    exit();
 
-    echo "<pre>".print_r($params,true)."</pre>";
-    exit();
+    $datetime = date("Y-m-d H:i");
+    $date = date("d-m-Y");
 
-    // form needs to handle up to 10 risk questions  -  needs to use Bootstrap5
-    // displays event and tide information and sends with form
-    // requests name of person completing form
+    $instructions_bufr = <<<EOT
+        <div class="alert alert-light fade show fs-5 mt-5 text-bg-primary" role="alert" style="border: steelblue 1px solid">
+        <b>Instructions</b><br>{instructions}
+        </div>
+    EOT;
 
-
-    $form_name = "multiclass_open_fm.php";     // important this matches the form-file field in e_form
-
-    $required = "<span class='field-reqd'>&nbsp;<i class='bi bi-asterisk'></i></span>";
-
-    $instructions_htm = "";
-    if (!empty($params['instructions']))
-    {
-        $instructions_htm = <<<EOT
-<!-- instructions -->
-<div class="">
-    <div class="alert alert-light alert-dismissible fade show fs-6 " role="alert">
-        {$params['instructions']}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    $admin_fields_bufr = <<<EOT
+    <div class="alert alert-light fade show mt-5 mb-2" role="alert" style="border: steelblue 1px solid"><span class="text-primary fs-4">Administration Details</span> 
+    <div class="row g-xl-5">
+        <div class="col">            
+                <input type="text" class="form-control" id="person" name="person" placeholder="person completing form ..." value="" required />        
+                <div class="invalid-feedback">please enter your name</div>
+        </div>
+        <div class="col">          
+                <input type="text" class="form-control" id="date" name="date" value="$date" required />
+                <div class="invalid-feedback">please enter date of race(s) DD/MM/YYYY </div>
+        </div> 
+        <div class="col">            
+                <input type="text" class="form-control" id="event" name="event" placeholder="e.g Spring Series (2 races)" value="{event}"  required />
+                <div class="invalid-feedback">please list the races covered by the assessment </div> 
+        </div>
     </div>
-</div>
+    <input type="hidden" name="datetime" placeholder="" value="$datetime">
 EOT;
-    }
 
-// check if we have classes
-    if (empty($params['class-list']))        // no classes defined just add a simple text field
+    $question_fields_bufr = "";
+    foreach ($params['questions'] as $k=>$question)
     {
-        $class_field_htm = <<<EOT
-    <div class="form-floating">       
-        <input type="text" class="form-control" id="class" name="class" placeholder="" value="" required autofocus />
-        <label for="floatingInput" class="label-style">Class Name $required</label>
-        <div class="invalid-feedback">Enter the class you will be sailing (e.g RS400)</div>
-    </div>
-EOT;
-    }
-    else                                     // create select field with supplied classes (+ option to add new class)
-    {
-        $classes = explode(",", $params['class-list']);
-        $class_options = "<option value=''></option>";
-        foreach ($classes as $class)
+        $opt_bufr = "<option value=''>&hellip; pick one</option>";
+        foreach($question['options'] as $option)
         {
-            $class_options.= "<option value='$class'>".trim($class)."</option>";
+            if ($option['active'])
+            {
+                $opt_bufr.= "<option value='{$option['score']}'>{$option['label']}</option>";
+            }
         }
 
-        $class_field_htm = <<<EOT
-    <!-- class add button -->     
-    <div class="input-group">
-        <div class="form-floating">          
-            <input class="form-control" list="classopts" id="class" name="class" placeholder="" value="" required autofocus />
-            <datalist id="classopts">$class_options</datalist>
-            <label for="class" class="label-style">Boat Class $required</label>                       
-            <div class="invalid-feedback">please pick your boat class (or add missing class name)</div> 
-            <div class="text-primary mx-5">start typing then pick from suggestions &hellip; (or add new class)</div>          
-        </div>                  
-    </div>      
+        $question_fields_bufr.= <<<EOT
+        <div class="row mb-3">
+            <div class="input-group">
+                <div class="col-1">&nbsp;</div>
+                <div class="col-6">
+                    <label class="label-style fs-5">{$question['label']} </label>   
+                    <div class="text-primary mx-5 fs-6">{$question['info']}</div>
+                </div>
+                <div class="col-4">                        
+                        <select class="form-select" name="q$k" required>
+                            $opt_bufr
+                        </select>                                
+                        <div class="invalid-feedback">Please provide an assessment for this item</div>                          
+                </div>                  
+            </div>
+        </div>
 EOT;
     }
 
-    $fields_bufr = <<<EOT
-<!-- boat section -->
-<div class="form-section w-100 p-1 mb-3" >&nbsp;&nbsp;Boat &hellip;</div>
 
-<div class="row mb-3 gx-5">
-    <div class="col-md-6">   
-        $class_field_htm
-    </div>   
-    <div class="col-md-4">
-        <div class="form-floating">            
-            <input type="text" class="form-control" id="sailnumber" name="sailnumber" placeholder="" value="" required /> 
-            <label for="floatingInput" class="label-style">Sail Number $required</label>          
-            <div class="invalid-feedback">enter your sail number</div>
-        </div>
-    </div>
-</div>
-
-<div class="row mb-3 gx-5">
-    <div class="col-md-6">
-        <div class="form-floating">           
-            <input type="text" class="form-control" id="boatname" name="boatname" placeholder="e.g Black Pearl &hellip;" value="" /> 
-            <label for="floatingInput" class="label-style">Boat Name / Sponsor</label>          
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="form-floating">            
-            <input type="text" class="form-control" id="club" name="club" placeholder="" value="" required> 
-            <label for="floatingInput" class="label-style">Home Club $required</label>         
-            <div class="invalid-feedback">enter your home club name (e.g. Exe SC)</div>
-        </div>
-    </div>
-</div>
-
-<!-- helm section -->
-<div class="form-section w-100 p-1 mb-3" >&nbsp;&nbsp;Helm &hellip;</div>
-<div class="row mb-3 gx-5">
-    <div class="col-md-6">
-        <div class="form-floating">            
-            <input type="text" class="form-control" id="helm-name" name="helm-name"  placeholder="" value="" required />   
-            <label for="floatingInput" class="label-style">Helm Name $required</label>         
-            <div class="invalid-feedback">enter the helm name (e.g. Ben Ainslie).</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="form-floating"  style="visibility:visible;">           
-            <input type="text" class="form-control" id="helm-age" name="helm-age" placeholder="" value="" /> 
-            <label for="floatingInput" class="label-style">Age (if under 18) </label>           
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="form-floating" style="visibility:hidden;">                  
-            <input type="text" class="form-control" list="genderlist" id="h-gender" name="h-gender" 
-                   pattern="female|male|other" placeholder="" value="" />
-            <datalist id="genderlist"><option value="female"><option value="male"><option value="other"></datalist>
-            <label for="h-gender" class="label-style">Gender</label>
-            <div class="invalid-feedback">female/male/other - or leave blank.</div>
-        </div>
-    </div>
-</div>
-
-<div class="row mb-3 gx-5">
-    <div class="col-md-6">
-        <div class="form-floating">           
-            <input type="email" class="form-control" id="helm-email" name="helm-email"  placeholder="" value="" required>
-            <label for="floatingInput" class="label-style">Email $required</label>
-            <div class="invalid-feedback">enter valid email address (e.g. ben@gmail.com)</div>
-        </div>
-    </div>
-    <div class="col-md-6" style="">
-        <div class="form-floating">           
-            <input type="text" class="form-control" id="ph-mobile" name="ph-mobile" pattern="[0-9]+" minlength="9" maxlength="11" placeholder="" value="" />
-            <label for="floatingInput" class="label-style">Mobile </label>
-            <div class="invalid-feedback">enter phone number (e.g. 07804555666)</div>
-            <div class="text-primary mx-5">9 to 11 digits no spaces &hellip;</div> 
-        </div>
-    </div>
-    
-</div>
-
-<!-- crew section (info not required) -->
-<div class="form-section w-100 p-1 mb-3" >&nbsp;&nbsp;Crew &hellip;</div>
-<div class="row mb-3 gx-5">
-    <div class="col-md-6">
-        <div class="form-floating">            
-            <input type="text" class="form-control" id="crew-name" name="crew-name" placeholder="" value="" >  
-            <label for="floatingInput" class="label-style">Crew Name</label>         
-            <div class="invalid-feedback">enter the crew name (e.g. Ben Ainslie).</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="form-floating">          
-            <input type="text" class="form-control" id="crew-age" name="crew-age" placeholder="" value="" >  
-            <label for="floatingInput" class="label-style">Age (if under 18)</label>          
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="form-floating" style="visibility:hidden;">                 
-            <input type="text" class="form-control" list="genderlist" id="c-gender" name="c-gender" 
-                   pattern="female|male|other" placeholder="" value="">
-            <datalist id="genderlist"><option value="female"><option value="male"><option value="other"></datalist>
-            <label for="h-gender" class="label-style">Gender</label>
-            <div class="invalid-feedback">female/male/other - or leave blank.</div>
-        </div>
-    </div>
-</div>
-
-<!-- admin section -->
-<div class="form-section w-100 p-1 mb-3" >&nbsp;&nbsp;Emergency Contact and Consent &hellip;</div>  
-<div class="row mb-3 gx-5">
-    <div class="col-md-6">
-        <div class="form-floating">           
-            <input type="text" class="form-control" id="ph-emer" name="ph-emer" placeholder="" value="" required>            
-            <label for="floatingInput" class="label-style">Emergency Contact (during event)<span class="field-reqd"> *</span></label>
-            <div class="invalid-feedback">enter contact name and phone number.</div>
-            <div class="text-primary mx-5"><i>(e.g. Mary Little, 07804555666)</i></div>
-        </div>
-    </div> 
-</div>
-
-<div class="row mb-3 gx-5">  
-    <div class="col-md-8"> 
-        I undertake that I hold valid third party insurance of a minimum of &pound;3,000,000 for the entered boat 
-        and I agree to be bound by the rules of the event as set out in the Notice of Race and Sailing Instructions
-    </div>
-    <div class="col-md-4">                  
-        <div class="mb-3 form-check">
-            <label class="form-check-label" for="consent">&nbsp;&nbsp;&nbsp;I consent<span class="field-reqd"> *</span></label>
-            <input type="checkbox" class="form-check-input" id="consent" name="consent" required />
-            <div class="invalid-feedback">You must agree to the terms and conditions to submit your entry.</div>
-        </div>
-    </div>
-</div>
-EOT;
 
     $buttons_bufr = <<<EOT
 <div class="mb-3 d-flex justify-content-end">
-    <button type="submit" disabled style="display: none" aria-hidden="true"></button> <!-- hack to stop form submitting on enter-->
-    <button type="button" class="btn btn-secondary me-2" onclick="history.back()">Cancel</button>
-    <button type="submit" class="btn btn-primary me-2">Enter Boat</button>                   
+    <!-- button type="submit" disabled style="display: none" aria-hidden="true"></button --> <!-- hack to stop form submitting on enter-->
+    <button type="button" class="btn btn-warning me-5" onclick="history.back()">Cancel</button>
+    <button type="submit" class="btn btn-primary me-5">Submit Risk Assessment</button>                   
 </div>
 EOT;
 
-    $form_htm = <<<EOT
-<!-- form details -->
-<div class="container mt-1">
-    <div class="row">
-        <div class="">
-            <form id="entryForm" action="rm_event_sc.php?eid={$params['eventid']}&pagestate=newentry&formname=$form_name&mode={$params['form-mode']}"
-                  method="post" role="form" autocomplete="off" class="needs-validation" novalidate>
-                  $fields_bufr
-                  $buttons_bufr
-            </form>
-        </div>
-    </div>
-</div>
-EOT;
-
-    $validation_htm = <<<EOT
+    $validation_bufr = <<<EOT
 <script>
-(function () {
-    "use strict";
-    var form = document.getElementById("entryForm");
 
-    form.addEventListener("submit", function (event) {           
-        if (!form.checkValidity()) {   
-            event.preventDefault();
-            event.stopPropagation();
-        }
+(function ()  {
+  'use strict'
 
-        form.classList.add("was-validated");        
-    });
-})();
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
 </script>
 EOT;
 
+    $bufr = <<<EOT
+<div class="container mt-1">
+    <form id="riskForm" action="{script}" method="post" role="form" autocomplete="off" class="needs-validation" novalidate>
+        $instructions_bufr
+        $admin_fields_bufr
+        <hr>
+        <span class="text-primary fs-4">Risk Assessment</span>
+        $question_fields_bufr  
+        <hr>      
+        $buttons_bufr
+    </form>
+    $validation_bufr        
+</div>
+
+EOT;
 
     return $bufr;
 }
 
 function risk_response($params = array())
 {
-    $htm = "";
+
+    //echo "<pre>".print_r($params,true)."</pre>";
+
+    $risk = $params['risk'];
+    $mitigations = $params['data']['mitigations'];
+    $contacts = explode("|", $params['data']['form']['contacts']);
+    $form = $params['data']['form'];
+
+    // initialise additional information in response
+    $abandoning_txt = $form['abandoning'];
+    $results_txt = $form['results'];
+
+    // set mitigations text based on most series risks
+    $mitigation_txt = "";
+    foreach ($mitigations as $mitigation)
+    {
+        if (strpos($mitigation['tags'], $risk['risk_1']) !== false)
+        {
+            $mitigation_txt.= " - ".$mitigation['action']."</br>";
+            continue;
+        }
+    }
+
+
+    if ($risk['state'] == "red")                      // RED response
+    {
+        // get list of contact officers
+        $contact_opts = "";
+        foreach ($contacts as $contact) { $contact_opts.= "<li><a class='dropdown-item' href='#'>$contact</a></li>"; }
+
+        $response = <<<EOT
+        <div class="text-danger-emphasis" > 
+            <span class='fs-2' style="color:#FFE6E6;">Status <b>RED</b> &hellip; <i class="bi-emoji-grimace-fill" style="font-size: 2rem; color: #FFE6E6;"></i></span>
+            <br><span class='fs-4 '>{$form['red_response']}</span>
+        </div>
+        <div class="dropdown pt-3 d-md-flex justify-content-md-end">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">People to contact</button>
+            <ul class="dropdown-menu">
+                $contact_opts
+            </ul>
+        </div>
+
+EOT;
+        $bg_style = "text-bg-danger";
+
+
+    }
+    elseif ($risk['state'] == "amber")               // AMBER response
+    {
+        $response = <<<EOT
+        <div class="text-warning-emphasis" > 
+            <span class='fs-3' style="color:#FFE5B4;">Status <b>AMBER</b> &hellip; <i class="bi-emoji-frown-fill" style="font-size: 2rem; color: #FFE5B4;"></i></span>
+            <br><span class='fs-4 '>{$form['amber_response']}</span>
+        </div>
+EOT;
+        $bg_style = "text-bg-warning";
+    }
+
+    elseif ($risk['state'] == "green")               // GREEN response
+    {
+        $response = <<<EOT
+        <div class="text-success-emphasis" > 
+            <span class='fs-2' style="color:aquamarine">Status <b>GREEN</b> &hellip; <i class="bi-emoji-smile-fill" style="font-size: 2rem; color: aquamarine;"></i></span>
+            <br><span class='fs-4 '>{$form['green_response']}</span>
+        </div>
+EOT;
+        $bg_style = "text-bg-success";
+        $mitigation_txt = "";  // not required
+        $abandoning_txt = "";
+        $results_txt = "";
+    }
+
+    if (!empty($mitigation_txt))
+    {
+        $mitigation_txt = <<<EOT
+            <div>
+                <p class="fs-3 text-primary">MITIGATION - actions to consider</p>
+                <p class="ps-5">$mitigation_txt</p>
+            </div>
+            <hr>
+EOT;
+    }
+
+    if (!empty($abandoning_txt))
+    {
+        $abandoning_txt = <<<EOT
+            <div>
+                <p class="fs-3 text-primary">ABANDONING - how to do it</p>
+                <p class="ps-5">$abandoning_txt</p>
+            </div>
+            <hr>
+EOT;
+    }
+
+    if (!empty($results_txt))
+    {
+        $results_txt = <<<EOT
+            <div>
+                <p class="fs-3 text-primary">RESULTS </p>
+                <p class="ps-5">$results_txt</p>
+            </div>
+            <hr>
+EOT;
+    }
+
+    $htm = <<<EOT
+    <main class="" >
+        <div class="container nav-margin my-5 ">
+            <span class='fs-4 text-primary '>Thank you for completing the risk assessment for today's race &hellip;</span>
+            
+            <div class="row align-items-md-stretch mt-3">
+                <div class="col-md-9">
+                    <div class="h-100 p-5 $bg_style rounded-3">
+                        $response
+                    </div>
+                </div>
+            </div>
+            <br><br>    
+            $mitigation_txt
+            <br><br>
+            $abandoning_txt
+            <br><br>
+            $results_txt
+            <br><br>                                
+        </div>    
+    </main>
+EOT;
 
     return $htm;
 
 }
 function error_report($params = array())
 {
-    empty($params['action']) ? $action = "" : $action = "<br><br>You could try ... ".$params['action'];
+    $err_text = array (
+        "2" => "The script page state is not recognised",
+        "3" => "The system has been unable to produce an assessment for unknown reasons"
+    );
 
-    $debug = "";
-    if (!empty($params['location']) or !empty($params['evidence'])) { $debug =  "<p class='text-end'>[ debug detail: {$params['location']} - {$params['evidence']} ]</p>";}
+    $problem = $err_text[$params['err']];
 
     $htm = <<<EOT
     <main class="" >
         <div class="container nav-margin">
-            <p class='display-5 text-info mb-lg-5'><b>{title}</b></p>           
+            <p class='display-5 text-info mb-lg-5'><b>Club Racing - Risk Assessment Form</b></p>           
             <div class="p-5 mb-4 text-bg-secondary border rounded-3">
-              <div class="container-fluid py-5">
-                <h1 class="display-6 fw-bold">Oops ... we have a problem</h1>
-                <p class="col-md-10 fs-5">{problem} $action</p>        
-                <p class="col-md-10 fs-5">You can report this problem to our System Administrator using the button below.</p>
-                <a class="btn btn-danger btn-lg" href="{report-link}" type="button" target="_BLANK">report problem</a>
-                $debug
-              </div>
+                <div class="container-fluid py-5">
+                    <h1 class="display-6 fw-bold">Oops ... we have a problem</h1>
+                    <p class="col-md-10 fs-5">$problem</p>        
+                    <p class="col-md-10 fs-5">Please report this problem to a club officer.</p>
+                    
+                    <p><b>If you have ANY concerns about the likely conditions for the race - please contact a club officer</b></p>
+                </div>
             </div>           
         </div>    
     </main>

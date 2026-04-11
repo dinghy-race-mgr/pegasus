@@ -292,7 +292,6 @@ function get_class_entry_btns($eid, $class_list)
         $classes = explode(",", $class_list);
     }
 
-
     if (count($classes) <= 0)                 // no classes defined - report error message
     {
         $entry_btns = <<<EOT
@@ -308,7 +307,7 @@ EOT;
         $entry_btns = <<<EOT
         <div class="btn-group" >
             <a class="btn btn-primary btn-lg" type="button" href="rm_event.php?page=newentryform&eid=$eid&class=$class_txt" 
-               role="button" aria-expanded="false">
+               role="button" aria-expanded="false" style="text-decoration: none">
                 Enter $class_txt &hellip;
             </a>            
         </div>    
@@ -326,7 +325,7 @@ EOT;
         }
 
         $entry_btns = <<<EOT
-        <div class="btn-group dropend" data-bs-theme="dark">
+        <div class="btn-group dropend" data-bs-theme="light">
             <button class="btn btn-primary btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Enter Boat
             </button>
@@ -379,7 +378,7 @@ function get_class_list($eventcfgid)
             //echo "<pre>{$class['classname']} included</pre>";
         }
     }
-    //echo "<pre>classes: $class_list</pre>";exit();
+    $class_list = rtrim($class_list, ",");
 
     return $class_list;
 }

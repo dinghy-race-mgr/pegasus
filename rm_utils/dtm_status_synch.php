@@ -4,7 +4,7 @@
  *
  * Interrogates dutyman members and duties view to check on confirmed and swap status.
  * Synchs dutyman future allocated duty information with the latest information in racemanager regarding swaps
- * Records current duty status information in t_eventduty
+ * Optionally updates current duty status information in t_eventduty and republishes the raceManager programme to the website
  *
  *
  */
@@ -429,9 +429,9 @@ function get_rm_duty_arr($start, $end)
         }
         else                                                                                           // get matching rotamember record
         {
-            $fn = mres($names['fn']);
-            $fm = mres($names['fm']);
-            $query = "SELECT * FROM t_rotamember WHERE firstname = '$fn' and familyname = '$fm' LIMIT 1";
+            $fn_esc = mres($names['fn']);                                                              // first name - escaped
+            $fm_esc = mres($names['fm']);                                                              // last name - escaped
+            $query = "SELECT * FROM t_rotamember WHERE firstname = '$fn_esc' and familyname = '$fm_esc' LIMIT 1";
             $matches = $db_o->db_get_rows($query);
             
             if (empty($matches))
@@ -571,8 +571,11 @@ function duty_compare($events, $dtm_duty, $rm_duty, $dryrun)
 
             // setup common variables
             $fn = trim($dtm_arr[$k]['fn']);                        // first name
+            $fn_esc = mres($fn);                                   // first name - apostrophe escaped
             $ln = trim($dtm_arr[$k]['ln']);                        // last name
+            $ln_esc = mres($ln);                                   // last name - apostrophe escaped
             $person = "{$dtm_arr[$k]['fn']} {$dtm_arr[$k]['ln']}"; // full name
+            $person_esc = "$fn_esc $ln_esc";                       // person - apostrophe escaped
             $rotalbl = array_search($dtm_arr[$k]['code'], $rota);  // rota text
 
             // review differences
@@ -610,25 +613,25 @@ function duty_compare($events, $dtm_duty, $rm_duty, $dryrun)
             {
                 if (strtolower($dtm_arr[$k]['ln']) == "unallocated")
                 {
-                    $chgperson = "UNALLOCATED";
-                    $set_clause = "`person`='$chgperson',`email`='',`phone`='',`memberid`='',`confirmed`='0',`confirmed_date`='',`swap_requested`='0',`swap_request_date`='',`notes`='' ";
+                    // $chgperson = "UNALLOCATED";
+                    $set_clause = "`person`='UNALLOCATED',`email`='',`phone`='',`memberid`='',`confirmed`='0',`confirmed_date`='',`swap_requested`='0',`swap_request_date`='',`notes`='' ";
                 }
                 else
                 {
                     $chgperson = $person;
 
                     // find details of person we are swapping to
-                    $query = "SELECT * FROM t_rotamember WHERE firstname = '$fn' and familyname = '$ln' LIMIT 1";
+                    $query = "SELECT * FROM t_rotamember WHERE firstname = '$fn_esc' and familyname = '$ln_esc' LIMIT 1";
                     $m = $db_o->db_get_row($query);
                     if (empty($m))
                     {
                         // details not found - just add name and no other details
-                        $set_clause = "`person`='$chgperson',`email`='',`phone`='', `memberid`='',`confirmed`= '0',`confirmed_date`='',`swap_requested`='0',`swap_request_date`='',`notes`='' ";
+                        $set_clause = "`person`='$person_esc',`email`='',`phone`='', `memberid`='',`confirmed`= '0',`confirmed_date`='',`swap_requested`='0',`swap_request_date`='',`notes`='' ";
                     }
                     else
                     {
                         // details found - add name and other details from t_rotamember
-                        $set_clause = "`person`='$chgperson',`email`='{$m['email']}',`phone`='{$m['phone']}',`memberid`='{$m['memberid']}',`confirmed`='0',`confirmed_date`='',`swap_requested`='0',`swap_request_date`='',`notes`='' ";
+                        $set_clause = "`person`='$person_esc',`email`='{$m['email']}',`phone`='{$m['phone']}',`memberid`='{$m['memberid']}',`confirmed`='0',`confirmed_date`='',`swap_requested`='0',`swap_request_date`='',`notes`='' ";
                     }
 
                 }

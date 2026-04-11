@@ -278,7 +278,6 @@ class EVENT
     }
 
 
-    //Method: get events 
     public function get_events_bydate($date, $mode, $requiredtype = "")
         /*
          * gets events on specified day.

@@ -54,6 +54,8 @@ EOT;
 
 function navbar_utils ($params = array())
 {
+    //echo "<pre>NAVBAR".print_r($params,true)."</pre>";
+
     $htm = <<<EOT
     <header>
         <nav class="navbar bg-primary navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
@@ -79,6 +81,8 @@ EOT;
 
 function footer_utils ($params = array())
 {
+    //echo "<pre>FOOTER".print_r($params,true)."</pre>";
+
     $htm = "";
     if ($params['footer'])
     {

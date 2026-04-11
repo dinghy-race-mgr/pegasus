@@ -46,7 +46,6 @@
  *      db_log_debug
  *
  */
-
 class DB
 {
     public $pdo;
@@ -74,6 +73,39 @@ class DB
         //echo "<br>";
         //$stmt->debugDumpParams();
         return $stmt;
+    }
+
+    public function db_get_rows( $query )
+    {
+        //Overwrite the $row var to null
+        //if ($_SESSION['sql_debug']) { u_writedbg("db_get_rows: $query",__FILE__,__FUNCTION__,__LINE__); }
+
+        //echo "<pre>".print_r($query,true)."</pre>";
+        $rows = $this->run($query, array() )->fetchall();
+        if ($rows)
+        {
+            return $rows;
+        }
+        else
+        {
+            return false;
+        }
+
+
+//        if( $this->link->error )
+//        {
+//            $this->db_log_errors( $this->link->error, $query );
+//            return false;
+//        }
+//        else
+//        {
+//            $rows = array();
+//            while( $r = $results->fetch_assoc() )
+//            {
+//                $rows[] = $r;
+//            }
+//            return $rows;
+//        }
     }
 
     public function getinivalues($process_bool, $category="")
@@ -118,26 +150,20 @@ class DB
         $fields_str = rtrim($fields_str, ", ");
 
         $keys_str = "";
-//        $val_str = "";
         foreach ($params as $k=>$v)
         {
             $keys_str.= ":$k, ";
-//            $val_str.= "$v, ";
         }
         $keys_str = rtrim($keys_str, ", ");
 
-//        $sql0 = "INSERT INTO $table ($fields_str) VALUES ($val_str) ";
         $sql = "INSERT INTO $table ($fields_str) VALUES ($keys_str) ";
-//        echo "<pre>$sql0</pre>";
-//        echo "<pre>$sql</pre>";
-        //echo "<pre>".print_r($params,true)."</pre>";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
-        $insertid = $this->pdo->lastInsertId();
-//        echo "<br>";
-//        $stmt->debugDumpParams();
-//        exit("stopping in INSERT");
+        $insertid = $this->pdo->lastInsertId();                  // id for last record inserted
+        $count = $stmt->rowCount();                              // number of rows inserted
+        //exit("stopping in INSERT (insertid: $insertid, rowcount: $count");
+
         return $insertid;
     }
 
@@ -164,12 +190,55 @@ class DB
         echo "<pre>INSERT: $query</pre>";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($params);
-        $insertid = $this->pdo->lastInsertId();
-        //echo "<br>";
-        //$stmt->debugDumpParams();
-        //exit("stopping in INSERT2");
+        $count = $stmt->rowCount();                              // number of rows inserted
+        $insertid = $this->pdo->lastInsertId();                  // id for last record inserted
+//        echo "<br>";
+//        $stmt->debugDumpParams();
+//        exit("stopping in INSERT2 (insertid: $insertid, rowcount: $count");
         return $insertid;
     }
+
+
+//    public function update( $table, $variables = array(), $where = array(), $limit = '' )
+//    {
+//        $dbg_on = false;
+//
+//        // returns -1 if update failed, 0 if successful but no rows changed, >1 no. rows changed
+//        if( empty( $variables ) ) { return -1; }
+//
+//        $sql = "UPDATE ". $table ." SET ";
+//        $updates = array();
+//        foreach( $variables as $field => $value )
+//        {
+//            strtolower($value) == "null" ? $updates[] = "`$field` = null" : $updates[] = "`$field` = '".addslashes($value)."'";
+//        }
+//        $sql .= implode(', ', $updates);
+//
+//        // Add the $where clauses as needed
+//        if( !empty( $where ) )
+//        {
+//            $clause = array();
+//            foreach( $where as $field => $value ) { $clause[] = "`$field` = '$value'"; }
+//            $sql .= ' WHERE '. implode(' AND ', $clause);
+//        }
+//
+//        if( !empty( $limit ) ) { $sql .= ' LIMIT '. $limit; }
+//
+//
+//        $stmt = $this->pdo->prepare($sql);
+//        $stmt->execute($params);
+//        $update = $this->link->query( $query );
+//        $numrows = $this->link->affected_rows;         // might be zero if no records changed
+//        if ($dbg_on) { u_writedbg("db_update: $query | rows affected: $numrows | result: $update ",__FILE__,__FUNCTION__,__LINE__); }
+//
+//        if( $this->link->error )
+//        {
+//            $this->db_log_errors( $this->link->error, $query );
+//            $numrows = -1;
+//        }
+//
+//        return $numrows;
+//    }
 
     /*
        Could use try and catch to handle fatal errors

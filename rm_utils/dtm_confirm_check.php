@@ -281,7 +281,7 @@ function send_email_reminder($arr, $subject, $template, $api_key)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://api.sendinblue.com/v3/smtp/email');
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 9);
         curl_setopt($ch, CURLOPT_TIMEOUT, 20);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -297,7 +297,9 @@ function send_email_reminder($arr, $subject, $template, $api_key)
 
         if (curl_errno($ch))
         {
-            $status_arr['err'] = 'Error:' . curl_error($ch);
+            $err = curl_errno($ch);
+            u_cronlog(" dbg - email for {$arr['email']['name']} FAILED - curl[errno: $err | error: ".curl_error($ch)." | err msg: ".curl_strerror($err)."| return: $result");
+            $status_arr['err'] = 'Error: ' . curl_error($ch);
             $status_arr['success'] = false;
         }
 

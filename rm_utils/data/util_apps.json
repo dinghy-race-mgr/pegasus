@@ -2,7 +2,41 @@
   "title": "util apps configuration",
   "version": "2026-02-16",
   "apps": {
-    "dtm_export": {"category": "dutyman", "title": "dutyman export", "description":  "", "url": "dtm_export.php?pagestate=init", "dryrun": "false", "status": "current"},
-    "dtm_status_synch": {"category": "dutyman", "title": "dutyman status synchronisation", "description":  "", "url": "dtm_status_synch.php?pagestate=init", "dryrun": "true", "status": "current"},
+    "berth_synch_webcollect": {
+      "category": "berth",
+      "title": "berth_synch_webcollect",
+      "description": "Script to download berth information from webcollect in a csv format for use in other systems. <br> Note: this will only work with Starcross YC configuration of webcollect",
+      "notes": "",
+      "url": "berth_synch_webcollect.php?pagestate=init&report=true",
+      "dryrun": "false",
+      "status": "current"
+    },
+    "dtm_export": {
+      "category": "dutyman",
+      "title": "dutyman export",
+      "description": "Creates DutyMan import CVS format files for EVENTS and/or DUTIES between specified start and end dates for selected rotas.  Typically used to populate dutyman when the annual programme is first published",
+      "notes": "It is recommended that the rota information in webcollect is synchronised with the raceManager system before running this script.  Use the rota_synch_webcollect.php script to do this",
+      "url": "dtm_export.php?pagestate=init",
+      "dryrun": "true",
+      "status": "current"
+    },
+    "dtm_status_synch": {
+      "category": "dutyman",
+      "title": "dutyman status synchronisation",
+      "description": "Interrogates dutyman members and duties view to check on confirmed and swap status.\n Synchs dutyman future allocated duty information with the latest information in racemanager regarding swaps\n Optionally updates current duty status information in t_eventduty and republishes the raceManager programme to the website",
+      "notes": "This script generates an email summarising the results of the process which is sent to rota manager via an email list. /nThe link to the script here will run in dry run mode ",
+      "url": "dtm_status_synch.php?pagestate=init&dryrun=true",
+      "dryrun": "true",
+      "status": "current"
+    },
+    "race_risk_assessment": {
+      "category": "racebox",
+      "title": "race risk assessment",
+      "description": "An online form which allows an OOD to assess risk for a club race.  The form will respond with a red-amber-green status with further instructions to the OOD where necessary.",
+      "notes": "This script stores the OOD assessments permanently in a database table [t_riskassess]",
+      "url": "race_risk_assessment.php?",
+      "dryrun": "true",
+      "status": "current"
+    }
   }
 }
