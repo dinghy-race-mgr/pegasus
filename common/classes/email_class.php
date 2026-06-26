@@ -22,7 +22,7 @@ $logfile = "../../logs/email.log";
 
 $email_o = new EMAIL($api_url, $api_key, $email_type, $email_tmpl, $logfile);
 
-$email_o->set_sender("markeb14.762@gmail.com", "Mark D Elkington";
+$email_o->set_sender("markeb14.762@gmail.com", "Mark D Elkington");
 $email_o->set_subject("This is a test email");
 $email_o->set_template("This is a fixed text email on two lines<br><br>so there");
 $email_o->set_recipient("markelkington640@gmail.com", "Mark Elkington", "", array(), array());
@@ -126,7 +126,7 @@ class EMAIL
         {
             $err[] = "empty subject";
         }
-        elseif (check template_    // need to be able to pass template as a string variable or as file
+     //   elseif (check template_    // need to be able to pass template as a string variable or as file
 
 
 
@@ -135,7 +135,7 @@ class EMAIL
             "email"    => $email,
             "name"     => $name,
             "subject"  => $subject,
-            "template" => $template,
+ //           "template" => $template,
             "fields"   => $fields,
             "params"   => $params
         );
