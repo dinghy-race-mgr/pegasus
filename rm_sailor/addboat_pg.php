@@ -33,14 +33,14 @@ if ($_SESSION['mode'] == "cruise") {
     $field_set = array(
         "helm_email" => $_SESSION['sailor_boat_h_email'],
         "crew_email" => $_SESSION['sailor_boat_c_email'],
-        "dob" => $_SESSION['sailor_boat_dob'],
+        //"dob" => $_SESSION['sailor_boat_dob'],              ---- not allowing dob from rm_sailor
         "skill_level" => $_SESSION['sailor_boat_skill'],
     );
 } else {
     $field_set = array(
         "helm_email" => $_SESSION['sailor_boat_h_email'],
         "crew_email" => $_SESSION['sailor_boat_c_email'],
-        "dob" => $_SESSION['sailor_boat_dob'],
+        //"dob" => $_SESSION['sailor_boat_dob'],              ---- not allowing dob from rm_sailor
         "skill_level" => $_SESSION['sailor_boat_skill'],
     );
 }
@@ -48,8 +48,8 @@ if ($_SESSION['mode'] == "cruise") {
 // set initial values for all fields
 $addboatfields = array(
     "classid"     => "", "boatnum"     => "", "sailnum"     => "",  "boatname"    => "",
-    "helm"        => "", "helm_dob"    => "", "helm_email"  => "",
-    "crew"        => "", "crew_dob"    => "", "crew_email"  => "",
+    "helm"        => "", "helm_yob"    => "", "helm_email"  => "",
+    "crew"        => "", "crew_yob"    => "", "crew_email"  => "",
     "club"        => $_SESSION['clubname'],
     "personal_py" => "", "skill_level" => "1",
     "flight"      => "",
@@ -72,7 +72,8 @@ $_SESSION['pagefields']['header-center'] = $_SESSION['option_cfg'][$page]['pagen
 $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(),
     array("page" => $page, "options" => set_page_options($page)));
 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boat_fm", $addboatfields,
-    array("mode" => $_SESSION['mode'], "action" => "add", "fields" => $field_set, "class_list" => $class_lut, "skill_list" => $skill_lut));
+    array("mode" => $_SESSION['mode'], "action" => "add", "fields" => $field_set, "class_list" => $class_lut, "skill_list" => $skill_lut,
+            "instructions" => "Complete this form to create a new boat record &hellip;") );
 
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();

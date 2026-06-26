@@ -1,6 +1,10 @@
 <?php
 /**
  * Makes permanent changes to a boat details
+ *
+ * mode parameter is used to customise the instrucions at top of form
+ *    'edit' - standard edit instructions
+ *    'yob'  - flag missing year of birth information
  * 
  */
 $loc        = "..";
@@ -22,6 +26,8 @@ require_once ("{$loc}/common/classes/db_class.php");
 require_once ("{$loc}/common/classes/template_class.php");
 require_once ("{$loc}/common/classes/boat_class.php");
 require_once ("{$loc}/common/classes/comp_class.php");
+
+$mode = u_checkarg("mode", "set", "", "edit");  // defaults mode to edit if not set
 
 // connect to database to get event information
 $db_o = new DB();
@@ -45,11 +51,25 @@ $editboatfields = $comp_o->get_competitor($_SESSION['sailor']['id']);
 //$class_lut  = u_selectlist($class_list, $_SESSION['sailor']['classname']);
 $skill_lut = u_selectcodelist($db_o->db_getsystemcodes("competitor_skill"), "default");
 
+// set instructions
+if ($mode == "yob")
+{
+    $instructions = "IMPORTANT  -- We do not have your year of birth. <br>
+                     We need this information to generate results for our age-group trophies - please add your year of birth below.<br>  
+                     If you do not want to be considered for these trophies and want to stop future reminders - enter 9999";
+}
+else
+{
+    $instructions = "Details changed/entered here will be applied for all future races &hellip;";
+}
+
+
 // assemble and render page
 $_SESSION['pagefields']['header-center'] = $_SESSION['option_cfg'][$page]['pagename'];
 $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburger", array(),
     array("page" => $page, "options" => set_page_options($page)));
 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boat_fm", $editboatfields,
-    array("action" => "edit", "sailor" => $_SESSION['sailor'], "fields" => $field_set, "skill_list" => $skill_lut));
+    array("action" => "edit", "sailor" => $_SESSION['sailor'], "fields" => $field_set, "skill_list" => $skill_lut,
+        "instructions" => $instructions ));
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();

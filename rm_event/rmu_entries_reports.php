@@ -135,7 +135,6 @@ function get_report_config($output, $fleet)
     }
     elseif ($output == "entrycheck")
     {
-//      EntryCheck (sort: 1 where:  checks: true template: entrycheck_rept
         $fleet? $sort_option = 4 : $sort_option = 1;
         $out_cfg = array(
             "sort"     => $sort["1"],
@@ -146,7 +145,6 @@ function get_report_config($output, $fleet)
     }
     elseif ($output == "tallylist")
     {
-//      Tally (sort: 1 where: 1 checks: false template: tally_rept
         $out_cfg = array(
             "sort"     => $sort["1"],
             "where"    => $waiting["1"],
@@ -156,12 +154,20 @@ function get_report_config($output, $fleet)
     }
     elseif ($output == "fleetlist")
     {
-//      Fleet (sort: 4 where: 1 checks: false template: tally_rept
         $out_cfg = array(
             "sort"     => $sort["4"],
             "where"    => $waiting["1"],
             "checks"   => false,
             "template" => "fleetlist_rept"
+        );
+    }
+    elseif ($output == "resultlist")
+    {
+        $out_cfg = array(
+            "sort"     => $sort["4"],
+            "where"    => $waiting["1"],
+            "checks"   => false,
+            "template" => "result_rept"
         );
     }
     else

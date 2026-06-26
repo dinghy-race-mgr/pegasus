@@ -34,14 +34,16 @@ $db_o = new DB();
 $tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php", "./templates/results_tm.php"));
 
 // check arguments
-$eventid = u_checkarg("state", "checkint", "");
-$display = u_checkarg("mode", "set", "", "list");
+$eventid = u_checkarg("event", "checkint", "");
+$display = u_checkarg("mode", "set", "", "list");    // can be list or full
 
-if ($eventid) {
+if ($eventid)
+{
     if ($_SESSION['events']['numevents'] <= 0) {
         $_SESSION['pagefields']['body'] = $tmpl_o->get_template("noevents", array(), $_SESSION['events']);
-
-    } else {
+    }
+    else
+    {
         // get results data (with position for sailor in each event and full data with all positions)
         $_SESSION['result'] = set_result_data($_SESSION['sailor']['id'], $_SESSION['events']['details']);
         $result_arr = $_SESSION['result']['list'];
@@ -56,24 +58,28 @@ if ($eventid) {
             if (!empty($_SESSION['result']['list'])) {
                 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("result_list", $boat_fields, $result_arr);
 
-            } else {
-                $no_results = true;
-
             }
-
-        } elseif ($display == "full") {
+            else
+            {
+                $no_results = true;
+            }
+        }
+        elseif ($display == "full")
+        {
             if (key_exists($eventid, $result_arr) and key_exists($eventid, $_SESSION['result']['data'])) {
                 $result_arr[$eventid]['event-date'] = date("jS M", strtotime($result_arr[$eventid]['event-date']));
                 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("result_data", $result_arr[$eventid],
                     array("type" => $result_arr[$eventid]['race-type'], "sailorid" => $_SESSION['sailor']['id'],
                         "data" => $_SESSION['result']['data'][$eventid]));
-
-            } else {
+            }
+            else
+            {
                 $no_results = true;
-
             }
 
-        } else {
+        }
+        else
+        {
             $error_fields = array(
                 "error"=>"The results page mode is not valid |{value}|",
                 "detail"=>"value was - $display",
@@ -83,11 +89,14 @@ if ($eventid) {
             $_SESSION['pagefields']['body'] = $tmpl_o->get_template("error_msg", $error_fields, array("restart"=>true));
         }
 
-        if ($no_results) {
+        if ($no_results)
+        {
             $_SESSION['pagefields']['body'] = $tmpl_o->get_template("result_none", $boat_fields);
         }
     }
-} else {
+}
+else
+{
     $error_fields = array(
         "error"=>"No event specified for the results",
         "detail"=>"",

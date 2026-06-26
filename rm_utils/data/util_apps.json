@@ -37,6 +37,15 @@
       "url": "race_risk_assessment.php?",
       "dryrun": "true",
       "status": "current"
+    },
+    "results_publish": {
+      "category": "results",
+      "title": "Publish Results",
+      "description": "Publishes results for a specified eventid.  Optionally updates related series and transfers results files (and updated inventory) to website",
+      "notes": "",
+      "url": "publish_results2.php?pagestate=submit&eventid=11512&mode=auto",
+      "dryrun": "false",
+      "status": "current"
     }
   }
 }

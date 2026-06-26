@@ -45,37 +45,54 @@ if ($sailorid)
     $competitors = $comp_o->comp_findcompetitor(array("id"=>$sailorid));
     $competitors ? $numcompetitors = count($competitors) : $numcompetitors = 0;
 
-    if ($numcompetitors==1) {                                                           // found
+    if ($numcompetitors==1)                                                                 // found
+    {
         u_writelog($_SESSION['app_name']." $scriptname : boat selected -> [id: $sailorid]  ","");
         $_SESSION['sailor'] = $competitors[0];
         $_SESSION['sailor']['change'] = false;
 
-        if ($_SESSION['mode'] == "cruise") {
+        if ($_SESSION['mode'] == "cruise")
+        {
             // check if boat already registered in t_cruise
             $cruise_o = new CRUISE($db_o, date("Y-m-d"));
             $chk_cruise = $cruise_o->get_latest_changes($_SESSION['sailor']['id']);
 
             // update sailor info with custom fields
-            foreach ($_SESSION['change_fm'] as $field => $spec) {
+            foreach ($_SESSION['change_fm'] as $field => $spec)
+            {
                 if (!empty($chk_cruise[$field])) {$_SESSION['sailor']['change'] = true;}
                 $_SESSION['sailor'][$field] = $chk_cruise[$field];
             }
+        }
+        elseif ($_SESSION['mode'] == "race")
+        {
+            // temporary fix - request yob if missing - remove after Dec 2027
+            if (empty($_SESSION['sailor']['helm_yob']))
+            {
+                // redirect to edit page with yob mode
+                sailor_redirect($_SESSION['mode'], "editboat_pg.php?state=init&mode=yob", "cruise_pg.php?state=init" );
+                exit();
 
-        } elseif ($_SESSION['mode'] == "race") {
+            }
+
 
             $chk_race = get_race_entries($_SESSION['sailor']['id'], date("Y-m-d"));
 
             // update sailor info with custom fields
-            foreach ($_SESSION['change_fm'] as $field => $spec) {
+            foreach ($_SESSION['change_fm'] as $field => $spec)
+            {
                 if (!empty($chk_race[$field])) {$_SESSION['sailor']['change'] = true;}
                 $_SESSION['sailor'][$field] = $chk_race[$field];
             }
         }
 
+
         sailor_redirect($_SESSION['mode'], "race_pg.php?state=init", "cruise_pg.php?state=init" );
         exit();
 
-    } else {                                                                                // single match not found - report error
+    }
+    else
+    {                                                                                // single match not found - report error
         u_writelog($_SESSION['app_name']." $scriptname : boat selected not found -> [id: $sailorid]  ","");
         $error_fields = array(
             "error" => "Fatal Error: Boat selected not found",
@@ -88,7 +105,9 @@ if ($sailorid)
         echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
         exit();
     }
-} else {
+}
+else
+{
     // id passed is not valid
     u_writelog("Fatal Error: selected boat from search list not recognised", "");
     $error_fields = array(

@@ -121,17 +121,19 @@ class PAGES
                 if ($duty_count == 0)
                 {
                     $duty_present = false;
-                    $duty_info = "";
                 }
                 else
                 {
                     $duty_present = true;
-                    if ($this->cfg['programme']['fields']['inc_duty'] == "ood")
+                    if ($this->cfg['programme']['fields']['inc_duty'] == "ood")            // only need lead officer
                     {
-                        if (array_key_exists("Race Officer", $event['duties'])) {
-                            $duty_info = $event['duties']["Race Officer"];
-                        } else {
-                            $duty_info = "not allocated yet";
+                        foreach ($event['duties'] as $k => $row)
+                        {
+                            if (strtolower($row['duty']) == "race officer" or strtolower($row['duty']) == "dinghy cruise officer")
+                            {
+                                $duty_info = $row['person'];
+                                break;
+                            }
                         }
                     }
                     else
@@ -140,17 +142,16 @@ class PAGES
                             "inc_dutyconfirm_status" => $this->cfg['programme']['fields']["inc_dutyconfirm_status"],
                             "inc_dutyswap_status"    => $this->cfg['programme']['fields']["inc_dutyswap_status"]
                         );
-                        $i = 0;
-                        foreach ($event['duties'] as $k => $duty)
-                        {
-                            $duty['confirmed'] ? $params['duty_confirm_status'] = "confirmed" : $params['duty_confirm_status'] = "unconfirmed" ;
-                            $duty['swap_requested'] ? $params['duty_swap_status'] = "requested"  : $params['duty_swap_status'] = "not_requested" ;
 
-                            $duty_info .= $this->get_template("tb_prg_duty", array("duty" => $duty['duty'], "person" => $duty['person']), $params);
+                        foreach ($event['duties'] as $k => $row)
+                        {
+                            $row['confirmed'] ? $params['duty_confirm_status'] = "confirmed" : $params['duty_confirm_status'] = "unconfirmed" ;
+                            $row['swap_requested'] ? $params['duty_swap_status'] = "requested"  : $params['duty_swap_status'] = "not_requested" ;
+
+                            $duty_info .= $this->get_template("tb_prg_duty", array("duty" => $row['duty'], "person" => $row['person']), $params);
                         }
                     }
                 }
-
 
                 $format = "";
                 if ($event['category'] == "racing")
@@ -164,13 +165,14 @@ class PAGES
                     $info_present = true;
                     if (empty($event['infolbl']))
                     {
-                        $event['infolbl'] = "more information";
+                        $event['infolbl'] = "more information - click here";
                     }
                 }
 
                 $time = date("H:i", strtotime($event['time']));
                 if ($time == "00:00")  { $time = " - "; }
 
+                $tide = ltrim($event['tide'], "HW");
 
                 $evt_fields = array(
                     "state"       => $event['state'],
@@ -183,18 +185,18 @@ class PAGES
                     "category"    => $_SESSION['prg']['meta']['eventtype'][$event['category']],
                     "subcategory" => $event['subcategory'],
                     "format"      => $format,
-                    "tide"        => $event['tide'],
+                    "tide"        => $tide,
                     "info"        => $event['info'],
                     "infolbl"     => $event['infolbl'],
                     "duties"      => $duty_info,
                     "duty_num"    => $duty_count
                 );
 
-                // ".in" for expanded duty info
+                // determine if all duty info is expanded on display or is clickable  -  ".in" for expanded duty info
                 $this->cfg["programme"]['duty_display'] ? $evt_fields['duty_show'] = ".in" : $evt_fields['duty_show'] = "";
 
-                $table_data.= $this->get_template("tb_prg_data", $evt_fields,
-                    array("fields" => $this->cfg["programme"]['fields'], "state" => $event['state'], "info" => $info_present, "duty" => $duty_present));
+                $table_data.= $this->get_template("tb_prg_data", $evt_fields, array("fields" => $this->cfg["programme"]['fields'], "data" => $evt_fields,
+                    "info" => $info_present, "duty" => $duty_present));
             }
             $table_head = "";
             if ($this->cfg['programme']['table_hdr'])

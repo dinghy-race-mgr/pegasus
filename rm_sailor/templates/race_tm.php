@@ -431,11 +431,14 @@ EOT;
 
 function results_btn($opt, $eventid, $ev_state, $en_state, $tip)
 {
+
     $mode = "";
     if ($opt)
     {
-        if ($ev_state >= 4 and $ev_state <= 5 and ($en_state == "retired" or $en_state == "signed off"
-                                                   or $en_state == "entered" or $en_state == "updated")) {
+//        if ($ev_state >= 4 and $ev_state <= 5 and ($en_state == "retired" or $en_state == "signed off"
+//                                                   or $en_state == "entered" or $en_state == "updated"))
+        if ($ev_state >= 4 and $ev_state <= 5 )
+        {
             $mode = "btn-success";
         }
 //        else

@@ -1,10 +1,7 @@
 <?php
-//error_log("<pre>".print_r($values,true)."</pre>\n", 3, $_SESSION['dbglog']);
-
 
 // set mode
-//isset($oldvalues) ? $mode = "edit" : $mode = "add";
-
+isset($oldvalues) ? $mode = "edit" : $mode = "add";
 
 // modify series fields to include year modifier
 if (!empty($values['series_root']))
@@ -32,7 +29,6 @@ else
     $values['series_code_extra'] = "";
 }
 unset($values['series_root_extra']);
-
 
 // individual field validation checks
 $msg = "";
@@ -136,7 +132,7 @@ elseif ($mode == "edit")
                 }
                 else                                                   // not valid
                 {
-                    $msg.= "- manually entered tide details are not correct for the event date - please check tables<br>";
+                    $msg.= "- the tide details are not correct for the event date - please check that you have the correct tide data<br>";
                 }
             }
             else
@@ -187,6 +183,7 @@ else
     $commit = false;
     $message = "<span style=\"white-space: normal\">EVENT PROBLEMS:<br>$msg </span>";
 }
+
 
 
 

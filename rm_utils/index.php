@@ -67,11 +67,18 @@ echo <<<EOT
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="icon" href="../common/images/logos/favicon.png">
-    
+        
         <!-- Bootstrap core CSS -->
+        <link href="../common/oss/bootstrap532/css/cerulean_bootstrap.min.css" rel="stylesheet">
+        <link href="../common/oss/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+        
+        <!-- Bootstrap core js -->
+        <script src="../common/oss/bootstrap532/js/bootstrap.bundle.min.js"></script> 
+    
+        <!-- Bootstrap core CSS >
         <link   rel="stylesheet"       href="../common/oss/bootstrap532/css/cerulean_bootstrap.min.css" >
         <script type="text/javascript" src="../common/oss/jquery/jquery.min.js"></script>
-        <script type="text/javascript" src="../common/oss/bootstrap532/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../common/oss/bootstrap532/js/bootstrap.min.js"></script -->
         
         <style>
             body { padding-top: 70px; font-family: Kalinga, Arial, sans-serif;}
@@ -99,9 +106,7 @@ echo <<<EOT
     </header>
         
         $page_body
-        
-        <script src="common/oss/jquery/jquery.min.js"></script>
-        <script src="common/oss/bootstrap341/js/bootstrap.min.js"></script>
+
   </body>
 </html>
 EOT;

@@ -8,28 +8,52 @@ function risk_form($params = array())     // fixme this is from rm_event
     $datetime = date("Y-m-d H:i");
     $date = date("d-m-Y");
 
+// instruction block
     $instructions_bufr = <<<EOT
-        <div class="alert alert-light fade show fs-5 mt-5 text-bg-primary" role="alert" style="border: steelblue 1px solid">
-        <b>Instructions</b><br>{instructions}
+        <div class="alert alert-info fade show fs-6 mt-2" role="alert" style="border: steelblue 1px solid; width: 80%;">
+            <b>Instructions</b><br>{instructions}
         </div>
-    EOT;
+EOT;
+
+    $links_bufr = "";
+    if (count($params['links']) > 0)
+    {
+        $links_htm = "<span class='text-primary'><b>Useful Info &hellip;</b></span>";
+        foreach ($params['links'] as $link)
+        {
+            $links_htm.= <<<EOT
+            <a type="button" class="btn btn-md btn-outline-warning mx-3 my-2" href="{$link['link']}" target="_blank">{$link['label']}&nbsp;&nbsp;</a>
+EOT;
+        }
+
+        $links_bufr = <<<EOT
+
+        <div class="alert alert-light fade show fs-6 mt-2" role="alert" style="border: steelblue 1px solid">
+            <div class="row">
+                <div class="col">$links_htm</div>
+            </div>
+        </div>
+
+EOT;
+    }
+
 
     $admin_fields_bufr = <<<EOT
-    <div class="alert alert-light fade show mt-5 mb-2" role="alert" style="border: steelblue 1px solid"><span class="text-primary fs-4">Administration Details</span> 
-    <div class="row g-xl-5">
-        <div class="col">            
-                <input type="text" class="form-control" id="person" name="person" placeholder="person completing form ..." value="" required />        
-                <div class="invalid-feedback">please enter your name</div>
+    <div class="alert alert-light fade show mt-2 mb-2" role="alert" style="border: steelblue 1px solid"><p class="text-primary text-center fs-4"><b>Risk Assessment Form</b></p> 
+        <div class="row g-xl-5">
+            <div class="col">            
+                    <input type="text" class="form-control" id="person" name="person" placeholder="your name here ..." value="" required />        
+                    <div class="invalid-feedback">please enter your name</div>
+            </div>
+            <div class="col">          
+                    <input type="text" class="form-control" id="date" name="date" placeholder="event date ..." value="$date" required />
+                    <div class="invalid-feedback">please enter date of race(s) DD/MM/YYYY </div>
+            </div> 
+            <div class="col">            
+                    <input type="text" class="form-control" id="event" name="event" placeholder="event name e.g Spring Series (2 races)" value="{event}"  required />
+                    <div class="invalid-feedback">please list the races covered by the assessment </div> 
+            </div>
         </div>
-        <div class="col">          
-                <input type="text" class="form-control" id="date" name="date" value="$date" required />
-                <div class="invalid-feedback">please enter date of race(s) DD/MM/YYYY </div>
-        </div> 
-        <div class="col">            
-                <input type="text" class="form-control" id="event" name="event" placeholder="e.g Spring Series (2 races)" value="{event}"  required />
-                <div class="invalid-feedback">please list the races covered by the assessment </div> 
-        </div>
-    </div>
     <input type="hidden" name="datetime" placeholder="" value="$datetime">
 EOT;
 
@@ -46,7 +70,7 @@ EOT;
         }
 
         $question_fields_bufr.= <<<EOT
-        <div class="row mb-3">
+        <div class="row mb-1">
             <div class="input-group">
                 <div class="col-1">&nbsp;</div>
                 <div class="col-6">
@@ -99,12 +123,12 @@ EOT;
 EOT;
 
     $bufr = <<<EOT
-<div class="container mt-1">
+<div class="container">
     <form id="riskForm" action="{script}" method="post" role="form" autocomplete="off" class="needs-validation" novalidate>
         $instructions_bufr
+        $links_bufr
         $admin_fields_bufr
         <hr>
-        <span class="text-primary fs-4">Risk Assessment</span>
         $question_fields_bufr  
         <hr>      
         $buttons_bufr
@@ -127,6 +151,10 @@ function risk_response($params = array())
     $contacts = explode("|", $params['data']['form']['contacts']);
     $form = $params['data']['form'];
 
+    // get list of contact officers
+    $contact_opts = "";
+    foreach ($contacts as $contact) { $contact_opts.= "<li><a class='dropdown-item' href='#'>$contact</a></li>"; }
+
     // initialise additional information in response
     $abandoning_txt = $form['abandoning'];
     $results_txt = $form['results'];
@@ -145,14 +173,11 @@ function risk_response($params = array())
 
     if ($risk['state'] == "red")                      // RED response
     {
-        // get list of contact officers
-        $contact_opts = "";
-        foreach ($contacts as $contact) { $contact_opts.= "<li><a class='dropdown-item' href='#'>$contact</a></li>"; }
-
         $response = <<<EOT
         <div class="text-danger-emphasis" > 
             <span class='fs-2' style="color:#FFE6E6;">Status <b>RED</b> &hellip; <i class="bi-emoji-grimace-fill" style="font-size: 2rem; color: #FFE6E6;"></i></span>
             <br><span class='fs-4 '>{$form['red_response']}</span>
+            <br><!-- b>{scores}</b -->
         </div>
         <div class="dropdown pt-3 d-md-flex justify-content-md-end">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">People to contact</button>
@@ -170,8 +195,15 @@ EOT;
     {
         $response = <<<EOT
         <div class="text-warning-emphasis" > 
-            <span class='fs-3' style="color:#FFE5B4;">Status <b>AMBER</b> &hellip; <i class="bi-emoji-frown-fill" style="font-size: 2rem; color: #FFE5B4;"></i></span>
+            <span class='fs-3' style="color:#FFE5B4;">Status <b>AMBER</b> &hellip; <i class="bi-emoji-neutral-fill" style="font-size: 2rem; color: #FFE5B4;"></i></span>
             <br><span class='fs-4 '>{$form['amber_response']}</span>
+            <br><!-- b>{scores}</b -->
+        </div>
+        <div class="dropdown pt-3 d-md-flex justify-content-md-end">
+            <button class="btn btn-secondary dropdown-toggle px-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">Need Advice? people to ask &hellip;</button>
+            <ul class="dropdown-menu">
+                $contact_opts
+            </ul>
         </div>
 EOT;
         $bg_style = "text-bg-warning";
@@ -183,12 +215,13 @@ EOT;
         <div class="text-success-emphasis" > 
             <span class='fs-2' style="color:aquamarine">Status <b>GREEN</b> &hellip; <i class="bi-emoji-smile-fill" style="font-size: 2rem; color: aquamarine;"></i></span>
             <br><span class='fs-4 '>{$form['green_response']}</span>
+            <br><!-- b>{scores}</b -->
         </div>
 EOT;
         $bg_style = "text-bg-success";
         $mitigation_txt = "";  // not required
-        $abandoning_txt = "";
-        $results_txt = "";
+        $abandoning_txt = "";  // not required
+        $results_txt    = "";     // not required
     }
 
     if (!empty($mitigation_txt))
@@ -196,7 +229,7 @@ EOT;
         $mitigation_txt = <<<EOT
             <div>
                 <p class="fs-3 text-primary">MITIGATION - actions to consider</p>
-                <p class="ps-5">$mitigation_txt</p>
+                <p class="ms-5 fs-5">$mitigation_txt</p>
             </div>
             <hr>
 EOT;
@@ -207,7 +240,7 @@ EOT;
         $abandoning_txt = <<<EOT
             <div>
                 <p class="fs-3 text-primary">ABANDONING - how to do it</p>
-                <p class="ps-5">$abandoning_txt</p>
+                <p class="fs-6">$abandoning_txt</p>
             </div>
             <hr>
 EOT;
@@ -218,7 +251,7 @@ EOT;
         $results_txt = <<<EOT
             <div>
                 <p class="fs-3 text-primary">RESULTS </p>
-                <p class="ps-5">$results_txt</p>
+                <p class="fs-6">$results_txt</p>
             </div>
             <hr>
 EOT;
@@ -226,7 +259,7 @@ EOT;
 
     $htm = <<<EOT
     <main class="" >
-        <div class="container nav-margin my-5 ">
+        <div class="container nav-margin my-4 ">
             <span class='fs-4 text-primary '>Thank you for completing the risk assessment for today's race &hellip;</span>
             
             <div class="row align-items-md-stretch mt-3">
@@ -238,11 +271,11 @@ EOT;
             </div>
             <br><br>    
             $mitigation_txt
-            <br><br>
+            <br>
             $abandoning_txt
-            <br><br>
+            <br>
             $results_txt
-            <br><br>                                
+            <br>                               
         </div>    
     </main>
 EOT;

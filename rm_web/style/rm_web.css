@@ -59,18 +59,20 @@ a:hover {
 .prg_past {
    font-size: 1.0em;
    color: gray;
-   background-color: lightgrey;
+   background-color: whitesmoke;
 }
 
 .prg_next {
    font-size: 1.0em;
    color: black;
+   font-weight: 600;
    background-color: LemonChiffon;
 }
 
 .prg_future {
    font-size: 1.0em;
    color: black;
+   font-weight: 500;
    background-color: white;
 }
 
@@ -109,14 +111,13 @@ a:hover {
 }
 
 .duty_type {
-   font-size: 1.0em;
+   font-size: 0.9em;
    color: steelblue;
 }
 
 .duty_person {
-   font-size: 1.0em;
+   font-size: 0.9em;
    color: darkblue;
-   font-weight: bold;
 }
 
 .pagination {

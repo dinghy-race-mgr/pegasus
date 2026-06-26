@@ -19,6 +19,7 @@ class WEB_TEMPLATE
         <link   rel="icon"    href="{ossloc}/common/images/logos/favicon.png">
         <link rel="stylesheet" href="{ossloc}/common/oss/bootstrap341/css/bootstrap.min.css" >
         <link rel="stylesheet" href="{ossloc}/common/oss/bootstrap341/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{ossloc}/common/oss/bootstrap341/css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="{ossloc}/common/oss/bs-validator/dist/css/formValidation.min.css">
 
         <script type="text/javascript" src="{ossloc}/common/oss/jquery/jquery.min.js"></script>
@@ -168,36 +169,24 @@ EOT;
        $tide = "";
        $category = "";
        $duty = "";
-       if ($params['inc_tide']) { $tide = "<th width=\"12%\">Tide</th>"; }
-       if ($params['inc_type']) { $category = "<th width=\"12%\">Type/Format</th>"; }
+       if ($params['inc_tide']) { $tide = "<th width='12%'>Tide HW</th>"; }
+       if ($params['inc_type']) { $category = "<th width='16%'>Type/Format</th>"; }
        if ($params['inc_duty'])
        {
-//           if ($params['inc_duty_ood_only'])
-//           {
-//               $duty = "<th width=\"25%\">Race Officer</th>";
-//           }
-//           else
-//           {
-//               $duty = "<th width=\"25%\">Duties</th>";
-//           }
-            if ($params['inc_duty'] == "all")
+            if ($params['inc_duty'] == "ood")
             {
-                $duty = "<th width='32%'>Duties</th>";
+                $duty = "<th width='30%'>Event Officer</th>";
             }
-            elseif ($params['inc_duty'] == "ood")
+            elseif ($params['inc_duty'] == "all")
             {
-                $duty = "<th width='32%'>Race Officer</th>";
-            }
-            else
-            {
-                $duty = "<th width='32%'>&nbsp;</th>";
+                $duty = "<th width='30%'>Duties</th>";
             }
        }
               
        $html = <<<EOT
        <thead>
-          <tr class="bg-primary" style="font-size: 0.8em;"> 
-             <th width="8%">Date</th> 
+          <tr class="bg-primary" style="font-size: 1.0em;"> 
+             <th width="10%">Date</th> 
              <th width="6%">Time</th> 
              <th width="25%">Event</th> 
              $category
@@ -211,87 +200,84 @@ EOT;
     
     public function tb_prg_data($params=array())
     {
-       $tide = "";
-       $category = "";
-       $duty = "";
+        $date     = "";
+        $tide     = "";
+        $category = "";
+        $duty     = "";
+        $note     = "";
+        $info     = "";
 
-       if ($params['state']=="noevent")
-       {
-           $time = "<td>&nbsp;</td>";
-           $name = "<td>[ {event} ]<br><span class=\"prg_notes\">{note}</span></td>";
-       }
-       else
-       {
-           $time = "<td class=\"\">{time}</td>";
-           $name = "<td class=\"\"><b>{event}</b><br><span class=\"prg_notes\">{note}</span></td>";
-       }
+        //if ($params['data']['id'] == 11390) { echo "<pre>".print_r($params['data'],true)."</pre>"; }  // debug
 
-       if ($params['fields']['inc_tide'])
-       {
-           $tide = "<td class=\"\">{tide}</td>";
-       }
+        if ($params['info']) { $info = "<br><a href=\"{info}\" target=\"_blank\">{infolbl}</a>"; }   // info link layout if set
+        if ($params['data']['note']) { $note = "<br><span class='prg_notes'>{note}</span>"; }    // note layout if note set
 
-       if ($params['fields']['inc_type'] and $params['state']!="noevent")
-       {
-           $category = <<<EOT
-           <td class="">
-                {category} / 
-                <span class="tb_format" data-toggle="tooltip" data-placement="right" title="{format}">
-                    {subcategory}
-                </span>
-           </td>
+        // COL 1 - event date
+        $date = "<td class=''>{alert}{date}</td>";
 
+        // COL 2 - event time
+        $params['state'] == "noevent" ? $time = "<td>&nbsp;</td>" : $time = "<td class=''>{time}</td>";
+
+        // COL 3 - event name ( + notes) (+ link to additional info)
+        $name = "<td>{event} $note $info </td>";
+
+        // COL 4 - event type / category
+        if ($params['fields']['inc_type'] and $params['state']!="noevent")
+        {
+            $category = "<td class=''>{category} / <span class='tb_format' data-toggle='tooltip' data-placement='right' title='{format}'>{subcategory}</span></td>";
+        }
+
+        // COL 5 - tide information
+        if ($params['fields']['inc_tide'])
+        {
+            $tide = "<td class=''>{tide}</td>";
+        }
+
+        // COL 6 - duty information
+        if ($params['state']=="noevent")
+        {
+            $params['fields']['inc_duty'] == "none" ? $duty = "" : $duty = "&nbsp;";
+        }
+        else
+        {
+            if ($params['fields']['inc_duty'] == "none")
+            {
+                $duty = "";
+            }
+            elseif ($params['fields']['inc_duty'] == "ood")
+            {
+                $duty = "<td>".$params['data']['duties']."</td>";
+            }
+            elseif ($params['fields']['inc_duty'] == "all")
+            {
+                if ($params['data']['duty_num'] <= 0)
+                {
+                    $duty = "<td>&nbsp;</td>";
+                }
+                else
+                {
+                    $params['data']['state'] == "past" ? $link_id = "Duties ({duty_num})" : $link_id = "<b>Duties ({duty_num})</b>";
+
+                    $duty = <<<EOT
+                <td class="" style="text-align: center">
+                    <a class = "btn btn-sm btn-default" data-toggle="collapse" data-target="#duty{id}" aria-expanded="false" aria-controls="duty{id}" >$link_id</a>
+                    <div class="collapse{duty_show}" id="duty{id}">
+                        <div style="margin: 0px; padding: 0px; "><table class="table table-condensed" style="font-weight: normal; text-align: left">{duties} </table></div>
+                    </div>
+                </td>            
 EOT;
-       }
+                }
+            }
+            else
+            {
+                $duty = "&nbsp;";
+            }
+        }
 
-       $info = "";
-       if ($params['info'])
-       {
-           $info = <<<EOT
-            <a href="{info}" target="_blank">{infolbl}</a>
-EOT;
-       }
-
-
-       $duty = "";
-       if ($params['fields']['inc_duty'] and $params['state']!="noevent")
-       {
-           if ($params['fields']['inc_duty'] == "ood")
-           {
-               $duty = "{duties}";
-           }
-           else
-           {
-               if ($params['duty'])
-               {
-                   $duty = <<<EOT
-                <a  data-toggle="collapse" data-target="#duty{id}" aria-expanded="false" aria-controls="duty{id}" ><b>Duties [{duty_num}]</b></a>
-                <div class="collapse{duty_show}" id="duty{id}">
-                   <div style="margin: 0px; padding: 0px; ">
-                         <table class="table table-condensed" >{duties} </table>
-                   </div>
-                </div>
-EOT;
-               }
-               else
-               {
-                   $duty = " - ";
-               }
-           }
-       }
-
-       $html = <<<EOT
-          <tr class="prg_{state}">
-             <td class="">{alert}{date}</td>
-             $time
-             $name
-             $category
-             $tide
-             <td class="" style="width: 25%">
-                $duty<br>
-                $info
-             </td>
-         </tr>
+        $html = <<<EOT
+        <tr class="prg_{state}">
+            $date $time $name $category $tide $duty
+        </tr>
 EOT;
         return $html;    
     }
@@ -313,8 +299,7 @@ EOT;
     {
         $icons = array(
             "confirmed"     => "<span class='glyphicon glyphicon-ok' aria-hidden='true' style='font-size: 1.0em; color: limegreen;'></span>",
-            //"unconfirmed"   => "<span class='glyphicon glyphicon-minus' aria-hidden='true' style='font-size: 1.0em'></span>",
-            "unconfirmed"   => "<span class='' aria-hidden='true' style='font-size: 1.0em; color: darkorange;'>-</span>",
+            "unconfirmed"   => "",
             "requested"     => "<span class='glyphicon glyphicon-transfer' aria-hidden='true' style='font-size: 1.2em; color: darkred;'></span>",
             "not_requested" => "",
         );
@@ -327,7 +312,7 @@ EOT;
 
         $html = <<<EOT
      <tr>
-        <td class="duty_type">{duty}</td>
+        <td class="duty_type" style="border-right:1px solid steelblue;">{duty}</td>
         <td class="duty_person">{person}</td>
         <td>$duty_status &nbsp; $swap_status</td>
      </tr>

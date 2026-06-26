@@ -135,11 +135,17 @@ if ($eventid AND $pagestate)
                 // delete entries in t_race and t_lap
                 $del = $db_o->db_delete("t_race", array("eventid" => $eventid));          // race details
                 $del = $db_o->db_delete("t_lap", array("eventid" => $eventid));           // lap times
-//                $del = $db_o->db_delete("t_finish", array("eventid" => $eventid));        // pursuit finish positions
+//                $del = $db_o->db_delete("t_finish", array("eventid" => $eventid));      // pursuit finish positions
 
                 u_writelog("race CANCELLED", $eventid);
                 u_growlSet($eventid, $page, $g_race_cancel_success);
                 u_growlset($eventid, $page, $g_race_close_reminder);
+
+                if ($_SESSION['results_upload'] != "none")
+                {
+                    $status_arr = u_update_results($_SESSION['baseurl']);
+                    u_writelog("updated results inventory "."<pre>".print_r($status_arr,true)."</pre>", $eventid);
+                }
             }
             else
             {

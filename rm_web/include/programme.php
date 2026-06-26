@@ -1,6 +1,14 @@
 <?php
 class PROGRAMME
 {
+    /*
+     * duty_display = off                                                             ; duty pop-up information shown on page display  [DO I NEED THIS]
+        fields[inc_tide] = on                                                          ; include ide information
+        fields[inc_type] = on                                                          ; include race type information
+        fields[inc_duty] = all                                                         ; include duty information   [all, none, ood]
+        fields[inc_dutyconfirm_status] = on                                            ; include duty status information
+        fields[inc_dutyswap_status] = on
+     */
    
     public function __construct($dir, $file, $mode, $force)
     {
@@ -73,7 +81,6 @@ class PROGRAMME
             $status = false;
         }
 
-
         return $status;
     }
 
@@ -107,7 +114,7 @@ class PROGRAMME
         // by the programme it displays the nearest month (i.e first or last month
         else
         {
-            $params['opt']   = "init";
+            $params['opt'] = "init";
 
             $today = date("Y-m-d");
             $today_ts = strtotime($today);

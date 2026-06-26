@@ -11,17 +11,26 @@ include ("./common/classes/db.php");
 
 // read ini file
 $cfg = u_set_config("./config/common.ini", array(), false);
-//echo "<pre>".print_r($cfg,true)."</pre>";
+$racemanager_cfg = u_set_config("./config/racemanager.ini", array(), false);
+if (array_key_exists("risk_assess", $racemanager_cfg))
+{
+    $cfg['risk_assess'] = $racemanager_cfg['risk_assess'];
+}
+unset($racemanager_cfg);
 
 // check if demo is set to default on this index page
 file_exists('demo_on.txt') ? $mode = "demo" : $mode = "live";
 $debug = 0;
 
+// initialise optional blocks
+$links_block_htm = "";
+$risk_block_htm = "";
+
 // check if system is down for maintenance
 if (file_exists('maintenance_on.txt'))
 {
     // undergoing maintenance message
-    $application_block =  <<<EOT
+    $application_block_htm =  <<<EOT
     <div>
         <h3 class="text-info text-center display-6">Sorry! - raceManager is currently ...</h3>
         <div style="text-align: center;">
@@ -32,13 +41,12 @@ if (file_exists('maintenance_on.txt'))
     </div>
 EOT;
 
-    $links_block = "";
 }
 else
 {
 
-    $application_block = <<<EOT
-    <div class="container mb-5">
+    $application_block_htm = <<<EOT
+    <div class="container mb-3">
         <div class="row">
             <div class="col-md-3">
                 <a class="btn btn-info d-grid" href="./rm_sailor/index.php?demo=$mode" target="_blank" role="button">
@@ -71,31 +79,31 @@ else
     </div>
 EOT;
 
-    $links_block = "";
+    // links block  - optional block containing links to useful information - configured in t_link table
 
     $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
     $local_links = $db_o->run("SELECT * FROM t_link WHERE category = ? order by listorder", array("index") )->fetchall();
-    if (count($local_links) > 0) {
-
-        //echo "<pre>".print_r($local_links,true)."</pre>";
-        if (!empty($local_links)) {
+    if (count($local_links) > 0)
+    {
+        if (!empty($local_links))
+        {
             $local_links_htm = "";
             foreach ($local_links as $link)
             {
                 $local_links_htm.= <<<EOT
-                <a type="button" class="btn btn-lg btn-outline-{$link['style']} mx-3 my-2 icon-link"
+                <a type="button" class="btn btn-md btn-outline-{$link['style']} mx-3 my-2 icon-link"
                       data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="list-tooltip" data-bs-title="{$link['tip']}"
                       href="{$link['url_link']}" target="_blank">
                     {$link['label']}&nbsp;&nbsp;<i class="{$link['icon']}"></i>
-                </a>
+                 </a>
 EOT;
             }
 
-            $links_block = <<<EOT
+            $links_block_htm = <<<EOT
             <div class="container text-left">
-                <div class="row pt-5">
-                    <div class="col"><span class="text-info fs-5">Info Links&hellip;</span></div>
-                    <div class="col-10 border border-info p-3">                   
+                <div class="row">
+                    <div id = "inline_text" class="text-info fs-4"><b>Information Links&hellip;</b></div> 
+                    <div id = "inline_block" class="col-12 p-3" style="border: 3px solid steelblue;">                                         
                         $local_links_htm
                     </div>
                     <div class="col">&nbsp;</div>
@@ -103,6 +111,30 @@ EOT;
             </div>
 EOT;
         }
+    }
+
+    if ($cfg['risk_assess'])
+    {
+        // risk form block - optional block to request OOD to complete an risk assessment
+        $risk_block_htm = <<<EOT
+            <div class="container text-left">
+                <div class="row">
+                    <div id = "inline_text" class="text-danger fs-4"><b>Risk Assessment&hellip;</b></div> 
+                    <div id = "inline_block" class="col-12 p-3" style="border: 3px solid red;">                                         
+                        <div class="row">
+                            <div class="col-7 text-danger">
+                                <h4>IMPORTANT</h4>
+                                <p class="fs-5">The Sailing Committee asks that you complete a simple risk assessment form before proceeding with the race.  
+                                Please click the button to get the form &hellip;</p>
+                            </div>
+                            <div id="div_center" class="col-5" style="margin-left: auto;">
+                                <a href="./rm_risk/risk_assessment.php?form=CR_risk_assessment_cfg.json" class="btn btn-danger btn-lg " tabindex="-1" role="button" aria-disabled="true" target="_blank">Risk Assessment Form</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+EOT;
     }
 }
 
@@ -125,7 +157,10 @@ echo <<<EOT
         
         <style>
             body { padding-top: 20px; font-family: Kalinga, Arial, sans-serif;}
-            .brand-splash {font-weight: bold; font-size: 120%; color: orange;}
+            .brand-splash { font-weight: bold; font-size: 120%; color: orange;}
+            #inline_text  { background-color: #FFF; text-align: right; position: relative; z-index: 1000; width: 260px; margin-left: 75%;}
+            #inline_block { padding: 20px; position: relative; margin-top: -15px; }
+            #div_center   { display: flex; align-items: center; justify-content: center; }
         </style>    
     </head>      
     <body>
@@ -142,8 +177,9 @@ echo <<<EOT
                </div>
            </div>
         </div>
-        <div>$application_block</div>
-        <div>$links_block</div>
+        <div>$application_block_htm</div>
+        <div>$links_block_htm</div>
+        <div>$risk_block_htm</div>
         <script>
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {

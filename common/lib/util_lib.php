@@ -473,7 +473,7 @@ function u_startsession ($sess_name, $sess_timeout)
 
     empty($_SESSION['racebox_theme']) ? $theme = $_SESSION['racebox_theme'] : $theme = "flatly_";
     $title = "raceManager";
-    if (empty($action)) { $action = "Closing the browser completely and restarting the part of raceManager you were using"; }
+
     $function = $attr['function'];
 
     $line = $attr['line'];
@@ -491,6 +491,20 @@ function u_startsession ($sess_name, $sess_timeout)
     u_writelog($logmsg, 0);                                // write to system log
     if ($eventid!=0) { u_writelog($logmsg, $eventid); }    // write to event log
 
+    if (empty($action))
+    {
+        $action_bufr = <<<EOT
+        <h3>Please contact your system administrator ...</h3>
+EOT;
+    }
+    else
+    {
+        $action_bufr = <<<EOT
+        <h3>You could try ...</h3> 
+        <p class="lead" style="padding-left: 30px;">$action
+        <br>- if this doesn't work contact your raceManager administrator</p>
+EOT;
+    }
 
     echo <<<EOT
     <!DOCTYPE html><html lang="en">
@@ -524,15 +538,11 @@ function u_startsession ($sess_name, $sess_timeout)
               <h2 class="text-info">Oops sorry... &nbsp;&nbsp;we have encountered an unexpected error</h2>
               <p class="text-primary">$error</p>
             </div>
-            <div>
-                <div class="alert alert-info" style="margin-top: 40px;">
-                  <h3>You could try ...</h3> 
-                  <p class="lead" style="padding-left: 30px;">$action<br>
-                  - if this doesn't work contact your raceManager administrator</p>
-                </div>
-            </div>
+            
+            <div class="alert alert-info" style="margin-top: 40px;">$action_bufr</div>
+
             <div class="well well-lg" style="margin-top: 30px;">
-                <p class="lead" style="padding-left: 30px;">
+                <p class="" style="padding-left: 30px;">
                 The problem is probably due to some frankly shoddy coding by the deranged system developer!! - the details below might help him find the problem.<br>
                 <pre>$script $function (line $line) $calledby $argtxt </pre>
                 </p>
@@ -1459,6 +1469,21 @@ function u_create_csv_file($file, $cols, $rows, $excludes = array())
     }
 
     return $status;
+}
+
+function u_update_results($baseurl)
+{
+    // update results and post updated results inventory to website
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $baseurl."/rm_utils/website_publish.php?pagestate=submit&report=off");
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);   //returns result output from script
+    $output = curl_exec($ch);
+    curl_close($ch);
+
+    parse_str($output, $status_arr);
+
+    return $status_arr;
 }
 
 

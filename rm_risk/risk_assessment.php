@@ -13,12 +13,6 @@
  * Response will be coloured RAG display with actions to be taken by
  */
 
-// DONE - add error handling template
-// DONE - add OOD responses to database
-// DONE - update database record with response details
-// TODO - check form operation
-// TODO - response layout
-// TODO - install on HTZ
 
 $loc  = "..";
 $page = "Race Risk Assessment";
@@ -43,13 +37,38 @@ empty($_REQUEST['demo']) ? $demo = false : $demo = true;                        
 $cfg = u_set_config("../config/common.ini", array(), false);
 
 // connect to database using PDO
-$db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host'], $cfg['db_port'],);
+$db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host'], $cfg['db_port']);
 foreach ($db_o->getinivalues(false) as $k=>$v) {
     $cfg[$v['parameter']] = $v['value'];
 }
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm_bs5.php", "./templates/risk_tm.php"));
+$tmpl_o = new TEMPLATE(array("./templates/layouts_tm_bs5.php", "./templates/risk_tm.php"));
+
+// get json configuration data
+$cfg_err = false;
+if (array_key_exists("form", $_REQUEST))                               // check if requested cfg file exists
+{
+    $cfg_file = "./data/" . $_REQUEST['form'];
+    if (file_exists($cfg_file) and is_readable($cfg_file))
+    {
+        $formcfg = json_decode(file_get_contents($cfg_file), true);
+    }
+    else
+    {
+        $cfg_err = true;
+    }
+}
+else
+{
+    $cfg_err = true;
+}
+
+if ($cfg_err)
+{
+    u_exitnicely($scriptname, 0, "the requested risk assessment configuration file either cannot be found or is not readable","",
+        array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__, "calledby" => "", "args" => array()));
+}
 
 // set fixed page layout fields
 $pagefields = array(
@@ -57,15 +76,11 @@ $pagefields = array(
     "page-theme"  => $styletheme,
     "stylesheet"  => $stylesheet,
     "page-title"  => "Risk Form",
-    "page-navbar" => $tmpl_o->get_template("navbar_utils", array("util-name"=>$page, "version"=>$cfg['sys_version'], "year" => date("Y")), array()),
+    "page-navbar" => $tmpl_o->get_template("navbar_utils", array("header-left"=>$formcfg['title'], "version"=>$cfg['sys_version'], "year" => date("Y")), array()),
     "page-footer" => $tmpl_o->get_template("footer_utils", array("footer-left"=>"", "footer-center"=>"", "footer-right"=>""), array("footer" => false)),
     "page-modals" => "",
     "page-js"     => ""
 );
-
-// get json configuration data
-
-$formcfg = json_decode(file_get_contents("./data/race_risk_assessment_cfg.json"), true);
 
 // processing for each pagestate
 $err = 0;
@@ -91,8 +106,8 @@ elseif ($pagestate == "init")                            // present risk form
 
     $pagefields['event'] = $event_list;
     $pagefields['instructions'] = $formcfg['form']['instructions'];
-    $pagefields['script'] = "race_risk_assessment.php?pagestate=submit&formname=$formname&date=$today";
-    $pagefields['page-main'] = $tmpl_o->get_template("risk_form", $pagefields, array("questions"=> $formcfg['questions']));
+    $pagefields['script'] = "risk_assessment.php?pagestate=submit&form={$_REQUEST['form']}&date=$today";
+    $pagefields['page-main'] = $tmpl_o->get_template("risk_form", $pagefields, array("questions"=> $formcfg['questions'], "links"=>$formcfg['links']));
 
     echo $tmpl_o->get_template("page", $pagefields, array());
 }
@@ -106,19 +121,23 @@ elseif ($pagestate == "submit")                          // risk response page
         "date"     => $_REQUEST['date'],
         "events"   => $_REQUEST['event'],
         "person"   => $_REQUEST['person'],
-        "formcode" => $_REQUEST['formname']
+        "formcode" => $_REQUEST['form']
     );
 
     $risk_total = 0;
+    $scores_text = "RISK SCORES: ";
     for ($i=0; $i<=9; $i++)
     {
         if (!empty($_REQUEST["q$i"]))
         {
             $insert_arr["r$i"] = $_REQUEST["q$i"];
-            //$risk_total = $risk_total + $insert_arr["r$i"];
+            $scores_text.= " {$formcfg['questions'][$i]['code']}-{$_REQUEST["q$i"]} ";
+            $risk_total = $risk_total + $insert_arr["r$i"];
         }
-        //echo "<pre>$i - $risk_total</pre>";
     }
+    $scores_text.= "-- TOTAL: $risk_total";
+
+    // add to database
     $insertid = $db_o->insert("t_riskassess", $insert_arr);
 
     $risk = get_assessment($insert_arr);
@@ -126,10 +145,10 @@ elseif ($pagestate == "submit")                          // risk response page
     if ($risk['state'] == "red" or $risk['state'] == "amber" or $risk['state'] == "green")
     {
         // update database with assessment
-        $upd = $db_o->run("UPDATE t_riskassess SET `response` = ?, `response_info` = ?", array($risk['state'], "MAIN ISSUES: {$risk['risk_1']}; {$risk['risk_2']}" ));
+        $upd = $db_o->run("UPDATE t_riskassess SET `response` = '{$risk['state']}', `response_info` = 'MAIN ISSUES: {$risk['risk_1']}, {$risk['risk_2']}' WHERE id = $insertid", array());
 
         // display response   (include try again)
-        $pagefields['page-main'] = $tmpl_o->get_template("risk_response", array(), array("risk" => $risk, "data" => $formcfg));
+        $pagefields['page-main'] = $tmpl_o->get_template("risk_response", array("scores"=>$scores_text), array("risk" => $risk, "data" => $formcfg));
         echo $tmpl_o->get_template("page", $pagefields, array());
     }
     else
@@ -148,11 +167,6 @@ function get_assessment($arr)
 {
     global $formcfg;
 
-
-    //echo "<pre>get_assessment</pre>";
-    //echo "<pre>CFG".print_r($formcfg,true)."</pre>";
-    //echo "<pre>ARR".print_r($arr,true)."</pre>";
-
     // count scores for up to ten questions
     $sort_arr = array();
     $risk_arr = array("total"=>0, "state"=>"not set", "risk_1" => "not set", "risk_2" => "not set");
@@ -160,8 +174,8 @@ function get_assessment($arr)
     {
         if (isset($arr["r$i"]))
         {
-            $risk_arr["total"] = $risk_arr["total"] + $arr["r$i"];
-            $sort_arr[$i] = $formcfg['questions'][$i]["max"] - $arr["r$i"];
+            $risk_arr["total"]  = $risk_arr["total"] + $arr["r$i"];
+            $sort_arr[$i]       = $formcfg['questions'][$i]["max"] - $arr["r$i"];
         }
     }
     //echo "<pre>RISK".print_r($risk_arr,true)."</pre>";
@@ -184,7 +198,6 @@ function get_assessment($arr)
     // search mitigations for relevance for these risks
     // render unique mitigations
     asort($sort_arr);
-    //echo "<pre>".print_r($sort_arr,true)."</pre>";
     $i = 0;
     foreach ($sort_arr as $k=>$risk)
     {
@@ -202,8 +215,6 @@ function get_assessment($arr)
         }
         $i++;
     }
-
-    echo "<pre>".print_r($risk_arr,true)."</pre>";
 
     return $risk_arr;
 }

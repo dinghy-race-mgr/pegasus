@@ -163,8 +163,8 @@ class COMPETITOR
         }
 
         $detail = array();
-        $query = "SELECT a.`id` as `id`, `classid`, `boatnum`, `sailnum`, `classname`, `acronym`, `helm` as `helmname`, `helm_dob`, `helm_email`,
-                  a.`crew` as `crewname`, `crew_dob`, `crew_email`, `club`, `nat_py`, `local_py`, `personal_py`, `skill_level`, `flight`, `last_entry`,
+        $query = "SELECT a.`id` as `id`, `classid`, `boatnum`, `sailnum`, `classname`, `acronym`, `helm` as `helmname`, `helm_dob`, `helm_yob`, `helm_email`,
+                  a.`crew` as `crewname`, `crew_dob`, `crew_yob`, `crew_email`, `club`, `nat_py`, `local_py`, `personal_py`, `skill_level`, `flight`, `last_entry`,
                   `last_event`, a.`active` as `active`, `grouplist`, `category`, b.`crew` as `crew`, `rig`, `spinnaker`, `keel`, `engine`
                   FROM `t_competitor` as a
                   JOIN `t_class` as b ON a.`classid`=b.`id`

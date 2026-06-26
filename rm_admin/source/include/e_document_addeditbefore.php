@@ -8,16 +8,20 @@ if (!empty($values['filename']) and !empty($values['file']))
 }
 else
 {
-    $values['filename'] ? $values['file-loc'] = "external" : $values['file-loc'] = "local";
+    !empty($values['filename']) ? $values['file-loc'] = "external" : $values['file-loc'] = "local";
 }
 
 // check publication dates are valid
-$pub_start = strtotime($values['publish-start']);
-$pub_end = strtotime($values['publish-end']);
-if ($pub_end < $pub_start)
+if (!empty($values['publish-end']))
 {
-    $msg.= "- publishing end date is before start date<br>";
+    $pub_start = strtotime($values['publish-start']);
+    $pub_end = strtotime($values['publish-end']);
+    if ($pub_end < $pub_start)
+    {
+        $msg.= "- publishing end date is before start date<br>";
+    }
 }
+
 
 if (empty($msg))
 {

@@ -818,7 +818,7 @@ function documents_body ($params = array())
             }
             else
             {
-                //!empty($document['version']) ? $version = "version: " . $document['version'] : $version = "";
+                //FIXME - this isn't allowing V1 to be used
                 !empty($document['version']) ? $version = "version: " . $release : $version = "";
             }
 

@@ -15,8 +15,10 @@ function boat_fm($params = array())
     $fld_width  = "col-xs-6";
     $fld_narrow = "col-xs-3";
 
+    $instruction_bufr = addslashes($params['instructions']);
+
     if ($params['action'] == "edit") {
-        $instruction_bufr = "Details entered here will be PERMANENTLY changed for this boat &hellip;";
+//        $instruction_bufr = "Details entered here will be PERMANENTLY changed for this boat &hellip;";
         $post_script = "editboat_sc.php";
         $btn_label = "Change Details";
         $classlist_bufr = <<<EOT
@@ -31,8 +33,9 @@ function boat_fm($params = array())
 
 EOT;
 
-    } else {
-        $instruction_bufr = "Complete his form to create a new boat record &hellip;";
+    }
+    else
+    {
         $post_script = "addboat_sc.php";
         $btn_label = "Add Boat";
         $classlist_bufr = <<<EOT
@@ -89,20 +92,20 @@ EOT;
     </div>
 EOT;
 
-// helm dob details
-    $helm_dob_bufr = "";
-    if ($params['fields']['dob'])
-    {
-        $helm_dob_bufr.= <<<EOT
-        <div class="form-group form-condensed">
-            <label for="helm_dob" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label> 
-            <div class="inputfieldgroup $fld_width">     
-                <input name="helm_dob" autocomplete="off" type="text" class="form-control rm-form-input-md placeholder-md" id="helm_dob" value="{helm_dob}"
-                       placeholder="date of birth - dd/mm/yyyy ...">
-            </div>
-        </div> 
-EOT;
-    }
+//// helm dob details
+//    $helm_dob_bufr = "";
+//    if ($params['fields']['dob'])
+//    {
+//        $helm_dob_bufr.= <<<EOT
+//        <div class="form-group form-condensed">
+//            <label for="helm_dob" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label>
+//            <div class="inputfieldgroup $fld_width">
+//                <input name="helm_dob" autocomplete="off" type="text" class="form-control rm-form-input-md placeholder-md" id="helm_dob" value="{helm_dob}"
+//                       placeholder="date of birth - dd/mm/yyyy ...">
+//            </div>
+//        </div>
+//EOT;
+//    }
 
     // helm email details
     $helm_email_bufr = "";
@@ -133,19 +136,19 @@ EOT;
 EOT;
     }
 
-    // crew dob details
-    $crew_dob_bufr = "";
-    if ($params['fields']['dob']) {
-        $crew_dob_bufr .= <<<EOT
-        <div class="form-group form-condensed">
-            <label for="crew_dob" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label> 
-            <div class="inputfieldgroup $fld_width">     
-                <input name="crew_dob" autocomplete="off" type="text" class="form-control rm-form-input-md placeholder-md" id="crew_dob" value="{crew_dob}"
-                       placeholder="date of birth - dd/mm/yyyy ...">
-            </div>
-        </div> 
-EOT;
-    }
+//    // crew dob details
+//    $crew_dob_bufr = "";
+//    if ($params['fields']['dob']) {
+//        $crew_dob_bufr .= <<<EOT
+//        <div class="form-group form-condensed">
+//            <label for="crew_dob" class="rm-form-label control-label $lbl_width $label_col">&nbsp;</label>
+//            <div class="inputfieldgroup $fld_width">
+//                <input name="crew_dob" autocomplete="off" type="text" class="form-control rm-form-input-md placeholder-md" id="crew_dob" value="{crew_dob}"
+//                       placeholder="date of birth - dd/mm/yyyy ...">
+//            </div>
+//        </div>
+//EOT;
+//    }
 
     // crew email details
     $crew_email_bufr = "";
@@ -161,32 +164,44 @@ EOT;
 EOT;
     }
 
-    $helm_bufr = <<<EOT
+    $helm_bufr =  <<<EOT
     <div class="form-group form-condensed">
+
         <label for="helm" class="rm-form-label control-label $lbl_width $label_col">Helm</label>
-        <div class="inputfieldgroup $fld_width">
-            <div>
-            <input name="helm" autocomplete="off" type="text" class="form-control rm-form-input-md placeholder-md" id="helm" value="{helm}"
-                   placeholder="name - e.g. Fred Flintstone ..." required data-fv-notempty-message="helm name is required">
-            </div>
-            $helm_dob_bufr
-            $helm_email_bufr                 
-            $skill_bufr           
-        </div>                
+        
+        <div class ="col-md-3">
+            <input name="helm" autocomplete="off" type="text" class="form-control rm-form-input-md placeholder-md"  id="helm" value="{helm}" 
+                style="width: 100% !important;" placeholder="name - e.g. Ben Ainslie ..." required data-fv-notempty-message="helm name is required">
+        </div>
+        
+        <div class ="col-md-1 text-info text-right" style="padding-top:10px !important;"><b>Birth Year</b></div>
+        
+        <div class="col-md-4">
+            <input name="helm_yob" autocomplete="off" type="text" class="form-control rm-form-input-md placeholder-md" id="helm_yob" value="{helm_yob}" 
+                style="width: 45% !important;" placeholder=" birth year e.g. 1999 ...">
+                <span class="text-info rm-text-xs"><i>* this will only be used to determine eligibility for age-group trophies</i></span>
+        </div>
+        $helm_email_bufr
+        $skill_bufr
     </div>
 EOT;
 
     $crew_bufr = <<<EOT
     <div class="form-group form-condensed">
         <label for="crew" class="rm-form-label control-label $lbl_width $label_col">Crew</label>
-        <div class="$fld_width">
-            <div>
-            <input name="crew" autocomplete="off" type="text" class="form-control rm-form-input-md placeholder-md" id="crew" value="{crew}"
-                   placeholder="name - e.g. Barney Rubble ...">
-            </div>
-            $crew_dob_bufr
-            $crew_email_bufr
+        
+        <div class ="col-md-3">
+            <input name="crew" autocomplete="off" type="text" class="form-control rm-form-input-md placeholder-md"  id="crew" value="{crew}" 
+                style="width: 100% !important;" placeholder="REGULAR crew - e.g. Barney Rubble ...">
         </div>
+        
+        <div class ="col-md-1 text-info text-right" style="padding-top:10px !important;"><b>Birth Year</b></div>
+        
+        <div class="col-md-4">
+            <input name="crew_yob" autocomplete="off" type="text" class="form-control rm-form-input-md placeholder-md" id="crew_yob" value="{crew_yob}" 
+                style="width: 45% !important;" placeholder=" birth year e.g. 1999 ...">
+        </div>
+        $crew_email_bufr
     </div>
 EOT;
 

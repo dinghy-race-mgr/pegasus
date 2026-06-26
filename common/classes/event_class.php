@@ -527,6 +527,8 @@ class EVENT
             if (!empty($fields['event_ood']))
             {
                 $_SESSION["e_$eventid"]['ev_ood'] = $fields['event_ood'];
+                // and update ood if set in t_eventduty
+                $set = $this->db->db_update( 't_eventduty', array("person"=>$fields['event_ood']), array("eventid"=>$eventid, "dutycode"=>"ood_p") );
             }
             if (!empty($fields['event_start']))
             {

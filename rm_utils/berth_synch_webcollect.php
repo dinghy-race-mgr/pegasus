@@ -206,17 +206,12 @@ function process_member(WebCollectResource $resource)
   
     $array = json_decode(json_encode($resource), true);  // convert into array
 
-    $first = ucfirst(strtolower(trim($array["{$_SESSION['webcollect']['firstname_fld']}"])));
-    $last  = ucfirst(strtolower(trim($array["{$_SESSION['webcollect']['familyname_fld']}"])));
-    
-//    if ($last == "Clarke")
-//    {
-//        echo "<pre>".print_r($array,true)."</pre>";
-//    }
+    $first = ucfirst(strtolower(trim($array["{$_SESSION['webcollect']['field_map']['firstname']}"])));
+    $last  = ucfirst(strtolower(trim($array["{$_SESSION['webcollect']['field_map']['familyname']}"])));
 
     $person = $first." ".$last;
-    $phone = strtolower(trim($array["{$_SESSION['webcollect']['phone_fld']}"]));
-    $email = strtolower(trim($array["{$_SESSION['webcollect']['email_fld']}"]));
+    $phone = strtolower(trim($array["{$_SESSION['webcollect']['field_map']['phone_1']}"]));
+    $email = strtolower(trim($array["{$_SESSION['webcollect']['field_map']['email']}"]));
 
     $sub_map = array (
         "berth" => "Dinghy Berth",
@@ -255,7 +250,6 @@ function process_member(WebCollectResource $resource)
                 strpos(strtolower($sub['description']), "rack") !== false OR
                 strpos(strtolower($sub['description']), "storage") !== false) {
 
-
                 $member_output++;
 
                 $key = array_search($sub['description'], $sub_map);
@@ -285,6 +279,7 @@ function process_member(WebCollectResource $resource)
                     /*"sticker_19" => $sub['form_data']['Boat_Sticker_No_2019'],*/
                     "sort" => strtolower($last)
                 );
+                //if ($member['berth'] == "B134") { echo "<pre>".print_r($member,true)."</pre>";}
                 $output[] = $member;
             }
         }

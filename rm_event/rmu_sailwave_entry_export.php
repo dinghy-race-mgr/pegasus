@@ -131,7 +131,8 @@ elseif ($pagestate == "submit")
                         "class"        => $row['b-class'],
                         "sailno"       => $row['b-sailno'],
                         "boat"         => $row['b-name'],             // used for boatname/sponsor
-                        "rating"       => $row['b-pn'],
+                        "division"     => $row['b-division'],
+                        "rating_pn"    => $row['b-pn'],
                         "helmname"     => $row['h-name'],
                         "helmagegroup" => $row['h-age'],
                         "crewname"     => $row['c-name'],
@@ -150,7 +151,7 @@ elseif ($pagestate == "submit")
                         "class"        => $row['b-class'],
                         "sailno"       => $row['b-sailno'],
                         "boat"         => $row['b-name'],             // used for boatname/sponsor
-                        "rating"       => $row['b-pn'],
+                        "rating_pn"    => $row['b-pn'],
                         "helmname"     => $row['h-name'],
                         "helmagegroup" => $row['h-age'],
                         "crewname"     => $row['c-name'],

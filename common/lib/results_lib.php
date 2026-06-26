@@ -307,7 +307,6 @@ function transfer_files($files, $protocol)
 
     if ($num_for_transfer > 0)       // we have files to transfer
     {
-
         // setup protocol connection attributes if required
         if ($protocol == "sftp" or $protocol == "ftp")
         {

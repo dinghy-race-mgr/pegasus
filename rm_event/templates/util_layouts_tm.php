@@ -541,6 +541,101 @@ EOT;
     return $htm;
 }
 
+function result_rept ($params = array())
+{
+    // title details
+    $timestamp = date("d-M-Y H:i");
+    $title = "{event-title}";
+
+    // format counts
+    $entry_count = "TOTAL ENTRIES : - ".count($params['entries']);
+    $count_str = format_entry_counts($params['counts']['class'], "b-class");
+    empty($count_str) ? $class_count = "": $class_count = "CLASSES :- $count_str";
+    $count_str = format_entry_counts($params['counts']['fleet'], "b-fleet");
+    empty($count_str) ? $fleet_count = "": $fleet_count = "FLEETS :- $count_str";
+
+    // table columns
+    $cols = <<<EOT
+<thead><tr>
+    <th >Fleet</th>
+    <th >Boat</th>
+    <th >Crew</th>
+    <th >Lap 1</th>
+    <th >Lap 2</th>
+    <th >Lap 3</th>
+    <th >Lap 4</th>
+    <th >Lap 5</th>
+    <th >Lap 5</th>
+    <th >Code / Comment</th>
+</tr></thead>
+EOT;
+
+    // table rows
+    $rows = "";
+    $fleet_div = "";
+    foreach ($params['entries'] as $key => $data)
+    {
+        if ($fleet_div != ucwords(strtolower($data['b-fleet'])))  // add blank row divider
+        {
+            $fleet_div = ucwords(strtolower($data['b-fleet']));
+            $rows .= <<<EOT
+<tr>
+    <td colspan="5" class="text-center fs-4"><b>$fleet_div</b></td>  
+</tr>
+EOT;
+        }
+
+        $helmname = $data['h-name'];
+        if (!empty($data['h-age']) and $data['h-age'] < 18) { $helmname = $helmname . " [J]"; }
+
+        $crewname = $data['c-name'];
+        if (!empty($data['c-age']) and $data['c-age'] < 18) { $crewname = $crewname . " [J]"; }
+
+        empty($data['c-name']) ? $team = ucwords($helmname) : $team = ucwords($helmname) . " / " . ucwords($crewname);
+
+        //empty($data['b-fleet']) ? $fleet_div = $data['b-division'] : $fleet_div = $data['b-fleet'] . "<br>" . $data['b-division'];
+        $fleet_div = ucwords(strtolower($data['b-fleet']));
+
+        $rows .= <<<EOT
+<tr>
+    <td style="padding: .1em .1em !important; font-size: 0.8em !important;">$fleet_div</td>
+    <td style="padding: .1em .1em !important; font-size: 0.8em !important;">{$data['b-class']} {$data['b-sailno']}</td>
+    <td style="padding: .1em .1em !important; font-size: 0.8em !important;">$team</td>
+    <td style="padding: .1em .1em !important; font-size: 0.8em !important;">&nbsp;</td>
+    <td style="padding: .1em .1em !important; font-size: 0.8em !important;">&nbsp;</td>
+    <td style="padding: .1em .1em !important; font-size: 0.8em !important;">&nbsp;</td>
+    <td style="padding: .1em .1em !important; font-size: 0.8em !important;">&nbsp;</td>
+    <td style="padding: .1em .1em !important; font-size: 0.8em !important;">&nbsp;</td>
+    <td style="padding: .1em .1em !important; font-size: 0.8em !important;">&nbsp;</td>
+    <td style="padding: .1em .1em !important; font-size: 0.8em !important;">&nbsp;</td>
+</tr>
+EOT;
+    }
+
+    // render report
+    $htm = <<<EOT
+    <main class="" >
+        <div class="container-fluid">
+            <p class='fs-4'>$title</p>              
+            <div >   
+                <table class="table table-bordered table-condensed fs-6" style="margin-left: 10px; width: 95% padding: .1rem .1rem;">
+                    $cols
+                    $rows           
+                </table>
+                <div>
+                    <p>$entry_count</p>  
+                    <p>$class_count</p>
+                    <p>$fleet_count</p>  
+                </div>                
+            </div>   
+        </div>    
+    </main>
+
+EOT;
+
+    return $htm;
+}
+
 
 function set_tally_info($params = array())
 {
@@ -797,7 +892,7 @@ function sailwave_export_form($params = array())
     <div class="row mt-4 p-5 fs-4 bg-primary text-white rounded">
         <h2>Transferring entries to Sailwave&hellip; for {event-title}</h2>
         <p>This should be done when when all entries have been confirmed - <u>typically after reception has closed</u>.</p>
-        <p>Please select the field set you need and the categories of entry records to include in your transfer.</p>
+        <!-- p>Please select the field set you need and the categories of entry records to include in your transfer.</p -->
         <div class="text-end">
             <a class="btn btn-info float-right" href="./documents/RM_EVENT_documentation.pdf" target="_BLANK" type="button" role="button">get help ...</a>
         </div>
@@ -806,13 +901,13 @@ function sailwave_export_form($params = array())
     <form class="row g-3" enctype="multipart/form-data" id="sailwaveexportForm" action="{script}" method="post">
         
         <!-- mode argument -->
-        <div class="col-md-3 mx-5 pt-5">
+        <!-- div class="col-md-3 mx-5 pt-5">
             <label for="fieldSet"><h5>Field Set<h5></label>
             <select class="form-select form-select-lg mb-3" size="4" id="mode" name="mode">
               <option selected value="standard">standard</option>
               <option value="extended">extended</option>
             </select>
-        </div>
+        </div -->
         
         <!-- include argument -->
         <div class="col-md-4 pt-5">
