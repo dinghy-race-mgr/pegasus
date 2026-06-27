@@ -14,13 +14,13 @@ require_once ("./template_class.php");
 
 session_start();
 
-$api_url = "https://api.sendinblue.com/v3/smtp/email";
-$api_key = "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";
+$cfg = u_set_config("../config/common.ini", array(), false);
+
 $email_type = "single";
 $email_tmpl = false;
 $logfile = "../../logs/email.log";
 
-$email_o = new EMAIL($api_url, $api_key, $email_type, $email_tmpl, $logfile);
+$email_o = new EMAIL($cfg['BREVO_URL'], $cfg['BREVO_API'], $email_type, $logfile);
 
 $email_o->set_sender("markeb14.762@gmail.com", "Mark D Elkington");
 $email_o->set_subject("This is a test email");
