@@ -24,7 +24,7 @@ $email_o = new EMAIL($cfg['BREVO_URL'], $cfg['BREVO_API'], $email_type, $logfile
 
 $email_o->set_sender("markeb14.762@gmail.com", "Mark D Elkington");
 $email_o->set_subject("This is a test email");
-$email_o->set_template("This is a fixed text email on two lines<br><br>so there");
+$email_o->set_template("This is a fixed text test email on two lines<br><br>so there");
 $email_o->set_recipient("markelkington640@gmail.com", "Mark Elkington", "", array(), array());
 $email_o->send_email();
 

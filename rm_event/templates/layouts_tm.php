@@ -844,9 +844,9 @@ function documents_body ($params = array())
                         // decode json content
                         $files = json_decode($document['file'], true);
                         $file_link = $cfg['baseurl'].strstr($files[0]['name'], '/data');
-                        //$bit = strstr($files[0]['name'], '/data');
-                        //echo "<pre>".$file_link."</pre>";
-                        //exit();
+//                        $bit = strstr($files[0]['name'], '/data');
+//                        echo "<pre>".$file_link."</pre>";
+//                        exit();
                         if (!empty($file_link))
                         {
                             $anchor = $file_link;

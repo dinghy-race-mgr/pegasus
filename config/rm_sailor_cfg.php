@@ -36,7 +36,7 @@ $_SESSION['option_cfg'] = array(
         "editboat" => array("label" => "Edit Boat Details", "pagename" => "CHANGE BOAT DETAILS", "url" => "editboat_pg.php",
             "tip" => "", "active" => true),
         "results" => array("label" => "Get Results", "pagename" => "RACE RESULTS", "url" => "results_pg.php",
-            "tip" => "Results for this race", "active" => false),
+            "tip" => "Results for this race", "active" => true),
         "protest" => array("label" => "Submit Protest", "pagename" => "SUBMIT PROTEST", "url" => "protest_pg.php",
             "tip" => "Submit a protest for this race", "active" => false),
         "hideboat" => array("label" => "Hide Boat", "pagename" => "HIDE THIS BOAT", "url" => "hideboat_sc.php", "active" => false,

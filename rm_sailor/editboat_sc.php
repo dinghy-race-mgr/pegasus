@@ -29,6 +29,9 @@ $comp_o = new COMPETITOR($db_o);
 $boat_o = new BOAT($db_o);
 $tmpl_o = new TEMPLATE(array("./templates/layouts_tm.php", "./templates/addeditboat_tm.php"));
 
+// get argument
+$mode = u_checkarg("mode","set","","edit");
+
 // set up confirmation fields
 $editboatfields = array(
     "class" => $boat_o->boat_getclassname($_REQUEST['classid']),

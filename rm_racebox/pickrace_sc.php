@@ -43,6 +43,7 @@ if (!empty($_REQUEST['pagestate']))
             "event_format" => $_REQUEST['eventformat'],
             "event_entry"  => $_REQUEST['evententry'],
             "event_type"   => "racing",
+            "active"       => "1"
         );
 
         if (!empty($_REQUEST['seriesname']))

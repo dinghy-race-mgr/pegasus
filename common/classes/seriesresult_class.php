@@ -515,10 +515,6 @@ class SERIES_RESULT
 
             $rfile = $result_o->get_result_files(array("eventid"=>$eventid, "folder"=>"races"));
 
-//            u_writedbg("RFILE: ".print_r($rfile,true), __FILE__, __FUNCTION__, __LINE__);
-//            u_writedbg($_SESSION['result_public_url'], __FILE__, __FUNCTION__, __LINE__);
-//            u_writedbg("count rfile: ".count($rfile), __FILE__, __FUNCTION__, __LINE__);
-
             if (empty($rfile[0]))
             {
                 $event['url'] = "";
@@ -527,7 +523,6 @@ class SERIES_RESULT
             {
                 $event['url'] = $_SESSION['result_public_url']."/".$rfile[0]['eventyear']."/".$rfile[0]['folder']."/".$rfile[0]['filename'];
             }
-//            u_writedbg("eventurl: ".$event['url'], __FILE__, __FUNCTION__, __LINE__);
 
             // event format consistency check
             if ($i == 1 )

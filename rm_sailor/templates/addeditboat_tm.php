@@ -18,7 +18,6 @@ function boat_fm($params = array())
     $instruction_bufr = addslashes($params['instructions']);
 
     if ($params['action'] == "edit") {
-//        $instruction_bufr = "Details entered here will be PERMANENTLY changed for this boat &hellip;";
         $post_script = "editboat_sc.php";
         $btn_label = "Change Details";
         $classlist_bufr = <<<EOT
@@ -374,9 +373,11 @@ EOT;
 function editboat_success($params = array())
 {
     $restart = "";
-    if ($params['restart']) {
+    if ($params['restart'])
+    {
+        // restarts but goes to race_pg to allow continue editing
         $restart = <<<EOT
-        <button type="button" class="btn btn-primary btn-md" style="position: absolute; right: 15px; bottom: 0px;" 
+        <button type="button" class="btn btn-primary btn-lg" style="position: absolute; right: 15px; bottom: 0px;" 
                 onclick="location.href = 'javascript: history.go(-2)';">
             <span class="glyphicon glyphicon-step-backward"></span> Continue
         </button>
@@ -391,6 +392,8 @@ EOT;
                     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10" style="min-height: 200px">
                         <h2>Boat details updated &hellip;</h2>
                         <p><b>{class} {sailnum}<br>{team}</b></p>
+                        <br>
+                        <p>IMPORTANT: Please click the CONTINUE button and re-enter your sail number and/or surname to restart the entry process</p>
                     </div>
                     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="min-height: 200px;">
                         $restart
@@ -407,9 +410,11 @@ EOT;
 function editboat_fail($params = array())
 {
     $restart = "";
-    if ($params['restart']) {
+    if ($params['restart'])
+    {
+        // restarts but goes back to search_pg
         $restart = <<<EOT
-        <button type="button" class="btn btn-primary btn-md" style="position: absolute; right: 15px; bottom: 0px;" 
+        <button type="button" class="btn btn-primary btn-lg" style="position: absolute; right: 15px; bottom: 0px;" 
                 onclick="location.href = 'javascript: history.go(-2)';">
             <span class="glyphicon glyphicon-step-backward"></span> Back
         </button>
@@ -425,7 +430,8 @@ EOT;
                     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10" style="min-height: 200px">
                         <h2>Boat details update failed &hellip;</h2>
                         <p><b>{class} {sailnum}<br>{team}</b></p>
-                        <p><small>Please contact your system administrator or try again later  </small></p>
+                        <br>
+                        <p>Please contact your system administrator or try again later</p>
                     </div>
                     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2" style="min-height: 200px;">
                         $restart

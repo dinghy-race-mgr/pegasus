@@ -45,6 +45,9 @@ foreach($cfg['rm_event'] as $k => $v) {$cfg[$k] = $v;}
 unset($cfg['rm_event']);
 $cfg['logfile'] = str_replace("_date", date("_Y"), $cfg['logfile']);
 
+// set timezone
+date_default_timezone_set($cfg['timezone']);
+
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
 
 // arguments

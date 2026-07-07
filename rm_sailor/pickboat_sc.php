@@ -66,15 +66,13 @@ if ($sailorid)
         }
         elseif ($_SESSION['mode'] == "race")
         {
-            // temporary fix - request yob if missing - remove after Dec 2027
+
             if (empty($_SESSION['sailor']['helm_yob']))
             {
                 // redirect to edit page with yob mode
                 sailor_redirect($_SESSION['mode'], "editboat_pg.php?state=init&mode=yob", "cruise_pg.php?state=init" );
                 exit();
-
             }
-
 
             $chk_race = get_race_entries($_SESSION['sailor']['id'], date("Y-m-d"));
 
@@ -85,7 +83,6 @@ if ($sailorid)
                 $_SESSION['sailor'][$field] = $chk_race[$field];
             }
         }
-
 
         sailor_redirect($_SESSION['mode'], "race_pg.php?state=init", "cruise_pg.php?state=init" );
         exit();

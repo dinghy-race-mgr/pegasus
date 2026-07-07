@@ -70,6 +70,6 @@ $_SESSION['pagefields']['header-right'] = $tmpl_o->get_template("options_hamburg
     array("page" => $page, "options" => set_page_options($page)));
 $_SESSION['pagefields']['body'] = $tmpl_o->get_template("boat_fm", $editboatfields,
     array("action" => "edit", "sailor" => $_SESSION['sailor'], "fields" => $field_set, "skill_list" => $skill_lut,
-        "instructions" => $instructions ));
+        "instructions" => $instructions, "mode"=>$mode ));
 echo $tmpl_o->get_template("basic_page", $_SESSION['pagefields']);
 exit();
