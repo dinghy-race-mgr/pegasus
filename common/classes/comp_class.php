@@ -13,9 +13,7 @@
 ** The source code included in this package is free software; you can
 ** redistribute it and/or modify it under the terms of the GNU General Public
 ** License as published by the Free Software Foundation. This license can be
-** read at:
-**
-** http://www.opensource.org/licenses/gpl-license.php
+** read at   http://www.opensource.org/licenses/gpl-license.php
 **
 ** This program is distributed in the hope that it will be useful, but WITHOUT 
 ** ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 

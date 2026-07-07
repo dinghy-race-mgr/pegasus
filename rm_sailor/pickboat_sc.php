@@ -66,7 +66,6 @@ if ($sailorid)
         }
         elseif ($_SESSION['mode'] == "race")
         {
-
             if (empty($_SESSION['sailor']['helm_yob']))
             {
                 // redirect to edit page with yob mode
