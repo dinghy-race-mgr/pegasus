@@ -17,7 +17,7 @@ require_once ("./template_class.php");
 
 session_start();
 
-$cfg = u_set_config($config, array(), false);
+$cfg = u_set_config("../config/common.ini", array(), false);
 
 $email_type = "single";
 $email_tmpl = false;
