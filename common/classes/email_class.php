@@ -10,13 +10,14 @@
 // for test purposes
 
 $scriptname = basename(__FILE__);
+$config = "../config/common.ini";
 require_once ("../lib/util_lib.php");
 require_once ("./db_class.php");
 require_once ("./template_class.php");
 
 session_start();
 
-$cfg = u_set_config("../config/common.ini", array(), false);
+$cfg = u_set_config($config, array(), false);
 
 $email_type = "single";
 $email_tmpl = false;
