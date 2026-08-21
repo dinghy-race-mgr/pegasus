@@ -1,42 +1,17 @@
 <?php
 
-function risk_form($params = array())     // fixme this is from rm_event
+function risk_form($params = array())
 {
-//    echo "<pre>".print_r($params,true)."</pre>";
-//    exit();
 
     $datetime = date("Y-m-d H:i");
     $date = date("d-m-Y");
 
 // instruction block
     $instructions_bufr = <<<EOT
-        <div class="alert alert-info fade show fs-6 mt-2" role="alert" style="border: steelblue 1px solid; width: 80%;">
+        <div class="alert alert-info fade show fs-6 mt-2" role="alert" style="border: steelblue 1px solid; width: 100%;">
             <b>Instructions</b><br>{instructions}
         </div>
 EOT;
-
-    $links_bufr = "";
-    if (count($params['links']) > 0)
-    {
-        $links_htm = "<span class='text-primary'><b>Useful Info &hellip;</b></span>";
-        foreach ($params['links'] as $link)
-        {
-            $links_htm.= <<<EOT
-            <a type="button" class="btn btn-md btn-outline-warning mx-3 my-2" href="{$link['link']}" target="_blank">{$link['label']}&nbsp;&nbsp;</a>
-EOT;
-        }
-
-        $links_bufr = <<<EOT
-
-        <div class="alert alert-light fade show fs-6 mt-2" role="alert" style="border: steelblue 1px solid">
-            <div class="row">
-                <div class="col">$links_htm</div>
-            </div>
-        </div>
-
-EOT;
-    }
-
 
     $admin_fields_bufr = <<<EOT
     <div class="alert alert-light fade show mt-2 mb-2" role="alert" style="border: steelblue 1px solid"><p class="text-primary text-center fs-4"><b>Risk Assessment Form</b></p> 
@@ -126,7 +101,7 @@ EOT;
 <div class="container">
     <form id="riskForm" action="{script}" method="post" role="form" autocomplete="off" class="needs-validation" novalidate>
         $instructions_bufr
-        $links_bufr
+
         $admin_fields_bufr
         <hr>
         $question_fields_bufr  

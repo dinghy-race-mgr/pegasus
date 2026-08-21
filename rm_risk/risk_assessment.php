@@ -49,7 +49,7 @@ $tmpl_o = new TEMPLATE(array("./templates/layouts_tm_bs5.php", "./templates/risk
 $cfg_err = false;
 if (array_key_exists("form", $_REQUEST))                               // check if requested cfg file exists
 {
-    $cfg_file = "./data/" . $_REQUEST['form'];
+    $cfg_file = "{$cfg['basepath']}/data/risk_forms/" . $_REQUEST['form'];
     if (file_exists($cfg_file) and is_readable($cfg_file))
     {
         $formcfg = json_decode(file_get_contents($cfg_file), true);
@@ -107,7 +107,7 @@ elseif ($pagestate == "init")                            // present risk form
     $pagefields['event'] = $event_list;
     $pagefields['instructions'] = $formcfg['form']['instructions'];
     $pagefields['script'] = "risk_assessment.php?pagestate=submit&form={$_REQUEST['form']}&date=$today";
-    $pagefields['page-main'] = $tmpl_o->get_template("risk_form", $pagefields, array("questions"=> $formcfg['questions'], "links"=>$formcfg['links']));
+    $pagefields['page-main'] = $tmpl_o->get_template("risk_form", $pagefields, array("questions"=> $formcfg['questions']));
 
     echo $tmpl_o->get_template("page", $pagefields, array());
 }

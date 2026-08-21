@@ -576,10 +576,36 @@ function u_writelog($logmessage, $eventid)
         { error_log($log, 3, $_SESSION["e_$eventid"]['eventlog']); }
 }
 
-function u_cronlog($logtext)
+function u_cronlog($logtext)  // FIXME - usage can change to u_app_log
 {
     $logfile = "../logs/sys/cronlog_" . date("Y") .".log";
     $log = date('d-M H:i:s')."| ".$logtext.PHP_EOL;
+    error_log($log,3,$logfile);
+}
+
+function u_app_log($logtext, $app, $period = "year")
+{
+    if ($period == "day")
+    {
+        $logfile = "../logs/sys/$app" . "_". date("Y-m-d") .".log";
+    }
+    elseif ($period == "month")
+    {
+        $logfile = "../logs/sys/$app" . "_". date("Y-M") .".log";
+    }
+    else  // period = year
+    {
+        $logfile = "../logs/sys/$app" . "_". date("Y") .".log";
+    }
+
+    $log = date('d-M H:i:s')."| ".$logtext.PHP_EOL;
+    error_log($log,3,$logfile);
+}
+
+function u_event_log($logtext, $app, $eventid)
+{
+    $logfile = "../logs/event/$eventid" .".log";
+    $log = date('d-M H:i:s')." | $app | ".$logtext.PHP_EOL;
     error_log($log,3,$logfile);
 }
 

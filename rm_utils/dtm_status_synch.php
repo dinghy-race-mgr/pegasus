@@ -41,14 +41,11 @@ u_cronlog(" - starting analysis for events from $start_synch to $end_synch");
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host'], $cfg['db_port']);
 
 // open database connection for dutyman - doesn't seem to support PDO
-$dbt_o = mysqli_connect("dutyman.biz","S0002342","necuCe82mati","dutyman", "3307");
 $dbt_o = mysqli_connect($cfg['dtm_name'], $cfg['dtm_user'], $cfg['dtm_pass'], $cfg['dtm_host'], $cfg['dtm_port']);
 
 if(!$dbt_o) {
     die("Connection failed: " . mysqli_connect_error());
 }
-//$dbt_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
-//$dbt_o = new DB($cfg['dtm_name'], $cfg['dtm_user'], $cfg['dtm_pass'], $cfg['dtm_host'], $cfg['dtm_port']);
 
 $continue = true;
 
