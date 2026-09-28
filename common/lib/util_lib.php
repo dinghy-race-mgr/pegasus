@@ -381,6 +381,12 @@ function u_truncatestring ($string, $length, $dots = "...")
     }
 }
 
+function u_str_ends_with(string $haystack, string $needle): bool
+{
+    $needle_len = strlen($needle);
+    return ($needle_len === 0 || 0 === substr_compare($haystack, $needle, - $needle_len));
+}
+
 function u_daysdiff($datestr1, $datestr2)
 {
     // gets no. of days between two dates
@@ -559,13 +565,10 @@ EOT;
 
 // ------ LOGGING FUNCTIONS ------------------------------------------------------------------------------------------
 /**
- * u_writelog()
+ * u_writelog() LEGACY replaced by u_app_log and u_event_log
  * 
  * Outputs message to system or event log
- * 
- * @param string $logmessage       message for log
- * @param int    $eventid          eventid - used to identify correct system log
- * @return void
+ *
  */
 function u_writelog($logmessage, $eventid)
 {
@@ -576,49 +579,43 @@ function u_writelog($logmessage, $eventid)
         { error_log($log, 3, $_SESSION["e_$eventid"]['eventlog']); }
 }
 
-function u_cronlog($logtext)  // FIXME - usage can change to u_app_log
+function u_cronlog($logtext)
 {
-    $logfile = "../logs/sys/cronlog_" . date("Y") .".log";
-    $log = date('d-M H:i:s')."| ".$logtext.PHP_EOL;
-    error_log($log,3,$logfile);
+    u_app_log($logtext, "cron", "month");
 }
 
-function u_app_log($logtext, $app, $period = "year")
+function u_app_log($logtext, $app, $period = "month")
 {
     if ($period == "day")
     {
-        $logfile = "../logs/sys/$app" . "_". date("Y-m-d") .".log";
+        $date = date("Y_m_d");
     }
     elseif ($period == "month")
     {
-        $logfile = "../logs/sys/$app" . "_". date("Y-M") .".log";
+        $date = date("Y");
     }
-    else  // period = year
+    else  // period = month
     {
-        $logfile = "../logs/sys/$app" . "_". date("Y") .".log";
+        $date = date("Y_M");
     }
-
-    $log = date('d-M H:i:s')."| ".$logtext.PHP_EOL;
-    error_log($log,3,$logfile);
+    error_log(date('d-M H:i:s')."| ".$logtext.PHP_EOL,3,"../logs/sys/{$app}_$date.log");
 }
 
 function u_event_log($logtext, $app, $eventid)
 {
-    $logfile = "../logs/event/$eventid" .".log";
-    $log = date('d-M H:i:s')." | $app | ".$logtext.PHP_EOL;
-    error_log($log,3,$logfile);
+    if (empty($app)) { $app = "---"; }
+    error_log(date('d-M H:i:s')." | $app | ".$logtext.PHP_EOL,3,"../logs/event/$eventid" .".log");
+}
+
+function u_dbg_log($logtext, $file, $period = "day")
+{
+    $date = date("Y_m_d");
+    error_log(date('d-M H:i:s')."| ".$logtext.PHP_EOL,3,"../logs/dbg/{$file}_$date.log");
 }
 
 /**
- * u_writedbg()
- * 
- * Outputs message to debug log
- * 
- * @param string $dbgmessage      message to be output to debug log
- * @param string $script          name of script
- * @param string $function        name of script
- * @param int    $line            line in script
- * @return void
+ * u_writedbg() - LEGACY (replaced by u_dbg_log)
+ *
  */
 function u_writedbg($dbgmessage, $script, $function, $line )
 {
@@ -640,7 +637,7 @@ function u_writedbg($dbgmessage, $script, $function, $line )
  * @return void
  */
 
-function u_requestdbg($arg_list, $file, $function, $line, $inline=false)
+function u_requestdbg($arg_list, $file, $function, $line, $inline=false)   // DEPRECATE - no replacement
 {
     $msg = " <pre>".print_r($arg_list,true)."</pre>";
     if ($inline)
@@ -653,7 +650,7 @@ function u_requestdbg($arg_list, $file, $function, $line, $inline=false)
     }
 }
 
-function u_startsyslog($scriptname, $app, $sessionid = "")
+function u_startsyslog($scriptname, $app, $sessionid = "")              // DEPRECATE - 1 usage in rm_racebox.php
 {
     $msg = "$app START: $scriptname --------------------------";
     if (!empty($sessionid)) { $msg.= " [session: $sessionid]"; }
@@ -661,7 +658,7 @@ function u_startsyslog($scriptname, $app, $sessionid = "")
 }
 
 
-function u_starteventlogs($scriptname, $eventid, $mode)
+function u_starteventlogs($scriptname, $eventid, $mode)                 // DEPRECATE - 1 usage in raceinit_sc.php
 {
     $_SESSION["e_$eventid"]['eventlog'] = "../logs/event/event_$eventid.log";        // setup event log e.g  event_907.log
     u_writelog("initialising event: $scriptname --- [eventid: $eventid] ", 0);       // add system log entry
@@ -669,7 +666,7 @@ function u_starteventlogs($scriptname, $eventid, $mode)
 }
 
 
-function u_sessionstate($scriptname, $reference, $file_dir, $eventid)
+function u_sessionstate($scriptname, $reference, $file_dir, $eventid)   // DEPRECATE - 1 usage in rm_racebox.php
 {
     $filename = $file_dir."/"."session_{$reference}_{$eventid}.htm";
     $eventid==0 ? $title = "$scriptname: $reference " : $title = "$scriptname: $reference event: $eventid";
@@ -691,6 +688,61 @@ function u_sessionstate($scriptname, $reference, $file_dir, $eventid)
 
 
 // ------ INITIALISATION FUNCTIONS ----------------------------------------------------------------------------------
+function u_config($inifile, $sections, $opmode, $flatten = true)
+{
+    // parse common file
+    $arr = parse_ini_file($inifile, true, INI_SCANNER_TYPED);                       // read ini file - including all sections
+
+    // remove unwanted sections and flatten into $cfg array
+    $cfg = array();
+    foreach ($arr as $k => $v)
+    {
+        if ($k == "common" or in_array($k, $sections) )
+        {
+            if ($flatten)
+            {
+                foreach ($v as $l => $m)
+                {
+                    $cfg[$l] = $m;
+                }
+            }
+        }
+        else
+        {
+            unset($arr[$k]);
+        }
+    }
+
+//    // process arrays
+//    foreach($cfg as $k => $v)
+//    {
+//        if (u_str_ends_with($k, "_arr"))
+//        {
+//            // convert to array
+//            $tmp_arr = explode(",", $v);
+//            foreach($tmp_arr as $item)
+//            {
+//                $cfg[$k][] = $item;
+//            }
+//        }
+//    }
+
+    // process parameters (currently only copyright)
+    if (key_exists("sys_copyright",$cfg))
+    {
+        $cfg['sys_copyright'] = $cfg['sys_copyright']." ".date("Y");
+    }
+
+    // set timezone
+    date_default_timezone_set($cfg['timezone']);
+
+    // set error handling
+    $opmode == "live" ? error_reporting(E_ERROR) : error_reporting(E_ALL);
+
+    return $cfg;
+}
+
+
 function u_set_config($cfgfile, $sections, $flatten = true)
 {
     $arr = parse_ini_file($cfgfile, true);
@@ -712,6 +764,7 @@ function u_set_config($cfgfile, $sections, $flatten = true)
 
     return $cfg;
 }
+
 function u_initialisation($app_cfg_file, $loc, $scriptname)
 {
     $status = true;

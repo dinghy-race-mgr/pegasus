@@ -14,43 +14,42 @@
 
 $dbg = true;
 $loc  = "..";
-$page = "trophy_winners_list";     //
+$appname    = "rm_trophy";
+$opmode     = "live";
+$syslog     = "$loc/logs/sys/$appname"."_".date("Y-m-d").".log";
+$page = "trophy presentation list";
 $scriptname = basename(__FILE__);
 $today = date("Y-m-d");
 $styletheme = "cerulean_";
 $stylesheet = "./style/rm_utils.css";
 
-require_once ("{$loc}/common/lib/util_lib.php");
-
-session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
-session_start();
-
-$_SESSION['sql_debug'] = true;  // FIXME - turn off after debugging
+$today = date("Y-m-d");
 
 // classes
 require_once ("{$loc}/common/classes/db.php");
 require_once ("{$loc}/common/classes/template_class.php");
+require_once ("{$loc}/common/lib/util_lib.php");
+require_once ("./include/rm_trophy_lib.php");
 
-// initialise utility application
-$cfg = u_set_config("../config/common.ini", array(), false);
-$cfg['rm_trophy'] = u_set_config("../config/rm_trophy.ini", array("rm_trophy"), true);
-foreach($cfg['rm_trophy'] as $k => $v) { $cfg[$k] = $v; }
-unset($cfg['rm_trophy']);
-//$cfg['logfile'] = str_replace("_date", date("_Y"), $cfg['logfile']); // no logging
-if (array_key_exists("timezone", $cfg)) { date_default_timezone_set($cfg['timezone']); }
+//session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
+//session_start();
+
+// initialise application
+$cfg = u_config("../config/racemanager_new.ini", array("rm_trophy"), $opmode, true);
 
 // connect to database  (using PDO)
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
+
+// add club specific values to config
+$club_val = $db_o->getinivalues(true);
+foreach ($club_val as $k => $v)  { $cfg[$k] = $v;}
 
 // find out in trophy_award what period values are currently used
 $query = "SELECT period FROM t_trophyaward GROUP BY period ORDER BY period DESC";
 $periods = $db_o->run($query, array() )->fetchall();
 
-// get club specific values
-//foreach ($db_o->getinivalues(true) as $k => $v) { $cfg[$k] = $v; }  // FIXME not working on HTZ
-
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/trophies_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/trophies_tm.php"));
 
 // common template parameters
 $pagefields = array(
@@ -78,9 +77,9 @@ elseif ($_REQUEST['pagestate'] == "init")
     $formfields = array(
         "function"     => "Trophy Presentation List",
         "instructions" => "Creates a list of trophy winners for a selected year/period. The list groups all trophies won by each member, 
-                            sorted by the no. of trophies won be each member (most first).</br></br>Use the print to PDF option on your browser to get the list as 
+                            sorted by the no. of trophies won be each member (least first).</br></br>Use the print to PDF option on your browser to get the list as 
                             a PDF file</br><hr>Please set the option(s) below.",
-        "script"       => "trophy_winners_list.php?pagestate=submit",
+        "script"       => "trophy_presentation_list.php?pagestate=submit",
     );
 
     $pagefields['page-main'] = $tmpl_o->get_template("trophies_presentation_list_form", $formfields, array("periods" => $periods));
@@ -165,32 +164,7 @@ elseif ($_REQUEST['pagestate'] == "submit") {
 }
 
 
-function decode_winner($i, $winner_str, $section, $decode_type = 'class')
-{
-    // Boatname|SailNumber|Helm Name|Crew1 name, Crew2 Name|Other Info|
-    // Class|Sailnumber|Helm Name|Crew Name|Other Info|
 
-    $position = array("1"=>"1st","2"=>"2nd","3"=>"3rd");
-
-    $winner_arr = array();
-    $arr = array_filter(explode("|", $winner_str));  /// array_filter ensures null array
-
-    empty($arr) ? $winner_arr['exists'] = false : $winner_arr['exists'] = true;
-
-    if ($winner_arr['exists'] === true)
-    {
-        $winner_arr['type']    = $decode_type;
-        $winner_arr['section'] = $section;
-        $winner_arr['posn']    = $position[$i];
-        !empty($arr[0]) ? $winner_arr['boat'] = $arr[0] : $winner_arr['boat'] = '';
-        !empty($arr[1]) ? $winner_arr['number'] = $arr[1] : $winner_arr['number'] = '';
-        !empty($arr[2]) ? $winner_arr['helm'] = $arr[2] : $winner_arr['helm'] = '';
-        !empty($arr[3]) ? $winner_arr['crew'] = $arr[3] : $winner_arr['crew'] = '';
-        !empty($arr[4]) ? $winner_arr['info'] = $arr[4] : $winner_arr['info'] = '';
-    }
-
-    return $winner_arr;
-}
 
 
 

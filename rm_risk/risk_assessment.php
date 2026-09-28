@@ -13,13 +13,15 @@
  * Response will be coloured RAG display with actions to be taken by
  */
 
-
-$loc  = "..";
-$page = "Race Risk Assessment";
+$loc        = "..";
+$appname    = "rm_risk";
+$opmode     = "live";
+$syslog     = "$loc/logs/sys/$appname"."_".date("Y-m-d").".log";
+$page       = "Race Risk Assessment";
 $scriptname = basename(__FILE__);
 $styletheme = "cerulean_";
-$stylesheet = "./style/rm_utils.css";
-date_default_timezone_set('Europe/London');
+$stylesheet = "./style/rm_risk.css";
+
 
 // imports
 require_once ("{$loc}/common/classes/db.php");
@@ -28,13 +30,13 @@ require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/classes/event_class.php");
 
 // script arguments
-empty($_REQUEST['pagestate']) ? $pagestate = "init" : $pagestate = strtolower($_REQUEST['pagestate']);              // initial pagestate if not provided
-empty($_REQUEST['formname']) ? $formname = "clubrace_risk_form" : $formname = strtolower($_REQUEST['formname']);    // default form name if not provided
-empty($_REQUEST['date']) ? $today = date("Y-m-d") : $today = date("Y-m-d", strtotime($_REQUEST['date']));           // date for assessment if not provided
-empty($_REQUEST['demo']) ? $demo = false : $demo = true;                                                            // demo state true/false
+empty($_REQUEST['pagestate']) ? $pagestate = "init" : $pagestate = strtolower($_REQUEST['pagestate']);                   // initial pagestate if not provided
+empty($_REQUEST['formname'])  ? $formname = "clubrace_risk_form" : $formname = strtolower($_REQUEST['formname']);        // default form name if not provided
+empty($_REQUEST['date'])      ? $today = date("Y-m-d") : $today = date("Y-m-d", strtotime($_REQUEST['date']));           // date for assessment if not provided
+empty($_REQUEST['demo'])      ? $demo = false : $demo = true;                                                            // demo state true/false
 
 // set config
-$cfg = u_set_config("../config/common.ini", array(), false);
+$cfg = u_config("../config/racemanager_new.ini", array("rm_risk"), $opmode, true);
 
 // connect to database using PDO
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host'], $cfg['db_port']);
@@ -114,7 +116,6 @@ elseif ($pagestate == "init")                            // present risk form
 
 elseif ($pagestate == "submit")                          // risk response page
 {
-    //echo "<pre>".print_r($_REQUEST,true)."</pre>";
 
     // add OOD responses to database
     $insert_arr = array(
@@ -178,8 +179,6 @@ function get_assessment($arr)
             $sort_arr[$i]       = $formcfg['questions'][$i]["max"] - $arr["r$i"];
         }
     }
-    //echo "<pre>RISK".print_r($risk_arr,true)."</pre>";
-    //echo "<pre>SORT".print_r($sort_arr,true)."</pre>";
 
     if ($risk_arr["total"] >= $formcfg['thresholds']['red']['limit'])   // check if 'red' assessment
     {

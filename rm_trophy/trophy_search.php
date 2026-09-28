@@ -8,18 +8,19 @@
  *
  */
 
-// TODO - integrate into results application, send to Simon
-// TODO - set up return to results button
-
 $dbg = false;
-$loc  = "..";
-$page = "trophy_search";     //
+$loc        = "..";
+$appname    = "rm_trophy";
+$opmode     = "live";
+$syslog     = "$loc/logs/sys/$appname"."_".date("Y-m-d").".log";
+$page       = "Trophy Search";     //
 $scriptname = basename(__FILE__);
-$today = date("Y-m-d");
-$year = date("Y");
 $styletheme = "morph_";
+$stylesheet = "./style/rm_trophy.css";
 
-$stylesheet = "./style/rm_utils.css";
+$today      = date("Y-m-d");
+$year       = date("Y");
+
 
 // uncomment if you want to make bootstrap theme selectable
 //session_id("sess-rmutil-".str_replace("_", "", strtolower($page)));
@@ -27,23 +28,19 @@ $stylesheet = "./style/rm_utils.css";
 //if (key_exists('theme', $_REQUEST)) { $_SESSION['theme'] = $_REQUEST['theme']."_"; }
 //$styletheme = $_SESSION['theme'];
 
+// classes
 require_once ("{$loc}/common/lib/util_lib.php");
 require_once ("{$loc}/common/classes/db.php");
 require_once ("{$loc}/common/classes/template_class.php");
 
-// initialise utility application
-$cfg = u_set_config("../config/common.ini", array(), false);
-$cfg['rm_trophy'] = u_set_config("../config/rm_trophy.ini", array("rm_trophy"), true);
-foreach($cfg['rm_trophy'] as $k => $v) { $cfg[$k] = $v; }
-unset($cfg['rm_trophy']);
-
-if (array_key_exists("timezone", $cfg)) { date_default_timezone_set($cfg['timezone']); }
+// initialise application
+$cfg = u_config("../config/racemanager_new.ini", array("rm_trophy"), $opmode, true);
 
 // connect to database  (using PDO)
 $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
 
 // set templates
-$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/layouts_tm.php", "./templates/trophies_tm.php"));
+$tmpl_o = new TEMPLATE(array("$loc/common/templates/general_tm.php", "./templates/trophies_tm.php"));
 
 // common template parameters
 $footer = <<<EOT

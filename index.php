@@ -116,6 +116,10 @@ EOT;
     if ($cfg['risk_assess'])
     {
         // risk form block - optional block to request OOD to complete an risk assessment
+
+        // first check if we have already had a risk assessment submitted today
+        //$local_links = $db_o->run("SELECT * FROM t_link WHERE category = ? order by listorder", array("index") )->fetchall();
+
         $risk_block_htm = <<<EOT
             <div class="container text-left">
                 <div class="row">
@@ -123,7 +127,7 @@ EOT;
                     <div id = "inline_block" class="col-12 p-3" style="border: 3px solid red;">                                         
                         <div class="row">
                             <div class="col-7 text-danger">
-                                <h4>IMPORTANT</h4>
+                                <h3>IMPORTANT ! - Before you start</h3>
                                 <p class="fs-5">The Sailing Committee asks that you complete a simple risk assessment form before proceeding with the race.  
                                 Please click the button to get the form &hellip;</p>
                             </div>
