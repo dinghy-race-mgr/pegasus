@@ -424,6 +424,7 @@ EOT;
 
     private function trophy_switch()
     {
+        // FIXME this should be data driven so that code doesn't need to be changed to add a new year results - pdf should be in a data directory and construct dropdown from files present
         $htm = <<<EOT
             <div class="btn-group" style="margin-top: 20px;">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" 
@@ -431,7 +432,7 @@ EOT;
                     Trophy Winners &hellip; <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a href="https://www.starcrossyc.org.uk/images/sailing_committee/results/trophy_winners_2025.pdf" target="_blank">2024-24</a></li>
+                    <li><a href="https://www.starcrossyc.org.uk/images/sailing_committee/results/trophy_winners_2025.pdf" target="_blank">2024-25</a></li>
                     <li><a href="https://www.starcrossyc.org.uk/images/sailing_committee/results/trophy_winners_2024.pdf" target="_blank">2023-24</a></li>
                 </ul>
             </div>

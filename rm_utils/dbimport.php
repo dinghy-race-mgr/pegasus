@@ -593,7 +593,7 @@ function val_event($i, $key, $row, $table, $fields)
     $import[$key]['series_code']  = addslashes(strtoupper($row['series_code']));
     $import[$key]['series_code_extra']  = addslashes(strtoupper($row['series_code_extra']));
     $import[$key]['event_type']   = addslashes($row['event_type']);
-    !$racecfg ? $import[$key]['event_format'] = 0 : $import[$key]['event_format'] = $racecfg['id'];
+    !$racecfg ? $import[$key]['event_format'] = null : $import[$key]['event_format'] = $racecfg['id'];
     $import[$key]['event_entry']  = addslashes($row['event_entry']);
     $import[$key]['event_open']   = addslashes($row['event_open']);
     $import[$key]['tide_time']    = $row['tide_time'];

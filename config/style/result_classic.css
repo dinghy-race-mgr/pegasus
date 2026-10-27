@@ -26,10 +26,10 @@ body             {font-family: Kalinga, Verdana, sans-serif; font-size: 1.0em;}
 .club-logo       {border: 1px solid #ddd; border-radius: 4px; padding: 5px; width: 330px;}
 .event-hdr-left  {font-weight: bold; font-size: 200%; letter-spacing: -1px; color: var(--darkblue); text-align: left; }
 .event-hdr-right {font-weight: bold; font-size: 180%; letter-spacing: -1px; color: var(--darkblue); text-align: right;}
-.report-notes    {text-align: left; color: var(--darkred); padding-top: 10px; padding-bottom: 10px;}
+.report-notes    {text-align: left; color: var(--blue); padding-top: 10px; padding-bottom: 10px;}
 .info-notes      {color: var(--blue); font-weight: normal; line-height: 1.0em; font-size: 0.8em;}
-.fleet-hdr       {font-family: Kalinga, Verdana, sans-serif; font-weight: bold; font-size: 150%; color: var(--darkblue); padding-top: 40px}
-.fleet-info      {font-family: Kalinga, Verdana, sans-serif; font-size: 0.8em; text-align: left;}
+.fleet-hdr       {font-family: Kalinga, Verdana, sans-serif; font-weight: bold; font-size: 150%; color: var(--darkblue); padding-top: 20px}
+.fleet-info      {text-align: left; color: var(--blue); padding-top: 10px; padding-bottom: 10px;}
 .footer          {font-family: Kalinga, Verdana, sans-serif; font-size: 0.8em; text-align: left;}
 .spacer          {border-top: 1px solid var(--grey); margin-top: 15px; margin-bottom: 5px; display: block;}
 .codes-info      {color: var(--blue); font-weight: normal; line-height: 1.0em; font-size: 0.8em; margin-top: 25px;}

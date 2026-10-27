@@ -267,7 +267,8 @@ elseif ($_REQUEST['pagestate'] == "submit")
                             "inc-turnout" => $series['opt_turnout'],                                              // include turnout statistics
                             "race-label" => $series['opt_racelabel'],                                             // use race number or date for labelling races
                             "club-logo" => "../../club_logo.jpg",                                                 // if set include club logo
-                            "styles" => $_SESSION['baseurl'] . "/config/style/result_{$series['opt_style']}.css"  // styles to be used
+                            "styles" => "/home/sycuser/websites/www.starcrossyc.org.uk/html/non-joomla//videos/result_{$series['opt_style']}.css" // styles to be used FIXME - temp while doing 7.2 migration
+                            //"styles" => $_SESSION['baseurl'] . "/config/style/result_{$series['opt_style']}.css"  // styles to be used
                         );
 
                         $report_arr = array("action" => "series", "tab" => $tab, "detail" => "", "file" => array());

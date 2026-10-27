@@ -26,6 +26,9 @@ $debug = 0;
 $links_block_htm = "";
 $risk_block_htm = "";
 
+// initialise database access
+$db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
+
 // check if system is down for maintenance
 if (file_exists('maintenance_on.txt'))
 {
@@ -81,7 +84,6 @@ EOT;
 
     // links block  - optional block containing links to useful information - configured in t_link table
 
-    $db_o = new DB($cfg['db_name'], $cfg['db_user'], $cfg['db_pass'], $cfg['db_host']);
     $local_links = $db_o->run("SELECT * FROM t_link WHERE category = ? order by listorder", array("index") )->fetchall();
     if (count($local_links) > 0)
     {
@@ -102,8 +104,8 @@ EOT;
             $links_block_htm = <<<EOT
             <div class="container text-left">
                 <div class="row">
-                    <div id = "inline_text" class="text-info fs-4"><b>Information Links&hellip;</b></div> 
-                    <div id = "inline_block" class="col-12 p-3" style="border: 3px solid steelblue;">                                         
+                    <div id = "inline_text" class="text-info fs-4"><b>Useful Information</b></div> 
+                    <div id = "inline_block" class="col-12 p-3 border border-info-subtle border-4 rounded">                                         
                         $local_links_htm
                     </div>
                     <div class="col">&nbsp;</div>
@@ -118,27 +120,49 @@ EOT;
         // risk form block - optional block to request OOD to complete an risk assessment
 
         // first check if we have already had a risk assessment submitted today
-        //$local_links = $db_o->run("SELECT * FROM t_link WHERE category = ? order by listorder", array("index") )->fetchall();
-
-        $risk_block_htm = <<<EOT
+        $risk_assessment = $db_o->run("SELECT * FROM t_riskassess WHERE DATE(date) = CURDATE();", array() )->fetchall();
+        if ($risk_assessment)
+        {
+            $risk_block_htm = <<<EOT
             <div class="container text-left">
                 <div class="row">
-                    <div id = "inline_text" class="text-danger fs-4"><b>Risk Assessment&hellip;</b></div> 
-                    <div id = "inline_block" class="col-12 p-3" style="border: 3px solid red;">                                         
+                    <div id = "inline_text" class="text-success fs-4"><b>Risk Assessment</b></div> 
+                    <div id = "inline_block" class="col-12 p-3 border border-success-subtle border-4 rounded">                                         
                         <div class="row">
-                            <div class="col-7 text-danger">
-                                <h3>IMPORTANT ! - Before you start</h3>
-                                <p class="fs-5">The Sailing Committee asks that you complete a simple risk assessment form before proceeding with the race.  
-                                Please click the button to get the form &hellip;</p>
+                            <div class="col-8 text-success">
+                                <h4 class="mx-3"><b>Conditions changed?</b> redo risk assessment</h4>
                             </div>
-                            <div id="div_center" class="col-5" style="margin-left: auto;">
-                                <a href="./rm_risk/risk_assessment.php?form=CR_risk_assessment_cfg.json" class="btn btn-danger btn-lg " tabindex="-1" role="button" aria-disabled="true" target="_blank">Risk Assessment Form</a>
+                            <div id="div_center" class="col-4" style="margin-left: auto;">
+                                <a href="./rm_risk/risk_assessment.php?form=CR_risk_assessment_cfg.json" 
+                                class="btn btn-success btn-lg " tabindex="-1" role="button" aria-disabled="true" target="_blank">New Risk Assessment</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 EOT;
+        }
+        else
+        {
+            $risk_block_htm = <<<EOT
+            <div class="container text-left flash ">
+                <div class="row">
+                    <div id = "inline_text" class="text-danger fs-4"><b>Risk Assessment</b></div> 
+                    <div id = "inline_block" class="col-12 p-3 border border-danger-subtle border-4 rounded">                                         
+                        <div class="row">
+                            <div class="col-8 ">
+                                <h4 class="mx-3 text-danger flash"><b>Important !</b> - before you start please complete a risk assessment</h4>
+                                <p class="mx-3 fs-6 text-primary-subtle">The Sailing Committee needs you to complete a <u>simple</u> risk assessment form before starting the race.</p>
+                            </div>
+                            <div id="div_center" class="col-4" style="margin-left: auto;">
+                                <a href="./rm_risk/risk_assessment.php?form=CR_risk_assessment_cfg.json" class="btn btn-danger btn-lg " tabindex="-1" role="button" aria-disabled="true" target="_blank">Risk Assessment</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+EOT;
+        }
     }
 }
 
@@ -162,10 +186,19 @@ echo <<<EOT
         <style>
             body { padding-top: 20px; font-family: Kalinga, Arial, sans-serif;}
             .brand-splash { font-weight: bold; font-size: 120%; color: orange;}
-            #inline_text  { background-color: #FFF; text-align: right; position: relative; z-index: 1000; width: 260px; margin-left: 75%;}
+            #inline_text  { background-color: #FFF; text-align: left; position: relative; z-index: 1000; width: 260px; margin-left: 10%;}
             #inline_block { padding: 20px; position: relative; margin-top: -15px; }
             #div_center   { display: flex; align-items: center; justify-content: center; }
-        </style>    
+        </style> 
+        
+        <style>    
+            .flash { animation: blink 1000ms 4; }
+            @keyframes blink {
+                0%   { opacity: 1; }
+                50%  { opacity: 0; }
+                100% { opacity: 1; }
+            }       
+        </style>   
     </head>      
     <body>
         <!-- Identity block -->

@@ -3,9 +3,7 @@
 // initialise
 $msg = "";
 $display_msg = false;
-
-
-error_log("|$display_msg|$msg|", 3, $_SESSION['dbglog']);
+//error_log("|$display_msg|$msg|", 3, $_SESSION['dbglog']);
 
 if (!empty($msg))
 {

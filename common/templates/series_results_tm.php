@@ -117,7 +117,21 @@ function series_sheet($params = array())
     $fleets = $params['fleets'];
     $sys    = $params['sys'];
 
-    //echo "<pre>TEMPLATE series_sheet: ".print_r($opts,true)."</pre>";
+    // series calculations
+    $series_turnout = "";
+    if ($opts['inc-turnout']) { $series_turnout = " | turnout: max - {$series['max_turnout']}, min - {$series['min_turnout']}, avg - {$series['avg_turnout']}"; }
+
+    $club_logo = "";
+    if ($opts['club-logo']) { $club_logo = "<img class='club-logo' style='width: 100px; height: auto' src='{$opts['club-logo']}'>"; }
+
+    $series_detail_bufr = "races sailed <b>{$series['races_complete']}</b> ";     // races sailed 5 | discards 1 | counting 4  | discard profile: [0,0,1,1,2,2,3,3,4,4,5,5,6]
+    if (!empty($series['discard'][$series['races_complete']]))
+    {
+        $discards_num = $series['discard'][$series['races_complete']];
+        $counting_num = $series['races_complete'] - $discards_num;
+        $profile = implode(",", $series['discard']);
+        $series_detail_bufr.= "| discards <b>$discards_num</b> | counting <b>$counting_num</b><br>discard profile [ <b>$profile</b> ]";
+    }
 
     $doc_head_bufr = <<<EOT
     <!DOCTYPE html><html lang="en">
@@ -141,59 +155,40 @@ function series_sheet($params = array())
 EOT;
 
     // header
-    empty($opts['club-logo']) ? $club_logo = "" : $club_logo = "<img class='club-logo' style='width: 100px; height: auto' src='{$opts['club-logo']}'>";
-
     $header_bufr = <<<EOT
     <div class="flex-container">
         <div class="flex-child">$club_logo</div> 
-        <div class="flex-child" style="text-align: right">
-            <span class="event-hdr-right">{$series['clubname']}</span>
-        </div> 
+        <div class="flex-child" style="text-align: right"><span class="event-hdr-right">{$series['clubname']}</span></div> 
     </div>
 EOT;
-
-    // event detail
-    $series_turnout = "";
-    if ($opts['inc-turnout'])
-    {
-        $series_turnout = <<<EOT
-        &nbsp;|&nbsp; turnout: max - {$series['max_turnout']}, min - {$series['min_turnout']}, avg - {$series['avg_turnout']}
-EOT;
-    }
 
     $event_bufr = <<<EOT
     <div class="flex-container">
         <div class="flex-child">
             <span class="event-hdr-left" >{$series['name']} {$params['eventyear']}</span>
             <div class="report-notes" >{$series['notes']} $series_turnout</div>
+            <div class="report-notes" > $series_detail_bufr</div>
         </div> 
         <div class="flex-child" style="text-align: right">
             <span class="print"><a class="button-green noprint" onclick="window.print()" href="#" type="button">Print Results</a></span>
-        </div> 
+        </div>         
     </div>
 EOT;
 
+
     // format results for each fleet
-    //$discard = explode(",", $series['discard']);
-    !empty($discard[$series['races_complete']]) ? $discard_txt = "| discards: <b>{$series['discard'][$series['races_complete']]}</b>"
-        : $discard_txt = "";
     $fleet_block = array();
     foreach($fleets as $i=>$fleet)
     {
         $fleet_turnout = "";
-        if ($opts['inc-turnout']) {
-            $fleet_turnout = <<<EOT
-        turnout: max - {$fleet['max_turnout']}, min - {$fleet['min_turnout']}, avg - {$fleet['avg_turnout']} 
-EOT;
-        }
+        if ($opts['inc-turnout']) { $fleet_turnout = "turnout: max - {$fleet['max_turnout']}, min - {$fleet['min_turnout']}, avg - {$fleet['avg_turnout']}" ; }
 
         // fleet detail
         $fleet_detail_bufr = <<<EOT
-
             <div class="fleet-hdr">{$fleet['fleet-name']}</div>
             <div class="spacer"></div>
             <div class="fleet-info">
-                entries: <b>{$fleet['num-competitors']}</b> | races sailed: <b>{$series['races_complete']}</b> $discard_txt | $fleet_turnout
+                entries: <b>{$fleet['num-competitors']}</b> 
             </div>
 EOT;
         // fleet data

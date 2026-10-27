@@ -2,6 +2,15 @@
   "title": "util apps configuration",
   "version": "2026-02-16",
   "apps": {
+    "programmemaker": {
+      "category": "programme",
+      "title": "create draft programme",
+      "description": "Using event rules defined a json file, creates a draft programme of event and optionally outputs as an import file for rm_admin <br> ",
+      "notes": "",
+      "url": "programmemaker.php?",
+      "dryrun": "false",
+      "status": "current"
+    },
     "berth_synch_webcollect": {
       "category": "berth",
       "title": "berth_synch_webcollect",

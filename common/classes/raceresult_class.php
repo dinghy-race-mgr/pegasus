@@ -386,7 +386,8 @@ EOT;
             "inc-turnout"   => true,                                                 // include turnout statistics
             "race-label"    => "number",                                             // use race number or date for labelling races
             "club-logo"     => "../../club_logo.jpg",                                // if set include club logo
-            "styles"        => file_get_contents($_SESSION['baseurl']."/config/style/result_classic.css")     // styles to be used
+            "styles"        => file_get_contents("/home/sycuser/websites/www.starcrossyc.org.uk/html/non-joomla/videos/result_classic.css")     // styles to be used FIXME temporary while
+            //"styles"        => file_get_contents($_SESSION['baseurl']."/config/style/result_classic.css")     // styles to be used
         );
 
         $fields = array(

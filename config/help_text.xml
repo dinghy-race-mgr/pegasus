@@ -2,6 +2,26 @@
 <pages>
 
     <page>
+        <category></category>
+        <author></author>
+        <listorder>1</listorder>
+        <pursuit></pursuit>
+        <eventname></eventname>
+        <format></format>
+        <startdate></startdate>
+        <enddate></enddate>
+        <multirace></multirace>
+        <question>EMERGENCY Top 5 Common Problems Using RaceManager </question>
+        <answer><![CDATA[
+
+
+
+        ]]></answer>
+
+
+    </page>
+
+    <page>
         <category>reminder</category>
         <author>Mark Elkington - SYC</author>
         <listorder>5</listorder>
@@ -192,12 +212,12 @@
         <question>Where can I find the SAILING INSTRUCTIONS?</question>
         <answer><![CDATA[
             <p>The Starcross YC Sailing Instructions for club racing can be found on the club website <a
-                href="https://www.starcrossyc.org.uk/images/sailing_committee/documents/syc_sailinginstructions_v3-7.pdf" target="_BLANK">on this
+                href="https://www.starcrossyc.org.uk/racing-rules" target="_BLANK">on this
             page
         </a>
         ]]></answer>
         <notes><![CDATA[
-            <p>If you are running an event open to non-club members then it may have specific sailing instructions which
+            <p>If you are running an event that is open to non-club members then it may have specific Sailing Instructions which
             may be found on the SYC events page <a href="https://www.starcrossyc.org.uk/open-events" target="_BLANK">on
             this page
         </a>
@@ -425,8 +445,8 @@
             </p>
             <p>30 seconds before each fleet starts the “Start Infringements” and “General Recall” buttons will be
                 enabled. Use the START INFRINGEMENTS button to record start line infringements such as OCS, DNS, DNC
-                etc.. If you decide to have a general recall use the GENERAL RECALL button to enter the wall clock time
-                for the actual start time of the fleet in question</p>
+                etc.. If you have a general recall for one or more fleets use the GENERAL RECALL button for the relevant fleet(s)
+                to enter the wall clock time for the actual start time of the fleet in question (e.g "12:34:15")</p>
         ]]></answer>
         <notes><![CDATA[
             <p>Note:</p>
@@ -481,16 +501,16 @@
         <multirace></multirace>
         <question>How do I handle a GENERAL RECALL?</question>
         <answer><![CDATA[
-            <p>If you signal a general recall for a fleet - that fleet must restart AFTER the remaining fleets have
-                started. Once the other fleets have started use the following procedure to start the recalled fleet:
-            </p>
+            <p>If you signal a general recall for one or more fleets - those fleets must restart AFTER the remaining fleets have
+                started - in the order in which they were originally scheduled to start.</p>
+            <p>Once the other fleets have started use the following procedure to start the recalled fleet:</p>
             <ul>
-                <li>restart the lights system (power off / power on) - set the number of starts to 1 (or however many fleets you have recalled)</li>
-                <li>IMPORTANT - do NOT stop/restart the raceManager timer
-                <li>start the recalled start sequence on the light box - press the green button (take a note of the wall clock time of the setting the start sequence</li>
-                <li>if you want to use the black flag - hoist it at the 3 minute sound signal</li>
-                <li>on the START page in raceManager click the General Recall option for the fleet(s) in question - enter the clocktime (hh:mm:ss) of the start gun for the recalled fleet
-                (i.e. the time you previously noted + 6 minutes)</li>
+                <li>IMPORTANT - do NOT stop/restart the raceManager timer</li>
+                <li>Approximately 1 minute after the last start - press the fleet light for the first fleet to restart
+                    (eg. green for fast handicap) and sound the horn once. Note the time (if you want to use the black flag - hoist it at the same time</li>
+                <li>Three minutes after the previous signal - sound the horn and switch the fleet light off - deal with any OCS boats as usual</li>
+                <li>Click the General Recall option for the fleet in question - enter the clock time (hh:mm:ss) of the start gun for fleet you just started</li>
+                <li>Repeat the process for any other fleet that has a general recall</li>
                 <li>. . . continue to run the race as normal</li>
             </ul>
         ]]></answer>
@@ -576,19 +596,22 @@
         <multirace></multirace>
         <question>I forgot to SHORTEN COURSE?</question>
         <answer><![CDATA[
-            <p>The most common OOD mistake when using raceManager is to signal a shortened course with the beacon lights and hoot when the leading boat
-            crosses the finish line . . . BUT HAVE FORGOTTEN to reduce the no. of laps in raceManager.
+            <p>The most common OOD mistake when using raceManager is to signal a shortened course with the beacon lights and
+            then hoot when the leading boat crosses the finish line . . . only to realise you have forgotten to shorten course in
+            raceManager and the boat is not marked as finished.
             </p>
-            <p style="font-size: 1.2em"><b>Do Not Panic . . .</b></p><br>
-            <p>Click the button labelled <b>Change Shorten Lap</b> on the right hand side of the screen</p>
-            <p>Now change the lap for each fleet you want to shorten and submit the form.  The system will then finish the boats that you have already finished in the shortened race,
-            and will correctly finish the boats that still have to complete the race as they cross the line.
+            <p style="font-size: 1.2em"><b>Do Not Panic . . . just continue finishing the boats - clicking them in raceManager
+            as they cross the line and sounding the hooter</b></p>
+            <p>When the race has finished go to the RESULTS page and click the "Change Finish Lap" button.  Set the no. of laps to
+            the lap you actually finished them on (e.g. if the race was scheduled for 4 laps and you actually finished them on lap 3
+              - set the number of laps to 3) </p>
+            <p>The system will now calculate the results from the elapsed times for Lap 3.</p>
 
         ]]></answer>
         <notes><![CDATA[
             <p>Note:</p>
             <ul>
-                <li>Using the <b>Change Shorten Lap</b> option works with average lap racing even if boats in that fleet will finish on different laps</li>
+                <li>Using the <b>Change Finish Lap</b> option works with average lap racing even if boats in that fleet will finish on different laps</li>
             </ul>
         ]]></notes>
     </page>

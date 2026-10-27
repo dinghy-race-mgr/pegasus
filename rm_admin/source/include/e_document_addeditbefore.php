@@ -22,7 +22,6 @@ if (!empty($values['publish-end']))
     }
 }
 
-
 if (empty($msg))
 {
     $commit = true;
