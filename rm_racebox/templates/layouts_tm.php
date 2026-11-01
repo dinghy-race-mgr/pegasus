@@ -227,36 +227,8 @@ EOT;
 
 function racebox_navbar($params=array())
 {
-    //echo "<pre>".print_r($params,true)."</pre>";
-    
-    /*
-     *   fields:
-     *      eventid:      id for event (int) - not required on pickrace page
-     *      brand:        label on left of navbar (str)
-     *      club:         club acronym (e.g. SYC) (str)
-     *
-     *   params:
-     *      page:         page name (str)
-     *      pursuit:      flag if pursuit race (int:  1 | 0 )
-     *      baseurl:      url to racemanager startup page (str) - only required on pickrace page
-     *      links:        local links for custom menu (array) - can be empty array
-     *      num_reminders no. of remiders for this event
-     *      current_view: current view on timer page (str: tabbed | list ) - only required on timer page
-     */
-//    $refresh_htm = "";
-//    if ($params['page'] == "race")
-//    {
-//        $refresh_htm = <<<EOT
-//        <script>
-//        document.addEventListener("visibilitychange", function() {
-//           if (!document.hidden){
-//                location.reload();
-//           }
-//        });
-//        </script>
-//EOT;
-//    }
 
+    // template for the top navigation bar in rm_racebox
 
     $options = array(
         "1" => array("name" => "race",      "label" => "status",    "target" => "race_pg.php"),
@@ -306,9 +278,7 @@ EOT;
         $params["current_view"] == "tabbed" ? $display_mode = "list" : $display_mode = "tabbed";
         $view_bufr = <<<EOT
         <a href="timer_pg.php?eventid={eventid}&mode=$display_mode" title="switch to $display_mode view" role="button" >
-            <span class="rm-navmenu-right rm-navmenu-icon text-muted"><small>CHANGE VIEW</small>
-                <!--span class="glyphicon glyphicon-transfer" aria-hidden="true" ></span -->
-            </span>
+            <span class="rm-navmenu-right rm-navmenu-icon text-muted"><small>CHANGE VIEW</small></span>
         </a>
 EOT;
     }
@@ -321,7 +291,16 @@ EOT;
                 <span class="rm-navmenu-right rm-navmenu-icon text-muted"><small>HELP</small></span>
             </a>
 EOT;
+    }
 
+    $panic_bufr = "";
+    if ($params['page'] != "pickrace")
+    {
+        $panic_bufr.= <<<EOT
+            <a href="help_pg.php?eventid={eventid}&page=panic" class="text-danger" style=""
+               title="" role="button"><span class="rm-navmenu-right rm-navmenu-icon text-danger"><small><b>PANIC</b></small></span></a>
+            </a>
+EOT;
     }
 
     // setup club local links menu
@@ -374,10 +353,11 @@ EOT;
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">$option_bufr</ul>
                 
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav navbar-right collapse navbar-collapse">
                     <li>$view_bufr</li>                    
                     <li>$help_bufr</li>
-                    <li class="dropdown">$club_bufr</li>                   
+                    <li class="dropdown">$club_bufr</li>         
+                    <li>$panic_bufr</li>          
                 </ul>
             </div>
         </div>

@@ -44,7 +44,7 @@ class HELP
         $this->topics = array();
         $this->page == "race" ? $this->pagelabel = "STATUS" : $this->pagelabel = strtoupper($this->page);  // FIXME ugly
 
-        /* constraints are (* only relevent to reminder page)
+        /* constraints are (* only relevant to reminder page)
         pursuit - true if a pursuit race
         numrace - true if more than one race today
         name* - event name
@@ -143,7 +143,7 @@ class HELP
         if (count($this->topics) <= 0)
         {
             $htm = <<<EOT
-                <h2>Race Officer Reminders ...</h2>
+                <h2>Race Officer Reminders for today's race &hellip;</h2>
                 <blockquote>
                     <p class="lead">No reminders for today </p>
                 </blockquote>
@@ -156,7 +156,6 @@ EOT;
             foreach ($this->topics as $k=>$topic)
             {
                 $i++;
-                //$i==1 ? $panel_status = "in" : $panel_status = "";
                 $panel_status = "";
                 $panel_bufr.= <<<EOT
                 <div class="panel panel-success margin-top-20" style="margin-bottom: 20px">
@@ -180,7 +179,7 @@ EOT;
 
             // add outer div
             $htm = <<<EOT
-            <h2 style="margin-top:60px; margin-bottom:20px;">Race Officer Reminders &hellip;&nbsp;&nbsp;&nbsp;<small> click topics to view</small></h2>
+            <h2 style="margin-top:60px; margin-bottom:20px;">Race Officer Reminders for today's race &hellip;&nbsp;&nbsp;&nbsp;<small> click topics to view</small></h2>
             <h4>The club suggests checking the information below as they may be relevant to the races you are running today</h4>
             <h4 class="text-info">You can return to this page at any time by selecting "Today's Reminders" option from the 
                                   <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> menu</h4>
@@ -197,19 +196,23 @@ EOT;
         return $htm;
     }
 
-
-
     public function render_help($helpid = false)
     {
-        // title
+        // set page title
+        if ( strtolower($this->pagelabel) == "panic")
+        {
+            $title = "Top issues reported by OODs &hellip;";
+        }
+        else
+        {
+            $title = "Help topics for the {$this->pagelabel} page &hellip;";
+        }
 
-        if (count($this->topics) <= 0)
+        if (count($this->topics) <= 0)           // no topics
         {
             $htm = <<<EOT
-                <h2 style="margin-top:60px; margin-bottom:20px;">Help for the {$this->pagelabel} page &hellip;</h2>
-                <blockquote style="margin-left: 100px;">
-                    <p class="lead">Sorry - no help information for this page</p>
-                </blockquote>
+                <h2 style="margin-top:60px; margin-bottom:20px;">$title</h2>
+                <blockquote style="margin-left: 100px;"><p class="lead">Sorry - no help information for this page</p></blockquote>
 EOT;
         }
         else
@@ -223,14 +226,13 @@ EOT;
                 $i++;
                 $panel_status = "";
                 //$i==1 ? $panel_status = "in" : $panel_status = "";
-                $helpid and $helpid == $topic['id'] ? $panel_status = "in" : $panel_status = "";    // open this item
+                if ($helpid and $helpid == $topic['id'] ) { $panel_status = "in"; }  // open this item
                 $panel_bufr.= <<<EOT
                 <div class="panel panel-info">
                      <div class="panel-heading" role="tab" id="heading$i">                    
-                     <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$i"  aria-expanded="true" aria-controls="collapse$i" style="text-decoration: none">                       
-                       <p class="panel-title help-title-text"><small>topic: </small>&nbsp; {$topic['question']} </p>
-                     </a>                                              
-                     
+                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse$i"  aria-expanded="true" aria-controls="collapse$i" style="text-decoration: none">                       
+                           <p class="panel-title help-title-text"><small>topic: </small>&nbsp; {$topic['question']} </p>
+                         </a>                                                                 
                     </div>
                     
                     <div id="collapse$i" class="panel-collapse collapse $panel_status" role="tabpanel" aria-labelledby="heading$i">
@@ -241,14 +243,13 @@ EOT;
                         </div>
                     </div>
                 </div>
-
                 </br>
 EOT;
             }
 
             // add outer div
             $htm = <<<EOT
-            <h2 style="margin-top:60px; margin-bottom:20px;">Help for the {$this->pagelabel} page &hellip; <small> click topics to view</small></h2>
+            <h2 style="margin-top:60px; margin-bottom:20px;">$title <small> click topics to view</small></h2>
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">

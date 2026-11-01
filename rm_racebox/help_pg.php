@@ -21,8 +21,8 @@ u_startsession("sess-rmracebox", 10800);
 
 // script parameters
 $eventid  = u_checkarg("eventid", "checkint","");                 // if zero - requested from pickrace_pg
-$helppage = u_checkarg("page", "set", "", "help");               // help category items to include on page
-$helpid   = u_checkarg("helpid", "checkint", "");                  // if not set or not integer or not found - ignore - otherwise open topic
+$helppage = u_checkarg("page", "set", "", "help");         // help category items to include on page
+$helpid   = u_checkarg("helpid", "checkint", "");                 // if not set or not integer or not found - ignore - otherwise open topic
 
 // page initialisation
 u_initpagestart($eventid, $page, false);
@@ -71,8 +71,8 @@ $lbufr =  $help_o->render_help($helpid);
 
 // ----- right hand panel --------------------------------------------------------------------
 $rbufr = "";
-$go_back = htmlspecialchars($_SERVER['HTTP_REFERER']);
-$rbufr.= "<a class='btn btn-lg btn-info' href='$go_back'><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span> &nbsp;Close Help</a>";
+//$go_back = htmlspecialchars($_SERVER['HTTP_REFERER']);
+$rbufr.= "<a class='btn btn-lg btn-info' href='javascript:history.go(-1)'><span class='glyphicon glyphicon-new-window' aria-hidden='true'></span> &nbsp;Close Help</a>";
 
 // disconnect database
 $db_o->db_disconnect();

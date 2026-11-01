@@ -62,10 +62,15 @@ foreach($xmldata->children() as $topic) {
         if (empty($topic->format)) { $topic->format = ""; }
         if (empty($topic->multirace)) { $topic->_multirace = 0; }
         // FIXME - this script is not handling the startdate / enddate options
-        $values = "VALUES ('$topic->category', '$topic->question', '$topic->answer', '$topic->notes', '$topic->author', '$topic->listorder', '$topic->active',
+
+        // escape quotes
+        $answer = addslashes($topic->answer);
+        $notes = addslashes($topic->notes);
+        $values = "VALUES ('$topic->category', '$topic->question', '$answer', '$notes', '$topic->author', '$topic->listorder', '$topic->active',
                             '$topic->pursuit', '$topic->eventname', '$topic->format', '$topic->multirace')";
     }
 
+    // fixme escape quotes in answer and notes
     $sql = $fields.$values;
     $insert = $db_o->db_query($sql);
     $error = "";
