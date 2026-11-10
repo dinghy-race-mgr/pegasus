@@ -57,18 +57,22 @@ class DB
 	    global $connection;
 		mb_internal_encoding( 'UTF-8' );
 		mb_regex_encoding( 'UTF-8' );
-		$this->link = new mysqli( $_SESSION['db_host'], $_SESSION['db_user'], $_SESSION['db_pass'], $_SESSION['db_name']);
-		$this->link->set_charset( "utf8" );
+		mysqli_report( MYSQLI_REPORT_OFF );
+		$this->link = @new mysqli( $_SESSION['db_host'], $_SESSION['db_user'], $_SESSION['db_pass'], $_SESSION['db_name']);
 		
         if( $this->link->connect_errno )
         {
+            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+            $calledby = isset($trace[1]['function']) ? $trace[1]['function'] : '';
             $this->db_log_errors( "Connect failed", $this->link->connect_error );
             u_exitnicely("db_class.php",0,"database connection error - host: {$_SESSION['db_host']}, user: {$_SESSION['db_user']}, dbase: {$_SESSION['db_name']}",
                 "Likely reason - the browser session has timed out - close the browser and restart the application<br>
                  Possible reason - database configuration is wrong",
                 array("script" => __FILE__, "line" => __LINE__, "function" => __FUNCTION__,
-                    "calledby" => print_r(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2)[1]['function'], true), "args" => func_get_args()));
+                    "calledby" => $calledby, "args" => func_get_args()));
         }
+
+		$this->link->set_charset( "utf8" );
 	}
     
 
@@ -561,7 +565,7 @@ class DB
     private function db_log_errors( $error, $query )
     {    
         $message = "DATABASE ERROR [".date('Y-m-d H:i:s')."]".PHP_EOL;
-        $message.= "Query: ". htmlentities( $query ).PHP_EOL;
+        $message.= "Query: ". htmlentities( $query, ENT_COMPAT | ENT_HTML401, 'UTF-8' ).PHP_EOL;
         $message.= "Error: $error<br />".PHP_EOL;
         error_log($message, 3, $_SESSION['syslog']);
         if ($_SESSION['sql_debug']) { u_writedbg($message,__FILE__,__FUNCTION__,__LINE__); }
@@ -572,7 +576,7 @@ class DB
     {
         $message = "DEBUG [".date('Y-m-d H:i:s')."]".PHP_EOL;
         $message.= "Method: $method".PHP_EOL;
-        $message.= "Query: ". htmlentities( $query ).PHP_EOL;
+        $message.= "Query: ". htmlentities( $query, ENT_COMPAT | ENT_HTML401, 'UTF-8' ).PHP_EOL;
         error_log($message, 3, $_SESSION['debuglog']);
     }
     

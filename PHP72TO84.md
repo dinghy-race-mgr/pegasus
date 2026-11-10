@@ -487,6 +487,63 @@ Caddy documents [handler sorting](https://caddyserver.com/docs/caddyfile/directi
 - Keep browser assets untouched to preserve UI. Assess their security separately only if necessary to the PHP runtime migration.
 - Treat Bootstrap 3.4.1 and Bootstrap 5.3.2 as separate existing UI dependencies. Record which generation each canary route loads, route the corresponding static assets with it, and compare each page against its own version-specific baseline rather than expecting a common Bootstrap rendering.
 
+### P2 landing-page compatibility evidence — completed 2026-11-10
+
+The first Phase 2 batch is limited to `rm_utils/index.php` and its only PHP include, `common/lib/util_lib.php`, at checkout commit `8ccb44ff6328`. The landing page reads configuration and `data/util_apps.json`; it does not start a session, instantiate a database wrapper, or call MySQLi/PDO. No application PHP change is needed for this route. MySQLi report mode was therefore handled deliberately by deferring the compatibility shim or wrapper repair until the first DB-backed batch, where valid and deliberately invalid connections/queries can be tested. Applying a process-wide MySQLi change to this DB-free route would add risk without exercising it.
+
+Temporary report-only tooling was installed under `/tmp/pegasus-phase2-tools` in `syc-fpm84`, outside the served tree: Rector 2.8.4 and PHPStan 2.3.5. Exact checkout copies, not the drifted deployed volume, were scanned.
+
+- Rector's PHP-through-8.4 dry run reported suggestions in both files. They were cosmetic long-array-to-short-array rewrites, one PHP 7-compatible null-coalescing rewrite, and one PHP 8-only `str_contains()` rewrite. None fixes a demonstrated 7.2→8.4 defect; the PHP 8-only suggestion would break rollback compatibility. All suggestions were reviewed and rejected, and Rector did not edit the checkout.
+- PHPStan level 2 with `phpVersion: 80400` reported nine findings, all in the unused `u_sendfile_sftp()` function because the excluded/manual phpseclib `Net/SFTP.php`, `Net_SFTP`, and its constants were not loaded into the isolated scan. `rm_utils/index.php` had no finding. The reviewed external baseline is `C:\Users\MarkE\AppData\Local\Temp\pegasus-phase2-phpstan-baseline.neon` (1,424 bytes; SHA-256 `5ec0627a1743b7a72a1be4ea9d2cc3d94d7c6dfdf6b2c6ee20b4a00030e2ad55`). No suppression or tooling file was added to the repository.
+- Exact checkout copies of both PHP files passed syntax lint in the running PHP 7.2 and 8.4 containers. With the same copied `common.ini` and `util_apps.json`, both runtimes rendered exactly 7,560 bytes with SHA-256 `8f29c39b517615b661b67a421e31ed9ac95f4712d846b27e3fa4436da956dd6d`; no focused test was added because there is no behavior change to capture.
+
+The owner confirmed on 2026-11-10 that the checkout `common/lib/util_lib.php` is authoritative. Its SHA-256 `0a5ac4a9e95baf4e9d4404124a15f182bdce3883400310366242501a2f312cdc` was synced to the shared local deployed volume, replacing the drifted copy that enabled the obsolete `u_sendmail()` implementation. Both FPM containers see the authoritative hash; the replaced copy remains recoverable from the external temporary evidence directory.
+
+### P3.1 landing-page route gate — completed 2026-11-10
+
+The active Caddy 2.11.7 configuration validates successfully. Its `@php84` matcher contains only the landing page's three URL forms, favicon, Bootstrap 5.3.2 assets, and Bootstrap Icons 1.11.3 assets. That handler retains the Pegasus INI/log block and sends PHP to `syc-fpm84:9000`. The remaining `/pegasus*` handler retains Basic Auth, the same INI/log block, and `syc-fpm72:9000`.
+
+Read-only HTTP probes confirmed:
+
+- `/pegasus_stx/rm_utils` returns 308 to the slash form; the slash form and explicit `index.php` return 200 with 6,104 bytes, without Basic Auth;
+- the PHP 8.4 access log records both landing-page executions as `GET /pegasus_stx/rm_utils/index.php` with 200;
+- the favicon, Bootstrap CSS/bundle, and Bootstrap Icons CSS all return 200;
+- unselected `rm_utils/helloworld.php`, `rm_utils/common.ini`, and `rm_sailor/` return 401 from the authenticated legacy handler before reaching PHP; and
+- the Caddy matcher/config inspection confirms unmatched Pegasus PHP remains directed to PHP 7.2. No routing, container, or source file was changed during this gate.
+
+### P3.2 landing-page dual-runtime parity — completed 2026-11-10
+
+After resolving the shared-file drift, the mounted `rm_utils/index.php` and authoritative `common/lib/util_lib.php` passed syntax lint in both running FPM containers. Executing the landing page against the same mounted configuration and `util_apps.json` produced exactly 6,104 bytes with SHA-256 `10848f634d123897e5c43e00bbfeabd55a8066ce90282d47d8158ec51e0ea519` on both PHP 7.2 and PHP 8.4. The routed PHP 8.4 HTTP response is also 200 with the same byte count and hash. The slash redirect remains 308 and required assets remain 200.
+
+A new fixed 1440×1200 Edge screenshot is stored outside Git at `C:\Users\MarkE\AppData\Local\Temp\pegasus-php84-migration\php84-rm-utils-index-20261110.png`. It is 119,389 bytes with SHA-256 `33556f75fb219d7049e71d3fb7d61e6bfc97be4801a86f2e6f998a3fdbc60cbb`, exactly matching the recorded PHP 7.2 screenshot's size and hash. Visual inspection also confirms the same header, utility cards, styling, and absence of an authentication prompt.
+
+The PHP 8.4 log records successful 200 requests with no warning, notice, deprecation, fatal error, or exception. This landing page does not start a session, query or modify the database, create a download, write a file, or call an external service, so session continuation and side-effect comparisons are not applicable to this route. Rollback remains the validated Caddy fallback to PHP 7.2 using the same dual-compatible source.
+
+### P3.3 first read-only DB-backed batch — completed 2026-11-10
+
+The first P3.3 batch is `rm_utils/handicap_numbers.php`, selected because it takes no request parameters and performs only database SELECTs. The owner authorised the local directory permission prerequisite. The shared Pegasus `logs`, `tmp`, and `data` trees now retain owner UID 82, use FPM group GID 33, directory mode `2775`, and file mode `0664`. Cross-container probes confirmed that the PHP 7.2 worker can create and the PHP 8.4 worker can write/remove a file in each tree; probe files were removed. This permission correction is local runtime state only and is not yet durable in `dev/02-dev-edits.sh`.
+
+The reachable `common/classes/db_class.php` wrapper received a narrow dual-runtime compatibility repair:
+
+- explicitly set `MYSQLI_REPORT_OFF` before connecting so PHP 8.1+ does not replace the wrapper's return/error contract with `mysqli_sql_exception`;
+- suppress the native connection warning because the wrapper records and renders the same failure itself;
+- check `connect_errno` before calling `set_charset()`, because PHP 8 treats the failed `mysqli` object as closed and otherwise throws `Error`;
+- handle an absent caller backtrace frame without PHP 8 warnings; and
+- pass explicit PHP 7.2-equivalent `ENT_COMPAT | ENT_HTML401` and UTF-8 arguments to `htmlentities()` in error/debug logging.
+
+No public method signature or successful-query behavior changed. PHPCompatibility `7.2-8.4` reports no finding in the changed wrapper or route. Rector's final dry run proposed only short-array/null-coalescing style rewrites, which were rejected. PHPStan level 2 reports 15 reviewed pre-existing findings across the reachable scan: nine unloaded manual-phpseclib symbols, plus one potentially undefined variable in an unused boat-update method, two unused/invalid DB helper branches, two template diagnostics, and a top-level `__FUNCTION__` diagnostic. None is introduced by this batch or exercised by the route; they remain recorded for their relevant later batches.
+
+Dual-runtime behavior evidence against the same mounted source and database:
+
+- valid report: PHP 7.2 and 8.4 both return 26,475 HTML bytes, SHA-256 `897626132126949810df5656b5f99306e0b34304879424852bb64c6fbdd8ba45`, with empty stderr;
+- invalid SELECT against a deliberately absent table: both preserve the valid page fingerprint, return `false`, and write the expected application error log; an apostrophe in the probe query remains unescaped on both versions;
+- invalid connection: both exit through the same 2,632-byte controlled error page, SHA-256 `ffb5ce585938c8df3d0e264db17d6ec960e0def70cfd7643543d2ec1785604e3`, with empty stderr and no exception; and
+- neither the valid report nor failure probes modify database data.
+
+The authorised Caddy matcher now includes only `handicap_numbers.php`, its local stylesheet, and the Bootstrap 3.4.1/jQuery/Growl/FormValidation/clock assets it requests. The route and every asset return 200 through PHP 8.4; unselected `entry_check.php` remains on the authenticated fallback and returns 401. A temporary local Caddy reload routed the selected matcher to PHP 7.2 for rollback rehearsal, returned the same 26,475-byte report, and recorded the request in the PHP 7.2 access log. The matcher was then restored to PHP 8.4, revalidated, reloaded, and confirmed healthy.
+
+Fixed 1440×1200 Edge captures are stored outside Git as `php72-handicap-numbers-20261110.png` and `php84-handicap-numbers-20261110.png` under `C:\Users\MarkE\AppData\Local\Temp\pegasus-php84-migration`. Both are 64,610 bytes with SHA-256 `b5e1e3e4c480b1b1d9bf3700eceae16d1ab54d207ac5ad165762765986648f95`; visual inspection confirms the expected styled handicap table. This route uses a fixed application session ID rather than user login state. Separate container-private sessions initialise successfully and render identically, so the rehearsed rollback does not require shared user-session continuity for this route.
+
 ## 5. Step-by-step phased roadmap
 
 Check the box only after its stated evidence is recorded below. A less capable implementation agent should work one path at a time and stop at any unresolved dependency or owner action.
@@ -496,7 +553,7 @@ Check the box only after its stated evidence is recorded below. A less capable i
 - [x] P0.1 Record the Git commit, currently untracked files, running image tags/digests, `php -v`, `php -m`, effective FPM ini/pool settings, Caddy adapted route, and Compose configuration. Store no credentials or backup contents in Git. Completed 2026-10-27; see “P0.1 baseline evidence”.
 - [x] P0.2 Preserve the known-good 7.2 and 8.4 image tags/digests and deployable Caddy config; confirm the VPS has a working rollback path. Do not rebuild the EOL 7.2 base as a prerequisite. Completed 2026-10-27 under the owner-approved registry rollback and public-only production access policy; migration-image rollback rehearsal remains a later release gate.
 - [x] P0.3 List all public/CLI/cron entrypoints reachable from `rm_utils`, the `common/` PHP they load, file outputs, external services, and DB tables they touch. Exclude `rm_admin/`, `testing/`, `common/oss/` from changes. Completed 2026-10-27; see “P0.3 `rm_utils` entrypoint and dependency inventory”.
-- [ ] P0.4 Choose a disposable, anonymised MySQL 8.0 data snapshot and safe mail/API targets. Capture representative 7.2 responses, exports, logs and screenshots before touching application PHP. In progress 2026-10-27: an owner-approved anonymised logical snapshot, safe-target policy, and PHP 7.2 landing-page HTTP/fingerprint/screenshot evidence are recorded above. A disposable restore plus successful DB-backed, export and application-log evidence remains outstanding.
+- [ ] P0.4 Choose a disposable, anonymised MySQL 8.0 data snapshot and safe mail/API targets. Capture representative 7.2 responses, exports, logs and screenshots before touching application PHP. In progress: an owner-approved anonymised logical snapshot, safe-target policy, landing-page evidence, and a successful read-only DB-backed report/application-log comparison are recorded above. A disposable restore and export baseline remain outstanding.
 
 ### Phase 1 — Audit and route selection
 
@@ -507,16 +564,16 @@ Check the box only after its stated evidence is recorded below. A less capable i
 
 ### Phase 2 — Narrow PHP compatibility work
 
-- [ ] P2.1 Apply only 7.2-safe PHP changes to the selected route and reachable shared PHP. Address MySQLi report mode deliberately; preserve public APIs and output.
-- [ ] P2.2 Run Rector dry run with selected rules, review each proposed edit, apply only relevant fixes, then lint on both runtimes. Avoid broad typing/style rewrites and all excluded directories.
-- [ ] P2.3 Run PHPStan/Psalm as chosen, update a reviewed baseline, and fix newly introduced high-confidence errors. Record any deferred warnings with reason and owner.
-- [ ] P2.4 Add a focused integration or unit test only where it captures a changed PHP behaviour; otherwise record manual/scripted baseline evidence.
+- [x] P2.1 Apply only 7.2-safe PHP changes to the selected route and reachable shared PHP. Address MySQLi report mode deliberately; preserve public APIs and output. Completed 2026-11-10: the selected route is DB-free and requires no PHP edit; MySQLi handling is explicitly deferred to the first DB-backed batch.
+- [x] P2.2 Run Rector dry run with selected rules, review each proposed edit, apply only relevant fixes, then lint on both runtimes. Avoid broad typing/style rewrites and all excluded directories. Completed 2026-11-10: all suggestions were cosmetic or rollback-incompatible and were rejected; exact checkout files lint on both runtimes.
+- [x] P2.3 Run PHPStan/Psalm as chosen, update a reviewed baseline, and fix newly introduced high-confidence errors. Record any deferred warnings with reason and owner. Completed 2026-11-10: no landing-page finding; nine known manual-phpseclib discovery findings are recorded in an external reviewed baseline.
+- [x] P2.4 Add a focused integration or unit test only where it captures a changed PHP behaviour; otherwise record manual/scripted baseline evidence. Completed 2026-11-10: no behavior changed, so no test was added; exact-source CLI rendering is byte-identical on PHP 7.2 and 8.4.
 
 ### Phase 3 — Dual-run QA, `rm_utils` first
 
-- [ ] P3.1 After authorised Caddy/Compose changes, validate the route matcher, same URL, correct FPM, expected P2PShell/access-control state, blocked files, static assets and fallback paths. Verify all other Pegasus paths remain on 7.2.
-- [ ] P3.2 Test the selected route on the same data with 7.2 and 8.4; compare HTML/DOM/screenshots, status, redirects, downloads, DB effects and logs. Confirm session continuation or documented re-login behaviour.
-- [ ] P3.3 Repeat P2–P3 in small `rm_utils` batches: read-only views; calculations/reports; programme/results; CSV import/export; WebCollect/Brevo integrations; scheduled/CLI jobs. Keep each batch independently reversible.
+- [x] P3.1 After authorised Caddy/Compose changes, validate the route matcher, same URL, correct FPM, expected P2PShell/access-control state, blocked files, static assets and fallback paths. Verify all other Pegasus paths remain on 7.2. Completed 2026-11-10: Caddy validates; selected URLs/assets pass; FPM 8.4 logging and authenticated PHP 7.2 fallback behavior are confirmed.
+- [x] P3.2 Test the selected route on the same data with 7.2 and 8.4; compare HTML/DOM/screenshots, status, redirects, downloads, DB effects and logs. Confirm session continuation or documented re-login behaviour. Completed 2026-11-10: HTML and screenshot hashes are identical across the recorded 7.2 baseline and current 8.4 canary; the route is session-free and has no side effects.
+- [ ] P3.3 Repeat P2–P3 in small `rm_utils` batches: read-only views; calculations/reports; programme/results; CSV import/export; WebCollect/Brevo integrations; scheduled/CLI jobs. Keep each batch independently reversible. In progress 2026-11-10: the first read-only DB-backed `handicap_numbers.php` batch passes dual-runtime output, failure-path, browser, asset, and rollback checks.
 - [ ] P3.4 After shared `common/` PHP changes, smoke-test other in-scope modules under 7.2; do not include excluded modules as migration targets.
 
 ### Phase 4 — Canary and production cutover
@@ -557,6 +614,10 @@ Check the box only after its stated evidence is recorded below. A less capable i
 | 2026-11-02 | D-019 | The obsolete `PHP72TO84v1.md` is absent from the Docker repository's `php72to84` branch. | Treat this repository's `PHP72TO84.md` as the authoritative migration plan. |
 | 2026-11-02 | D-020 | The `rm_utils` UI is mixed-version: the landing page uses Bootstrap 5.3.2, while many template-driven utilities use bundled Bootstrap 3.4.1. | Keep both asset trees unchanged. Add `bootstrap341` paths only when a corresponding utility enters a PHP 8.4 route batch, and test that route against its Bootstrap 3 baseline. |
 | 2026-11-02 | D-021 | P1.2 dependency/extension audit completed. The running PHP 8.4 image has the required extensions and the reachable phpseclib/WebCollect code lints and loads, but `common/oss` is Git-ignored; phpseclib and WebCollect lack reliable provenance, and PHPMailer is absent. The owner subsequently confirmed that the stale Bootstrap Dialog references were not required, and they were removed. | Continue the landing-page canary. Hold each affected later route until its recorded owner action and controlled integration/UI test are complete. |
+| 2026-11-10 | D-022 | Phase 2 for the landing page is complete without an application PHP edit. Rector changes were rejected after review, PHPStan has no landing-page finding, and exact checkout sources render byte-identically on PHP 7.2 and 8.4. | The recorded deployed-file drift was resolved by D-024. |
+| 2026-11-10 | D-023 | P3.1 completed: the active Caddy route validates, serves only the selected landing-page URLs/assets through PHP 8.4, and preserves the authenticated PHP 7.2 fallback plus INI/log blocks. | The recorded P3.2 gate was resolved by D-024. |
+| 2026-11-10 | D-024 | The owner confirmed the checkout `util_lib.php` is authoritative; it was synced to the shared local volume. P3.2 then passed with identical PHP 7.2/8.4 HTML and identical PHP 7.2/8.4 screenshot fingerprints. | The landing-page batch is locally accepted. Continue P3.3 with one read-only DB-backed utility after selecting its exact inputs and confirming the disposable-data/logging prerequisites. |
+| 2026-11-10 | D-025 | The local Pegasus writable trees were changed to owner/group `82:33`, directory mode `2775`, and file mode `0664`. The first DB-backed batch repairs the shared MySQLi wrapper and moves `handicap_numbers.php` plus only its required assets into the local PHP 8.4 matcher. Dual-runtime success/failure output, screenshots, and rollback all match. | Keep the permission change local until separately authorised for `dev/02-dev-edits.sh`. Continue P3.3 one reversible route category at a time; do not begin DB-write or external-service batches before their disposable targets are ready. |
 
 ## Questions to resolve before implementation
 
