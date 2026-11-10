@@ -899,49 +899,49 @@ function u_initpagestart($eventid, $page, $change_page)
 }
 
 
-function u_sendmail($from, $to, $subject, $message)
-{
-    global $loc;
-    
-    session_start();
-    include ("{$loc}/common/lib/mail_lib.php");
-    require ("{$loc}/common/oss/phpmailer/class.phpmailer.php");
-	
-    // create email body and send it
-    $format      = "html";
-    $event       = $_REQUEST['openmeeting'];
-    $name        = $_REQUEST['name'];
-    $from        = $_SESSION['smtp_user'];
-    $fromtxt     = "no-reply";
-    $reply       = $from;
-    $replytxt    = "reply-to";
-    $body        = nl2br($message);   // adds html line breaks
-    $email_to    = $to;	
-    $email_cc    = array();
-    $email_bc    = array();
-    $attachments = array();
-    	
-    // send email
-    $sent = sendEmail($format, $from, $fromtxt, $reply, $replytxt, $email_to, $email_cc, $email_bc, $attachments, $subject, $body);
-    
-    if ($sent==0)
-    { 
-        //echo "contact form processed";
-        echo "ok";
-        return true; 
-    }
-    else
-    { 
-        echo "contact form processing failed"; 
-        if ($sent==-1){ echo ": reply email address not provided"; }
-        elseif ($sent==-2){ echo ": target email address not defined"; }
-        elseif ($sent==-3){ echo ": no subject provided"; }
-        elseif ($sent==-4){ echo ": no message provided"; }
-        elseif ($sent==-4){ echo ": email transmission failed"; }
-        else { echo ": undefined error"; }
-        return false; 
-    }
-}
+//function u_sendmail($from, $to, $subject, $message)
+//{
+//    global $loc;
+//
+//    session_start();
+//    include ("{$loc}/common/lib/mail_lib.php");
+//    require ("{$loc}/common/oss/phpmailer/class.phpmailer.php");
+//
+//    // create email body and send it
+//    $format      = "html";
+//    $event       = $_REQUEST['openmeeting'];
+//    $name        = $_REQUEST['name'];
+//    $from        = $_SESSION['smtp_user'];
+//    $fromtxt     = "no-reply";
+//    $reply       = $from;
+//    $replytxt    = "reply-to";
+//    $body        = nl2br($message);   // adds html line breaks
+//    $email_to    = $to;
+//    $email_cc    = array();
+//    $email_bc    = array();
+//    $attachments = array();
+//
+//    // send email
+//    $sent = sendEmail($format, $from, $fromtxt, $reply, $replytxt, $email_to, $email_cc, $email_bc, $attachments, $subject, $body);
+//
+//    if ($sent==0)
+//    {
+//        //echo "contact form processed";
+//        echo "ok";
+//        return true;
+//    }
+//    else
+//    {
+//        echo "contact form processing failed";
+//        if ($sent==-1){ echo ": reply email address not provided"; }
+//        elseif ($sent==-2){ echo ": target email address not defined"; }
+//        elseif ($sent==-3){ echo ": no subject provided"; }
+//        elseif ($sent==-4){ echo ": no message provided"; }
+//        elseif ($sent==-4){ echo ": email transmission failed"; }
+//        else { echo ": undefined error"; }
+//        return false;
+//    }
+//}
 
 
 function u_getfleetcontext($eventid, $page)

@@ -2,23 +2,148 @@
 <pages>
 
     <page>
-        <category></category>
-        <author></author>
+        <category>panic</category>
+        <author>Mark Elkington - SYC</author>
         <listorder>1</listorder>
+        <active>1</active>
         <pursuit></pursuit>
         <eventname></eventname>
         <format></format>
         <startdate></startdate>
         <enddate></enddate>
         <multirace></multirace>
-        <question>EMERGENCY Top 5 Common Problems Using RaceManager </question>
+        <question>Forgot to SHORTEN COURSE in raceManager</question>
         <answer><![CDATA[
-
-
-
+        <h3>Problem:  You are expecting boats to be finished by raceManager, but it just records another lap </h3>
+        <p>DO NOT PANIC - just keep timing the boats as they cross the line and use the hooter to signal the finish until <u>all boats have finished</u>.</p>
+        <p>Once the race is completed go to the RESULTS page and use the "Change Finish Lap" option to reset the laps to the lap you wanted to finish them on.
+        For example - if you originally set 4 laps, but forgot to shorten it to 3 laps - set the laps for that fleet to lap 3.  RaceManager will recalculate the results for
+        a finish at lap 3.</p>
         ]]></answer>
+        <notes><![CDATA[<p>This works for non-handicap, handicap and average lap handicap racing</p>]]></notes>
+    </page>
 
+    <page>
+        <category>panic</category>
+        <author>Mark Elkington - SYC</author>
+        <listorder>2</listorder>
+        <active>1</active>
+        <pursuit></pursuit>
+        <eventname></eventname>
+        <format></format>
+        <startdate></startdate>
+        <enddate></enddate>
+        <multirace></multirace>
+        <question>Missed timing a boat on a previous lap</question>
+        <answer><![CDATA[
+        <h3>Problem:  Typical scenario - you are timing Lap 2 for most boats but realise that you have not recorded a Lap 1 time for a boat approaching the club line</h3>
+        <p>DO NOT PANIC - First consider if the boat could have been delayed by a very lengthy capsize - if that is likely then just record its time as Lap 1.
+        If a long capsize is not likely, simply click the boat in question on the TIMER page. This will give the boat an incorrect Lap 1 time, BUT it will allow you to record
+        a correct time for Lap 2 as it crosses the club line.</p>
+        <p>Note:  this fix also works if you are finishing boats, and you have missed an earlier lap for one or more boats.</p>
+        ]]></answer>
+        <notes><![CDATA[<p>After the race has finished you can use the "edit laps" function to give a more likely lap time for the missing lap - but it is not necessary</p>]]></notes>
+    </page>
 
+    <page>
+        <category>panic</category>
+        <author>Mark Elkington - SYC</author>
+        <listorder>3</listorder>
+        <active>1</active>
+        <pursuit></pursuit>
+        <eventname></eventname>
+        <format></format>
+        <startdate></startdate>
+        <enddate></enddate>
+        <multirace></multirace>
+        <question>Forgot to start the raceManager TIMER</question>
+        <answer><![CDATA[
+        <h3>Problem:  Forgot to start raceManager timer when starting the lights box - unable to record lap times</h3>
+        <p>DO NOT PANIC - on the START page click the "Forgot to Start Timer" button below the timer clock display.  Enter the approximate time you started the lights box Timer in hh:mm:ss format.
+        </p>
+        ]]></answer>
+        <notes><![CDATA[<p>You can change the estimated time more than once - but you must NOT change it AFTER you have started recording lap times</p>]]></notes>
+    </page>
+
+    <page>
+        <category>panic</category>
+        <author>Mark Elkington - SYC</author>
+        <listorder>4</listorder>
+        <active>1</active>
+        <pursuit></pursuit>
+        <eventname></eventname>
+        <format></format>
+        <startdate></startdate>
+        <enddate></enddate>
+        <multirace></multirace>
+        <question>Too many boats - hard to time laps accurately ... [using VIEW and BUNCH]</question>
+        <answer><![CDATA[
+        <h3>Problem:  Having to switch quickly between fleets on the TIMER page - not possible to accurately record lap times.</h3>
+        <p>DO NOT PANIC - on the TIMER page click the CHANGE VIEW option on the top navigation bar.  This view includes all boats on a single page.  You can organise the boats by
+        sail number, class, or fleet.  Most people prefer the CLASS view.</p>
+
+        <p>Using these alternate views in combination with the BUNCH feature usually makes the lap timing process much less stressful.</p>
+
+        <p>To use BUNCH - one person spots approaching boats when they are about 100m - 200m from the line - calling out the class and sail number.
+                The other person - running raceManager - clicks the blue button (with a pin icon) for each boat spotted - the boat will then be added to
+                 the BUNCH list on the right hand side of the screen.</p>
+
+        <p>You can now use this bunch list to easily and quickly record the boats as they cross the line
+                - avoiding the panic of finding them in the few seconds as they cross the line.</p>
+
+        <p>The bunch list has up and down arrows so that you can adjust the likely order that the boats will cross
+                the line to make it even easier.  You can also remove boats from the bunch list using the red delete icon.</p>
+        ]]></answer>
+        <notes><![CDATA[<p>Most OODs who have tried this feature find it MUCH easier and less stressful - give it a try...</p>]]></notes>
+    </page>
+
+    <page>
+        <category>panic</category>
+        <author>Mark Elkington - SYC</author>
+        <listorder>8</listorder>
+        <active>1</active>
+        <pursuit></pursuit>
+        <eventname></eventname>
+        <format></format>
+        <startdate></startdate>
+        <enddate></enddate>
+        <multirace></multirace>
+        <question>Computer MOUSE not Working</question>
+        <answer><![CDATA[
+        <h3>Problem: Difficulty getting the system to respond to mouse clicks</h3>
+        <p>DO NOT PANIC - sometimes this might be the mouse itself - check the USB connection behind the screen.  If that does not work there are spare mouse devices in the OOD desk drawers.</p>
+        <p>Sometimes it is operator error - a mouse click is detected when you RELEASE the mouse NOT when you press it.  So try to lightly click the mouse with a
+        positive lift of your finger to release it </p>
+        ]]></answer>
+        <notes><![CDATA[<p></p>]]></notes>
+    </page>
+
+    <page>
+        <category>panic</category>
+        <author>Mark Elkington - SYC</author>
+        <listorder>9</listorder>
+        <active>1</active>
+        <pursuit></pursuit>
+        <eventname></eventname>
+        <format></format>
+        <startdate></startdate>
+        <enddate></enddate>
+        <multirace></multirace>
+        <question>RaceManager has STOPPED RESPONDING</question>
+        <answer><![CDATA[
+        <h3>Problem: raceManager has frozen, or the PC has stopped</h3>
+        <p>There are lots of possible reasons for this happening.  It might simply be the main network switching over to the backup network - but this should only take a few seconds.</p>
+        <br>
+        <p>If raceManager has not responded for 30 seconds or so - but the mouse and PC still seem to be responding - just close the raceManager browser window.  Then click on the raceManager
+        icon in the centre of the screen to get back into raceManager (then click RACEBOX and select the race that is running).  No data will be lost if you do this.</p>
+        <br>
+        <p>If the race has started and the entire PC seems to be frozen, then abandon the computer and just use paper (and the hooter) to record finishing times from the wall clock.
+        After the race has finished let Michael Bagge or Mark Elkington know what happened so that we can advise on the best way to deal with your paper record.</p>
+        <br>
+        <p>if the PC freezes before the race starts you could reboot the PC by just turning off the power at the wall (under the PC cage).
+        If that does not work check with Mark Elkington or another club official if Mark is not at the club.</p>
+        ]]></answer>
+        <notes><![CDATA[<p></p>]]></notes>
     </page>
 
     <page>
@@ -39,13 +164,11 @@
                 courses also include options for light winds and low tide conditions. Each course is shown as it
                 should be displayed on the course board and includes tips on how to position the inflatable buoys.
             </p>
-
             <p>The courses can be viewed by selecting the <b>CourseFinder</b> option on the Status Page</p>
-
             <p>An online copy of the buoy locations <a href="https://www.starcrossyc.org.uk/buoy-chart" target="_blank">can be found here</a></p>
         ]]></answer>
         <notes><![CDATA[
-        <p>As OOD you can design your own race course - but in this case please check the course with a member of the Sailing Committee</p>
+        <p>As OOD you can choose to set your own course - but in this case please check the course with a member of the Sailing Committee</p>
         ]]></notes>
     </page>
 

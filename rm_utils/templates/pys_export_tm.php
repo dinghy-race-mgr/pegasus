@@ -88,6 +88,9 @@ EOT;
     return $bufr;
 }
 
+
+//
+// fixme the template below could be stadardised in common/templates
 function publish_results($params = array())
 {
     // starts processing report - completed by command_report and end_report templates
@@ -105,6 +108,8 @@ EOT;
 EOT;
     }
 
+
+
     $bufr = <<<EOT
      <!DOCTYPE html>
      <html lang="en">
@@ -118,11 +123,9 @@ EOT;
            
             <link rel="icon"          href="{loc}/common/images/logos/favicon.png">           
             <link rel="stylesheet"    href="{loc}/common/oss/bootstrap341/css/{theme}bootstrap.min.css" >      
-            <link rel="stylesheet"    href="{loc}/common/oss/bs-dialog341/css/bootstrap-dialog.min.css">
                     
             <script type="text/javascript" src="{loc}/common/oss/jquery/jquery.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bootstrap341/js/bootstrap.min.js"></script>
-            <script type="text/javascript" src="{loc}/common/oss/bs-dialog/js/bootstrap-dialog.min.js"></script>
             <script type="text/javascript" src="{loc}/common/oss/bs-growl/jquery.bootstrap-growl.min.js"></script>
             <script type="text/javascript" src="{loc}/common/scripts/clock.js"></script>
             

@@ -67,6 +67,7 @@ foreach($xmldata->children() as $topic) {
     }
 
     $sql = $fields.$values;
+    //echo "<pre>$sql</pre>";
     $insert = $db_o->db_query($sql);
     $error = "";
     if ($insert === false)

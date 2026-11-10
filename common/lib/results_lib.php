@@ -501,17 +501,29 @@ function process_transfer_sftp($files, $ftp_env)
 {
     global $db_o;
 
-    error_reporting(E_ERROR);
-    set_include_path(get_include_path() . PATH_SEPARATOR . $_SESSION['basepath'] . "/common/oss/phpseclib");
-    include("Net/SFTP.php");
+    echo "<pre>entering process_transfer_sftp</pre>";
+
+    // error_reporting(E_ERROR);
+    error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+    echo "<pre>base path: ".$_SESSION['basepath']."</pre>";
+    echo "<pre>before include path: ".get_include_path()."</pre>";
+    //set_include_path(get_include_path() . PATH_SEPARATOR . $_SESSION['basepath'] . "/common/oss/phpseclib2");
+    set_include_path("/home/sycuser/websites/www.starcrossyc.org.uk/html/non-joomla/pegasus_stx/common/oss/phpseclib");
+
+    echo "<pre>after include path: ".get_include_path()."</pre>";
+    // include("Net/SFTP.php");
+    include("/home/sycuser/websites/www.starcrossyc.org.uk/html/non-joomla/pegasus_stx/common/oss/phpseclib2/Net/SFTP.php");
+    echo "<pre>after include</pre>";
     define('NET_SFTP_LOGGING', NET_SFTP_LOG_COMPLEX);
+    echo "<pre>after logging</pre>";
 
     $status = array("login" => false, "connection" => "", "result" => false, "complete" => false, "num_files" => 0, "files" => array());
     $result_dirs = array("class", "races", "series", "special");   // fixme - needs to be in configuration somewhere
     $num_files = count($files);
     $num_files_sent = 0;
 
-    //echo "<pre>".print_r($ftp_env,true)."</pre>";
+    echo "<pre>".print_r($ftp_env,true)."</pre>";
+
     $sftp = new Net_SFTP($ftp_env['server']);
 
     // login to server
@@ -528,10 +540,12 @@ function process_transfer_sftp($files, $ftp_env)
     }
 
     //u_writedbg("<pre>files to transfer: ".print_r($files,true)."</pre>", __CLASS__, __FUNCTION__, __LINE__);
+    echo "<pre>files to transfer: ".print_r($files,true)."</pre>";
 
     if ($continue) {
         foreach ($files as $k => $file)
         {
+
             $continue = false;
             $status['files'][$k]['label'] = $file['label'];
             $status['files'][$k]['log'] .= "sftp transfer {$file['file']}: ";
@@ -547,6 +561,7 @@ function process_transfer_sftp($files, $ftp_env)
             $status['files'][$k]['file_type'] = $file['type'];
 
             //u_writedbg("<pre>source: $source_file<br>target: $target_file<br>target_year_dir: $target_year_dir</pre>", __CLASS__, __FUNCTION__, __LINE__);
+            echo "<pre>source: $source_file<br>target: $target_file<br>target_year_dir: $target_year_dir</pre>";
 
             // check if source file exists
             if (file_exists($source_file)) {
@@ -570,6 +585,7 @@ function process_transfer_sftp($files, $ftp_env)
                 foreach ($result_dirs as $dir)
                 {
                     //u_writedbg("<pre>checking: $target_year_dir/$dir</pre>", __CLASS__, __FUNCTION__, __LINE__);
+                    echo "<pre>checking: $target_year_dir/$dir</pre>";
 
                     if (!$sftp->chdir("$target_year_dir/$dir"))
                     {
@@ -605,6 +621,8 @@ function process_transfer_sftp($files, $ftp_env)
                     $status['files'][$k]['log'] .= "file not transferred | ";
                 }
             }
+
+            echo "<pre>status: ".print_r($status['files'][$k],true)."</pre>";
 
         }
     }
